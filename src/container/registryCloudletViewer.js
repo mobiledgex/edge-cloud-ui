@@ -338,31 +338,9 @@ const mapStateToProps = (state) => {
     let accountInfo = account ? account + Math.random()*10000 : null;
     let dimmInfo = dimm ? dimm : null;
     let submitVal = null;
-    let selectedRegion = null;
-    let selectedCloudlet = null;
-    let selectedOperator = null;
-    let selectedApp = null;
-    let flavors = null;
     let validateValue = {};
     
-    //TODO : 건희 20190902 새롭게 추가된 필드 'Cloudlet Type'데 대한 기능 구현 ()
-    /**
-     * EDGECLOUD-1187 Web UI - need to add new fields for creating a new cloudlet
-     * Web UI - need to add new fields for creating a new cloudlet
-
-     we need to add the following fields when creating a new cloudlet:
-     Type - with pulldown values of 'Openstack', 'Azure', 'GCP'.
-     Location - this is a freeform string value but has to match what is configured in the vault. Right now we use the values of 'hamburg' and 'bonn'. Should we use a pulldown with the pulldown of 'Hamburg', 'Bonn'?
-
-     Type needs to send the following in the create cloudlet message:
-     for openstack: "platform_type":2
-     for azure: "platform_type":3
-     for gcp: "platform_type":4
-
-     Location needs to send the following in the create cloudlet message:
-     "physical_name":"hamburg"
-     "physical_name":"bonn"
-     */
+    if(state.form.createAppFormDefault)
     if(state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.getRegion.region){
         state.form.createAppFormDefault.values.Latitude = state.getRegion.region.lat;
         state.form.createAppFormDefault.values.Longitude = state.getRegion.region.long;

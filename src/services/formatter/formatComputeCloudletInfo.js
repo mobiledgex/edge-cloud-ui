@@ -42,32 +42,32 @@ export const formatData = (datas, body) => {
                         Region: '',
                         CloudletName: '',
                         Operator: '',
-                        CloudletLocation: '',
-                        Ip_support: '',
-                        Num_dynamic_ips: '',
-                        Physical_name: '',
-                        Platform_type: '',
+                        NotifyId: '',
+                        Controller: '',
+                        Version: '',
+                        OSMaxRam: '',
                         State: '',
-                        Progress: '',
-                        Status: '',
-                        CloudletInfoState:4,
-                        Edit: null
+                        Status: ''
                     })
                 } else {
                     let Region = body.region || '-';
                     let CloudletName = dataResult.data.key.name || '-';
                     let Operator = dataResult.data.key.operator_key.name || '-';
-                    let CloudletLocation = dataResult.data.location || '-';
-                    let Ip_support = dataResult.data.ip_support || '-';
-                    let Num_dynamic_ips = dataResult.data.num_dynamic_ips || '-';
-                    let Physical_name = dataResult.data.physical_name || '-';
-                    let Platform_type = dataResult.data.platform_type || '-';
                     let State = dataResult.data.state || '-';
+                    let NotifyId = dataResult.data.notify_id || '-';
+                    let Controller = dataResult.data.controller || '-';
+                    let Errors = dataResult.data.errors;
                     let Status = dataResult.data.status;
-                    let CloudletInfoState = 4;
-                    values.push({ uuid: generateUniqueId(), CloudletInfoState:CloudletInfoState, Region: Region, CloudletName: CloudletName, Operator: Operator, CloudletLocation: CloudletLocation, Ip_support: Ip_support, Num_dynamic_ips: Num_dynamic_ips, Physical_name: Physical_name, Platform_type: Platform_type, State: State,Progress: '', Status: Status, Edit: newRegistKey })
+                    let Version = dataResult.data.version || '-';
+                    let OSMaxRam = dataResult.data.os_max_ram || '-';
+                    let OSMaxVCores = dataResult.data.os_max_vcores
+                    let OSMaxVolGB = dataResult.data.os_max_vol_gb
+                    let Flavors = dataResult.data.flavors
+                    values.push({ Region: Region, CloudletName: CloudletName, Operator: Operator, State: State, NotifyId: NotifyId, Controller: Controller, Errors: Errors, Status: Status, Version: Version, OSMaxRam: OSMaxRam, OSMaxVCores: OSMaxVCores, OSMaxVolGB: OSMaxVolGB, Flavors: Flavors })
                 }
             })
+        } else {
+            values.push({ Region: '', CloudletLocation: '' })
         }
     }
     return values

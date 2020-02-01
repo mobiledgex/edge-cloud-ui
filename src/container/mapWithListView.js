@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react';
-import { Header, Button, Table, Icon, Input, Popup, Container } from 'semantic-ui-react';
+import { Header, Button, Table, Icon, Input, Popup, Container, Label } from 'semantic-ui-react';
 import { withRouter } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip'
 import { connect } from 'react-redux';
@@ -89,6 +89,7 @@ class MapWithListView extends React.Component {
             { margin: '0 0 10px 0', padding: '5px 15px 15px', alignItems: 'center', display: 'flex', flexDirection: 'column' },
             { margin: '0 0 10px 0', padding: '5px 15px 15px', alignItems: 'center', display: 'flex', flexDirection: 'column', height: '28px' }
         ]
+        this.headerLabels = [];
         this.streamInterval = null;
         this.oldTemp = {};
         this.live = true;
@@ -205,7 +206,7 @@ class MapWithListView extends React.Component {
 
                     <div className={'grid_table ' + this.props.siteId}>
                         {
-                            this.TableExampleVeryBasic(this.props.headerLayout, this.props.hiddenKeys, dummyData)
+                            this.TableExampleVeryBasic(this.props.headerLayout, dummyData)
                         }
                     </div>
                 </div>
@@ -228,37 +229,7 @@ class MapWithListView extends React.Component {
         return layout
     }
 
-    makeHeader(_keys, headL, hidden) {
-        const { column, direction } = this.state
-        let keys = Object.keys(_keys);
-        let widthDefault = Math.round(16 / keys.length);
 
-        return keys.map((key, i) => (
-            (key === 'uuid') ? null :
-                (!(String(hidden).indexOf(key) > -1)) ?
-                    (i === keys.length - 1) ?
-                        <Table.HeaderCell key={i} className='unsortable' textAlign='center'>
-                            {(key === 'Edit') ? 'Actions' : key}
-                        </Table.HeaderCell>
-                        :
-                        <Table.HeaderCell key={i} className={(key === 'CloudletLocation' || key === 'Edit' || key === 'Progress') ? 'unsortable' : ''} textAlign='center' sorted={column === key ? direction : null} onClick={(key == 'CloudletLocation' || key == 'Edit' || key == 'Progress' || key == 'Ports') ? null : this.handleSort(key)}>
-                            {
-                                (key === 'CloudletName') ? 'Cloudlet Name'
-                                    : (key === 'CloudletLocation') ? 'Cloudlet Location'
-                                        : (key === 'ClusterName') ? 'Cluster Name'
-                                            : (key === 'OrganizationName') ? 'Organization Name'
-                                                : (key === 'IpAccess') ? 'IP Access'
-                                                    : (key === 'AppName') ? 'App Name'
-                                                        : (key === 'ClusterInst') ? 'Cluster Instance'
-                                                            : (key === 'Physical_name') ? 'Physical Name'
-                                                                : (key === 'Platform_type') ? 'Platform Type'
-                                                                    : (key === 'Edit') ? 'Actions'
-                                                                        : key}
-                        </Table.HeaderCell>
-                    :
-                    null
-        ));
-    }
 
     onLayoutChange(layout) {
         //this.props.onLayoutChange(layout);
@@ -290,7 +261,7 @@ class MapWithListView extends React.Component {
     resetParentProps = () => {
     }
 
-    showProgress(_item, _siteId, _auto) {
+    onProgressClick(_item, _siteId, _auto) {
         this.setState({
             uuid: 0
         })
@@ -306,13 +277,10 @@ class MapWithListView extends React.Component {
         }
     }
 
-    requestLastResponse = (data)=>    
-    {
-        if(this.state.uuid === 0)
-        {
+    requestLastResponse = (data) => {
+        if (this.state.uuid === 0) {
             let type = 'error'
-            if(data.code === 200)
-            {
+            if (data.code === 200) {
                 type = 'success'
             }
             this.props.handleAlertInfo(type, data.message)
@@ -329,9 +297,8 @@ class MapWithListView extends React.Component {
                         responseData = item;
                     }
                     else {
-                        if(item.steps && item.steps.length > 1)
-                        {    
-                            this.requestLastResponse(item.steps[item.steps.length-1]);
+                        if (item.steps && item.steps.length > 1) {
+                            this.requestLastResponse(item.steps[item.steps.length - 1]);
                         }
                         if (item.steps.length >= 1 && item.steps[0].code === 200) {
                             item.steps.push({ code: CODE_FINISH })
@@ -362,7 +329,7 @@ class MapWithListView extends React.Component {
                     }
                 })
                 this.setState({
-                    stepsArray : stepsArray
+                    stepsArray: stepsArray
                 })
             }
         }
@@ -381,7 +348,7 @@ class MapWithListView extends React.Component {
         })
     }
 
-    
+
 
     makeUTC = (time) => (
         moment.unix(time.replace('seconds : ', '')).utc().format('YYYY-MM-DD HH:mm:ss')
@@ -460,11 +427,149 @@ class MapWithListView extends React.Component {
         }
     }
 
-    TableExampleVeryBasic = (headL, hidden, dummyData) => (
+
+
+    makeHeader() {
+        const { column, direction } = this.state
+        if (this.headerLabels.length === 0) {
+            return this.props.headerInfo.map((header, i) => {
+                if (header.visible) {
+                    return (
+                        <Table.HeaderCell key={i} className={header.sortable ? '' : 'unsortable'} textAlign='center' sorted={column === header.field ? direction : null} onClick={header.sortable ? this.handleSort(header.field) : null}>
+                            {header.label}
+                        </Table.HeaderCell>)
+                }
+            })
+
+        }
+    }
+
+    showProgress = (item) => {
+        let state = item['State'];
+        let icon = null;
+        let color = 'red';
+        switch (state) {
+            case 5:
+                icon = <Popup content={this.getStateStatus(state)} trigger={<Icon className="progressIndicator" name='check' color='green' />}/>
+                break;
+            case 3:
+            case 7:
+            case 14:
+                icon = <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading size={12} color='green' name='circle notch' />} />
+                break;
+            case 10:
+            case 12:
+                icon = <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading size={12} color='red' name='circle notch' />} />
+                break;
+            default:
+                icon = <Popup content={this.getStateStatus(state)} trigger={<Icon className="progressIndicator" name='close' color='red' />}/>
+        }
+        return (
+            icon
+        )
+    }
+
+    showAction = (item, field) => {
+        return (
+            String(item[field]) === 'null' ? '' : <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({ openDelete: true, selected: item })}><Icon name={'trash alternate'} /></Button>
+        )
+    }
+
+    getCloudletInfoState = (id) => {
+
+        let state = 'Not Present';
+        let color = 'red'
+        switch (id) {
+            case 0:
+                state = 'Unknown'
+                break;
+            case 1:
+                state = 'Error'
+                break;
+            case 2:
+                state = 'Online'
+                color = 'green'
+                break;
+            case 3:
+                state = 'Offline'
+                break;
+            case 4:
+                state = 'Not Present'
+                break;
+            case 5:
+                state = 'Init'
+                break;
+            case 6:
+                state = 'Upgrade'
+                break;
+            default:
+                state = 'Not Present'
+                break;
+        }
+
+        return (
+            <Button basic size='mini' color={color} compact style={{ width: 100 }}>
+                {state}
+            </Button>
+        )
+    }
+
+    getCellClick = (field, item) => {
+        return (
+            field === 'Progress' ?
+                this.onProgressClick(item, this.props.siteId, '', item['State']) :
+                field === 'Actions' ?
+                    null :
+                    this.detailView(item)
+        )
+    }
+
+    getIPAccessState = (id) => {
+        switch (id) {
+            case 0:
+                return 'IpAccessUnknown'
+            case 1:
+                return 'Dedicated'
+            case 2:
+                return 'IpAccessDedicated/Shared'
+            case 3:
+                return 'Shared'
+            default:
+                return id
+        }
+    }
+
+    makeBody(i, item) {
+        return this.props.headerInfo.map((header, j) => {
+            if (header.visible) {
+                let field = header.field;
+                return <Table.Cell key={j} textAlign='center' ref={cell => this.tableCell = cell} onClick={() => this.getCellClick(field, item)} style={(this.state.selectedItem == i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
+                    {
+                        field === 'Actions' ?
+                            this.showAction(item, field) :
+                            field === 'Progress' ?
+                                this.showProgress(item) :
+                                (field === 'State' && item[field]) ?
+                                    this.getStateStatus(item[field]) :
+                                    (field === 'CloudletLocation' && item[field]) ?
+                                        item[field].latitude && item[field].longitude ? <div> {`Latitude : ${item[field].latitude}`} <br /> {`Longitude : ${item[field].longitude}`} </div> : '' :
+                                        (field === 'CloudletInfoState' && item[field]) ?
+                                            this.getCloudletInfoState(item[field]) :
+                                            (field === 'IpAccess' && item[field]) ?
+                                                this.getIPAccessState(item[field]) :
+                                                <div style={{ display: 'flex', alignContent: 'Column', justifyContent: 'center', alignItems: 'center', wordBreak: 'break-all' }}>
+                                                    <div>{String(item[field])}</div>{(this.compareDate(item['Created']).new && field === 'Region') ? <div className="userNewMark" style={{ marginLeft: 5, fontSize: 10, padding: '0 5px' }}>{`New`}</div> : null}
+                                                </div>
+                    }</Table.Cell>
+            }
+        })
+    }
+
+    TableExampleVeryBasic = (headL, dummyData) => (
         <Table className="viewListTable" basic='very' striped celled sortable ref={ref => this.viewListTable = ref} style={{ width: '100%' }}>
             <Table.Header className="viewListTableHeader" style={{ width: '100%' }}>
                 <Table.Row>
-                    {(dummyData.length > 0) ? this.makeHeader(dummyData[0], headL, hidden) : null}
+                    {(dummyData.length > 0) ? this.makeHeader() : null}
                 </Table.Row>
             </Table.Header>
             <Table.Body className="tbBodyList">
@@ -472,79 +577,8 @@ class MapWithListView extends React.Component {
 
                     dummyData.map((item, i) => (
                         <Table.Row key={i}>
-                            {Object.keys(item).map((value, j) => (
-                                (value === 'uuid') ?
-                                    null :
-                                    (value === 'Edit') ?
-                                        String(item[value]) === 'null' ? <Table.Cell /> :
-                                            <Table.Cell key={j} textAlign='center' style={(this.state.selectedItem == i) ? { whiteSpace: 'nowrap', background: '#444' } : { whiteSpace: 'nowrap' }} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
-                                                <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({ openDelete: true, selected: item })}><Icon name={'trash alternate'} /></Button>
-                                            </Table.Cell>
-                                        :
-                                        (value === 'AppName' && item[value]) ? //
-                                            <Table.Cell key={j} textAlign='left' ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={(this.state.selectedItem == i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
-                                                <div style={{ display: 'flex', justifyContent: 'row', wordBreak: 'break-all' }}>
-                                                    {String(item[value])}
-                                                </div>
-                                            </Table.Cell>
-                                            :
-                                            (value === 'Mapped_ports' && item[value]) ?
-                                                <Table.Cell key={j} textAlign='left' style={(this.state.selectedItem == i) ? { background: '#444' } : null} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
-                                                    <Icon name='server' size='big' onClick={() => this.onPortClick(value, item)} style={{ cursor: 'pointer' }}></Icon>
-                                                </Table.Cell>
-                                                :
-                                                (value === 'CloudletLocation' && item[value]) ?
-                                                    <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)} style={(this.state.selectedItem == i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
-                                                        {
-                                                            item[value].latitude && item[value].longitude ?
-                                                                <div>
+                            {this.makeBody(i, item)}
 
-                                                                    {`Latitude : ${item[value].latitude}`} <br />
-                                                                    {`Longitude : ${item[value].longitude}`}
-
-                                                                </div> : ''}
-                                                    </Table.Cell>
-                                                    :
-                                                    (value === 'IpAccess' && item[value]) ?
-                                                        <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={(this.state.selectedItem == i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
-                                                            {(item[value] == 0) ? "IpAccessUnknown" : (item[value] == 1) ? "Dedicated" : (item[value] == 2) ? "IpAccessDedicatedOrShared" : (item[value] == 3) ? "Shared" : item[value]}
-                                                        </Table.Cell>
-                                                        :
-                                                        (value === 'State' && item[value]) ?
-                                                            <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={(this.state.selectedItem === i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
-                                                                {this.getStateStatus(item[value])}
-                                                            </Table.Cell>
-                                                            :
-                                                            (value === 'Progress' && (item['State'] === 3 || item['State'] === 7 || item['State'] === 14)) ?
-                                                                <Table.Cell key={j} textAlign='center' onClick={() => this.showProgress(item, this.props.siteId, '', item['State'])} style={(this.state.selectedItem === i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
-                                                                    <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading size={12} color='green' name='circle notch' />} />
-                                                                </Table.Cell>
-                                                                :
-                                                                (value === 'Progress' && item['State'] === 5) ?
-                                                                    <Table.Cell key={j} textAlign='center' onClick={() => this.showProgress(item, this.props.siteId, '', item['State'])} style={(this.state.selectedItem === i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
-                                                                        <Icon className="progressIndicator" name='check' color='rgba(255,255,255,.5)' />
-                                                                    </Table.Cell>
-                                                                    :
-                                                                    (value === 'Progress' && (item['State'] === 10 || item['State'] === 12)) ?
-                                                                        <Table.Cell key={j} textAlign='center' onClick={() => this.showProgress(item, this.props.siteId, '', item['State'])} style={(this.state.selectedItem === i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
-                                                                            <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading size={12} color='red' name='circle notch' />} />
-                                                                        </Table.Cell>
-                                                                        :
-                                                                        (value.indexOf('Name') !== -1 || value === 'Cloudlet' || value === 'ClusterInst') ?
-                                                                            <Table.Cell key={j} textAlign='left' ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={(this.state.selectedItem === i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
-                                                                                <div style={{ display: 'flex', alignContent: 'Column', justifyContent: 'flex-start', alignItems: 'center', wordBreak: 'break-all' }}>
-                                                                                    <div>{String(item[value])}</div>{(this.compareDate(item['Created']).new && value === 'Region') ? <div className="userNewMark" style={{ marginLeft: 5, fontSize: 10, padding: '0 5px' }}>{`New`}</div> : null}
-                                                                                </div>
-                                                                            </Table.Cell>
-                                                                            :
-                                                                            (!(String(hidden).indexOf(value) > -1)) ?
-                                                                                <Table.Cell key={j} textAlign={'center'} ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={(this.state.selectedItem == i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
-                                                                                    <div style={{ display: 'flex', alignContent: 'Column', justifyContent: 'center', alignItems: 'center', wordBreak: 'break-all' }}>
-                                                                                        <div>{String(item[value])}</div>{(this.compareDate(item['Created']).new && value === 'Region') ? <div className="userNewMark" style={{ marginLeft: 5, fontSize: 10, padding: '0 5px' }}>{`New`}</div> : null}
-                                                                                    </div>
-                                                                                </Table.Cell>
-                                                                                : null
-                            ))}
                         </Table.Row>
                     ))
 
@@ -569,7 +603,7 @@ class MapWithListView extends React.Component {
         let close = !this.state.closeMap;
         this.setState({ closeMap: close })
     }
-    
+
 
     componentDidMount() {
         window.addEventListener("resize", this.updateDimensions);
@@ -579,9 +613,7 @@ class MapWithListView extends React.Component {
         }
     }
     componentWillUnmount() {
-        //window.addEventListener("resize", this.updateDimensions);
         clearTimeout(this.interval)
-        //this.props.handleSetHeader([])
         clearInterval(prgInter);
         clearInterval(_self.streamInterval);
     }
@@ -607,27 +639,7 @@ class MapWithListView extends React.Component {
         if (nextProps.accountInfo) {
             this.setState({ dimmer: 'blurring', open: true })
         }
-        if (nextProps.devData.length && !this.state.toggle) {
-            this.setState({ toggle: true })
-            //set filtering
-            let filteredData = [];
-            if (this.state.dummyData.length === 0) {
-                let headers = Object.keys(nextProps.devData[0])
-                let filters = [];
-                headers.map((item) => {
-                    let _state = false;
-                    this.props.hiddenKeys.map((hkey) => {
-                        if (item === hkey) {
-                            _state = true
-                        }
-                    })
-                    filters.push({ name: item, hidden: _state })
-                })
-                this.props.handleSetHeader(filters)
-            }
-        } else {
-            this.checkLengthData();
-        }
+
         nextProps.clickCity.map((item) => {
             cityCoordinates.push(item.coordinates)
         })
@@ -675,26 +687,26 @@ class MapWithListView extends React.Component {
         this.props.handleChangeClickCity([])
     }
 
-    getAppInstKey=(item)=>{
+    getAppInstKey = (item) => {
         return (
-        {
-        region:item.Region,
-        appinst:
-        {
-            key:
             {
-                app_key:
+                region: item.Region,
+                appinst:
                 {
-                    developer_key:{name:item.OrganizationName},name:item.AppName,version: item.Version
-                },
-                cluster_inst_key:
-                {
-                    cluster_key:{name:item.ClusterInst},
-                    cloudlet_key:{operator_key:{name:item.Operator},name:item.Cloudlet}
+                    key:
+                    {
+                        app_key:
+                        {
+                            developer_key: { name: item.OrganizationName }, name: item.AppName, version: item.Version
+                        },
+                        cluster_inst_key:
+                        {
+                            cluster_key: { name: item.ClusterInst },
+                            cloudlet_key: { operator_key: { name: item.Operator }, name: item.Cloudlet }
+                        }
+                    }
                 }
-            }
-        }
-        })
+            })
     }
 
     render() {
@@ -771,7 +783,6 @@ const mapDispatchProps = (dispatch) => {
         handleDetail: (data) => { dispatch(actions.changeDetail(data)) },
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data)) },
         handleRefreshData: (data) => { dispatch(actions.refreshData(data)) },
-        handleSetHeader: (data) => { dispatch(actions.tableHeaders(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
         handleEditInstance: (data) => { dispatch(actions.editInstance(data)) },
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },

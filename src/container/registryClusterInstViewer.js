@@ -321,59 +321,37 @@ const mapStateToProps = (state) => {
     let accountInfo = account ? account + Math.random() * 10000 : null;
     let dimmInfo = dimm ? dimm : null;
     let submitVal = null;
-    let selectedRegion = null;
-    let selectedCloudlet = null;
-    let selectedOperator = null;
-    let selectedApp = null;
-    let flavors = null;
     let validateValue = null;
+    let region = state.changeRegion ? {value: state.changeRegion.region}: {};
+    let regionInfo = (state.regionInfo) ? state.regionInfo : null;
+    let formClusterInst = {};
 
-    if (state.form.createAppFormDefault) {
-        if (state.form.createAppFormDefault.values.Region !== "") {
-            selectedRegion = state.form.createAppFormDefault.values.Region;
+    if (state.form && state.form.createAppFormDefault) {
+        let values = state.form.createAppFormDefault.values;
+        let submitSucceeded = state.form.createAppFormDefault.submitSucceeded;
+        if (values) {
+            if (values && submitSucceeded) {
+                let enableValue = reducer.filterDeleteKey(values, 'Edit')
+                if (enableValue.DeploymentType === "Docker") {
+                    enableValue.NumberOfMaster = 0;
+                    enableValue.NumberOfNode = 0;
+                    enableValue.DeploymentType = "docker"
+                }
+                if (enableValue.DeploymentType === "Kubernetes") {
+                    enableValue.DeploymentType = "kubernetes"
+                }
+                submitVal = createFormat(enableValue);
+                validateValue = values;
+            }
         }
-        if (state.form.createAppFormDefault.values.Cloudlet !== "") {
-            selectedCloudlet = state.form.createAppFormDefault.values.Cloudlet;
-        }
-        if (state.form.createAppFormDefault.values.Operator !== "") {
-            selectedOperator = state.form.createAppFormDefault.values.Operator;
-        }
-        if (state.form.createAppFormDefault.values.AppName !== "") {
-            selectedApp = state.form.createAppFormDefault.values.AppName;
-        }
-        // if(state.form.createAppFormDefault.values.AppName !== "") {
-        //     selectedApp = state.form.createAppFormDefault.values.AppName;
-        // }
 
-        if (state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
-            let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
-            if (enableValue.DeploymentType === "Docker") {
-                enableValue.NumberOfMaster = 0;
-                enableValue.NumberOfNode = 0;
-                enableValue.DeploymentType = "docker"
-            }
-            if (enableValue.DeploymentType === "Kubernetes") {
-                enableValue.DeploymentType = "kubernetes"
-            }
-            submitVal = createFormat(enableValue);
-            validateValue = state.form.createAppFormDefault.values;
+        formClusterInst = {
+            values: state.form.createAppFormDefault.values,
+            submitSucceeded: submitSucceeded
         }
     }
 
 
-    let region = state.changeRegion
-        ? {
-            value: state.changeRegion.region
-        }
-        : {};
-
-    let formClusterInst = state.form.createAppFormDefault
-        ? {
-            values: state.form.createAppFormDefault.values,
-            submitSucceeded: state.form.createAppFormDefault.submitSucceeded
-        }
-        : {};
-    let regionInfo = (state.regionInfo) ? state.regionInfo : null;
     return {
         accountInfo,
         dimmInfo,
@@ -388,14 +366,6 @@ const mapStateToProps = (state) => {
         formClusterInst: formClusterInst,
         regionInfo: regionInfo
     }
-
-    // return (dimm) ? {
-    //     dimmInfo : dimm
-    // } : (account)? {
-    //     accountInfo: account + Math.random()*10000
-    // } : null;
-
-
 };
 
 const mapDispatchProps = (dispatch) => {

@@ -33,8 +33,8 @@ const detailViewer = (props, type) => (
             <Table className='page_cloudletPool_table' celled collapsing style={{ width: '100%', height: '100%', border: 'none', display: 'flex', flexDirection: 'column' }}>
                 <Table.Header>
                     <Table.Row>
-                        <Table.HeaderCell><div style={{ display: 'flex', justifyContent: 'center', width:'25%' }}>Subject</div></Table.HeaderCell>
-                        <Table.HeaderCell><div style={{ display: 'flex', justifyContent: 'center' }}>Value</div></Table.HeaderCell>
+                        <Table.HeaderCell width={6}><div style={{ display: 'flex', justifyContent: 'center' }}>Key</div></Table.HeaderCell>
+                        <Table.HeaderCell width={10}><div style={{ display: 'flex', justifyContent: 'center' }}>Value</div></Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -68,6 +68,9 @@ const makeCloudletTable = (values, label, i) => (
                                                             :(label == 'ClusterInst')?'Cluster Instance'
                                                                 :(label == 'Physical_name')?'Physical Name'
                                                                     :(label == 'Platform_type')?'Platform Type'
+                                                                    :(label == 'PoolName')?'Pool Name'
+                                                                    :(label == 'Cloudlets')?'Number of Cloudlets'
+                                                                    :(label == 'Organizations')?'Number of Organizations'
                                                                         :label}
                     
             </Table.Cell>
