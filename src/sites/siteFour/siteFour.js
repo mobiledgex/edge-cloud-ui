@@ -848,32 +848,6 @@ class SiteFour extends React.Component {
 
     /** audit ********/
 
-    getSubHeader = ()=>
-    {
-        let subHeader = ''
-        if(this.state.detailData && this.state.detailData.Region)
-        {
-            subHeader =  this.state.detailData.Region;
-            if(this.state.headerTitle === 'Cloudlets' &&  this.state.detailData.Operator && this.state.detailData.CloudletName)
-            {
-                subHeader = subHeader + ' / ' +  this.state.detailData.Operator + ' / ' + this.state.detailData.CloudletName;
-            }
-            else if(this.state.detailData.OrganizationName && this.state.detailData.Cloudlet)
-            {
-                subHeader = subHeader + ' / ' + this.state.detailData.OrganizationName + ' / ' +  this.state.detailData.Cloudlet
-                if(this.state.headerTitle === 'Cluster Instances' && this.state.detailData.ClusterName)
-                {
-                    subHeader = subHeader + ' / ' + this.state.detailData.ClusterName;
-                }
-                else if(this.state.headerTitle === 'App Instances' && this.state.detailData.ClusterInst && this.state.detailData.AppName)
-                {
-                    subHeader = subHeader + ' / ' + this.state.detailData.ClusterInst + ' / ' + this.state.detailData.AppName
-                }
-            }
-        }
-        return subHeader;  
-    }
-
 
     render() {
         const { shouldShowBox, shouldShowCircle, viewMode } = this.state;
@@ -1063,19 +1037,6 @@ class SiteFour extends React.Component {
                                                         viewMode: 'listView'
                                                     })}>Close Details</Button>
                                                 </Item>
-                                                <div style={{
-                                                    lineHeight:'38px',
-                                                    fontSize:'18px',
-                                                    overflow: 'hidden',
-                                                    whiteSpace: 'nowrap',
-                                                    textOverflow: 'ellipsis',
-                                                    maxWidth: '540px'
-                                                }}>
-                                                    [
-                                                        {this.getSubHeader()}
-                                                    ]
-
-                                                </div>
                                             </Grid.Column>
                                             : null
                                     }
