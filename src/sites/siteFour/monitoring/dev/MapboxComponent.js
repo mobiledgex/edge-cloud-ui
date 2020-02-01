@@ -24,7 +24,7 @@ export default class MapboxComponent extends Component {
             longitude: 51.1657,
             zoom: 0.7
         },
-        zoom: 0.9,
+        zoom: 0.75,
     };
 
     constructor() {
