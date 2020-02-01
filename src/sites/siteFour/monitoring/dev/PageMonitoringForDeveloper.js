@@ -38,8 +38,9 @@ import '../PageMonitoring.css'
 import {makeBubbleChartDataForCluster, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
 import {getCloudletList, getAppInstList, StylesForMonitoring} from "../admin/PageMonitoringServiceForAdmin";
-import MiniMapComponent2 from "./MiniMapComponent2";
+import MiniMapComponent2 from "./MiniMapComponent2____.jsskadjfksdjfkj";
 import MapboxComponent from "./MapboxComponent";
+import * as reducer from "../../../../utils";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -150,6 +151,7 @@ type State = {
     filteredAppInstanceList: Array,
     appInstDropdown: Array,
     appInstLoading: boolean,
+    cloudletKeys: Array,
 
 }
 
@@ -235,6 +237,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             filteredAppInstanceList: [],
             appInstDropdown: [],
             appInstLoading: false,
+            cloudletKeys: [],
         };
 
         interval = null;
@@ -242,7 +245,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         constructor(props) {
             super(props);
-
         }
 
         componentDidMount = async () => {
@@ -275,6 +277,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             console.log('appInstanceList===>', appInstanceList);
 
             let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
+
+            let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
+
             await this.setState({
                 isReady: true,
                 clusterDropdownList: clusterDropdownList,
@@ -284,15 +289,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceList: appInstanceList,
                 filteredAppInstanceList: appInstanceList,
                 appInstLoading: false,
+                appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
             });
+            /*  cloudletKeys.map(key=>{
+                  let listOne=groupedDatas[key];
 
-            console.log('sdlkfsldkflksdflksdlfk===>', this.state.clusterDropdownList)
+                  listOne.map((item, index)=>{
+                  })
+                  console.log('listOne.length===>', listOne.length);
+
+              })*/
+
 
             let allUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
             await this.setState({
                 allUsageList: allUsageList,
             });
-            console.log('getClusterLevelUsageList===>', allUsageList)
+            console.log('filteredAppInstanceList===>', appInstanceList)
 
             let bubbleChartData = await makeBubbleChartDataForCluster(allUsageList, HARDWARE_TYPE.CPU);
             await this.setState({
@@ -327,6 +340,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 filteredUsageList: this.state.allUsageList,
                 filteredAppInstanceList: this.state.appInstanceList,
+                appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
             })
             this.setState({
                 appInstLoading: false,
@@ -360,6 +374,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             this.setState({
                 loading: false,
             })
+
 
             await this.setState({
                 currentRegion: 'ALL',
@@ -701,12 +716,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     console.log('filteredAppInstList===>', filteredAppInstList);
                                     let appInstDropdown = makeSelectBoxListWithKeyValuePipe(filteredAppInstList, 'AppName', CLASSIFICATION.CLOUDLET)
 
+
                                     await this.setState({
                                         appInstDropdown: appInstDropdown,
                                         currentAppInst: '',
                                         appInstSelectBoxPlaceholder: 'Select App Inst',
                                         filteredAppInstanceList: filteredAppInstList,
-
+                                        appInstanceListGroupByCloudlet: reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET),
                                     })
 
 
@@ -936,9 +952,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolder() :
-                                                            <MapboxComponent appInstLoading={this.state.appInstLoading} markerList={this.state.filteredAppInstanceList}/>
-                                                        }
+                                                        <MapboxComponent appInstLoading={this.state.appInstLoading} markerList={this.state.appInstanceListGroupByCloudlet}/>
                                                     </div>
                                                 </div>
 

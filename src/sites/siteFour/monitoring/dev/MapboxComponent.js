@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import '../PageMonitoring.css'
-import ReactMapboxGl, {Layer, Marker, ZoomControl} from 'react-mapbox-gl';
+import ReactMapboxGl, {Marker} from 'react-mapbox-gl';
 import type {TypeAppInstance} from "../../../../shared/Types";
 import {Button, Icon} from "semantic-ui-react";
 import {showToast} from "../PageMonitoringCommonService";
@@ -13,27 +13,104 @@ const Map = ReactMapboxGl({
 
 });
 
+type Props = {
+    handleLoadingSpinner: Function,
+    cloudletKey: any,//hashmap
+    markerList: Array,
+}
 
-export default class MapboxComponent extends Component {
+type State = {
+    date: string,
+    appInstanceListGroupByCloudlet: any,
+    cloudletKeys: Array,
+    zoom: number,
+    newCloudLetLocationList: Array,
+    showModal: boolean
+}
 
-    state = {
-        viewport: {
-            width: '100%',
-            height: '100%',
-            latitude: 10.4515,
-            longitude: 51.1657,
-            zoom: 0.7
-        },
-        zoom: 0.75,
+export default class MapboxComponent extends Component<Props, State> {
+
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            viewport: {
+                width: '100%',
+                height: '100%',
+                latitude: 10.4515,
+                longitude: 51.1657,
+                zoom: 0.7
+            },
+            zoom: 0.75,
+            appInstanceListGroupByCloudlet: '',
+            cloudletKeys: [],
+            newCloudLetLocationList: [],
+            showModal: false,
+
+        };
+    }
+
+    componentDidMount = async () => {
+        console.log('markerList2222===>', this.props.markerList);
+        let appInstanceListGroupByCloudlet = this.props.markerList
+        this.setCloudletLocation(appInstanceListGroupByCloudlet)
+
     };
 
-    constructor() {
-        super();
+    async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
+        if (this.props.markerList !== nextProps.markerList) {
+
+            console.log(' nextProps_markerList===>', nextProps.markerList);
+            let appInstanceListGroupByCloudlet = nextProps.markerList;
+
+            this.setCloudletLocation(appInstanceListGroupByCloudlet)
+
+        }
 
     }
 
+    setCloudletLocation(appInstanceListGroupByCloudlet) {
 
-    render() {
+        let cloudletKeys = Object.keys(appInstanceListGroupByCloudlet)
+
+        let newCloudLetLocationList = []
+        cloudletKeys.map((key, index) => {
+
+            let AppNames = ''
+            let CloudletLocation = '';
+            let Cloudlet = '';
+            appInstanceListGroupByCloudlet[key].map((item: TypeAppInstance, index) => {
+
+                if (index === (appInstanceListGroupByCloudlet[key].length - 1)) {
+                    AppNames += item.AppName;
+                } else {
+                    AppNames += item.AppName + " , "
+                }
+
+
+                CloudletLocation = item.CloudletLocation;
+                Cloudlet = item.Cloudlet
+
+            })
+
+            newCloudLetLocationList.push({
+                AppNames: AppNames,
+                CloudletLocation: CloudletLocation,
+                Cloudlet: Cloudlet,
+            })
+
+        })
+
+        this.setState({
+            newCloudLetLocationList: newCloudLetLocationList,
+        }, () => {
+            console.log('newCloudLetLocationList===>', this.state.newCloudLetLocationList);
+        })
+
+
+    }
+
+    renderMapBoxCore = () => {
         return (
             <div style={{width: '100%', height: '100%'}}>
                 <Map
@@ -44,96 +121,31 @@ export default class MapboxComponent extends Component {
                     }}
                     zoom={[this.state.zoom]}
                 >
-                    <Layer
-                        id="my-id"
-                        sourceId="data"
-                        type="fill"
-                        layerOptions={{filter: ['==', 'type', 'region']}}
-                        layout={{}}
-                        paint={{'fill-color': '#81D8D0', 'fill-opacity': 0.5}}
-                    />
-                    {/*<ZoomControl position={'bottom-left'} style={{color:'green'}}/>*/}
-                    {/*<RotationControl/>*/}
-                    {/*<ScaleControl/>*/}
+                    {!this.props.appInstLoading && this.state.newCloudLetLocationList.map((item, index) => {
 
-                    {!this.props.appInstLoading &&
-                        <div>
-                            <Marker
-                                //key={key}
-                                //style={styles.marker}
-                                coordinates={[-122.399076, 37.787302]}
-                                onClick={() => {
-                                    showToast('Mobiledgex')
-                                }}>
-                                <img
+                        let listAppName = item.AppNames.split(",")
 
-                                    src="https://www.vippng.com/png/detail/318-3188126_building-company-office-icon-in-png-file-specialty.png" style={{color: 'red'}} height="25" width="25"/>
-                                <div style={{color: 'white', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
-                                    Mobiledgex
-                                </div>
-                                <div style={{color: 'yellow', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
-                                    [Mobiledgex office]
-                                </div>
-                            </Marker>
-                            <Marker
-                                //key={key}
-                                //style={styles.marker}
-                                coordinates={[127.106259,37.404945]}
-                                onClick={() => {
-                                    showToast('BIC')
-                                }}>
-                                <img
-
-                                    src="https://www.vippng.com/png/detail/318-3188126_building-company-office-icon-in-png-file-specialty.png" style={{color: 'red'}} height="25" width="25"/>
-                                <div style={{color: 'white', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
-                                    BIC
-                                </div>
-                                <div style={{color: 'yellow', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
-                                    [BIC office]
-                                </div>
-                            </Marker>
-
-                            <Marker
-                                //key={key}
-                                //style={styles.marker}
-                                coordinates={[77.595914,12.980056]}
-                                onClick={() => {
-                                    showToast('BIC')
-                                }}>
-                                <img
-
-                                    src="https://www.vippng.com/png/detail/318-3188126_building-company-office-icon-in-png-file-specialty.png" style={{color: 'red'}} height="25" width="25"/>
-                                <div style={{color: 'white', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
-                                    Rahul
-                                </div>
-                                <div style={{color: 'yellow', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
-                                    [Rahul's office]
-                                </div>
-                            </Marker>
-                        </div>
-
-                    }
-
-                    {/*37.404945, 127.106259*/}
-
-                    {!this.props.appInstLoading && this.props.markerList.map((item: TypeAppInstance, index) => {
                         return (
                             <Marker
                                 //key={key}
                                 //style={styles.marker}
                                 coordinates={[item.CloudletLocation.longitude, item.CloudletLocation.latitude]}
                                 onClick={() => {
-                                    showToast(item.AppName + "[" + item.Cloudlet + "]")
+                                    showToast(item.AppNames + "[" + item.Cloudlet + "]")
                                 }}>
                                 <img
+                                    src="https://cdn1.iconfinder.com/data/icons/basic-ui-elements-coloricon/21/06_1-512.png" style={{color: 'red'}} height="30" width="25"/>
 
-                                    src="https://cdn1.iconfinder.com/data/icons/basic-ui-elements-coloricon/21/06_1-512.png" style={{color: 'red'}} height="25" width="25"/>
-                                <div style={{color: 'white', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
-                                    {item.AppName}
-                                </div>
                                 <div style={{color: 'yellow', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
                                     [{item.Cloudlet}]
                                 </div>
+                                {listAppName.map(item => {
+                                    return (
+                                        <div style={{color: 'white', fontSize: 12, fontFamily: 'Acme'}}>
+                                            {item}
+                                        </div>
+                                    )
+                                })}
                             </Marker>
                         )
                     })}
@@ -156,7 +168,7 @@ export default class MapboxComponent extends Component {
                     />
                 </div>
                 }
-                <div style={{marginTop: -120}}>
+                <div style={{marginTop: -140}}>
                     <Button id="mapZoomCtl" size='larges' icon onClick={() => {
                         this.setState({
                             zoom: 0.8,
@@ -178,17 +190,26 @@ export default class MapboxComponent extends Component {
                     }}>
                         <Icon name="minus square outline"/>
                     </Button>
-                    <Button id="mapZoomCtl" size='large' icon onClick={() => {
+                  {/*  <Button id="mapZoomCtl" size='large' icon onClick={() => {
                         this.setState({
-                            showModal: !this.state.showModal
+                            showModal: true,
                         })
                     }}>
                         <Icon name="fullscreen square outline"/>
-                    </Button>
+                    </Button>*/}
                 </div>
             </div>
+        )
+    }
 
+
+    render() {
+        return (
+            <div style={{width: '100%', height: '100%'}}>
+                {this.renderMapBoxCore()}
+            </div>
 
         );
     }
 }
+

@@ -2,6 +2,8 @@ import React, {Component} from "react"
 import {ComposableMap, Geographies, Geography, Marker, Markers, ZoomableGroup} from "react-simple-maps"
 import {Button, Icon} from "semantic-ui-react";
 import type {TypeAppInstance} from "../../../../shared/Types";
+import '../PageMonitoring.css'
+import Modal from 'react-awesome-modal';
 
 const geoUrl =
     "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json"
@@ -151,9 +153,9 @@ export default class MiniMapComponent2 extends Component<Props, State> {
                             ))}
                         </Geographies>
                         <Markers>
-                             <Marker fill="#777" marker={{coordinates: [-101, 53]}}>
+                            <Marker fill="#777" marker={{coordinates: [-101, 53]}}>
                                 <text textAnchor="middle" fill="#F53">
-                                   CANADA
+                                    CANADA
                                 </text>
                             </Marker>
 
@@ -168,14 +170,14 @@ export default class MiniMapComponent2 extends Component<Props, State> {
                                     Mexico
                                 </text>
                             </Marker>
-                             <Marker fill="#777" marker={{coordinates: [10.4515, 51.1657]}}>
+                            <Marker fill="#777" marker={{coordinates: [10.4515, 51.1657]}}>
                                 <text textAnchor="middle" fill="#F53">
                                     Germany
                                 </text>
                             </Marker>
                         </Markers>
                         <Markers>
-                            {this.props.markerList.map((item : TypeAppInstance, index) => {
+                            {this.props.markerList.map((item: TypeAppInstance, index) => {
                                 return (
 
                                     <Marker
@@ -203,7 +205,7 @@ export default class MiniMapComponent2 extends Component<Props, State> {
                     </ZoomableGroup>
 
                 </ComposableMap>
-                <div style={{marginTop: type==='popup' ? -900 : -250, zIndex: 999999}}>
+                <div style={{marginTop: type === 'popup' ? -900 : -250, zIndex: 999999}}>
                     <Button id="mapZoomCtl" size='larges' icon onClick={() => {
                         this.setState({
                             zoom: 0.45,
@@ -257,37 +259,22 @@ export default class MiniMapComponent2 extends Component<Props, State> {
                  onDoubleClick={this.handleDoubleClick}
             >
                 {this.renderMap()}
-
-
-                {/*@todo: Modal*/}
-                {/*@todo: Modal*/}
-                {/*@todo: Modal*/}
-                {this.state.showModal ?
-                    <Popup
-                        text='Close Me'
-                        closePopup={this.togglePopup.bind(this)}
-                        renderMap={this.renderMap}
-                    />
-                    : null
-                }
+                <Modal
+                    //visible={this.state.showModal}
+                    visible={true}
+                    width="400"
+                    height="300"
+                    effect="fadeInUp"
+                    //onClickAway={() => this.closeModal()}
+                >
+                    <div>
+                        <h1>Title</h1>
+                        <p>Some Contents</p>
+                        <a href="javascript:void(0);" onClick={() => this.closeModal()}>Close</a>
+                    </div>
+                </Modal>
             </div>
         )
     }
 }
 
-class Popup extends React.Component {
-    render() {
-        return (
-            <div className='popup'>
-                <Button onClick={this.props.closePopup} style={{zIndex: 99999, marginTop: 25}}>
-                    Close
-                </Button>
-                <div className='popup_inner'>
-                    <div className='popup_inner'>
-                        {this.props.renderMap('popup')}
-                    </div>
-                </div>
-            </div>
-        );
-    }
-}
