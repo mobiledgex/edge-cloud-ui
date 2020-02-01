@@ -25,7 +25,8 @@ type State = {
     cloudletKeys: Array,
     zoom: number,
     newCloudLetLocationList: Array,
-    showModal: boolean
+    showModal: boolean,
+    showOffice:boolean,
 }
 
 export default class MapboxComponent extends Component<Props, State> {
@@ -46,6 +47,7 @@ export default class MapboxComponent extends Component<Props, State> {
             cloudletKeys: [],
             newCloudLetLocationList: [],
             showModal: false,
+            showOffice: false,
 
         };
     }
@@ -110,6 +112,66 @@ export default class MapboxComponent extends Component<Props, State> {
 
     }
 
+    renderOfficeLoc() {
+        return (
+            <div>
+                <Marker
+                    //key={key}
+                    //style={styles.marker}
+                    coordinates={[-122.399076, 37.787302]}
+                    onClick={() => {
+                        showToast('Mobiledgex')
+                    }}>
+                    <img
+
+                        src="https://www.vippng.com/png/detail/318-3188126_building-company-office-icon-in-png-file-specialty.png" style={{color: 'red'}} height="25" width="25"/>
+                    <div style={{color: 'white', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
+                        Mobiledgex
+                    </div>
+                    <div style={{color: 'yellow', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
+                        [Mobiledgex office]
+                    </div>
+                </Marker>
+                <Marker
+                    //key={key}
+                    //style={styles.marker}
+                    coordinates={[127.106259, 37.404945]}
+                    onClick={() => {
+                        showToast('BIC')
+                    }}>
+                    <img
+
+                        src="https://www.vippng.com/png/detail/318-3188126_building-company-office-icon-in-png-file-specialty.png" style={{color: 'red'}} height="25" width="25"/>
+                    <div style={{color: 'white', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
+                        BIC
+                    </div>
+                    <div style={{color: 'yellow', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
+                        [BIC office]
+                    </div>
+                </Marker>
+
+                <Marker
+                    //key={key}
+                    //style={styles.marker}
+                    coordinates={[77.595914, 12.980056]}
+                    onClick={() => {
+                        showToast('BIC')
+                    }}>
+                    <img
+
+                        src="https://www.vippng.com/png/detail/318-3188126_building-company-office-icon-in-png-file-specialty.png" style={{color: 'red'}} height="25" width="25"/>
+                    <div style={{color: 'white', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
+                        Rahul
+                    </div>
+                    <div style={{color: 'yellow', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
+                        [Rahul office]
+                    </div>
+                </Marker>
+                {/*, */}
+            </div>
+        )
+    }
+
     renderMapBoxCore = () => {
         return (
             <div style={{width: '100%', height: '100%'}}>
@@ -121,6 +183,7 @@ export default class MapboxComponent extends Component<Props, State> {
                     }}
                     zoom={[this.state.zoom]}
                 >
+                    {this.state.showOffice && this.renderOfficeLoc()}
                     {!this.props.appInstLoading && this.state.newCloudLetLocationList.map((item, index) => {
 
                         let listAppName = item.AppNames.split(",")
@@ -168,7 +231,7 @@ export default class MapboxComponent extends Component<Props, State> {
                     />
                 </div>
                 }
-                <div style={{marginTop: -140}}>
+                <div style={{marginTop: -150}}>
                     <Button id="mapZoomCtl" size='larges' icon onClick={() => {
                         this.setState({
                             zoom: 0.8,
@@ -190,13 +253,13 @@ export default class MapboxComponent extends Component<Props, State> {
                     }}>
                         <Icon name="minus square outline"/>
                     </Button>
-                  {/*  <Button id="mapZoomCtl" size='large' icon onClick={() => {
+                      <Button id="mapZoomCtl" size='large' icon onClick={() => {
                         this.setState({
-                            showModal: true,
+                            showOffice: !this.state.showOffice,
                         })
                     }}>
-                        <Icon name="fullscreen square outline"/>
-                    </Button>*/}
+                        <Icon name="star badge square outline"/>
+                    </Button>
                 </div>
             </div>
         )
