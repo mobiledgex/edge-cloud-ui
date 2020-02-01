@@ -20,7 +20,7 @@ type State = {
 }
 
 
-export default class MiniMapForDevMon extends Component<Props, State> {
+export default class MiniMapComponent2 extends Component<Props, State> {
 
 
     constructor(props) {

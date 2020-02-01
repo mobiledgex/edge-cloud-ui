@@ -38,7 +38,7 @@ import '../PageMonitoring.css'
 import {makeBubbleChartDataForCluster, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
 import {getCloudletList, getAppInstList, StylesForMonitoring} from "../admin/PageMonitoringServiceForAdmin";
-import MiniMapForDevMon from "./MiniMapForDevMon";
+import MiniMapComponent2 from "./MiniMapComponent2";
 import MapboxComponent from "./MapboxComponent";
 
 const FA = require('react-fontawesome')

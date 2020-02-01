@@ -24,7 +24,7 @@ export default class MapboxComponent extends Component {
             longitude: 51.1657,
             zoom: 0.7
         },
-        zoom: 0.45,
+        zoom: 0.9,
     };
     constructor() {
         super();
@@ -72,7 +72,7 @@ export default class MapboxComponent extends Component {
                                         showToast(item.AppName)
                                     }}
                                     src="https://cdn1.iconfinder.com/data/icons/basic-ui-elements-coloricon/21/06_1-512.png" style={{color: 'red'}} height="25" width="25"/>
-                                <div>
+                                <div style={{color:'white', fontWeight:'bold', fontSize:15, fontFamily:'Acme'}}>
                                     {item.AppName} [{item.Cloudlet}]
                                 </div>
                             </Marker>
