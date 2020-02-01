@@ -154,7 +154,8 @@ const _status = {
     "10": "Deleting",
     "11": "Delete Error",
     "12": "Delete Prepare",
-    "13": "CRM Init"
+    "13": "CRM Init",
+    "14": "Creating"
 }
 const _liveness = {
     "1": "Static",
