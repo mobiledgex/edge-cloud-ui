@@ -92,6 +92,24 @@ export default class MapboxComponent extends Component {
                                     [BIC office]
                                 </div>
                             </Marker>
+
+                            <Marker
+                                //key={key}
+                                //style={styles.marker}
+                                coordinates={[77.595914,12.980056]}
+                                onClick={() => {
+                                    showToast('BIC')
+                                }}>
+                                <img
+
+                                    src="https://www.vippng.com/png/detail/318-3188126_building-company-office-icon-in-png-file-specialty.png" style={{color: 'red'}} height="25" width="25"/>
+                                <div style={{color: 'white', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
+                                    Rahul
+                                </div>
+                                <div style={{color: 'yellow', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
+                                    [Rahul's office]
+                                </div>
+                            </Marker>
                         </div>
 
                     }
