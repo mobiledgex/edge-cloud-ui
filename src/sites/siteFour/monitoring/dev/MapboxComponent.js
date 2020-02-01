@@ -27,6 +27,7 @@ type State = {
     newCloudLetLocationList: Array,
     showModal: boolean,
     showOffice: boolean,
+    isUpdateEnable: boolean,
 }
 
 export default class MapboxComponent extends Component<Props, State> {
@@ -48,6 +49,7 @@ export default class MapboxComponent extends Component<Props, State> {
             newCloudLetLocationList: [],
             showModal: false,
             showOffice: false,
+            isUpdateEnable: false,
 
         };
     }
@@ -62,13 +64,18 @@ export default class MapboxComponent extends Component<Props, State> {
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
         if (this.props.markerList !== nextProps.markerList) {
 
-            console.log(' nextProps_markerList===>', nextProps.markerList);
+            console.log('markerList2222 nextProps_markerList===>', nextProps.markerList);
             let appInstanceListGroupByCloudlet = nextProps.markerList;
-
             this.setCloudletLocation(appInstanceListGroupByCloudlet)
-
         }
+    }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        if (this.props.markerList === nextProps.markerList && !this.state.isUpdateEnable) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     setCloudletLocation(appInstanceListGroupByCloudlet) {
@@ -198,7 +205,7 @@ export default class MapboxComponent extends Component<Props, State> {
                     zoom={[this.state.zoom]}
                 >
                     {this.state.showOffice && this.renderOfficeLoc()}
-                    {!this.props.appInstLoading && this.state.newCloudLetLocationList.map((item, index) => {
+                    {this.state.newCloudLetLocationList.map((item, index) => {
 
                         let listAppName = item.AppNames.split(",")
 
@@ -217,9 +224,9 @@ export default class MapboxComponent extends Component<Props, State> {
                                 {listAppName.map(AppName => {
                                     return (
                                         <div style={{color: 'white', fontSize: 12, fontFamily: 'Acme'}} onClick={() => {
-                                            showToast(AppName+ " | " + item.Cloudlet)
+                                            showToast(AppName + " | " + item.Cloudlet)
                                         }}>
-                                            {AppName }
+                                            {AppName}
                                         </div>
                                     )
                                 })}
@@ -227,7 +234,7 @@ export default class MapboxComponent extends Component<Props, State> {
                         )
                     })}
                 </Map>
-                {this.props.appInstLoading &&
+                {/* {this.props.appInstLoading &&
                 <div style={{left: '39%', top: '32%', position: 'absolute'}}>
                     <Lottie
                         options={{
@@ -244,32 +251,53 @@ export default class MapboxComponent extends Component<Props, State> {
                         isPaused={false}
                     />
                 </div>
-                }
+                }*/}
                 <div style={{marginTop: -150}}>
                     <Button id="mapZoomCtl" size='larges' icon onClick={() => {
+
                         this.setState({
+                            isUpdateEnable: true,
                             zoom: 0.8,
+                        },()=>{
+                            this.setState({
+                                isUpdateEnable: false,
+                            })
                         })
                     }}>
                         <Icon name="refresh"/>
                     </Button>
                     <Button id="mapZoomCtl" size='large' icon onClick={() => {
                         this.setState({
+                            isUpdateEnable: true,
                             zoom: this.state.zoom * 1.5
+                        },()=>{
+                            this.setState({
+                                isUpdateEnable: false,
+                            })
                         })
                     }}>
                         <Icon name="plus square outline"/>
                     </Button>
                     <Button id="mapZoomCtl" size='large' icon onClick={() => {
                         this.setState({
+                            isUpdateEnable: true,
                             zoom: this.state.zoom * 0.5
+                        },()=>{
+                            this.setState({
+                                isUpdateEnable: false,
+                            })
                         })
                     }}>
                         <Icon name="minus square outline"/>
                     </Button>
                     <Button id="mapZoomCtl" size='large' icon onClick={() => {
                         this.setState({
+                            isUpdateEnable: true,
                             showOffice: !this.state.showOffice,
+                        },()=>{
+                            this.setState({
+                                isUpdateEnable: false,
+                            })
                         })
                     }}>
                         <Icon name="star badge square outline"/>

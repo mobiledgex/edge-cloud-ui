@@ -263,19 +263,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 this.setState({
                     intervalLoading: true,
                 })
-                await this.loadInitDataForCluster();
+                await this.loadInitDataForCluster(true);
                 this.setState({
                     intervalLoading: false,
                 })
 
-            }, 1000 * 15)
+            }, 1000 * 10)
         }
 
         componentWillUnmount(): void {
             clearInterval(this.interval)
         }
 
-        async loadInitDataForCluster() {
+        async loadInitDataForCluster(isInterval: boolean = false) {
 
             let clusterList = await getClusterList();
             let cloudletList = await getCloudletList()
@@ -299,16 +299,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceList: appInstanceList,
                 filteredAppInstanceList: appInstanceList,
                 appInstLoading: false,
-                appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
+
             });
-            /*  cloudletKeys.map(key=>{
-                  let listOne=groupedDatas[key];
 
-                  listOne.map((item, index)=>{
-                  })
-                  console.log('listOne.length===>', listOne.length);
-
-              })*/
+            if (!isInterval) {
+                this.setState({
+                    appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
+                })
+            }
 
 
             let allUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
@@ -976,7 +974,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        <MapboxComponent appInstLoading={this.state.appInstLoading} markerList={this.state.appInstanceListGroupByCloudlet}/>
+                                                        <MapboxComponent  markerList={this.state.appInstanceListGroupByCloudlet}/>
                                                     </div>
                                                 </div>
 
