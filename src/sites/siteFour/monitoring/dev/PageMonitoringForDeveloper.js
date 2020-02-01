@@ -313,6 +313,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 maxCpu: maxCpu,
                 maxMem: maxMem,
                 isRequesting: false,
+                currentCluster: '',
             })
 
         }
@@ -327,7 +328,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredUsageList: this.state.allUsageList,
                 filteredAppInstanceList: this.state.appInstanceList,
             })
-            this.setState({appInstLoading: false})
+            this.setState({
+                appInstLoading: false,
+                currentCluster: '',
+            })
         }
 
 
@@ -362,8 +366,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentCloudLet: '',
                 currentCluster: '',
                 currentAppInst: '',
-            })
 
+            })
 
 
         }
@@ -578,13 +582,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-
         renderHeader = () => {
 
             return (
 
                 <div>
-                    <SemanticToastContainer position="center-left" />
+                    <SemanticToastContainer position="center-left"/>
                     <Grid.Row className='content_title'
                               style={{width: 'fit-content', display: 'inline-block'}}>
                         <Grid.Column className='title_align'
@@ -651,9 +654,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <Dropdown
                                 value={this.state.currentCluster}
                                 clearable={this.state.clusterSelectBoxClearable}
-                                //disabled={this.state.currentCloudLet === '' || this.state.loading}
+                                disabled={this.state.loading}
                                 placeholder={this.state.clusterSelectBoxPlaceholder}
                                 selection
+                                loading={this.state.loading}
                                 options={this.state.clusterDropdownList}
                                 style={StylesForMonitoring.dropDown}
                                 onChange={async (e, {value}) => {
