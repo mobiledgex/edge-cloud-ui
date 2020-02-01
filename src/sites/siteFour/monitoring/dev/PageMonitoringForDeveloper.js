@@ -259,10 +259,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 loading: false,
             })
 
+            this.interval = setInterval(async () => {
+                this.setState({
+                    intervalLoading: true,
+                })
+                await this.loadInitDataForCluster();
+                this.setState({
+                    intervalLoading: false,
+                })
+
+            }, 1000 * 15)
         }
 
         componentWillUnmount(): void {
-            //clearInterval(this.interval)
+            clearInterval(this.interval)
         }
 
         async loadInitDataForCluster() {
@@ -645,8 +655,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.state.selectOrg}
                         </div>
                         {this.state.intervalLoading &&
-                        <div style={{marginLeft: 50}}>
-                            <CircularProgress size={9} style={{fontSize: 9}}/>
+
+                        <div style={{marginLeft: 15}}>
+                            <Lottie
+                                options={{
+                                    loop: true,
+                                    autoplay: true,
+                                    animationData: require('../../../../lotties/loader003'),
+                                    rendererSettings: {
+                                        preserveAspectRatio: 'xMidYMid slice'
+                                    }
+                                }}
+                                height={35}
+                                width={35}
+                                isStopped={false}
+                                isPaused={false}
+                            />
                         </div>
                         }
                     </Grid.Row>

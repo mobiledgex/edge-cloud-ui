@@ -217,9 +217,9 @@ export default class MapboxComponent extends Component<Props, State> {
                                 {listAppName.map(AppName => {
                                     return (
                                         <div style={{color: 'white', fontSize: 12, fontFamily: 'Acme'}} onClick={() => {
-                                            showToast(AppName)
+                                            showToast(AppName+ " | " + item.Cloudlet)
                                         }}>
-                                            {AppName}
+                                            {AppName }
                                         </div>
                                     )
                                 })}
