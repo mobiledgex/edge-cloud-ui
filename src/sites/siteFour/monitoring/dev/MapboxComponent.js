@@ -56,6 +56,47 @@ export default class MapboxComponent extends Component {
                     {/*<RotationControl/>*/}
                     {/*<ScaleControl/>*/}
 
+                    {!this.props.appInstLoading &&
+                        <div>
+                            <Marker
+                                //key={key}
+                                //style={styles.marker}
+                                coordinates={[-122.399076, 37.787302]}
+                                onClick={() => {
+                                    showToast('Mobiledgex')
+                                }}>
+                                <img
+
+                                    src="https://cdn1.iconfinder.com/data/icons/basic-ui-elements-coloricon/21/06_1-512.png" style={{color: 'red'}} height="25" width="25"/>
+                                <div style={{color: 'white', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
+                                    Mobiledgex
+                                </div>
+                                <div style={{color: 'yellow', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
+                                    [Mobiledgex office]
+                                </div>
+                            </Marker>
+                            <Marker
+                                //key={key}
+                                //style={styles.marker}
+                                coordinates={[127.106259,37.404945]}
+                                onClick={() => {
+                                    showToast('BIC')
+                                }}>
+                                <img
+
+                                    src="https://cdn1.iconfinder.com/data/icons/basic-ui-elements-coloricon/21/06_1-512.png" style={{color: 'red'}} height="25" width="25"/>
+                                <div style={{color: 'white', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
+                                    BIC
+                                </div>
+                                <div style={{color: 'yellow', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
+                                    [BIC office]
+                                </div>
+                            </Marker>
+                        </div>
+
+                    }
+
+                    {/*37.404945, 127.106259*/}
 
                     {!this.props.appInstLoading && this.props.markerList.map((item: TypeAppInstance, index) => {
                         return (
