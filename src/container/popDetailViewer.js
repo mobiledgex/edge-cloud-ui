@@ -67,6 +67,7 @@ export default class PopDetailViewer extends React.Component {
                                  :(key == 'DefaultFlavor')?'Default Flavor'
                                  :(key == 'DeploymentMF')?'Deployment Manifest' /* 여기까지 Apps*/
                                  :(key == 'AuthPublicKey')?'Auth Public Key'
+                                 :(key == 'GPU')?'Number of GPUs'
                                  :key}
                             </div>
                         </Grid.Column>
