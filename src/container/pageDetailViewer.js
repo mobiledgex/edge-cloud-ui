@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import TerminalViewer from './TerminalViewer';
 import './styles.css';
+import TextareaAutosize from "react-textarea-autosize";
 
 const pane = [
     { menuItem: 'Details', render: (props) => <Tab.Pane>{detailViewer(props, 'detailViewer')}</Tab.Pane> }
@@ -21,7 +22,7 @@ const detailViewer = (props, type) => (
             <Table celled collapsing style={{ width: '100%', height: '100%', border: 'none', display: 'flex', flexDirection: 'column' }}>
                 <Table.Header>
                     <Table.Row>
-                        <Table.HeaderCell width={6}><div style={{ display: 'flex', justifyContent: 'center' }}>Subject</div></Table.HeaderCell>
+                        <Table.HeaderCell width={6}><div style={{ display: 'flex', justifyContent: 'center' }}>Key</div></Table.HeaderCell>
                         <Table.HeaderCell width={10}><div style={{ display: 'flex', justifyContent: 'center' }}>Value</div></Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
@@ -38,7 +39,39 @@ const detailViewer = (props, type) => (
 
     </Fragment>
 )
+const returnReWord = (label) => {
+    let newName = '';
+    switch (label) {
+        case 'CloudletName' : newName = 'Cloudlet Name'; break;
+        case 'CloudletLocation' : newName = 'Cloudlet Location'; break;
+        case 'Ip_support' : newName = 'IP Support'; break;
+        case 'Num_dynamic_ips' : newName = 'Number of Dynamic IPs'; break;
+        case 'ClusterName' : newName =  'Cluster Name'; break;
+        case 'OrganizationName' : newName = 'Organization Name'; break;
+        case 'IpAccess' : newName = 'IP Access'; break;
+        case 'Mapped_port' : newName = 'Mapped Port'; break;
+        case 'AppName' : newName = 'App Name'; break;
+        case 'ClusterInst' : newName = 'Cluster Instance'; break;
+        case 'Physical_name' : newName = 'Physical Name'; break;
+        case 'Platform_type' : newName = 'Platform Type'; break;
+        case 'FlavorName' : newName = 'Flavor Name'; break;
+        case 'RAM' : newName = 'RAM Size'; break;
+        case 'vCPUs' : newName = 'Number of vCPUs'; break;
+        case 'Disk' : newName = 'Disk Space'; break;
+        case 'DeploymentType' : newName = 'Deployment Type'; break;
+        case 'ImageType' : newName = 'Image Type'; break;
+        case 'ImagePath' : newName = 'Image Path'; break;
+        case 'DefaultFlavor' : newName = 'Default Flavor'; break;
+        case 'DeploymentMF' : newName = 'Deployment Manifest'; break;
+        case 'AuthPublicKey' : newName = 'Auth Public Key'; break;
+        case 'DefaultFQDN' : newName = 'Official FQDN'; break;
+        case 'PackageName' : newName = 'Package Name'; break;
+        case 'ScaleWithCluster' : newName = 'Scale With Cluster'; break;
+        default: newName = label; break;
+    }
+    return newName;
 
+}
 const makeTable = (values, label, i) => (
     (label !== 'Edit' && label !== 'uuid' && label !== 'CloudletInfoState') ?
         <Table.Row key={i}>
@@ -46,19 +79,7 @@ const makeTable = (values, label, i) => (
                 <Header as='h4' image>
                     <Icon name={'dot'} />
                     <Header.Content>
-                        {(label == 'CloudletName') ? 'Cloudlet Name'
-                            : (label == 'CloudletLocation') ? 'Cloudlet Location'
-                                : (label == 'Ip_support') ? 'IP Support'
-                                    : (label == 'Num_dynamic_ips') ? 'Number of Dynamic IPs' /* Cloudlets */
-                                        : (label == 'ClusterName') ? 'Cluster Name'
-                                            : (label == 'OrganizationName') ? 'Organization Name'
-                                                : (label == 'IpAccess') ? 'IP Access' /* Cluster Inst */
-                                                    : (label == 'Mapped_port') ? 'Mapped Port' /* Cluster Inst */
-                                                        : (label == 'AppName') ? 'App Name'
-                                                            : (label == 'ClusterInst') ? 'Cluster Instance'
-                                                                : (label == 'Physical_name') ? 'Physical Name'
-                                                                    : (label == 'Platform_type') ? 'Platform Type'
-                                                                        : label}
+                        {returnReWord(label)}
                     </Header.Content>
                 </Header>
             </Table.Cell>
@@ -70,12 +91,32 @@ const makeTable = (values, label, i) => (
                                 : (label === 'Created') ? String(makeUTC(values[label]))
                                     : (label === 'State') ? _status[values[label]]
                                         : (label === 'Liveness') ? _liveness[values[label]]
-                                            : (typeof values[label] === 'object') ? jsonView(values[label], label)
-                                                : (label === 'Platform_type') ? String(makePFT(values[label]))
+                                            : (label === 'Platform_type') ? String(makePFT(values[label]))
+                                                :(label == 'DeploymentType' && String(values[label]) === 'docker')?"Docker"
+                                                    :(label == 'DeploymentType' && String(values[label]) === 'vm')?"VM"
+                                                        :(label == 'DeploymentType' && String(values[label]) === 'kubernetes')?"Kubernetes"
+                                                            :(label == 'DeploymentType' && String(values[label]) === 'helm')?"Helm"
+                                                                :(label == 'Ports')?String(values[label]).toUpperCase()
+                                                                    :(label == 'DeploymentMF')? makeTextBox(values[label])
+                                                                        :(label == 'ImageType' && String(values[label]) === '1')?"Docker"
+                                                                            :(label == 'ImageType' && String(values[label]) === '2')?"Qcow" /* 여기까지 Apps*/
+                                                                                :(label == 'Created')? String("time is ==  "+values[label])
+                                                                                    :(label == 'ScaleWithCluster' && String(values[label]) === 'false')?"False"
+                                                                                        :(label == 'ScaleWithCluster' && String(values[label]) === 'true')?"True"
+                                                                                            : (typeof values[label] === 'object') ? jsonView(values[label], label)
                                                     : String(values[label])}
             </Table.Cell>
         </Table.Row> : null
 )
+
+const makeTextBox = (value) => (
+    <TextareaAutosize
+        minRows={3}
+        maxRows={10}
+        style={{width:'100%', resize:'none', padding:'5px 10px', backgroundColor:'rgba(0,0,0,.2)', borderColor:'rgba(255,255,255,.1)', color:'rgba(255,255,255,.5)' }}
+        defaultValue={value}></TextareaAutosize>
+)
+
 const jsonView = (jsonObj, _label) => {
     if (_label === 'Mapped_port') {
         jsonObj.map((item) => {
