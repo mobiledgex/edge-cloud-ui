@@ -610,7 +610,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:REGION Dropdown           */}
                         {/*todo:---------------------------*/}
                         <div className="page_monitoring_dropdown_box">
-                          {/*  <div className="page_monitoring_dropdown_label">
+                            {/*  <div className="page_monitoring_dropdown_label">
                                 Region
                             </div>
                             <Dropdown
@@ -658,24 +658,29 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 onChange={async (e, {value}) => {
 
 
+                                    let selectData = value.split("|")
+                                    let selectCluster = selectData[0].trim();
+                                    let selectCloudlet = selectData[1].trim();
+
                                     await this.setState({
                                         currentCluster: value,
                                     })
 
                                     let allUsageList = this.state.allUsageList
 
-                                    let _filteredUsageList = []
+                                    console.log('allUsageList===>', allUsageList)
+
+                                    let filteredUsageList = []
                                     allUsageList.map(item => {
-                                        if (item.cluster === value) {
-                                            _filteredUsageList.push(item)
+                                        if (item.cluster === selectCluster && item.cloudlet === selectCloudlet) {
+                                            filteredUsageList.push(item)
                                         }
                                         // console.log('Cluster_Dropdown===>', item);
                                     })
 
-                                    console.log('Cluster_Dropdown===>', _filteredUsageList);
-
+                                    console.log('filteredUsageList===>', filteredUsageList);
                                     this.setState({
-                                        filteredUsageList: _filteredUsageList,
+                                        filteredUsageList: filteredUsageList,
                                     })
 
 

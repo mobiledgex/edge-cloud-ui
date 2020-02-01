@@ -602,7 +602,7 @@ export const renderBarGraphForCluster = (usageList, hardwareType, _this) => {
         for (let index = 0; index < usageList.length; index++) {
             if (index < 5) {
                 let barDataOne = [
-                    usageList[index].cluster.toString().substring(0, 10) + "...",//clusterName
+                    usageList[index].cluster.toString().substring(0, 10) + "\n["+ usageList[index].cloudlet +"]",//clusterName
                     renderUsageByType(usageList[index], hardwareType),
                     CHART_COLOR_LIST[index],
                     renderUsageLabelByTypeForCluster(usageList[index], hardwareType)
@@ -1541,7 +1541,8 @@ export const makeSelectBoxListForClusterList2 = (arrList, keyName, valueName) =>
     let newArrList = [];
     for (let i in arrList) {
         newArrList.push({
-            value: arrList[i][keyName],
+            key: arrList[i][keyName]+ " | "+ arrList[i][valueName],
+            value: arrList[i][keyName]+ " | "+ arrList[i][valueName],
             text: arrList[i][keyName]+ " | "+ arrList[i][valueName],
         })
     }
