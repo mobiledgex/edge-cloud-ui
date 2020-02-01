@@ -1,5 +1,19 @@
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Bungee|Candal|Righteous&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Bungee|Barlow+Semi+Condensed|Candal|Encode+Sans+Condensed|Righteous&display=swap');
+
+.mapbox-logo{
+    display: none !important;
+}
+
+.mapboxgl-ctrl{
+    display: none !important;
+}
+#zoomIn{
+    background-color: green;
+}
+
+
+
 /*.gridRow {*/
 /*    color: #808080;*/
 /*    height: 30px;*/

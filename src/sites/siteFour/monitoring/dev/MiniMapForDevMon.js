@@ -165,12 +165,11 @@ export default class MiniMapForDevMon extends Component<Props, State> {
                                 </text>
                             </Marker>
 
-                            <Marker fill="#777" marker={{coordinates: [-103, 25]}}>
+                            <Marker fill="#777" marker={{coordinates: [-102, 38]}}>
                                 <text textAnchor="middle" fill="#F53">
                                     Mexico
                                 </text>
                             </Marker>
-
                              <Marker fill="#777" marker={{coordinates: [10.4515, 51.1657]}}>
                                 <text textAnchor="middle" fill="#F53">
                                     Germany

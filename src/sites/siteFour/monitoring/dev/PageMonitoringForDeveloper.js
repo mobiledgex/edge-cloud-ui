@@ -39,6 +39,7 @@ import {makeBubbleChartDataForCluster, renderPlaceHolder, showToast} from "../Pa
 import {CircularProgress} from "@material-ui/core";
 import {getCloudletList, getAppInstList, StylesForMonitoring} from "../admin/PageMonitoringServiceForAdmin";
 import MiniMapForDevMon from "./MiniMapForDevMon";
+import MapboxComponent from "./MapboxComponent";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -917,7 +918,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     </div>
                                                     <div className='page_monitoring_container'>
                                                         {!this.state.isAppInstaceDataReady ? renderPlaceHolder() :
-                                                            <MiniMapForDevMon loading={this.state.loading} markerList={this.state.appInstanceList}/>}
+                                                            <MapboxComponent loading={this.state.loading} markerList={this.state.appInstanceList}/>
+                                                        }
                                                     </div>
                                                 </div>
 
