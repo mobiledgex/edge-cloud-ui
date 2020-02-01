@@ -149,6 +149,7 @@ type State = {
     cloudletList: Array,
     filteredAppInstanceList: Array,
     appInstDropdown: Array,
+    appInstLoading: boolean,
 
 }
 
@@ -233,6 +234,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             selectOrg: '',
             filteredAppInstanceList: [],
             appInstDropdown: [],
+            appInstLoading: false,
         };
 
         interval = null;
@@ -266,7 +268,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let clusterList = await getClusterList();
             let cloudletList = await getCloudletList()
 
-
+            this.setState({appInstLoading: true})
             let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
 
             console.log('clusterList===>', clusterList);
@@ -281,6 +283,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isAppInstaceDataReady: true,
                 appInstanceList: appInstanceList,
                 filteredAppInstanceList: appInstanceList,
+                appInstLoading: false,
             });
 
             console.log('sdlkfsldkflksdflksdlfk===>', this.state.clusterDropdownList)
@@ -314,6 +317,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
+        async resetAllData() {
+            await this.setState({
+                currentGridIndex: -1,
+                currentTabIndex: 0,
+            })
+
+            await this.setState({
+                filteredUsageList: this.state.allUsageList,
+                filteredAppInstanceList: this.state.appInstanceList,
+            })
+            this.setState({appInstLoading: false})
+        }
+
 
         async refreshAllData() {
 
@@ -332,8 +348,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 cloudLetSelectBoxClearable: true,
             })
-            this.setState({
+            await this.setState({
                 loading: true,
+                appInstLoading: true
             })
             await this.loadInitDataForCluster();
             this.setState({
@@ -346,6 +363,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentCluster: '',
                 currentAppInst: '',
             })
+
+
 
         }
 
@@ -555,7 +574,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     </div>
                 </div>
             )
+
         }
+
 
 
         renderHeader = () => {
@@ -593,14 +614,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <div style={{marginLeft: '10px'}}>
                             <Button
                                 onClick={async () => {
-                                    await this.setState({
-                                        currentGridIndex: -1,
-                                        currentTabIndex: 0,
-                                    })
-
-                                    this.setState({
-                                        filteredUsageList: this.state.allUsageList,
-                                    })
+                                    this.resetAllData();
                                 }}
                             >RESET</Button>
                         </div>
@@ -685,7 +699,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     await this.setState({
                                         appInstDropdown: appInstDropdown,
                                         currentAppInst: '',
-                                        appInstSelectBoxPlaceholder: 'Select App Inst'
+                                        appInstSelectBoxPlaceholder: 'Select App Inst',
+                                        filteredAppInstanceList: filteredAppInstList,
 
                                     })
 
@@ -918,7 +933,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     </div>
                                                     <div className='page_monitoring_container'>
                                                         {!this.state.isAppInstaceDataReady ? renderPlaceHolder() :
-                                                            <MapboxComponent loading={this.state.loading} markerList={this.state.appInstanceList}/>
+                                                            <MapboxComponent appInstLoading={this.state.appInstLoading} markerList={this.state.filteredAppInstanceList}/>
                                                         }
                                                     </div>
                                                 </div>

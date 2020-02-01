@@ -4,6 +4,7 @@ import ReactMapboxGl, {Layer, Marker, ZoomControl} from 'react-mapbox-gl';
 import type {TypeAppInstance} from "../../../../shared/Types";
 import {Button, Icon} from "semantic-ui-react";
 import {showToast} from "../PageMonitoringCommonService";
+import Lottie from "react-lottie";
 
 const Map = ReactMapboxGl({
     accessToken: 'pk.eyJ1Ijoia3l1bmdqb29uLWdvLWNvbnN1bHRhbnQiLCJhIjoiY2s2Mnk2eHl0MDI5bzNzcGc0MTQ3NTM4NSJ9.BVwP4hu1ySJCJpGyVQBWSQ',
@@ -32,6 +33,7 @@ export default class MapboxComponent extends Component {
 
 
 
+
     render() {
         return (
             <div style={{width:'100%', height:'100%'}}>
@@ -56,7 +58,7 @@ export default class MapboxComponent extends Component {
                     {/*<ScaleControl/>*/}
 
 
-                    {this.props.markerList.map((item: TypeAppInstance, index) => {
+                    {!this.props.appInstLoading && this.props.markerList.map((item: TypeAppInstance, index) => {
                         return (
                             <Marker
                                 //key={key}
@@ -74,12 +76,27 @@ export default class MapboxComponent extends Component {
                                     {item.AppName} [{item.Cloudlet}]
                                 </div>
                             </Marker>
-
-
                         )
                     })}
                 </Map>
-
+                {this.props.appInstLoading &&
+                <div style={{left: '39%', top: '32%', position: 'absolute'}}>
+                    <Lottie
+                        options={{
+                            loop: true,
+                            autoplay: true,
+                            animationData: require('../../../../lotties/pinjump'),
+                            rendererSettings: {
+                                preserveAspectRatio: 'xMidYMid slice'
+                            }
+                        }}
+                        height={150}
+                        width={150}
+                        isStopped={false}
+                        isPaused={false}
+                    />
+                </div>
+                }
                 <div style={{marginTop:-120}}>
                     <Button id="mapZoomCtl" size='larges' icon onClick={() => {
                         this.setState({
