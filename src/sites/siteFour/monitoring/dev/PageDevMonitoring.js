@@ -34,6 +34,7 @@ import MapboxComponent from "./MapboxComponent";
 import * as reducer from "../../../../utils";
 import {CircularProgress} from "@material-ui/core";
 import {TabPanel, Tabs} from "react-tabs";
+import FlexBox from "flexbox-react";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -1026,21 +1027,27 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* ___col___2nd*/}
                                                 <div className='page_monitoring_column'>
 
-                                                    {/*todo:---------------------------------*/}
-                                                    {/*todo: RENDER TAB_AREA                 */}
-                                                    {/*todo:---------------------------------*/}
-                                                    <Tab
-                                                        className='page_monitoring_tab'
-                                                        menu={{secondary: true, pointing: true}}
-                                                        panes={this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.TAB_FOR_CLUSTER : this.TAB_FOR_APP_INST}
-                                                        activeIndex={this.state.currentTabIndex}
-                                                        onTabChange={(e, {activeIndex}) => {
-                                                            this.setState({
-                                                                currentTabIndex: activeIndex,
-                                                            })
-                                                        }}
-                                                        defaultActiveIndex={this.state.currentTabIndex}
-                                                    />
+                                                    {/*fixme:---------------------------------*/}
+                                                    {/*fixme: RENDER TAB_AREA                 */}
+                                                    {/*fixme:---------------------------------*/}
+                                                    {this.state.loading ? <CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 25, margin: 15}}
+                                                        />
+
+                                                        :
+                                                        <Tab
+                                                            className='page_monitoring_tab'
+                                                            menu={{secondary: true, pointing: true}}
+                                                            panes={this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.TAB_FOR_CLUSTER : this.TAB_FOR_APP_INST}
+                                                            activeIndex={this.state.currentTabIndex}
+                                                            onTabChange={(e, {activeIndex}) => {
+                                                                this.setState({
+                                                                    currentTabIndex: activeIndex,
+                                                                })
+                                                            }}
+                                                            defaultActiveIndex={this.state.currentTabIndex}
+                                                        />
+                                                    }
+
                                                 </div>
                                             </div>
                                             {/*_____row____2*/}
