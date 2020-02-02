@@ -419,16 +419,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 <div className='page_monitoring_dual_column'>
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                TOP5 of {convertNetworkTitle(subCategoryType)} Usage on {this.state.currentClassification}
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
-                        </div>
-                    </div>
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title_select'>
                                 {convertNetworkTitle(subCategoryType)} Usage of {this.state.currentClassification}
                             </div>
@@ -438,6 +428,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
                         </div>
                     </div>
+                    <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                TOP5 of {convertNetworkTitle(subCategoryType)} Usage on {this.state.currentClassification}
+                            </div>
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
+                        </div>
+                    </div>
+
                 </div>
             )
         }
@@ -600,6 +601,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         renderGraphArea(pHardwareType, barChartDataSet, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column'>
+                    {/*2_column*/}
+                    <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                {pHardwareType} Usage of {this.state.loading ?
+                                <CircularProgress size={9} style={{fontSize: 9, color: '#77BD25', marginLeft: 5, marginBottom: 1,}}/> : this.state.currentClassification}
+                            </div>
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
+                        </div>
+                    </div>
+
                     {/*@todo:BarChartCore*/}
                     {/*@todo:BarChartCore*/}
                     {/*@todo:BarChartCore*/}
@@ -613,18 +627,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </div>
                         <div className='page_monitoring_container'>
                             {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
-                        </div>
-                    </div>
-                    {/*2_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                {pHardwareType} Usage of {this.state.loading ?
-                                <CircularProgress size={9} style={{fontSize: 9, color: '#77BD25', marginLeft: 5, marginBottom: 1,}}/> : this.state.currentClassification}
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
                         </div>
                     </div>
 
