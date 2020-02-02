@@ -220,13 +220,18 @@ export default class MapboxComponent extends Component<Props, State> {
                                 <img
                                     src="https://cdn1.iconfinder.com/data/icons/basic-ui-elements-coloricon/21/06_1-512.png" style={{color: 'red'}} height="30" width="25"/>
 
+                                {item.Cloudlet.trim() === 'hamburg-stage' &&
+                                <img
+                                    src="https://icons.iconarchive.com/icons/google/noto-emoji-food-drink/1024/32382-hamburger-icon.png" style={{color: 'red'}} height="30" width="25"/>
+                                }
+
                                 <div style={{color: 'yellow', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
                                     [{item.Cloudlet}]
                                 </div>
                                 {listAppName.map(AppName => {
                                     return (
                                         <div style={{color: 'white', fontSize: 12, fontFamily: 'Acme'}} onClick={() => {
-                                            let dataSet = AppName.trim() + " | " + item.Cloudlet.trim() +" | "  + item.ClusterInst.trim()
+                                            let dataSet = AppName.trim() + " | " + item.Cloudlet.trim() + " | " + item.ClusterInst.trim()
                                             //showToast(dataSet)
                                             this.props.handleAppInstDropdown(dataSet)
                                         }}>
