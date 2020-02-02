@@ -497,15 +497,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     )
                 }
             },
-           /* {
-                menuItem: 'CONNECTIONS', render: () => {
-                    return (
-                        <Pane>
-                            {this.renderTypeTabArea(HARDWARE_TYPE.CONNECTIONS)}
-                        </Pane>
-                    )
-                }
-            },*/
+            /* {
+                 menuItem: 'CONNECTIONS', render: () => {
+                     return (
+                         <Pane>
+                             {this.renderTypeTabArea(HARDWARE_TYPE.CONNECTIONS)}
+                         </Pane>
+                     )
+                 }
+             },*/
             /* {
                  menuItem: 'UDP', render: () => {
                      return (
@@ -658,6 +658,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 onChange={async (e, {value}) => {
                                     this.handleClusterDropdown(value.trim())
                                 }}
+
                             />
                         </div>
 
@@ -677,6 +678,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 selection
                                 options={this.state.appInstDropdown}
                                 //style={Styles.dropDown}
+
                                 onChange={async (e, {value}) => {
                                     this.handleAppInstDropdown(value.trim())
                                 }}
@@ -1008,7 +1010,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*todo:---------------------------------*/}
 
 
-                                                  {/*  <Tabs selectedIndex={this.state.networkTabIndex}
+                                                    {/*  <Tabs selectedIndex={this.state.networkTabIndex}
                                                           className='page_monitoring_tab'>
                                                         <TabPanel>
                                                             {this.renderTypeTabArea(HARDWARE_TYPE.NETWORK, HARDWARE_TYPE.RECV_BYTES)}
