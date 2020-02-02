@@ -258,7 +258,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 loading: false,
             })
 
-            this.interval = setInterval(async () => {
+            /*this.interval = setInterval(async () => {
                 this.setState({
                     intervalLoading: true,
                 })
@@ -267,12 +267,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     intervalLoading: false,
                 })
 
-            }, 1000 * 8)
+            }, 1000 * 12)*/
         }
 
         componentWillUnmount(): void {
             clearInterval(this.interval)
         }
+
 
         async loadInitDataForCluster(isInterval: boolean = false) {
 
@@ -393,7 +394,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentAppInst: '',
             })
         }
-
 
         renderTypeTabArea(hwType, networkDataDirectionType = '') {
             let barChartDataSet: TypeBarChartData = [];
@@ -605,30 +605,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {this.state.intervalLoading &&
 
                         <div style={{marginLeft: 15}}>
-                            <Lottie
-                                options={{
-                                    loop: true,
-                                    autoplay: true,
-                                    animationData: require('../../../../lotties/loader003'),
-                                    rendererSettings: {
-                                        preserveAspectRatio: 'xMidYMid slice'
-                                    }
-                                }}
-                                height={35}
-                                width={35}
-                                isStopped={false}
-                                isPaused={false}
-                            />
+                            <div style={{marginLeft: 15}}>
+                                <CircularProgress style={{color: 'grey', zIndex: 9999999, fontSize: 10}}
+                                                  size={20}/>
+                            </div>
                         </div>
                         }
 
-                        {this.state.dropdownRequestLoading &&
+                        {/*   {this.state.dropdownRequestLoading &&
 
                         <div style={{marginLeft: 15}}>
                             <CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 10}}
                                               size={20}/>
                         </div>
-                        }
+                        }*/}
                     </Grid.Row>
                 </div>
             )
@@ -733,6 +723,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         handleAppInstDropdown = async (pCurrentAppInst) => {
+            clearInterval(this.interval)
             await this.setState({
                 currentAppInst: pCurrentAppInst,
                 loading: true,
@@ -771,10 +762,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             } finally {
                 this.setState({dropdownRequestLoading: false})
             }
-            console.log('Instance_Dropdown=5==>', allAppInstUsageList);
             // Cluster | AppInst
             let currentCluster = pCurrentAppInst.split("|")[2].trim() + " | " + pCurrentAppInst.split('|')[1].trim()
-            console.log('Instance_Dropdown=currentAppInst===>', pCurrentAppInst.trim());
             pCurrentAppInst = pCurrentAppInst.trim();
             pCurrentAppInst = pCurrentAppInst.split("|")[0].trim() + " | " + pCurrentAppInst.split('|')[1].trim() + " | " + pCurrentAppInst.split('|')[2].trim()
 
@@ -787,10 +776,27 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentCluster: currentCluster,
             })
 
+            this.interval = setInterval(async () => {
+                this.setState({
+                    intervalLoading: true,
+                })
+                let arrDateTime2 = getOneYearStartEndDatetime();
+                allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime2[0], arrDateTime2[1]);
+
+                console.log('allAppInstUsageList77===>', allAppInstUsageList);
+
+                this.setState({
+                    intervalLoading: false,
+                    filteredAppInstUsageList: allAppInstUsageList,
+                })
+
+            }, 1000 * 5)
+
         }
 
 
         async handleClusterDropdown(value) {
+            clearInterval(this.interval)
 
             let selectData = value.split("|")
             let selectedCluster = selectData[0].trim();
