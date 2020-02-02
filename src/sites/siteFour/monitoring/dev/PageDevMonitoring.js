@@ -28,7 +28,7 @@ import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import '../PageMonitoring.css'
-import {getOneYearStartEndDatetime, makeBubbleChartDataForCluster, renderBarChartCore, renderLineChartCore, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
+import {getOneYearStartEndDatetime, makeBubbleChartDataForCluster, renderBarChartCore, renderLineChartCore, renderPlaceHolder, renderPlaceHolder3, showToast} from "../PageMonitoringCommonService";
 import {getAppLevelUsageList, StylesForMonitoring} from "../admin/PageAdminMonitoringService";
 import MapboxComponent from "./MapboxComponent";
 import * as reducer from "../../../../utils";
@@ -1030,9 +1030,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*fixme:---------------------------------*/}
                                                     {/*fixme: RENDER TAB_AREA                 */}
                                                     {/*fixme:---------------------------------*/}
-                                                    {this.state.loading ? <CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 25, margin: 15}}
-                                                        />
-
+                                                    {this.state.loading ? renderPlaceHolder3()
                                                         :
                                                         <Tab
                                                             className='page_monitoring_tab'

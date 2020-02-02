@@ -67,6 +67,16 @@ export const renderPlaceHolder = (type: string = '') => {
     )
 }
 
+export const renderPlaceHolder3 = (type: string = '') => {
+    // let boxWidth = window.innerWidth / 3 - 50;
+    return (
+        <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
+            <CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 20}}/>
+
+        </div>
+    )
+}
+
 
 export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDateTimeList, hardwareType) => {
 
@@ -202,8 +212,8 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
     return (
         <div style={{
             position: 'relative',
-            width:'99%',
-            height:'96%'
+            width: '99%',
+            height: '96%'
         }}>
             <ReactChartJs
                 //width={'100%'}
