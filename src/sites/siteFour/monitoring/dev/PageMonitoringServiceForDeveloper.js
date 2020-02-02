@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from "axios";
 import '../PageMonitoring.css';
-import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION, USAGE_INDEX_FOR_CLUSTER} from "../../../../shared/Constants";
+import {APP_INST_USAGE_TYPE_INDEX, CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION, USAGE_INDEX_FOR_CLUSTER} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
 import BubbleChart from "../../../../components/BubbleChart";
 import type {TypeGridInstanceList} from "../../../../shared/Types";
@@ -621,13 +621,13 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
     if (hardwareType === HARDWARE_TYPE.CPU) {
         typedUsageList = allHWUsageList[0]
     } else if (hardwareType === HARDWARE_TYPE.MEM) {
-        typedUsageList = allHWUsageList[2]
+        typedUsageList = allHWUsageList[1]
     } else if (hardwareType === HARDWARE_TYPE.NETWORK) {
-        typedUsageList = allHWUsageList[3]
+        typedUsageList = allHWUsageList[2]
     } else if (hardwareType === HARDWARE_TYPE.DISK) {
-        typedUsageList = allHWUsageList[4]
+        typedUsageList = allHWUsageList[3]
     } else if (hardwareType === HARDWARE_TYPE.CONNECTIONS) {
-        typedUsageList = allHWUsageList[5]
+        typedUsageList = allHWUsageList[4]
     }
 
     if (typedUsageList.length === 0) {
@@ -797,15 +797,14 @@ export const makeLineChartDataForAppInst = (allHWUsageList: Array, hardwareType:
     if (hardwareType === HARDWARE_TYPE.CPU) {
         oneTypedUsageList = allHWUsageList[0]
     } else if (hardwareType === HARDWARE_TYPE.MEM) {
-        oneTypedUsageList = allHWUsageList[2]
+        oneTypedUsageList = allHWUsageList[1]
     } else if (hardwareType === HARDWARE_TYPE.NETWORK) {
-        oneTypedUsageList = allHWUsageList[3]
+        oneTypedUsageList = allHWUsageList[2]
     } else if (hardwareType === HARDWARE_TYPE.DISK) {
-        oneTypedUsageList = allHWUsageList[4]
+        oneTypedUsageList = allHWUsageList[3]
     } else if (hardwareType === HARDWARE_TYPE.CONNECTIONS) {
-        oneTypedUsageList = allHWUsageList[5]
+        oneTypedUsageList = allHWUsageList[4]
     }
-
 
     if (oneTypedUsageList.length === 0) {
         return (
@@ -828,21 +827,21 @@ export const makeLineChartDataForAppInst = (allHWUsageList: Array, hardwareType:
 
                 let usageOne = 0;
                 if (hardwareType === HARDWARE_TYPE.CPU) {
-                    usageOne = seriesValues[j]["6"];
+                    usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.CPU];
                 } else if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
-                    usageOne = seriesValues[j]["13"];//receivceBytes
+                    usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.RECVBYTES];
                 } else if (hardwareType === HARDWARE_TYPE.SEND_BYTES) {
-                    usageOne = seriesValues[j]["12"]; //sendBytes
+                    usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.SENDBYTES];
                 } else if (hardwareType === HARDWARE_TYPE.MEM) {
-                    usageOne = seriesValues[j]["10"]; //mem usage
+                    usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.MEM];
                 } else if (hardwareType === HARDWARE_TYPE.DISK) {
-                    usageOne = seriesValues[j]["8"];
+                    usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.DISK];
                 } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-                    usageOne = seriesValues[j]["12"];
+                    usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.ACTIVE];
                 } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
-                    usageOne = seriesValues[j]["13"];
+                    usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.HANDLED];
                 } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-                    usageOne = seriesValues[j]["14"];
+                    usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.ACCEPTS];
                 }
 
                 usageList.push(usageOne);

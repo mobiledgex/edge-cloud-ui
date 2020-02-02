@@ -25,16 +25,16 @@ export const USAGE_TYPE = {
     SUM_DISK_USAGE: 'sumDiskUsage',
     SUM_TCP_CONNS: 'sumTcpConns'
 
-  /*  sumUdpSent: 6827
-    sumUdpRecv: 1087
-    sumUdpRecvErr: 0
-    sumTcpConns: 196
-    sumTcpRetrans: 865
-    sumSendBytes: 435582.3
-    sumRecvBytes: 136609.3
-    sumMemUsage: 29.078074012239632
-    sumDiskUsage: 10.561762070574607
-    sumCpuUsage: 4.878710078764074*/
+    /*  sumUdpSent: 6827
+      sumUdpRecv: 1087
+      sumUdpRecvErr: 0
+      sumTcpConns: 196
+      sumTcpRetrans: 865
+      sumSendBytes: 435582.3
+      sumRecvBytes: 136609.3
+      sumMemUsage: 29.078074012239632
+      sumDiskUsage: 10.561762070574607
+      sumCpuUsage: 4.878710078764074*/
 
 }
 
@@ -47,6 +47,25 @@ export const CLASSIFICATION = {
     CLUSTER: 'Cluster',
 }
 
+export const APP_INST_USAGE_TYPE_INDEX = {
+    TIME: 0,
+    APP: 1,
+    CLUSTER: 2,
+    DEV: 3,
+    CLOUDLET: 4,
+    OPERATOR: 5,
+    CPU: 6,
+    MEM: 7,
+    DISK: 8,
+    SENDBYTES: 9,
+    RECVBYTES: 10,
+    PORT: 11,
+    ACTIVE: 12,
+    HANDLED: 13,
+    ACCEPTS: 14,
+    BYTESSENT: 15,
+    BYTESRECVD: 16,
+}
 
 
 export const RECENT_DATA_LIMIT_COUNT = 10
@@ -150,7 +169,7 @@ export const HARDWARE_OPTIONS_FOR_CLOUDLET = [
 ]
 
 
-export const HARDWARE_OPTIONS_FOR_CLUSTER= [
+export const HARDWARE_OPTIONS_FOR_CLUSTER = [
     {text: 'CPU', value: 'CPU'},
     {text: 'MEM', value: 'MEM'},
     {text: 'DISK', value: 'DISK'},
@@ -164,7 +183,7 @@ export const HARDWARE_OPTIONS_FOR_CLUSTER= [
 ]
 
 
-export const INSTANCE_TEST_OPTIONS= [
+export const INSTANCE_TEST_OPTIONS = [
     {text: 'redhong_inst', value: 'redhong_inst'},
     {text: 'asbdsf_inst', value: 'asbdsf_inst'},
     {text: '123241__inst', value: '123241__inst'},
@@ -176,11 +195,11 @@ export const INSTANCE_TEST_OPTIONS= [
 ]
 
 export const HARDWARE_TYPE_FOR_CLOUDLET = {
-    vCPU : 'vCPU',
+    vCPU: 'vCPU',
     MEM: 'MEM',
     DISK: 'DISK',
-    RECV_BYTES : 'RECV_BYTES',
-    SEND_BYTES : 'SEND_BYTES',
+    RECV_BYTES: 'RECV_BYTES',
+    SEND_BYTES: 'SEND_BYTES',
     FLOATING_IPS: 'FLOATING_IPS',
     IPV4: 'IPV4',
 }

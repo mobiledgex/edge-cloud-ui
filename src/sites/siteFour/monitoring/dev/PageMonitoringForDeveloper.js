@@ -11,6 +11,7 @@ import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker,} from 'antd';
 import {
+    convertNetworkTitle,
     filterUsageByClassification,
     getClusterLevelUsageList,
     getClusterList,
@@ -21,7 +22,7 @@ import {
     makeSelectBoxListWithKeyValuePipe, makeSelectBoxListWithThreeValuePipe,
     renderBubbleChartForCloudlet,
 } from "./PageMonitoringServiceForDeveloper";
-import {CLASSIFICATION, HARDWARE_OPTIONS_FOR_CLUSTER, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT} from "../../../../shared/Constants";
+import {CLASSIFICATION, HARDWARE_OPTIONS_FOR_CLUSTER, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
@@ -33,6 +34,7 @@ import {getAppInstList, getAppLevelUsageList, getCloudletList, StylesForMonitori
 import MapboxComponent from "./MapboxComponent";
 import * as reducer from "../../../../utils";
 import {CircularProgress} from "@material-ui/core";
+import {TabPanel, Tabs} from "react-tabs";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -392,102 +394,128 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
         }
 
-        renderCpuTabArea() {
 
+        renderTypeTabArea(hwType, networkDataDirectionType = '') {
             let barChartDataSet: TypeBarChartData = [];
             let lineChartDataSet: TypeLineChartData = [];
             if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, HARDWARE_TYPE.CPU, this)
-                lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, HARDWARE_TYPE.CPU, this)
+                barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
+                lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
             } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
-                barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, HARDWARE_TYPE.CPU, this)
-                lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, HARDWARE_TYPE.CPU, this)
+                barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
+                lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
             }
-
-            return this.renderGraphArea(HARDWARE_TYPE.CPU, barChartDataSet, lineChartDataSet)
+            console.log(`barChartDataSet===${hwType}>`, barChartDataSet);
+            if (hwType === HARDWARE_TYPE.NETWORK) {
+                return this.renderGraphAreaForNetwork(networkDataDirectionType, barChartDataSet, lineChartDataSet)
+            } else {
+                return this.renderGraphArea(hwType, barChartDataSet, lineChartDataSet)
+            }
         }
 
-        /* renderMemTabArea() {
-             let barChartDataSet: TypeBarChartData = makeBarChartDataForCluster(this.state.filteredClusterUsageList, HARDWARE_TYPE.MEM, this)
-             let lineChartDataSet: TypeLineChartData = makeLineChartDataForCluster(this.state.filteredClusterUsageList, HARDWARE_TYPE.MEM, this)
-             return this.renderGraphArea(HARDWARE_TYPE.MEM, barChartDataSet, lineChartDataSet)
-         }
+        renderGraphAreaForNetwork(networkType, barChartDataSet, lineChartDataSet) {
+            return (
+                <div className='page_monitoring_dual_column'>
+                    <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                TOP5 of {convertNetworkTitle(networkType)} Usage on {this.state.currentClassification}
+                            </div>
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
+                        </div>
+                    </div>
+                    <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title_select'>
+                                {convertNetworkTitle(networkType)} Usage of {this.state.currentClassification}
+                            </div>
+                            {!this.state.loading &&
+                            <Dropdown
+                                placeholder='SELECT NET TYPE'
+                                selection
+                                loading={this.state.loading}
+                                options={NETWORK_OPTIONS}
+                                defaultValue={NETWORK_OPTIONS[0].value}
+                                onChange={async (e, {value}) => {
+                                    //TAB0 IS SENDBYTES
+                                    if (value === HARDWARE_TYPE.RECV_BYTES) {
+                                        this.setState({
+                                            networkTabIndex: 0,
+                                        })
+                                    } else {
+                                        this.setState({
+                                            networkTabIndex: 1,
+                                        })
+                                    }
 
-         renderDiskTabArea() {
-             let barChartDataSet: TypeBarChartData = makeBarChartDataForCluster(this.state.filteredClusterUsageList, HARDWARE_TYPE.DISK, this)
-             let lineChartDataSet: TypeLineChartData = makeLineChartDataForCluster(this.state.filteredClusterUsageList, HARDWARE_TYPE.DISK, this)
-             return this.renderGraphArea(HARDWARE_TYPE.DISK, barChartDataSet, lineChartDataSet)
-         }
+                                }}
+                                value={networkType}
+                                // style={Styles.dropDown}
+                            />
+                            }
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
+                        </div>
+                    </div>
+                </div>
+            )
+        }
 
-         renderTcpTab() {
-             let barChartDataSet: TypeBarChartData = makeBarChartDataForCluster(this.state.filteredClusterUsageList, HARDWARE_TYPE.TCPCONNS, this)
-             let lineChartDataSet: TypeLineChartData = makeLineChartDataForCluster(this.state.filteredClusterUsageList, HARDWARE_TYPE.TCPCONNS, this)
-             return this.renderGraphArea(HARDWARE_TYPE.TCPCONNS, barChartDataSet, lineChartDataSet)
-         }
+        //@todo:-----------------------
+        //@todo:    CPU,MEM,DISK TAB
+        //@todo:-----------------------
+        CPU_MEM_DISK_ETCS_TABS = [
 
-         renderUdpTab() {
-             let barChartDataSet: TypeBarChartData = makeBarChartDataForCluster(this.state.filteredClusterUsageList, HARDWARE_TYPE.UDPSENT, this)
-             let lineChartDataSet: TypeLineChartData = makeLineChartDataForCluster(this.state.filteredClusterUsageList, HARDWARE_TYPE.UDPSENT, this)
-             return this.renderGraphArea(HARDWARE_TYPE.UDPSENT, barChartDataSet, lineChartDataSet)
-         }
+            {
+                menuItem: 'CPU', render: () => {
+                    return (
+                        <Pane>
+                            {this.renderTypeTabArea(HARDWARE_TYPE.CPU)}
+                        </Pane>
+                    )
+                },
+            },
+            {
+                menuItem: 'MEM', render: () => {
+                    return (
+                        <Pane>
+                            {this.renderTypeTabArea(HARDWARE_TYPE.MEM)}
+                        </Pane>
+                    )
+                }
+            },
 
-         renderNetworkAreaForCluster(networkType: string) {
-             let barChartDataSet: TypeBarChartData = makeBarChartDataForCluster(this.state.filteredClusterUsageList, networkType, this)
-             let lineChartDataSet: TypeLineChartData = makeLineChartDataForCluster(this.state.filteredClusterUsageList, networkType, this)
-             return this.renderGraphAreaForNetwork(networkType, barChartDataSet, lineChartDataSet)
-         }*/
-
-
-        /* renderGraphAreaForNetwork(networkType, barChartDataSet, lineChartDataSet) {
-             return (
-                 <div className='page_monitoring_dual_column'>
-                     <div className='page_monitoring_dual_container'>
-                         <div className='page_monitoring_title_area'>
-                             <div className='page_monitoring_title'>
-                                 TOP5 of {convertNetworkTitle(networkType)} Usage on {this.state.currentClassification}
-                             </div>
-                         </div>
-                         <div className='page_monitoring_container'>
-                             {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
-                         </div>
-                     </div>
-                     <div className='page_monitoring_dual_container'>
-                         <div className='page_monitoring_title_area'>
-                             <div className='page_monitoring_title_select'>
-                                 {convertNetworkTitle(networkType)} Usage of {this.state.currentClassification}
-                             </div>
-                             {!this.state.loading &&
-                             <Dropdown
-                                 placeholder='SELECT NET TYPE'
-                                 selection
-                                 loading={this.state.loading}
-                                 options={NETWORK_OPTIONS}
-                                 defaultValue={NETWORK_OPTIONS[0].value}
-                                 onChange={async (e, {value}) => {
-                                     //TAB0 IS SENDBYTES
-                                     if (value === HARDWARE_TYPE.RECV_BYTES) {
-                                         this.setState({
-                                             networkTabIndex: 0,
-                                         })
-                                     } else {
-                                         this.setState({
-                                             networkTabIndex: 1,
-                                         })
-                                     }
-
-                                 }}
-                                 value={networkType}
-                                 // style={Styles.dropDown}
-                             />
-                             }
-                         </div>
-                         <div className='page_monitoring_container'>
-                             {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
-                         </div>
-                     </div>
-                 </div>
-             )
-         }*/
+            {
+                menuItem: 'DISK', render: () => {
+                    return (
+                        <Pane>
+                            {this.renderTypeTabArea(HARDWARE_TYPE.DISK)}
+                        </Pane>
+                    )
+                }
+            },
+           /* {
+                menuItem: 'CONNECTIONS', render: () => {
+                    return (
+                        <Pane>
+                            {this.renderTypeTabArea(HARDWARE_TYPE.CONNECTIONS)}
+                        </Pane>
+                    )
+                }
+            },*/
+            /* {
+                 menuItem: 'UDP', render: () => {
+                     return (
+                         <Pane>
+                             {this.renderUdpTab()}
+                         </Pane>
+                     )
+                 }
+             },*/
+        ]
 
 
         renderGraphArea(pHardwareType, barChartDataSet, lineChartDataSet) {
@@ -812,73 +840,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
         }
 
-
-        //@todo:-----------------------
-        //@todo:    CPU,MEM,DISK TAB
-        //@todo:-----------------------
-        CPU_MEM_DISK_ETCS_TABS = [
-
-            {
-                menuItem: 'CPU', render: () => {
-                    return (
-                        <Pane>
-                            {this.renderCpuTabArea()}
-                        </Pane>
-                    )
-                },
-            },
-            /* {
-                 menuItem: 'MEM', render: () => {
-                     return (
-                         <Pane>
-                             {this.renderMemTabArea()}
-                         </Pane>
-                     )
-                 }
-             },
-             {
-                 menuItem: 'DISK', render: () => {
-                     return (
-                         <Pane>
-                             {this.renderDiskTabArea()}
-                         </Pane>
-                     )
-                 }
-             },
-             {
-                 menuItem: 'TCP', render: () => {
-                     return (
-                         <Pane>
-                             {this.renderTcpTab()}
-                         </Pane>
-                     )
-                 }
-             },*/
-            /*
-
-
-             {
-                 menuItem: 'UDP', render: () => {
-                     return (
-                         <Pane>
-                             {this.renderUdpTab()}
-                         </Pane>
-                     )
-                 }
-             },
- */
-        ]
-
-        filterOnCluster(pCluster) {
-
-
-            console.log('filterOnCluster===>', this.state.allUsageList);
-
-            console.log('filterOnCluster===>', pCluster);
-
-
-        }
-
         render() {
             // todo: Components showing when the loading of graph data is not completed.
             if (!this.state.isReady) {
@@ -1045,13 +1006,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*todo:---------------------------------*/}
                                                     {/*todo: NETWORK TAB PANEL AREA           */}
                                                     {/*todo:---------------------------------*/}
-                                                    {/*  <Tabs selectedIndex={this.state.networkTabIndex}
+
+
+                                                  {/*  <Tabs selectedIndex={this.state.networkTabIndex}
                                                           className='page_monitoring_tab'>
                                                         <TabPanel>
-                                                            {this.renderNetworkAreaForCluster(HARDWARE_TYPE.RECV_BYTES)}
+                                                            {this.renderTypeTabArea(HARDWARE_TYPE.NETWORK, HARDWARE_TYPE.RECV_BYTES)}
                                                         </TabPanel>
                                                         <TabPanel>
-                                                            {this.renderNetworkAreaForCluster(HARDWARE_TYPE.SEND_BYTES)}
+                                                            {this.renderTypeTabArea(HARDWARE_TYPE.NETWORK, HARDWARE_TYPE.SEND_BYTES)}
                                                         </TabPanel>
                                                     </Tabs>*/}
                                                 </div>
