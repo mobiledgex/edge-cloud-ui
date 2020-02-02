@@ -395,7 +395,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
         }
 
-        renderTypeTabArea(hwType, networkDataDirectionType = '') {
+        renderTypeTabBody(hwType, networkDataDirectionType = '') {
             let barChartDataSet: TypeBarChartData = [];
             let lineChartDataSet: TypeLineChartData = [];
             if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
@@ -473,7 +473,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 menuItem: 'CPU', render: () => {
                     return (
                         <Pane>
-                            {this.renderTypeTabArea(HARDWARE_TYPE.CPU)}
+                            {this.renderTypeTabBody(HARDWARE_TYPE.CPU)}
                         </Pane>
                     )
                 },
@@ -482,7 +482,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 menuItem: 'MEM', render: () => {
                     return (
                         <Pane>
-                            {this.renderTypeTabArea(HARDWARE_TYPE.MEM)}
+                            {this.renderTypeTabBody(HARDWARE_TYPE.MEM)}
                         </Pane>
                     )
                 }
@@ -492,7 +492,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 menuItem: 'DISK', render: () => {
                     return (
                         <Pane>
-                            {this.renderTypeTabArea(HARDWARE_TYPE.DISK)}
+                            {this.renderTypeTabBody(HARDWARE_TYPE.DISK)}
                         </Pane>
                     )
                 }
@@ -525,7 +525,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                {pHardwareType} of on {this.state.currentClassification}
+                                {pHardwareType} Usage of {this.state.loading ?
+                                <CircularProgress size={9} style={{fontSize: 9, color: '#77BD25', marginLeft: 5, marginBottom: 1,}}/> : this.state.currentClassification}
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
