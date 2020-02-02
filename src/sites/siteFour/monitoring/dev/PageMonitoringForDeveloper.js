@@ -257,17 +257,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             this.setState({
                 loading: false,
             })
-
-            /*this.interval = setInterval(async () => {
-                this.setState({
-                    intervalLoading: true,
-                })
-                await this.loadInitDataForCluster(true);
-                this.setState({
-                    intervalLoading: false,
-                })
-
-            }, 1000 * 12)*/
         }
 
         componentWillUnmount(): void {
@@ -777,21 +766,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentCluster: currentCluster,
             })
 
+            /*
             this.interval = setInterval(async () => {
-                this.setState({
-                    intervalLoading: true,
-                })
-                let arrDateTime2 = getOneYearStartEndDatetime();
-                allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime2[0], arrDateTime2[1]);
+                   this.setState({
+                       intervalLoading: true,
+                   })
+                   let arrDateTime2 = getOneYearStartEndDatetime();
+                   allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime2[0], arrDateTime2[1]);
 
-                console.log('allAppInstUsageList77===>', allAppInstUsageList);
+                   console.log('allAppInstUsageList77===>', allAppInstUsageList);
 
-                this.setState({
-                    intervalLoading: false,
-                    filteredAppInstUsageList: allAppInstUsageList,
-                })
+                   this.setState({
+                       intervalLoading: false,
+                       filteredAppInstUsageList: allAppInstUsageList,
+                   })
 
-            }, 1000 * 7)
+               }, 1000 * 7)
+            */
 
         }
 
