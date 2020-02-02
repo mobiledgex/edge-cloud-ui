@@ -12,7 +12,10 @@ import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../servi
 import {sendSyncRequest} from "../../../../services/serviceMC";
 import {Table} from "semantic-ui-react";
 import PageMonitoringForDeveloper from "./PageMonitoringForDeveloper";
-import {renderLineChartCore} from "../admin/PageMonitoringServiceForAdmin";
+import {renderLineChartCore, renderUsageLabelByType, StylesForMonitoring} from "../admin/PageMonitoringServiceForAdmin";
+import {Chart} from "react-google-charts";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import {Line as ReactChartJs} from "react-chartjs-2";
 
 export const getClusterLevelMatric = async (serviceBody: any, pToken: string) => {
     console.log('token2===>', pToken);
@@ -540,68 +543,6 @@ export const sortUsageListByTypeForCluster = (usageList, hardwareType) => {
     return usageList;
 }
 
-
-export const makeBarGraphForCloudlet = (usageList, hardwareType, _this) => {
-
-    usageList = sortUsageListByType(usageList, hardwareType)
-
-
-    if (usageList.length === 0) {
-        return (
-            <div style={Styles.noData}>
-                NO DATA
-            </div>
-        )
-    } else {
-
-        let chartDataList = [];
-        chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
-        for (let index = 0; index < usageList.length; index++) {
-            if (index < 5) {
-                let barDataOne = [
-                    usageList[index].cloudlet.toString().substring(0, 10) + "...",
-                    renderUsageByType(usageList[index], hardwareType),
-                    CHART_COLOR_LIST[index],
-                    renderUsageLabelByTypeForAppInst(usageList[index], hardwareType)
-                ]
-                chartDataList.push(barDataOne);
-            }
-        }
-
-        return renderBarChartCore(chartDataList, hardwareType)
-    }
-}
-
-
-export const renderBarChartForAppInst = (usageList, hardwareType, _this) => {
-
-    if (usageList.length === 0) {
-        return (
-            <div style={Styles.noData}>
-                NO DATA
-            </div>
-        )
-    } else {
-
-        let chartDataList = [];
-        chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
-        for (let index = 0; index < usageList.length; index++) {
-            if (index < 5) {
-
-                let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...",
-                    renderUsageByTypeForAppInst(usageList[index], hardwareType),
-                    CHART_COLOR_LIST[index],
-                    renderUsageLabelByTypeForAppInst(usageList[index], hardwareType)]
-                chartDataList.push(barDataOne);
-            }
-        }
-
-        return renderBarChartCore(chartDataList, hardwareType)
-    }
-
-
-}
-
 export const renderBarGraphForCluster = (usageList, hardwareType, _this) => {
 
     console.log(`renderBarGraphForCluster===>${hardwareType}`, usageList);
@@ -662,6 +603,57 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this) => {
         }
         return chartDataSet
     }
+}
+
+
+/**
+ *
+ * @param allHWUsageList
+ * @param hardwareType
+ * @param _this
+ * @returns {string|{chartDataList: [], hardwareType: *}}
+ */
+export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: PageMonitoringForDeveloper) => {
+
+    console.log('allHWUsageList===>', allHWUsageList);
+
+    let typedUsageList = [];
+    if (hardwareType === HARDWARE_TYPE.CPU) {
+        typedUsageList = allHWUsageList[0]
+    } else if (hardwareType === HARDWARE_TYPE.MEM) {
+        typedUsageList = allHWUsageList[2]
+    } else if (hardwareType === HARDWARE_TYPE.NETWORK) {
+        typedUsageList = allHWUsageList[3]
+    } else if (hardwareType === HARDWARE_TYPE.DISK) {
+        typedUsageList = allHWUsageList[4]
+    } else if (hardwareType === HARDWARE_TYPE.CONNECTIONS) {
+        typedUsageList = allHWUsageList[5]
+    }
+
+    if (typedUsageList.length === 0) {
+        return "";
+    } else {
+        let chartDataList = [];
+        chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
+        for (let index = 0; index < typedUsageList.length; index++) {
+            if (index < 5) {
+                let barDataOne = [
+                    typedUsageList[index].instance.AppName.toString().substring(0, 10) + "..." + "\n[" + typedUsageList[index].instance.Cloudlet + "]",
+                    renderUsageByType(typedUsageList[index], hardwareType),
+                    CHART_COLOR_LIST[index],
+                    renderUsageLabelByType(typedUsageList[index], hardwareType)
+                ]
+                chartDataList.push(barDataOne);
+            }
+        }
+
+        let chartDataSet = {
+            chartDataList,
+            hardwareType,
+        }
+        return chartDataSet
+    }
+
 }
 
 
@@ -788,10 +780,34 @@ export const renderBubbleChartForCloudlet = (_this: PageMonitoring, hardwareType
 
 }
 
+/**
+ *
+ * @param _this
+ * @param hardwareUsageList
+ * @param hardwareType
+ * @returns {*}
+ */
+export const makeLineChartDataForAppInst = (allHWUsageList: Array, hardwareType: string, _this: PageMonitoringForDeveloper) => {
+    /*    allCpuUsageList: usageList[0],
+           allMemUsageList: usageList[1],
+           allNetworkUsageList: usageList[2],
+           allDiskUsageList: usageList[3],
+           allConnectionsUsageList: usageList[4],*/
+    let oneTypedUsageList = [];
+    if (hardwareType === HARDWARE_TYPE.CPU) {
+        oneTypedUsageList = allHWUsageList[0]
+    } else if (hardwareType === HARDWARE_TYPE.MEM) {
+        oneTypedUsageList = allHWUsageList[2]
+    } else if (hardwareType === HARDWARE_TYPE.NETWORK) {
+        oneTypedUsageList = allHWUsageList[3]
+    } else if (hardwareType === HARDWARE_TYPE.DISK) {
+        oneTypedUsageList = allHWUsageList[4]
+    } else if (hardwareType === HARDWARE_TYPE.CONNECTIONS) {
+        oneTypedUsageList = allHWUsageList[5]
+    }
 
-export const makeLineChartDataForAppInst = (_this: PageMonitoring, hardwareUsageList: Array, hardwareType: string) => {
 
-    if (hardwareUsageList.length === 0) {
+    if (oneTypedUsageList.length === 0) {
         return (
             <div style={Styles.noData}>
                 NO DATA
@@ -799,13 +815,13 @@ export const makeLineChartDataForAppInst = (_this: PageMonitoring, hardwareUsage
         )
     } else {
         let instanceAppName = ''
-        let instanceNameList = [];
+        let levelTypeNameList = [];
         let usageSetList = []
         let dateTimeList = []
-        for (let i in hardwareUsageList) {
-            let seriesValues = hardwareUsageList[i].values
+        for (let i in oneTypedUsageList) {
+            let seriesValues = oneTypedUsageList[i].values
 
-            instanceAppName = hardwareUsageList[i].instance.AppName
+            instanceAppName = oneTypedUsageList[i].instance.AppName
             let usageList = [];
 
             for (let j in seriesValues) {
@@ -836,7 +852,7 @@ export const makeLineChartDataForAppInst = (_this: PageMonitoring, hardwareUsage
                 dateTimeList.push(dateOne[1]);
             }
 
-            instanceNameList.push(instanceAppName)
+            levelTypeNameList.push(instanceAppName)
             usageSetList.push(usageList);
         }
 
@@ -852,9 +868,25 @@ export const makeLineChartDataForAppInst = (_this: PageMonitoring, hardwareUsage
 
         }
 
-        return renderLineChartCore(usageSetList, instanceNameList, newDateTimeList, hardwareType)
+        let chartDataset = {
+            levelTypeNameList,
+            usageSetList,
+            newDateTimeList,
+            hardwareType
+        }
+        return chartDataset;
     }
 
+
+}
+
+export const convertNetworkTitle = (pHardwareType) => {
+
+    if (pHardwareType === HARDWARE_TYPE.RECV_BYTES) {
+        return "NETWORK RECV BYTES"
+    } else {
+        return "NETWORK SEND BYTES"
+    }
 
 }
 
@@ -951,98 +983,6 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
     }
 
 }
-
-
-export const renderLineChartForCluster = (_this: PageMonitoring, pUsageList: Array, hardwareType: string) => {
-
-    console.log('usageList3333====>', pUsageList);
-
-    if (pUsageList.length === 0) {
-        return (
-            <div style={Styles.noData}>
-                NO DATA
-            </div>
-        )
-    } else {
-        let classificationName = ''
-        let levelTypeNameList = [];
-        let usageSetList = []
-        let dateTimeList = []
-        let series = []
-        for (let i in pUsageList) {
-
-            if (hardwareType === HARDWARE_TYPE.CPU) {
-                series = pUsageList[i].cpuSeriesList
-            } else if (hardwareType === HARDWARE_TYPE.MEM) {
-                series = pUsageList[i].memSeriesList
-            } else if (hardwareType === HARDWARE_TYPE.DISK) {
-                series = pUsageList[i].diskSeriesList
-            } else if (hardwareType === HARDWARE_TYPE.UDP) {
-                series = pUsageList[i].udpSeriesList
-            } else if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
-                series = pUsageList[i].tcpSeriesList
-            } else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
-                series = pUsageList[i].udpSeriesList
-            } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-                series = pUsageList[i].networkSeriesList
-            } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-                series = pUsageList[i].networkSeriesList
-            }
-
-            console.log('series333333333===>', series);
-
-            classificationName = pUsageList[i].cluster + "\n[" + pUsageList[i].cloudlet + "]";
-            let usageList = [];
-
-            for (let j in series) {
-
-                let usageOne = 0;
-                if (hardwareType === HARDWARE_TYPE.CPU) {
-                    usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.CPU];
-                } else if (hardwareType === HARDWARE_TYPE.MEM) {
-                    usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.MEM];
-                } else if (hardwareType === HARDWARE_TYPE.DISK) {
-                    usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.DISK];
-                } else if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
-                    usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.TCPCONNS];
-                } else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
-                    usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.UDPSENT];
-                } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-                    usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.SENDBYTES];
-                } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-                    usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.RECVBYTES];
-                }
-
-                usageList.push(usageOne);
-
-                let dateOne = series[j]["0"];
-                dateOne = dateOne.toString().split("T")
-                dateTimeList.push(dateOne[1]);
-            }
-
-            levelTypeNameList.push(classificationName)
-            usageSetList.push(usageList);
-        }
-
-        console.log('usageSetList====>', usageSetList);
-
-
-        //@todo: CUST LIST INTO RECENT_DATA_LIMIT_COUNT
-        let newDateTimeList = []
-        for (let i in dateTimeList) {
-            if (i < RECENT_DATA_LIMIT_COUNT) {
-                let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
-                let timeOne = splitDateTimeArrayList[0].replace("T", "T");
-                newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
-            }
-
-        }
-
-        return renderLineChartCore(levelTypeNameList, usageSetList, newDateTimeList, hardwareType)
-    }
-
-}
-
 
 /**
  *
@@ -1691,13 +1631,26 @@ export const makeSelectBoxListWithKeyValuePipe = (arrList, keyName, valueName) =
     let newArrList = [];
     for (let i in arrList) {
         newArrList.push({
-            key: arrList[i][keyName] + " | " + arrList[i][valueName],
-            value: arrList[i][keyName] + " | " + arrList[i][valueName],
-            text: arrList[i][keyName] + " | " + arrList[i][valueName],
+            key: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim(),
+            value: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim(),
+            text: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim(),
         })
     }
     return newArrList;
 }
+
+export const makeSelectBoxListWithThreeValuePipe = (arrList, keyName: string, valueName: string, thirdValue: string) => {
+    let newArrList = [];
+    for (let i in arrList) {
+        newArrList.push({
+            key: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim() + " | " + arrList[i][thirdValue].trim(),
+            value: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim() + " | " + arrList[i][thirdValue].trim(),
+            text: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim() + " | " + arrList[i][thirdValue].trim(),
+        })
+    }
+    return newArrList;
+}
+
 
 export const makeSelectBoxListWithKeyValueCombination = (arrList, key, value) => {
     let newArrList = [];

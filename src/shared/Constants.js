@@ -42,6 +42,7 @@ export const CLASSIFICATION = {
     CLOUDLET: 'Cloudlet',
     APP_NAME: 'AppName',
     APPNAME: 'AppName',
+    APPINST: 'AppInst',
     CLUSTER_INST: 'ClusterInst',
     CLUSTER: 'Cluster',
 }
@@ -252,7 +253,7 @@ export const MONITORING_CATE_SELECT_TYPE = {
     APPNAME: 'AppName',
     CLOUDLET: 'Cloudlet',
     CLUSTERINST: 'ClusterInst',
-
+    APPINST: 'AppInst',
 }
 
 export const USER_ROLE = {

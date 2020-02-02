@@ -287,7 +287,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }));
 
             await this.setState({
-                allUsageList: allUsageList,
+                allClusterUsageList: allUsageList,
                 cloudletList: cloudletList,
                 maxCpu: maxCpu,
                 maxMem: maxMem,

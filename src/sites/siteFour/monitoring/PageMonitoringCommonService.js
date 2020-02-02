@@ -3,12 +3,13 @@ import './PageMonitoring.css';
 import {toast} from "react-semantic-toasts";
 import {HARDWARE_TYPE, HARDWARE_TYPE_FOR_CLOUDLET, USAGE_TYPE,} from "../../../shared/Constants";
 import Lottie from "react-lottie";
-import {removeDuplication} from "./dev/PageMonitoringServiceForDeveloper";
+import {makeGradientColor, removeDuplication} from "./dev/PageMonitoringServiceForDeveloper";
 import {Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import PageMonitoringForDeveloper from "./dev/PageMonitoringForDeveloper";
 import {makeCompleteDateTime} from "./admin/PageMonitoringServiceForAdmin";
 import moment from "moment";
+import {Line as ReactChartJs} from "react-chartjs-2";
 
 export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
 
@@ -65,6 +66,151 @@ export const renderPlaceHolder = (type: string = '') => {
         </div>
     )
 }
+
+
+
+export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDateTimeList, hardwareType) => {
+    const lineChartData = (canvas) => {
+
+        let gradientList = makeGradientColor(canvas, height);
+
+        let finalSeriesDataSets = [];
+        for (let i in usageSetList) {
+            //@todo: top5 만을 추린다
+            if (i < 5) {
+                let datasetsOne = {
+                    label: paramLevelTypeNameList[i],
+                    backgroundColor: gradientList[i],//todo: 리전드box area fill True/false
+                    fill: false,//todo: 라인차트 area fill True/false
+                    //backgroundColor: '',
+                    borderColor: gradientList[i],
+                    borderWidth: 2,
+                    pointColor: "#fff",
+                    pointStrokeColor: 'white',
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: 'white',
+                    data: usageSetList[i],
+                    radius: 0,
+                    pointRadius: 1,
+
+                }
+
+                finalSeriesDataSets.push(datasetsOne)
+            }
+
+        }
+
+
+        console.log('finalSeriesDataSets====>', finalSeriesDataSets);
+
+        return {
+            labels: newDateTimeList,
+            datasets: finalSeriesDataSets,
+        }
+    }
+
+    let height = 500 + 100;
+    let options = {
+        plugins: {
+            zoom: {
+                pan: {
+                    enabled: true,
+                    mode: 'y'
+                },
+                zoom: {
+                    enabled: true,
+                    mode: 'xy'
+                }
+            }
+        },
+        maintainAspectRatio: true,
+        responsive: true,
+        datasetStrokeWidth: 3,
+        pointDotStrokeWidth: 4,
+        layout: {
+            padding: {
+                left: 0,
+                right: 10,
+                top: 0,
+                bottom: 0
+            }
+        },
+        legend: {
+            position: 'top',
+            labels: {
+                boxWidth: 10,
+                fontColor: 'white'
+            }
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                    fontColor: 'white',
+                    callback(value, index, label) {
+                        return numberWithCommas(value);
+
+                    },
+                },
+                gridLines: {
+                    color: "#505050",
+                },
+                //stacked: true
+
+            }],
+            xAxes: [{
+                /*ticks: {
+                    fontColor: 'white'
+                },*/
+                gridLines: {
+                    color: "#505050",
+                },
+                ticks: {
+                    fontSize: 14,
+                    fontColor: 'white',
+                    //maxRotation: 0.05,
+                    //autoSkip: true,
+                    maxRotation: 45,
+                    minRotation: 45,
+                    padding: 10,
+                    labelOffset: 0,
+                    callback(value, index, label) {
+                        return value;
+
+                    },
+                },
+                beginAtZero: false,
+                /* gridLines: {
+                     drawTicks: true,
+                 },*/
+            }],
+            backgroundColor: {
+                fill: "#1e2124"
+            },
+        }
+
+    }
+
+
+    let chartWidth = ((window.innerWidth - 300) * 2 / 3 - 50) / 2
+    let chartHeight = window.innerWidth > 1700 ? ((window.innerHeight - 320) / 2 - 80) - 10 : ((window.innerHeight - 370) / 2 - 80) - 10 //(height 사이즈)-(여유공백)
+    // let chartNetHeight = window.innerWidth > 1782 ? (window.innerHeight-320)/2-50 : (window.innerHeight-370)/2-50
+    //todo :#######################
+    //todo : chart rendering part
+    //todo :#######################
+    return (
+        <div style={{width: '100%', height: '100%'}}>
+            <ReactChartJs
+                width={chartWidth}
+                height={hardwareType === "recv_bytes" || hardwareType === "send_bytes" ? chartHeight + 20 : chartHeight}
+                data={lineChartData}
+                options={options}
+
+            />
+        </div>
+    );
+}
+
 
 
 export const renderBarChartCore = (chartDataList, hardwareType) => {

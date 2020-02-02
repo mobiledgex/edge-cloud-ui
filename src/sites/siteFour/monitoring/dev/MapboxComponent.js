@@ -17,6 +17,7 @@ type Props = {
     handleLoadingSpinner: Function,
     cloudletKey: any,//hashmap
     markerList: Array,
+    handleAppInstDropdown: Function,
 }
 
 type State = {
@@ -88,6 +89,7 @@ export default class MapboxComponent extends Component<Props, State> {
             let AppNames = ''
             let CloudletLocation = '';
             let Cloudlet = '';
+            let ClusterInst = '';
             appInstanceListGroupByCloudlet[key].map((item: TypeAppInstance, index) => {
 
                 if (index === (appInstanceListGroupByCloudlet[key].length - 1)) {
@@ -98,7 +100,8 @@ export default class MapboxComponent extends Component<Props, State> {
 
 
                 CloudletLocation = item.CloudletLocation;
-                Cloudlet = item.Cloudlet
+                Cloudlet = item.Cloudlet;
+                ClusterInst = item.ClusterInst;
 
             })
 
@@ -106,6 +109,7 @@ export default class MapboxComponent extends Component<Props, State> {
                 AppNames: AppNames,
                 CloudletLocation: CloudletLocation,
                 Cloudlet: Cloudlet,
+                ClusterInst: ClusterInst,
             })
 
         })
@@ -191,12 +195,12 @@ export default class MapboxComponent extends Component<Props, State> {
                     movingMethod={'easeTo'}
                     flyToOptions={{
                         speed: 3.5,
-                     /*   center: [0, 0],
-                        zoom: 45,
-                        curve: 3,
-                        easing(t) {
-                            return t;
-                        }*/
+                        /*   center: [0, 0],
+                           zoom: 45,
+                           curve: 3,
+                           easing(t) {
+                               return t;
+                           }*/
                     }}
 
 
@@ -222,7 +226,9 @@ export default class MapboxComponent extends Component<Props, State> {
                                 {listAppName.map(AppName => {
                                     return (
                                         <div style={{color: 'white', fontSize: 12, fontFamily: 'Acme'}} onClick={() => {
-                                            showToast(AppName + " | " + item.Cloudlet)
+                                            let dataSet = AppName.trim() + " | " + item.Cloudlet.trim() +" | "  + item.ClusterInst.trim()
+                                            //showToast(dataSet)
+                                            this.props.handleAppInstDropdown(dataSet)
                                         }}>
                                             {AppName}
                                         </div>
@@ -298,7 +304,7 @@ export default class MapboxComponent extends Component<Props, State> {
                             })
                         })
                     }}>
-                        <Icon name="star badge square outline" />
+                        <Icon name="star badge square outline"/>
                     </Button>
                 </div>
             </div>
