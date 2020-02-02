@@ -790,7 +790,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     filteredAppInstUsageList: allAppInstUsageList,
                 })
 
-            }, 1000 * 8)
+            }, 1000 * 7)
 
         }
 
