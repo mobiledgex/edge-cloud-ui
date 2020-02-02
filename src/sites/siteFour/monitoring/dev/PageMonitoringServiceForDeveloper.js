@@ -820,7 +820,7 @@ export const makeLineChartDataForAppInst = (allHWUsageList: Array, hardwareType:
         for (let i in oneTypedUsageList) {
             let seriesValues = oneTypedUsageList[i].values
 
-            instanceAppName = oneTypedUsageList[i].instance.AppName
+            instanceAppName = oneTypedUsageList[i].instance.AppName + "[" + oneTypedUsageList[i].instance.Cloudlet + "]"
             let usageList = [];
 
             for (let j in seriesValues) {
