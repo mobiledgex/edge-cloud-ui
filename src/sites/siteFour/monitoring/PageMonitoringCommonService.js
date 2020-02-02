@@ -68,8 +68,9 @@ export const renderPlaceHolder = (type: string = '') => {
 }
 
 
-
 export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDateTimeList, hardwareType) => {
+
+
     const lineChartData = (canvas) => {
 
         let gradientList = makeGradientColor(canvas, height);
@@ -212,6 +213,185 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
 }
 
 
+export const renderLineChartCore00002 = (paramLevelTypeNameList, usageSetList, newDateTimeList, hardwareType) => {
+
+    console.log('usageSetList===>', usageSetList);
+
+    let hwType='CPU';
+
+    let nameList=[
+        "autoclusterbicapp\n[hamburg-stage]",
+        "autoclusterbicapp\n[Rah123]",
+        "autoclusterbicapp\n[frankfurt-eu]",
+        "Rah-Clust-8\n[frankfurt-eu]"
+    ]
+
+    let datetimeList2=[
+        "08:53:00",
+        "08:52:52",
+        "08:52:44",
+        "08:52:36",
+        "08:52:28",
+        "08:52:20",
+        "08:52:12",
+        "08:52:04",
+        "08:51:56",
+        "08:51:48"
+    ]
+
+    let usageSetList2=[
+        [
+            0,
+            0,
+            0,
+            0,
+            29.999999994179234,
+            0,
+            25.423728815210573,
+            0,
+            1.639344262353743,
+            0
+        ],
+        [
+            0,
+            39.99999999997726,
+            0,
+            0,
+            0,
+            0,
+            3.278688524584054,
+            0,
+            0,
+            0
+        ],
+        [
+            8.47457626148795,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            29.508196703947725,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ]
+    ]
+
+    let chartDataList=[]
+
+    let titleArray=[];
+
+    titleArray.push("time")
+
+    titleArray.concat(nameList)
+    datetimeList2.map((item, index)=>{
+
+
+
+    })
+
+    const data = [
+        ["Year", "Sales", "Expenses"],
+        ["2004", 1000, 400],
+        ["2005", 1170, 460],
+        ["2006", 660, 1120],
+        ["2007", 1030, 540],
+        ["2008", 1035, 545],
+        ["2009", 1037, 518],
+        ["2010", 1040, 550],
+        ["2011", 1050, 570],
+    ];
+    const options = {
+        //title: "Company Performance",
+        curveType: "function",
+        backgroundColor: {
+            fill: '#1e2124'
+        },
+        chartArea: {left: 60, top: 40, width: '90%', height: '75%'},
+        annotations: {
+            style: 'line',
+            textStyle: {
+                //fontName: 'Righteous',
+                fontSize: 12,
+                //bold: true,
+                //italic: true,
+                // The color of the text.
+                color: '#fff',
+                // The color of the text outline.
+                //auraColor: 'black',
+                // The transparency of the text.
+                opacity: 1.0
+            },
+            boxStyle: {
+                // Color of the box outline.
+                stroke: '#ffffff',
+                // Thickness of the box outline.
+                strokeWidth: 1,
+                // x-radius of the corner curvature.
+                rx: 10,
+                // y-radius of the corner curvature.
+                ry: 10,
+            }
+        },
+        animation: {
+            startup: true,
+            duration: 850,
+            /*'linear' - Constant speed.
+            'in' - Ease in - Start slow and speed up.
+            'out' - Ease out - Start fast and slow down.
+            'inAndOut' - Ease in and out - Start slow, speed up, then slow down.*/
+            easing:'inAndOut',
+        },
+        explorer: {
+            actions: ['dragToPan', 'rightClickToReset'],
+        },
+        tooltip: {textStyle: {color: '#FF0000'}, showColorCode: true},
+        legend: {position: 'top', textStyle: {color: 'white', fontSize: 16}},
+        vAxis: {//y축
+            gridlines: {color: '#333', minSpacing: 20},
+            textStyle: {
+                color: 'green',
+                fontSize: 15,
+                bold: true,
+            },
+            viewWindowMode: 'maximized'
+        },
+        titlePosition: 'none',
+        hAxis: {//x축
+            //gridlines: {color: '#333', minSpacing: 20},
+            textStyle: {
+                color: 'white',
+                fontSize: 12,
+                bold: true,
+            }
+        }
+    };
+
+    return (
+        <div className="App">
+            <Chart
+                chartType="LineChart"
+                width={700}
+                height={'100%'}
+                data={data}
+                options={options}
+            />
+        </div>
+    )
+}
 
 export const renderBarChartCore = (chartDataList, hardwareType) => {
     return (
@@ -413,7 +593,7 @@ export const filterUsageByType = (pTypeKey, pTypeValue, usageList,) => {
 
 export const getOneYearStartEndDatetime = () => {
 
-    let arrDateTime=[]
+    let arrDateTime = []
     let startTime = makeCompleteDateTime(moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'));
     let endTime = makeCompleteDateTime(moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'));
 

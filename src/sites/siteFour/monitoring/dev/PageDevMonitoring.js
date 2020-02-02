@@ -29,7 +29,15 @@ import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import '../PageMonitoring.css'
-import {getOneYearStartEndDatetime, makeBubbleChartDataForCluster, renderBarChartCore, renderLineChartCore, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
+import {
+    getOneYearStartEndDatetime,
+    makeBubbleChartDataForCluster,
+    renderBarChartCore,
+    renderLineChartCore,
+    renderLineChartCore00002,
+    renderPlaceHolder,
+    showToast
+} from "../PageMonitoringCommonService";
 import {getAppInstList, getAppLevelUsageList, getCloudletList, StylesForMonitoring} from "../admin/PageAdminMonitoringService";
 import MapboxComponent from "./MapboxComponent";
 import * as reducer from "../../../../utils";
@@ -265,12 +273,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         async loadInitDataForCluster(isInterval: boolean = false) {
-
-            let clusterList = await getClusterList();
-            let cloudletList = await getCloudletList()
-
             this.setState({dropdownRequestLoading: true})
-            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
+         /*   let clusterList = await getClusterList();
+            let cloudletList = await getCloudletList()
+            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();*/
+
+            let clusterList =require('./clusterList')
+            let cloudletList =require('./cloudletList')
+            let appInstanceList =require('./appInstList')
 
             console.log('clusterList===>', clusterList);
 
@@ -300,8 +310,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
 
 
-            let allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
-            await this.setState({
+            //let allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
+            let allClusterUsageList =require('./allClusterUsageList')
+                await this.setState({
                 allClusterUsageList: allClusterUsageList,
             });
             console.log('filteredAppInstanceList===>', appInstanceList)
@@ -384,7 +395,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
         }
 
-        renderTypeTabBody(hwType, networkDataDirectionType = '') {
+        makeChartDataAndRenderTabBody(hwType, networkDataDirectionType = '') {
             let barChartDataSet: TypeBarChartData = [];
             let lineChartDataSet: TypeLineChartData = [];
             if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
@@ -394,6 +405,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
                 lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
             }
+
+
+
+
             console.log(`barChartDataSet===${hwType}>`, barChartDataSet);
             if (hwType === HARDWARE_TYPE.NETWORK) {
                 return this.renderGraphAreaForNetwork(networkDataDirectionType, barChartDataSet, lineChartDataSet)
@@ -453,58 +468,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        //@todo:-----------------------
-        //@todo:    CPU,MEM,DISK TAB
-        //@todo:-----------------------
-        CPU_MEM_DISK_ETCS_TABS = [
-
-            {
-                menuItem: 'CPU', render: () => {
-                    return (
-                        <Pane>
-                            {this.renderTypeTabBody(HARDWARE_TYPE.CPU)}
-                        </Pane>
-                    )
-                },
-            },
-            {
-                menuItem: 'MEM', render: () => {
-                    return (
-                        <Pane>
-                            {this.renderTypeTabBody(HARDWARE_TYPE.MEM)}
-                        </Pane>
-                    )
-                }
-            },
-
-            {
-                menuItem: 'DISK', render: () => {
-                    return (
-                        <Pane>
-                            {this.renderTypeTabBody(HARDWARE_TYPE.DISK)}
-                        </Pane>
-                    )
-                }
-            },
-            /* {
-                 menuItem: 'CONNECTIONS', render: () => {
-                     return (
-                         <Pane>
-                             {this.renderTypeTabArea(HARDWARE_TYPE.CONNECTIONS)}
-                         </Pane>
-                     )
-                 }
-             },*/
-            /* {
-                 menuItem: 'UDP', render: () => {
-                     return (
-                         <Pane>
-                             {this.renderUdpTab()}
-                         </Pane>
-                     )
-                 }
-             },*/
-        ]
 
 
         renderGraphArea(pHardwareType, barChartDataSet, lineChartDataSet) {
@@ -519,14 +482,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {/*  levelTypeNameList,
-                            usageSetList,
-                            newDateTimeList,
-                            hardwareType*/}
                             {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
                         </div>
                     </div>
-                    {/*1_column*/}
+                    {/*@todo:BarChartCore*/}
+                    {/*@todo:BarChartCore*/}
+                    {/*@todo:BarChartCore*/}
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
@@ -840,6 +801,62 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceListGroupByCloudlet: reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET),
             })
         }
+
+        //@todo:-----------------------
+        //@todo:    CPU,MEM,DISK TAB
+        //@todo:-----------------------
+        CPU_MEM_DISK_ETCS_TABS = [
+
+            {
+                menuItem: 'CPU', render: () => {
+                    return (
+                        <Pane>
+                            {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.CPU)}
+                        </Pane>
+                    )
+                },
+            },
+            {
+                menuItem: 'MEM', render: () => {
+                    return (
+                        <Pane>
+                            {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.MEM)}
+                        </Pane>
+                    )
+                }
+            },
+
+            {
+                menuItem: 'DISK', render: () => {
+                    return (
+                        <Pane>
+                            {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.DISK)}
+                        </Pane>
+                    )
+                }
+            },
+            /* */
+            /* {
+                 menuItem: 'CONNECTIONS', render: () => {
+                     return (
+                         <Pane>
+                             {this.renderTypeTabArea(HARDWARE_TYPE.CONNECTIONS)}
+                         </Pane>
+                     )
+                 }
+             },*/
+            /* {
+                 menuItem: 'UDP', render: () => {
+                     return (
+                         <Pane>
+                             {this.renderUdpTab()}
+                         </Pane>
+                     )
+                 }
+             },*/
+        ]
+
+
 
         render() {
             // todo: Components showing when the loading of graph data is not completed.
