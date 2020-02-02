@@ -413,34 +413,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 return this.renderGraphArea(hwType, barChartDataSet, lineChartDataSet)
             }
         }
-        renderGraphAreaMulti(subCategoryType, barChartDataSet, lineChartDataSet) {
-            return (
-                <div className='page_monitoring_dual_column'>
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title_select'>
-                                {convertNetworkTitle(subCategoryType)} Usage of {this.state.currentClassification}
-                            </div>
-                            {!this.state.loading && this.renderDropDownForMultiTab(subCategoryType)}
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
-                        </div>
-                    </div>
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                TOP5 of {convertNetworkTitle(subCategoryType)} Usage on {this.state.currentClassification}
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
-                        </div>
-                    </div>
 
-                </div>
-            )
-        }
         renderGraphArea(pHardwareType, barChartDataSet, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column'>
@@ -477,6 +450,36 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 </div>
             )
         }
+
+        renderGraphAreaMulti(subCategoryType, barChartDataSet, lineChartDataSet) {
+            return (
+                <div className='page_monitoring_dual_column'>
+                    <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title_select'>
+                                {convertNetworkTitle(subCategoryType)} Usage of {this.state.currentClassification}
+                            </div>
+                            {!this.state.loading && this.renderDropDownForMultiTab(subCategoryType)}
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
+                        </div>
+                    </div>
+                    <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                TOP5 of {convertNetworkTitle(subCategoryType)} Usage on {this.state.currentClassification}
+                            </div>
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
+                        </div>
+                    </div>
+
+                </div>
+            )
+        }
+
 
 
         renderDropDownForMultiTab(cate) {
