@@ -397,6 +397,71 @@ export const renderLineChartCore00002 = (paramLevelTypeNameList, usageSetList, n
     )
 }
 
+export const renderUsageByType = (usageOne, hardwareType, role = '',) => {
+
+    if (hardwareType === HARDWARE_TYPE.VCPU) {
+        return usageOne.avgVCpuUsed;
+    }
+
+    if (hardwareType === HARDWARE_TYPE.MEM_USED) {
+        return usageOne.avgMemUsed;
+    }
+
+    if (hardwareType === HARDWARE_TYPE.DISK_USED) {
+        return usageOne.avgDiskUsed;
+    }
+
+    if (hardwareType === HARDWARE_TYPE.FLOATING_IPS_USED) {
+        return usageOne.avgFloatingIpsUsed;
+    }
+
+    if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
+        return usageOne.sumTcpConns;
+    }
+
+
+    if (hardwareType === HARDWARE_TYPE.IPV4_USED) {
+        return usageOne.avgIpv4Used;
+    }
+
+    if (hardwareType === HARDWARE_TYPE.NET_SEND) {
+        return usageOne.avgNetSend;
+    }
+
+    if (hardwareType === HARDWARE_TYPE.NET_RECV) {
+        return usageOne.avgNetRecv;
+    }
+
+    if (hardwareType === HARDWARE_TYPE.CPU) {
+        return usageOne.sumCpuUsage
+    }
+    if (hardwareType === HARDWARE_TYPE.MEM) {
+        return usageOne.sumMemUsage
+    }
+    if (hardwareType === HARDWARE_TYPE.DISK) {
+        return usageOne.sumDiskUsage
+    }
+    if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
+        return usageOne.sumRecvBytes
+    }
+
+    if (hardwareType === HARDWARE_TYPE.SEND_BYTES) {
+        return usageOne.sumSendBytes
+    }
+
+    if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+        return usageOne.sumActiveConnection
+    }
+
+    if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+        return usageOne.sumHandledConnection
+    }
+
+    if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+        return usageOne.sumAcceptsConnection
+    }
+}
+
 export const renderBarChartCore = (chartDataList, hardwareType) => {
     return (
         <Chart

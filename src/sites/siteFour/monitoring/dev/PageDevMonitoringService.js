@@ -7,7 +7,7 @@ import BubbleChart from "../../../../components/BubbleChart";
 import type {TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import PageMonitoring from "./PageDevMonitoring";
-import {makeFormForClusterLevelMatric, numberWithCommas, renderBarChartCore, renderUsageByTypeForAppInst, renderUsageLabelByTypeForAppInst} from "../PageMonitoringCommonService";
+import {makeFormForClusterLevelMatric, numberWithCommas, renderBarChartCore, renderUsageByType, renderUsageByTypeForAppInst, renderUsageLabelByTypeForAppInst} from "../PageMonitoringCommonService";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../../services/serviceMC";
 import {Table} from "semantic-ui-react";
@@ -408,71 +408,6 @@ export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, userTyp
     }
 }
 
-export const renderUsageByType = (usageOne, hardwareType, role = '',) => {
-
-    if (hardwareType === HARDWARE_TYPE.VCPU) {
-        return usageOne.avgVCpuUsed;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.MEM_USED) {
-        return usageOne.avgMemUsed;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.DISK_USED) {
-        return usageOne.avgDiskUsed;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.FLOATING_IPS_USED) {
-        return usageOne.avgFloatingIpsUsed;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
-        return usageOne.sumTcpConns;
-    }
-
-
-    if (hardwareType === HARDWARE_TYPE.IPV4_USED) {
-        return usageOne.avgIpv4Used;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.NET_SEND) {
-        return usageOne.avgNetSend;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.NET_RECV) {
-        return usageOne.avgNetRecv;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.CPU) {
-        return usageOne.sumCpuUsage
-    }
-    if (hardwareType === HARDWARE_TYPE.MEM) {
-        return usageOne.sumMemUsage
-    }
-    if (hardwareType === HARDWARE_TYPE.DISK) {
-        return usageOne.sumDiskUsage
-    }
-    if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
-        return usageOne.sumRecvBytes
-    }
-
-    if (hardwareType === HARDWARE_TYPE.SEND_BYTES) {
-        return usageOne.sumSendBytes
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-        return usageOne.sumActiveConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
-        return usageOne.sumHandledConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-        return usageOne.sumAcceptsConnection
-    }
-}
-
 
 export const renderUsageByTypeForCluster = (usageOne, hardwareType) => {
 
@@ -577,7 +512,6 @@ export const renderBarGraphForCluster = (usageList, hardwareType, _this) => {
 export const makeBarChartDataForCluster = (usageList, hardwareType, _this) => {
 
     console.log(`renderBarGraphForCluster===>${hardwareType}`, usageList);
-
     usageList = sortUsageListByTypeForCluster(usageList, hardwareType)
 
     if (usageList.length === 0) {
@@ -622,13 +556,19 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
         typedUsageList = allHWUsageList[0]
     } else if (hardwareType === HARDWARE_TYPE.MEM) {
         typedUsageList = allHWUsageList[1]
-    } else if (hardwareType === HARDWARE_TYPE.NETWORK) {
+    } else if (hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
         typedUsageList = allHWUsageList[2]
     } else if (hardwareType === HARDWARE_TYPE.DISK) {
         typedUsageList = allHWUsageList[3]
-    } else if (hardwareType === HARDWARE_TYPE.CONNECTIONS) {
+    } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+        typedUsageList = allHWUsageList[4]
+    } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+        typedUsageList = allHWUsageList[4]
+    } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
         typedUsageList = allHWUsageList[4]
     }
+
+    console.log('typedUsageList===>', typedUsageList);
 
     if (typedUsageList.length === 0) {
         return "";
@@ -882,9 +822,9 @@ export const makeLineChartDataForAppInst = (allHWUsageList: Array, hardwareType:
 export const convertNetworkTitle = (pHardwareType) => {
 
     if (pHardwareType === HARDWARE_TYPE.RECV_BYTES) {
-        return "NETWORK RECV BYTES"
+        return pHardwareType
     } else {
-        return "NETWORK SEND BYTES"
+        return pHardwareType
     }
 
 }

@@ -21,7 +21,7 @@ import {
     makeSelectBoxListWithThreeValuePipe,
     renderBubbleChartForCloudlet,
 } from "./PageDevMonitoringService";
-import {CLASSIFICATION, HARDWARE_OPTIONS_FOR_CLUSTER, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT} from "../../../../shared/Constants";
+import {CLASSIFICATION, CONNECTIONS_OPTIONS, HARDWARE_OPTIONS_FOR_CLUSTER, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
@@ -33,6 +33,7 @@ import {getAppLevelUsageList, StylesForMonitoring} from "../admin/PageAdminMonit
 import MapboxComponent from "./MapboxComponent";
 import * as reducer from "../../../../utils";
 import {CircularProgress} from "@material-ui/core";
+import {TabPanel, Tabs} from "react-tabs";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -264,13 +265,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         async loadInitDataForCluster(isInterval: boolean = false) {
             this.setState({dropdownRequestLoading: true})
-         /*   let clusterList = await getClusterList();
-            let cloudletList = await getCloudletList()
-            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();*/
+            /*   let clusterList = await getClusterList();
+               let cloudletList = await getCloudletList()
+               let appInstanceList: Array<TypeAppInstance> = await getAppInstList();*/
 
-            let clusterList =require('./clusterList')
-            let cloudletList =require('./cloudletList')
-            let appInstanceList =require('./appInstList')
+            let clusterList = require('./clusterList')
+            let cloudletList = require('./cloudletList')
+            let appInstanceList = require('./appInstList')
 
             console.log('clusterList===>', clusterList);
 
@@ -301,8 +302,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
             //let allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
-            let allClusterUsageList =require('./allClusterUsageList')
-                await this.setState({
+            let allClusterUsageList = require('./allClusterUsageList')
+            await this.setState({
                 allClusterUsageList: allClusterUsageList,
             });
             console.log('filteredAppInstanceList===>', appInstanceList)
@@ -385,35 +386,40 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
         }
 
-        makeChartDataAndRenderTabBody(hwType, networkDataDirectionType = '') {
+        makeChartDataAndRenderTabBody(hwType, subCategoryType = '') {
             let barChartDataSet: TypeBarChartData = [];
             let lineChartDataSet: TypeLineChartData = [];
-            if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
-                lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
-            } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
+            if (this.state.currentClassification === CLASSIFICATION.APPINST) {
                 barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
                 lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
             }
-
-
-
+            //@todo:클러스터인 경우
+            else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
+                lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
+            }
 
             console.log(`barChartDataSet===${hwType}>`, barChartDataSet);
-            if (hwType === HARDWARE_TYPE.NETWORK) {
-                return this.renderGraphAreaForNetwork(networkDataDirectionType, barChartDataSet, lineChartDataSet)
+            if (hwType === HARDWARE_TYPE.RECVBYTES
+                || hwType === HARDWARE_TYPE.SENDBYTES
+                || hwType === HARDWARE_TYPE.ACTIVE_CONNECTION
+                || hwType === HARDWARE_TYPE.ACCEPTS_CONNECTION
+                || hwType === HARDWARE_TYPE.HANDLED_CONNECTION
+            ) {
+                return this.renderGraphForMultiTabGraphArea(subCategoryType, barChartDataSet, lineChartDataSet)
+
             } else {
                 return this.renderGraphArea(hwType, barChartDataSet, lineChartDataSet)
             }
         }
 
-        renderGraphAreaForNetwork(networkType, barChartDataSet, lineChartDataSet) {
+        renderGraphForMultiTabGraphArea(subCategoryType, barChartDataSet, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column'>
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                TOP5 of {convertNetworkTitle(networkType)} Usage on {this.state.currentClassification}
+                                TOP5 of {convertNetworkTitle(subCategoryType)} Usage on {this.state.currentClassification}
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
@@ -423,32 +429,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title_select'>
-                                {convertNetworkTitle(networkType)} Usage of {this.state.currentClassification}
+                                {convertNetworkTitle(subCategoryType)} Usage of {this.state.currentClassification}
                             </div>
-                            {!this.state.loading &&
-                            <Dropdown
-                                placeholder='SELECT NET TYPE'
-                                selection
-                                loading={this.state.loading}
-                                options={NETWORK_OPTIONS}
-                                defaultValue={NETWORK_OPTIONS[0].value}
-                                onChange={async (e, {value}) => {
-                                    //TAB0 IS SENDBYTES
-                                    if (value === HARDWARE_TYPE.RECV_BYTES) {
-                                        this.setState({
-                                            networkTabIndex: 0,
-                                        })
-                                    } else {
-                                        this.setState({
-                                            networkTabIndex: 1,
-                                        })
-                                    }
-
-                                }}
-                                value={networkType}
-                                // style={Styles.dropDown}
-                            />
-                            }
+                            {!this.state.loading && this.renderDropDownForMultiTab(subCategoryType)}
                         </div>
                         <div className='page_monitoring_container'>
                             {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
@@ -459,22 +442,163 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
+        renderDropDownForMultiTab(cate) {
+            if (cate === HARDWARE_TYPE.SENDBYTES || cate === HARDWARE_TYPE.RECVBYTES) {
+                return this.renderDropdownForNetwork(cate)
+            } else {
+                return this.renderDropdownForConnections(cate)
+            }
+
+        }
+
+        renderDropdownForConnections(subCategoryType) {
+            return (
+                <Dropdown
+                    placeholder='SELECT CONN TYPE'
+                    selection
+                    loading={this.state.loading}
+                    options={CONNECTIONS_OPTIONS}
+                    defaultValue={CONNECTIONS_OPTIONS[0].value}
+                    onChange={async (e, {value}) => {
+                        //TAB0 IS SENDBYTES
+                        if (value === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+                            this.setState({
+                                connectionsTabIndex: 0,
+                            })
+                        } else if (value === HARDWARE_TYPE.HANDLED_CONNECTION) {
+                            this.setState({
+                                connectionsTabIndex: 1,
+                            })
+                        } else if (value === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+                            this.setState({
+                                connectionsTabIndex: 2,
+                            })
+                        }
+
+                    }}
+                    value={subCategoryType}
+                    // style={Styles.dropDown}
+                />
+            )
+        }
+
+        renderDropdownForNetwork(subCategoryType) {
+            return (
+                <Dropdown
+                    placeholder='SELECT NET TYPE'
+                    selection
+                    loading={this.state.loading}
+                    options={NETWORK_OPTIONS}
+                    defaultValue={NETWORK_OPTIONS[0].value}
+                    onChange={async (e, {value}) => {
+                        //TAB0 IS SENDBYTES
+                        if (value === HARDWARE_TYPE.RECVBYTES) {
+                            this.setState({
+                                connectionsTabIndex: 0,
+                            })
+                        } else if (value === HARDWARE_TYPE.SENDBYTES) {
+                            this.setState({
+                                connectionsTabIndex: 1,
+                            })
+                        }
+                    }}
+                    value={subCategoryType}
+                    // style={Styles.dropDown}
+                />
+            )
+        }
+
+        //@todo:-----------------------
+        //@todo:    CPU,MEM,DISK TAB
+        //@todo:-----------------------
+        TAB_FOR_APP_INST = [
+
+            {
+                menuItem: 'CPU', render: () => {
+                    return (
+                        <Pane>
+                            {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.CPU)}
+                        </Pane>
+                    )
+                },
+            },
+            {
+                menuItem: 'MEM', render: () => {
+                    return (
+                        <Pane>
+                            {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.MEM)}
+                        </Pane>
+                    )
+                }
+            },
+
+            {
+                menuItem: 'DISK', render: () => {
+                    return (
+                        <Pane>
+                            {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.DISK)}
+                        </Pane>
+                    )
+                }
+            },
+            {
+                menuItem: 'CONNECTIONS', render: () => {
+                    return (
+                        <Pane>
+                            <Tabs selectedIndex={this.state.connectionsTabIndex} className='page_monitoring_tab'>
+
+                                <TabPanel>
+                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.ACTIVE_CONNECTION, HARDWARE_TYPE.ACTIVE_CONNECTION)}
+                                </TabPanel>
+                                <TabPanel>
+                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.HANDLED_CONNECTION, HARDWARE_TYPE.HANDLED_CONNECTION)}
+                                </TabPanel>
+                                <TabPanel>
+                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.ACCEPTS_CONNECTION, HARDWARE_TYPE.ACCEPTS_CONNECTION)}
+                                </TabPanel>
+                            </Tabs>
+                        </Pane>
+                    )
+                }
+            },
+        ]
+
+        TAB_FOR_CLUSTER = [
+
+            {
+                menuItem: 'CPU', render: () => {
+                    return (
+                        <Pane>
+                            {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.CPU)}
+                        </Pane>
+                    )
+                },
+            },
+            {
+                menuItem: 'MEM', render: () => {
+                    return (
+                        <Pane>
+                            {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.MEM)}
+                        </Pane>
+                    )
+                }
+            },
+
+            {
+                menuItem: 'DISK', render: () => {
+                    return (
+                        <Pane>
+                            {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.DISK)}
+                        </Pane>
+                    )
+                }
+            },
+        ]
+
 
         renderGraphArea(pHardwareType, barChartDataSet, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column'>
-                    {/*2_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                {pHardwareType} Usage of {this.state.loading ?
-                                <CircularProgress size={9} style={{fontSize: 9, color: '#77BD25', marginLeft: 5, marginBottom: 1,}}/> : this.state.currentClassification}
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
-                        </div>
-                    </div>
                     {/*@todo:BarChartCore*/}
                     {/*@todo:BarChartCore*/}
                     {/*@todo:BarChartCore*/}
@@ -490,6 +614,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
                         </div>
                     </div>
+                    {/*2_column*/}
+                    <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                {pHardwareType} Usage of {this.state.loading ?
+                                <CircularProgress size={9} style={{fontSize: 9, color: '#77BD25', marginLeft: 5, marginBottom: 1,}}/> : this.state.currentClassification}
+                            </div>
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
+                        </div>
+                    </div>
+
 
                 </div>
             )
@@ -792,61 +929,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
         }
 
-        //@todo:-----------------------
-        //@todo:    CPU,MEM,DISK TAB
-        //@todo:-----------------------
-        CPU_MEM_DISK_ETCS_TABS = [
-
-            {
-                menuItem: 'CPU', render: () => {
-                    return (
-                        <Pane>
-                            {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.CPU)}
-                        </Pane>
-                    )
-                },
-            },
-            {
-                menuItem: 'MEM', render: () => {
-                    return (
-                        <Pane>
-                            {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.MEM)}
-                        </Pane>
-                    )
-                }
-            },
-
-            {
-                menuItem: 'DISK', render: () => {
-                    return (
-                        <Pane>
-                            {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.DISK)}
-                        </Pane>
-                    )
-                }
-            },
-            /* */
-            /* {
-                 menuItem: 'CONNECTIONS', render: () => {
-                     return (
-                         <Pane>
-                             {this.renderTypeTabArea(HARDWARE_TYPE.CONNECTIONS)}
-                         </Pane>
-                     )
-                 }
-             },*/
-            /* {
-                 menuItem: 'UDP', render: () => {
-                     return (
-                         <Pane>
-                             {this.renderUdpTab()}
-                         </Pane>
-                     )
-                 }
-             },*/
-        ]
-
-
 
         render() {
             // todo: Components showing when the loading of graph data is not completed.
@@ -950,7 +1032,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     <Tab
                                                         className='page_monitoring_tab'
                                                         menu={{secondary: true, pointing: true}}
-                                                        panes={this.CPU_MEM_DISK_ETCS_TABS}
+                                                        panes={this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.TAB_FOR_CLUSTER : this.TAB_FOR_APP_INST}
                                                         activeIndex={this.state.currentTabIndex}
                                                         onTabChange={(e, {activeIndex}) => {
                                                             this.setState({
@@ -1014,17 +1096,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*todo:---------------------------------*/}
                                                     {/*todo: NETWORK TAB PANEL AREA           */}
                                                     {/*todo:---------------------------------*/}
-
-
-                                                    {/*  <Tabs selectedIndex={this.state.networkTabIndex}
-                                                          className='page_monitoring_tab'>
+                                                    <Tabs selectedIndex={this.state.connectionsTabIndex} className='page_monitoring_tab'>
                                                         <TabPanel>
-                                                            {this.renderTypeTabArea(HARDWARE_TYPE.NETWORK, HARDWARE_TYPE.RECV_BYTES)}
+                                                            {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.RECVBYTES, HARDWARE_TYPE.RECVBYTES)}
                                                         </TabPanel>
                                                         <TabPanel>
-                                                            {this.renderTypeTabArea(HARDWARE_TYPE.NETWORK, HARDWARE_TYPE.SEND_BYTES)}
+                                                            {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.SENDBYTES, HARDWARE_TYPE.SENDBYTES)}
                                                         </TabPanel>
-                                                    </Tabs>*/}
+                                                    </Tabs>
                                                 </div>
 
 
