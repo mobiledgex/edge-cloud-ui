@@ -231,15 +231,21 @@ export default class MapboxComponent extends Component<Props, State> {
                                 </div>
                                 {listAppName.map(AppName => {
                                     return (
-                                        <Ripples color='#77BD25' during={500}>
-                                            <div style={{color: 'white', fontSize: 12, fontFamily: 'Acme', cursor: 'crosshair'}} onClick={() => {
-                                                let dataSet = AppName.trim() + " | " + item.Cloudlet.trim() + " | " + item.ClusterInst.trim()
-                                                //showToast(dataSet)
-                                                this.props.handleAppInstDropdown(dataSet)
-                                            }}>
+
+                                        <div style={{color: 'white', fontSize: 14, fontFamily: 'Righteous', cursor: 'crosshair', display: 'flex', flexDirection: 'column'}}
+                                        >
+                                            <Ripples
+                                                color='#77BD25' during={500}
+                                                onClick={() => {
+                                                    let dataSet = AppName.trim() + " | " + item.Cloudlet.trim() + " | " + item.ClusterInst.trim()
+                                                    //showToast(dataSet)
+                                                    this.props.handleAppInstDropdown(dataSet)
+                                                }}
+                                            >
                                                 {AppName}
-                                            </div>
-                                        </Ripples>
+                                            </Ripples>
+                                        </div>
+
 
                                     )
                                 })}
