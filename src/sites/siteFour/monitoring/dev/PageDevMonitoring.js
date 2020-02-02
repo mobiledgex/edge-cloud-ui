@@ -784,11 +784,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(1, 'd')],
                                     'This Month': [moment().startOf('month'), moment().endOf('month')],
                                     'Last Month': [moment().date(-30), moment().date(-1)],
-                                    'Last 90 Days': [moment().subtract(89, 'd'), moment().subtract(0, 'd')],
-                                    'Last 182 Days': [moment().subtract(181, 'd'), moment().subtract(0, 'd')],
-                                    'Last 365 Days': [moment().subtract(364, 'd'), moment().subtract(0, 'd')],
-                                    'Last 730 Days': [moment().subtract(729, 'd'), moment().subtract(0, 'd')],
-                                    'Last 1095 Days': [moment().subtract(1094, 'd'), moment().subtract(0, 'd')],
+                                    'Last 3 Months': [moment().subtract(89, 'd'), moment().subtract(0, 'd')],
+                                    'Last 6 Months': [moment().subtract(181, 'd'), moment().subtract(0, 'd')],
+                                    'Last 1 Year': [moment().subtract(364, 'd'), moment().subtract(0, 'd')],
+                                    'Last 2 Years': [moment().subtract(729, 'd'), moment().subtract(0, 'd')],
+                                    'Last 3 Years': [moment().subtract(1094, 'd'), moment().subtract(0, 'd')],
                                 }}
                                 style={{width: 300}}
                             />
