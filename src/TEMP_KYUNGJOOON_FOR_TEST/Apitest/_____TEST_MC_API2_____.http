@@ -292,18 +292,20 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODAyNDMwN
   "selector": "*"
 }
 
-###
-
+### 전체 클라우드렛에 대한 상태를 콜하는 Api
+### 전체 클라우드렛에 대한 상태를 콜하는 Api
+### 전체 클라우드렛에 대한 상태를 콜하는 Api
+### 전체 클라우드렛에 대한 상태를 콜하는 Api
 
 POST https://console-stage.mobiledgex.net:443/api/v1/auth/ctrl/ShowCloudletInfo
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODA1OTY2ODEsImlhdCI6MTU4MDUxMDI4MSwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.4-if0iPPezRQ9w6Z0Xy-iu7_stgC5_75MphW_mgHtfuxF5A6PopdR8_Z5kA-pEnraez5GfXBQDuppUijJnXWeQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODA2OTYyNzYsImlhdCI6MTU4MDYwOTg3NiwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.UP63BOJHKrZmVcLRkXglc0L2LxCC7C5wkM74k3-7hUzSFfX-rQySuJgLcNtuTmkJxFnVH0gqHKkoRuZDB7BYDA
 
 {
   "region": "EU",
   "cloudlet": {
     "key": {
-      "name": "frankfurt-eu",
+      "name": "*",
       "operator_key": {
         "name": "TDG"
       }
@@ -318,7 +320,7 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODA1OTY2O
 
 POST https://console-stage.mobiledgex.net:443/api/v1/auth/metrics/app
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODA1OTY2ODEsImlhdCI6MTU4MDUxMDI4MSwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.4-if0iPPezRQ9w6Z0Xy-iu7_stgC5_75MphW_mgHtfuxF5A6PopdR8_Z5kA-pEnraez5GfXBQDuppUijJnXWeQ
+Authorization: Bearer  eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODA2OTYyNzYsImlhdCI6MTU4MDYwOTg3NiwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.UP63BOJHKrZmVcLRkXglc0L2LxCC7C5wkM74k3-7hUzSFfX-rQySuJgLcNtuTmkJxFnVH0gqHKkoRuZDB7BYDA
 
 {
   "region": "EU",

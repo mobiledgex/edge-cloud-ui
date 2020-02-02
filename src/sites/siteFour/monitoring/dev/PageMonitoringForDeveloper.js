@@ -258,20 +258,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 loading: false,
             })
 
-            /*  this.interval = setInterval(async () => {
-                  this.setState({
-                      intervalLoading: true,
-                  })
-                  await this.loadInitDataForCluster(true);
-                  this.setState({
-                      intervalLoading: false,
-                  })
+            this.interval = setInterval(async () => {
+                this.setState({
+                    intervalLoading: true,
+                })
+                await this.loadInitDataForCluster(true);
+                this.setState({
+                    intervalLoading: false,
+                })
 
-              }, 1000 * 10)*/
+            }, 1000 * 8)
         }
 
         componentWillUnmount(): void {
-            // clearInterval(this.interval)
+            clearInterval(this.interval)
         }
 
         async loadInitDataForCluster(isInterval: boolean = false) {
