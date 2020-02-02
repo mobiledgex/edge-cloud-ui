@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import Ripples from 'react-ripples'
 import '../PageMonitoring.css'
 import ReactMapboxGl, {Marker} from 'react-mapbox-gl';
 import type {TypeAppInstance} from "../../../../shared/Types";
@@ -230,13 +231,16 @@ export default class MapboxComponent extends Component<Props, State> {
                                 </div>
                                 {listAppName.map(AppName => {
                                     return (
-                                        <div style={{color: 'white', fontSize: 12, fontFamily: 'Acme'}} onClick={() => {
-                                            let dataSet = AppName.trim() + " | " + item.Cloudlet.trim() + " | " + item.ClusterInst.trim()
-                                            //showToast(dataSet)
-                                            this.props.handleAppInstDropdown(dataSet)
-                                        }}>
-                                            {AppName}
-                                        </div>
+                                        <Ripples color='#77BD25' during={500}>
+                                            <div style={{color: 'white', fontSize: 12, fontFamily: 'Acme', cursor: 'crosshair'}} onClick={() => {
+                                                let dataSet = AppName.trim() + " | " + item.Cloudlet.trim() + " | " + item.ClusterInst.trim()
+                                                //showToast(dataSet)
+                                                this.props.handleAppInstDropdown(dataSet)
+                                            }}>
+                                                {AppName}
+                                            </div>
+                                        </Ripples>
+
                                     )
                                 })}
                             </Marker>
