@@ -966,7 +966,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 <div className='page_monitoring_column'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title_select'>
-                                                            Performance status of {this.state.currentClassification} hardware
+                                                            Performance status of Cluster hardware
                                                         </div>
                                                         {/*todo:---------------------------------*/}
                                                         {/*todo: bubbleChart DropDown            */}
