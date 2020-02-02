@@ -3,11 +3,11 @@ import './PageMonitoring.css';
 import {toast} from "react-semantic-toasts";
 import {HARDWARE_TYPE, HARDWARE_TYPE_FOR_CLOUDLET, USAGE_TYPE,} from "../../../shared/Constants";
 import Lottie from "react-lottie";
-import {makeGradientColor, removeDuplication} from "./dev/PageMonitoringServiceForDeveloper";
+import {makeGradientColor, removeDuplication} from "./dev/PageDevMonitoringService";
 import {Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import PageMonitoringForDeveloper from "./dev/PageMonitoringForDeveloper";
-import {makeCompleteDateTime} from "./admin/PageMonitoringServiceForAdmin";
+import PageMonitoringForDeveloper from "./dev/PageDevMonitoring";
+import {makeCompleteDateTime} from "./admin/PageAdminMonitoringService";
 import moment from "moment";
 import {Line as ReactChartJs} from "react-chartjs-2";
 

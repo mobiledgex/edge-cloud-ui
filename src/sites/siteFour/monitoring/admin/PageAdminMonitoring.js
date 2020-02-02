@@ -36,7 +36,7 @@ import {
     renderSixGridInstanceOnCloudletGrid,
     getAppInstList,
     StylesForMonitoring
-} from "./PageMonitoringServiceForAdmin";
+} from "./PageAdminMonitoringService";
 import {
     APPINSTANCE_INIT_VALUE,
     CLASSIFICATION,

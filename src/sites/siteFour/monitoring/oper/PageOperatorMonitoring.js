@@ -10,7 +10,7 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker, Progress,} from 'antd';
-import {getCloudletList, getClouletLevelUsageList, renderBubbleChartForCloudlet, StylesForMonitoring} from "../admin/PageMonitoringServiceForAdmin";
+import {getCloudletList, getClouletLevelUsageList, renderBubbleChartForCloudlet, StylesForMonitoring} from "../admin/PageAdminMonitoringService";
 import {HARDWARE_OPTIONS_FOR_CLOUDLET, HARDWARE_TYPE, HARDWARE_TYPE_FOR_CLOUDLET, NETWORK_OPTIONS2, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeCloudletUsageList, TypeGridInstanceList} from "../../../../shared/Types";
@@ -22,7 +22,7 @@ import '../PageMonitoring.css'
 import {numberWithCommas, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
 import MiniMap from "./MiniMap";
 import {CircularProgress} from "@material-ui/core";
-import {renderBarGraphForCloutdlet, renderLineChartForCloudlet} from "./PageMonitoringServiceForOperator";
+import {renderBarGraphForCloutdlet, renderLineChartForCloudlet} from "./PageOperatorMonitoringService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
