@@ -124,7 +124,7 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
                 }
             }
         },
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,//@todo
         responsive: true,
         datasetStrokeWidth: 3,
         pointDotStrokeWidth: 4,
@@ -200,10 +200,15 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
     //todo : chart rendering part
     //todo :#######################
     return (
-        <div style={{width: '100%', height: '100%'}}>
+        <div style={{
+            position: 'relative',
+            width:'99%',
+            height:'96%'
+        }}>
             <ReactChartJs
-                width={chartWidth}
-                height={hardwareType === "recv_bytes" || hardwareType === "send_bytes" ? chartHeight + 20 : chartHeight}
+                //width={'100%'}
+                //height={hardwareType === "recv_bytes" || hardwareType === "send_bytes" ? chartHeight + 20 : chartHeight}
+                //height={'100%'}
                 data={lineChartData}
                 options={options}
 
@@ -217,16 +222,16 @@ export const renderLineChartCore00002 = (paramLevelTypeNameList, usageSetList, n
 
     console.log('usageSetList===>', usageSetList);
 
-    let hwType='CPU';
+    let hwType = 'CPU';
 
-    let nameList=[
+    let nameList = [
         "autoclusterbicapp\n[hamburg-stage]",
         "autoclusterbicapp\n[Rah123]",
         "autoclusterbicapp\n[frankfurt-eu]",
         "Rah-Clust-8\n[frankfurt-eu]"
     ]
 
-    let datetimeList2=[
+    let datetimeList2 = [
         "08:53:00",
         "08:52:52",
         "08:52:44",
@@ -239,7 +244,7 @@ export const renderLineChartCore00002 = (paramLevelTypeNameList, usageSetList, n
         "08:51:48"
     ]
 
-    let usageSetList2=[
+    let usageSetList2 = [
         [
             0,
             0,
@@ -290,15 +295,14 @@ export const renderLineChartCore00002 = (paramLevelTypeNameList, usageSetList, n
         ]
     ]
 
-    let chartDataList=[]
+    let chartDataList = []
 
-    let titleArray=[];
+    let titleArray = [];
 
     titleArray.push("time")
 
     titleArray.concat(nameList)
-    datetimeList2.map((item, index)=>{
-
+    datetimeList2.map((item, index) => {
 
 
     })
@@ -353,7 +357,7 @@ export const renderLineChartCore00002 = (paramLevelTypeNameList, usageSetList, n
             'in' - Ease in - Start slow and speed up.
             'out' - Ease out - Start fast and slow down.
             'inAndOut' - Ease in and out - Start slow, speed up, then slow down.*/
-            easing:'inAndOut',
+            easing: 'inAndOut',
         },
         explorer: {
             actions: ['dragToPan', 'rightClickToReset'],

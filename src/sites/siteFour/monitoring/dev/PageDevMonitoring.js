@@ -13,13 +13,12 @@ import {DatePicker,} from 'antd';
 import {
     convertNetworkTitle,
     filterUsageByClassification,
-    getClusterLevelUsageList,
-    getClusterList,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
     makeLineChartDataForAppInst,
     makeLineChartDataForCluster,
-    makeSelectBoxListWithKeyValuePipe, makeSelectBoxListWithThreeValuePipe,
+    makeSelectBoxListWithKeyValuePipe,
+    makeSelectBoxListWithThreeValuePipe,
     renderBubbleChartForCloudlet,
 } from "./PageDevMonitoringService";
 import {CLASSIFICATION, HARDWARE_OPTIONS_FOR_CLUSTER, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT} from "../../../../shared/Constants";
@@ -29,20 +28,11 @@ import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import '../PageMonitoring.css'
-import {
-    getOneYearStartEndDatetime,
-    makeBubbleChartDataForCluster,
-    renderBarChartCore,
-    renderLineChartCore,
-    renderLineChartCore00002,
-    renderPlaceHolder,
-    showToast
-} from "../PageMonitoringCommonService";
-import {getAppInstList, getAppLevelUsageList, getCloudletList, StylesForMonitoring} from "../admin/PageAdminMonitoringService";
+import {getOneYearStartEndDatetime, makeBubbleChartDataForCluster, renderBarChartCore, renderLineChartCore, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
+import {getAppLevelUsageList, StylesForMonitoring} from "../admin/PageAdminMonitoringService";
 import MapboxComponent from "./MapboxComponent";
 import * as reducer from "../../../../utils";
 import {CircularProgress} from "@material-ui/core";
-import {TabPanel, Tabs} from "react-tabs";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
