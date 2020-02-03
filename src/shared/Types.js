@@ -43,7 +43,7 @@ export type TypeClusterUsageList = {
     cluster: string,
     OrganizationName: string,
     Operator: string,
-    Cloudlet: string,
+    cloudlet: string,
     Flavor: string,
     IpAccess: number,
     CloudletLocation: string,
@@ -54,6 +54,12 @@ export type TypeClusterUsageList = {
     sumDiskUsage: number,
     sumRecvBytes: number,
     sumSendBytes: number,
+    sumUdpSent: number,
+    sumUdpRecv: number,
+    sumUdpRecvErr: number,
+    sumTcpConns: number,
+    sumTcpRetrans: number,
+
 }
 export type TypeAppInstance = {
     "Region": string,

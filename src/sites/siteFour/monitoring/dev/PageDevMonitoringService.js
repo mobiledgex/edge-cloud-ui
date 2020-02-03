@@ -503,7 +503,7 @@ export const renderBarGraphForCluster = (usageList, hardwareType, _this) => {
         for (let index = 0; index < usageList.length; index++) {
             if (index < 5) {
                 let barDataOne = [
-                    usageList[index].cluster.toString().substring(0, 10) + "\n[" + usageList[index].cloudlet + "]",//clusterName
+                    usageList[index].cluster.toString() + "\n[" + usageList[index].cloudlet + "]",//clusterName
                     renderUsageByType(usageList[index], hardwareType),
                     CHART_COLOR_LIST[index],
                     renderUsageLabelByTypeForCluster(usageList[index], hardwareType)
@@ -529,7 +529,7 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this) => {
         for (let index = 0; index < usageList.length; index++) {
             if (index < 5) {
                 let barDataOne = [
-                    usageList[index].cluster.toString().substring(0, 10) + "\n[" + usageList[index].cloudlet + "]",//clusterName
+                    usageList[index].cluster.toString() + "\n[" + usageList[index].cloudlet + "]",//clusterName
                     renderUsageByType(usageList[index], hardwareType),
                     CHART_COLOR_LIST[index],
                     renderUsageLabelByTypeForCluster(usageList[index], hardwareType)

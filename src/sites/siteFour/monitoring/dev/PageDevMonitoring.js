@@ -12,14 +12,14 @@ import {hot} from "react-hot-loader/root";
 import {DatePicker, Progress,} from 'antd';
 import {
     convertHwTypePhrases,
-    filterUsageByClassification,
+    filterUsageByClassification, getClusterLevelUsageList,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
     makeLineChartDataForAppInst,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
     makeSelectBoxListWithThreeValuePipe,
-    renderBubbleChartForCloudlet,
+    renderBubbleChartForCloudlet, sortUsageListByTypeForCluster,
 } from "./PageDevMonitoringService";
 import {
     CLASSIFICATION,
@@ -168,6 +168,7 @@ type State = {
     filteredClusterUsageList: Array,
     filteredAppInstUsageList: Array,
     allAppInstUsageList: Array,
+    clusterListLoading: boolean,
 
 }
 
@@ -261,6 +262,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             allClusterUsageList: [],
             filteredAppInstUsageList: [],
             allAppInstUsageList: [],
+            clusterListLoading: true,
+            allClusterUsageList003: [],
         };
 
         interval = null;
@@ -325,12 +328,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             }
 
-
             //let allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
             let allClusterUsageList = require('./allClusterUsageList')
-            await this.setState({
-                allClusterUsageList: allClusterUsageList,
-            });
             console.log('filteredAppInstanceList===>', appInstanceList)
 
             let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
@@ -346,13 +345,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 return o.sumMemUsage;
             }));
 
+            //allClusterUsageList = sortUsageListByTypeForCluster(allClusterUsageList, HARDWARE_TYPE.CPU)
+
+
+            console.log('allClusterUsageList333====>', allClusterUsageList);
+
             await this.setState({
+                clusterListLoading: false,
                 allClusterUsageList: allClusterUsageList,
+                allClusterUsageList003: allClusterUsageList,
                 filteredClusterUsageList: allClusterUsageList,
                 maxCpu: maxCpu,
                 maxMem: maxMem,
                 isRequesting: false,
                 currentCluster: '',
+
             })
 
         }
@@ -1096,7 +1103,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
         }
 
-        renderBottomGridAreaForCluster() {
+        renderBottomGridAreaForCluster(pClusterList) {
+
+            //pClusterList
+            pClusterList = sortUsageListByTypeForCluster(pClusterList, HARDWARE_TYPE.CPU)
+
             return (
                 <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
                     <Table.Header className="viewListTableHeader">
@@ -1121,6 +1132,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </Table.HeaderCell>
                             <Table.HeaderCell>
                                 NETWORK SENT
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
+                                TCP CONN
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
+                                TCP RETRANS
                             </Table.HeaderCell>
                             <Table.HeaderCell>
                                 UDP REV
@@ -1158,9 +1175,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 />
                             </Table.Cell>
                         </Table.Row>}
-                        {this.state.isReady && this.state.filteredClusterUsageList.map((item: TypeClusterUsageList, index) => {
+                        {!this.state.isRequesting && pClusterList.map((item: TypeClusterUsageList, index) => {
 
-                            console.log('filteredClusterUsageList==item==>', item);
+                            console.log('pClusterList==item==>', item);
 
                             return (
                                 <Table.Row className='page_monitoring_popup_table_row'>
@@ -1169,7 +1186,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         {index}
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {item.cluster}
+                                        {item.cluster}<br/>[{item.cloudlet}]
                                     </Table.Cell>
                                     <Table.Cell>
                                         <div>
@@ -1187,7 +1204,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <Table.Cell>
                                         <div>
                                             <div>
-                                                {numberWithCommas(item.sumMemUsage) + ' Byte'}
+                                                {numberWithCommas(item.sumMemUsage.toFixed(2)) + ' Byte'}
                                             </div>
                                             <div>
                                                 <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
@@ -1198,20 +1215,28 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         </div>
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {numberWithCommas(item.sumDiskUsage) + ' Byte'}
+                                        {numberWithCommas(item.sumDiskUsage.toFixed(2)) + ' Byte'}
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {numberWithCommas(item.sumRecvBytes) + ' Byte'}
+                                        {numberWithCommas(item.sumRecvBytes.toFixed(2)) + ' Byte'}
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {numberWithCommas(item.sumSendBytes) + ' Byte'}
+                                        {numberWithCommas(item.sumSendBytes.toFixed(2)) + ' Byte'}
+                                    </Table.Cell>
+
+                                    <Table.Cell>
+                                        {numberWithCommas(item.sumTcpConns.toFixed(2)) + ' Byte'}
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {item.sumSendBytes}
+                                        {numberWithCommas(item.sumTcpRetrans.toFixed(2)) + ' Byte'}
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {item.sumSendBytes}
+                                        {numberWithCommas(item.sumUdpRecv.toFixed(2)) + ' Byte'}
                                     </Table.Cell>
+                                    <Table.Cell>
+                                        {numberWithCommas(item.sumUdpSent.toFixed(2)) + ' Byte'}
+                                    </Table.Cell>
+
                                 </Table.Row>
 
                             )
@@ -1465,11 +1490,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*fixme: BOTTOM APP INSTACE LIST         */}
                                                         {/*fixme:---------------------------------*/}
                                                         <div className='page_monitoring_popup_table'>
-                                                            {this.state.cloudletList.length && this.state.isReady === 0 ?
-                                                                <div style={StylesForMonitoring.noData}>
-                                                                    NO DATA
-                                                                </div>
-                                                                : this.renderBottomGridAreaForCluster()}
+                                                            {this.renderBottomGridAreaForCluster(this.state.filteredClusterUsageList)}
                                                         </div>
                                                     </div>
                                                 </OutsideClickHandler>
