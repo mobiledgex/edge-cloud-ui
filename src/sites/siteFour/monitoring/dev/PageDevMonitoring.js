@@ -373,7 +373,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             })
 
-            this.setIntervalForCluster();
+
 
         }
 
@@ -459,8 +459,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentCluster: '',
                 currentAppInst: '',
             })
-
-            this.setIntervalForCluster();
         }
 
 
@@ -496,8 +494,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentCluster: '',
                 currentAppInst: '',
             })
-
-            this.setIntervalForCluster();
         }
 
         makeChartDataAndRenderTabBody(hwType, subCategoryType = '') {
@@ -1107,27 +1103,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 currentTabIndex: 0,
             })
-            this.setIntervalForAppInst();
-        }
-
-
-        setIntervalForAppInst (){
             this.interval = setInterval(async () => {
-                this.setState({
-                    intervalLoading: true,
-                })
-                let arrDateTime2 = getOneYearStartEndDatetime();
-                let allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime2[0], arrDateTime2[1]);
-                console.log('allAppInstUsageList77===>', allAppInstUsageList);
-                this.setState({
-                    intervalLoading: false,
-                    filteredAppInstUsageList: allAppInstUsageList,
-                })
+                   this.setState({
+                       intervalLoading: true,
+                   })
+                   let arrDateTime2 = getOneYearStartEndDatetime();
+                   allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime2[0], arrDateTime2[1]);
 
-            }, 1000 * 3.0)
+                   console.log('allAppInstUsageList77===>', allAppInstUsageList);
+
+                   this.setState({
+                       intervalLoading: false,
+                       filteredAppInstUsageList: allAppInstUsageList,
+                   })
+
+               }, 1000 * 3.0)
         }
-
-
         async handleClusterDropdown(value) {
             clearInterval(this.interval)
 
