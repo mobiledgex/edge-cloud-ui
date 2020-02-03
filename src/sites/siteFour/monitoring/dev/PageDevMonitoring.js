@@ -21,14 +21,30 @@ import {
     makeSelectBoxListWithThreeValuePipe,
     renderBubbleChartForCloudlet,
 } from "./PageDevMonitoringService";
-import {CLASSIFICATION, CONNECTIONS_OPTIONS, HARDWARE_OPTIONS_FOR_CLUSTER, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT} from "../../../../shared/Constants";
+import {
+    CLASSIFICATION,
+    CONNECTIONS_OPTIONS,
+    HARDWARE_OPTIONS_FOR_CLUSTER,
+    HARDWARE_TYPE,
+    NETWORK_OPTIONS,
+    NETWORK_TYPE,
+    RECENT_DATA_LIMIT_COUNT, TCP_OPTIONS, UDP_OPTIONS
+} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import '../PageMonitoring.css'
-import {getOneYearStartEndDatetime, makeBubbleChartDataForCluster, renderBarChartCore, renderLineChartCore, renderPlaceHolder, renderPlaceHolder3, showToast} from "../PageMonitoringCommonService";
+import {
+    getOneYearStartEndDatetime,
+    makeBubbleChartDataForCluster,
+    renderBarChartCore,
+    renderLineChartCore,
+    renderPlaceHolder,
+    renderPlaceHolder3,
+    showToast
+} from "../PageMonitoringCommonService";
 import {getAppLevelUsageList, StylesForMonitoring} from "../admin/PageAdminMonitoringService";
 import MapboxComponent from "./MapboxComponent";
 import * as reducer from "../../../../utils";
@@ -131,7 +147,11 @@ type State = {
     placeHolderEndTime: string,
     allConnectionsUsageList: Array,
     filteredConnectionsUsageList: Array,
+
     connectionsTabIndex: number,
+    tcpTabIndex: number,
+    udpTabIndex: number,
+
     cloudletList: Array,
     maxCpu: number,
     maxMem: number,
@@ -219,7 +239,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
             allConnectionsUsageList: [],
             filteredConnectionsUsageList: [],
+
             connectionsTabIndex: 0,
+            tcpTabIndex: 0,
+            udpTabIndex: 0,
+
             dropdownCloudletList: [],
             allUsageList: [],
             maxCpu: 0,
@@ -405,7 +429,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 || hwType === HARDWARE_TYPE.SENDBYTES
                 || hwType === HARDWARE_TYPE.ACTIVE_CONNECTION
                 || hwType === HARDWARE_TYPE.ACCEPTS_CONNECTION
-                || hwType === HARDWARE_TYPE.HANDLED_CONNECTION
+                || hwType === HARDWARE_TYPE.TCPCONNS
+                || hwType === HARDWARE_TYPE.TCPRETRANS
+                || hwType === HARDWARE_TYPE.UDPRECV
+                || hwType === HARDWARE_TYPE.UDPSENT
+
             ) {
                 return this.renderGraphAreaMulti(subCategoryType, barChartDataSet, lineChartDataSet)
 
@@ -414,22 +442,41 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
         }
 
-        renderGraphArea(pHardwareType, barChartDataSet, lineChartDataSet) {
+        renderGraphAreaMulti(subCategoryType, barChartDataSet, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column'>
-                    {/*2_column*/}
+                    {/*@todo:BarChartCore*/}
+                    {/*@todo:BarChartCore*/}
+                    {/*@todo:BarChartCore*/}
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                {pHardwareType} Usage of {this.state.loading ?
-                                <CircularProgress size={9} style={{fontSize: 9, color: '#77BD25', marginLeft: 5, marginBottom: 1,}}/> : this.state.currentClassification}
+                                TOP5 of {convertNetworkTitle(subCategoryType)} Usage on {this.state.currentClassification}
                             </div>
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
+                        </div>
+                    </div>
+                    <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title_select'>
+                                {convertNetworkTitle(subCategoryType)} Usage of {this.state.currentClassification}
+                            </div>
+                            {!this.state.loading && this.renderDropDownForMultiTab(subCategoryType)}
                         </div>
                         <div className='page_monitoring_container'>
                             {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
                         </div>
                     </div>
+                </div>
+            )
+        }
 
+
+        renderGraphArea(pHardwareType, barChartDataSet, lineChartDataSet) {
+            return (
+                <div className='page_monitoring_dual_column'>
                     {/*@todo:BarChartCore*/}
                     {/*@todo:BarChartCore*/}
                     {/*@todo:BarChartCore*/}
@@ -445,47 +492,34 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
                         </div>
                     </div>
-
-
-                </div>
-            )
-        }
-
-        renderGraphAreaMulti(subCategoryType, barChartDataSet, lineChartDataSet) {
-            return (
-                <div className='page_monitoring_dual_column'>
+                    {/*2_column*/}
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title_select'>
-                                {convertNetworkTitle(subCategoryType)} Usage of {this.state.currentClassification}
+                            <div className='page_monitoring_title'>
+                                {pHardwareType} Usage of {this.state.loading ?
+                                <CircularProgress size={9} style={{fontSize: 9, color: '#77BD25', marginLeft: 5, marginBottom: 1,}}/> : this.state.currentClassification}
                             </div>
-                            {!this.state.loading && this.renderDropDownForMultiTab(subCategoryType)}
                         </div>
                         <div className='page_monitoring_container'>
                             {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
                         </div>
                     </div>
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                TOP5 of {convertNetworkTitle(subCategoryType)} Usage on {this.state.currentClassification}
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
-                        </div>
-                    </div>
+
 
                 </div>
             )
         }
 
 
-
         renderDropDownForMultiTab(cate) {
             if (cate === HARDWARE_TYPE.SENDBYTES || cate === HARDWARE_TYPE.RECVBYTES) {
                 return this.renderDropdownForNetwork(cate)
-            } else {
+            } else if (cate === HARDWARE_TYPE.TCPCONNS || cate === HARDWARE_TYPE.TCPRETRANS) {
+                return this.renderDropdownForTCP(cate)
+            } else if (cate === HARDWARE_TYPE.UDPRECV || cate === HARDWARE_TYPE.UDPSENT) {
+                return this.renderDropdownForUDP(cate)
+            }
+            else if (cate === HARDWARE_TYPE.RECVBYTES || cate === HARDWARE_TYPE.SENDBYTES){
                 return this.renderDropdownForConnections(cate)
             }
 
@@ -548,9 +582,64 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+
+        renderDropdownForTCP(subCategoryType) {
+            return (
+                <Dropdown
+                    placeholder='SELECT TCP TYPE'
+                    selection
+                    loading={this.state.loading}
+                    options={TCP_OPTIONS}
+                    defaultValue={TCP_OPTIONS[0].value}
+                    onChange={async (e, {value}) => {
+                        //TAB0 IS SENDBYTES
+                        if (value === HARDWARE_TYPE.TCPCONNS) {
+                            this.setState({
+                                tcpTabIndex: 0,
+                            })
+                        } else if (value === HARDWARE_TYPE.TCPRETRANS) {
+                            this.setState({
+                                tcpTabIndex: 1,
+                            })
+                        }
+                    }}
+                    value={subCategoryType}
+                    // style={Styles.dropDown}
+                />
+            )
+        }
+
+
+        renderDropdownForUDP(subCategoryType) {
+            return (
+                <Dropdown
+                    placeholder='SELECT UDP TYPE'
+                    selection
+                    loading={this.state.loading}
+                    options={UDP_OPTIONS}
+                    defaultValue={UDP_OPTIONS[0].value}
+                    onChange={async (e, {value}) => {
+                        //TAB0 IS SENDBYTES
+                        if (value === HARDWARE_TYPE.UDPRECV) {
+                            this.setState({
+                                udpTabIndex: 0,
+                            })
+                        } else if (value === HARDWARE_TYPE.UDPSENT) {
+                            this.setState({
+                                udpTabIndex: 1,
+                            })
+                        }
+                    }}
+                    value={subCategoryType}
+                    // style={Styles.dropDown}
+                />
+            )
+        }
+
+
         //@todo:-----------------------
-        //@todo:    CPU,MEM,DISK TAB
-        //@todo:-----------------------
+        //@todo:    TAB_FOR_APP_INST
+        //@todo:-----------------------`
         TAB_FOR_APP_INST = [
 
             {
@@ -603,6 +692,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             },
         ]
 
+
+        //@todo:-----------------------
+        //@todo:    TAB_FOR_CLUSTER
+        //@todo:-----------------------
         TAB_FOR_CLUSTER = [
 
             {
@@ -633,10 +726,43 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     )
                 }
             },
+            {
+                menuItem: 'TCP', render: () => {
+                    return (
+                        <Pane>
+                            <Tabs selectedIndex={this.state.tcpTabIndex} className='page_monitoring_tab'>
+
+                                <TabPanel>
+                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.TCPCONNS, HARDWARE_TYPE.TCPCONNS)}
+                                </TabPanel>
+                                <TabPanel>
+                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.TCPRETRANS, HARDWARE_TYPE.TCPRETRANS)}
+                                </TabPanel>
+
+                            </Tabs>
+                        </Pane>
+                    )
+                }
+            },
+            {
+                menuItem: 'UDP', render: () => {
+                    return (
+                        <Pane>
+                            <Tabs selectedIndex={this.state.udpTabIndex} className='page_monitoring_tab'>
+                                <TabPanel>
+                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.UDPRECV, HARDWARE_TYPE.UDPRECV)}
+                                </TabPanel>
+                                <TabPanel>
+                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.UDPSENT, HARDWARE_TYPE.UDPSENT)}
+                                </TabPanel>
+
+                            </Tabs>
+                        </Pane>
+                    )
+                }
+            },
+
         ]
-
-
-
 
 
         renderHeader = () => {
@@ -1206,6 +1332,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
     }
-))));
+))))
+;
 
 

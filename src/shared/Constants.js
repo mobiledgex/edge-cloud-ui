@@ -97,6 +97,18 @@ export const NETWORK_OPTIONS = [
     {text: 'SEND BYTES', value: 'SEND_BYTES'},
 ]
 
+export const TCP_OPTIONS = [
+    {text: 'TCPCONNS', value: 'TCPCONNS'},
+    {text: 'TCPRETRANS', value: 'TCPRETRANS'},
+]
+
+export const UDP_OPTIONS = [
+    {text: 'UDPRECV', value: 'UDPRECV'},
+    {text: 'UDPSENT', value: 'UDPSENT'},
+    //{text: 'UDPRECVERR', value: 'UDPRECVERR'},
+
+]
+
 export const NETWORK_OPTIONS2 = [
     {text: 'NET_SEND', value: 'NET_SEND'},
     {text: 'NET_RECV', value: 'NET_RECV'},
@@ -227,12 +239,16 @@ export const HARDWARE_TYPE = {
     UDP: 'UDP',
     TCP: 'TCP',
     NETWORK: 'NETWORK',
-    /////////////////////////
+    //UDP
     UDPSENT: 'UDPSENT',
     UDPRECV: 'UDPRECV',
     UDPRECVERR: 'UDPRECVERR',
+
+    //TCP
     TCPCONNS: 'TCPCONNS',
     TCPRETRANS: 'TCPRETRANS',
+
+    //NETWORK
     SENDBYTES: 'SEND_BYTES',
     RECVBYTES: 'RECV_BYTES',
 

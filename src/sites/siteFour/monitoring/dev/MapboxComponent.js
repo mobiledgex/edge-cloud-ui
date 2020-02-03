@@ -218,12 +218,12 @@ export default class MapboxComponent extends Component<Props, State> {
                                 //style={styles.marker}
                                 coordinates={[item.CloudletLocation.longitude, item.CloudletLocation.latitude]}
                             >
-                                <img
-                                    src="https://cdn1.iconfinder.com/data/icons/basic-ui-elements-coloricon/21/06_1-512.png" style={{color: 'red'}} height="30" width="25"/>
+                                <img src={require('./red_marker.png')} style={{color: 'red'}} height="30" width="25"/>
 
                                 {item.Cloudlet.trim() === 'hamburg-stage' &&
                                 <img
-                                    src="https://icons.iconarchive.com/icons/google/noto-emoji-food-drink/1024/32382-hamburger-icon.png" style={{color: 'red'}} height="30" width="25"/>
+                                    src="https://icons.iconarchive.com/icons/google/noto-emoji-food-drink/1024/32382-hamburger-icon.png" style={{color: 'red'}} height="30"
+                                    width="25"/>
                                 }
 
                                 <div style={{color: 'yellow', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
