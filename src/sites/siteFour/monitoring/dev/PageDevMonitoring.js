@@ -448,22 +448,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
         }
 
+
+        convertToClassification(pClassfication) {
+            if (pClassfication === CLASSIFICATION.APPINST) {
+                return "App Instance"
+            } else {
+                return pClassfication
+            }
+        }
+
         renderGraphAreaMulti(pHardwareType, barChartDataSet, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column'>
-                    {/*@todo:BarChartCore*/}
-                    {/*@todo:BarChartCore*/}
-                    {/*@todo:BarChartCore*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                Top 5 {convertHwTypePhrases(pHardwareType)} usage of {this.convertToClassification(this.state.currentClassification)}
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
-                        </div>
-                    </div>
+                    {/*@todo:LInechart*/}
+                    {/*@todo:LInechart*/}
+                    {/*@todo:LInechart*/}
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title_select'>
@@ -475,25 +474,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
                         </div>
                     </div>
-                </div>
-            )
-        }
-
-        convertToClassification(pClassfication) {
-            if (pClassfication === CLASSIFICATION.APPINST) {
-                return "App Instance"
-            } else {
-                return pClassfication
-            }
-        }
-
-
-        renderGraphArea(pHardwareType, barChartDataSet, lineChartDataSet) {
-            return (
-                <div className='page_monitoring_dual_column'>
-                    {/*@todo:BarChartCore*/}
-                    {/*@todo:BarChartCore*/}
-                    {/*@todo:BarChartCore*/}
+                    {/*@todo:BarChart*/}
+                    {/*@todo:BarChart*/}
+                    {/*@todo:BarChart*/}
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
@@ -504,7 +487,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
                         </div>
                     </div>
-                    {/*2_column*/}
+
+                </div>
+            )
+        }
+
+
+        renderGraphArea(pHardwareType, barChartDataSet, lineChartDataSet) {
+            return (
+                <div className='page_monitoring_dual_column'>
+                    {/*@todo:LInechart*/}
+                    {/*@todo:LInechart*/}
+                    {/*@todo:LInechart*/}
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
@@ -516,6 +510,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
                         </div>
                     </div>
+                    {/*@todo:BarChart*/}
+                    {/*@todo:BarChart*/}
+                    {/*@todo:BarChart*/}
+                    <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                Top 5 {convertHwTypePhrases(pHardwareType)} usage of {this.convertToClassification(this.state.currentClassification)}
+                            </div>
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
+                        </div>
+                    </div>
+
 
 
                 </div>
