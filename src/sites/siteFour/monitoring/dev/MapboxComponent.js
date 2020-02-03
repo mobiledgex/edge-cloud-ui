@@ -216,7 +216,9 @@ export default class MapboxComponent extends Component<Props, State> {
                                 //style={styles.marker}
                                 coordinates={[item.CloudletLocation.longitude, item.CloudletLocation.latitude]}
                             >
-                                <img src={require('../../../../assets/red_marker.png')} style={{color: 'red'}} height="30" width="25"/>
+
+                                {/*@todo:green_marker*/}
+                                <img src={'https://cdn1.iconfinder.com/data/icons/basic-ui-elements-coloricon/21/06_1-512.png'} style={{color: 'red'}} height="30" width="25"/>
 
                                 {item.Cloudlet.trim() === 'hamburg-stage' &&
                                 <img
@@ -224,7 +226,7 @@ export default class MapboxComponent extends Component<Props, State> {
                                     width="25"/>
                                 }
 
-                                <div style={{color: 'yellow', fontWeight: 'bold', fontSize: 14, }}>
+                                <div style={{color: 'yellow', fontWeight: 'bold', fontSize: 14,}}>
                                     [{item.Cloudlet}]
                                 </div>
                                 {listAppName.map(AppName_ClusterInst => {
@@ -251,7 +253,7 @@ export default class MapboxComponent extends Component<Props, State> {
                                                 }}
                                             >
                                                 {AppName}
-                                                <div style={{color: '#77BD25', fontFamily: 'Acme', fontSize:12}}>
+                                                <div style={{color: '#77BD25', fontFamily: 'Acme', fontSize: 12}}>
                                                     &nbsp;&nbsp;{` [${ClusterInst.trim()}]`}
                                                 </div>
 
