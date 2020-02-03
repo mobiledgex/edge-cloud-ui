@@ -1057,6 +1057,7 @@ class SiteFour extends React.Component {
                                         (this.state.intoCity) ? <Button onClick={this.onClickBackBtn}>Back</Button> : <Grid.Row style={{ padding: '10px 10px 0 10px', display: 'inline-block' }}>
                                             <label style={{ padding: '0 10px' }}>Region</label>
                                             <Dropdown className='selection'
+                                                style={{ zIndex: 100002, position: 'relative' }}
                                                 options={this.state.regions}
                                                 defaultValue={this.state.regions[0].value}
                                                 onChange={this.onChangeRegion}
