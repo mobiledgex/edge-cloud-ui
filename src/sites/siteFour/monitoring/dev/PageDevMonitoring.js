@@ -369,7 +369,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredAppInstanceList: this.state.appInstanceList,
                 appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
             })
-            this.setState({
+
+            //todo: reset bubble chart data
+            let bubbleChartData = await makeBubbleChartDataForCluster(this.state.allClusterUsageList, HARDWARE_TYPE.CPU);
+            await this.setState({
+                bubbleChartData: bubbleChartData,
+            })
+            await this.setState({
                 dropdownRequestLoading: false,
                 currentCluster: '',
                 currentAppInst: '',
@@ -1027,17 +1033,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             let allUsageList = allClusterUsageList;
             console.log('allUsageList===>', allUsageList)
-            let filteredUsageList = []
+            let filteredClusterUsageList = []
             allUsageList.map(item => {
                 if (item.cluster === selectedCluster && item.cloudlet === selectedCloudlet) {
-                    filteredUsageList.push(item)
+                    filteredClusterUsageList.push(item)
                 }
                 // console.log('Cluster_Dropdown===>', item);
             })
 
-            console.log('filteredUsageList===>', filteredUsageList);
+            console.log('filteredUsageList===>', filteredClusterUsageList);
             this.setState({
-                filteredClusterUsageList: filteredUsageList,
+                filteredClusterUsageList: filteredClusterUsageList,
             })
 
             let appInstanceList = this.state.appInstanceList;
@@ -1051,12 +1057,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             console.log('appInstDropdown===filteredAppInstList>', filteredAppInstList);
             let appInstDropdown = makeSelectBoxListWithThreeValuePipe(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
             console.log('appInstDropdown===>', appInstDropdown);
+
             await this.setState({
                 appInstDropdown: appInstDropdown,
                 currentAppInst: '',
                 appInstSelectBoxPlaceholder: 'Select App Inst',
                 filteredAppInstanceList: filteredAppInstList,
                 appInstanceListGroupByCloudlet: reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET),
+            })
+
+            //todo: reset bubble chart data
+            let bubbleChartData = await makeBubbleChartDataForCluster(this.state.filteredClusterUsageList, this.state.currentHardwareType);
+            await this.setState({
+                bubbleChartData: bubbleChartData,
             })
         }
 
