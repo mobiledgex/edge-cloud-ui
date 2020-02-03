@@ -249,6 +249,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             console.log('token===>', token);
 
 
+
+
+
             try {
                 await this.loadInitData();
             } catch (e) {
