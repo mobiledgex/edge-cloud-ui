@@ -304,7 +304,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
               let cloudletList = require('./cloudletList')
               let appInstanceList = require('./appInstList')*/
 
-            console.log('appInstanceList====>',appInstanceList);
+            console.log('appInstanceList====>', appInstanceList);
 
             console.log('clusterList===>', clusterList);
 
@@ -374,22 +374,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
 
 
+            this.setIntervalForCluster()
 
         }
 
-        setIntervalForCluster(){
+        setIntervalForCluster() {
             this.interval = setInterval(async () => {
-                this.setState({
-                    intervalLoading: true,
-                })
                 this.loadIntervalDataForCluster();
-                this.setState({
-                    intervalLoading: false,
-                })
             }, 1000 * 3.0)
         }
 
-        async loadIntervalDataForCluster (){
+        async loadIntervalDataForCluster() {
+            this.setState({
+                intervalLoading: true,
+            })
             let clusterList = await getClusterList();
             let cloudletList = await getCloudletList()
             let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
@@ -405,6 +403,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceList: appInstanceList,
                 filteredAppInstanceList: appInstanceList,
                 dropdownRequestLoading: false,
+                appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
 
             });
 
@@ -431,6 +430,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 maxMem: maxMem,
                 currentCluster: '',
             })
+            await this.setState({
+                intervalLoading: false,
+            })
         }
 
         async resetAllData() {
@@ -445,7 +447,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredClusterUsageList: this.state.allClusterUsageList,
                 filteredAppInstanceList: this.state.appInstanceList,
                 appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
-            },()=>{
+            }, () => {
 
             })
 
@@ -1104,21 +1106,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentTabIndex: 0,
             })
             this.interval = setInterval(async () => {
-                   this.setState({
-                       intervalLoading: true,
-                   })
-                   let arrDateTime2 = getOneYearStartEndDatetime();
-                   allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime2[0], arrDateTime2[1]);
+                this.setState({
+                    intervalLoading: true,
+                })
+                let arrDateTime2 = getOneYearStartEndDatetime();
+                allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime2[0], arrDateTime2[1]);
 
-                   console.log('allAppInstUsageList77===>', allAppInstUsageList);
+                console.log('allAppInstUsageList77===>', allAppInstUsageList);
 
-                   this.setState({
-                       intervalLoading: false,
-                       filteredAppInstUsageList: allAppInstUsageList,
-                   })
+                this.setState({
+                    intervalLoading: false,
+                    filteredAppInstUsageList: allAppInstUsageList,
+                })
 
-               }, 1000 * 3.0)
+            }, 1000 * 3.0)
         }
+
         async handleClusterDropdown(value) {
             clearInterval(this.interval)
 
