@@ -2,15 +2,17 @@ import React from 'react';
 import {Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import axios from "axios";
-import {formatData} from "../../../services/formatter/formatComputeInstance";
-import './PageMonitoring.css';
-import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../shared/Constants";
+import {formatData} from "../../../../services/formatter/formatComputeInstance";
+import '../PageMonitoring.css';
+import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../../shared/Constants";
 import {Line as ReactChartJs} from 'react-chartjs-2';
 import Lottie from "react-lottie";
-import BubbleChart from "../../../components/BubbleChart";
-import {TypeAppInstance} from "../../../shared/Types";
-import PageMonitoring from "./PageMonitoring";
-import {showToast} from "./PageMonitoringChartService";
+import BubbleChart from "../../../../components/BubbleChart";
+import {TypeAppInstance} from "../../../../shared/Types";
+import PageMonitoring from "./PageAdminMonitoring";
+import {numberWithCommas, showToast} from "../PageMonitoringCommonService";
+import {SHOW_CLOUDLET} from "../../../../services/endPointTypes";
+import {sendSyncRequest} from "../../../../services/serviceMC";
 
 export const cutArrayList = (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];
@@ -28,36 +30,26 @@ export const covertToComparableDate = (paramDate) => {
     return compareableFullDate
 
 }
-export const numberWithCommas = (x) => {
-    let value = ''
-    try {
-        value = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    } catch (e) {
-        console.log('error===>', e);
-    } finally {
-        return value;
-    }
-}
 
-export const makeFormForAppInstance = (instanceDataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
+export const makeFormForAppInstance = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
 
     if (pStartTime !== '' && pEndTime !== '') {
         return (
             {
                 "token": token,
                 "params": {
-                    "region": instanceDataOne.Region,
+                    "region": dataOne.Region,
                     "appinst": {
                         "app_key": {
-                            "developer_key": {"name": instanceDataOne.OrganizationName},
-                            "name": instanceDataOne.AppName.toLowerCase().replace(/\s+/g, ''),
-                            "version": instanceDataOne.Version
+                            "developer_key": {"name": dataOne.OrganizationName},
+                            "name": dataOne.AppName.toLowerCase().replace(/\s+/g, ''),
+                            "version": dataOne.Version
                         },
                         "cluster_inst_key": {
-                            "cluster_key": {"name": instanceDataOne.ClusterInst},
+                            "cluster_key": {"name": dataOne.ClusterInst},
                             "cloudlet_key": {
-                                "name": instanceDataOne.Cloudlet,
-                                "operator_key": {"name": instanceDataOne.Operator}
+                                "name": dataOne.Cloudlet,
+                                "operator_key": {"name": dataOne.Operator}
                             }
                         }
                     },
@@ -73,18 +65,18 @@ export const makeFormForAppInstance = (instanceDataOne, valid = "*", token, fetc
             {
                 "token": token,
                 "params": {
-                    "region": instanceDataOne.Region,
+                    "region": dataOne.Region,
                     "appinst": {
                         "app_key": {
-                            "developer_key": {"name": instanceDataOne.OrganizationName},
-                            "name": instanceDataOne.AppName.toLowerCase().replace(/\s+/g, ''),
-                            "version": instanceDataOne.Version
+                            "developer_key": {"name": dataOne.OrganizationName},
+                            "name": dataOne.AppName.toLowerCase().replace(/\s+/g, ''),
+                            "version": dataOne.Version
                         },
                         "cluster_inst_key": {
-                            "cluster_key": {"name": instanceDataOne.ClusterInst},
+                            "cluster_key": {"name": dataOne.ClusterInst},
                             "cloudlet_key": {
-                                "name": instanceDataOne.Cloudlet,
-                                "operator_key": {"name": instanceDataOne.Operator}
+                                "name": dataOne.Cloudlet,
+                                "operator_key": {"name": dataOne.Operator}
                             }
                         }
                     },
@@ -95,9 +87,29 @@ export const makeFormForAppInstance = (instanceDataOne, valid = "*", token, fetc
             }
         )
     }
-
-
 }
+
+
+export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
+
+    return (
+        {
+            "token": token,
+            "params": {
+                "region": dataOne.Region,
+                "cloudlet": {
+                    "operator_key": {
+                        "name": dataOne.Operator
+                    },
+                    "name": dataOne.CloudletName,
+                },
+                "last": fetchingDataNo,
+                "selector": "*"
+            }
+        }
+    )
+}
+
 
 export const isEmpty = (value) => {
     if (value == "" || value == null || value == undefined || (value != null && typeof value == "object" && !Object.keys(value).length)) {
@@ -270,7 +282,6 @@ export const makeCloudletListSelectBox = (appInstanceList) => {
  */
 export const renderUsageLabelByType = (usageOne, hardwareType) => {
     if (hardwareType === HARDWARE_TYPE.CPU) {
-
         let cpuUsageOne = '';
         try {
             cpuUsageOne = (usageOne.sumCpuUsage * 1).toFixed(2) + " %";
@@ -282,6 +293,35 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
         return cpuUsageOne;
     }
 
+    if (hardwareType === HARDWARE_TYPE.VCPU) {
+        return numberWithCommas(usageOne.avgVCpuUsed) + " %"
+    }
+
+    if (hardwareType === HARDWARE_TYPE.MEM_USED) {
+        return numberWithCommas(usageOne.avgMemUsed) + " Byte"
+    }
+
+    if (hardwareType === HARDWARE_TYPE.DISK_USED) {
+        return numberWithCommas(usageOne.avgDiskUsed) + " Byte"
+    }
+
+    if (hardwareType === HARDWARE_TYPE.FLOATING_IPS_USED) {
+        return usageOne.avgFloatingIpsUsed;
+    }
+
+    if (hardwareType === HARDWARE_TYPE.IPV4_USED) {
+        return usageOne.avgIpv4Used;
+    }
+
+    if (hardwareType === HARDWARE_TYPE.NET_SEND) {
+        return usageOne.avgNetSend;
+    }
+
+    if (hardwareType === HARDWARE_TYPE.NET_RECV) {
+        return usageOne.avgNetRecv;
+    }
+
+
     if (hardwareType === HARDWARE_TYPE.MEM) {
         return numberWithCommas(usageOne.sumMemUsage) + " Byte"
     }
@@ -290,11 +330,11 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
         return numberWithCommas(usageOne.sumDiskUsage) + " Byte"
     }
 
-    if (hardwareType === HARDWARE_TYPE.RECV_BYTE) {
+    if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
         return numberWithCommas(usageOne.sumRecvBytes) + " Byte";
     }
 
-    if (hardwareType === HARDWARE_TYPE.SEND_BYTE) {
+    if (hardwareType === HARDWARE_TYPE.SEND_BYTES) {
         return numberWithCommas(usageOne.sumSendBytes) + " Byte";
     }
 
@@ -314,6 +354,36 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
 }
 
 export const renderUsageByType = (usageOne, hardwareType) => {
+
+    if (hardwareType === HARDWARE_TYPE.VCPU) {
+        return usageOne.avgVCpuUsed;
+    }
+
+    if (hardwareType === HARDWARE_TYPE.MEM_USED) {
+        return usageOne.avgMemUsed;
+    }
+
+    if (hardwareType === HARDWARE_TYPE.DISK_USED) {
+        return usageOne.avgDiskUsed;
+    }
+
+    if (hardwareType === HARDWARE_TYPE.FLOATING_IPS_USED) {
+        return usageOne.avgFloatingIpsUsed;
+    }
+
+    if (hardwareType === HARDWARE_TYPE.IPV4_USED) {
+        return usageOne.avgIpv4Used;
+    }
+
+    if (hardwareType === HARDWARE_TYPE.NET_SEND) {
+        return usageOne.avgNetSend;
+    }
+
+    if (hardwareType === HARDWARE_TYPE.NET_RECV) {
+        return usageOne.avgNetRecv;
+    }
+
+
     if (hardwareType === HARDWARE_TYPE.CPU) {
         return usageOne.sumCpuUsage
     }
@@ -323,11 +393,11 @@ export const renderUsageByType = (usageOne, hardwareType) => {
     if (hardwareType === HARDWARE_TYPE.DISK) {
         return usageOne.sumDiskUsage
     }
-    if (hardwareType === HARDWARE_TYPE.RECV_BYTE) {
+    if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
         return usageOne.sumRecvBytes
     }
 
-    if (hardwareType === HARDWARE_TYPE.SEND_BYTE) {
+    if (hardwareType === HARDWARE_TYPE.SEND_BYTES) {
         return usageOne.sumSendBytes
     }
 
@@ -352,7 +422,7 @@ export const renderLottie = () => {
                     options={{
                         loop: true,
                         autoplay: true,
-                        animationData: require('../../../lotties/loader001'),
+                        animationData: require('../../../../lotties/loader001'),
                         rendererSettings: {
                             preserveAspectRatio: 'xMidYMid slice'
                         }
@@ -367,19 +437,14 @@ export const renderLottie = () => {
     )
 }
 
-/**
- * @todo: Bar Graph Rendering
- * @param usageList
- * @param hardwareType
- * @returns {*}
- */
+
 export const renderBarGraph = (usageList, hardwareType, _this) => {
 
-    console.log('usageList===>', usageList);
+    console.log('renderBarGraphusageList===>', usageList);
 
     if (usageList.length === 0) {
         return (
-            <div style={Styles.noData}>
+            <div style={StylesForMonitoring.noData}>
                 NO DATA
             </div>
         )
@@ -505,31 +570,27 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
 
 }
 
-/**
- * @todo: 로딩이 완료 되기전에 placeholder를 보여준다..
- * @returns {*}
- */
-export const renderPlaceHolder = (type: string = '') => {
-    // let boxWidth = window.innerWidth / 3 - 50;
-    return (
-        <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
-            <Lottie
-                options={{
-                    loop: true,
-                    autoplay: true,
-                    animationData: require('../../../lotties/loader001'),
-                    rendererSettings: {
-                        preserveAspectRatio: 'xMidYMid slice'
-                    }
-                }}
-                height={120}
-                width={120}
-                isStopped={false}
-                isPaused={false}
-            />
-        </div>
-    )
+export const sortUsageListByType = (usageList, hardwareType) => {
+
+    if (hardwareType === HARDWARE_TYPE.VCPU) {
+        usageList.sort((a, b) => b.avgVCpuUsed - a.avgVCpuUsed);
+    } else if (hardwareType === HARDWARE_TYPE.MEM_USED) {
+        usageList.sort((a, b) => b.avgMemUsed - a.avgMemUsed);
+    } else if (hardwareType === HARDWARE_TYPE.DISK_USED) {
+        usageList.sort((a, b) => b.avgDiskUsed - a.avgDiskUsed);
+    } else if (hardwareType === HARDWARE_TYPE.FLOATING_IPS_MAX) {
+        usageList.sort((a, b) => b.avgFloatingIpsUsed - a.avgFloatingIpsUsed);
+    } else if (hardwareType === HARDWARE_TYPE.IPV4_USED) {
+        usageList.sort((a, b) => b.avgIpv4Used - a.avgIpv4Used);
+    } else if (hardwareType === HARDWARE_TYPE.NET_SEND) {
+        usageList.sort((a, b) => b.avgNetRecv - a.avgNetRecv);
+    } else if (hardwareType === HARDWARE_TYPE.NET_SEND) {
+        usageList.sort((a, b) => b.avgNetSend - a.avgNetSend);
+    }
+
+    return usageList;
 }
+
 
 /**
  * bottom Grid InstanceList maker..
@@ -573,7 +634,7 @@ export const renderPlaceHolder2 = () => {
                     options={{
                         loop: true,
                         autoplay: true,
-                        animationData: require('../../../lotties/loader001'),
+                        animationData: require('../../../../lotties/loader001'),
                         rendererSettings: {
                             preserveAspectRatio: 'xMidYMid slice'
                         }
@@ -634,7 +695,112 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
 
     if (pBubbleChartData.length === 0) {
         return (
-            <div style={Styles.noData}>
+            <div style={StylesForMonitoring.noData}>
+                NO DATA
+            </div>
+        )
+    } else {
+        let appInstanceList = _this.state.appInstanceList;
+
+
+        let boxWidth = (window.innerWidth - 300) / 3 - 20
+
+        function renderZoomLevel(appInstanceListLength) {
+            if (appInstanceListLength <= 4) {
+                return 0.5;
+            } else {
+                return 0.70;
+            }
+        }
+
+
+        function renderOffsetY(appInstanceListLength) {
+            if (appInstanceListLength === 0) {
+                return 0.05;
+            } else if (appInstanceListLength === 1) {
+                return 0.05;
+            } else if (appInstanceListLength <= 4) {
+                return 0.05;
+            } else {
+                return 0.00;
+            }
+        }
+
+
+        return (
+            <div style={{display: 'flex', flexDirection: 'row'}}>
+                <div style={{
+                    //backgroundColor: 'blue',
+                    backgroundColor: '#1e2124',
+                    // marginLeft: 0, marginRight: 0, marginBottom: 10,
+                }}>
+                    <BubbleChart
+                        className='bubbleChart'
+                        graph={{
+                            zoom: renderZoomLevel(appInstanceList.length),
+                            //zoom: 0.70,
+                            offsetX: 0.15,
+                            offsetY: renderOffsetY(appInstanceList.length)
+                        }}
+                        width={boxWidth}
+                        height={'100%'}
+                        padding={0} // optional value, number that set the padding between bubbles
+                        showLegend={true} // optional value, pass false to disable the legend.
+                        legendPercentage={20} // number that represent the % of with that legend going to use.
+                        legendFont={{
+                            //family: 'Candal',
+                            size: 9,
+                            color: 'black',
+                            weight: 'bold',
+                        }}
+                        valueFont={{
+                            //family: 'Righteous',
+                            size: 12,
+                            color: 'black',
+                            //weight: 'bold',
+                            fontStyle: 'italic',
+                        }}
+                        labelFont={{
+                            //family: 'Righteous',
+                            size: 14,
+                            color: 'black',
+                            weight: 'bold',
+                        }}
+                        bubbleClickFun={async (label, index) => {
+                            /*  await _this.setState({
+                                  currentAppInst: label,
+                                  currentGridIndex: index,
+                              })
+                              await _this.handleSelectBoxChanges(_this.state.currentRegion, _this.state.currentCloudLet, _this.state.currentCluster, label)*/
+
+                        }}
+                        legendClickFun={async (label, index) => {
+                            await _this.setState({
+                                currentAppInst: label,
+                                currentGridIndex: index,
+                            })
+                            await _this.filterByEachTypes(_this.state.currentRegion, _this.state.currentCloudLet, _this.state.currentCluster, label)
+
+                        }}
+                        data={pBubbleChartData}
+                    />
+
+                </div>
+
+            </div>
+        )
+    }
+}
+
+export const renderBubbleChartForCloudlet = (_this: PageMonitoring, hardwareType: string, pBubbleChartData: any) => {
+
+
+    console.log('pBubbleChartData====>', pBubbleChartData);
+
+
+    if (pBubbleChartData.length === 0 && _this.loading === false) {
+        return (
+            <div style={StylesForMonitoring.noData}>
                 NO DATA
             </div>
         )
@@ -734,54 +900,6 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
 }
 
 
-export const getMetricsUtilizationAtAppLevel_TEST = async (appInstanceOne) => {
-    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-    let responseRslt = await axios({
-        url: '/api/v1/auth/metrics/app',
-        method: 'post',
-        data: {
-            "region": "EU",
-            "appinst": {
-                "app_key": {
-                    "developer_key": {
-                        "name": "MobiledgeX"
-                    },
-                    "name": "bicTestApp1112-01",
-                    "version": "1.0"
-                },
-                "cluster_inst_key": {
-                    "cluster_key": {
-                        "name": "qqqaaa"
-                    },
-                    "cloudlet_key": {
-                        "operator_key": {
-                            "name": ""
-                        }
-                    }
-                }
-            },
-            "starttime": "2019-09-11T21:26:04Z",
-            "endtime": "2020-01-02T21:26:10Z",
-            "last": 1,
-            "selector": "cpu"
-        },
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + store.userToken
-
-        },
-        timeout: 15 * 1000
-    }).then(async response => {
-        return response.data;
-    }).catch(e => {
-        throw new Error(e)
-    })
-
-    return responseRslt;
-
-}
-
-
 export const getMetricsUtilizationAtAtClusterLevel = async (appInstanceOne) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
@@ -828,7 +946,7 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
 
     if (hardwareUsageList.length === 0) {
         return (
-            <div style={Styles.noData}>
+            <div style={StylesForMonitoring.noData}>
                 NO DATA
             </div>
         )
@@ -848,9 +966,9 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
                 let usageOne = 0;
                 if (hardwareType === HARDWARE_TYPE.CPU) {
                     usageOne = seriesValues[j]["6"];
-                } else if (hardwareType === HARDWARE_TYPE.RECV_BYTE) {
+                } else if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
                     usageOne = seriesValues[j]["13"];//receivceBytes
-                } else if (hardwareType === HARDWARE_TYPE.SEND_BYTE) {
+                } else if (hardwareType === HARDWARE_TYPE.SEND_BYTES) {
                     usageOne = seriesValues[j]["12"]; //sendBytes
                 } else if (hardwareType === HARDWARE_TYPE.MEM) {
                     usageOne = seriesValues[j]["10"]; //mem usage
@@ -1025,6 +1143,7 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
 
 }
 
+
 export const makeNetworkBarData = (networkUsageList, hwType) => {
     let chartDataList = [];
     chartDataList.push(["Element", hwType + " USAGE", {role: "style"}, {role: 'annotation'}])
@@ -1033,9 +1152,9 @@ export const makeNetworkBarData = (networkUsageList, hwType) => {
         if (index < 5) {
             let barDataOne = [
                 networkUsageList[index].instance.AppName.toString().substring(0, 10) + "...",
-                hwType === HARDWARE_TYPE.RECV_BYTE ? networkUsageList[index].sumRecvBytes : networkUsageList[index].sumSendBytes,
+                hwType === HARDWARE_TYPE.RECV_BYTES ? networkUsageList[index].sumRecvBytes : networkUsageList[index].sumSendBytes,
                 CHART_COLOR_LIST[index],
-                hwType === HARDWARE_TYPE.RECV_BYTE ? networkUsageList[index].sumRecvBytes : networkUsageList[index].sumSendBytes,
+                hwType === HARDWARE_TYPE.RECV_BYTES ? networkUsageList[index].sumRecvBytes : networkUsageList[index].sumSendBytes,
             ]
             chartDataList.push(barDataOne);
         }
@@ -1188,7 +1307,7 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
     if (isEmptyObject(appInstanceListSortByCloudlet)) {
         //do something
         return (
-            <div style={Styles.noData}>
+            <div style={StylesForMonitoring.noData}>
                 NO DATA
             </div>
         )
@@ -1305,13 +1424,49 @@ export const filterUsageListByRegion = (pRegion, usageList) => {
     }
 }
 
+export const getCloudletList = async () => {
+   try{
+       let store = JSON.parse(localStorage.PROJECT_INIT);
+       let token = store ? store.userToken : 'null';
+       let requestData = {token: token, method: SHOW_CLOUDLET, data: {region: REGION.EU}};
+       let requestData2 = {token: token, method: SHOW_CLOUDLET, data: {region: REGION.US}};
+       let promiseList = []
+       promiseList.push(sendSyncRequest(this, requestData))
+       promiseList.push(sendSyncRequest(this, requestData2))
+       let showCloudletList = await Promise.all(promiseList);
+       /*console.log('results===EU>', showCloudletList[0].response.data);
+       console.log('results===US>', showCloudletList[1].response.data);*/
+       let resultList = [];
+       showCloudletList.map(item => {
+           //@todo : null check
+           if (item.response.data["0"].Region !== '') {
+               let cloudletList = item.response.data;
+               cloudletList.map(item => {
+                   resultList.push(item);
+               })
+           }
+       })
+
+       /* let newCloudletList = []
+        resultList.map(item => {
+            if (item.Operator === localStorage.selectOrg) {
+                newCloudletList.push(item)
+            }
+        })*/
+
+       return resultList;
+   }catch (e) {
+
+   }
+}
+
 
 /**
  * @todo : fetch App Instance List BY region
  * @param pArrayRegion
  * @returns {Promise<[]>}
  */
-export const requestShowAppInstanceList = async (pArrayRegion = ['EU', 'US']) => {
+export const getAppInstList = async (pArrayRegion = ['EU', 'US']) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     let mergedAppInstanceList = [];
 
@@ -1368,7 +1523,7 @@ export const requestShowAppInstanceList = async (pArrayRegion = ['EU', 'US']) =>
  * @param serviceBodyForAppInstanceOneInfo
  * @returns {Promise<AxiosResponse<any>>}
  */
-export const requestAppLevelMetrics = async (serviceBodyForAppInstanceOneInfo: any) => {
+export const getAppLevelMetrics = async (serviceBodyForAppInstanceOneInfo: any) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     let result = await axios({
         url: '/api/v1/auth/metrics/app',
@@ -1401,7 +1556,7 @@ export const makeCompleteDateTime = (date: string) => {
 }
 
 
-export const getUsageList = async (appInstanceList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
+export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
 
     let instanceBodyList = []
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
@@ -1411,13 +1566,9 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
         instanceBodyList.push(instanceInfoOneForm);
     }
 
-    /*
-    "starttime": "2019-06-11T21:26:00Z",
-    "endtime": "2019-12-31T21:26:00Z"
-    */
     let promiseList = []
     for (let index = 0; index < instanceBodyList.length; index++) {
-        promiseList.push(requestAppLevelMetrics(instanceBodyList[index]))
+        promiseList.push(getAppLevelMetrics(instanceBodyList[index]))
     }
     //todo: Bring health check list(cpu,mem,network,disk..) to the number of apps instance, by parallel request
 
@@ -1645,7 +1796,149 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
 }
 
 
-export const Styles = {
+export const getClouletLevelUsageList = async (cloudletList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
+    let instanceBodyList = []
+    let store = JSON.parse(localStorage.PROJECT_INIT);
+    let token = store ? store.userToken : 'null';
+
+    for (let index = 0; index < cloudletList.length; index++) {
+        let instanceInfoOneForm = makeFormForCloudletLevelMatric(cloudletList[index], pHardwareType, token, recentDataLimitCount, pStartTime, pEndTime)
+        instanceBodyList.push(instanceInfoOneForm);
+    }
+
+    let promiseList = []
+    for (let index = 0; index < instanceBodyList.length; index++) {
+        promiseList.push(getCloudletLevelMatric(instanceBodyList[index], token))
+    }
+    console.log('instanceBodyList===>', instanceBodyList)
+
+    let cloudletLevelMatricUsageList = await Promise.all(promiseList);
+    /*
+    [
+        "time",0
+        "cloudlet",1
+        "operator",2
+        "netSend",3
+        "netRecv",4
+        "vCpuUsed",5
+        "vCpuMax",6
+        "memUsed",7
+        "memMax",8
+        "diskUsed",9
+        "diskMax",10
+        "floatingIpsUsed",11
+        "floatingIpsMax",12
+        "ipv4Used",13
+        "ipv4Max"14
+    ]
+    */
+
+
+    let usageList = []
+    cloudletLevelMatricUsageList.map(item => {
+
+        let series = item.data["0"].Series["0"].values
+        let columns = item.data["0"].Series["0"].columns
+
+
+        let sumVirtualCpuUsed = 0;
+        let sumVirtualCpuMax = 0;
+        let sumMemUsed = 0;
+        let sumMemMax = 0;
+        let sumDiskUsed = 0;
+        let sumDiskMax = 0;
+        let sumNetSend = 0;
+        let sumNetRecv = 0;
+        let sumFloatingIpsUsed = 0;
+        let sumFloatingIpsMax = 0
+        let sumIpv4Used = 0;
+        let sumIpv4Max = 0;
+
+        let cloudlet = "";
+        let operator = "";
+        series.map(item => {
+            cloudlet = item[1]
+            operator = item[2]
+
+            //todo: CPU
+            let vCpuUsed = item["5"];
+            let vCpuMax = item["6"];
+            sumVirtualCpuUsed += vCpuUsed;
+            sumVirtualCpuMax += vCpuMax;
+
+            //todo: MEM
+            sumMemUsed += item["7"];
+            sumMemMax += item["8"];
+
+            //todo: DISK
+            sumDiskUsed += item["9"];
+            sumDiskMax += item["10"];
+
+            //todo: NETWORK(RECV,SEND)
+            sumNetSend += item["3"];
+            sumNetRecv += item["4"];
+
+            //todo: FLOATIP
+            sumFloatingIpsUsed += item["11"];
+            sumFloatingIpsMax += item["12"];
+
+            //todo: IPV4
+            sumIpv4Used += item["13"];
+            sumIpv4Max += item["14"];
+
+
+        })
+
+        usageList.push({
+            avgVCpuUsed: sumVirtualCpuUsed / RECENT_DATA_LIMIT_COUNT,
+            avgVCpuMax: sumVirtualCpuMax / RECENT_DATA_LIMIT_COUNT,
+            avgMemUsed: sumMemUsed / RECENT_DATA_LIMIT_COUNT,
+            avgMemMax: sumMemMax / RECENT_DATA_LIMIT_COUNT,
+            avgDiskUsed: sumDiskUsed / RECENT_DATA_LIMIT_COUNT,
+            avgDiskMax: sumDiskMax / RECENT_DATA_LIMIT_COUNT,
+            avgNetSend: sumNetSend / RECENT_DATA_LIMIT_COUNT,
+            avgNetRecv: sumNetRecv / RECENT_DATA_LIMIT_COUNT,
+            avgFloatingIpsUsed: sumFloatingIpsUsed / RECENT_DATA_LIMIT_COUNT,
+            avgFloatingIpsMax: sumFloatingIpsMax / RECENT_DATA_LIMIT_COUNT,
+            avgIpv4Used: sumIpv4Used / RECENT_DATA_LIMIT_COUNT,
+            avgIpv4Max: sumIpv4Max / RECENT_DATA_LIMIT_COUNT,
+            columns: columns,
+            series: series,
+            cloudlet: cloudlet,
+            operator: operator,
+
+        })
+
+    })
+
+    console.log('usageList====>', usageList);
+
+    return usageList;
+
+}
+
+
+export const getCloudletLevelMatric = async (serviceBody: any, pToken: string) => {
+    console.log('token2===>', pToken);
+    let result = await axios({
+        url: '/api/v1/auth/metrics/cloudlet',
+        method: 'post',
+        data: serviceBody['params'],
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + pToken
+        },
+        timeout: 15 * 1000
+    }).then(async response => {
+        return response.data;
+    }).catch(e => {
+        //showToast(e.toString())
+    })
+    return result;
+}
+
+
+export const StylesForMonitoring = {
     selectBoxRow: {
         alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,
     },
@@ -1674,10 +1967,10 @@ export const Styles = {
     },
     dropDown: {
         //minWidth: 150,
-        height: '20px',
-        minWidth: '140px',
-        fontSize: '12px',
-        verticalAlign: 'middle',
+        minWidth: '350px',
+        //fontSize: '12px',
+        minHeight: '40px'
+        //height: '50px',
     },
     cell000: {
         marginLeft: 0,
