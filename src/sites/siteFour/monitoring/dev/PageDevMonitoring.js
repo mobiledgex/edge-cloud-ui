@@ -291,6 +291,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         async loadInitDataForCluster(isInterval: boolean = false) {
+            clearInterval(this.interval)
             this.setState({dropdownRequestLoading: true})
             let clusterList = await getClusterList();
             let cloudletList = await getCloudletList()
@@ -375,6 +376,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         async resetAllData() {
+            clearInterval(this.interval)
             await this.setState({
                 currentGridIndex: -1,
                 currentTabIndex: 0,
@@ -403,7 +405,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         async refreshAllData() {
-
+            clearInterval(this.interval)
             toast({
                 type: 'success',
                 //icon: 'smile',
@@ -1041,9 +1043,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 currentTabIndex: 0,
             })
-
-
-            /*
             this.interval = setInterval(async () => {
                    this.setState({
                        intervalLoading: true,
@@ -1058,106 +1057,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                        filteredAppInstUsageList: allAppInstUsageList,
                    })
 
-               }, 1000 * 7)
-            */
-
+               }, 1000 * 3.0)
         }
-
-        handleAppInstDropdown2 = async (pCurrentAppInst_Cluster_Cluodlet:string) => {
-            clearInterval(this.interval)
-
-
-            let arrayClassification = pCurrentAppInst_Cluster_Cluodlet.split(" | ")
-
-            let newCurrentAppInst_Cluster_Cluodlet= arrayClassification[0].trim() + arrayClassification[2].trim() + arrayClassification[1].trim()
-
-
-            await this.setState({
-                currentAppInst: newCurrentAppInst_Cluster_Cluodlet,
-                loading: true,
-            })
-
-            let AppName = pCurrentAppInst_Cluster_Cluodlet.split('|')[0].trim()
-            let ClusterInst = pCurrentAppInst_Cluster_Cluodlet.split('|')[1].trim()
-            let Cloudlet = pCurrentAppInst_Cluster_Cluodlet.split('|')[2].trim()
-
-            console.log('Instance_Dropdown===>', newCurrentAppInst_Cluster_Cluodlet);
-            console.log('Instance_Dropdown=1==>', AppName);
-            console.log('Instance_Dropdown=2==>', Cloudlet);
-            console.log('Instance_Dropdown=ClusterInst==>', ClusterInst);
-            console.log('Instance_Dropdown=3==>', this.state.appInstanceList);
-
-
-            console.log('Instance_Dropdown==AppName==>', filteredAppList);
-
-            let filteredAppList = filterUsageByClassification(this.state.appInstanceList, Cloudlet, 'Cloudlet');
-
-
-            filteredAppList = filterUsageByClassification(filteredAppList, ClusterInst, 'ClusterInst');
-
-            console.log('Instance_Dropdown==ClusterInst==>', filteredAppList);
-
-            filteredAppList = filterUsageByClassification(filteredAppList, AppName, 'AppName');
-
-            console.log('Instance_DropdownAppName', filteredAppList);
-
-            let appInstDropdown = makeSelectBoxListWithThreeValuePipe(filteredAppList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
-            await this.setState({
-                appInstDropdown,
-            })
-
-
-            let arrDateTime = getOneYearStartEndDatetime();
-
-            let allAppInstUsageList = [];
-            await this.setState({dropdownRequestLoading: true})
-            try {
-                allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime[0], arrDateTime[1]);
-            } catch (e) {
-                showToast(e.toString())
-            } finally {
-                this.setState({dropdownRequestLoading: false})
-            }
-            // Cluster | AppInst
-            let currentCluster = pCurrentAppInst_Cluster_Cluodlet.split("|")[2].trim() + " | " + pCurrentAppInst_Cluster_Cluodlet.split('|')[1].trim()
-            pCurrentAppInst_Cluster_Cluodlet = pCurrentAppInst_Cluster_Cluodlet.trim();
-            pCurrentAppInst_Cluster_Cluodlet = pCurrentAppInst_Cluster_Cluodlet.split("|")[0].trim() + " | " + pCurrentAppInst_Cluster_Cluodlet.split('|')[1].trim() + " | " + pCurrentAppInst_Cluster_Cluodlet.split('|')[2].trim()
-
-            await this.setState({
-                currentClassification: CLASSIFICATION.APPINST,
-                allAppInstUsageList: allAppInstUsageList,
-                filteredAppInstUsageList: allAppInstUsageList,
-                loading: false,
-                currentAppInst: pCurrentAppInst_Cluster_Cluodlet,
-                currentCluster: currentCluster,
-            })
-
-            await this.setState({
-                currentTabIndex: 0,
-            })
-
-
-            /*
-            this.interval = setInterval(async () => {
-                   this.setState({
-                       intervalLoading: true,
-                   })
-                   let arrDateTime2 = getOneYearStartEndDatetime();
-                   allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime2[0], arrDateTime2[1]);
-
-                   console.log('allAppInstUsageList77===>', allAppInstUsageList);
-
-                   this.setState({
-                       intervalLoading: false,
-                       filteredAppInstUsageList: allAppInstUsageList,
-                   })
-
-               }, 1000 * 7)
-            */
-
-        }
-
-
 
         async handleClusterDropdown(value) {
             clearInterval(this.interval)
