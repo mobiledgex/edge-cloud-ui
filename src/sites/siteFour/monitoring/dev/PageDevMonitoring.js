@@ -920,7 +920,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <div style={{marginLeft: 50, color: '#6de1ff', fontWeight: 'bold', fontFamily: 'Encode Sans Condensed'}}>
                             {this.state.selectOrg}
                         </div>
-                     {/*   {this.state.intervalLoading &&
+                        {this.state.intervalLoading &&
 
                         <div style={{marginLeft: 15}}>
                             <div style={{marginLeft: 15}}>
@@ -928,7 +928,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                   size={20}/>
                             </div>
                         </div>
-                        }*/}
+                        }
 
                         {/*   {this.state.dropdownRequestLoading &&
 
