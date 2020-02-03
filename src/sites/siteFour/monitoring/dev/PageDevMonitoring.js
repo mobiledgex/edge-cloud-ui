@@ -381,7 +381,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         setIntervalForCluster() {
             this.interval = setInterval(async () => {
                 this.loadIntervalDataForCluster();
-            }, 1000 * 3.0)
+            }, 1000 * 5.0)
         }
 
         async loadIntervalDataForCluster() {
@@ -392,7 +392,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let cloudletList = await getCloudletList()
             let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
             let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
-            let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
+            //let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
 
             await this.setState({
                 isReady: true,
@@ -403,7 +403,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceList: appInstanceList,
                 filteredAppInstanceList: appInstanceList,
                 dropdownRequestLoading: false,
-                appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
+                //appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
 
             });
 
@@ -461,6 +461,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentCluster: '',
                 currentAppInst: '',
             })
+
+            this.setIntervalForCluster()
         }
 
 
@@ -496,6 +498,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentCluster: '',
                 currentAppInst: '',
             })
+
+            this.setIntervalForCluster()
         }
 
         makeChartDataAndRenderTabBody(hwType, subCategoryType = '') {
