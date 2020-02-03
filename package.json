@@ -89,6 +89,7 @@
     "react-html5video": "^2.5.1",
     "react-iframe": "^1.1.0",
     "react-image-filter": "^0.1.2",
+    "react-interval": "^2.1.1",
     "react-interval-timer": "^1.0.5",
     "react-json-view": "^1.19.1",
     "react-live-clock": "^3.0.0",
