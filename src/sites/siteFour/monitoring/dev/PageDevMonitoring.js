@@ -1045,7 +1045,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 currentTabIndex: 0,
             })
-          /*  this.interval = setInterval(async () => {
+            this.interval = setInterval(async () => {
                    this.setState({
                        intervalLoading: true,
                    })
@@ -1059,7 +1059,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                        filteredAppInstUsageList: allAppInstUsageList,
                    })
 
-               }, 1000 * 3.0)*/
+               }, 1000 * 3.0)
         }
 
         async handleClusterDropdown(value) {
