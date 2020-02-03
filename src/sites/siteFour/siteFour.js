@@ -636,7 +636,15 @@ class SiteFour extends React.Component {
             this.setState({ intoCity: false })
         }
 
+        //set category
+        if(nextProps.detailData !== this.props.detailData) {
+            // alert(JSON.stringify(nextProps.detailData))
+            this.setState({detailData:nextProps.detailData})
+        }
+
     }
+
+
 
     componentDidUpdate() {
         if (localStorage.selectRole && this.state.menuClick) {
@@ -1023,32 +1031,25 @@ class SiteFour extends React.Component {
                                     {
                                         (viewMode === 'detailView') ?
                                             <Grid.Column className='title_align' style={{ marginLeft: 20 }}>
-                                                <Button onClick={() => this.props.handleDetail({ data: null, viewMode: 'listView' })}>Close Details</Button>
+                                                <Item className={'stepOrg2'} style={{marginLeft: 20, marginRight:20}}>
+                                                    <Button onClick={() => this.props.handleDetail({
+                                                        data: null,
+                                                        viewMode: 'listView'
+                                                    })}>Close Details</Button>
+                                                </Item>
                                             </Grid.Column>
                                             : null
                                     }
-                                    {/* {
-                                    //filtering for column of table
-                                    (viewMode !== 'detailView' && (this.state.headerTitle === 'App Instances' || this.state.headerTitle === 'Apps' || this.state.headerTitle === 'Cluster Instances')) ?
-                                        <Grid.Column>
-                                            <DropDownFilter></DropDownFilter>
-                                        </Grid.Column>
-                                        :
-                                        null
-                                } */}
                                     <div style={{ marginLeft: '10px' }}>
-                                        {/* {(this.state.enable)?this.getGuidePopup(this.state.headerTitle):null} */}
                                         {
                                             (
+                                                this.state.page !== 'pg=editApp' &&
                                                 this.props.viewMode !== 'detailView' &&
                                                 this.state.headerTitle !== 'User Roles' &&
                                                 this.state.headerTitle !== 'Accounts' &&
                                                 this.state.headerTitle !== 'Flavors'
                                             ) ? this.getGuidePopup(this.state.headerTitle) : null}
                                     </div>
-                                    {/* <div style={{position:'absolute', top:25, right:25}}>
-                                    {this.getHelpPopup(this.state.headerTitle)}
-                                </div> */}
 
                                 </Grid.Row>
                                 {
@@ -1058,7 +1059,6 @@ class SiteFour extends React.Component {
                                             <Dropdown className='selection'
                                                 options={this.state.regions}
                                                 defaultValue={this.state.regions[0].value}
-                                                value={this.props.changeRegion}
                                                 onChange={this.onChangeRegion}
                                             />
                                         </Grid.Row>
@@ -1133,7 +1133,9 @@ const mapStateToProps = (state) => {
     let submitInfo = (state.submitInfo) ? state.submitInfo : null;
     let regionInfo = (state.regionInfo) ? state.regionInfo : null;
     let checkedAudit = (state.checkedAudit) ? state.checkedAudit.audit : null;
+    let detailData = (state.changeViewMode && state.changeViewMode.mode)?state.changeViewMode.mode.data : null;
     let selectedOrg = (state.selectOrganiz) ? state.selectOrganiz.org : null;
+
 
     return {
         viewBtn: state.btnMnmt ? state.btnMnmt : null,
@@ -1161,6 +1163,7 @@ const mapStateToProps = (state) => {
         regionInfo: regionInfo,
         audit: checkedAudit,
         clickCity: state.clickCityList.list,
+        detailData:detailData,
         selectedOrg
     }
 };

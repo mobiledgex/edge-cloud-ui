@@ -118,12 +118,12 @@ class SiteFourPoolTwo extends React.Component {
     //data:data, keys:keysData, region:region
     // data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')}
     render (){
-        const { handleSubmit, reset, org, type } = this.props;
+        const { handleSubmit, reset, org, type, step } = this.props;
         return (
             <Fragment>
                 <Grid>
                     <Grid.Column>
-                        <div><SiteFourCreatePoolForm data={this.state.devData}  pId={2} getUserRole={this.props.userrole} gotoUrl={this.props.gotoUrl} toggleSubmit={this.props.toggleSubmit} validError={this.props.error || []} onSubmit={() => console.log('submit form')} changeNext={'201'} stepTwo={true} editMode={this.props.editMode ? this.props.editMode : null}/></div>
+                        <div><SiteFourCreatePoolForm data={this.state.devData} step={step} pId={2} getUserRole={this.props.userrole} gotoUrl={this.props.gotoUrl} toggleSubmit={this.props.toggleSubmit} validError={this.props.error || []} onSubmit={() => console.log('submit form')} changeNext={'201'} editMode={this.props.editMode ? this.props.editMode : null}/></div>
                     </Grid.Column>
                 </Grid>
             </Fragment>

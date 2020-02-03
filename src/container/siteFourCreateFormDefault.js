@@ -159,7 +159,7 @@ const renderDualListInput = (self,data) => (
             moveUp: <span className="fa fa-chevron-up" />,
         }}
         canFilter
-        options={self.getListData(data)}
+        options={self.getListData(data, self)}
         selected={self.state.selected}
         onChange={self.onChangeDualList}
     />
@@ -236,7 +236,6 @@ class SiteFourCreateFormDefault extends React.Component {
 
     }
     onChangeDualList = (selected) => {
-        console.log("20200110 " + selected)
         this.setState({ selected });
         this.props.dispatch(change('createAppFormDefault', 'invisibleField', JSON.stringify(selected)));
     }
@@ -269,9 +268,9 @@ class SiteFourCreateFormDefault extends React.Component {
         return mockData;
     };
 
-    getListData = (datas) => {
+    getListData = (datas, self) => {
         const listData = [];
-
+        
         if(datas && datas.length) {
             datas.map((item, i) => {
                 const data = {
@@ -370,12 +369,16 @@ class SiteFourCreateFormDefault extends React.Component {
                 this.setState({dataInit:true})
             }
             let self = this;
-            setTimeout(() => {
-                self.setState({data:nextProps.data.data[0], regKeys:keys, fieldKeys:nextProps.data.keys, pId:nextProps.pId})
-            }, 5000)
+    
             this.getSelectedListData(nextProps.data.data[0], nextProps.pId, keys, nextProps.data.keys, nextProps.selectListData)
         }
-        if(nextProps.editMode) this.setState({submitButton:'Update'})
+        if(nextProps.editMode){
+            this.setState({submitButton:'Update'})
+        } else if(nextProps.step && nextProps.step == 1) {
+            this.setState({submitButton:'Create Cloudlet Pool'})
+        } else if(nextProps.step && nextProps.step == 2) {
+            this.setState({submitButton:'Link Organization'})
+        }
     }
 
     getLabel (key, pId) {
@@ -640,7 +643,7 @@ class SiteFourCreateFormDefault extends React.Component {
                             <Form.Group inline>
                                 {/*<Button onClick={()=>this.onHandleReset()}>Reset</Button>*/}
                                 <span style={{marginRight:'1em'}}>
-                                    {(this.props.stepTwo)?
+                                    {(this.props.step == 2)?
                                         <Button bid={'skip'}  onClick={this.cancelClick}>
                                             Skip
                                         </Button>
@@ -652,21 +655,13 @@ class SiteFourCreateFormDefault extends React.Component {
 
                                 </span>
                                 {
-                                    (this.props.stepTwo)?
-                                        <Button
-                                            primary
-                                            positive
-                                            icon='checkmark'
-                                            labelPosition='right'
-                                            content="Submit"
-                                        /> :
-                                        <Button
-                                            primary
-                                            positive
-                                            icon='checkmark'
-                                            labelPosition='right'
-                                            content={this.state.submitButton}
-                                        />
+                                    <Button
+                                        primary
+                                        positive
+                                        icon='checkmark'
+                                        labelPosition='right'
+                                        content={this.state.submitButton}
+                                    />
                                 }
                             </Form.Group>
 

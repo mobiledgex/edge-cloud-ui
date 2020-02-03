@@ -58,15 +58,17 @@ const checkExpiry = (self, message) => {
 }
 
 function responseError(self, request, response, callback) {
-    let message = 'UnKnown';
-    let code = response.status;
-    if (response.data && response.data.message) {
-        message = response.data.message
-        if (checkExpiry(self, message)) {
-            showSpinner(self, false)
-            showError(request, message);
-            if (callback) {
-                callback({ request: request, error: { code: code, message: message } })
+    if (response) {
+        let message = 'UnKnown';
+        let code = response.status;
+        if (response.data && response.data.message) {
+            message = response.data.message
+            if (checkExpiry(self, message)) {
+                showSpinner(self, false)
+                showError(request, message);
+                if (callback) {
+                    callback({ request: request, error: { code: code, message: message } })
+                }
             }
         }
     }
@@ -116,7 +118,6 @@ export function sendWSRequest(request, callback) {
 
 
 export function sendMultiRequest(self, requestDataList, callback) {
-
     showSpinner(self, true)
     let promise = [];
     let resResults = [];

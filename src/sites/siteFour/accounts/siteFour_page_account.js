@@ -114,7 +114,7 @@ class SiteFourPageAccount extends React.Component {
     }
     render() {
         return (
-            <AccountListView devData={this.state.devData} headerLayout={this.headerLayout} siteId={'Account'} dataRefresh={this.getDataDeveloper} hiddenKeys={this.hiddenKeys}></AccountListView>
+            <AccountListView devdata={this.state.devData} headerlayout={this.headerLayout} siteId={'Account'} dataRefresh={this.getDataDeveloper} hiddenKeys={this.hiddenKeys}></AccountListView>
         );
     }
 

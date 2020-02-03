@@ -35,7 +35,20 @@ class SiteFourPageClusterInst extends React.Component {
         this.loadCount = 0;
         this.countObject = {};
         this.headerLayout = [1, 2, 2, 2, 2, 1, 2, 2, 1, 2];
-        this.hiddenKeys = ['Status', 'Deployment']
+        this.headerInfo = [
+            { field: 'Region', label: 'Region', sortable: true, visible: true },
+            { field: 'ClusterName', label: 'Cluster Name', sortable: true, visible: true },
+            { field: 'OrganizationName', label: 'Organization Name', sortable: true, visible: true },
+            { field: 'Operator', label: 'Operator', sortable: true, visible: true },
+            { field: 'Cloudlet', label: 'Cloudlet', sortable: true, visible: true },
+            { field: 'Flavor', label: 'Flavor', sortable: true, visible: true },
+            { field: 'Deployment', label: 'Deployment', sortable: true, visible: true },
+            { field: 'IpAccess', label: 'IP Access', sortable: true, visible: true },
+            { field: 'CloudletLocation', label: 'Cloudlet Location', sortable: false, visible: false },
+            { field: 'State', label: 'State', sortable: true, visible: false },
+            { field: 'Progress', label: 'Progress', sortable: false, visible: true },
+            { field: 'Actions', label: 'Actions', sortable: false, visible: true },
+        ]
 
     }
     gotoUrl(site, subPath) {
@@ -190,7 +203,7 @@ class SiteFourPageClusterInst extends React.Component {
                         }
                     }
                     let requestList = [];
-                    requestList.push({ token: token, method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: item } })
+                    requestList.push({ token: token, method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: item, org:localStorage.selectOrg } })
                     requestList.push({ token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: data })
                     serviceMC.sendMultiRequest(_self, requestList, _self.receiveClusterInstResult)
                 })
@@ -207,7 +220,7 @@ render() {
     let randomValue = Math.round(Math.random() * 100);
     return (
         (viewMode === 'listView') ?
-            <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} region='US' dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort}></MapWithListView>
+            <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} headerInfo = {this.headerInfo} siteId={'ClusterInst'} region='US' dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort}></MapWithListView>
             :
             <PageDetailViewer className="ttt" data={this.state.detailData} page='clusterInst' />
     );

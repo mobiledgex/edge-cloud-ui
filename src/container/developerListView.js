@@ -233,6 +233,7 @@ class DeveloperListView extends React.Component {
                                         : (key === 'AppName') ? 'App Name'
                                             : (key === 'DeploymentType') ? 'Deployment Type'
                                                 : (key === 'DefaultFlavor') ? 'Default Flavor'
+                                                    : (key === 'GPU') ? 'Number of GPUs'
                                                     : key}
                 </Table.HeaderCell>
         ));

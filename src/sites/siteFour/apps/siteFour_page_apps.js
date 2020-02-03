@@ -9,6 +9,7 @@ import * as serviceMC from '../../../services/serviceMC';
 import '../../siteThree.css';
 import InsideListView from '../../../container/insideListView';
 import ListDetailViewer from '../../../container/ListDetailViewer';
+import PageDetailViewer from "../../../container/pageDetailViewer";
 
 let _self = null;
 let rgn = [];
@@ -181,7 +182,8 @@ class SiteFourPageApps extends React.Component {
             (viewMode === 'listView') ?
                 <InsideListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'App'} randomId={randomId} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></InsideListView>
                 :
-                <ListDetailViewer data={detailData} dimmer={false} open={this.state.openDetail} siteId={'App'} close={this.closeDetail} siteId={this.props.siteId}></ListDetailViewer>
+                <PageDetailViewer className="ttt" data={detailData} page='App' />
+                //<ListDetailViewer data={detailData} dimmer={false} open={this.state.openDetail} siteId={'App'} close={this.closeDetail} siteId={this.props.siteId}></ListDetailViewer>
         );
     }
 
