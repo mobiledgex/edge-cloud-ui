@@ -110,6 +110,7 @@ class RegistryInstViewer extends React.Component {
         setTimeout(() => serviceMC.sendRequest(_self,{ token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: { region: _region } }, this.receiveResultClusterInst), 400);
 
     }
+
     receiveResultCloudlet = (mcRequestList) => {
         if(mcRequestList && mcRequestList.length>0)
         {
@@ -118,7 +119,7 @@ class RegistryInstViewer extends React.Component {
             mcRequestList.map(mcRequest=>{
                 if(mcRequest.request.method === serviceMC.getEP().SHOW_CLOUDLET ||  mcRequest.request.method === serviceMC.getEP().SHOW_ORG_CLOUDLET)
                 {
-                    cloudletList = mcRequest.response.data
+                    cloudletList = mcRequest.response.data.filter((item) => {return item.State === 5});
                 }
                 else if(mcRequest.request.method === serviceMC.getEP().SHOW_CLOUDLET_INFO)
                 {
@@ -163,7 +164,7 @@ class RegistryInstViewer extends React.Component {
     }
     receiveResultApp = (mcRequest) => {
         if (mcRequest) {
-            if (mcRequest.response) {
+            if (mcRequest.response && mcRequest.response.data) {
                 let response = mcRequest.response;
                 let appGroup = reducer.groupBy(response.data, 'OrganizationName')
                 let keys = Object.keys(appGroup);
@@ -177,7 +178,7 @@ class RegistryInstViewer extends React.Component {
     }
     receiveResultClusterInst = (mcRequest) => {
         if (mcRequest) {
-            if (mcRequest.response) {
+            if (mcRequest.response && mcRequest.response.data) {
                 let response = mcRequest.response;
 
                 let clinstGroup = reducer.groupBy(response.data, 'ClusterName')
