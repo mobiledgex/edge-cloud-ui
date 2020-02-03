@@ -1425,35 +1425,39 @@ export const filterUsageListByRegion = (pRegion, usageList) => {
 }
 
 export const getCloudletList = async () => {
-    let store = JSON.parse(localStorage.PROJECT_INIT);
-    let token = store ? store.userToken : 'null';
-    let requestData = {token: token, method: SHOW_CLOUDLET, data: {region: REGION.EU}};
-    let requestData2 = {token: token, method: SHOW_CLOUDLET, data: {region: REGION.US}};
-    let promiseList = []
-    promiseList.push(sendSyncRequest(this, requestData))
-    promiseList.push(sendSyncRequest(this, requestData2))
-    let showCloudletList = await Promise.all(promiseList);
-    /*console.log('results===EU>', showCloudletList[0].response.data);
-    console.log('results===US>', showCloudletList[1].response.data);*/
-    let resultList = [];
-    showCloudletList.map(item => {
-        //@todo : null check
-        if (item.response.data["0"].Region !== '') {
-            let cloudletList = item.response.data;
-            cloudletList.map(item => {
-                resultList.push(item);
-            })
-        }
-    })
+   try{
+       let store = JSON.parse(localStorage.PROJECT_INIT);
+       let token = store ? store.userToken : 'null';
+       let requestData = {token: token, method: SHOW_CLOUDLET, data: {region: REGION.EU}};
+       let requestData2 = {token: token, method: SHOW_CLOUDLET, data: {region: REGION.US}};
+       let promiseList = []
+       promiseList.push(sendSyncRequest(this, requestData))
+       promiseList.push(sendSyncRequest(this, requestData2))
+       let showCloudletList = await Promise.all(promiseList);
+       /*console.log('results===EU>', showCloudletList[0].response.data);
+       console.log('results===US>', showCloudletList[1].response.data);*/
+       let resultList = [];
+       showCloudletList.map(item => {
+           //@todo : null check
+           if (item.response.data["0"].Region !== '') {
+               let cloudletList = item.response.data;
+               cloudletList.map(item => {
+                   resultList.push(item);
+               })
+           }
+       })
 
-    let newCloudletList = []
-    resultList.map(item => {
-        if (item.Operator === localStorage.selectOrg) {
-            newCloudletList.push(item)
-        }
-    })
+       /* let newCloudletList = []
+        resultList.map(item => {
+            if (item.Operator === localStorage.selectOrg) {
+                newCloudletList.push(item)
+            }
+        })*/
 
-    return newCloudletList;
+       return resultList;
+   }catch (e) {
+
+   }
 }
 
 

@@ -135,7 +135,7 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
             }
         },
         maintainAspectRatio: false,//@todo
-        responsive: true,
+        responsive: true,//@todo
         datasetStrokeWidth: 3,
         pointDotStrokeWidth: 4,
         layout: {

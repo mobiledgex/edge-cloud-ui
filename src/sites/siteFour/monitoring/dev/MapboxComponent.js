@@ -91,18 +91,17 @@ export default class MapboxComponent extends Component<Props, State> {
             let CloudletLocation = '';
             let Cloudlet = '';
             let ClusterInst = '';
-            appInstanceListGroupByCloudlet[key].map((item: TypeAppInstance, index) => {
+            appInstanceListGroupByCloudlet[key].map((innerItem: TypeAppInstance, index) => {
 
                 if (index === (appInstanceListGroupByCloudlet[key].length - 1)) {
-                    AppNames += item.AppName;
+                    AppNames += innerItem.AppName + " | " + innerItem.ClusterInst;
                 } else {
-                    AppNames += item.AppName + " , "
+                    AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " , "
                 }
 
 
-                CloudletLocation = item.CloudletLocation;
-                Cloudlet = item.Cloudlet;
-                ClusterInst = item.ClusterInst;
+                CloudletLocation = innerItem.CloudletLocation;
+                Cloudlet = innerItem.Cloudlet;
 
             })
 
@@ -110,7 +109,7 @@ export default class MapboxComponent extends Component<Props, State> {
                 AppNames: AppNames,
                 CloudletLocation: CloudletLocation,
                 Cloudlet: Cloudlet,
-                ClusterInst: ClusterInst,
+                //ClusterInst: ClusterInst,
             })
 
         })
@@ -225,23 +224,37 @@ export default class MapboxComponent extends Component<Props, State> {
                                     width="25"/>
                                 }
 
-                                <div style={{color: 'yellow', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
+                                <div style={{color: 'yellow', fontWeight: 'bold', fontSize: 14, }}>
                                     [{item.Cloudlet}]
                                 </div>
-                                {listAppName.map(AppName => {
+                                {listAppName.map(AppName_ClusterInst => {
+
+                                    let AppName = AppName_ClusterInst.trim().split(" | ")[0].trim()
+                                    let ClusterInst = AppName_ClusterInst.trim().split(" | ")[1].trim()
+
+
                                     return (
 
-                                        <div style={{color: 'white', fontSize: 14, fontFamily: 'Righteous', cursor: 'crosshair', display: 'flex', flexDirection: 'column'}}
+                                        <div style={{color: 'white', fontSize: 12, fontFamily: 'Righteous', cursor: 'crosshair', display: 'flex', flexDirection: 'column'}}
                                         >
                                             <Ripples
                                                 color='#77BD25' during={500}
                                                 onClick={() => {
-                                                    let dataSet = AppName.trim() + " | " + item.Cloudlet.trim() + " | " + item.ClusterInst.trim()
+
+                                                    let arrayTemp = AppName_ClusterInst.split(" | ");
+
+                                                    let Cluster = arrayTemp[1].trim();
+                                                    let AppInst = arrayTemp[0].trim()
+                                                    let dataSet = AppInst + " | " + item.Cloudlet.trim() + " | " + Cluster
                                                     //showToast(dataSet)
                                                     this.props.handleAppInstDropdown(dataSet)
                                                 }}
                                             >
                                                 {AppName}
+                                                <div style={{color: '#77BD25', fontFamily: 'Acme', fontSize:12}}>
+                                                    &nbsp;&nbsp;{` [${ClusterInst.trim()}]`}
+                                                </div>
+
                                             </Ripples>
                                         </div>
 
