@@ -7,12 +7,13 @@ import {Button, Dropdown, Grid, Modal, Tab, Table} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import * as actions from '../../../actions';
+import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker, Progress,} from 'antd';
-import * as reducer from "../../../utils";
+import * as reducer from "../../../../utils";
 import {
-    cutArrayList, filterAppInstanceListByAppInst,
+    cutArrayList,
+    filterAppInstanceListByAppInst,
     filterAppInstanceListByCloudLet,
     filterAppInstanceListByClusterInst,
     filterAppInstanceListByRegion,
@@ -20,24 +21,26 @@ import {
     filterInstanceCountOnCloutLetOne,
     filterUsageByType,
     filterUsageListByRegion,
-    getUsageList,
+    getAppLevelUsageList,
     instanceFlavorToPerformanceValue,
     makeCloudletListSelectBox,
     makeClusterListSelectBox,
-    makeCompleteDateTime, makeGridInstanceList,
+    makeCompleteDateTime,
+    makeGridInstanceList,
     makeNetworkBarData,
-    makeNetworkLineChartData, numberWithCommas,
+    makeNetworkLineChartData,
     renderBarGraph,
     renderBubbleChart,
     renderLineChart,
-    renderPlaceHolder,
     renderPlaceHolder2,
     renderSixGridInstanceOnCloudletGrid,
-    requestShowAppInstanceList, Styles
-} from "./PageMonitoringService";
+    getAppInstList,
+    StylesForMonitoring
+} from "./PageAdminMonitoringService";
 import {
     APPINSTANCE_INIT_VALUE,
-    CLASSIFICATION, CONNECTIONS_OPTIONS,
+    CLASSIFICATION,
+    CONNECTIONS_OPTIONS,
     HARDWARE_OPTIONS,
     HARDWARE_TYPE,
     MONITORING_CATE_SELECT_TYPE,
@@ -45,16 +48,15 @@ import {
     NETWORK_TYPE,
     RECENT_DATA_LIMIT_COUNT,
     REGIONS_OPTIONS
-} from "../../../shared/Constants";
+} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
-import type {TypeGridInstanceList} from "../../../shared/Types";
-import {TypeAppInstance, TypeUtilization} from "../../../shared/Types";
+import type {TypeGridInstanceList} from "../../../../shared/Types";
+import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
-import './PageMonitoring.css'
-import {showToast} from "./PageMonitoringChartService";
-import {Icon,} from 'semantic-ui-react'
+import '../PageMonitoring.css'
+import {numberWithCommas, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -159,9 +161,8 @@ type State = {
 
 }
 
-
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
-    class PageMonitoring extends Component<Props, State> {
+    class PageAdminMonitoring extends Component<Props, State> {
         state = {
             date: '',
             time: '',
@@ -241,6 +242,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         componentDidMount = async () => {
+
+            let store = JSON.parse(localStorage.PROJECT_INIT);
+            let token = store ? store.userToken : 'null';
+
+            console.log('token===>', token);
+
+
+
+
+
             try {
                 await this.loadInitData();
             } catch (e) {
@@ -251,7 +262,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     allMemUsageList: [],
                     allNetworkUsageList: [],
                     allDiskUsageList: [],
-                    cloudletList: [],
+                    dropdownCloudletList: [],
                     clusterList: [],
                     filteredCpuUsageList: [],
                     filteredMemUsageList: [],
@@ -268,17 +279,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         async loadInitData() {
-            let userType = localStorage.getItem('selectRole')
-            console.log('userRole====>', userType);
+            let userRole = localStorage.getItem('selectRole')
+            console.log('userRole====>', userRole);
 
             this.setState({
                 loading: true,
                 loading0: true,
                 isReady: false,
-                userType: userType,
+                userType: userRole,
             })
             //todo: REALDATA
-            let appInstanceList: Array<TypeAppInstance> = await requestShowAppInstanceList();
+            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
 
             //todo: FAKE JSON FOR DEV
             //let appInstanceList: Array<TypeAppInstance> = require('../../../temp/appInstacelist2')
@@ -321,7 +332,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             });
             let usageList = [];
             try {
-                usageList = await getUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
+                usageList = await getAppLevelUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
             } catch (e) {
                 showToast(e.toString())
             }
@@ -410,7 +421,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
          * @todo: 셀렉트박스 Region, CloudLet, Cluster을 변경할때 처리되는 프로세스..
          * @todo: Process to be processed when changing select box Region, CloudLet, Cluster
          */
-        async filterByEachTypes(pRegion: string = '', pCloudLet: string = '', pCluster: string = '', pAppInstance: string = '', isDateFiltering: boolean = false,) {
+        async fliterOnCluster(pRegion: string = '', pCloudLet: string = '', pCluster: string = '', pAppInstance: string = '', isDateFiltering: boolean = false,) {
             let appInstanceList = []
             let allCpuUsageList = []
             let allMemUsageList = []
@@ -419,7 +430,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let allConnectionsUsageList = []
             let allGridInstanceList = []
 
-
             //@todo: 날짜에 의한 필터링인경우
             if (isDateFiltering) {
                 appInstanceList = this.state.appInstanceList;
@@ -427,7 +437,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 allMemUsageList = this.state.usageListByDate[1]
                 allNetworkUsageList = this.state.usageListByDate[2]
                 allDiskUsageList = this.state.usageListByDate[3]
-                allConnectionsUsageList = this.state.usageListByDate[4];
+                allConnectionsUsageList = this.state.usageListByDate[4]
                 allGridInstanceList = makeGridInstanceList(this.state.usageListByDate);
             } else {
                 appInstanceList = this.state.allAppInstanceList;
@@ -523,7 +533,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let gridInstanceListCpuMax = Math.max.apply(Math, allGridInstanceList.map(function (o) {
                 return o.sumCpuUsage;
             }));
-
             await this.setState({
                 filteredCpuUsageList: filteredCpuUsageList,
                 filteredMemUsageList: filteredMemUsageList,
@@ -590,12 +599,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 let endTime = makeCompleteDateTime(this.state.endTime);
 
                 this.setState({loading: true})
-                let usageList = await getUsageList(this.state.appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
+                let usageList = await getAppLevelUsageList(this.state.appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
                 this.setState({
                     usageListByDate: usageList,
                     loading: false
                 })
 
+                // pRegion?: string = '',     pCloudLet?: string = '',     pCluster?: string = '',     pAppInstance?: string = '',     isDateFiltering?: boolean = false): Promise<void>
                 this.filterByEachTypes(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, this.state.currentAppInst, true)
 
             }
@@ -666,6 +676,178 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
         }
 
+        /**
+         * @todo: 셀렉트박스 Region, CloudLet, Cluster을 변경할때 처리되는 프로세스..
+         * @todo: Process to be processed when changing select box Region, CloudLet, Cluster
+         */
+        async filterByEachTypes(pRegion: string = '', pCloudLet: string = '', pCluster: string = '', pAppInstance: string = '', isDateFiltering: boolean = false,) {
+            let appInstanceList = []
+            let allCpuUsageList = []
+            let allMemUsageList = []
+            let allDiskUsageList = []
+            let allNetworkUsageList = []
+            let allConnectionsUsageList = []
+            let allGridInstanceList = []
+
+            //@todo: 날짜에 의한 필터링인경우
+            if (isDateFiltering) {
+                appInstanceList = this.state.appInstanceList;
+                allCpuUsageList = this.state.usageListByDate[0]
+                allMemUsageList = this.state.usageListByDate[1]
+                allNetworkUsageList = this.state.usageListByDate[2]
+                allDiskUsageList = this.state.usageListByDate[3]
+                allConnectionsUsageList = this.state.usageListByDate[4]
+                allGridInstanceList = makeGridInstanceList(this.state.usageListByDate);
+            } else {
+                appInstanceList = this.state.allAppInstanceList;
+                allCpuUsageList = this.state.allCpuUsageList
+                allMemUsageList = this.state.allMemUsageList
+                allDiskUsageList = this.state.allDiskUsageList
+                allNetworkUsageList = this.state.allNetworkUsageList
+                allConnectionsUsageList = this.state.allConnectionsUsageList
+                allGridInstanceList = this.state.allGridInstanceList;
+            }
+
+            this.props.toggleLoading(true)
+            await this.setState({
+                loading0: true,
+                appInstanceListSortByCloudlet: [],
+                currentRegion: pRegion,
+                cloudletList: [],
+            })
+
+            //todo: -------------------------------------------
+            //todo: FLITER By pRegion
+            //todo: -------------------------------------------
+            appInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
+            let cloudletSelectBoxList = makeCloudletListSelectBox(appInstanceList)
+            let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
+
+            let filteredCpuUsageList = filterUsageListByRegion(pRegion, allCpuUsageList);
+            let filteredMemUsageList = filterUsageListByRegion(pRegion, allMemUsageList);
+            let filteredDiskUsageList = filterUsageListByRegion(pRegion, allDiskUsageList);
+            let filteredNetworkUsageList = filterUsageListByRegion(pRegion, allNetworkUsageList);
+            let filteredConnectionsUsageList = filterUsageListByRegion(pRegion, allConnectionsUsageList);
+
+            let filteredGridInstanceList = filterUsageListByRegion(pRegion, allGridInstanceList);
+
+            //todo: -------------------------------------------
+            //todo: FLITER  By pCloudLet
+            //todo: -------------------------------------------
+            let clusterSelectBoxList = [];
+            if (pCloudLet !== '') {
+                appInstanceListGroupByCloudlet = filterInstanceCountOnCloutLetOne(appInstanceListGroupByCloudlet, pCloudLet)
+                appInstanceList = filterAppInstanceListByCloudLet(appInstanceList, pCloudLet);
+                clusterSelectBoxList = makeClusterListSelectBox(appInstanceList, pCloudLet)
+                filteredCpuUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredCpuUsageList);
+                filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredMemUsageList);
+                filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredDiskUsageList);
+                filteredNetworkUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredNetworkUsageList);
+                filteredConnectionsUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredConnectionsUsageList);
+
+
+                filteredGridInstanceList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredGridInstanceList);
+            }
+
+            //todo: -------------------------------------------
+            //todo: Filter By pCluster
+            //todo: -------------------------------------------
+            if (pCluster !== '') {
+                //todo:LeftTop의 Cloudlet위에 올라가는 인스턴스 리스트를 필터링 처리하는 로직.
+                appInstanceListGroupByCloudlet[0] = filterAppInstOnCloudlet(appInstanceListGroupByCloudlet[0], pCluster)
+                //todo:app instalce list를 필터링
+                appInstanceList = filterAppInstanceListByClusterInst(appInstanceList, pCluster);
+                filteredCpuUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredCpuUsageList);
+                filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredMemUsageList);
+                filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredDiskUsageList);
+                filteredNetworkUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredNetworkUsageList);
+                filteredConnectionsUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCloudLet, filteredConnectionsUsageList);
+                filteredGridInstanceList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredGridInstanceList);
+
+            }
+
+            //todo: -------------------------------------------
+            //todo: FLITER By pAppInstance
+            //todo: -------------------------------------------
+            if (pAppInstance !== '') {
+                appInstanceList = filterAppInstanceListByAppInst(appInstanceList, pAppInstance);
+                filteredCpuUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredCpuUsageList);
+                filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredMemUsageList);
+                filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredDiskUsageList);
+                filteredNetworkUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredNetworkUsageList);
+                filteredConnectionsUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredConnectionsUsageList);
+
+                filteredGridInstanceList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredGridInstanceList);
+
+            }
+
+            //todo: -------------------------------------------
+            //todo: GridInstanceList MEM,CPU MAX VALUE
+            //todo: -------------------------------------------
+            let gridInstanceListMemMax = Math.max.apply(Math, allGridInstanceList.map(function (o) {
+                return o.sumMemUsage;
+            }));
+            let gridInstanceListCpuMax = Math.max.apply(Math, allGridInstanceList.map(function (o) {
+                return o.sumCpuUsage;
+            }));
+
+            await this.setState({
+                filteredCpuUsageList: filteredCpuUsageList,
+                filteredMemUsageList: filteredMemUsageList,
+                filteredDiskUsageList: filteredDiskUsageList,
+                filteredNetworkUsageList: filteredNetworkUsageList,
+                filteredConnectionsUsageList: filteredConnectionsUsageList,
+                filteredGridInstanceList: filteredGridInstanceList,
+                gridInstanceListMemMax: gridInstanceListMemMax,
+                gridInstanceListCpuMax: gridInstanceListCpuMax,
+                appInstanceList: appInstanceList,
+                appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
+                loading0: false,
+                cloudletList: cloudletSelectBoxList,
+                clusterList: clusterSelectBoxList,
+                currentCloudLet: pCloudLet,
+                currentCluster: pCluster,
+            });
+
+
+            //todo: MAKE TOP5 CPU/MEM USAGE SELECTBOX
+            if (pAppInstance === '') {
+                //todo: MAKE TOP5 INSTANCE LIST
+                let appInstanceListTop5 = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), CLASSIFICATION.APP_NAME)
+                await this.setState({
+                    appInstanceListTop5: appInstanceListTop5,
+                });
+            }
+            setTimeout(() => {
+                this.setState({
+                    cloudLetSelectBoxPlaceholder: 'Select CloudLet',
+                    clusterSelectBoxPlaceholder: 'Select Cluster',
+                })
+            }, 500)
+
+            //todo: -------------------------------------------
+            //todo: make BUBBLE CHART DATA
+            //todo: -------------------------------------------
+            let bubbleChartData = await this.makeBubbleChartData(appInstanceList);
+            await this.setState({
+                bubbleChartData: bubbleChartData,
+            })
+
+            //todo: -------------------------------------------
+            //todo: NETWORK chart data filtering
+            //todo: -------------------------------------------
+            let networkChartData = makeNetworkLineChartData(this.state.filteredNetworkUsageList, this.state.currentNetworkType)
+            let networkBarChartData = makeNetworkBarData(this.state.filteredNetworkUsageList, this.state.currentNetworkType)
+            await this.setState({
+                networkChartData: networkChartData,
+                networkBarChartData: networkBarChartData,
+            })
+
+
+            this.props.toggleLoading(false)
+        }
+
+
 
         renderBottomGridArea() {
             return (
@@ -722,7 +904,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     options={{
                                         loop: true,
                                         autoplay: true,
-                                        animationData: require('../../../lotties/loader001'),
+                                        animationData: require('../../../../lotties/loader001'),
                                         rendererSettings: {
                                             preserveAspectRatio: 'xMidYMid slice'
                                         }
@@ -949,7 +1131,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                 }}
                                 value={connectionsType}
-                                style={Styles.dropDown}
+                                style={StylesForMonitoring.dropDown}
                             />
                             }
                         </div>
@@ -1063,9 +1245,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+
         renderSelectBoxRow() {
-
-
             return (
                 <div className='page_monitoring_select_row'>
                     <div className='page_monitoring_select_area'>
@@ -1086,12 +1267,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 options={REGIONS_OPTIONS}
                                 defaultValue={REGIONS_OPTIONS[0].value}
                                 onChange={async (e, {value}) => {
-                                    await this.filterByEachTypes(value)
-                                    setTimeout(() => {
-                                        this.setState({
-                                            cloudLetSelectBoxPlaceholder: 'Select CloudLet'
-                                        })
-                                    }, 1000)
+                                    try{
+                                        await this.filterByEachTypes(value)
+                                        setTimeout(() => {
+                                            this.setState({
+                                                cloudLetSelectBoxPlaceholder: 'Select CloudLet'
+                                            })
+                                        }, 1000)
+                                    }catch (e) {
+
+                                    }
+
                                 }}
                                 value={this.state.currentRegion}
                                 // style={Styles.dropDown}
@@ -1105,9 +1291,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                         <div className="page_monitoring_dropdown_box">
                             <div className="page_monitoring_dropdown_label">
-                                Cloudlet
+                                CloudLet
                             </div>
-
                             <Dropdown
                                 disabled={this.state.loading}
                                 value={this.state.currentCloudLet}
@@ -1118,15 +1303,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 options={this.state.cloudletList}
                                 // style={Styles.dropDown}
                                 onChange={async (e, {value}) => {
-                                    await this.filterByEachTypes(this.state.currentRegion, value)
-                                    setTimeout(() => {
-                                        this.setState({
-                                            clusterSelectBoxPlaceholder: 'Select Cluster'
-                                        })
-                                    }, 1000)
+                                    try{
+                                        await this.filterByEachTypes(this.state.currentRegion, value)
+                                        setTimeout(() => {
+                                            this.setState({
+                                                clusterSelectBoxPlaceholder: 'Select Cluster'
+                                            })
+                                        }, 1000)
+                                    }catch (e) {
+                                    }
+
                                 }}
                             />
                         </div>
+
+
 
 
                         {/*todo:---------------------------*/}
@@ -1140,20 +1331,26 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 disabled={this.state.loading}
                                 value={this.state.currentCluster}
                                 clearable={this.state.clusterSelectBoxClearable}
-                                loading={this.state.loading}
+                                disabled={this.state.currentCloudLet === '' || this.state.loading}
                                 placeholder={this.state.clusterSelectBoxPlaceholder}
                                 selection
                                 options={this.state.clusterList}
                                 // style={Styles.dropDown}
                                 onChange={async (e, {value}) => {
-                                    await this.filterByEachTypes(this.state.currentRegion, this.state.currentCloudLet, value)
+                                    try{
+                                        await this.filterByEachTypes(this.state.currentRegion, this.state.currentCloudLet, value)
 
-                                    setTimeout(() => {
-                                        this.setState({
-                                            appInstSelectBoxPlaceholder: "Select App Instance",
-                                            currentAppInst: '',
-                                        })
-                                    }, 500)
+                                        setTimeout(() => {
+                                            this.setState({
+                                                appInstSelectBoxPlaceholder: "Select App Instance",
+                                                currentAppInst: '',
+                                            })
+                                        }, 500)
+                                    }catch (e) {
+
+
+                                    }
+
                                 }}
                             />
                         </div>
@@ -1166,7 +1363,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 App Inst
                             </div>
                             <Dropdown
-                                disabled={this.state.loading}
+                                disabled={this.state.currentCluster === '' || this.state.loading}
                                 clearable={this.state.appInstSelectBoxClearable}
                                 loading={this.state.loading}
                                 value={this.state.currentAppInst}
@@ -1176,10 +1373,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 // style={Styles.dropDown}
                                 onChange={async (e, {value}) => {
 
-                                    await this.setState({
-                                        currentAppInst: value,
-                                    })
-                                    await this.filterByEachTypes(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
+                                    try{
+                                        await this.setState({
+                                            currentAppInst: value,
+                                        })
+                                        await this.filterByEachTypes(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
+                                    }catch (e) {
+
+                                    }
+
                                 }}
                             />
                         </div>
@@ -1198,13 +1400,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 format="YYYY-MM-DD HH:mm"
                                 placeholder={[moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]}
                                 onOk={async (date) => {
-                                    let stateTime = date[0].format('YYYY-MM-DD HH:mm')
-                                    let endTime = date[1].format('YYYY-MM-DD HH:mm')
-                                    await this.setState({
-                                        startTime: stateTime,
-                                        endTime: endTime,
-                                    })
-                                    this.filterUsageListByDate()
+
+                                    try{
+                                        let stateTime = date[0].format('YYYY-MM-DD HH:mm')
+                                        let endTime = date[1].format('YYYY-MM-DD HH:mm')
+                                        await this.setState({
+                                            startTime: stateTime,
+                                            endTime: endTime,
+                                        })
+                                        this.filterUsageListByDate()
+                                    }catch (e) {
+
+                                    }
+
                                 }}
                                 ranges={{
                                     Today: [moment(), moment()],
@@ -1217,10 +1425,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     'Last 730 Days': [moment().subtract(729, 'd'), moment().subtract(0, 'd')],
                                     'Last 1095 Days': [moment().subtract(1094, 'd'), moment().subtract(0, 'd')],
                                 }}
-                                style={{width: 300}}
+                                // style={{width: 300}}
                             />
                         </div>
-
                     </div>
                 </div>
 
@@ -1293,7 +1500,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         fullLabel: item.instance.AppName.toString(),
                     })
                 })
-            } else if (value === HARDWARE_TYPE.SEND_BYTE) {
+            } else if (value === HARDWARE_TYPE.SEND_BYTES) {
                 allNetworkUsageList.map((item, index) => {
                     chartData.push({
                         index: index,
@@ -1305,18 +1512,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             }
 
+            //@todo:-----------------------
             //todo: bubbleChart
-            //todo: bubbleChart
-            //todo: bubbleChart
+            //@todo:-----------------------
             this.setState({
                 bubbleChartData: chartData,
             });
         }
 
         //@todo:-----------------------
-        //@todo:-----------------------
         //@todo:    CPU,MEM,DISK TAB
-        //@todo:-----------------------
         //@todo:-----------------------
         CPU_MEM_DISK_CONN_TABS = [
 
@@ -1373,11 +1578,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         ]
 
         render() {
-            {/*todo:-------------------------------------------------------------------------------*/
-            }
             // todo: Components showing when the loading of graph data is not completed.
-            {/*todo:-------------------------------------------------------------------------------*/
-            }
             if (!this.state.isAppInstaceDataReady) {
                 return (
                     <Grid.Row className='view_contents'>
@@ -1389,7 +1590,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         options={{
                                             loop: true,
                                             autoplay: true,
-                                            animationData: require('../../../lotties/loader001'),
+                                            animationData: require('../../../../lotties/loader001'),
                                             rendererSettings: {
                                                 preserveAspectRatio: 'xMidYMid slice'
                                             }
@@ -1609,8 +1810,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*todo: BOTTOM APP INSTACE LIST         */}
                                                         {/*todo:---------------------------------*/}
                                                         <div className='page_monitoring_popup_table'>
-                                                            {this.state.filteredGridInstanceList.length === 0 ?
-                                                                <div style={Styles.noData}>
+                                                            {this.state.filteredGridInstanceList.length && this.state.isReady === 0 ?
+                                                                <div style={StylesForMonitoring.noData}>
                                                                     NO DATA
                                                                 </div>
                                                                 : this.renderBottomGridArea()}
