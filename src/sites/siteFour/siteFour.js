@@ -49,6 +49,9 @@ import SiteFourPageCloudletPool from './cloudletPool/siteFour_page_cloudletPool'
 import SiteFourPageCloudletPoolReg from './cloudletPool/siteFour_page_cloudletPoolReg';
 import SiteFourPageLinkOrganizeReg from './cloudletPool/siteFour_page_linkOrganizeReg';
 import SiteFourPageCloudletPoolUpdate from './cloudletPool/siteFour_page_cloudletPoolUpdate';
+import SiteFourAutoScalePolicy from './autoPolicy/siteFour_page_autoScalePolicy';
+import SiteFourAutoProvPolicy from './autoProvPolicy/siteFour_page_autoProvPolicy';
+import SiteFourAutoProvPolicyReg from './autoProvPolicy/autoProvPolicyReg';
 import PageMonitoring from './monitoring/PageMonitoring'
 
 import PopLegendViewer from '../../container/popLegendViewer';
@@ -160,6 +163,8 @@ class SiteFour extends React.Component {
             { label: 'Apps', icon: 'apps', pg: 5 },
             { label: 'App Instances', icon: 'storage', pg: 6 },
             { label: 'Monitoring', icon: 'tv', pg: 'Monitoring' },
+            { label: 'Auto Scale Policy', icon: 'policy', pg: '8' },
+            { label: 'Auto Prov Policy', icon: 'policy', pg: '9' },
             { label: 'Audit Log', icon: 'check', pg: 'audits' }
         ]
         this.menuItems = [ //developer menu
@@ -283,6 +288,9 @@ class SiteFour extends React.Component {
         } else if (localStorage.selectMenu === 'Cloudlet Pool') {
             this.setState({ page: 'pg=createCloudletPool' })
             this.gotoUrl('/site4', 'pg=createCloudletPool')
+        }else if (localStorage.selectMenu === 'Auto Prov Policy') {
+            this.setState({ page: 'pg=createAutoProvPolicy' })
+            this.gotoUrl('/site4', 'pg=createAutoProvPolicy')
         } else {
             this.props.handleInjectDeveloper('newRegist');
         }
@@ -1084,18 +1092,17 @@ class SiteFour extends React.Component {
                                                             (this.state.page === 'pg=2') ? <SiteFourPageCloudlet></SiteFourPageCloudlet> :
                                                                 (this.state.page === 'pg=3') ? <SiteFourPageFlavor></SiteFourPageFlavor> :
                                                                     (this.state.page === 'pg=4') ? <SiteFourPageClusterInst></SiteFourPageClusterInst> :
-                                                                        /*@todo:apps detail page*/
-                                                                        /*@todo:apps detail page*/
-                                                                        /*@todo:apps detail page*/
-                                                                        /*@todo:apps detail page*/
                                                                         (this.state.page === 'pg=5') ? <SiteFourPageApps></SiteFourPageApps> :
                                                                             (this.state.page === 'pg=6') ? <SiteFourPageAppInst></SiteFourPageAppInst> :
                                                                                 (this.state.page === 'pg=7') ? <SiteFourPageCloudletPool></SiteFourPageCloudletPool> :
+                                                                                    (this.state.page === 'pg=8') ? <SiteFourAutoScalePolicy></SiteFourAutoScalePolicy> :
+                                                                                    (this.state.page === 'pg=9') ? <SiteFourAutoProvPolicy></SiteFourAutoProvPolicy> :
                                                                                     (this.state.page === 'pg=newOrg') ? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
                                                                                         (this.state.page === 'pg=createApp') ? <SiteFourPageAppReg editable={false}></SiteFourPageAppReg> :
                                                                                             (this.state.page === 'pg=editApp') ? <SiteFourPageAppReg editable={true}></SiteFourPageAppReg> :
                                                                                                 (this.state.page === 'pg=createAppInst') ? <SiteFourPageAppInstReg editable={false}></SiteFourPageAppInstReg> :
                                                                                                     (this.state.page === 'pg=createCloudletPool') ? <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
+                                                                                                    (this.state.page === 'pg=createAutoProvPolicy') ? <SiteFourAutoProvPolicyReg></SiteFourAutoProvPolicyReg> :
                                                                                                         (this.state.page === 'pg=updateCloudletPool') ? <SiteFourPageCloudletPoolUpdate></SiteFourPageCloudletPoolUpdate> :
                                                                                                             (this.state.page === 'pg=linkOrganize') ? <SiteFourPageLinkOrganizeReg></SiteFourPageLinkOrganizeReg> :
                                                                                                                 (this.state.page === 'pg=createCloudletPool') ? <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :

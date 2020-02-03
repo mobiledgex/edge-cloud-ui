@@ -18,6 +18,7 @@ import * as FormatComputeCloudletPoolMember from './formatter/formatComputeCloud
 import * as FormatComputeCloudletPoolMemberDelete from './formatter/formatComputeCloudletPoolMemberDelete';
 import * as FormatComputeOrgCloudlet from './formatter/formatComputeOrgCloudlet';
 import * as FormatComputeLinkPoolOrgDelete from './formatter/formatComputeLinkPoolOrgDelete';
+import * as FormatAutoProvPolicy from './formatter/formatAutoProvPolicy';
 
 
 export const SHOW_ORG = "showOrg";
@@ -76,6 +77,7 @@ export const DELETE_CLOUDLET_POOL_MEMBER = "DeleteCloudletPoolMember";
 export const SHOW_ORG_CLOUDLET = "orgcloudlet";
 export const DELETE_LINK_POOL_ORG = "DeleteLinkPoolOrg";
 export const RUN_COMMAND = "RunCommand";
+export const SHOW_AUTO_PROV_POLICY = "ShowAutoProvPolicy";
 
 export function getPath(request) {
     switch (request.method) {
@@ -135,6 +137,7 @@ export function getPath(request) {
         case CREATE_CLOUDLET_POOL:
         case CREATE_CLOUDLET_POOL_MEMBER:
         case DELETE_CLOUDLET_POOL_MEMBER:
+        case SHOW_AUTO_PROV_POLICY:
         case RUN_COMMAND:
             return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:
@@ -210,6 +213,9 @@ export function formatData(request, response) {
             break;
         case SHOW_ORG_CLOUDLET:
             data = FormatComputeOrgCloudlet.formatData(response, request.data)
+            break;
+        case SHOW_AUTO_PROV_POLICY:
+            data = FormatAutoProvPolicy.formatData(response, request.data)
             break;
         default:
             data = undefined;
