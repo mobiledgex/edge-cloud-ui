@@ -7,7 +7,14 @@ import BubbleChart from "../../../../components/BubbleChart";
 import type {TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import PageMonitoring from "./PageDevMonitoring";
-import {makeFormForClusterLevelMatric, numberWithCommas, renderBarChartCore, renderUsageByType, renderUsageByTypeForAppInst, renderUsageLabelByTypeForAppInst} from "../PageMonitoringCommonService";
+import {
+    makeFormForClusterLevelMatric,
+    numberWithCommas,
+    renderBarChartCore,
+    renderUsageByType,
+    renderUsageByTypeForAppInst,
+    renderUsageLabelByTypeForAppInst
+} from "../PageMonitoringCommonService";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../../services/serviceMC";
 import {Table} from "semantic-ui-react";
@@ -819,12 +826,14 @@ export const makeLineChartDataForAppInst = (allHWUsageList: Array, hardwareType:
 
 }
 
-export const convertNetworkTitle = (pHardwareType) => {
+export const convertGraphTitle = (pHardwareType) => {
 
-    if (pHardwareType === HARDWARE_TYPE.RECV_BYTES) {
-        return pHardwareType
-    } else {
-        return pHardwareType
+    if (pHardwareType === HARDWARE_TYPE.RECVBYTES || pHardwareType === HARDWARE_TYPE.SENDBYTES) {
+        return HARDWARE_TYPE.NETWORK
+    } else if (pHardwareType === HARDWARE_TYPE.TCPCONNS || pHardwareType === HARDWARE_TYPE.TCPRETRANS) {
+        return HARDWARE_TYPE.TCP
+    }else if (pHardwareType === HARDWARE_TYPE.UDPRECV || pHardwareType === HARDWARE_TYPE.UDPSENT) {
+        return HARDWARE_TYPE.UDP
     }
 
 }

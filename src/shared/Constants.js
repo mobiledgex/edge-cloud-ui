@@ -21,15 +21,20 @@ export const REGION = {
 export const USAGE_TYPE = {
     SUM_CPU_USAGE: 'sumCpuUsage',
     SUM_MEM_USAGE: 'sumMemUsage',
+    SUM_SEND_BYTES: 'sumSendBytes',
     SUM_RECV_BYTES: 'sumRecvBytes',
     SUM_DISK_USAGE: 'sumDiskUsage',
-    SUM_TCP_CONNS: 'sumTcpConns'
+    SUM_UDP_SENT: 'sumUdpSent',
+    SUM_UDP_RECV: 'sumUdpRecv',
+    SUM_TCP_CONNS: 'sumTcpConns',
+    SUM_TCP_RETRANS: 'sumTcpRetrans',
 
+
+    /*sumUdpRecv: 1087
+    sumUdpRecvErr: 0
+    sumTcpConns: 196
+    sumTcpRetrans: 865*/
     /*  sumUdpSent: 6827
-      sumUdpRecv: 1087
-      sumUdpRecvErr: 0
-      sumTcpConns: 196
-      sumTcpRetrans: 865
       sumSendBytes: 435582.3
       sumRecvBytes: 136609.3
       sumMemUsage: 29.078074012239632
@@ -98,13 +103,13 @@ export const NETWORK_OPTIONS = [
 ]
 
 export const TCP_OPTIONS = [
-    {text: 'TCPCONNS', value: 'TCPCONNS'},
-    {text: 'TCPRETRANS', value: 'TCPRETRANS'},
+    {text: 'TCP CONNS', value: 'TCPCONNS'},
+    {text: 'TCP RETRANS', value: 'TCPRETRANS'},
 ]
 
 export const UDP_OPTIONS = [
-    {text: 'UDPRECV', value: 'UDPRECV'},
-    {text: 'UDPSENT', value: 'UDPSENT'},
+    {text: 'UDP RECV', value: 'UDPRECV'},
+    {text: 'UDP SENT', value: 'UDPSENT'},
     //{text: 'UDPRECVERR', value: 'UDPRECVERR'},
 
 ]
@@ -185,13 +190,12 @@ export const HARDWARE_OPTIONS_FOR_CLUSTER = [
     {text: 'CPU', value: 'CPU'},
     {text: 'MEM', value: 'MEM'},
     {text: 'DISK', value: 'DISK'},
-    {text: 'RECV BYTES', value: 'RECV_BYTES'},
-    {text: 'SEND BYTES', value: 'SEND_BYTES'},
-    {text: 'UDP_SENT', value: 'UDPSENT'},
-    {text: 'UDP_RECVERR', value: 'UDPRECVERR'},
-    {text: 'TCP_CONNS', value: 'TCPCONNS'},
-    {text: 'TCP_RETRANS', value: 'TCPRETRANS'},
-
+    {text: 'RECV BYTES', value: 'RECVBYTES'},
+    {text: 'SEND BYTES', value: 'SENDBYTES'},
+    {text: 'TCP CONNS', value: 'TCPCONNS'},
+    {text: 'TCP RETRANS', value: 'TCPRETRANS'},
+    {text: 'UDP RECV', value: 'UDPRECVERR'},
+    {text: 'UDP SENT', value: 'UDPSENT'},
 ]
 
 

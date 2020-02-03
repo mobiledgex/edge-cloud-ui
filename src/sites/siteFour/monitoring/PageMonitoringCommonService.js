@@ -905,16 +905,29 @@ export const hardwareTypeToUsageKey = (hwType: string) => {
     }
 
     if (hwType === HARDWARE_TYPE.MEM.toUpperCase()) {
-        return "sumMemUsage"
+        return USAGE_TYPE.SUM_MEM_USAGE
     }
 
     if (hwType === HARDWARE_TYPE.DISK.toUpperCase()) {
-        return "sumDiskUsage"
+        return USAGE_TYPE.SUM_DISK_USAGE
     }
 
     if (hwType === HARDWARE_TYPE.TCPCONNS.toUpperCase()) {
-        return "sumTcpConns"
+        return USAGE_TYPE.SUM_TCP_CONNS
     }
+
+    if (hwType === HARDWARE_TYPE.TCPRETRANS.toUpperCase()) {
+        return USAGE_TYPE.SUM_TCP_RETRANS
+    }
+
+    if (hwType === HARDWARE_TYPE.UDPRECV.toUpperCase()) {
+        return USAGE_TYPE.SUM_UDP_RECV
+    }
+
+    if (hwType === HARDWARE_TYPE.UDPSENT.toUpperCase()) {
+        return USAGE_TYPE.SUM_UDP_SENT
+    }
+
 
 }
 export const NumberToFixed = (value: number, fixedLength: number) => {
@@ -925,14 +938,13 @@ export const NumberToFixed = (value: number, fixedLength: number) => {
     }
 }
 
-export const makeBubbleChartDataForCluster = (usageList: any, paramHWType) => {
+export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType) => {
 
     console.log('makeBubbleChartDataForCluster===>', usageList)
 
     let bubbleChartData = []
     usageList.map((item, index) => {
-
-        let usageValue: number = item[hardwareTypeToUsageKey(paramHWType)]
+        let usageValue: number = item[hardwareTypeToUsageKey(pHardwareType)]
         usageValue = usageValue.toFixed(2)
 
         bubbleChartData.push({

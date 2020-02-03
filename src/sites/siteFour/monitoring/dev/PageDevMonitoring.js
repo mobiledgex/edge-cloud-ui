@@ -11,7 +11,7 @@ import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker,} from 'antd';
 import {
-    convertNetworkTitle,
+    convertGraphTitle,
     filterUsageByClassification,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
@@ -451,7 +451,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                TOP5 of {convertNetworkTitle(subCategoryType)} Usage on {this.state.currentClassification}
+                                TOP5 of {convertGraphTitle(subCategoryType)} Usage on {this.state.currentClassification}
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
@@ -461,7 +461,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title_select'>
-                                {convertNetworkTitle(subCategoryType)} Usage of {this.state.currentClassification}
+                                {convertGraphTitle(subCategoryType)} Usage of {this.state.currentClassification}
                             </div>
                             {!this.state.loading && this.renderDropDownForMultiTab(subCategoryType)}
                         </div>
@@ -518,8 +518,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 return this.renderDropdownForTCP(cate)
             } else if (cate === HARDWARE_TYPE.UDPRECV || cate === HARDWARE_TYPE.UDPSENT) {
                 return this.renderDropdownForUDP(cate)
-            }
-            else if (cate === HARDWARE_TYPE.RECVBYTES || cate === HARDWARE_TYPE.SENDBYTES){
+            } else if (cate === HARDWARE_TYPE.RECVBYTES || cate === HARDWARE_TYPE.SENDBYTES) {
                 return this.renderDropdownForConnections(cate)
             }
 
@@ -1204,7 +1203,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             defaultValue={HARDWARE_OPTIONS_FOR_CLUSTER[0].value}
                                                             onChange={async (e, {value}) => {
                                                                 try {
-                                                                    let bubbleChartData = makeBubbleChartDataForCluster(this.state.allUsageList, value);
+                                                                    let bubbleChartData = makeBubbleChartDataForCluster(this.state.filteredClusterUsageList, value);
                                                                     this.setState({
                                                                         bubbleChartData: bubbleChartData,
                                                                         currentHardwareType: value,
