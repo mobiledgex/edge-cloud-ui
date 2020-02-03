@@ -7,22 +7,12 @@ import BubbleChart from "../../../../components/BubbleChart";
 import type {TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import PageMonitoring from "./PageDevMonitoring";
-import {
-    makeFormForClusterLevelMatric,
-    numberWithCommas,
-    renderBarChartCore,
-    renderUsageByType,
-    renderUsageByTypeForAppInst,
-    renderUsageLabelByTypeForAppInst
-} from "../PageMonitoringCommonService";
+import PageMonitoringForDeveloper from "./PageDevMonitoring";
+import {makeFormForClusterLevelMatric, numberWithCommas, renderBarChartCore, renderUsageByType} from "../PageMonitoringCommonService";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../../services/serviceMC";
 import {Table} from "semantic-ui-react";
-import PageMonitoringForDeveloper from "./PageDevMonitoring";
-import {renderLineChartCore, renderUsageLabelByType, StylesForMonitoring} from "../admin/PageAdminMonitoringService";
-import {Chart} from "react-google-charts";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import {Line as ReactChartJs} from "react-chartjs-2";
+import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
 
 export const getClusterLevelMatric = async (serviceBody: any, pToken: string) => {
     console.log('token2===>', pToken);
