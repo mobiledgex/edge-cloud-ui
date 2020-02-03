@@ -216,7 +216,7 @@ export default class MapboxComponent extends Component<Props, State> {
                                 //style={styles.marker}
                                 coordinates={[item.CloudletLocation.longitude, item.CloudletLocation.latitude]}
                             >
-                                <img src={require('./red_marker.png')} style={{color: 'red'}} height="30" width="25"/>
+                                <img src={require('../../../../assets/red_marker.png')} style={{color: 'red'}} height="30" width="25"/>
 
                                 {item.Cloudlet.trim() === 'hamburg-stage' &&
                                 <img
