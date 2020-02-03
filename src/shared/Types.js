@@ -37,7 +37,24 @@ export type TypeCloudletUsageList = {
     operator: string,
 }
 
-
+export type TypeClusterUsageList = {
+    uuid: string,
+    Region: string,
+    cluster: string,
+    OrganizationName: string,
+    Operator: string,
+    Cloudlet: string,
+    Flavor: string,
+    IpAccess: number,
+    CloudletLocation: string,
+    State: number,
+    Progress: string,
+    sumCpuUsage: number,
+    sumMemUsage: number,
+    sumDiskUsage: number,
+    sumRecvBytes: number,
+    sumSendBytes: number,
+}
 export type TypeAppInstance = {
     "Region": string,
     "OrganizationName": string,

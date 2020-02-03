@@ -3,13 +3,13 @@ import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import OutsideClickHandler from 'react-outside-click-handler';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Button, Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
+import {Button, Dropdown, Grid, Modal, Tab, Table} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
-import {DatePicker,} from 'antd';
+import {DatePicker, Progress,} from 'antd';
 import {
     convertHwTypePhrases,
     filterUsageByClassification,
@@ -31,14 +31,14 @@ import {
     RECENT_DATA_LIMIT_COUNT, TCP_OPTIONS, UDP_OPTIONS
 } from "../../../../shared/Constants";
 import Lottie from "react-lottie";
-import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData} from "../../../../shared/Types";
+import type {TypeBarChartData, TypeCloudletUsageList, TypeClusterUsageList, TypeGridInstanceList, TypeLineChartData} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import '../PageMonitoring.css'
 import {
     getOneYearStartEndDatetime,
-    makeBubbleChartDataForCluster,
+    makeBubbleChartDataForCluster, numberWithCommas,
     renderBarChartCore,
     renderLineChartCore,
     renderPlaceHolder,
@@ -503,7 +503,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
                                 {convertHwTypePhrases(pHardwareType)} Usage of {this.state.loading ?
-                                <CircularProgress size={9} style={{fontSize: 9, color: '#77BD25', marginLeft: 5, marginBottom: 1,}}/> : this.convertToClassification(this.state.currentClassification)}
+                                <CircularProgress size={9} style={{
+                                    fontSize: 9,
+                                    color: '#77BD25',
+                                    marginLeft: 5,
+                                    marginBottom: 1,
+                                }}/> : this.convertToClassification(this.state.currentClassification)}
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
@@ -523,7 +528,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
                         </div>
                     </div>
-
 
 
                 </div>
@@ -1005,6 +1009,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentCluster: currentCluster,
             })
 
+            await this.setState({
+                currentTabIndex: 0,
+            })
+
+
             /*
             this.interval = setInterval(async () => {
                    this.setState({
@@ -1085,6 +1094,131 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 bubbleChartData: bubbleChartData,
             })
+        }
+
+        renderBottomGridAreaForCluster() {
+            return (
+                <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
+                    <Table.Header className="viewListTableHeader">
+                        <Table.Row>
+                            <Table.HeaderCell>
+                                index
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
+                                Cluster
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
+                                CPU(%)
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
+                                MEM
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
+                                DISK
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
+                                NETWORK RECV
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
+                                NETWORK SENT
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
+                                UDP REV
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
+                                UDP SENT
+                            </Table.HeaderCell>
+
+                        </Table.Row>
+                    </Table.Header>
+                    <Table.Body className="tbBodyList"
+                                ref={(div) => {
+                                    this.messageList = div;
+                                }}
+                    >
+                        {/*-----------------------*/}
+                        {/*todo:ROW HEADER        */}
+                        {/*-----------------------*/}
+                        {!this.state.isReady &&
+                        <Table.Row className='page_monitoring_popup_table_empty'>
+                            <Table.Cell>
+                                <Lottie
+                                    options={{
+                                        loop: true,
+                                        autoplay: true,
+                                        animationData: require('../../../../lotties/loader001'),
+                                        rendererSettings: {
+                                            preserveAspectRatio: 'xMidYMid slice'
+                                        }
+                                    }}
+                                    height={240}
+                                    width={240}
+                                    isStopped={false}
+                                    isPaused={false}
+                                />
+                            </Table.Cell>
+                        </Table.Row>}
+                        {this.state.isReady && this.state.filteredClusterUsageList.map((item: TypeClusterUsageList, index) => {
+
+                            console.log('filteredClusterUsageList==item==>', item);
+
+                            return (
+                                <Table.Row className='page_monitoring_popup_table_row'>
+
+                                    <Table.Cell>
+                                        {index}
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        {item.cluster}
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        <div>
+                                            <div>
+                                                {item.sumCpuUsage.toFixed(2) + '%'}
+                                            </div>
+                                            <div>
+                                                <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                                          percent={(item.sumCpuUsage / this.state.maxCpu * 100)}
+                                                    //percent={(item.sumCpuUsage / this.state.gridInstanceListCpuMax) * 100}
+                                                          strokeColor={'#29a1ff'} status={'normal'}/>
+                                            </div>
+                                        </div>
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        <div>
+                                            <div>
+                                                {numberWithCommas(item.sumMemUsage) + ' Byte'}
+                                            </div>
+                                            <div>
+                                                <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                                          percent={(item.sumMemUsage / this.state.maxMem * 100)}
+                                                          strokeColor={'#29a1ff'} status={'normal'}/>
+                                            </div>
+
+                                        </div>
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        {numberWithCommas(item.sumDiskUsage) + ' Byte'}
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        {numberWithCommas(item.sumRecvBytes) + ' Byte'}
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        {numberWithCommas(item.sumSendBytes) + ' Byte'}
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        {item.sumSendBytes}
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        {item.sumSendBytes}
+                                    </Table.Cell>
+                                </Table.Row>
+
+                            )
+                        })}
+                    </Table.Body>
+                </Table>
+            )
         }
 
 
@@ -1327,16 +1461,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             </div>
                                                             <div/>
                                                         </div>
-                                                        {/*todo:---------------------------------*/}
-                                                        {/*todo: BOTTOM APP INSTACE LIST         */}
-                                                        {/*todo:---------------------------------*/}
-                                                        {/*  <div className='page_monitoring_popup_table'>
+                                                        {/*fixme:---------------------------------*/}
+                                                        {/*fixme: BOTTOM APP INSTACE LIST         */}
+                                                        {/*fixme:---------------------------------*/}
+                                                        <div className='page_monitoring_popup_table'>
                                                             {this.state.cloudletList.length && this.state.isReady === 0 ?
-                                                                <div style={Styles.noData}>
+                                                                <div style={StylesForMonitoring.noData}>
                                                                     NO DATA
                                                                 </div>
-                                                                : this.renderBottomGridAreaForCloudlet()}
-                                                        </div>*/}
+                                                                : this.renderBottomGridAreaForCluster()}
+                                                        </div>
                                                     </div>
                                                 </OutsideClickHandler>
                                             </ToggleDisplay>

@@ -1252,4 +1252,3 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
     }
 ))));
 
-
