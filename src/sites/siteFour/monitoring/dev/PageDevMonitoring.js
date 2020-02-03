@@ -11,7 +11,7 @@ import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker,} from 'antd';
 import {
-    convertGraphTitle,
+    convertHwTypePhrases,
     filterUsageByClassification,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
@@ -448,7 +448,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
         }
 
-        renderGraphAreaMulti(subCategoryType, barChartDataSet, lineChartDataSet) {
+        renderGraphAreaMulti(pHardwareType, barChartDataSet, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column'>
                     {/*@todo:BarChartCore*/}
@@ -457,7 +457,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                TOP5 of {convertGraphTitle(subCategoryType)} Usage on {this.state.currentClassification}
+                                Top 5 {convertHwTypePhrases(pHardwareType)} usage of {this.convertToClassification(this.state.currentClassification)}
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
@@ -467,9 +467,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title_select'>
-                                {convertGraphTitle(subCategoryType)} Usage of {this.state.currentClassification}
+                                {convertHwTypePhrases(pHardwareType)} Usage of {this.convertToClassification(this.state.currentClassification)}
                             </div>
-                            {!this.state.loading && this.renderDropDownForMultiTab(subCategoryType)}
+                            {!this.state.loading && this.renderDropDownForMultiTab(pHardwareType)}
                         </div>
                         <div className='page_monitoring_container'>
                             {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
@@ -477,6 +477,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     </div>
                 </div>
             )
+        }
+
+        convertToClassification(pClassfication) {
+            if (pClassfication === CLASSIFICATION.APPINST) {
+                return "App Instance"
+            } else {
+                return pClassfication
+            }
         }
 
 
@@ -489,9 +497,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                TOP5 of {pHardwareType} on {this.state.loading ?
-                                <CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 7}} size={9}/> : this.state.currentClassification}
-
+                                Top 5 {convertHwTypePhrases(pHardwareType)} usage of {this.convertToClassification(this.state.currentClassification)}
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
@@ -502,8 +508,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                {pHardwareType} Usage of {this.state.loading ?
-                                <CircularProgress size={9} style={{fontSize: 9, color: '#77BD25', marginLeft: 5, marginBottom: 1,}}/> : this.state.currentClassification}
+                                {convertHwTypePhrases(pHardwareType)} Usage of {this.state.loading ?
+                                <CircularProgress size={9} style={{fontSize: 9, color: '#77BD25', marginLeft: 5, marginBottom: 1,}}/> : this.convertToClassification(this.state.currentClassification)}
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
@@ -1173,7 +1179,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*fixme:---------------------------------*/}
                                                     {/*fixme: RENDER TAB_AREA                 */}
                                                     {/*fixme:---------------------------------*/}
-                                                    {this.state.loading ? renderPlaceHolder3()
+                                                    {this.state.loading ? renderPlaceHolder()
                                                         :
                                                         <Tab
                                                             className='page_monitoring_tab'

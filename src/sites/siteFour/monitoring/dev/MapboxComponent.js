@@ -204,7 +204,6 @@ export default class MapboxComponent extends Component<Props, State> {
                            }*/
                     }}
 
-
                     zoom={[this.state.zoom]}
                 >
                     {this.state.showOffice && this.renderOfficeLoc()}

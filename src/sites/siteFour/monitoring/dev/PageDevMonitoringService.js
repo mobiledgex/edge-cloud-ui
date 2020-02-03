@@ -826,14 +826,22 @@ export const makeLineChartDataForAppInst = (allHWUsageList: Array, hardwareType:
 
 }
 
-export const convertGraphTitle = (pHardwareType) => {
+export const convertHwTypePhrases = (pHardwareType) => {
 
     if (pHardwareType === HARDWARE_TYPE.RECVBYTES || pHardwareType === HARDWARE_TYPE.SENDBYTES) {
-        return HARDWARE_TYPE.NETWORK
+        return "Network"
     } else if (pHardwareType === HARDWARE_TYPE.TCPCONNS || pHardwareType === HARDWARE_TYPE.TCPRETRANS) {
-        return HARDWARE_TYPE.TCP
-    }else if (pHardwareType === HARDWARE_TYPE.UDPRECV || pHardwareType === HARDWARE_TYPE.UDPSENT) {
-        return HARDWARE_TYPE.UDP
+        return "Tcp"
+    } else if (pHardwareType === HARDWARE_TYPE.UDPRECV || pHardwareType === HARDWARE_TYPE.UDPSENT) {
+        return "Udp"
+    } else if (pHardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || pHardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || pHardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+        return "Connections"
+    } else if (pHardwareType === HARDWARE_TYPE.CPU) {
+        return "Cpu"
+    } else if (pHardwareType === HARDWARE_TYPE.MEM) {
+        return "Mem"
+    } else if (pHardwareType === HARDWARE_TYPE.DISK) {
+        return "Disk"
     }
 
 }
