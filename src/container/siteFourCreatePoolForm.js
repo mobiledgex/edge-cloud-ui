@@ -405,7 +405,7 @@ const mapStateToProps = (state) => {
     let accountInfo = account ? account + Math.random()*10000 : null;
     let dimmInfo = dimm ? dimm : null;
     let submitVal = null;
-    let selectedRegion = state.form.createAppFormDefault ? state.form.createAppFormDefault.values.Region : null;
+    let selectedRegion = state.form.createAppFormDefault && state.form.createAppFormDefault.values ? state.form.createAppFormDefault.values.Region : null;
     let selectedCloudlet = null;
     let selectedOperator = null;
     let selectedFlavor = null;

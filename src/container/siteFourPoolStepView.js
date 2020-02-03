@@ -14,7 +14,9 @@ import SiteFourPoolOne from "./siteFourPoolStepOne";
 import SiteFourPoolTwo from "./siteFourPoolStepTwo";
 import SiteFourPoolThree from "./siteFourPoolStepThree";
 import Alert from 'react-s-alert';
+import { SubmissionError } from 'redux-form'
 
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 const ReactGridLayout = WidthProvider(RGL);
 
 const headerStyle = {
@@ -428,6 +430,11 @@ class SiteFourPoolStepView extends React.Component {
             this.setState({submitValues: nextProps.formClusterInst.values})
 
             if(this.state.step === 1) {
+                let form = nextProps.formClusterInst.values;
+                if(form.poolName.length < 1 || typeof form.Region !== 'string' || form.invisibleField === '') {
+                    this.props.handleAlertInfo('error', 'You must fill in required of the fields')
+                    return;
+                }
 
                 // TODO: 20200109 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
                 // old
@@ -485,7 +492,7 @@ class SiteFourPoolStepView extends React.Component {
                     })
                 } else {
                     //_self.props.handleAlertInfo('error', 'Select the organization')
-                    Alert.warning('Select the organization', {
+                    Alert.error('Required select an organization', {
                         position: 'top-right',
                         effect: 'scale',
                         onShow: function () {
