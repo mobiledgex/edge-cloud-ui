@@ -27,6 +27,8 @@ const cloudletPoolEdit = [
     {key: 'link', text:'Link Organization', icon:null},
     {key: 'delete', text:'Delete Cloudlet Pool', icon:'trash alternate'},
 ]
+const cloudletPoolDeleteDisabled = [cloudletPoolEdit[0], cloudletPoolEdit[1]]
+
 const headerStyle = {
     backgroundImage: 'url()'
 }
@@ -63,7 +65,8 @@ class InsideListView extends React.Component {
             isOpen: false,
             isOpenTip:false,
             actionContextRef:'actionCell_0',
-            item:null
+            item:null,
+            deleteDisabled:false,
         };
         this.sorting = false;
 
@@ -337,7 +340,7 @@ class InsideListView extends React.Component {
     }
     onOverDropMenu = (item, value, idx) => {
         _self.setState({actionContextRef:'actionCell_'+idx})
-        setTimeout(() => _self.setState({isOpenTip:true}), 100)
+        !this.state.isOpen && setTimeout(() => _self.setState({isOpenTip:true}), 100)
 
         //set state for use audit
         _self.setState({orgName:item.Organization, item:item})
@@ -376,15 +379,22 @@ class InsideListView extends React.Component {
 
     }
 
-    makeActionButton = (target) => (
+    makeActionButton = (target, disabled) => (
         <Button.Group vertical className="table_actions_popup_group">
             {
                 (this.props.siteId === "Cloudlet Pool")?
-                    cloudletPoolEdit.map((option, i)=> (
-                        <Button key={i} onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
-                            {option.text}
-                        </Button>
-                    ))
+                    (disabled === true)?
+                        cloudletPoolDeleteDisabled.map((option, i) => (
+                            <Button key={i} onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
+                                {option.text}
+                            </Button>
+                        ))
+                        :
+                        cloudletPoolEdit.map((option, i)=> (
+                            <Button key={i} onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
+                                {option.text}
+                            </Button>
+                        ))
                     :
                     appssEdit.map((option, i)=> (
                         <Button key={i} onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
@@ -394,10 +404,16 @@ class InsideListView extends React.Component {
             }
         </Button.Group>
     )
-    makeEditButtonGroup = (item, value, j, i) => (
+    makeEditButtonGroup = (item, value, j, i, OrgCount) => (
         <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
             <div ref={acell => this['actionCell_'+i] = acell} style={{backgroundColor:'transparent', width:0, height:0, position:'relative'}}></div>
-            <Button className="table_actions_button" onClick={(self) => _self.onClickDropMenu(item, value, i, self)} onMouseOver={()=>_self.onOverDropMenu(item, value, i)} onMouseOut={() => _self.onOutDropMenu(item, value, i)}>
+            <Button className="table_actions_button"
+                    onClick={(self) => {
+                        _self.onClickDropMenu(item, value, i, self)
+                        OrgCount !== 0 ? this.setState({deleteDisabled : true}) : this.setState({deleteDisabled : false})
+                    }}
+                    onMouseOver={()=> _self.onOverDropMenu(item, value, i)}
+                    onMouseOut={() => _self.onOutDropMenu(item, value, i)}>
                 <Button.Content visible>
                     <Icon name='bars' />
                 </Button.Content>
@@ -432,7 +448,7 @@ class InsideListView extends React.Component {
                                 (value === 'Edit')?
                                     String(item[value]) === 'null' ? <Table.Cell /> :
                                         <Table.Cell className="table_actions" key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444', overflow:'visible'} :{whiteSpace:'nowrap', overflow:'visible'} }>
-                                            {this.makeEditButtonGroup(item, value, j, i)}
+                                            {this.makeEditButtonGroup(item, value, j, i, item['Organizations'] && item['Organizations'])}
                                         </Table.Cell>
                                 :
                                 (value === 'Type')?
@@ -531,7 +547,7 @@ class InsideListView extends React.Component {
                 </div>
                 <Popup
                     inverted
-                    content={this.makeActionButton(this[this.state.actionContextRef])}
+                    content={this.makeActionButton(this[this.state.actionContextRef], this.state.deleteDisabled)}
                     on='click'
                     open={this.state.isOpen}
                     onClose={this.handleClose}

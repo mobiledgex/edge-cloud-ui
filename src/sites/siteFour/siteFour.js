@@ -49,10 +49,10 @@ import SiteFourPageCloudletPool from './cloudletPool/siteFour_page_cloudletPool'
 import SiteFourPageCloudletPoolReg from './cloudletPool/siteFour_page_cloudletPoolReg';
 import SiteFourPageLinkOrganizeReg from './cloudletPool/siteFour_page_linkOrganizeReg';
 import SiteFourPageCloudletPoolUpdate from './cloudletPool/siteFour_page_cloudletPoolUpdate';
+import PageMonitoringMain from './monitoring/PageMonitoringMain'
 import SiteFourAutoScalePolicy from './autoPolicy/siteFour_page_autoScalePolicy';
 import SiteFourAutoProvPolicy from './autoProvPolicy/siteFour_page_autoProvPolicy';
 import SiteFourAutoProvPolicyReg from './autoProvPolicy/autoProvPolicyReg';
-import PageMonitoring from './monitoring/PageMonitoring'
 
 import PopLegendViewer from '../../container/popLegendViewer';
 import * as serviceMC from '../../services/serviceMC';
@@ -1022,7 +1022,7 @@ class SiteFour extends React.Component {
                     </Grid.Row>
                 </Container>
                 <Container className='contents_body_container' style={{ top: this.headerH, left: this.menuW }}>
-                    {(this.state.page === 'pg=Monitoring') ? <PageMonitoring /> :
+                    {(this.state.page === 'pg=Monitoring') ? <PageMonitoringMain /> :
                         <Grid.Row className='view_contents'>
                             <Grid.Column className='contents_body'>
                                 <Grid.Row className='content_title' style={{ width: 'fit-content', display: 'inline-block' }}>
@@ -1065,6 +1065,7 @@ class SiteFour extends React.Component {
                                         (this.state.intoCity) ? <Button onClick={this.onClickBackBtn}>Back</Button> : <Grid.Row style={{ padding: '10px 10px 0 10px', display: 'inline-block' }}>
                                             <label style={{ padding: '0 10px' }}>Region</label>
                                             <Dropdown className='selection'
+                                                style={{ zIndex: 100002, position: 'relative' }}
                                                 options={this.state.regions}
                                                 defaultValue={this.state.regions[0].value}
                                                 onChange={this.onChangeRegion}
