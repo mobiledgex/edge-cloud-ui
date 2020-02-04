@@ -236,16 +236,11 @@ class MexTerminal extends Component {
     }
 
     connect = () => {
-        if (this.state.cmd.length === 0) {
-            this.props.handleAlertInfo('error', 'Please input command')
-        }
-        else {
-            this.setState({
-                history: ["Please wait connecting"],
-                optionView: false
-            })
-            this.openTerminal()
-        }
+        this.setState({
+            history: ["Please wait connecting"],
+            optionView: false
+        })
+        this.openTerminal()
     }
 
 
