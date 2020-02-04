@@ -54,6 +54,11 @@ import SiteFourAutoScalePolicy from './autoPolicy/siteFour_page_autoScalePolicy'
 import SiteFourAutoProvPolicy from './autoProvPolicy/siteFour_page_autoProvPolicy';
 import SiteFourAutoProvPolicyReg from './autoProvPolicy/autoProvPolicyReg';
 
+import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
+import RefreshOutlinedIcon from '@material-ui/icons/RefreshOutlined';
+import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
+import CallEndOutlinedIcon from '@material-ui/icons/CallEndOutlined';
+
 import PopLegendViewer from '../../container/popLegendViewer';
 import * as serviceMC from '../../services/serviceMC';
 import * as reducer from '../../utils'
@@ -64,6 +69,7 @@ import Alert from 'react-s-alert';
 
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
+import { IconButton } from '@material-ui/core';
 
 let devOptions = [{ key: 'af', value: 'af', text: 'SK Telecom' }]
 const locationOptions = [
@@ -377,13 +383,8 @@ class SiteFour extends React.Component {
                         : (key == 'App Instances') ? 'AppInst is an instance of an App on a Cloudlet where it is defined by an App plus a ClusterInst key. Many of the fields here are inherited from the App definition.'
                             : key
             }
-            // content={this.state.tip}
-            // style={style}
             inverted
         />
-    )
-    getGuidePopup = (key) => (
-        <button className="ui circular icon button" onClick={this.enalbeSteps}><i aria-hidden="true" className="info icon"></i></button>
     )
 
     enalbeSteps = () => {
@@ -520,8 +521,8 @@ class SiteFour extends React.Component {
         } catch (e) {
 
         }
-        if(nextProps.selectedOrg) {
-            this.setState({selectOrg: nextProps.selectedOrg})
+        if (nextProps.selectedOrg) {
+            this.setState({ selectOrg: nextProps.selectedOrg })
         }
 
         if (nextProps.params && nextProps.params.subPath) {
@@ -645,9 +646,9 @@ class SiteFour extends React.Component {
         }
 
         //set category
-        if(nextProps.detailData !== this.props.detailData) {
+        if (nextProps.detailData !== this.props.detailData) {
             // alert(JSON.stringify(nextProps.detailData))
-            this.setState({detailData:nextProps.detailData})
+            this.setState({ detailData: nextProps.detailData })
         }
 
     }
@@ -857,6 +858,7 @@ class SiteFour extends React.Component {
     /** audit ********/
 
 
+
     render() {
         const { shouldShowBox, shouldShowCircle, viewMode } = this.state;
         const { stepsEnabled, initialStep, hintsEnabled, hints, steps } = this.state;
@@ -894,15 +896,26 @@ class SiteFour extends React.Component {
                         </Header>
                     </Grid.Column>
                     <Grid.Column width={10} className='navbar_right'>
-                        <div style={{ cursor: 'pointer' }} onClick={this.computeRefresh}>
-                            <MaterialIcon icon={'refresh'} />
+                        <div style={{ cursor: 'pointer',marginTop:10 }} onClick={this.computeRefresh}>
+                            <RefreshOutlinedIcon fontSize='large'/>
                         </div>
-                        <div style={{ cursor: 'pointer' }} onClick={() => this.gotoUrl('/site1', 'pg=0')}>
-                            <MaterialIcon icon={'public'} />
+                        <div style={{ cursor: 'pointer',marginTop:10  }} onClick={() => this.gotoUrl('/site1', 'pg=0')}>
+                            <PublicOutlinedIcon fontSize='large' />
                         </div>
-                        <div style={{ cursor: 'pointer', display: 'none' }}>
+                        <div style={{ cursor: 'pointer',marginTop:10 , display: 'none' }}>
                             <MaterialIcon icon={'notifications_none'} />
                         </div>
+                        {
+                            (
+                                this.state.page !== 'pg=editApp' &&
+                                this.props.viewMode !== 'detailView' &&
+                                this.state.headerTitle !== 'User Roles' &&
+                                this.state.headerTitle !== 'Accounts' &&
+                                this.state.headerTitle !== 'Flavors'
+                            ) ? <div style={{ cursor: 'pointer',marginTop:10  }} onClick={this.enalbeSteps}>
+                                    <HelpOutlineOutlinedIcon fontSize='large' />
+                                </div> : null
+                        }
                         <Popup
                             trigger={<div style={{ cursor: 'pointer', display: 'none' }}>
                                 <MaterialIcon icon={'add'} />
@@ -912,15 +925,14 @@ class SiteFour extends React.Component {
                             position='bottom center'
                             className='gnb_logout'
                         />
-                        {/* 프로필 */}
                         <HeaderGlobalMini email={this.state.email} data={this.props.userInfo.info} dimmer={false} />
-                        <Popup
-                            trigger={<div style={{ cursor: 'pointer' }}> Support </div>}
+                        {/* <Popup
+                            trigger={<div style={{ cursor: 'pointer',marginTop:10  }}> <CallEndOutlinedIcon fontSize='large'/> </div>}
                             content={this.menuSupport()}
                             on='click'
                             position='bottom center'
                             className='gnb_logout'
-                        />
+                        /> */}
                     </Grid.Column>
                 </Grid.Row>
                 <Container className='view_left_container' style={{ width: this.menuW }}>
@@ -1011,7 +1023,6 @@ class SiteFour extends React.Component {
                                                     null
                                     }
                                 </div>
-
                             </Menu>
                             <div style={{ zIndex: '100', color: 'rgba(255,255,255,.2)', padding: '10px' }}>
                                 {
@@ -1025,62 +1036,47 @@ class SiteFour extends React.Component {
                     {(this.state.page === 'pg=Monitoring') ? <PageMonitoringMain /> :
                         <Grid.Row className='view_contents'>
                             <Grid.Column className='contents_body'>
-                                <Grid.Row className='content_title' style={{ width: 'fit-content', display: 'inline-block' }}>
-                                    <Grid.Column className='title_align' style={{ lineHeight: '36px' }}>{this.state.headerTitle}</Grid.Column>
-                                    {
-                                        (this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView' && this.props.location.search.indexOf('audits') === -1) ?
-                                            <Grid.Column className='title_align'>
-                                                <Item className={'stepOrg2'} style={{ marginLeft: 20, marginRight: 10 }}>
+                                <div>
+                                    <Grid>
+                                        <Grid.Column floated='left' width={5}>
+                                            <label style={{fontSize:25, marginRight:20}}>{this.state.headerTitle}</label>
+                                            {
+                                                (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'User Roles' && this.state.headerTitle !== 'Accounts' && this.state.headerTitle !== 'Audit Log' && viewMode !== 'detailView' && this.state.page.indexOf('create') == -1 && this.state.page.indexOf('edit') == -1) ?
+                                                    (this.state.intoCity) ? 
+                                                        <Button onClick={this.onClickBackBtn}>Back</Button> :
+                                                        <Dropdown className='selection'
+                                                            style={{ zIndex: 100002, position: 'relative', marginRight:20, height:20 }}
+                                                            options={this.state.regions}
+                                                            defaultValue={this.state.regions[0].value}
+                                                            onChange={this.onChangeRegion}
+                                                        />
+                                                    : null
+                                            }
+                                            {
+                                                (this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView' && this.props.location.search.indexOf('audits') === -1) ?
                                                     <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>New</Button>
-                                                </Item>
-                                            </Grid.Column>
-                                            : null
-                                    }
-                                    {
-                                        (viewMode === 'detailView') ?
-                                            <Grid.Column className='title_align' style={{ marginLeft: 20 }}>
-                                                <Item className={'stepOrg2'} style={{marginLeft: 20, marginRight:20}}>
-                                                    <Button onClick={() => this.props.handleDetail({
+                                                    : null
+                                            }
+                                            {
+                                                (viewMode === 'detailView') ?
+                                                    <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.props.handleDetail({
                                                         data: null,
                                                         viewMode: 'listView'
                                                     })}>Close Details</Button>
-                                                </Item>
-                                            </Grid.Column>
-                                            : null
-                                    }
-                                    <div style={{ marginLeft: '10px' }}>
-                                        {
-                                            (
-                                                this.state.page !== 'pg=editApp' &&
-                                                this.props.viewMode !== 'detailView' &&
-                                                this.state.headerTitle !== 'User Roles' &&
-                                                this.state.headerTitle !== 'Accounts' &&
-                                                this.state.headerTitle !== 'Flavors'
-                                            ) ? this.getGuidePopup(this.state.headerTitle) : null}
-                                    </div>
+                                                    : null
+                                            }
+                                            {
+                                                (this.state.headerTitle == 'User Roles') ?
+                                                    <div className='user_search' style={{ top: 15, right: 65, position: 'absolute', zIndex: 99 }}>
+                                                        <Input icon='search' placeholder={'Search ' + this.state.searchChangeValue} style={{ marginRight: '20px' }} onChange={this.searchClick} />
+                                                        <Dropdown defaultValue={this.searchOptions[0].value} search selection options={this.searchOptions} onChange={this.searchChange} />
+                                                    </div>
+                                                    : null
+                                            }
+                                        </Grid.Column>
+                                    </Grid>
 
-                                </Grid.Row>
-                                {
-                                    (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'User Roles' && this.state.headerTitle !== 'Accounts' && this.state.headerTitle !== 'Audit Log' && viewMode !== 'detailView' && this.state.page.indexOf('create') == -1 && this.state.page.indexOf('edit') == -1) ?
-                                        (this.state.intoCity) ? <Button onClick={this.onClickBackBtn}>Back</Button> : <Grid.Row style={{ padding: '10px 10px 0 10px', display: 'inline-block' }}>
-                                            <label style={{ padding: '0 10px' }}>Region</label>
-                                            <Dropdown className='selection'
-                                                style={{ zIndex: 100002, position: 'relative' }}
-                                                options={this.state.regions}
-                                                defaultValue={this.state.regions[0].value}
-                                                onChange={this.onChangeRegion}
-                                            />
-                                        </Grid.Row>
-                                        : null
-                                }
-                                {
-                                    (this.state.headerTitle == 'User Roles') ?
-                                        <div className='user_search' style={{ top: 15, right: 65, position: 'absolute', zIndex: 99 }}>
-                                            <Input icon='search' placeholder={'Search ' + this.state.searchChangeValue} style={{ marginRight: '20px' }} onChange={this.searchClick} />
-                                            <Dropdown defaultValue={this.searchOptions[0].value} search selection options={this.searchOptions} onChange={this.searchChange} />
-                                        </div>
-                                        : null
-                                }
+                                </div>
 
                                 <Grid.Row className='site_content_body'>
                                     <Grid.Column>
@@ -1141,7 +1137,7 @@ const mapStateToProps = (state) => {
     let submitInfo = (state.submitInfo) ? state.submitInfo : null;
     let regionInfo = (state.regionInfo) ? state.regionInfo : null;
     let checkedAudit = (state.checkedAudit) ? state.checkedAudit.audit : null;
-    let detailData = (state.changeViewMode && state.changeViewMode.mode)?state.changeViewMode.mode.data : null;
+    let detailData = (state.changeViewMode && state.changeViewMode.mode) ? state.changeViewMode.mode.data : null;
     let selectedOrg = (state.selectOrganiz) ? state.selectOrganiz.org : null;
 
 
@@ -1171,7 +1167,7 @@ const mapStateToProps = (state) => {
         regionInfo: regionInfo,
         audit: checkedAudit,
         clickCity: state.clickCityList.list,
-        detailData:detailData,
+        detailData: detailData,
         selectedOrg
     }
 };
