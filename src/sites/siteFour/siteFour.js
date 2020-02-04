@@ -953,24 +953,24 @@ class SiteFour extends React.Component {
                                                     {localStorage.selectRole ?
                                                         <div className="markBox">
                                                             {
-                                                                (localStorage.selectRole == 'AdminManager') ? <div className="mark markA markS">S</div>
+                                                                (localStorage.selectRole === 'AdminManager') ? <div className="mark markA markS">S</div>
                                                                     :
-                                                                    (localStorage.selectRole == 'DeveloperManager') ?
+                                                                    (localStorage.selectRole === 'DeveloperManager') ?
                                                                         <div className="mark markD markM">M</div>
                                                                         :
-                                                                        (localStorage.selectRole == 'DeveloperContributor') ?
+                                                                        (localStorage.selectRole === 'DeveloperContributor') ?
                                                                             <div className="mark markD markC">C</div>
                                                                             :
-                                                                            (localStorage.selectRole == 'DeveloperViewer') ?
+                                                                            (localStorage.selectRole === 'DeveloperViewer') ?
                                                                                 <div className="mark markD markV">V</div>
                                                                                 :
-                                                                                (localStorage.selectRole == 'OperatorManager') ?
+                                                                                (localStorage.selectRole === 'OperatorManager') ?
                                                                                     <div className="mark markO markM">M</div>
                                                                                     :
-                                                                                    (localStorage.selectRole == 'OperatorContributor') ?
+                                                                                    (localStorage.selectRole === 'OperatorContributor') ?
                                                                                         <div className="mark markO markC">C</div>
                                                                                         :
-                                                                                        (localStorage.selectRole == 'OperatorViewer') ?
+                                                                                        (localStorage.selectRole === 'OperatorViewer') ?
                                                                                             <div className="mark markO markV">V</div>
                                                                                             :
                                                                                             <span></span>
@@ -980,7 +980,7 @@ class SiteFour extends React.Component {
                                                     }
                                                     <div>
                                                         {
-                                                            (localStorage.selectRole == 'AdminManager') ? localStorage.selectRole ? localStorage.selectRole : 'Please select a role' : localStorage.selectRole ? localStorage.selectRole : 'Please select a role'
+                                                            localStorage.selectRole && localStorage.selectRole!='null' ? localStorage.selectRole : 'Please select a role'
                                                         }
                                                     </div>
                                                 </Grid.Column>
@@ -996,8 +996,8 @@ class SiteFour extends React.Component {
                                 <div className='menuPart'>
                                     {
                                         this.OrgMenu.map((item, i) => (
-                                            (item.label == 'Accounts' && localStorage.selectRole !== 'AdminManager') ? null
-                                                : (localStorage.selectRole == 'AdminManager') ? this.menuItemView(item, i, localStorage.selectMenu)
+                                            (item.label === 'Accounts' && localStorage.selectRole !== 'AdminManager') ? null
+                                                : (localStorage.selectRole === 'AdminManager') ? this.menuItemView(item, i, localStorage.selectMenu)
                                                     : this.menuItemView(item, i, localStorage.selectMenu)
                                         ))
                                     }
@@ -1005,7 +1005,7 @@ class SiteFour extends React.Component {
 
                                 <div className='menuPart'>
                                     {
-                                        (localStorage.selectRole == 'AdminManager') ?
+                                        (localStorage.selectRole === 'AdminManager') ?
                                             this.menuItemsAll.map((item, i) => (
                                                 this.menuItemView(item, i, localStorage.selectMenu)
                                             ))
@@ -1038,7 +1038,7 @@ class SiteFour extends React.Component {
                             <Grid.Column className='contents_body'>
                                 <div>
                                     <Grid>
-                                        <Grid.Column floated='left' width={5}>
+                                        <Grid.Column floated='left' width={10}>
                                             <label style={{fontSize:25, marginRight:20}}>{this.state.headerTitle}</label>
                                             {
                                                 (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'User Roles' && this.state.headerTitle !== 'Accounts' && this.state.headerTitle !== 'Audit Log' && viewMode !== 'detailView' && this.state.page.indexOf('create') == -1 && this.state.page.indexOf('edit') == -1) ?
