@@ -50,19 +50,19 @@ let _self = null;
 const keys = [
     {
         'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy.', active:true, items:[]},
-        'autoPolicyName':{label:'Auto Policy Name', type:'RenderInput', necessary:true, tip:'Name of the auto policy.', active:true, items:[]},
+        'AutoPolicyName':{label:'Auto Policy Name', type:'RenderInput', necessary:true, tip:'Name of the auto policy.', active:true, items:[]},
         'AddCloudlet':{label:'Add cloudlet', type:'RenderDualListBox', necessary:true, tip:'select a cloudlet', active:true, items:[{headers:['Select Item', 'Selected Item']}]},
         'invisibleField':{label:'invisible field', type:'InvisibleField', necessary:true, tip:'', active:true},
     },
     {
         'Region':{label:'Region', type:'RenderInput', necessary:true, tip:'Select region where you want to deploy.', active:true, readOnly:true, items:[]},
-        'poolName':{label:'Pool Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, readOnly:true, items:[]},
+        'AutoPolicyName':{label:'Auto Policy Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, readOnly:true, items:[]},
         'LinktoOrganization':{label:'Add Cloudlet to Pool', type:'RenderDualListBox', necessary:true, tip:'Select a cloudlet in left side', active:true},
         'invisibleField':{label:'invisible field', type:'InvisibleField', necessary:true, tip:'', active:true},
     },
     {
         'Region':{label:'Region', type:'RenderInput', necessary:true, tip:'Select region where you want to deploy.', active:true, readOnly:true, items:[]},
-        'poolName':{label:'Pool Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, readOnly:true, items:[]},
+        'AutoPolicyName':{label:'Auto Policy Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, readOnly:true, items:[]},
         'LinktoOrganization':{label:'Add Member to Pool', type:'RenderDualListBox', necessary:true, tip:'select a cloudlet', active:true},
         'LinkDiagram':{label:'Linked Status', type:'RenderLinkedDiagram', necessary:false, tip:'linked the cloudlet pool with the organization', active:true},
     }
@@ -70,17 +70,17 @@ const keys = [
 const fakes = [
     {
         'Region':'',
-        'poolName':'',
+        'AutoPolicyName':'',
         'AddCloudlet':''
     },
     {
         'Region':'',
-        'poolName':'',
+        'AutoPolicyName':'',
         'LinktoOrganization':''
     },
     {
         'Region':'',
-        'poolName':'',
+        'AutoPolicyName':'',
         'AddedCloudlet':'',
         'LinktoOrganization':''
     }
@@ -270,36 +270,6 @@ class SiteFourPoolStepView extends React.Component {
         
     }
     receiveSubmit = (mcRequest) => {
-
-        
-
-        // if(result.error) {
-        //     //this.setState({clusterInstCreate:false})
-        //     this.props.handleLoadingSpinner(false);
-        //     if(result.error == 'Key already exists'){
-
-        //     } else {
-
-        //         this.props.handleAlertInfo('error','Request Failed')
-        //     }
-        //     // TEST : Although already exist pool add a cloudlets in to pool <-- later delete code
-        //     this.createPoolMember();
-        // } else {
-        //     if (result.data.error) {
-        //         this.props.handleAlertInfo('error', result.data.error)
-        //     } else {
-        //         this.props.handleAlertInfo('success',result.data.message)
-        //         /** send props to next step **/
-        //         //this.setState({selectedRegion:this.state.submitValues.Region, gavePoolName:this.state.submitValues.poolName})
-        //         //this.setState({step:2, validateError:null, keysData:[keys[1]], fakeData:[fakes[1]]})
-
-        //         this.createPoolMember();
-        //     }
-        // }
-
-
-
-        ///// new
         if(this.pauseRender) return;
         if(mcRequest)
         {
@@ -444,6 +414,8 @@ class SiteFourPoolStepView extends React.Component {
                 let region = nextProps.formClusterInst.values.Region;
                 let keyObj = {"region":region, "cloudletpool": {"key": {"name": poolName}}}
                 let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+
+        alert();
                 serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().CREATE_CLOUDLET_POOL, data : keyObj }, _self.receiveSubmit)
 
                 /** TEST 20191231 go to next step 2 **/

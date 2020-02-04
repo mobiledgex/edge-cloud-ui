@@ -59,7 +59,7 @@ class SiteFourPageCloudletPoolReg extends React.Component {
         //
         let fieldValue = [{
             'Region':rgn,
-            'poolName':'',
+            'AutoPolicyName':'',
             'AddCloudlet':cloudletList,
             'invisibleField':'',
             'CloudletPool':'',
@@ -75,32 +75,6 @@ class SiteFourPageCloudletPoolReg extends React.Component {
 
 
     receiveResult = (mcRequest) => {
-
-        // @inki if data has expired token
-        /*
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleComputeRefresh(false);
-            _self.props.handleLoadingSpinner(false);
-            return;
-        }
-
-        let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
-        if(Object.keys(regionGroup)[0]) {
-            _self._cloudletDummy = _self._cloudletDummy.concat(result)
-        }
-
-        this.loadCount ++;
-
-        if(rgn.length == this.loadCount){
-            _self.countJoin()
-        }
-        _self.props.handleLoadingSpinner(false);
-        */
-
-
-        ///
         if(mcRequest)
         {
             let regionGroup = {};
@@ -152,8 +126,6 @@ class SiteFourPageCloudletPoolReg extends React.Component {
         
     }
     componentWillReceiveProps(nextProps) {
-        console.log('20200104 cloudletPoolReg props props props = ', nextProps)
-        //
         if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
             _self.setState({regionToggle:true,regions:nextProps.regionInfo.region})
             this.getDataCloudetList(nextProps.changeRegion,nextProps.regionInfo.region);
