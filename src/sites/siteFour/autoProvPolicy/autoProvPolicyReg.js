@@ -60,6 +60,8 @@ class SiteFourPageCloudletPoolReg extends React.Component {
         let fieldValue = [{
             'Region':rgn,
             'AutoPolicyName':'',
+            'DeployClientCount':'',
+            'DeployIntervalCount':'',
             'AddCloudlet':cloudletList,
             'invisibleField':'',
             'CloudletPool':'',

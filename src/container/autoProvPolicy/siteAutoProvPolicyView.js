@@ -3,7 +3,6 @@ import { Item, Step, Icon} from 'semantic-ui-react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
-import RGL, { WidthProvider } from "react-grid-layout";
 import PopDetailViewer from '../popDetailViewer';
 import PopUserViewer from '../popUserViewer';
 import * as serviceMC from '../../services/serviceMC';
@@ -14,14 +13,7 @@ import AutoProvPolicyTwo from "./autoProvPolicyTwo";
 import AutoProvPolicyThree from "./autoProvPolicyThree";
 import Alert from 'react-s-alert';
 
-const ReactGridLayout = WidthProvider(RGL);
 
-const headerStyle = {
-    backgroundImage: 'url()'
-}
-
-var horizon = 6;
-var vertical = 20;
 var layout = [
     {"w":19,"h":20,"x":0,"y":0,"minW":8,"minH":7,"i":"0","moved":false,"static":false, "title":"Developer"}
 
@@ -51,38 +43,19 @@ const keys = [
     {
         'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy.', active:true, items:[]},
         'AutoPolicyName':{label:'Auto Policy Name', type:'RenderInput', necessary:true, tip:'Name of the auto policy.', active:true, items:[]},
+        'DeployClientCount':{label:'Deploy Client Count', type:'RenderInput', necessary:false, tip:'Name of the auto policy.', active:true},
+        'DeployIntervalCount':{label:'Deploy Interval Count', type:'RenderInput', necessary:false, tip:'Name of the auto policy.', active:true},
         'AddCloudlet':{label:'Add cloudlet', type:'RenderDualListBox', necessary:true, tip:'select a cloudlet', active:true, items:[{headers:['Select Item', 'Selected Item']}]},
         'invisibleField':{label:'invisible field', type:'InvisibleField', necessary:true, tip:'', active:true},
-    },
-    {
-        'Region':{label:'Region', type:'RenderInput', necessary:true, tip:'Select region where you want to deploy.', active:true, readOnly:true, items:[]},
-        'AutoPolicyName':{label:'Auto Policy Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, readOnly:true, items:[]},
-        'LinktoOrganization':{label:'Add Cloudlet to Pool', type:'RenderDualListBox', necessary:true, tip:'Select a cloudlet in left side', active:true},
-        'invisibleField':{label:'invisible field', type:'InvisibleField', necessary:true, tip:'', active:true},
-    },
-    {
-        'Region':{label:'Region', type:'RenderInput', necessary:true, tip:'Select region where you want to deploy.', active:true, readOnly:true, items:[]},
-        'AutoPolicyName':{label:'Auto Policy Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, readOnly:true, items:[]},
-        'LinktoOrganization':{label:'Add Member to Pool', type:'RenderDualListBox', necessary:true, tip:'select a cloudlet', active:true},
-        'LinkDiagram':{label:'Linked Status', type:'RenderLinkedDiagram', necessary:false, tip:'linked the cloudlet pool with the organization', active:true},
     }
 ]
 const fakes = [
     {
         'Region':'',
         'AutoPolicyName':'',
+        'DeployClientCount':'',
+        'DeployIntervalCount':'',
         'AddCloudlet':''
-    },
-    {
-        'Region':'',
-        'AutoPolicyName':'',
-        'LinktoOrganization':''
-    },
-    {
-        'Region':'',
-        'AutoPolicyName':'',
-        'AddedCloudlet':'',
-        'LinktoOrganization':''
     }
 ]
 class SiteFourPoolStepView extends React.Component {
@@ -168,8 +141,6 @@ class SiteFourPoolStepView extends React.Component {
             pathname: '/site4',
             search: 'pg=7'
         });
-        //this.props.history.location.search = 'pg=7';
-        //this.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=7'})
     }
     
     makeSteps = (data) => (
@@ -225,17 +196,7 @@ class SiteFourPoolStepView extends React.Component {
         return layout
     }
 
-
-
-    onLayoutChange(layout) {
-        //this.props.onLayoutChange(layout);
-    }
     createPoolMember= () => {
-        /**
-         * '{"cloudletpoolmember":{"cloudlet_key":{"name":"frankfurt-eu","operator_key":{"name":"TDG"}},"pool_key":{"name":"TEST1223"}},"region":"EU"}'
-         * @type {{pool: *, cloudlet: *, region: *, operator: *}}
-         * @private
-         */
         let cloudletTest = this.state.dummyData[0].AddCloudlet[0];
         console.log('20200104 cloudlet == ', cloudletTest)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -322,16 +283,12 @@ class SiteFourPoolStepView extends React.Component {
         if(this.pauseRender) return;
 
         if(result.response && result.response.error) {
-            //this.setState({clusterInstCreate:false})
             this.props.handleLoadingSpinner(false);
             if(result.error == 'Key already exists'){
 
             } else {
-                /** test --- test ---- send props to next step **/
                 this.setState({selectedRegion:this.state.submitValues.Region, gavePoolName:this.state.submitValues.poolName})
                 this.setState({step:3, validateError:null, keysData:[keys[2]], fakeData:[fakes[2]]})
-                /** **/
-
                 this.props.handleAlertInfo('error','Request Failed')
             }
         } else {
@@ -396,46 +353,14 @@ class SiteFourPoolStepView extends React.Component {
             this.setState({submitValues: nextProps.formClusterInst.values})
 
             if(this.state.step === 1) {
-
-                // TODO: 20200109 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-                // old
-                //servicePool.createCloudletPool('CreateCloudletPool', {params:nextProps.formClusterInst.values, token:store.userToken}, this.receiveSubmit)
-                
-                
-                // new
-                /*
-                
-                serviceBody = {"region":region, "cloudletpool": {"key": {"name": poolName}}};
-                */
-                //{"region":region, "cloudletpool": {"key": {"name": poolName}}}
                 let self = this;
                 self.setState({formValue: nextProps.formClusterInst.values, selectedRegion:nextProps.formClusterInst.values.Region, gavePoolName:nextProps.formClusterInst.values.poolName})
                 let poolName = nextProps.formClusterInst.values.poolName;
                 let region = nextProps.formClusterInst.values.Region;
                 let keyObj = {"region":region, "cloudletpool": {"key": {"name": poolName}}}
                 let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-
-        alert();
-                serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().CREATE_CLOUDLET_POOL, data : keyObj }, _self.receiveSubmit)
-
-                /** TEST 20191231 go to next step 2 **/
-                // let self = this;
-                // setTimeout(() => {
-                //     self.setState({selectedRegion:self.state.submitValues.Region, gavePoolName:self.state.submitValues.poolName})
-                //     self.setState({step:2, validateError:null, keysData:[keys[1]], fakeData:[fakes[1]]})
-                //     self.props.handleChangeNext(2)
-                // }, 2000)
-
-
+                //serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().CREATE_CLOUDLET_POOL, data : keyObj }, _self.receiveSubmit)
             } else if(this.state.step === 2) {
-
-                /**
-                 * $ http --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/orgcloudletpool/create <<<
-                 * '{"cloudletpool":"cloudletPool_bictest_1223-01","org":"bicinkiOper","region":"EU"}'
-                 * @type {{}}
-                 * @private
-                 */
-                console.log('21091231 create link pool org.. ')
                 let _params = {};
                 let _selectedItems = nextProps.formClusterInst.values.invisibleField;
                 let selectedNumber = (_selectedItems !== "") ? JSON.parse(_selectedItems) : [];
@@ -446,15 +371,10 @@ class SiteFourPoolStepView extends React.Component {
                     selectedNumber.map((no) => {
                         organiz = nextProps.formClusterInst.values.LinktoOrganization[no];
                         _params = {"cloudletpool":cloudletPool,"org":organiz['cloudlet'],"region":region}
-                        // old
-                        //servicePool.createLinkPoolOrg('CreateLinkPoolOrg',{token:store.userToken, params:_params}, _self.receiveResultLinkOrg)
-
-                        // new
                         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
                         serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().CREATE_LINK_POOL_ORG, data : _params }, _self.receiveResultLinkOrg)
                     })
                 } else {
-                    //_self.props.handleAlertInfo('error', 'Select the organization')
                     Alert.warning('Select the organization', {
                         position: 'top-right',
                         effect: 'scale',
@@ -468,14 +388,6 @@ class SiteFourPoolStepView extends React.Component {
                     setTimeout(() => Alert.closeAll(), 3000)
                     _self.setState({submitValues: {noData:''} })
                 }
-
-                //TEST goto step 3 -test-test-test-test-
-                // let self = this;
-                // setTimeout(() => {
-                //     self.setState({selectedRegion:self.state.submitValues.Region, gavePoolName:self.state.submitValues.poolName})
-                //     self.setState({step:3, validateError:null, keysData:[keys[2]], fakeData:[fakes[2]]})
-                // }, 2000)
-
             } else if(this.state.step === 3) {
 
                 console.log('20191231 submit link org to pool == ', JSON.parse(nextProps.formClusterInst.values))
@@ -494,7 +406,6 @@ class SiteFourPoolStepView extends React.Component {
                 <div
                     draggableHandle
                     layout={this.state.layout}
-                    onLayoutChange={this.onLayoutChange}
                     {...this.props}
                     useCSSTransforms={false}
                 >

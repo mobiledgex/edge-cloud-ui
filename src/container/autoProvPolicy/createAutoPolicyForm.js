@@ -359,8 +359,6 @@ class CreateAutoPolicyForm extends React.Component {
         let {dimmer, changeNext} = this.props;
         return (
             <Grid.Column>
-                {/*<Grid.Row className="grid_map_container">*/}
-                {/*    <Grid.Column className="left">*/}
                         <SiteFourCreateFormDefault data={devData} pId={0} getUserRole={this.props.getUserRole}
                                                    gotoUrl={this.gotoUrl} clusterHide={this.clusterHide}
                                                    toggleSubmit={this.props.toggleSubmit}
@@ -382,8 +380,6 @@ class CreateAutoPolicyForm extends React.Component {
                         >
 
                         </SiteFourCreateFormDefault>
-                {/*    </Grid.Column>*/}
-                {/*</Grid.Row>*/}
             </Grid.Column>
         )
     }

@@ -105,9 +105,10 @@ class DeveloperListView extends React.Component {
         )
     }
 
-    onActionClose = (action)=>
-    {
-        action.onClick()
+    onActionClose = (action) => {
+        if (action.onClick != null) {
+            action.onClick()
+        }
         this.setState({
             anchorEl: null
         })
