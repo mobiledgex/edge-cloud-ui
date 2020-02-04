@@ -8,6 +8,7 @@ import type {TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import PageMonitoring from "./PageDevMonitoring";
 import {
+    convertByteToMegaByte, convertByteToMegaByte2,
     makeFormForClusterLevelMatric,
     numberWithCommas,
     renderBarChartCore,
@@ -408,11 +409,11 @@ export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, userTyp
     //@fixme
     //@fixme
     if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-        return numberWithCommas((usageOne.sumSendBytes/ 1000000).toFixed(2)) + " MByte"
+        return numberWithCommas((usageOne.sumSendBytes/ 1000000).toFixed(0)) + " MByte"
     }
 
     if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-        return numberWithCommas((usageOne.sumRecvBytes/ 1000000).toFixed(2)) + " MByte"
+        return numberWithCommas((usageOne.sumRecvBytes/ 1000000).toFixed(0)) + " MByte"
     }
 }
 
@@ -486,36 +487,6 @@ export const sortUsageListByTypeForCluster = (usageList, hardwareType) => {
     return usageList;
 }
 
-export const renderBarGraphForCluster = (usageList, hardwareType, _this) => {
-
-    console.log(`renderBarGraphForCluster===>${hardwareType}`, usageList);
-
-    usageList = sortUsageListByTypeForCluster(usageList, hardwareType)
-
-    if (usageList.length === 0) {
-        return (
-            <div style={Styles.noData}>
-                NO DATA
-            </div>
-        )
-    } else {
-        let chartDataList = [];
-        chartDataList.push(["Element", hardwareType + " USAGE", {role: "style"}, {role: 'annotation'}])
-        for (let index = 0; index < usageList.length; index++) {
-            if (index < 5) {
-                let barDataOne = [
-                    usageList[index].cluster.toString() + "\n[" + usageList[index].cloudlet + "]",//clusterName
-                    renderUsageByType(usageList[index], hardwareType),
-                    CHART_COLOR_LIST[index],
-                    renderUsageLabelByTypeForCluster(usageList[index], hardwareType)
-                ]
-                chartDataList.push(barDataOne);
-            }
-        }
-        return renderBarChartCore(chartDataList, hardwareType)
-
-    }
-}
 
 export const makeBarChartDataForCluster = (usageList, hardwareType, _this) => {
 
@@ -753,6 +724,7 @@ export const makeLineChartDataForAppInst = (allHWUsageList: Array, hardwareType:
     } else if (hardwareType === HARDWARE_TYPE.CONNECTIONS) {
         oneTypedUsageList = allHWUsageList[4]
     }
+
 
     if (oneTypedUsageList.length === 0) {
         return (

@@ -10,7 +10,7 @@ import Lottie from "react-lottie";
 import BubbleChart from "../../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../../shared/Types";
 import PageMonitoring from "./PageAdminMonitoring";
-import {numberWithCommas, showToast} from "../PageMonitoringCommonService";
+import {convertByteToMegaByte, convertByteToMegaByte2, numberWithCommas, showToast} from "../PageMonitoringCommonService";
 import {SHOW_CLOUDLET} from "../../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../../services/serviceMC";
 
@@ -321,9 +321,8 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
         return usageOne.avgNetRecv;
     }
 
-
     if (hardwareType === HARDWARE_TYPE.MEM) {
-        return numberWithCommas(usageOne.sumMemUsage) + " Byte"
+        return numberWithCommas((usageOne.sumMemUsage/1000000).toFixed(2)) + " MByte"
     }
 
     if (hardwareType === HARDWARE_TYPE.DISK) {

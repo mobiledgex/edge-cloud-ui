@@ -83,8 +83,13 @@ export const convertByteToMegaByte = (value, hardwareType) => {
     } else {
         return numberWithCommas(value)
     }
-
-
+}
+export const convertByteToMegaByte2 = (value, hardwareType) => {
+    if (value > 1000000) {
+        return value / 1000000
+    } else {
+        return value;
+    }
 }
 
 
