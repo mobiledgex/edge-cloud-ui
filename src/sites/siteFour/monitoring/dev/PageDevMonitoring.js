@@ -12,14 +12,17 @@ import {hot} from "react-hot-loader/root";
 import {DatePicker, Progress,} from 'antd';
 import {
     convertHwTypePhrases,
-    filterUsageByClassification, getClusterLevelUsageList, getClusterList,
+    filterUsageByClassification,
+    getClusterLevelUsageList,
+    getClusterList,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
     makeLineChartDataForAppInst,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
     makeSelectBoxListWithThreeValuePipe,
-    renderBubbleChartForCloudlet, sortUsageListByTypeForCluster,
+    renderBubbleChartForCloudlet,
+    sortUsageListByTypeForCluster,
 } from "./PageDevMonitoringService";
 import {
     CLASSIFICATION,
@@ -28,29 +31,22 @@ import {
     HARDWARE_TYPE,
     NETWORK_OPTIONS,
     NETWORK_TYPE,
-    RECENT_DATA_LIMIT_COUNT, TCP_OPTIONS, UDP_OPTIONS
+    RECENT_DATA_LIMIT_COUNT,
+    TCP_OPTIONS,
+    UDP_OPTIONS
 } from "../../../../shared/Constants";
 import Lottie from "react-lottie";
-import type {TypeBarChartData, TypeCloudletUsageList, TypeClusterUsageList, TypeGridInstanceList, TypeLineChartData} from "../../../../shared/Types";
+import type {TypeBarChartData, TypeClusterUsageList, TypeGridInstanceList, TypeLineChartData} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import '../PageMonitoring.css'
-import {
-    getOneYearStartEndDatetime,
-    makeBubbleChartDataForCluster, numberWithCommas,
-    renderBarChartCore,
-    renderLineChartCore,
-    renderPlaceHolder,
-    renderPlaceHolder3,
-    showToast
-} from "../PageMonitoringCommonService";
+import {getOneYearStartEndDatetime, makeBubbleChartDataForCluster, numberWithCommas, renderBarChartCore, renderLineChartCore, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
 import {getAppInstList, getAppLevelUsageList, getCloudletList, StylesForMonitoring} from "../admin/PageAdminMonitoringService";
 import MapboxComponent from "./MapboxComponent";
 import * as reducer from "../../../../utils";
 import {CircularProgress} from "@material-ui/core";
 import {TabPanel, Tabs} from "react-tabs";
-import FlexBox from "flexbox-react";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;

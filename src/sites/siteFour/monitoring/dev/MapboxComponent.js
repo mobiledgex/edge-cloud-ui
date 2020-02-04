@@ -6,12 +6,18 @@ import type {TypeAppInstance} from "../../../../shared/Types";
 import {Button, Icon} from "semantic-ui-react";
 import {showToast} from "../PageMonitoringCommonService";
 import Lottie from "react-lottie";
+function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+}
+let tokenList= [
+    'pk.eyJ1Ijoia3l1bmdqb29uLWdvLWNvbnN1bHRhbnQiLCJhIjoiY2s2Mnk2eHl0MDI5bzNzcGc0MTQ3NTM4NSJ9.BVwP4hu1ySJCJpGyVQBWSQ',
+    'pk.eyJ1Ijoia3l1bmdqb29uZ283NyIsImEiOiJjazYyeGhvM2YwamFrM21vZjM0azJrOG9iIn0.P616aVPjYWPrjbVU5bCUHQ',
+]
 
 const Map = ReactMapboxGl({
-    accessToken: 'pk.eyJ1Ijoia3l1bmdqb29uLWdvLWNvbnN1bHRhbnQiLCJhIjoiY2s2Mnk2eHl0MDI5bzNzcGc0MTQ3NTM4NSJ9.BVwP4hu1ySJCJpGyVQBWSQ',
+    accessToken: tokenList[getRandomInt(2)],
     latitude: 10.4515,
     longitude: 51.1657,
-
 });
 
 type Props = {
@@ -31,6 +37,8 @@ type State = {
     showOffice: boolean,
     isUpdateEnable: boolean,
 }
+
+
 
 export default class MapboxComponent extends Component<Props, State> {
 
@@ -162,22 +170,22 @@ export default class MapboxComponent extends Component<Props, State> {
                 </Marker>
 
                 <Marker
-                    //key={key}
-                    //style={styles.marker}
-                    coordinates={[77.595914, 12.980056]}
-                    onClick={() => {
-                        showToast('Rahul')
-                    }}>
-                    <img
+                //key={key}
+                //style={styles.marker}
+                coordinates={[77.595914, 12.980056]}
+                onClick={() => {
+                    showToast('Rahul')
+                }}>
+                <img
 
-                        src="https://www.vippng.com/png/detail/318-3188126_building-company-office-icon-in-png-file-specialty.png" style={{color: 'red'}} height="25" width="25"/>
-                    <div style={{color: 'white', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
-                        Rahul
-                    </div>
-                    <div style={{color: 'yellow', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
-                        [Rahul office]
-                    </div>
-                </Marker>
+                    src="https://www.vippng.com/png/detail/318-3188126_building-company-office-icon-in-png-file-specialty.png" style={{color: 'red'}} height="25" width="25"/>
+                <div style={{color: 'white', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
+                    Rahul
+                </div>
+                <div style={{color: 'yellow', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
+                    [Rahul office]
+                </div>
+            </Marker>
                 {/*, */}
             </div>
         )
