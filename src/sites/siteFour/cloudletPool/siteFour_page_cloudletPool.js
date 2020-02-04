@@ -310,7 +310,7 @@ class SiteFourPageCloudletPool extends React.Component {
 
         return (
             (viewMode === 'listView') ?
-                <InsideListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet Pool'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></InsideListView>
+                <InsideListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet Pools'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></InsideListView>
                 :
                 <PagePoolDetailViewer data={this.state.detailData} page='cloudletPool' refreshData={this.getDataDeveloper} />
         );
