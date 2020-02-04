@@ -1,5 +1,4 @@
 import * as reducer from '../../utils'
-//import * as services from '../../services/service_compute_service';
 
 let rgn = [];
 let props = {};

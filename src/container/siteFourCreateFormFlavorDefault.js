@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
-import {Button, Form, Grid, Header, Item, Popup, Icon, Input} from "semantic-ui-react";
-import { Field, reduxForm, initialize, reset, stopSubmit, change } from "redux-form";
+import {Button, Form, Grid, Header, Item, Popup, Icon, Input, Checkbox} from "semantic-ui-react";
+import { Field, reduxForm, stopSubmit } from "redux-form";
 import './styles.css';
 
 const makeOption =(options)=> {
@@ -23,6 +23,16 @@ const makeOption =(options)=> {
     )
 
 };
+
+const renderCheckbox = field => (
+    <Form.Checkbox toggle
+        style={{height:'33px', paddingTop:'8px'}}
+        checked={!!field.input.value}
+        name={field.input.name}
+        label={field.label}
+        onChange={(e, { checked }) => field.input.onChange(checked)}
+    />
+);
 
 
 const renderSelect = ({ input, label, options, placeholder, error, disabled }) => (
@@ -95,13 +105,12 @@ class SiteFourCreateFormFlavorDefault extends React.Component {
             data:null,
             regKey:null,
             fieldKeys:null,
-            dataInit:false
+            dataInit:false,
+            gpu:false
         };
     }
 
-    // data.map((dt) => {
     handleInitialize(data) {
-        const initData = [];
         if(data.length){
 
         } else {
@@ -128,7 +137,6 @@ class SiteFourCreateFormFlavorDefault extends React.Component {
         if(nextProps.data && nextProps.data.data.length){
             let keys = Object.keys(nextProps.data.data[0])
             this.setState({data:nextProps.data.data[0], regKeys:keys, fieldKeys:nextProps.data.keys, pId:nextProps.pId})
-            // submitSucceeded 초기화
             if(this.props.toggleSubmit) {
                 this.props.dispatch(stopSubmit('createAppFormDefault',{}))
             }
@@ -166,11 +174,14 @@ class SiteFourCreateFormFlavorDefault extends React.Component {
         this.props.gotoUrl()
     }
 
+    onHandleToggleChange = (e)=>{
+
+    }
+
     onHandleChange = (key) => {
         if(key === 'Region'){
             this.handleInitialize(this.props.data.data[0]);
-        }
-        
+        } 
     }
     
     render (){
@@ -215,7 +226,16 @@ class SiteFourCreateFormFlavorDefault extends React.Component {
                                                                 unit={fieldKeys[pId][key]['unit']}
                                                                 error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                             :
-                                                            
+
+                                                            (fieldKeys[pId][key]['type'] === 'renderCheckbox') ?
+                                                            <Field
+                                                                component={renderCheckbox}
+                                                                value={data[key]}
+                                                                name={key}
+                                                                onChange={(e)=>this.onHandleToggleChange(e)}
+                                                                />
+                                                            :
+                                
                                                             <Field
                                                                 component={renderInput}
                                                                 type="input"
@@ -224,10 +244,6 @@ class SiteFourCreateFormFlavorDefault extends React.Component {
                                                                 error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                         }
                                                     </Grid.Column>
-                                                    {/* <Grid.Column width={1}>
-                                                    {(fieldKeys[pId][key] && fieldKeys[pId][key]['tip']) ? this.getHelpPopup(fieldKeys[pId][key]['tip']):null}
-
-                                                    </Grid.Column> */}
                                                 </Grid.Row>
                                             : null
                                         ))

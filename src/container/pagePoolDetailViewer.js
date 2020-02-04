@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import MonitoringViewer from './monitoringViewer';
 import CommandViewer from './commandViewer';
+import _ from 'lodash';
 import './styles.css';
 import '../css/pages/cloudletPool.css';
 
@@ -33,8 +34,8 @@ const detailViewer = (props, type) => (
             <Table className='page_cloudletPool_table' celled collapsing style={{ width: '100%', height: '100%', border: 'none', display: 'flex', flexDirection: 'column' }}>
                 <Table.Header>
                     <Table.Row>
-                        <Table.HeaderCell><div style={{ display: 'flex', justifyContent: 'center', width:'25%' }}>Subject</div></Table.HeaderCell>
-                        <Table.HeaderCell><div style={{ display: 'flex', justifyContent: 'center' }}>Value</div></Table.HeaderCell>
+                        <Table.HeaderCell width={6}><div style={{ display: 'flex', justifyContent: 'center' }}>Key</div></Table.HeaderCell>
+                        <Table.HeaderCell width={10}><div style={{ display: 'flex', justifyContent: 'center' }}>Value</div></Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -68,6 +69,9 @@ const makeCloudletTable = (values, label, i) => (
                                                             :(label == 'ClusterInst')?'Cluster Instance'
                                                                 :(label == 'Physical_name')?'Physical Name'
                                                                     :(label == 'Platform_type')?'Platform Type'
+                                                                    :(label == 'PoolName')?'Pool Name'
+                                                                    :(label == 'Cloudlets')?'Number of Cloudlets'
+                                                                    :(label == 'Organizations')?'Number of Organizations'
                                                                         :label}
                     
             </Table.Cell>
@@ -269,7 +273,7 @@ class PagePoolDetailViewer extends React.Component {
 
         }
 
-        this.selectedItems = [];
+        this.selectedItems = null;
 
     }
     generateLayout() {
@@ -288,38 +292,38 @@ class PagePoolDetailViewer extends React.Component {
             _self.props.handleLoadingSpinner(false)
         }
     }
-    removeSelectedItems = () => {
-        _self.selectedItems.map((item) => {
+    removeSelectedItems = (item) => {
+
             // 데이터에서 아이템 제거
             let groupData = null;
             let filterDefine = null;
-            let cloneListData = Object.assign([], _self.state.listData)
+            let cloneListData = _.cloneDeep(_self.state.listData)
             if(item.type === 'delete member') {
                 groupData = _self.state.listData['cloudletGroup'];
                 filterDefine = groupData.filter( data => data['Cloudlet'] !== item.item['Cloudlet']);
                 cloneListData['cloudletGroup'] = filterDefine;
-                cloneListData['Cloudlets'] -= 1;
+                cloneListData['Cloudlets'] = parseInt(cloneListData['Cloudlets']) - 1;
             } else if(item.type === 'delete link') {
                 groupData = _self.state.listData['OrganizGroup'];
                 filterDefine = groupData.filter( data => data['Org'] !== item.item['Org']);
                 cloneListData['OrganizGroup'] = filterDefine;
-                cloneListData['Organizations'] -= 1;
+                cloneListData['Organizations'] = parseInt(cloneListData['Organizations']) - 1;
             }
             
             
             if(filterDefine){
                 _self.setState({listData: cloneListData})
             }
-        })
+    
     }
     httpResponse = (result) => {
         if(result) {
             console.log(JSON.stringify(result))
             if(result.response && result.response.data) {
-                _self.props.handleAlertInfo('success', result.response.data.message ? result.response.data.message : 'Created successfully')
+                _self.props.handleAlertInfo('success', result.response.data.message ? result.response.data.message : 'Deleted successfully')
             }
             /** remove item from list */
-            this.removeSelectedItems();
+            this.removeSelectedItems(_self.selectedItems);
 
         } else {
             _self.props.handleAlertInfo('error', 'View the audit log')
@@ -344,9 +348,9 @@ class PagePoolDetailViewer extends React.Component {
                 method: method,
                 data: data
             }
-            _self.selectedItems.push(_data)
-            this.props.handleLoadingSpinner(true);
-            serviceMC.sendRequest(_self, serviceBody, this.httpResponse)
+            _self.selectedItems = _data;
+            _self.props.handleLoadingSpinner(true);
+            serviceMC.sendRequest(_self, serviceBody, _self.httpResponse)
         }
     }
 

@@ -3,6 +3,7 @@ import * as FormatComputeOrganization from './formatter/formatComputeOrganizatio
 import * as FormatComputeUsers from './formatter/formatComputeUsers';
 import * as FormatComputeAccounts from './formatter/formatComputeAccounts';
 import * as FormatComputeCloudlet from './formatter/formatComputeCloudlet';
+import * as FormatComputeCloudletInfo from './formatter/formatComputeCloudletInfo';
 import * as FormatComputeClstInst from './formatter/formatComputeClstInstance';
 import * as FormatComputeFlavor from './formatter/formatComputeFlavor';
 import * as FormatComputeApp from './formatter/formatComputeApp';
@@ -18,6 +19,7 @@ import * as FormatComputeCloudletPoolMemberDelete from './formatter/formatComput
 import * as FormatComputeOrgCloudlet from './formatter/formatComputeOrgCloudlet';
 import * as FormatComputeLinkPoolOrgDelete from './formatter/formatComputeLinkPoolOrgDelete';
 
+
 export const SHOW_ORG = "showOrg";
 export const CREATE_ORG = "createOrg";
 export const DELETE_ORG = "deleteOrg";
@@ -29,6 +31,7 @@ export const DELETE_ACCOUNT = "DeleteAccount";
 export const SHOW_ROLE = "ShowRole";
 export const SHOW_CONTROLLER = "showController"
 export const SHOW_CLOUDLET = "ShowCloudlet";
+export const SHOW_CLOUDLET_INFO = "ShowCloudletInfo";
 export const DELETE_CLOUDLET = "DeleteCloudlet";
 export const CREATE_CLOUDLET = "CreateCloudlet";
 export const SHOW_CLUSTER_INST = "ShowClusterInst";
@@ -70,8 +73,9 @@ export const CREATE_CLOUDLET_POOL_MEMBER = "CreateCloudletPoolMember";
 export const CREATE_LINK_POOL_ORG = "CreateLinkPoolOrg";
 export const DELETE_CLOUDLET_POOL = "DeleteCloudletPool";
 export const DELETE_CLOUDLET_POOL_MEMBER = "DeleteCloudletPoolMember";
-export const DELETE_LINK_POOL_ORG = "DeleteLinkPoolOrg";
 export const SHOW_ORG_CLOUDLET = "orgcloudlet";
+export const DELETE_LINK_POOL_ORG = "DeleteLinkPoolOrg";
+export const RUN_COMMAND = "RunCommand";
 
 export function getPath(request) {
     switch (request.method) {
@@ -104,6 +108,7 @@ export function getPath(request) {
         case CREATE_ORG:
             return '/api/v1/auth/org/create';
         case SHOW_CLOUDLET:
+        case SHOW_CLOUDLET_INFO:
         case CREATE_CLOUDLET:
         case DELETE_CLOUDLET:
         case STREAM_CLOUDLET:
@@ -124,13 +129,13 @@ export function getPath(request) {
         case CREATE_APP_INST:
         case DELETE_APP_INST:
         case STREAM_APP_INST:
-            return `/api/v1/auth/ctrl/${request.method}`;
         case SHOW_CLOUDLET_POOL:
         case SHOW_CLOUDLET_MEMBER:
         case DELETE_CLOUDLET_POOL:
         case CREATE_CLOUDLET_POOL:
         case CREATE_CLOUDLET_POOL_MEMBER:
         case DELETE_CLOUDLET_POOL_MEMBER:
+        case RUN_COMMAND:
             return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:
         case RESEND_VERIFY:
@@ -170,6 +175,9 @@ export function formatData(request, response) {
         case SHOW_CLOUDLET:
             data = FormatComputeCloudlet.formatData(response, request.data)
             break;
+        case SHOW_CLOUDLET_INFO:
+            data = FormatComputeCloudletInfo.formatData(response, request.data)
+            break;    
         case SHOW_CLUSTER_INST:
             data = FormatComputeClstInst.formatData(response, request.data)
             break;

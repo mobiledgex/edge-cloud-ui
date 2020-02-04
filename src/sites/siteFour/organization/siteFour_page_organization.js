@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react';
 import sizeMe from 'react-sizeme';
 import DeveloperListView from '../../../container/developerListView';
@@ -8,9 +9,6 @@ import * as actions from '../../../actions';
 
 import * as serviceMC from '../../../services/serviceMC';
 import '../../siteThree.css';
-
-
-let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
 
 let _self = null;
 class SiteFourPageOrganization extends React.Component {
@@ -98,9 +96,10 @@ class SiteFourPageOrganization extends React.Component {
                 if (response.data.length == 0) {
                     _self.setState({ devData: [] })
                     _self.props.handleDataExist(false)
-                    _self.props.handleAlertInfo('error', 'There is no data')
+                    _self.props.handleAlertInfo('error', 'Requested data is empty')
                 } else {
-                    _self.setState({ devData: response.data })
+                    let sortedData = _.orderBy(response.data, ['Organization'])
+                    _self.setState({ devData: sortedData })
                     _self.props.handleDataExist(true)
                 }
             }

@@ -13,7 +13,10 @@ import * as reducer from '../utils'
 import SiteFourPoolOne from "./siteFourPoolStepOne";
 import SiteFourPoolTwo from "./siteFourPoolStepTwo";
 import SiteFourPoolThree from "./siteFourPoolStepThree";
+import Alert from 'react-s-alert';
+import { SubmissionError } from 'redux-form'
 
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 const ReactGridLayout = WidthProvider(RGL);
 
 const headerStyle = {
@@ -37,7 +40,7 @@ const stepData = [
     },
     {
         step:"Step 3",
-        description:""
+        description:"Review your Cloudlet Pool"
     },
 ]
 const createFormat = (data) => (
@@ -89,7 +92,7 @@ class SiteFourPoolStepView extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
-
+        this.step = 1; //default is 1
         const layout = this.generateLayout();
         this.state = {
             layout,
@@ -104,9 +107,9 @@ class SiteFourPoolStepView extends React.Component {
             typeOperator:'Developer',
             orgaName:'',
             validateError:[],
-            step:1, //default is 1
-            keysData: [keys[0]],
-            fakeData: [fakes[0]],
+            step:this.step, 
+            keysData: [keys[this.step-1]],
+            fakeData: [fakes[this.step-1]],
             devData: [],
             region:[],
             selectedRegion:null,
@@ -161,16 +164,16 @@ class SiteFourPoolStepView extends React.Component {
             pathname: '/site4',
             search: 'pg=7'
         });
-        this.props.history.location.search = 'pg=0';
-        this.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=7'})
+        //this.props.history.location.search = 'pg=7';
+        //this.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=7'})
     }
     onSkipClick = () => {
         this.props.history.push({
             pathname: '/site4',
             search: 'pg=7'
         });
-        this.props.history.location.search = 'pg=0';
-        this.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=7'})
+        //this.props.history.location.search = 'pg=7';
+        //this.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=7'})
     }
 
     makeSteps = (data) => (
@@ -191,8 +194,8 @@ class SiteFourPoolStepView extends React.Component {
                 }
             </Step.Group>
             {
-                (this.state.step ==1) ? <SiteFourPoolOne onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} toggleSubmit={this.props.toggleSubmit} data={data} changeOrg={this.changeOrg}></SiteFourPoolOne> :
-                    (this.state.step ==2) ? <SiteFourPoolTwo onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} org={this.state.orgaName} toggleSubmitTwo={this.props.toggleSubmitTwo} selectedData={{region:this.state.selectedRegion, poolName:this.state.gavePoolName}} changeOrg={this.changeOrg} onSkipClick={this.onSkipClick}></SiteFourPoolTwo> :
+                (this.state.step ==1) ? <SiteFourPoolOne onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} toggleSubmit={this.props.toggleSubmit} data={data} changeOrg={this.changeOrg} step={this.state.step}></SiteFourPoolOne> :
+                    (this.state.step ==2) ? <SiteFourPoolTwo onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} org={this.state.orgaName} toggleSubmitTwo={this.props.toggleSubmitTwo} selectedData={{region:this.state.selectedRegion, poolName:this.state.gavePoolName}} changeOrg={this.changeOrg} step={this.state.step} onSkipClick={this.onSkipClick}></SiteFourPoolTwo> :
                         (this.state.step ==3) ? <SiteFourPoolThree onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} org={this.state.orgaName} data={data} selectedData={{region:this.state.selectedRegion, poolName:this.state.gavePoolName}} changeOrg={this.changeOrg}></SiteFourPoolThree> : null
             }
         </Item>
@@ -427,6 +430,11 @@ class SiteFourPoolStepView extends React.Component {
             this.setState({submitValues: nextProps.formClusterInst.values})
 
             if(this.state.step === 1) {
+                let form = nextProps.formClusterInst.values;
+                if(form.poolName.length < 1 || typeof form.Region !== 'string' || form.invisibleField === '') {
+                    this.props.handleAlertInfo('error', 'You must fill in required of the fields')
+                    return;
+                }
 
                 // TODO: 20200109 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
                 // old
@@ -466,7 +474,8 @@ class SiteFourPoolStepView extends React.Component {
                  */
                 console.log('21091231 create link pool org.. ')
                 let _params = {};
-                let selectedNumber = JSON.parse(nextProps.formClusterInst.values.invisibleField);
+                let _selectedItems = nextProps.formClusterInst.values.invisibleField;
+                let selectedNumber = (_selectedItems !== "") ? JSON.parse(_selectedItems) : [];
                 let cloudletPool = nextProps.formClusterInst.values.poolName;
                 let region = nextProps.formClusterInst.values.Region;
                 if(selectedNumber.length) {
@@ -481,6 +490,20 @@ class SiteFourPoolStepView extends React.Component {
                         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
                         serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().CREATE_LINK_POOL_ORG, data : _params }, _self.receiveResultLinkOrg)
                     })
+                } else {
+                    //_self.props.handleAlertInfo('error', 'Select the organization')
+                    Alert.error('Required select an organization', {
+                        position: 'top-right',
+                        effect: 'scale',
+                        onShow: function () {
+                            console.log('aye!')
+                        },
+                        beep: false,
+                        timeout: 5,
+                        offset: 100
+                    });
+                    setTimeout(() => Alert.closeAll(), 3000)
+                    _self.setState({submitValues: {noData:''} })
                 }
 
                 //TEST goto step 3 -test-test-test-test-

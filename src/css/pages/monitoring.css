@@ -24,11 +24,15 @@
 }
 
 
-
-
 .page_monitoring_dropdown_box {
     display: flex;
     flex-direction: row;
+}
+
+.page_monitoring_datepicker_box {
+    display: flex;
+    align-items:flex-end;
+    width: 100%;
 }
 
 .page_monitoring_dropdown_label {
@@ -67,8 +71,6 @@
 
 .page_monitoring_select_area .ant-calendar-picker{
     margin-bottom: 10px;
-    /*margin-left: 20px;*/
-    /*min-width: 250px;*/
 }
 
 .page_monitoring_datepicker_area {
@@ -134,9 +136,20 @@
     border-radius: 5px;
     padding: 0 20px;
     justify-content: center;
-
+    cursor: pointer;
 }
 
+.page_monitoring_table_column .page_monitoring_title_area>div{
+    width:33.3333%;
+    display: inline-block;
+    margin-right: 0;
+    vertical-align: middle;
+}
+
+.page_monitoring_table_column .page_monitoring_title_area .page_monitoring_popup_header_button{
+    text-align: center;
+    vertical-align: middle;
+}
 
 /*.page_monitoring_column_kj {*/
 /*    display: flex;*/
@@ -209,13 +222,10 @@
 }
 
 .page_monitoring_title_area {
-    display: flex;
-    flex-direction: row;
+    display: block;
     /*flex-wrap: wrap;*/
-    align-items: center;
     margin: 5px 0;
     height: fit-content;
-    flex:1 1 0;
 }
 
 /*.page_monitoring_title_area2 {*/
@@ -251,16 +261,27 @@
     height:20px;
     min-width: 140px;
     font-size: 12px;
+    vertical-align: middle;
 }
-
 .page_monitoring_title {
-    display: flex;
+    display: inline-block;
     margin-right: 20px;
     flex-grow: 1;
-    min-width: 190px;
+    width: 100%;
     line-height: 1.2;
     font-size: 18px;
     color: #c5c6c8;
+}
+.page_monitoring_title_select {
+    display: inline-block;
+    margin-right: 20px;
+    flex-grow: 1;
+    min-width: 150px;
+    width: calc(100% - 160px);
+    line-height: 1.2;
+    font-size: 18px;
+    color: #c5c6c8;
+    vertical-align: middle;
 }
 .page_monitoring_container {
     display: flex;
@@ -337,7 +358,7 @@
 }
 
 .page_monitoring_popup_table {
-    height: 100%;
+    height: calc(100% - 30px);
 }
 
 .page_monitoring_popup_table .ui.table {
@@ -559,4 +580,3 @@
 /*.chartjs-render-monitor{*/
 /*    width: 100% !important;*/
 /*}*/
-

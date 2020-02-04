@@ -1,5 +1,4 @@
 import React from 'react';
-import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
@@ -179,12 +178,13 @@ class SiteFourPageCloudletPoolUpdate extends React.Component {
     }
 
     gotoUrl() {
+      
         _self.props.history.push({
             pathname: '/site4',
             search: 'pg=7'
         });
-        _self.props.history.location.search = 'pg=7';
-        _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=7'})
+        // _self.props.history.location.search = 'pg=7';
+        //_self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=7'})
     }
 
     changeOrg() {
