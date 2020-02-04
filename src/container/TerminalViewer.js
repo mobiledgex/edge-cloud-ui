@@ -4,6 +4,9 @@ import Terminal from '../hoc/terminal/mexTerminal'
 import * as serviceMC from '../services/serviceMC'
 import stripAnsi from 'strip-ansi'
 import Options from '../hoc/terminal/options/terminalOptions'
+import * as actions from "../actions";
+import {withRouter} from "react-router-dom";
+import {connect} from "react-redux";
 
 
 const CMD_CLEAR = 'clear';
@@ -207,7 +210,15 @@ class MexTerminal extends Component {
                 this.close()
             }
             else {
-                this.sendChannel.send(cmd + '\n')
+                if(this.sendChannel && this.sendChannel.readyState === 'open')
+                {
+                    this.sendChannel.send(cmd + '\n')
+                }
+                else
+                {
+                    this.props.handleAlertInfo('error', 'Terminal not connected, please try again')
+                    this.close();
+                }
             }
         }
     }
@@ -225,11 +236,16 @@ class MexTerminal extends Component {
     }
 
     connect = () => {
-        this.setState({
-            history: ["Please wait connecting"],
-            optionView: false
-        })
-        this.openTerminal()
+        if (this.state.cmd.length === 0) {
+            this.props.handleAlertInfo('error', 'Please input command')
+        }
+        else {
+            this.setState({
+                history: ["Please wait connecting"],
+                optionView: false
+            })
+            this.openTerminal()
+        }
     }
 
 
@@ -261,4 +277,14 @@ class MexTerminal extends Component {
 
 }
 
-export default MexTerminal;
+
+const mapStateToProps = (state) => {
+    
+};
+const mapDispatchProps = (dispatch) => {
+    return {
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
+    };
+};
+
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(MexTerminal));
