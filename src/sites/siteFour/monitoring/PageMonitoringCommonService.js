@@ -77,6 +77,16 @@ export const renderPlaceHolder3 = (type: string = '') => {
     )
 }
 
+export const convertByteToMegaByte = (value, hardwareType) => {
+    if (value > 1000000) {
+        return numberWithCommas(value / 1000000) + ' MByte'
+    } else {
+        return numberWithCommas(value)
+    }
+
+
+}
+
 
 export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDateTimeList, hardwareType) => {
 
@@ -120,6 +130,7 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
         }
     }
 
+
     let height = 500 + 100;
     let options = {
         plugins: {
@@ -159,7 +170,7 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
                     beginAtZero: true,
                     fontColor: 'white',
                     callback(value, index, label) {
-                        return numberWithCommas(value);
+                        return convertByteToMegaByte(value, hardwareType)
 
                     },
                 },

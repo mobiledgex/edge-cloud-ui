@@ -405,13 +405,14 @@ export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, userTyp
         return numberWithCommas((usageOne.sumUdpSent).toFixed(2)) + " Byte"
     }
 
-
+    //@fixme
+    //@fixme
     if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-        return numberWithCommas((usageOne.sumSendBytes).toFixed(2)) + " Byte"
+        return numberWithCommas((usageOne.sumSendBytes/ 1000000).toFixed(2)) + " MByte"
     }
 
     if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-        return numberWithCommas((usageOne.sumRecvBytes).toFixed(2)) + " Byte"
+        return numberWithCommas((usageOne.sumRecvBytes/ 1000000).toFixed(2)) + " MByte"
     }
 }
 
