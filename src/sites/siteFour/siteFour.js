@@ -1037,7 +1037,7 @@ class SiteFour extends React.Component {
                                                     (this.state.intoCity) ? 
                                                         <Button onClick={this.onClickBackBtn}>Back</Button> :
                                                         <Dropdown className='selection'
-                                                            style={{ zIndex: 100002, position: 'relative', marginRight:20, height:20 }}
+                                                            style={{position: 'relative', marginRight:20, height:20 }}
                                                             options={this.state.regions}
                                                             defaultValue={this.state.regions[0].value}
                                                             onChange={this.onChangeRegion}
