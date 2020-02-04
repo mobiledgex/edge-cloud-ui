@@ -290,7 +290,6 @@ export default class SiteFourCreateOper extends React.Component{
         if(hideHeader && filteredDummyData.length > 0) {
             filteredDummyData  = reducer.filterDefineKey(filteredDummyData, hideHeader);
         }
-        console.log('filteredDummyData -- ', filteredDummyData)
 
         return layout.map((item, i) => (
 

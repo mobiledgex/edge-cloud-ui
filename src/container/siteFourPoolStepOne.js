@@ -38,7 +38,7 @@ class SiteFourPoolOne extends React.Component {
             this.props.dispatch(stopSubmit('orgaStepOne',{}))
         }
         if(nextProps.data) {
-            console.log('20200106 data data in step one =', nextProps.data )
+            //console.log('20200106 data data in step one =', nextProps.data )
             this.setState({data:nextProps.data})
         }
 

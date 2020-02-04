@@ -384,7 +384,6 @@ class SiteFour extends React.Component {
 
         if (this.props.viewMode === 'detailView') return;
 
-        console.log('20190821 siteName==', this.props, 'change org step..', this.props.changeStep, 'steps data=', orgaSteps, 'userRole=', this.props.userRole, this.props.userInfo.info, 'this.props.dataExist==', this.props.dataExist)
         let site = this.props.siteName;
         let userName = (this.props.userInfo && this.props.userInfo.info) ? this.props.userInfo.info.Name : '';
         if (this.props.params.mainPath === "/site4" && this.props.params.subPath === "pg=newOrg") {
@@ -452,12 +451,10 @@ class SiteFour extends React.Component {
         }
 
         this.setState({ steps: currentStep })
-        console.log('20190826 this.steps==', this.steps, currentStep)
 
         let elmentName = (this.steps) ? currentStep : null;
         //this.steps.props.options.hideNext = true;
         let element = (elmentName) ? document.getElementsByClassName(elmentName[0].element.replace('.', '')) : [];
-        console.log('20190821 step..', this.steps, element)
         if (enable) {
             console.log("elementelement111", element)
             this.setState({ stepsEnabled: true, enable: true })
@@ -580,7 +577,6 @@ class SiteFour extends React.Component {
         let formKey = Object.keys(nextProps.formInfo);
         //let submitSucceeded = (nextProps.formInfo) ? nextProps.formInfo[formKey[0]]['submitSucceeded']: null
         if (formKey.length) {
-            console.log('submitSucceeded = ', nextProps.formInfo[formKey[0]], nextProps.formInfo[formKey[0]]['submitSucceeded'])
             if (nextProps.formInfo[formKey[0]]['submitSucceeded']) {
                 if (nextProps.formInfo[formKey[0]]['submitSucceeded'] === true) {
                     _self.setState({ stepsEnabled: false })
@@ -598,7 +594,6 @@ class SiteFour extends React.Component {
                 //_self.makeGhost(elem, _self)
 
             }
-            console.log('20190822 tutorial=', tutorial)
             if (enable && !_self.state.learned && !tutorial) {
                 _self.enalbeSteps();
                 _self.setState({ stepsEnabled: true, learned: true })
@@ -616,7 +611,6 @@ class SiteFour extends React.Component {
 
 
         //{ key: 1, text: 'All', value: 'All' }
-        console.log("nextProps.regionInfo.region", nextProps.regionInfo, ":::", _self.props.regionInfo)
         if (nextProps.regionInfo.region.length && !this.state.regionToggle) {
 
             let getRegions = []
@@ -789,10 +783,8 @@ class SiteFour extends React.Component {
         let savedArray = localStorage.getItem('auditUnChecked');
         let checkedArray = localStorage.getItem('auditChecked');
         let checked = [];
-        console.log('20191022 item is -- ', all, "  :  ", savedArray, typeof savedArray)
         all.map((item, i) => {
             if (savedArray && JSON.parse(savedArray).length) {
-                console.log('20191022 item is -- ', JSON.parse(savedArray).findIndex(k => k == item.traceid))
                 //이전에 없던 데이터 이면 추가하기
                 if (JSON.parse(savedArray).findIndex(k => k == item.traceid) === -1) addArray.push(item.traceid)
             } else {
@@ -801,7 +793,6 @@ class SiteFour extends React.Component {
         })
 
         if (addArray.length) {
-            console.log('20191022 if has new data ... ', addArray)
             JSON.parse(savedArray).concat(addArray);
         }
 
@@ -816,7 +807,6 @@ class SiteFour extends React.Component {
         }
 
         checked = (checkedArray) ? JSON.parse(checkedArray) : [];
-        console.log('20191022  unchecked... is -- ', checkResult.length, ":", checked.length, " - ", (checkResult.length - checked.length))
         this.props.handleAuditCheckCount(checkResult.length - checked.length)
         localStorage.setItem('auditUnChecked', JSON.stringify(checkResult))
 
@@ -852,7 +842,6 @@ class SiteFour extends React.Component {
     render() {
         const { shouldShowBox, shouldShowCircle, viewMode } = this.state;
         const { stepsEnabled, initialStep, hintsEnabled, hints, steps } = this.state;
-        console.log('20190821 stepsEnabled..', stepsEnabled)
         return (
             <Grid className='view_body'>
                 {steps ?

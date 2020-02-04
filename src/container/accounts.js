@@ -62,7 +62,7 @@ class Accounts extends Component {
     }
 
     receiveAccountKey(receive) {
-        console.log('account receive  public key ---->> '+JSON.stringify(receive));
+        //console.log('account receive  public key ---->> '+JSON.stringify(receive));
         if(receive === 'error'){
             self.setState({isError:true})
 

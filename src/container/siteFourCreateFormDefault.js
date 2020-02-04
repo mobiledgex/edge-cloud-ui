@@ -315,9 +315,9 @@ class SiteFourCreateFormDefault extends React.Component {
     handleChange = (nextTargetKeys, direction, moveKeys) => {
         this.setState({ targetKeys: nextTargetKeys });
 
-        console.log('targetKeys: ', nextTargetKeys);
-        console.log('direction: ', direction);
-        console.log('moveKeys: ', moveKeys);
+        // console.log('targetKeys: ', nextTargetKeys);
+        // console.log('direction: ', direction);
+        // console.log('moveKeys: ', moveKeys);
         let selected = [];
         moveKeys.map((data) => {
             selected.push(this._mockData[parseInt(data)])
@@ -331,12 +331,12 @@ class SiteFourCreateFormDefault extends React.Component {
     handleSelectChange = (sourceSelectedKeys, targetSelectedKeys) => {
         this.setState({ selectedKeys: [...sourceSelectedKeys, ...targetSelectedKeys] });
 
-        console.log('sourceSelectedKeys: ', sourceSelectedKeys);
-        console.log('targetSelectedKeys: ', targetSelectedKeys);
+        // console.log('sourceSelectedKeys: ', sourceSelectedKeys);
+        // console.log('targetSelectedKeys: ', targetSelectedKeys);
     };
 
     handleSearch = (dir, value) => {
-        console.log('search:', dir, value);
+        //console.log('search:', dir, value);
     };
 
     /** end ANT **/
@@ -404,7 +404,7 @@ class SiteFourCreateFormDefault extends React.Component {
         alert('onForm state',a,b)
     }
     onHandleChange(key,value,c){
-        console.log("onChangeFormState111",key,":::",value)
+
         if(key === 'Region'){
             this.props.onChangeState(key,value)
         } else if(key === 'OrganizationName') {
@@ -460,7 +460,6 @@ class SiteFourCreateFormDefault extends React.Component {
     cancelClick = (e, obj) => {
         e.preventDefault();
         let siteNum = 0;
-        console.log("cancelClickddd",e,":::",this.props)
         if(localStorage.selectMenu == 'Cloudlets') siteNum = 2
         else if(localStorage.selectMenu == 'Cluster Instances') siteNum = 4
         else if(localStorage.selectMenu == 'Cloudlet Pool') siteNum = 7

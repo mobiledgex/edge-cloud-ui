@@ -69,7 +69,7 @@ class PopSettingViewer extends React.Component {
     }
     onHandleSubmit =(a,b)=> {
 
-        console.log('+++++++++on handle submit popSettingViewer+++++', _self.props.userURL, a, b)
+        //console.log('+++++++++on handle submit popSettingViewer+++++', _self.props.userURL, a, b)
         localStorage.setItem('domainData', JSON.stringify({"mcDomain":_self.props.userURL}));
         _self.props.handleSubmit();
         setTimeout(() => {
@@ -89,7 +89,6 @@ class PopSettingViewer extends React.Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('regist new item -- ', nextProps)
         // if(nextProps.open) {
         //     this.setState({open:nextProps.open, dimmer:nextProps.dimmer});
         //     if(nextProps.data){
