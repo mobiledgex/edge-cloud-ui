@@ -373,66 +373,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             })
 
-
-            this.setIntervalForCluster()
-
-        }
-
-        setIntervalForCluster() {
-            this.interval = setInterval(async () => {
-                this.loadIntervalDataForCluster();
-            }, 1000 * 5.0)
-        }
-
-        async loadIntervalDataForCluster() {
-            this.setState({
-                intervalLoading: true,
-            })
-            let clusterList = await getClusterList();
-            let cloudletList = await getCloudletList()
-            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
-            let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
-            //let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
-
-            await this.setState({
-                isReady: true,
-                clusterDropdownList: clusterDropdownList,
-                cloudletList: cloudletList,
-                clusterList: clusterList,
-                isAppInstaceDataReady: true,
-                appInstanceList: appInstanceList,
-                filteredAppInstanceList: appInstanceList,
-                dropdownRequestLoading: false,
-                //appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
-
-            });
-
-            let allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
-
-            let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
-            await this.setState({
-                bubbleChartData: bubbleChartData,
-            })
-
-            let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
-                return o.sumCpuUsage;
-            }));
-
-            let maxMem = Math.max.apply(Math, allClusterUsageList.map(function (o) {
-                return o.sumMemUsage;
-            }));
-
-            await this.setState({
-                allClusterUsageList: allClusterUsageList,
-                allClusterUsageList003: allClusterUsageList,
-                filteredClusterUsageList: allClusterUsageList,
-                maxCpu: maxCpu,
-                maxMem: maxMem,
-                currentCluster: '',
-            })
-            await this.setState({
-                intervalLoading: false,
-            })
         }
 
         async resetAllData() {
@@ -461,8 +401,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentCluster: '',
                 currentAppInst: '',
             })
-
-            this.setIntervalForCluster()
         }
 
 
@@ -499,7 +437,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentAppInst: '',
             })
 
-            this.setIntervalForCluster()
         }
 
         makeChartDataAndRenderTabBody(hwType, subCategoryType = '') {
