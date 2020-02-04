@@ -1,9 +1,8 @@
 import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX} from "../../../../shared/Constants";
 import React from "react";
-import { renderUsageByType, renderUsageLabelByType, sortUsageListByType, StylesForMonitoring} from "../admin/PageAdminMonitoringService";
+import {renderUsageByType, renderUsageLabelByType, sortUsageListByType, StylesForMonitoring} from "../admin/PageAdminMonitoringService";
 import PageMonitoring from "../admin/PageAdminMonitoring";
 import {renderBarChartCore, renderLineChartCore} from "../PageMonitoringCommonService";
-
 
 export const renderBarGraphForCloutdlet = (usageList, hardwareType, _this) => {
 

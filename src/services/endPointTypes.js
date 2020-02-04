@@ -106,6 +106,7 @@ export function getPath(request) {
         case CREATE_ORG:
             return '/api/v1/auth/org/create';
         case SHOW_CLOUDLET:
+            return '/api/v1/auth/ctrl/ShowCloudlet';
         case CREATE_CLOUDLET:
         case DELETE_CLOUDLET:
         case STREAM_CLOUDLET:
@@ -280,4 +281,4 @@ export function getStreamMethod(keyId) {
         case 'appinst':
             return STREAM_APP_INST;
     }
-}   
+}

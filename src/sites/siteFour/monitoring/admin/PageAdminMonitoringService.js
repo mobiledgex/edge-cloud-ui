@@ -10,9 +10,10 @@ import Lottie from "react-lottie";
 import BubbleChart from "../../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../../shared/Types";
 import PageMonitoring from "./PageAdminMonitoring";
-import {convertByteToMegaByte, convertByteToMegaByte2, numberWithCommas, showToast} from "../PageMonitoringCommonService";
+import {numberWithCommas, showToast} from "../PageMonitoringCommonService";
 import {SHOW_CLOUDLET} from "../../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../../services/serviceMC";
+
 
 export const cutArrayList = (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];
@@ -1430,30 +1431,28 @@ export const getCloudletList = async () => {
        let requestData = {token: token, method: SHOW_CLOUDLET, data: {region: REGION.EU}};
        let requestData2 = {token: token, method: SHOW_CLOUDLET, data: {region: REGION.US}};
        let promiseList = []
+
        promiseList.push(sendSyncRequest(this, requestData))
        promiseList.push(sendSyncRequest(this, requestData2))
        let showCloudletList = await Promise.all(promiseList);
-       /*console.log('results===EU>', showCloudletList[0].response.data);
-       console.log('results===US>', showCloudletList[1].response.data);*/
-       let resultList = [];
-       showCloudletList.map(item => {
-           //@todo : null check
-           if (item.response.data["0"].Region !== '') {
-               let cloudletList = item.response.data;
-               cloudletList.map(item => {
-                   resultList.push(item);
-               })
-           }
-       })
+       console.log('results===EU>', showCloudletList[0].response.data);
+       console.log('results===US>', showCloudletList[1].response.data);
 
-       /* let newCloudletList = []
-        resultList.map(item => {
+       let cloudletEU =showCloudletList[0].response.data;
+       let cloudletUS =showCloudletList[1].response.data;
+
+
+       let mergedCloudletList = cloudletEU.concat(cloudletUS)
+
+        let newCloudletList = []
+       mergedCloudletList.map(item => {
             if (item.Operator === localStorage.selectOrg) {
                 newCloudletList.push(item)
             }
-        })*/
+        })
 
-       return resultList;
+
+       return newCloudletList;
    }catch (e) {
 
    }

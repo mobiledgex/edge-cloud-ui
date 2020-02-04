@@ -349,8 +349,17 @@ Authorization: Bearer  eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODA2OTYy
   "selector": "*"
 }
 
+###/api/v1/auth/ctrl/ShowCloudlet
+
+
+POST https://console-stage.mobiledgex.net:443/api/v1/auth/ctrl/ShowCloudlet
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODA5NDM5NDQsImlhdCI6MTU4MDg1NzU0NCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.VhuKLhZ7_u9b3UfvNdI8wP51lQrGFMc5LRfWKPcnXJujRFyQqInqzbGb10FmhC0srQrAtKEEgwbGMeyqlo_DmA
+
+{
+    "region": "EU"
+
+}
+
 ###
-
-
-
 

@@ -253,7 +253,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             this.setState({
                 isRequesting: true,
             })
-            let cloudletList = await getCloudletList();
+
+            let cloudletList = []
+            cloudletList = await getCloudletList();
+
+            console.log('cloudletList===>', cloudletList)
+
             let cloudletListForDropdown = [];
             cloudletList.map(item => {
                 /*{text: 'FLAVOR', value: 'flavor'},*/
@@ -721,7 +726,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             >RESET</Button>
                         </div>
                         <div style={{marginLeft: 50}}>
-                            {this.state.userType}FOR OPERTATOR..
+                            {this.state.userType}
+                        </div>
+                        <div style={{color: 'yellow'}}>
+                            opertator view
                         </div>
                         {this.state.intervalLoading &&
                         <div style={{marginLeft: 50}}>
