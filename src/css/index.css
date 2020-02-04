@@ -248,7 +248,7 @@ body, button, input, textarea, optgroup, select, textarea,
     padding: 0.714em 0;
 }
 .intro_globe {
-    background: url("/assets/images/backgroundGlob.png") no-repeat #000000;
+    background: url("/assets/images/globe_1.png") no-repeat #000000;
     background-position: center;
     background-size: cover;
 }
