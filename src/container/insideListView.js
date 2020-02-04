@@ -410,7 +410,7 @@ class InsideListView extends React.Component {
             <Button className="table_actions_button"
                     onClick={(self) => {
                         _self.onClickDropMenu(item, value, i, self)
-                        OrgCount === 0 ? this.setState({deleteDisabled : true}) : this.setState({deleteDisabled : false})
+                        OrgCount !== 0 ? this.setState({deleteDisabled : true}) : this.setState({deleteDisabled : false})
                     }}
                     onMouseOver={()=> _self.onOverDropMenu(item, value, i)}
                     onMouseOut={() => _self.onOutDropMenu(item, value, i)}>
