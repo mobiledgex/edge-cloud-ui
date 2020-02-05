@@ -497,7 +497,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
          * @todo: Process to be processed when changing select box Region, CloudLet, Cluster
          */
         async filterByClassification(pRegion: string = '', pCloudLet: string = '', pCluster: string = '', pAppInstance: string = '', isDateFiltering: boolean = false,) {
-
             try {
                 let appInstanceList = []
                 let allCpuUsageList = []
@@ -540,7 +539,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
                 let cloudletSelectBoxList = makeCloudletListSelectBox(appInstanceList)
                 let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
-
                 let filteredCpuUsageList = filterUsageListByRegion(pRegion, allCpuUsageList);
                 let filteredMemUsageList = filterUsageListByRegion(pRegion, allMemUsageList);
                 let filteredDiskUsageList = filterUsageListByRegion(pRegion, allDiskUsageList);
