@@ -11,6 +11,7 @@ import {showToast} from "../../../PageMonitoringCommonService";
 import TouchRipple from "@material-ui/core/ButtonBase/TouchRipple";
 import Ripples from "react-ripples";
 import $ from 'jquery';
+import {Button, Icon} from "semantic-ui-react";
 
 
 const {BaseLayer, Overlay} = LayersControl
@@ -238,6 +239,30 @@ export default hot(
                         </Marker>
 
                     </Map>
+
+                    <div className="controls" style={{marginTop: -250, zIndex:9999999}}>
+                        <Button id="mapZoomCtl" size='larges' icon onClick={() => {
+                            this.setState({
+                                zoom: 0.45,
+                            })
+                        }}>
+                            <Icon name="refresh"/>
+                        </Button>
+                        <Button id="mapZoomCtl" size='large' icon onClick={() => {
+                            this.setState({
+                                zoom: this.state.zoom * 1.2
+                            })
+                        }}>
+                            <Icon name="plus square outline"/>
+                        </Button>
+                        <Button id="mapZoomCtl" size='large' icon onClick={() => {
+                            this.setState({
+                                zoom: this.state.zoom * 0.8
+                            })
+                        }}>
+                            <Icon name="minus square outline"/>
+                        </Button>
+                    </div>
                 </div>
             );
         }
