@@ -345,7 +345,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //fixme: fakeData
             //let allClusterUsageList = require('./allClusterUsageList')
 
-
             console.log('filteredAppInstanceList===>', appInstanceList)
 
             let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
@@ -369,13 +368,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 clusterListLoading: false,
                 allCloudletUsageList: allClusterUsageList,
-                allClusterUsageList003: allClusterUsageList,
+                allClusterUsageList: allClusterUsageList,
                 filteredClusterUsageList: allClusterUsageList,
                 maxCpu: maxCpu,
                 maxMem: maxMem,
                 isRequesting: false,
                 currentCluster: '',
-
             })
 
         }
@@ -392,22 +390,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredClusterUsageList: this.state.allClusterUsageList,
                 filteredAppInstanceList: this.state.appInstanceList,
                 appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
-            }, () => {
-
-            })
-
+            });
             //todo: reset bubble chart data
             let bubbleChartData = await makeBubbleChartDataForCluster(this.state.allClusterUsageList, HARDWARE_TYPE.CPU);
             await this.setState({
                 bubbleChartData: bubbleChartData,
-            })
-            await this.setState({
                 dropdownRequestLoading: false,
                 currentCluster: '',
                 currentAppInst: '',
             })
         }
-
 
         async refreshAllData() {
             clearInterval(this.interval)

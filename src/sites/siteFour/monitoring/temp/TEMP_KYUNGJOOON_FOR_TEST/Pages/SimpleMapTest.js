@@ -68,7 +68,7 @@ export default class SimpleMapTest extends Component<Props, State> {
                 >
                     <ZoomableGroup zoom={this.state.zoom}>
                         <Geographies
-                            geography={require('../../../../../../components/react-simple-maps-v1/topojson-maps/world-10m')}
+                            geography={require('../../../../../../components/react-simple-maps-v1/topojson-maps/dsds')}
 
                         >
                             {({geographies}) =>
