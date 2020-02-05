@@ -463,7 +463,7 @@ class SiteFourCreateFormDefault extends React.Component {
         console.log("cancelClickddd",e,":::",this.props)
         if(localStorage.selectMenu == 'Cloudlets') siteNum = 2
         else if(localStorage.selectMenu == 'Cluster Instances') siteNum = 4
-        else if(localStorage.selectMenu == 'Cloudlet Pool') siteNum = 7
+        else if(localStorage.selectMenu == 'Cloudlet Pools') siteNum = 7
         else if(this.bid === 'skip') siteNum = 7
         this.props.gotoUrl(siteNum)
     }

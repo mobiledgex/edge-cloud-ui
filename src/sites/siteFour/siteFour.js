@@ -160,7 +160,7 @@ class SiteFour extends React.Component {
         ]
         this.menuItemsAll = [ //admin menu
             { label: 'Cloudlets', icon: 'cloud_queue', pg: 2 },
-            { label: 'Cloudlet Pool', icon: 'pool', pg: 7 },
+            { label: 'Cloudlet Pools', icon: 'pool', pg: 7 },
             { label: 'Flavors', icon: 'free_breakfast', pg: 3 },
             { label: 'Cluster Instances', icon: 'storage', pg: 4 },
             { label: 'Apps', icon: 'apps', pg: 5 },
@@ -178,7 +178,7 @@ class SiteFour extends React.Component {
             reducer.getFindIndex(this.menuItemsAll, 'label', 'Audit Log'),
         ]
 
-        this.menuArr = ['Organization', 'User Roles', 'Cloudlets', 'Cloudlet Pool', 'Flavors', 'Cluster Instances', 'Apps', 'App Instances']
+        this.menuArr = ['Organization', 'User Roles', 'Cloudlets', 'Cloudlet Pools', 'Flavors', 'Cluster Instances', 'Apps', 'App Instances']
         this.auth_three = [ //operator menu
             reducer.getFindIndex(this.menuItemsAll, 'label', 'Cloudlets'),
             reducer.getFindIndex(this.menuItemsAll, 'label', 'Monitoring'),
@@ -286,7 +286,7 @@ class SiteFour extends React.Component {
         } else if (localStorage.selectMenu === 'Cluster Instances') {
             this.setState({ page: 'pg=createClusterInst' })
             this.gotoUrl('/site4', 'pg=createClusterInst')
-        } else if (localStorage.selectMenu === 'Cloudlet Pool') {
+        } else if (localStorage.selectMenu === 'Cloudlet Pools') {
             this.setState({ page: 'pg=createCloudletPool' })
             this.gotoUrl('/site4', 'pg=createCloudletPool')
         } else {

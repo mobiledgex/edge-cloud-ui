@@ -315,13 +315,13 @@ class InsideListView extends React.Component {
         this.gotoUrl('/site4', 'pg=updateCloudletPool','pg=7')
         this.props.handleAppLaunch(data)
         // this.props.handleChangeComputeItem('App Instances')
-        localStorage.setItem('selectMenu', 'Cloudlet Pool')
+        localStorage.setItem('selectMenu', 'Cloudlet Pools')
     }
     linkOrganize = (data) => {
         this.gotoUrl('/site4', 'pg=linkOrganize','pg=7')
         this.props.handleAppLaunch(data)
         // this.props.handleChangeComputeItem('App Instances')
-        localStorage.setItem('selectMenu', 'Cloudlet Pool')
+        localStorage.setItem('selectMenu', 'Cloudlet Pools')
     }
 
     handleClose = () => {
@@ -373,7 +373,7 @@ class InsideListView extends React.Component {
             this.addCloudlet(this.state.item)
         } else if(b.children === 'Link Organization') {
             this.linkOrganize(this.state.item)
-        } else if(b.children === 'Delete Cloudlet Pool') {
+        } else if(b.children === 'Delete Cloudlet Pools') {
             this.setState({openDelete: true, selected:this.state.item})
         }
 
@@ -382,7 +382,7 @@ class InsideListView extends React.Component {
     makeActionButton = (target, disabled) => (
         <Button.Group vertical className="table_actions_popup_group">
             {
-                (this.props.siteId === "Cloudlet Pool")?
+                (this.props.siteId === "Cloudlet Pools")?
                     (disabled === true)?
                         cloudletPoolDeleteDisabled.map((option, i) => (
                             <Button key={i} onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
