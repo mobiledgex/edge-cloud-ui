@@ -107,8 +107,6 @@ export function getPath(request) {
             return '/api/v1/auth/role/adduser';
         case CREATE_ORG:
             return '/api/v1/auth/org/create';
-        case SHOW_CLOUDLET:
-            return '/api/v1/auth/ctrl/ShowCloudlet';
         case SHOW_CLOUDLET_INFO:
         case CREATE_CLOUDLET:
         case DELETE_CLOUDLET:
@@ -178,7 +176,7 @@ export function formatData(request, response) {
             break;
         case SHOW_CLOUDLET_INFO:
             data = FormatComputeCloudletInfo.formatData(response, request.data)
-            break;    
+            break;
         case SHOW_CLUSTER_INST:
             data = FormatComputeClstInst.formatData(response, request.data)
             break;
