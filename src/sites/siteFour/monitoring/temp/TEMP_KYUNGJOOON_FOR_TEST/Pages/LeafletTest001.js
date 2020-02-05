@@ -165,20 +165,24 @@ export default hot(
                                 className="tooltip1"
                             >
                                 <div style={{display: 'flex', flexDirection: 'column'}}>
+                                    <div style={{fontSize:20, fontFamily:'Acme'}}>
+                                        [flakflut eu]
+                                    </div>
                                     <button style={{backgroundColor: 'green', color: "white"}} onClick={() => {
                                         alert('eundew')
                                     }}>eundew
                                     </button>
-                                    <div style={{height: 10}}/>
+                                    <div style={{height: 5}}/>
                                     <button onClick={() => {
                                         alert('GO')
                                     }}>GO
                                     </button>
-                                    <div style={{height: 10}}/>
+                                    <div style={{height: 5}}/>
                                     <button onClick={() => {
                                         alert('Rahul')
                                     }}>Rahul
                                     </button>
+                                    <div style={{height: 5}}/>
                                     <button onClick={() => {
                                         alert('redstar')
                                     }}>redstar
