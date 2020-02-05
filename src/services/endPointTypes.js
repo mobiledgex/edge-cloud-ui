@@ -107,6 +107,8 @@ export function getPath(request) {
             return '/api/v1/auth/role/adduser';
         case CREATE_ORG:
             return '/api/v1/auth/org/create';
+        case SHOW_CLOUDLET:
+            return '/api/v1/auth/ctrl/ShowCloudlet';
         case SHOW_CLOUDLET_INFO:
         case CREATE_CLOUDLET:
         case DELETE_CLOUDLET:
