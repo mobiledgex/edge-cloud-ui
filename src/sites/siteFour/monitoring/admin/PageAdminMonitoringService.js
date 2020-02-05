@@ -670,7 +670,6 @@ export const makeNetworkLineChartData = (filteredNetworkUsageList, pHardwareType
     let usageSetList = []
     let dateTimeList = []
 
-
     for (let i in filteredNetworkUsageList) {
         let seriesValues = filteredNetworkUsageList[i].values
         instanceAppName = filteredNetworkUsageList[i].instance.AppName
