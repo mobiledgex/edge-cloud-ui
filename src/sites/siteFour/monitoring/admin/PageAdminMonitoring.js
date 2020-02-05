@@ -231,7 +231,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             connectionsTabIndex: 0,
         };
 
-
         constructor(props) {
             super(props);
 
@@ -285,7 +284,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 //@test: FAKE JSON FOR DEV
                 //let appInstanceList: Array<TypeAppInstance> = require('./appInstanceList')
-
                 appInstanceList.map(async (item: TypeAppInstance, index) => {
                     if (index === 0) {
                         await this.setState({
@@ -729,14 +727,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                             return (
                                 <Table.Row className='page_monitoring_popup_table_row'
-                                           onClick={async () => {
-                                               //alert(item.AppName)
-                                               /*await this.setState({
-                                                   currentAppInst: item.instance.AppName,
-                                                   currentGridIndex: index,
-                                               })
-                                               await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, item.instance.AppName)*/
-                                           }}
                                 >
                                     <Table.Cell>
                                         {index}
