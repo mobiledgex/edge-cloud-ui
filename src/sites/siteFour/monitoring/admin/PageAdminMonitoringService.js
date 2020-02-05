@@ -11,7 +11,6 @@ import {numberWithCommas, renderBarChartCore, renderLineChartCore, renderUsageBy
 import {SHOW_ORG_CLOUDLET} from "../../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../../services/serviceMC";
 
-
 export const cutArrayList = async (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];
     for (let index in paramArrayList) {
@@ -20,13 +19,6 @@ export const cutArrayList = async (length: number = 5, paramArrayList: any) => {
         }
     }
     return newArrayList;
-}
-
-export const covertToComparableDate = (paramDate) => {
-    let arrayDate = paramDate.toString().split("-");
-    let compareableFullDate = arrayDate[0] + arrayDate[1] + arrayDate[2]
-    return compareableFullDate
-
 }
 
 export const makeFormForAppInstance = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
@@ -108,21 +100,6 @@ export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, fetc
     )
 }
 
-
-export const isEmpty = (value) => {
-    if (value == "" || value == null || value == undefined || (value != null && typeof value == "object" && !Object.keys(value).length)) {
-        return true
-    } else {
-        return false
-    }
-};
-
-
-/**
- * @param appInstanceListGroupByCloudlet
- * @param pCloudLet
- * @returns {[]}
- */
 export const filterInstanceCountOnCloutLetOne = (appInstanceListGroupByCloudlet, pCloudLet) => {
     try {
         let filterInstanceCountOnCloutLetOne = [];
@@ -155,37 +132,6 @@ export const filterUsageByType = (pTypeKey, pTypeValue, usageList,) => {
     return filteredUsageList
 }
 
-/**
- * todo: Fliter app instace list by cloudlet Value
- * @param appInstanceList
- * @param pCloudLet
- * @returns {[]}
- */
-export const filterAppInstanceListByCloudLet = (appInstanceList, pCloudLet = '') => {
-    try {
-        let instanceListFilteredByCloudlet = []
-        appInstanceList.map(item => {
-            if (item.Cloudlet === pCloudLet) {
-                instanceListFilteredByCloudlet.push(item);
-            }
-        })
-        return instanceListFilteredByCloudlet;
-    } catch (e) {
-
-    }
-}
-
-export const makeSelectBoxListByInstAppName = (arrList, keyName) => {
-    let newArrList = [];
-    arrList.map(item => {
-        newArrList.push({
-            value: item.instance.AppName,
-            text: item.instance.AppName,
-        })
-    })
-    return newArrList;
-}
-
 
 /**
  *
@@ -208,33 +154,6 @@ export const filterAppInstanceListByClassification = (appInstanceList, pCloudLet
 }
 
 
-/**
- * todo: Filter Instance List by clusterInst value
- * @param appInstanceList
- * @param pCluster
- * @returns {[]}
- */
-export const filterAppInstanceListByClusterInst = (appInstanceList, pCluster = '') => {
-    let instanceListFilteredByClusterInst = []
-    appInstanceList.map(item => {
-        if (item.ClusterInst === pCluster) {
-            instanceListFilteredByClusterInst.push(item);
-        }
-    })
-
-    return instanceListFilteredByClusterInst;
-}
-
-export const filterAppInstanceListByAppInst = (appInstanceList, pAppInstName = '') => {
-    let filteredInstanceList = []
-    appInstanceList.map(item => {
-        if (item.AppName === pAppInstName) {
-            filteredInstanceList.push(item);
-        }
-    })
-
-    return filteredInstanceList;
-}
 
 /**
  * @todo: Remove duplicates from an array.
@@ -366,30 +285,6 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
 
 
 }
-
-export const renderLottie = () => {
-    return (
-        <div style={{position: 'absolute', top: '-20%', left: '48%'}}>
-            <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row', marginTop: -170}}>
-                <Lottie
-                    options={{
-                        loop: true,
-                        autoplay: true,
-                        animationData: require('../../../../lotties/loader001'),
-                        rendererSettings: {
-                            preserveAspectRatio: 'xMidYMid slice'
-                        }
-                    }}
-                    height={240}
-                    width={240}
-                    isStopped={false}
-                    isPaused={false}
-                />
-            </div>
-        </div>
-    )
-}
-
 
 export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
 
@@ -628,10 +523,7 @@ export const renderBubbleChartForCloudlet = (_this: PageMonitoring, hardwareType
         )
     } else {
         let appInstanceList = _this.state.appInstanceList;
-
-
         let boxWidth = (window.innerWidth - 300) / 3 - 20
-
         function renderZoomLevel(appInstanceListLength) {
             if (appInstanceListLength <= 4) {
                 return 0.5;
@@ -722,47 +614,6 @@ export const renderBubbleChartForCloudlet = (_this: PageMonitoring, hardwareType
 }
 
 
-export const getMetricsUtilizationAtAtClusterLevel = async (appInstanceOne) => {
-    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-
-    let responseRslt = await axios({
-        url: '/api/v1/auth/metrics/cloudlet',
-        method: 'post',
-        data: {
-            "region": appInstanceOne.Region,
-            "cloudlet": {
-                "operator_key": {
-                    "name": appInstanceOne.Operator
-                },
-                "name": appInstanceOne.Cloudlet
-            },
-            "selector": "utilization",
-            "last": 1
-        },
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + store.userToken
-
-        },
-        timeout: 15 * 1000
-    }).then(async response => {
-        return response.data;
-    }).catch(e => {
-        throw new Error(e)
-    })
-
-    return responseRslt;
-
-}
-
-
-/**
- *
- * @param _this
- * @param hardwareUsageList
- * @param hardwareType
- * @returns {*}
- */
 export const makeLineChartDataForAppInst = (_this: PageMonitoring, hardwareUsageList: Array, hardwareType: string) => {
     if (hardwareUsageList.length === 0) {
         return (
@@ -925,47 +776,6 @@ export const makeNetworkLineChartData = (filteredNetworkUsageList, pHardwareType
 
     return lineChartData;
 
-}
-
-/**
- *
- * @param canvas
- * @param height
- * @returns {[]}
- */
-export const makeGradientColor = (canvas, height) => {
-    const ctx = canvas.getContext("2d");
-
-    let gradientList = []
-    const gradient = ctx.createLinearGradient(0, 0, 0, height);
-
-    //'rgb(222,0,0)', 'rgb(255,150,0)', 'rgb(255,246,0)', 'rgb(91,203,0)', 'rgb(0,150,255)'
-    gradient.addColorStop(0, 'rgb(222,0,0)');
-    gradient.addColorStop(1, 'rgba(222,0,0, 0)');
-
-    const gradient2 = ctx.createLinearGradient(0, 0, 0, height);
-    gradient2.addColorStop(0, 'rgb(255,150,0)');
-    gradient2.addColorStop(1, 'rgba(55,150,0,0)');
-
-    const gradient3 = ctx.createLinearGradient(0, 0, 0, height);
-    gradient3.addColorStop(0, 'rgb(255,246,0)');
-    gradient3.addColorStop(1, 'rgba(255,246,0,0)');
-
-    const gradient4 = ctx.createLinearGradient(0, 0, 0, height);
-    gradient4.addColorStop(0, 'rgb(91,203,0)');
-    gradient4.addColorStop(1, 'rgba(91,203,0,0)');
-
-    const gradient5 = ctx.createLinearGradient(0, 0, 0, height);
-    gradient5.addColorStop(0, 'rgb(0,150,255)');
-    gradient5.addColorStop(1, 'rgba(0,150,255,0)');
-
-    gradientList.push(gradient)
-    gradientList.push(gradient2)
-    gradientList.push(gradient3)
-    gradientList.push(gradient4)
-    gradientList.push(gradient5)
-
-    return gradientList;
 }
 
 function isEmptyObject(obj) {
@@ -1153,18 +963,6 @@ export const getCloudletList = async () => {
     } catch (e) {
 
     }
-}
-
-
-export const makeSelectBoxList2 = (arrList, keyName) => {
-    let newArrList = [];
-    for (let i in arrList) {
-        newArrList.push({
-            value: arrList[i].instance.AppName,
-            text: arrList[i].instance.AppName,
-        })
-    }
-    return newArrList;
 }
 
 
