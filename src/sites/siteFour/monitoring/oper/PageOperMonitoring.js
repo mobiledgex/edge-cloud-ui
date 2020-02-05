@@ -20,7 +20,7 @@ import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
 import {numberWithCommas, renderLottieLoader, renderPlaceHolder, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
-import MiniMap from "./MiniMap";
+import MiniMapComponent from "./MiniMapComponent";
 import {CircularProgress} from "@material-ui/core";
 import {getClouletLevelUsageList, renderBarGraphForCloudlet, renderLineChartForCloudlet} from "./PageOperMonitoringService";
 
@@ -1057,7 +1057,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        <MiniMap loading={this.state.loading} cloudletList={this.state.cloudletList}/>
+                                                        <MiniMapComponent loading={this.state.loading} cloudletList={this.state.cloudletList}/>
                                                     </div>
                                                 </div>
 
