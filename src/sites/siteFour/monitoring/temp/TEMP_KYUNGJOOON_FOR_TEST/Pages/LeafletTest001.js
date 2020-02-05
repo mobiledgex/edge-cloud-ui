@@ -74,8 +74,8 @@ export default hot(
              */
             //
             setTimeout(()=>{
-                this.marker1.leafletElement.openPopup()
-                this.marker2.leafletElement.openPopup()
+                /*this.marker1.leafletElement.openPopup()
+                this.marker2.leafletElement.openPopup()*/
             },10)
         }
 
@@ -83,7 +83,7 @@ export default hot(
         render() {
 
             var greenIcon = new L.Icon({
-                iconUrl: require('./leaflet_icons/marker-icon-red.png'),
+                iconUrl: require('./leaflet_icons/marker-icon-2x-green.png'),
                 shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
                 iconSize: [25, 41],
                 iconAnchor: [12, 41],
