@@ -1,16 +1,12 @@
 import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX} from "../../../../shared/Constants";
 import React from "react";
-import {renderUsageByType, renderUsageByTypeForCluster, renderUsageLabelByType, sortUsageListByType, StylesForMonitoring} from "../admin/PageAdminMonitoringService";
-import PageMonitoring from "../admin/PageAdminMonitoring";
-import {renderBarChartCore, renderLineChartCore, renderUsageByType2} from "../PageMonitoringCommonService";
+import {renderUsageLabelByType, StylesForMonitoring} from "../admin/PageAdminMonitoringService";
+import {renderBarChartCore, renderLineChartCore, renderUsageByType2, sortUsageListByType} from "../PageMonitoringCommonService";
 import PageOperMonitoring from "./PageOperMonitoring";
 
 export const renderBarGraphForCloudlet = (usageList, hardwareType, _this) => {
-
     console.log('renderBarGraph2===>', usageList);
-
     usageList = sortUsageListByType(usageList, hardwareType)
-
 
     if (usageList.length === 0) {
         return (

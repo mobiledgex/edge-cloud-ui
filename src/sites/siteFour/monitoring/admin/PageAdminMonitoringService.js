@@ -485,24 +485,6 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
 
 }
 
-export const sortUsageListByType = (usageList, hardwareType) => {
-    if (hardwareType === HARDWARE_TYPE.VCPU) {
-        usageList.sort((a, b) => b.sumVCpuUsage - a.sumVCpuUsage);
-    } else if (hardwareType === HARDWARE_TYPE.MEM) {
-        usageList.sort((a, b) => b.sumMemUsage - a.sumMemUsage);
-    } else if (hardwareType === HARDWARE_TYPE.DISK) {
-        usageList.sort((a, b) => b.sumDiskUsage - a.sumDiskUsage);
-    } else if (hardwareType === HARDWARE_TYPE.FLOATING_IPS) {
-        usageList.sort((a, b) => b.sumFloatingIpsUsage - a.sumFloatingIpsUsage);
-    } else if (hardwareType === HARDWARE_TYPE.IPV4) {
-        usageList.sort((a, b) => b.sumIpv4Usage - a.sumIpv4Usage);
-    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-        usageList.sort((a, b) => b.sumRecvBytes - a.sumRecvBytes);
-        usageList.sort((a, b) => b.sumSendBytes - a.sumSendBytes);
-    }
-    return usageList;
-}
-
 
 /**
  * bottom Grid InstanceList maker..
