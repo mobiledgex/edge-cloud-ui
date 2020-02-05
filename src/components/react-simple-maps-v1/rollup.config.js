@@ -13,10 +13,10 @@ const external = [
 ]
 
 export default [{
-  input: "src/index.js",
+  input: "src/ReactSimpleMapV1.js",
   external,
   output: {
-    name: "reactSimpleMaps",      
+    name: "reactSimpleMaps",
     file: pkg.browser,
     format: "umd",
     globals: {
@@ -34,7 +34,7 @@ export default [{
     terser(),
   ],
 }, {
-  input: "src/index.js",
+  input: "src/ReactSimpleMapV1.js",
   external,
   output: [{
       file: pkg.main,

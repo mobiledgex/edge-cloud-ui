@@ -1,11 +1,8 @@
 import React, {Component} from "react"
-import {ComposableMap, Geographies, Geography, Marker, ZoomableGroup,} from "../../../../../../components/react-simple-maps-v1/src/index"
+import {ComposableMap, Geographies, Geography, Marker, ZoomableGroup, Annotation} from "../../../../../../components/react-simple-maps-v1/src/ReactSimpleMapV1"
 import {Button, Icon} from "semantic-ui-react";
 import './mapbox.css'
-import Annotation from "../../../../../../components/react-simple-maps-v1/src/components/Annotation";
 
-const geoUrl =
-    "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json"
 
 
 type Props = {
@@ -71,7 +68,7 @@ export default class SimpleMapTest extends Component<Props, State> {
                 >
                     <ZoomableGroup zoom={this.state.zoom}>
                         <Geographies
-                            geography={geoUrl}
+                            geography={require('../../../../../../components/react-simple-maps-v1/topojson-maps/world-10m')}
 
                         >
                             {({geographies}) =>
