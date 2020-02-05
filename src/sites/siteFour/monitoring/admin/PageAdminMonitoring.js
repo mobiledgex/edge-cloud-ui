@@ -468,10 +468,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         async refreshAllData() {
             toast({
                 type: 'success',
-                //icon: 'smile',
-                title: 'REFRESH ALL DATA',
+                icon: 'smile',
+                title: 'RELOAD DATA!',
                 animation: 'bounce',
-                time: 3 * 1000,
+                time: 2 * 1000,
                 color: 'black',
             });
             await this.setState({
@@ -1048,13 +1048,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         currentGridIndex: -1,
                                         currentTabIndex: 0,
                                     })
+                                    showToast('Reset data')
                                     await this.filterByClassification('ALL', '', '', '')
                                 }}
                             >RESET</Button>
                         </div>
-                        {/* <div style={{marginLeft: 50}}>
-                            {this.state.userType}
-                        </div>*/}
                     </Grid.Row>
                 </div>
             )
