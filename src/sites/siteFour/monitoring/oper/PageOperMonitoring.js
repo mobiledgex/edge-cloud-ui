@@ -131,9 +131,7 @@ type State = {
     intervalLoading: boolean,
     isRequesting: false,
     allCloudletUsageList: Array,
-
 }
-
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class PageOperMonitoring extends Component<Props, State> {
