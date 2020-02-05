@@ -41,16 +41,7 @@ import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import '../PageMonitoring.css'
-import {
-    getOneYearStartEndDatetime,
-    makeBubbleChartDataForCluster,
-    numberWithCommas,
-    renderBarChartCore,
-    renderLineChartCore,
-    renderLottieLoader, renderLottieLoader2,
-    renderPlaceHolder,
-    showToast
-} from "../PageMonitoringCommonService";
+import {getOneYearStartEndDatetime, makeBubbleChartDataForCluster, numberWithCommas, renderBarChartCore, renderLineChartCore, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
 import {getAppInstList, getAppLevelUsageList, getCloudletList, StylesForMonitoring} from "../admin/PageAdminMonitoringService";
 import MapboxComponent from "./MapboxComponent";
 import * as reducer from "../../../../utils";
