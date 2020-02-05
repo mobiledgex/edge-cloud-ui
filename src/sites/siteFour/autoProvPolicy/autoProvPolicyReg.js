@@ -1,157 +1,119 @@
 import React from 'react';
 import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
+import { Item, Step, Icon } from 'semantic-ui-react';
+import MexForms from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import * as serviceMC from '../../../services/serviceMC';
-import SiteAutoProvPolicyView from '../../../container/autoProvPolicy/siteAutoProvPolicyView';
-import * as reducer from "../../../utils";
+import * as serverData from '../../../services/ServerData';
 
+const stepData = [
+    {
+        step: "Step 1",
+        description: "Create New Policy"
+    },
+    {
+        step: "Step 2",
+        description: "Link the organization to the cloudlet pool"
+    },
+    {
+        step: "Step 3",
+        description: "Review your Cloudlet Pool"
+    }
+]
 
-
-let _self = null;
-let rgn = [];
-class SiteFourPageCloudletPoolReg extends React.Component {
+class AutoProvPolicyReg extends React.Component {
     constructor(props) {
         super(props);
-        _self = this;
         this.state = {
-            shouldShowBox: true,
-            shouldShowCircle: false,
-            contHeight:0,
-            contWidth:0,
-            bodyHeight:0,
-            activeItem: 'Developers',
-            devData:[],
-            devDataOrg:[],
-            operators:[],
-            clustinst:[],
-            apps:[],
-            hangeRegion:[],
-            regionToggle:false,
-            step: 1
-        };
-        this.headerH = 70;
-        this.hgap = 0;
-        this.userToken = null;
-        this.cloudlets = [];
-    }
-
-    gotoPreview(site) {
-        let mainPath = site;
-        let subPath = 'pg=0';
-        _self.props.history.push({
-            pathname: mainPath,
-            search: subPath,
-            state: { some: 'state' }
-        });
-        _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
-
-    }
-    countJoin() {
-        let cloudlet = this._cloudletDummy;
-        let cloudletList = [];
-        cloudlet.map((list) => {
-            cloudletList.push({region:list['Region'], cloudlet:list['CloudletName'], orgaName:list['Operator']})
-        })
-        //
-        let fieldValue = [{
-            'Region':rgn,
-            'AutoPolicyName':'',
-            'DeployClientCount':'',
-            'DeployIntervalCount':'',
-            'AddCloudlet':cloudletList,
-            'invisibleField':'',
-            'CloudletPool':'',
-            'LinktoOrganization':'',
-            'LinkDiagram':''
-        }]
-        let cloneObj = Object.assign([], fieldValue);
-        _self.setState({devData:fieldValue})
-        _self.cloudlets = cloneObj;
-        _self.forceUpdate();
-        _self.props.handleLoadingSpinner(false);
-    }
-
-
-    receiveResult = (mcRequest) => {
-        if(mcRequest)
-        {
-            let regionGroup = {};
-            if(mcRequest.response)
-            {
-                let response = mcRequest.response;
-                regionGroup = reducer.groupBy(response.data, 'Region');
-                if(Object.keys(regionGroup)[0]) {
-                    _self._cloudletDummy = _self._cloudletDummy.concat(response.data)
-                }
-                this.loadCount ++;
-                if(rgn.length == this.loadCount){
-                    _self.countJoin()
-                }
-            }
-            else
-            {
-                _self.props.handleComputeRefresh(false);
-            }
+            step: 1,
+            forms: [],
+            info: { region: 'US' }
         }
-        _self.props.handleLoadingSpinner(false);
-
+        this.regions = props.regionInfo.region
     }
 
-    getDataCloudetList = (region,regionArr) => {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        this.setState({devData:[]})
-        this._cloudletDummy = [];
-        _self.loadCount = 0;
-        if(region !== 'All'){
-            rgn = [region]
+
+    onChangeActive(num) {
+        if (this.state.step == num + 1) {
+            return true;
         } else {
-            rgn = (regionArr)?regionArr:this.props.regionInfo.region;
+            return false;
         }
+    }
 
-        rgn.map((item, i) => {
-            let requestData = {token:store.userToken, method:serviceMC.getEP().SHOW_CLOUDLET, data : {region:item}};
-            serviceMC.sendRequest(_self, requestData, _self.receiveResult)
+    getRegionData = () => {
+        if (this.regions && this.regions.length > 0)
+            return this.regions.map(region => {
+                return { key: region, value: region, text: region }
+            })
+    }
+
+    onChange = (data) => {
+        this.setState(prevState => {
+            let info = Object.assign({}, prevState.info);
+            info.region = data;
+            return { info };
         })
-        this.props.handleLoadingSpinner(true);
+    }
+
+    onCreate = (data) => {
+        alert(JSON.stringify(data))
     }
 
 
-    componentWillMount() {
-        this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-        this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
-    }
-    componentDidMount() {
-        
-    }
-    componentWillReceiveProps(nextProps) {
-        if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
-            _self.setState({regionToggle:true,regions:nextProps.regionInfo.region})
-            this.getDataCloudetList(nextProps.changeRegion,nextProps.regionInfo.region);
-        }
-
-        
-
-
-
-    }
-
-    gotoUrl() {
-        _self.props.history.push({
-            pathname: '/site4',
-            search: 'pg=7'
-        });
-    }
-
-
-    /*
-     */
     render() {
-        const {devData} = this.state;
-        return (<SiteAutoProvPolicyView devData={devData} stepMove={this.state.step} gotoUrl={this.gotoUrl}/>)
+        return (
+            <div className="round_panel">
+                <div className="grid_table" style={{ overflow: 'auto' }}>
+                    <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
+                        <div className='content_title' style={{ padding: '0px 0px 10px 0' }}>Create New Cloudlet Policy</div>
+                        <Step.Group stackable='tablet' style={{ width: '100%' }}>
+                            {
+                                stepData.map((item, i) => (
+                                    <Step active={this.onChangeActive(i)} key={i} >
+                                        <Icon name='info circle' />
+                                        <Step.Content>
+                                            <Step.Title>{item.step}</Step.Title>
+                                            <Step.Description>{item.description}</Step.Description>
+                                        </Step.Content>
+                                    </Step>
+                                ))
+                            }
+                        </Step.Group>
+                        <MexForms forms={this.state.forms} />
+                    </Item>
+
+                </div>
+            </div>
+        )
+    }
+
+    
+
+    getFormData = ()=>
+    {
+        serverData.getCloudletInfo(this, this.regions).then(data => {
+            console.log('Rahul1234', data)
+
+            let step1 = [
+                { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', required: true, data: this.getRegionData() },
+                { field: 'AutoPolicyName', label: 'Auto Policy Name', type: 'Input', placeholder: 'Enter Auto Prov Name', rules: { required: true } },
+                { field: 'DeployClientCount', label: 'Deploy Client Count', type: 'Input', rules: { type: 'number', required: true } },
+                { field: 'DeployIntervalCount', label: 'Deploy Interval Count', type: 'Input', rules: { type: 'number', required: true } },
+                { field: 'Cloudlets', label: 'Select Cloudlet', type: 'DualList' },
+                { label: 'Create Cloudlet Pool', type: 'Button', onClick: this.onCreate }
+            ]
+            this.setState({
+                forms: step1
+            })
+        })
+        
+    }
+
+    componentDidMount() {
+        this.getFormData()
     }
 
 };
@@ -162,16 +124,16 @@ const mapStateToProps = (state) => {
             value: state.changeRegion.region
         }
         : {};
-    let regionInfo = (state.regionInfo)?state.regionInfo:null;
+    let regionInfo = (state.regionInfo) ? state.regionInfo : null;
     let appLaunch = state.appLaunch;
-    let changeNext = state.changeNext ? state.changeNext.next:null;
+    let changeNext = state.changeNext ? state.changeNext.next : null;
     let _changedRegion = (state.form && state.form.createAppFormDefault && state.form.createAppFormDefault.values) ? state.form.createAppFormDefault.values.Region : null;
     return {
-        getRegion : (state.getRegion)?state.getRegion.region:null,
+        getRegion: (state.getRegion) ? state.getRegion.region : null,
         regionInfo: regionInfo,
-        region:region,
-        changeRegion : state.changeRegion?state.changeRegion.region:null,
-        changedRegion : _changedRegion,
+        region: region,
+        changeRegion: state.changeRegion ? state.changeRegion.region : null,
+        changedRegion: _changedRegion,
         appLaunch,
         changeNext
     }
@@ -180,13 +142,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
-        handleInjectData: (data) => { dispatch(actions.injectData(data))},
-        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
-        handleInjectFlavor: (data) => { dispatch(actions.showFlavor(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
     };
 };
 
-export default  withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageCloudletPoolReg)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(AutoProvPolicyReg)));

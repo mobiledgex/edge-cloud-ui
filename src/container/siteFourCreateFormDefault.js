@@ -357,6 +357,7 @@ class SiteFourCreateFormDefault extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        console.log('Rahul1234', nextProps)
         if(nextProps.data && nextProps.data.data && nextProps.data.data.length){
             let keys = Object.keys(nextProps.data.data[0])
             this.setState({data:nextProps.data.data[0], regKeys:keys, fieldKeys:nextProps.data.keys, pId:nextProps.pId})
