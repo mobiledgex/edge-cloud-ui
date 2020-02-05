@@ -773,14 +773,19 @@ export const filterAppInstanceListByCloudLet = (appInstanceList, pCloudLet = '')
  * @returns {[]}
  */
 export const filterAppInstanceListByClusterInst = (appInstanceList, pCluster = '') => {
-    let instanceListFilteredByClusterInst = []
-    appInstanceList.map(item => {
-        if (item.ClusterInst === pCluster) {
-            instanceListFilteredByClusterInst.push(item);
-        }
-    })
+    try{
+        let instanceListFilteredByClusterInst = []
+        appInstanceList.map(item => {
+            if (item.ClusterInst === pCluster) {
+                instanceListFilteredByClusterInst.push(item);
+            }
+        })
 
-    return instanceListFilteredByClusterInst;
+        return instanceListFilteredByClusterInst;
+    }catch (e) {
+
+    }
+
 }
 
 export const showToast = (title: string) => {

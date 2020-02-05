@@ -348,14 +348,18 @@ export const makeFormForAppInstance = (dataOne, valid = "*", token, fetchingData
  * @returns {[]}
  */
 export const filterAppInstanceListByAppInst = (appInstanceList, pAppInstName = '') => {
-    let filteredInstanceList = []
-    appInstanceList.map(item => {
-        if (item.AppName === pAppInstName) {
-            filteredInstanceList.push(item);
-        }
-    })
+    try {
+        let filteredInstanceList = []
+        appInstanceList.map(item => {
+            if (item.AppName === pAppInstName) {
+                filteredInstanceList.push(item);
+            }
+        })
+        return filteredInstanceList;
+    } catch (e) {
+        throw new Error(e.toString())
+    }
 
-    return filteredInstanceList;
 }
 
 export const filterUsageByClassification = (classificationList, pTypeValue, mapKey,) => {
@@ -409,11 +413,11 @@ export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, userTyp
     //@fixme
     //@fixme
     if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-        return numberWithCommas((usageOne.sumSendBytes/ 1000000).toFixed(0)) + " MByte"
+        return numberWithCommas((usageOne.sumSendBytes / 1000000).toFixed(0)) + " MByte"
     }
 
     if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-        return numberWithCommas((usageOne.sumRecvBytes/ 1000000).toFixed(0)) + " MByte"
+        return numberWithCommas((usageOne.sumRecvBytes / 1000000).toFixed(0)) + " MByte"
     }
 }
 

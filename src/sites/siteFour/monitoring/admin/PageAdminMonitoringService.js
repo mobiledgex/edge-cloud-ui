@@ -15,7 +15,7 @@ import {SHOW_ORG_CLOUDLET} from "../../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../../services/serviceMC";
 
 
-export const cutArrayList = (length: number = 5, paramArrayList: any) => {
+export const cutArrayList = async (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];
     for (let index in paramArrayList) {
         if (index < 5) {
@@ -127,14 +127,19 @@ export const isEmpty = (value) => {
  * @returns {[]}
  */
 export const filterInstanceCountOnCloutLetOne = (appInstanceListGroupByCloudlet, pCloudLet) => {
-    let filterInstanceCountOnCloutLetOne = [];
-    for (let [key, value] of Object.entries(appInstanceListGroupByCloudlet)) {
-        if (key === pCloudLet) {
-            filterInstanceCountOnCloutLetOne.push(value)
-            break;
+    try {
+        let filterInstanceCountOnCloutLetOne = [];
+        for (let [key, value] of Object.entries(appInstanceListGroupByCloudlet)) {
+            if (key === pCloudLet) {
+                filterInstanceCountOnCloutLetOne.push(value)
+                break;
+            }
         }
+        return filterInstanceCountOnCloutLetOne;
+    } catch (e) {
+        //throw new Error(e.toString())
     }
-    return filterInstanceCountOnCloutLetOne;
+
 }
 
 /**
@@ -160,13 +165,49 @@ export const filterUsageByType = (pTypeKey, pTypeValue, usageList,) => {
  * @returns {[]}
  */
 export const filterAppInstanceListByCloudLet = (appInstanceList, pCloudLet = '') => {
-    let instanceListFilteredByCloudlet = []
-    appInstanceList.map(item => {
-        if (item.Cloudlet === pCloudLet) {
-            instanceListFilteredByCloudlet.push(item);
-        }
+    try {
+        let instanceListFilteredByCloudlet = []
+        appInstanceList.map(item => {
+            if (item.Cloudlet === pCloudLet) {
+                instanceListFilteredByCloudlet.push(item);
+            }
+        })
+        return instanceListFilteredByCloudlet;
+    } catch (e) {
+
+    }
+}
+
+export const makeSelectBoxListByInstAppName = (arrList, keyName) => {
+    let newArrList = [];
+    arrList.map(item => {
+        newArrList.push({
+            value: item.instance.AppName,
+            text: item.instance.AppName,
+        })
     })
-    return instanceListFilteredByCloudlet;
+    return newArrList;
+}
+
+
+/**
+ *
+ * @param appInstanceList
+ * @param pCloudLet
+ * @param classification
+ * @returns {[]}
+ */
+export const filterAppInstanceListByClassification = (appInstanceList, pCloudLet = '', classification) => {
+    try {
+        let instanceListFilteredByCloudlet = []
+        appInstanceList.map(item => {
+            if (item[classification] === pCloudLet) {
+                instanceListFilteredByCloudlet.push(item);
+            }
+        })
+        return instanceListFilteredByCloudlet;
+    } catch (e) {
+    }
 }
 
 
@@ -469,7 +510,7 @@ export const instanceFlavorToPerformanceValue = (flavor) => {
  * @returns {[]}
  */
 export const filterAppInstOnCloudlet = (CloudLetOneList, pCluster) => {
-    try{
+    try {
         let filteredAppInstOnCloudlet = []
         CloudLetOneList.map(item => {
             if (item.ClusterInst === pCluster) {
@@ -477,7 +518,7 @@ export const filterAppInstOnCloudlet = (CloudLetOneList, pCluster) => {
             }
         })
         return filteredAppInstOnCloudlet;
-    }catch (e) {
+    } catch (e) {
 
     }
 
