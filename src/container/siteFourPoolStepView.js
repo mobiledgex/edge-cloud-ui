@@ -241,7 +241,7 @@ class SiteFourPoolStepView extends React.Component {
          * @private
          */
         let cloudletTest = this.state.dummyData[0].AddCloudlet[0];
-        console.log('20200104 cloudlet == ', cloudletTest)
+        //console.log('20200104 cloudlet == ', cloudletTest)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let _params = {};
         let selectedNumber = JSON.parse(this.state.formValue.invisibleField)
@@ -249,7 +249,7 @@ class SiteFourPoolStepView extends React.Component {
             let cloudlet = ''
             selectedNumber.map((no) => {
                 cloudlet = this.state.dummyData[0].AddCloudlet[parseInt(no)];
-                console.log('20200104 cloudlet--- ', cloudlet)
+                //console.log('20200104 cloudlet--- ', cloudlet)
                 _params = {
                     "cloudletpoolmember":{
                         "cloudlet_key":{
@@ -264,7 +264,7 @@ class SiteFourPoolStepView extends React.Component {
                     },
                     "region":cloudlet.region
                 }
-                console.log('20200104 _params == ', _params)
+                //console.log('20200104 _params == ', _params)
                 ////////// new
                 let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
                 serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().CREATE_CLOUDLET_POOL_MEMBER, data : _params }, _self.receiveResultCreateMember)
@@ -352,7 +352,7 @@ class SiteFourPoolStepView extends React.Component {
 
     }
     receiveResultLinkOrg = (result) => {
-        console.log('20191231 result -- ',JSON.stringify(result))
+        //console.log('20191231 result -- ',JSON.stringify(result))
         if(this.pauseRender) return;
 
         if(result.response && result.response.error) {
@@ -411,7 +411,7 @@ class SiteFourPoolStepView extends React.Component {
             assObj[0].Region.items = nextProps.regionInfo.region;
         }
         if(nextProps.formClusterInst) {
-            console.log('20191231 if click skip... ', nextProps.formClusterInst)
+            //console.log('20191231 if click skip... ', nextProps.formClusterInst)
         }
         if(nextProps.formClusterInst.values === this.state.submitValues) return;
 
@@ -515,7 +515,7 @@ class SiteFourPoolStepView extends React.Component {
 
             } else if(this.state.step === 3) {
 
-                console.log('20191231 submit link org to pool == ', JSON.parse(nextProps.formClusterInst.values))
+                //console.log('20191231 submit link org to pool == ', JSON.parse(nextProps.formClusterInst.values))
             }
 
         }

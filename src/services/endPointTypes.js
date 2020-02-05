@@ -239,7 +239,7 @@ export function getKey(keyId, data) {
             return FormatComputeUsers.getKey(data)
         case 'Account':
             return FormatComputeAccounts.getKey(data)
-        case 'Cloudlet Pool':
+        case 'Cloudlet Pools':
             return FormatComputeCloudletPoolDelete.getKey(data)
         case 'delete member':
             return FormatComputeCloudletPoolMemberDelete.getKey(data)
@@ -268,7 +268,7 @@ export function getDeleteMethod(keyId) {
             return DELETE_USER;
         case 'Account':
             return DELETE_ACCOUNT;
-        case 'Cloudlet Pool':
+        case 'Cloudlet Pools':
             return DELETE_CLOUDLET_POOL;
         case 'delete member':
             return DELETE_CLOUDLET_POOL_MEMBER;

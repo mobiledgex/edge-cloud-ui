@@ -165,7 +165,6 @@ export default class MonitoringViewer extends React.Component {
 
     }
     bytesToString =  (bytes, inst) => {
-        //console.log("20190812 bytes..",bytes, ":", inst)
         // One way to write it, not the prettiest way to write it.
 
         var fmt = d3.format('.2f');
@@ -180,7 +179,6 @@ export default class MonitoringViewer extends React.Component {
         }
     }
     datasToString =  (datas, inst) => {
-        //console.log("20190812 bytes..",bytes, ":", inst)
         // One way to write it, not the prettiest way to write it.
 
         var fmt = d3.format('.2f');
@@ -195,14 +193,12 @@ export default class MonitoringViewer extends React.Component {
         }
     }
     bytesToPercent=  (bytes, inst) => {
-        //console.log("20190812 bytes..",bytes, ":", inst)
         // One way to write it, not the prettiest way to write it.
 
         var fmt = d3.format('.2f');
         return bytes + ' %'
     }
     gigabytesToString =  (bytes, inst) => {
-        console.log("20190812 bytes..",bytes, ":", inst)
         // One way to write it, not the prettiest way to write it.
         var p = d3.precisionFixed(1),
             fmt = d3.format("." + p + "f");
@@ -226,7 +222,6 @@ export default class MonitoringViewer extends React.Component {
         this.udpCnt = 0;
         this.connCnt = 0;
 
-        console.log('20191206 feedData-- ', data)
         if(data && data.mData.length) {
             data.mData.map(item => {
                 if(item.name.indexOf('cpu') > -1) {
@@ -260,7 +255,6 @@ export default class MonitoringViewer extends React.Component {
         this.ipv4Cnt = 0;
         this.floipCnt = 0;
 
-        console.log('20191007 feedData-- ', data)
         var ipData = null;
         var cmdData = null;
         if(data && data.length) {
