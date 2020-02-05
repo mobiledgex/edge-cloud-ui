@@ -11,6 +11,9 @@ export type TypeUtilization = {
 }
 
 export type TypeGridInstanceList = {
+    sumAcceptsConnection: number;
+    sumActiveConnection: number;
+    sumHandledConnection: number;
     "instance": any,
     "sumCpuUsage": number,
     "sumMemUsage": number,

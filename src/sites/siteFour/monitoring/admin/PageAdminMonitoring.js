@@ -492,10 +492,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
         }
 
-        /**
-         * @todo: 셀렉트박스 Region, CloudLet, Cluster을 변경할때 처리되는 프로세스..
-         * @todo: Process to be processed when changing select box Region, CloudLet, Cluster
-         */
+
         async filterByClassification(pRegion: string = '', pCloudLet: string = '', pCluster: string = '', pAppInstance: string = '', isDateFiltering: boolean = false,) {
             try {
                 let appInstanceList = []
@@ -544,7 +541,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 let filteredDiskUsageList = filterUsageListByRegion(pRegion, allDiskUsageList);
                 let filteredNetworkUsageList = filterUsageListByRegion(pRegion, allNetworkUsageList);
                 let filteredConnectionsUsageList = filterUsageListByRegion(pRegion, allConnectionsUsageList);
-
                 let filteredGridInstanceList = filterUsageListByRegion(pRegion, allGridInstanceList);
 
                 //todo: -------------------------------------------
