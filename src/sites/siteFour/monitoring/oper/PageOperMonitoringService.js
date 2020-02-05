@@ -1,7 +1,7 @@
 import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX} from "../../../../shared/Constants";
 import React from "react";
-import {makeFormForCloudletLevelMatric, renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
-import {renderBarChartCore, renderLineChartCore, renderUsageByType2, sortUsageListByType, StylesForMonitoring} from "../PageMonitoringCommonService";
+import { renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
+import {makeFormForCloudletLevelMatric, renderBarChartCore, renderLineChartCore, renderUsageByType2, sortUsageListByType, StylesForMonitoring} from "../PageMonitoringCommonService";
 import PageOperMonitoring from "./PageOperMonitoring";
 import axios from "axios";
 
@@ -107,9 +107,6 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
     let instanceBodyList = []
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
-
-    console.log('cloudletList===>', cloudletList);
-
     for (let index = 0; index < cloudletList.length; index++) {
         let instanceInfoOneForm = makeFormForCloudletLevelMatric(cloudletList[index], pHardwareType, token, recentDataLimitCount, pStartTime, pEndTime)
         instanceBodyList.push(instanceInfoOneForm);
@@ -119,12 +116,8 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
     for (let index = 0; index < instanceBodyList.length; index++) {
         promiseList.push(getCloudletLevelMatric(instanceBodyList[index], token))
     }
-    console.log('instanceBodyList===>', instanceBodyList)
 
     let cloudletLevelMatricUsageList = await Promise.all(promiseList);
-
-    console.log('cloudletLevelMatricUsageList===>', cloudletLevelMatricUsageList);
-
     let usageList = []
     cloudletLevelMatricUsageList.map(item => {
 

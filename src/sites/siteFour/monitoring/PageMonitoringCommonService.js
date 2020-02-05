@@ -488,6 +488,26 @@ export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, fetch
     )
 }
 
+export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
+
+    return (
+        {
+            "token": token,
+            "params": {
+                "region": dataOne.Region,
+                "cloudlet": {
+                    "operator_key": {
+                        "name": dataOne.Operator
+                    },
+                    "name": dataOne.CloudletName,
+                },
+                "last": fetchingDataNo,
+                "selector": "*"
+            }
+        }
+    )
+}
+
 
 export const getOneYearStartEndDatetime = () => {
 
