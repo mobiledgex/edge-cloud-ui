@@ -1073,7 +1073,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolder() : <MiniMap loading={this.state.loading} cloudletList={this.state.cloudletList}/>}
+                                                        <MiniMap loading={this.state.loading} cloudletList={this.state.cloudletList}/>
                                                     </div>
                                                 </div>
 

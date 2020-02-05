@@ -42,11 +42,9 @@ export default class MiniMap extends Component<Props, State> {
             //this.state.cloudletList["0"].CloudletLocation.latitude
             //this.state.cloudletList["0"].CloudletLocation.longitude
             //this.state.cloudletList["0"].CloudletName
-            console.log('cloudletList===>', this.state.cloudletList);
+            console.log('componentWillReceiveProps_cloudletList===>', this.state.cloudletList);
         }
     }
-
-
 
 
     handleWheel(event) {
@@ -137,10 +135,13 @@ export default class MiniMap extends Component<Props, State> {
                             ))}
                         </Geographies>
                         <Markers>
-                            {this.state.cloudletList.map(item => {
+                            {this.state.cloudletList.map((item, index) => {
+
+                                console.log(`cloudletList===${index}>`, item);
 
                                 return (
-                                    <Marker marker={{coordinates: [item.CloudletLocation.latitude, item.CloudletLocation.longitude,]}} style={{
+                                    //@todo : in simple map) [LONG,LAT]
+                                    <Marker marker={{coordinates: [item.CloudletLocation.longitude, item.CloudletLocation.latitude,]}} style={{
                                         hidden: {opacity: 0},
                                     }}>
                                         <svg width="35" height="35">
@@ -148,7 +149,7 @@ export default class MiniMap extends Component<Props, State> {
                                         </svg>
 
                                         <text textAnchor="middle" fill="#fff" style={{fontSize: 15, fontFamily: "Roboto, sans-serif", fontStyle: 'italic'}}>
-                                            {item.CloudletName.toString().substring(0, 17) + "..."}
+                                            {item.CloudletName.toString()}
                                         </text>
                                     </Marker>
                                 )
