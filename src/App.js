@@ -25,6 +25,7 @@ import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
 import Test001 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/Test001";
 import SimpleMapTest from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/SimpleMapTest";
+import LeafletTest001 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/LeafletTest001";
 // API
 
 let self = null;
@@ -334,6 +335,7 @@ class App extends Component {
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
                     <Route exact path='/Test001' component={Test001} />
                     <Route exact path='/SimpleMapTest' component={SimpleMapTest} />
+                    <Route exact path='/LeafletTest001' component={LeafletTest001} />
                 </div>
             </Router>
         );

@@ -1,13 +1,31 @@
 .leaflet-container {
-    width: 100%;
-    height: 100vh;
+    width: 30%;
+    height: 35%;
+    /*      left top right bottom*/
+    /*margin: 0 auto;*/
 }
+/*.leaflet-map-pane {
+    height: 400px;
+    background-color: #0a0a0c;
+
+}*/
 
 
 .leaflet-control-attribution{
     display: none;
 }
 
-.tooltip1 {
-    background-color: floralwhite;
+.leaflet-popup-content-wrapper {
+    background-color: #b5b5b5;
+    font-weight: bold;
+}
+
+.marker1 {
+    background-color: green;
+    font-weight: bold;
+}
+
+.request-popup .leaflet-popup-content-wrapper {
+    border-radius: 0px;
+    background-color: #575757;
 }
