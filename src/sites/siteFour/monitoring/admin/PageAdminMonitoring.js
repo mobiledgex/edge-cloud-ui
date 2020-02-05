@@ -29,9 +29,9 @@ import {
     makeGridInstanceList,
     makeNetworkBarData,
     makeNetworkLineChartData,
-    renderBarGraph,
+    makeBarChartDataForInst,
     renderBubbleChart,
-    renderLineChart,
+    makeLineChartDataForAppInst,
     renderPlaceHolder2,
     renderSixGridInstanceOnCloudletGrid,
     getAppInstList,
@@ -288,8 +288,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: REALDATA
             let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
 
-            //todo: FAKE JSON FOR DEV
-            //let appInstanceList: Array<TypeAppInstance> = require('../../../temp/appInstacelist2')
+            //fixme: FAKE JSON FOR DEV
+            //let appInstanceList: Array<TypeAppInstance> = require('./appInstanceList')
 
             appInstanceList.map(async (item: TypeAppInstance, index) => {
                 if (index === 0) {
@@ -309,18 +309,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isAppInstaceDataReady: true,
             })
 
-            //todo: -------------------------------------------------------------------------------
             //todo: make FirstbubbleChartData
-            //todo: -------------------------------------------------------------------------------
             let bubbleChartData = await this.makeBubbleChartData(appInstanceList);
             await this.setState({
                 bubbleChartData: bubbleChartData,
             })
 
 
-            //todo: ###################################################################################################################################
-            //todo: Bring Hardware chart Data with App Instance List. From remote  (REALDATA) , Previous 1year data(default)
-            //todo: ###################################################################################################################################
             let startTime = makeCompleteDateTime(moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'));
             let endTime = makeCompleteDateTime(moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'));
             await this.setState({
@@ -334,12 +329,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 showToast(e.toString())
             }
 
-            //todo: #####################################################
-            //todo: (last xx datas FOR MATRIC) - FAKE JSON FOR DEV
-            //todo:#####################################################
-            //let usageList = require('../../../temp/usageAllJsonList2')
+            //fixme: fakedata
+            //usageList = require('./appLevelUsageList')
 
-            console.log('usageList===>', usageList)
+            //console.log('usageList===>', usageList)
 
             //todo: MAKE SELECTBOX.
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, CLASSIFICATION.CLUSTER_INST)
@@ -360,7 +353,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredDiskUsageList: usageList[3],
                 filteredConnectionsUsageList: usageList[4],
             }, () => {
-                console.log('filteredNetworkUsageList===>', this.state.filteredNetworkUsageList);
+                console.log('filteredConnectionsUsageList===>', this.state.filteredConnectionsUsageList);
             });
 
             //todo: -------------------------------------------------------------
@@ -554,8 +547,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //todo: MAKE TOP5 INSTANCE LIST
                 let appInstanceListTop5 = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), CLASSIFICATION.APP_NAME)
                 await this.setState({
-                    appInstanceListTop5: appInstanceListTop5,
-                });
+                    appInstanceListTop5: []
+                })
+                await setTimeout(() => {
+                    this.setState({
+                        appInstanceListTop5: appInstanceListTop5,
+                    })
+                }, 500)
             }
             setTimeout(() => {
                 this.setState({
@@ -603,7 +601,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
 
                 // pRegion?: string = '',     pCloudLet?: string = '',     pCluster?: string = '',     pAppInstance?: string = '',     isDateFiltering?: boolean = false): Promise<void>
-                this.filterByEachTypes(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, this.state.currentAppInst, true)
+                this.filterByClassification(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, this.state.currentAppInst, true)
 
             }
         }
@@ -643,6 +641,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     text: arrList[i].instance.AppName,
                 })
             }
+
+            console.log('newArrList===>', newArrList);
+
             return newArrList;
         }
 
@@ -677,7 +678,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
          * @todo: 셀렉트박스 Region, CloudLet, Cluster을 변경할때 처리되는 프로세스..
          * @todo: Process to be processed when changing select box Region, CloudLet, Cluster
          */
-        async filterByEachTypes(pRegion: string = '', pCloudLet: string = '', pCluster: string = '', pAppInstance: string = '', isDateFiltering: boolean = false,) {
+        async filterByClassification(pRegion: string = '', pCloudLet: string = '', pCluster: string = '', pAppInstance: string = '', isDateFiltering: boolean = false,) {
             let appInstanceList = []
             let allCpuUsageList = []
             let allMemUsageList = []
@@ -773,7 +774,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredDiskUsageList);
                 filteredNetworkUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredNetworkUsageList);
                 filteredConnectionsUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredConnectionsUsageList);
-
                 filteredGridInstanceList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredGridInstanceList);
 
             }
@@ -843,7 +843,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             this.props.toggleLoading(false)
         }
-
 
 
         renderBottomGridArea() {
@@ -1001,7 +1000,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                            {this.state.loading ? renderPlaceHolder() : makeBarChartDataForInst(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -1014,7 +1013,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                            {this.state.loading ? renderPlaceHolder() : makeLineChartDataForAppInst(this, this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
                         </div>
                     </div>
                 </div>
@@ -1034,7 +1033,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
+                            {this.state.loading ? renderPlaceHolder() : makeBarChartDataForInst(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -1047,7 +1046,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
+                            {this.state.loading ? renderPlaceHolder() : makeLineChartDataForAppInst(this, this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
                         </div>
                     </div>
 
@@ -1066,7 +1065,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
+                            {this.state.loading ? renderPlaceHolder() : makeBarChartDataForInst(this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -1077,7 +1076,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
+                            {this.state.loading ? renderPlaceHolder() : makeLineChartDataForAppInst(this, this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
                         </div>
                     </div>
                 </div>
@@ -1095,7 +1094,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder('network') : renderBarGraph(this.state.filteredConnectionsUsageList, connectionsType, this)}
+                            {this.state.loading ? renderPlaceHolder('network') : makeBarChartDataForInst(this.state.filteredConnectionsUsageList, connectionsType, this)}
                         </div>
                     </div>
                     <div className='page_monitoring_dual_container'>
@@ -1133,7 +1132,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder('network') : renderLineChart(this, this.state.filteredConnectionsUsageList, connectionsType)}
+                            {this.state.loading ? renderPlaceHolder('network') : makeLineChartDataForAppInst(this, this.state.filteredConnectionsUsageList, connectionsType)}
                         </div>
                     </div>
                 </div>
@@ -1150,7 +1149,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder('network') : renderBarGraph(this.state.filteredNetworkUsageList, networkType, this)}
+                            {this.state.loading ? renderPlaceHolder('network') : makeBarChartDataForInst(this.state.filteredNetworkUsageList, networkType, this)}
                         </div>
                     </div>
                     <div className='page_monitoring_dual_container'>
@@ -1183,7 +1182,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder('network') : renderLineChart(this, this.state.filteredNetworkUsageList, networkType)}
+                            {this.state.loading ? renderPlaceHolder('network') : makeLineChartDataForAppInst(this, this.state.filteredNetworkUsageList, networkType)}
                         </div>
                     </div>
                 </div>
@@ -1230,7 +1229,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         currentGridIndex: -1,
                                         currentTabIndex: 0,
                                     })
-                                    await this.filterByEachTypes('ALL', '', '', '')
+                                    await this.filterByClassification('ALL', '', '', '')
                                 }}
                             >RESET</Button>
                         </div>
@@ -1264,14 +1263,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 options={REGIONS_OPTIONS}
                                 defaultValue={REGIONS_OPTIONS[0].value}
                                 onChange={async (e, {value}) => {
-                                    try{
-                                        await this.filterByEachTypes(value)
+                                    try {
+                                        await this.filterByClassification(value)
                                         setTimeout(() => {
                                             this.setState({
                                                 cloudLetSelectBoxPlaceholder: 'Select CloudLet'
                                             })
                                         }, 1000)
-                                    }catch (e) {
+                                    } catch (e) {
 
                                     }
 
@@ -1300,22 +1299,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 options={this.state.cloudletList}
                                 // style={Styles.dropDown}
                                 onChange={async (e, {value}) => {
-                                    try{
-                                        await this.filterByEachTypes(this.state.currentRegion, value)
+                                    try {
+                                        await this.filterByClassification(this.state.currentRegion, value)
                                         setTimeout(() => {
                                             this.setState({
                                                 clusterSelectBoxPlaceholder: 'Select Cluster'
                                             })
                                         }, 1000)
-                                    }catch (e) {
+                                    } catch (e) {
                                     }
 
                                 }}
                             />
                         </div>
-
-
-
 
                         {/*todo:---------------------------*/}
                         {/*todo:Cluster Dropdown         */}
@@ -1334,8 +1330,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 options={this.state.clusterList}
                                 // style={Styles.dropDown}
                                 onChange={async (e, {value}) => {
-                                    try{
-                                        await this.filterByEachTypes(this.state.currentRegion, this.state.currentCloudLet, value)
+                                    try {
+                                        await this.filterByClassification(this.state.currentRegion, this.state.currentCloudLet, value)
 
                                         setTimeout(() => {
                                             this.setState({
@@ -1343,7 +1339,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 currentAppInst: '',
                                             })
                                         }, 500)
-                                    }catch (e) {
+                                    } catch (e) {
 
 
                                     }
@@ -1370,12 +1366,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 // style={Styles.dropDown}
                                 onChange={async (e, {value}) => {
 
-                                    try{
+                                    try {
                                         await this.setState({
                                             currentAppInst: value,
                                         })
-                                        await this.filterByEachTypes(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
-                                    }catch (e) {
+
+                                        await this.filterByClassification(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
+                                    } catch (e) {
 
                                     }
 
@@ -1398,7 +1395,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 placeholder={[moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]}
                                 onOk={async (date) => {
 
-                                    try{
+                                    try {
                                         let stateTime = date[0].format('YYYY-MM-DD HH:mm')
                                         let endTime = date[1].format('YYYY-MM-DD HH:mm')
                                         await this.setState({
@@ -1406,7 +1403,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             endTime: endTime,
                                         })
                                         this.filterUsageListByDate()
-                                    }catch (e) {
+                                    } catch (e) {
 
                                     }
 

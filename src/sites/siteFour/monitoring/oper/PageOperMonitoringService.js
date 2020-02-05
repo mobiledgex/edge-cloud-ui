@@ -98,7 +98,6 @@ export const renderLineChartForCloudlet = (_this: PageOperMonitoring, pUsageList
         }
 
         console.log('instanceNameList===>', instanceNameList);
-
         return renderLineChartCore(instanceNameList, usageSetList, newDateTimeList, hardwareType)
     }
 }

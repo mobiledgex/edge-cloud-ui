@@ -243,7 +243,6 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
     );
 }
 
-
 export const renderLineChartCore00002 = (paramLevelTypeNameList, usageSetList, newDateTimeList, hardwareType) => {
 
     console.log('usageSetList===>', usageSetList);

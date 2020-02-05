@@ -357,7 +357,14 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODA5NDM5NDQsImlhdCI6MTU4MDg1NzU0NCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.VhuKLhZ7_u9b3UfvNdI8wP51lQrGFMc5LRfWKPcnXJujRFyQqInqzbGb10FmhC0srQrAtKEEgwbGMeyqlo_DmA
 
 {
-    "region": "EU"
+    "region": "EU",
+    "cloudlet": {
+        "key": {
+            "operator_key": {
+                "name": "TDG"
+            }
+        }
+    }
 
 }
 
@@ -368,7 +375,7 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODA5NDM5N
 
 {
     "region": "EU",
-    "org" : "TDG"
+
 }
 
 ###
