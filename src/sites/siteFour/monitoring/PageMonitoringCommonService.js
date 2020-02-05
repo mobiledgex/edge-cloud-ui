@@ -41,6 +41,25 @@ export const cutArrayList = (length: number = 5, paramArrayList: any) => {
     return newArrayList;
 }
 
+export const renderLottieLoader = (width, height) => {
+    return (
+        <Lottie
+            options={{
+                loop: true,
+                autoplay: true,
+                animationData: require('../../../lotties/13255-loader22'),
+                rendererSettings: {
+                    preserveAspectRatio: 'xMidYMid slice'
+                }
+            }}
+            height={height}
+            width={width}
+            isStopped={false}
+            isPaused={false}
+        />
+    )
+}
+
 /**
  * @todo: 로딩이 완료 되기전에 placeholder를 보여준다..
  * @returns {*}
@@ -53,7 +72,7 @@ export const renderPlaceHolder = (type: string = '') => {
                 options={{
                     loop: true,
                     autoplay: true,
-                    animationData: require('../../../lotties/loader001'),
+                    animationData: require('../../../lotties/13626-loading11'),
                     rendererSettings: {
                         preserveAspectRatio: 'xMidYMid slice'
                     }
@@ -773,7 +792,7 @@ export const filterAppInstanceListByCloudLet = (appInstanceList, pCloudLet = '')
  * @returns {[]}
  */
 export const filterAppInstanceListByClusterInst = (appInstanceList, pCluster = '') => {
-    try{
+    try {
         let instanceListFilteredByClusterInst = []
         appInstanceList.map(item => {
             if (item.ClusterInst === pCluster) {
@@ -782,7 +801,7 @@ export const filterAppInstanceListByClusterInst = (appInstanceList, pCluster = '
         })
 
         return instanceListFilteredByClusterInst;
-    }catch (e) {
+    } catch (e) {
 
     }
 
