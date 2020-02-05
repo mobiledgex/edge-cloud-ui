@@ -152,4 +152,3 @@ let data=[
     }
 ]
 
-data2=
