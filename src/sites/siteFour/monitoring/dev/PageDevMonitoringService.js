@@ -8,11 +8,11 @@ import type {TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import PageMonitoring from "./PageDevMonitoring";
 import PageMonitoringForDeveloper from "./PageDevMonitoring";
-import {makeFormForClusterLevelMatric, numberWithCommas, renderBarChartCore, renderUsageByType} from "../PageMonitoringCommonService";
+import {makeFormForClusterLevelMatric, numberWithCommas, renderUsageByType} from "../PageMonitoringCommonService";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../../services/serviceMC";
 import {Table} from "semantic-ui-react";
-import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
+import {renderLineChartCore, renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
 
 export const getClusterLevelMatric = async (serviceBody: any, pToken: string) => {
     console.log('token2===>', pToken);
@@ -337,14 +337,18 @@ export const makeFormForAppInstance = (dataOne, valid = "*", token, fetchingData
  * @returns {[]}
  */
 export const filterAppInstanceListByAppInst = (appInstanceList, pAppInstName = '') => {
-    let filteredInstanceList = []
-    appInstanceList.map(item => {
-        if (item.AppName === pAppInstName) {
-            filteredInstanceList.push(item);
-        }
-    })
+    try {
+        let filteredInstanceList = []
+        appInstanceList.map(item => {
+            if (item.AppName === pAppInstName) {
+                filteredInstanceList.push(item);
+            }
+        })
+        return filteredInstanceList;
+    } catch (e) {
+        throw new Error(e.toString())
+    }
 
-    return filteredInstanceList;
 }
 
 export const filterUsageByClassification = (classificationList, pTypeValue, mapKey,) => {
@@ -395,13 +399,14 @@ export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, userTyp
         return numberWithCommas((usageOne.sumUdpSent).toFixed(2)) + " Byte"
     }
 
-
+    //@fixme
+    //@fixme
     if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-        return numberWithCommas((usageOne.sumSendBytes).toFixed(2)) + " Byte"
+        return numberWithCommas((usageOne.sumSendBytes / 1000000).toFixed(0)) + " MByte"
     }
 
     if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-        return numberWithCommas((usageOne.sumRecvBytes).toFixed(2)) + " Byte"
+        return numberWithCommas((usageOne.sumRecvBytes / 1000000).toFixed(0)) + " MByte"
     }
 }
 
@@ -475,36 +480,6 @@ export const sortUsageListByTypeForCluster = (usageList, hardwareType) => {
     return usageList;
 }
 
-export const renderBarGraphForCluster = (usageList, hardwareType, _this) => {
-
-    console.log(`renderBarGraphForCluster===>${hardwareType}`, usageList);
-
-    usageList = sortUsageListByTypeForCluster(usageList, hardwareType)
-
-    if (usageList.length === 0) {
-        return (
-            <div style={Styles.noData}>
-                NO DATA
-            </div>
-        )
-    } else {
-        let chartDataList = [];
-        chartDataList.push(["Element", hardwareType + " USAGE", {role: "style"}, {role: 'annotation'}])
-        for (let index = 0; index < usageList.length; index++) {
-            if (index < 5) {
-                let barDataOne = [
-                    usageList[index].cluster.toString() + "\n[" + usageList[index].cloudlet + "]",//clusterName
-                    renderUsageByType(usageList[index], hardwareType),
-                    CHART_COLOR_LIST[index],
-                    renderUsageLabelByTypeForCluster(usageList[index], hardwareType)
-                ]
-                chartDataList.push(barDataOne);
-            }
-        }
-        return renderBarChartCore(chartDataList, hardwareType)
-
-    }
-}
 
 export const makeBarChartDataForCluster = (usageList, hardwareType, _this) => {
 
@@ -690,19 +665,10 @@ export const renderBubbleChartForCloudlet = (_this: PageMonitoring, hardwareType
                             weight: 'bold',
                         }}
                         bubbleClickFun={async (label, index) => {
-                            /*  await _this.setState({
-                                  currentAppInst: label,
-                                  currentGridIndex: index,
-                              })
-                              await _this.handleSelectBoxChanges(_this.state.currentRegion, _this.state.currentCloudLet, _this.state.currentCluster, label)*/
+
 
                         }}
                         legendClickFun={async (label, index) => {
-                            await _this.setState({
-                                currentAppInst: label,
-                                currentGridIndex: index,
-                            })
-                            await _this.filterByEachTypes(_this.state.currentRegion, _this.state.currentCloudLet, _this.state.currentCluster, label)
 
                         }}
                         data={pBubbleChartData}
@@ -742,6 +708,7 @@ export const makeLineChartDataForAppInst = (allHWUsageList: Array, hardwareType:
     } else if (hardwareType === HARDWARE_TYPE.CONNECTIONS) {
         oneTypedUsageList = allHWUsageList[4]
     }
+
 
     if (oneTypedUsageList.length === 0) {
         return (

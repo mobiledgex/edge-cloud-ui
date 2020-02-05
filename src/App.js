@@ -97,7 +97,7 @@ const DashboardContainer = ( props, props2) => {
         self.getControllers();
     }
 
-    console.log('20191118 region saved..', allRegions)
+    // console.log('20191118 region saved..', allRegions)
 
 
 
@@ -279,7 +279,7 @@ class App extends Component {
         let scope = this;
         if(localStorage && localStorage.PROJECT_INIT) {
             let store = JSON.parse(localStorage.PROJECT_INIT);
-            console.log('20191118 store...', JSON.parse(localStorage.PROJECT_INIT),":",store.userToken)
+            // console.log('20191118 store...', JSON.parse(localStorage.PROJECT_INIT),":",store.userToken)
             if (store.userToken) serviceMC.sendRequest(self, { token: store.userToken, method: serviceMC.getEP().SHOW_CONTROLLER }, scope.receiveController);
         }
     }
@@ -330,7 +330,6 @@ class App extends Component {
                     <Route exact path='/createAccount' component={DashboardContainer.bind(this, {mainPath:'/createAccount'})} />
                     <Route exact path='/passwordreset' component={DashboardContainer.bind(this, {mainPath:'/passwordreset'})} />
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
-
                 </div>
             </Router>
         );

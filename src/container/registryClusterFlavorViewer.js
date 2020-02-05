@@ -102,12 +102,10 @@ class RegistryClusterFlavorViewer extends React.Component {
     }
 
     onHandleClick(dim, data) {
-        console.log('on handle click == ', data)
         this.setState({ dimmer:dim, open: true, selected:data })
         //this.props.handleChangeSite(data.children.props.to)
     }
     onHandleClicAdd(dim, data) {
-        console.log('on handle click == ', data)
         this.setState({ dimmer:dim, openAdd: true, selected:data })
         //this.props.handleChangeSite(data.children.props.to)
     }
@@ -163,7 +161,6 @@ class RegistryClusterFlavorViewer extends React.Component {
 
     onLayoutChange(layout) {
         //this.props.onLayoutChange(layout);
-        console.log('changed layout = ', JSON.stringify(layout))
     }
 
     setFildData() {
@@ -282,10 +279,8 @@ const createFormat = (data) => (
     }
 )
 const mapStateToProps = (state) => {
-    console.log("store state:::",state);
     let account = state.registryAccount.account;
     let dimm =  state.btnMnmt;
-    console.log('account -- '+account)
     
     let accountInfo = account ? account + Math.random()*10000 : null;
     let dimmInfo = dimm ? dimm : null;

@@ -110,6 +110,7 @@ export function getPath(request) {
         case CREATE_ORG:
             return '/api/v1/auth/org/create';
         case SHOW_CLOUDLET:
+            return '/api/v1/auth/ctrl/ShowCloudlet';
         case SHOW_CLOUDLET_INFO:
         case CREATE_CLOUDLET:
         case DELETE_CLOUDLET:
@@ -180,7 +181,7 @@ export function formatData(request, response) {
             break;
         case SHOW_CLOUDLET_INFO:
             data = FormatComputeCloudletInfo.formatData(response, request.data)
-            break;    
+            break;
         case SHOW_CLUSTER_INST:
             data = FormatComputeClstInst.formatData(response, request.data)
             break;
@@ -244,7 +245,7 @@ export function getKey(keyId, data) {
             return FormatComputeUsers.getKey(data)
         case 'Account':
             return FormatComputeAccounts.getKey(data)
-        case 'Cloudlet Pool':
+        case 'Cloudlet Pools':
             return FormatComputeCloudletPoolDelete.getKey(data)
         case 'delete member':
             return FormatComputeCloudletPoolMemberDelete.getKey(data)
@@ -273,7 +274,7 @@ export function getDeleteMethod(keyId) {
             return DELETE_USER;
         case 'Account':
             return DELETE_ACCOUNT;
-        case 'Cloudlet Pool':
+        case 'Cloudlet Pools':
             return DELETE_CLOUDLET_POOL;
         case 'delete member':
             return DELETE_CLOUDLET_POOL_MEMBER;
@@ -293,4 +294,4 @@ export function getStreamMethod(keyId) {
         case 'appinst':
             return STREAM_APP_INST;
     }
-}   
+}
