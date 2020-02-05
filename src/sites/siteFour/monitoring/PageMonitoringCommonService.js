@@ -11,7 +11,6 @@ import moment from "moment";
 import {Line as ReactChartJs} from "react-chartjs-2";
 
 
-
 export const renderLottieLoader = (width, height) => {
     return (
         <Lottie
