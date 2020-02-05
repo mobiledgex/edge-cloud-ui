@@ -13,7 +13,6 @@ import Ripples from "react-ripples";
 import $ from 'jquery';
 import {Button, Icon} from "semantic-ui-react";
 
-
 const {BaseLayer, Overlay} = LayersControl
 const rectangle = [
     [51.49, -0.08],
@@ -216,22 +215,22 @@ export default hot(
                                         Rahul..
                                     </div>
                                     <button style={{backgroundColor: 'green', color: "white"}} onClick={() => {
-                                        alert('eundew')
+                                        showToast('eundew')
                                     }}>eundew
                                     </button>
                                     <div style={{height: 5}}/>
                                     <button onClick={() => {
-                                        alert('GO')
+                                        showToast('GO')
                                     }}>GO
                                     </button>
                                     <div style={{height: 5}}/>
                                     <button onClick={() => {
-                                        alert('Rahul')
+                                        showToast('Rahul')
                                     }}>Rahul
                                     </button>
                                     <div style={{height: 5}}/>
                                     <button onClick={() => {
-                                        alert('redstar')
+                                        showToast('redstar')
                                     }}>redstar
                                     </button>
                                 </div>
