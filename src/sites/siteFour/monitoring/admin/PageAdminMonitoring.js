@@ -18,7 +18,7 @@ import {
     filterAppInstOnCloudlet,
     filterInstanceCountOnCloutLetOne,
     filterUsageByType,
-    filterUsageListByRegion,
+    filterUsageListByRegion, getAppInstList,
     getAppLevelUsageList,
     instanceFlavorToPerformanceValue,
     makeBarChartDataForInst,
@@ -243,8 +243,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let token = store ? store.userToken : 'null';
 
             console.log('token===>', token);
-
-
             try {
                 await this.loadInitData();
             } catch (e) {
@@ -272,133 +270,144 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         async loadInitData() {
-            let userRole = localStorage.getItem('selectRole')
-            console.log('userRole====>', userRole);
+            try {
+                let userRole = localStorage.getItem('selectRole')
+                console.log('userRole====>', userRole);
 
-            this.setState({
-                loading: true,
-                loading0: true,
-                isReady: false,
-                userType: userRole,
-            })
-            //todo: REALDATA
-            //let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
+                this.setState({
+                    loading: true,
+                    loading0: true,
+                    isReady: false,
+                    userType: userRole,
+                })
+                //todo: REALDATA
+                let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
 
-            //fixme: FAKE JSON FOR DEV
-            let appInstanceList: Array<TypeAppInstance> = require('./appInstanceList')
+                //@test: FAKE JSON FOR DEV
+                //let appInstanceList: Array<TypeAppInstance> = require('./appInstanceList')
 
-            appInstanceList.map(async (item: TypeAppInstance, index) => {
-                if (index === 0) {
-                    await this.setState({
-                        appInstanceOne: APPINSTANCE_INIT_VALUE,
-                    });
+                appInstanceList.map(async (item: TypeAppInstance, index) => {
+                    if (index === 0) {
+                        await this.setState({
+                            appInstanceOne: APPINSTANCE_INIT_VALUE,
+                        });
+                    }
+                })
+
+                let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
+                await this.setState({
+                    appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
+                    appInstanceList: appInstanceList,
+                    allAppInstanceList: appInstanceList,
+                })
+                await this.setState({
+                    isAppInstaceDataReady: true,
+                })
+
+                //todo: make FirstbubbleChartData
+                let bubbleChartData = await this.makeBubbleChartData(appInstanceList);
+                await this.setState({
+                    bubbleChartData: bubbleChartData,
+                })
+
+
+                let startTime = makeCompleteDateTime(moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'));
+                let endTime = makeCompleteDateTime(moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'));
+                await this.setState({
+                    startTime,
+                    endTime
+                });
+                let usageList = [];
+
+                //@todo:realdata
+                try {
+                    usageList = await getAppLevelUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
+                } catch (e) {
+                    showToast(e.toString())
                 }
-            })
 
-            let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
-            await this.setState({
-                appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
-                appInstanceList: appInstanceList,
-                allAppInstanceList: appInstanceList,
-            })
-            await this.setState({
-                isAppInstaceDataReady: true,
-            })
+                //fixme: fakedata
+                //usageList = require('./appLevelUsageList')
 
-            //todo: make FirstbubbleChartData
-            let bubbleChartData = await this.makeBubbleChartData(appInstanceList);
-            await this.setState({
-                bubbleChartData: bubbleChartData,
-            })
+                //todo: MAKE SELECTBOX.
+                let clusterInstanceGroupList = reducer.groupBy(appInstanceList, CLASSIFICATION.CLUSTER_INST)
+                let cloudletList = this.makeSelectBoxList(appInstanceListGroupByCloudlet, CLASSIFICATION.CLOUDLET)
+                let clusterList = this.makeSelectBoxList(clusterInstanceGroupList, CLASSIFICATION.CLUSTER_INST)
 
+                await this.setState({
+                    allCpuUsageList: usageList[0],
+                    allMemUsageList: usageList[1],
+                    allNetworkUsageList: usageList[2],//networkUsage
+                    allDiskUsageList: usageList[3],//disk is last array
+                    allConnectionsUsageList: usageList[4],
+                    cloudletList: cloudletList,
+                    clusterList: clusterList,
+                    filteredCpuUsageList: usageList[0],
+                    filteredMemUsageList: usageList[1],
+                    filteredNetworkUsageList: usageList[2],
+                    filteredDiskUsageList: usageList[3],
+                    filteredConnectionsUsageList: usageList[4],
+                }, () => {
+                    console.log('filteredConnectionsUsageList===>', this.state.filteredConnectionsUsageList);
+                });
 
-            let startTime = makeCompleteDateTime(moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'));
-            let endTime = makeCompleteDateTime(moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'));
-            await this.setState({
-                startTime,
-                endTime
-            });
-            let usageList = [];
+                //todo: -------------------------------------------------------------
+                //todo: MAKE TOP5 INSTANCE LIST
+                //todo: -------------------------------------------------------------
+                let appInstanceListTop5 = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), CLASSIFICATION.APP_NAME)
 
-            //@todo:realdata
-            /*try {
-                usageList = await getAppLevelUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
+                //todo: -------------------------------------------
+                //todo: GridInstanceList
+                //todo: -------------------------------------------
+                let gridInstanceList = makeGridInstanceList(usageList);
+
+                //todo: -------------------------------------------
+                //todo: GridInstanceList MEM,CPU MAX VALUE
+                //todo: -------------------------------------------
+                let gridInstanceListMemMax = Math.max.apply(Math, gridInstanceList.map(function (o) {
+                    return o.sumMemUsage;
+                }));
+
+                let gridInstanceListCpuMax = Math.max.apply(Math, gridInstanceList.map(function (o) {
+                    return o.sumCpuUsage;
+                }));
+
+                await this.setState({
+                    appInstanceListTop5: appInstanceListTop5,
+                    allGridInstanceList: gridInstanceList,
+                    filteredGridInstanceList: gridInstanceList,
+                    gridInstanceListMemMax: gridInstanceListMemMax,
+                    gridInstanceListCpuMax: gridInstanceListCpuMax,
+                }, () => {
+                    console.log('filteredGridInstanceList===>', this.state.filteredGridInstanceList);
+                });
+
+                this.props.toggleLoading(false);
+                await this.setState({
+                    loading: false,
+                    loading0: false,
+                    isReady: true,
+                    isReadyNetWorkCharts: true,
+                });
+
+                toast({
+                    type: 'success',
+                    //icon: 'smile',
+                    title: 'Data Loading Complete',
+                    animation: 'bounce',
+                    time: 3 * 1000,
+                    color: 'black',
+                });
             } catch (e) {
                 showToast(e.toString())
-            }*/
-
-            //fixme: fakedata
-            usageList = require('./appLevelUsageList')
-
-            //todo: MAKE SELECTBOX.
-            let clusterInstanceGroupList = reducer.groupBy(appInstanceList, CLASSIFICATION.CLUSTER_INST)
-            let cloudletList = this.makeSelectBoxList(appInstanceListGroupByCloudlet, CLASSIFICATION.CLOUDLET)
-            let clusterList = this.makeSelectBoxList(clusterInstanceGroupList, CLASSIFICATION.CLUSTER_INST)
-
-            await this.setState({
-                allCpuUsageList: usageList[0],
-                allMemUsageList: usageList[1],
-                allNetworkUsageList: usageList[2],//networkUsage
-                allDiskUsageList: usageList[3],//disk is last array
-                allConnectionsUsageList: usageList[4],
-                cloudletList: cloudletList,
-                clusterList: clusterList,
-                filteredCpuUsageList: usageList[0],
-                filteredMemUsageList: usageList[1],
-                filteredNetworkUsageList: usageList[2],
-                filteredDiskUsageList: usageList[3],
-                filteredConnectionsUsageList: usageList[4],
-            }, () => {
-                console.log('filteredConnectionsUsageList===>', this.state.filteredConnectionsUsageList);
-            });
-
-            //todo: -------------------------------------------------------------
-            //todo: MAKE TOP5 INSTANCE LIST
-            //todo: -------------------------------------------------------------
-            let appInstanceListTop5 = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), CLASSIFICATION.APP_NAME)
-
-            //todo: -------------------------------------------
-            //todo: GridInstanceList
-            //todo: -------------------------------------------
-            let gridInstanceList = makeGridInstanceList(usageList);
-
-            //todo: -------------------------------------------
-            //todo: GridInstanceList MEM,CPU MAX VALUE
-            //todo: -------------------------------------------
-            let gridInstanceListMemMax = Math.max.apply(Math, gridInstanceList.map(function (o) {
-                return o.sumMemUsage;
-            }));
-
-            let gridInstanceListCpuMax = Math.max.apply(Math, gridInstanceList.map(function (o) {
-                return o.sumCpuUsage;
-            }));
-
-            await this.setState({
-                appInstanceListTop5: appInstanceListTop5,
-                allGridInstanceList: gridInstanceList,
-                filteredGridInstanceList: gridInstanceList,
-                gridInstanceListMemMax: gridInstanceListMemMax,
-                gridInstanceListCpuMax: gridInstanceListCpuMax,
-            }, () => {
-                console.log('filteredGridInstanceList===>', this.state.filteredGridInstanceList);
-            });
-
-            this.props.toggleLoading(false);
-            await this.setState({
-                loading: false,
-                loading0: false,
-                isReady: true,
-                isReadyNetWorkCharts: true,
-            });
-
-            toast({
-                type: 'success',
-                //icon: 'smile',
-                title: 'Data Loading Complete',
-                animation: 'bounce',
-                time: 3 * 1000,
-                color: 'black',
-            });
+            } finally {
+                await this.setState({
+                    loading: false,
+                    loading0: false,
+                    isReady: true,
+                    isReadyNetWorkCharts: true,
+                });
+            }
 
         }
 
@@ -453,9 +462,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     text: arrList[i].instance.AppName,
                 })
             }
-
-            console.log('newArrList===>', newArrList);
-
             return newArrList;
         }
 
@@ -1226,10 +1232,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(1, 'd')],
                                     'This Month': [moment().startOf('month'), moment().endOf('month')],
                                     'Last Month': [moment().date(-30), moment().date(-1)],
-                                    'Last 182 Days': [moment().subtract(181, 'd'), moment().subtract(0, 'd')],
-                                    'Last 365 Days': [moment().subtract(364, 'd'), moment().subtract(0, 'd')],
-                                    'Last 730 Days': [moment().subtract(729, 'd'), moment().subtract(0, 'd')],
-                                    'Last 1095 Days': [moment().subtract(1094, 'd'), moment().subtract(0, 'd')],
+                                    'Last 6 Months': [moment().subtract(181, 'd'), moment().subtract(0, 'd')],
+                                    'Last 1 Year': [moment().subtract(364, 'd'), moment().subtract(0, 'd')],
+                                    'Last 2 Year': [moment().subtract(729, 'd'), moment().subtract(0, 'd')],
+                                    'Last 3 Year': [moment().subtract(1094, 'd'), moment().subtract(0, 'd')],
                                 }}
                                 // style={{width: 300}}
                             />
