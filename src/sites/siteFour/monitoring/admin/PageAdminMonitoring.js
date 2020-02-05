@@ -52,7 +52,7 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {numberWithCommas, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
+import {numberWithCommas, renderLottieLoader, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -1396,20 +1396,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.renderHeader()}
                             <div style={{position: 'absolute', top: '37%', left: '48%'}}>
                                 <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                    <Lottie
-                                        options={{
-                                            loop: true,
-                                            autoplay: true,
-                                            animationData: require('../../../../lotties/3080-heartrate33'),
-                                            rendererSettings: {
-                                                preserveAspectRatio: 'xMidYMid slice'
-                                            }
-                                        }}
-                                        height={240}
-                                        width={240}
-                                        isStopped={false}
-                                        isPaused={false}
-                                    />
+                                    {renderLottieLoader(250, 250)}
                                 </div>
                             </div>
                         </Grid.Column>

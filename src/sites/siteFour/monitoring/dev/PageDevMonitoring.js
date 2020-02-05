@@ -41,7 +41,16 @@ import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import '../PageMonitoring.css'
-import {getOneYearStartEndDatetime, makeBubbleChartDataForCluster, numberWithCommas, renderBarChartCore, renderLineChartCore, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
+import {
+    getOneYearStartEndDatetime,
+    makeBubbleChartDataForCluster,
+    numberWithCommas,
+    renderBarChartCore,
+    renderLineChartCore,
+    renderLottieLoader, renderLottieLoader2,
+    renderPlaceHolder,
+    showToast
+} from "../PageMonitoringCommonService";
 import {getAppInstList, getAppLevelUsageList, getCloudletList, StylesForMonitoring} from "../admin/PageAdminMonitoringService";
 import MapboxComponent from "./MapboxComponent";
 import * as reducer from "../../../../utils";
@@ -441,8 +450,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                 barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
                 lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
-            }
-            else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
+            } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
                 barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
                 lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
             }
@@ -847,13 +855,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                             >RESET</Button>
                         </div>
-                        <div style={{marginLeft: 50, color: 'green', fontWeight: 'bold', fontFamily: 'Righteous'}}>
+                        {/*<div style={{marginLeft: 50, color: 'green', fontWeight: 'bold', fontFamily: 'Righteous'}}>
                             {this.state.userType}
                             [ This is Developer View ]
                         </div>
                         <div style={{marginLeft: 50, color: '#6de1ff', fontWeight: 'bold', fontFamily: 'Encode Sans Condensed'}}>
                             {this.state.selectOrg}
-                        </div>
+                        </div>*/}
                         {this.state.intervalLoading &&
 
                         <div style={{marginLeft: 15}}>
@@ -1280,13 +1288,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         options={{
                                             loop: true,
                                             autoplay: true,
-                                            animationData: require('../../../../lotties/loader001'),
+                                            animationData: require('../../../../lotties/3080-heartrate33'),
                                             rendererSettings: {
                                                 preserveAspectRatio: 'xMidYMid slice'
                                             }
                                         }}
-                                        height={240}
-                                        width={240}
+                                        height={250}
+                                        width={250}
                                         isStopped={false}
                                         isPaused={false}
                                     />

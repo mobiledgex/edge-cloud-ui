@@ -47,7 +47,25 @@ export const renderLottieLoader = (width, height) => {
             options={{
                 loop: true,
                 autoplay: true,
-                animationData: require('../../../lotties/13255-loader22'),
+                animationData: require('../../../lotties/3080-heartrate33'),
+                rendererSettings: {
+                    preserveAspectRatio: 'xMidYMid slice'
+                }
+            }}
+            height={height}
+            width={width}
+            isStopped={false}
+            isPaused={false}
+        />
+    )
+}
+export const renderLottieLoader2 = (width, height) => {
+    return (
+        <Lottie
+            options={{
+                loop: true,
+                autoplay: true,
+                animationData: require('../../../lotties/1981-standard-hex-loader777'),
                 rendererSettings: {
                     preserveAspectRatio: 'xMidYMid slice'
                 }

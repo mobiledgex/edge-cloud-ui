@@ -19,7 +19,7 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {numberWithCommas, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
+import {numberWithCommas, renderLottieLoader, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
 import MiniMap from "./MiniMap";
 import {CircularProgress} from "@material-ui/core";
 import {renderBarGraphForCloudlet, renderLineChartForCloudlet} from "./PageOperMonitoringService";
@@ -718,9 +718,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <div style={{marginLeft: 50}}>
                             {this.state.userType}
                         </div>
-                        <div style={{color: 'yellow'}}>
+                        {/*<div style={{color: 'yellow'}}>
                             [OPER_VIEW]
-                        </div>
+                        </div>*/}
                         {this.state.intervalLoading &&
                         <div style={{marginLeft: 50}}>
                             <CircularProgress size={9} style={{fontSize: 9}}/>
@@ -997,20 +997,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.renderHeader()}
                             <div style={{position: 'absolute', top: '37%', left: '48%'}}>
                                 <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                    <Lottie
-                                        options={{
-                                            loop: true,
-                                            autoplay: true,
-                                            animationData: require('../../../../lotties/loader001'),
-                                            rendererSettings: {
-                                                preserveAspectRatio: 'xMidYMid slice'
-                                            }
-                                        }}
-                                        height={240}
-                                        width={240}
-                                        isStopped={false}
-                                        isPaused={false}
-                                    />
+                                    {renderLottieLoader(250, 250)}
                                 </div>
                             </div>
                         </Grid.Column>
