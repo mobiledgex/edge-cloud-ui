@@ -39,7 +39,6 @@ class DeleteItem extends React.Component {
     httpResponse = (mcRequest) => {
         if (mcRequest) {
             if (mcRequest.response) {
-                let response = mcRequest.response;
                 let data = mcRequest.request.data;
                 let msg = '';
 
@@ -62,9 +61,8 @@ class DeleteItem extends React.Component {
                         break;
                 }
 
-                if (response.data.message) {
-                    this.props.handleAlertInfo('success', msg)
-                }
+                this.props.handleAlertInfo('success', msg)
+                
 
                 if (siteId === 'Organization' && data.name == localStorage.selectOrg) {
                     localStorage.setItem('selectRole', '')

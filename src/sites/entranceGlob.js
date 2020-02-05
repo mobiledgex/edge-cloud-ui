@@ -17,7 +17,7 @@ import Alert from 'react-s-alert';
 
 
 // const pointMarkers = getMockData(0x97bcd8, 'point');
-let src1 = 'assets/images/backgroundGlob.png'
+let src1 = 'assets/images/globe_1.png'
 let self = null;
 class EntranceGlobe extends Component {
 

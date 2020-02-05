@@ -30,15 +30,14 @@ export const formatData = (datas, body) => {
                 if (dataResult.error || dataResult.message) {
                     console.log("error")
                 } else {
-                    let Index = i;
                     let Region = body.region || '-';
                     let FlavorName = dataResult.data.key.name || '-';
                     let RAM = dataResult.data.ram || '-';
                     let vCPUs = dataResult.data.vcpus || '-';
                     let Disk = dataResult.data.disk || '-';
-                    let newRegistKey = ['Region', 'FlavorName', 'RAM', 'vCPUs', 'Disk'];
-
-                    values.push({ Region: Region, FlavorName: FlavorName, RAM: RAM, vCPUs: vCPUs, Disk: Disk, Edit: newRegistKey })
+                    let GPU = dataResult.data.opt_res_map ? 1 : 0;
+                    let newRegistKey = ['Region', 'FlavorName', 'RAM', 'vCPUs', 'Disk', 'GPU'];
+                    values.push({ Region: Region, FlavorName: FlavorName, RAM: RAM, vCPUs: vCPUs, Disk: Disk,GPU:GPU, Edit: newRegistKey })
                 }
 
             })

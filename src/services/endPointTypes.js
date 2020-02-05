@@ -3,6 +3,7 @@ import * as FormatComputeOrganization from './formatter/formatComputeOrganizatio
 import * as FormatComputeUsers from './formatter/formatComputeUsers';
 import * as FormatComputeAccounts from './formatter/formatComputeAccounts';
 import * as FormatComputeCloudlet from './formatter/formatComputeCloudlet';
+import * as FormatComputeCloudletInfo from './formatter/formatComputeCloudletInfo';
 import * as FormatComputeClstInst from './formatter/formatComputeClstInstance';
 import * as FormatComputeFlavor from './formatter/formatComputeFlavor';
 import * as FormatComputeApp from './formatter/formatComputeApp';
@@ -30,6 +31,7 @@ export const DELETE_ACCOUNT = "DeleteAccount";
 export const SHOW_ROLE = "ShowRole";
 export const SHOW_CONTROLLER = "showController"
 export const SHOW_CLOUDLET = "ShowCloudlet";
+export const SHOW_CLOUDLET_INFO = "ShowCloudletInfo";
 export const DELETE_CLOUDLET = "DeleteCloudlet";
 export const CREATE_CLOUDLET = "CreateCloudlet";
 export const SHOW_CLUSTER_INST = "ShowClusterInst";
@@ -107,6 +109,7 @@ export function getPath(request) {
             return '/api/v1/auth/org/create';
         case SHOW_CLOUDLET:
             return '/api/v1/auth/ctrl/ShowCloudlet';
+        case SHOW_CLOUDLET_INFO:
         case CREATE_CLOUDLET:
         case DELETE_CLOUDLET:
         case STREAM_CLOUDLET:
@@ -132,6 +135,7 @@ export function getPath(request) {
         case DELETE_CLOUDLET_POOL:
         case CREATE_CLOUDLET_POOL:
         case CREATE_CLOUDLET_POOL_MEMBER:
+        case DELETE_CLOUDLET_POOL_MEMBER:
         case RUN_COMMAND:
             return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:
@@ -172,6 +176,9 @@ export function formatData(request, response) {
         case SHOW_CLOUDLET:
             data = FormatComputeCloudlet.formatData(response, request.data)
             break;
+        case SHOW_CLOUDLET_INFO:
+            data = FormatComputeCloudletInfo.formatData(response, request.data)
+            break;    
         case SHOW_CLUSTER_INST:
             data = FormatComputeClstInst.formatData(response, request.data)
             break;

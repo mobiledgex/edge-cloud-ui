@@ -1,6 +1,6 @@
 node_modules/
 /.idea/
-!/package-lock.json
+/package-lock.json
 /build/
 /report.20200122.101608.32468.0.001.json
 /report.20200122.102157.32635.0.001.json
