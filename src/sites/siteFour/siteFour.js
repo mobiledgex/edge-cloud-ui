@@ -50,7 +50,6 @@ import SiteFourPageCloudletPoolReg from './cloudletPool/siteFour_page_cloudletPo
 import SiteFourPageLinkOrganizeReg from './cloudletPool/siteFour_page_linkOrganizeReg';
 import SiteFourPageCloudletPoolUpdate from './cloudletPool/siteFour_page_cloudletPoolUpdate';
 import PageMonitoringMain from './monitoring/PageMonitoringMain'
-
 import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
 import RefreshOutlinedIcon from '@material-ui/icons/RefreshOutlined';
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
