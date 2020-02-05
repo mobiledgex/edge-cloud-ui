@@ -10,7 +10,6 @@ import {makeCompleteDateTime} from "./admin/PageAdminMonitoringService";
 import moment from "moment";
 import {Line as ReactChartJs} from "react-chartjs-2";
 
-
 export const renderLottieLoader = (width, height) => {
     return (
         <Lottie
@@ -30,12 +29,8 @@ export const renderLottieLoader = (width, height) => {
     )
 }
 
-/**
- * @todo: 로딩이 완료 되기전에 placeholder를 보여준다..
- * @returns {*}
- */
+
 export const renderPlaceHolder = (type: string = '') => {
-    // let boxWidth = window.innerWidth / 3 - 50;
     return (
         <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
             <Lottie
@@ -73,6 +68,8 @@ export const convertByteToMegaByte = (value, hardwareType) => {
         return numberWithCommas(value)
     }
 }
+
+
 export const convertByteToMegaByte2 = (value, hardwareType) => {
     if (value > 1000000) {
         return value / 1000000
@@ -207,10 +204,6 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
 
     }
 
-
-    let chartWidth = ((window.innerWidth - 300) * 2 / 3 - 50) / 2
-    let chartHeight = window.innerWidth > 1700 ? ((window.innerHeight - 320) / 2 - 80) - 10 : ((window.innerHeight - 370) / 2 - 80) - 10 //(height 사이즈)-(여유공백)
-    // let chartNetHeight = window.innerWidth > 1782 ? (window.innerHeight-320)/2-50 : (window.innerHeight-370)/2-50
     //todo :#######################
     //todo : chart rendering part
     //todo :#######################

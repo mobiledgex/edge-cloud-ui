@@ -825,15 +825,6 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
                         {colSizeArray.map((item, index) =>
 
                             <div className='page_monitoring_grid_box_layout'
-                                /* onClick={async () => {
-                                     //alert(item.name)
-                                     await _this.handleSelectBoxChanges(_this.state.currentRegion, item.name)
-                                     setTimeout(() => {
-                                         _this.setState({
-                                             clusterSelectBoxPlaceholder: 'Select Cluster'
-                                         })
-                                     }, 1000)
-                                 }}*/
                             >
                                 <div className='page_monitoring_grid_box'>
                                     <div className='page_monitoring_grid_box_name'>
