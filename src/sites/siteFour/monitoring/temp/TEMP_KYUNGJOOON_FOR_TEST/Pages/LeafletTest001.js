@@ -70,17 +70,14 @@ export default hot(
                         alert("고경준 천재님");
                     });
                 });
-    */
-
+             */
+            //
+            setTimeout(()=>{
+                this.marker1.leafletElement.openPopup()
+                this.marker2.leafletElement.openPopup()
+            },10)
         }
 
-        openPopup(marker) {
-            if (marker && marker.leafletElement) {
-                window.setTimeout(() => {
-                    marker.leafletElement.openPopup()
-                })
-            }
-        }
 
         render() {
 
@@ -111,50 +108,13 @@ export default hot(
                             //maxZoom={15}
                         />
                         <Marker
-                            ref={this.openPopup}
+                            ref={c => this.marker1 = c}
                             icon={greenIcon}
                             className='marker1'
                             position={
                                 [37.404945, 127.106259]
                             }
                             onClick={() => {
-                            }}
-                        >
-
-                            <Tooltip
-                                //className='tooltip1'
-                                click={() => {
-                                }}
-                                direction='right'
-                                offset={[15, -2]} opacity={0.7}
-                                permanent
-                            >
-                                <div>
-                                    <div className='div1'>
-                                        고경준
-                                    </div>
-                                    <div className='div1'>
-                                        redstar
-                                    </div>
-                                    <div className='div1'>
-                                        inkikim
-                                    </div>
-                                    <div>
-                                        eundew
-                                    </div>
-
-                                </div>
-
-                            </Tooltip>
-
-                        </Marker>
-                        <Marker
-                            ref={this.openPopup}
-                            position={
-                                [50.110924, 8.682127]
-                            }
-                            onClick={() => {
-                                alert('sdlfkdslkf')
                             }}
                         >
 
@@ -165,7 +125,50 @@ export default hot(
                                 className="tooltip1"
                             >
                                 <div style={{display: 'flex', flexDirection: 'column'}}>
-                                    <div style={{fontSize:20, fontFamily:'Acme'}}>
+                                    <div style={{fontSize: 20, fontFamily: 'Acme'}}>
+                                        [KR , SEONGNAM]
+                                    </div>
+                                    <button style={{backgroundColor: 'green', color: "white"}} onClick={() => {
+                                        alert('eundew')
+                                    }}>eundew
+                                    </button>
+                                    <div style={{height: 5}}/>
+                                    <button onClick={() => {
+                                        alert('GO')
+                                    }}>GO
+                                    </button>
+                                    <div style={{height: 5}}/>
+                                    <button onClick={() => {
+                                        alert('Rahul')
+                                    }}>Rahul
+                                    </button>
+                                    <div style={{height: 5}}/>
+                                    <button onClick={() => {
+                                        alert('redstar')
+                                    }}>redstar
+                                    </button>
+                                </div>
+                            </Popup>
+
+                        </Marker>
+                        <Marker
+                            ref={c => this.marker2 = c}
+                            position={
+                                [50.110924, 8.682127]
+                            }
+                            onClick={() => {
+                                //alert('sdlfkdslkf')
+                            }}
+                        >
+
+                            <Popup
+                                //position={[100.110924, 8.682127]}
+                                offset={[0, 0]}
+                                opacity={0.7}
+                                className="tooltip1"
+                            >
+                                <div style={{display: 'flex', flexDirection: 'column'}}>
+                                    <div style={{fontSize: 20, fontFamily: 'Acme'}}>
                                         [flakflut eu]
                                     </div>
                                     <button style={{backgroundColor: 'green', color: "white"}} onClick={() => {
@@ -193,23 +196,45 @@ export default hot(
                         </Marker>
 
                         <Marker
+                            ref={this.openPopup}
                             position={
                                 [28, 3]
                             }
                             onClick={() => {
-                                alert('sdlfkdslkf')
+                                // alert('sdlfkdslkf')
                             }}
                         >
-                            <Tooltip
-                                className='tooltip1'
-                                click={() => {
-                                }}
-                                direction='right'
-                                offset={[-8, -2]}
+                            <Popup
+                                //position={[100.110924, 8.682127]}
+                                offset={[0, 0]}
                                 opacity={0.7}
-                                permanent>
-                                <span style={{fontWeight: 'bold'}}>Raul </span>
-                            </Tooltip>
+                                className="tooltip1"
+                            >
+                                <div style={{display: 'flex', flexDirection: 'column'}}>
+                                    <div style={{fontSize: 20, fontFamily: 'Acme'}}>
+                                        Rahul...dolai
+                                    </div>
+                                    <button style={{backgroundColor: 'green', color: "white"}} onClick={() => {
+                                        alert('eundew')
+                                    }}>eundew
+                                    </button>
+                                    <div style={{height: 5}}/>
+                                    <button onClick={() => {
+                                        alert('GO')
+                                    }}>GO
+                                    </button>
+                                    <div style={{height: 5}}/>
+                                    <button onClick={() => {
+                                        alert('Rahul')
+                                    }}>Rahul
+                                    </button>
+                                    <div style={{height: 5}}/>
+                                    <button onClick={() => {
+                                        alert('redstar')
+                                    }}>redstar
+                                    </button>
+                                </div>
+                            </Popup>
                         </Marker>
 
                     </Map>
