@@ -9,6 +9,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import {makeCompleteDateTime} from "./admin/PageAdminMonitoringService";
 import moment from "moment";
 import {Line as ReactChartJs} from "react-chartjs-2";
+import axios from "axios";
 
 export const renderLottieLoader = (width, height) => {
     return (
@@ -596,6 +597,46 @@ export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType) => 
 
     return bubbleChartData;
 }
+
+
+export const getCloudletLevelMatric = async (serviceBody: any, pToken: string) => {
+    console.log('token2===>', pToken);
+    let result = await axios({
+        url: '/api/v1/auth/metrics/cloudlet',
+        method: 'post',
+        data: serviceBody['params'],
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + pToken
+        },
+        timeout: 15 * 1000
+    }).then(async response => {
+        return response.data;
+    }).catch(e => {
+        //showToast(e.toString())
+    })
+    return result;
+}
+
+export const getClusterLevelMatric = async (serviceBody: any, pToken: string) => {
+    console.log('token2===>', pToken);
+    let result = await axios({
+        url: '/api/v1/auth/metrics/cluster',
+        method: 'post',
+        data: serviceBody['params'],
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + pToken
+        },
+        timeout: 15 * 1000
+    }).then(async response => {
+        return response.data;
+    }).catch(e => {
+        //showToast(e.toString())
+    })
+    return result;
+}
+
 
 
 export const StylesForMonitoring = {

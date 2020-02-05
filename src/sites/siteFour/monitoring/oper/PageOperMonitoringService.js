@@ -1,9 +1,16 @@
 import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX} from "../../../../shared/Constants";
 import React from "react";
-import { renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
-import {makeFormForCloudletLevelMatric, renderBarChartCore, renderLineChartCore, renderUsageByType2, sortUsageListByType, StylesForMonitoring} from "../PageMonitoringCommonService";
+import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
+import {
+    getCloudletLevelMatric,
+    makeFormForCloudletLevelMatric,
+    renderBarChartCore,
+    renderLineChartCore,
+    renderUsageByType2,
+    sortUsageListByType,
+    StylesForMonitoring
+} from "../PageMonitoringCommonService";
 import PageOperMonitoring from "./PageOperMonitoring";
-import axios from "axios";
 
 export const renderBarGraphForCloudlet = (usageList, hardwareType, _this) => {
     console.log('renderBarGraph2===>', usageList);
@@ -193,25 +200,5 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
 
     return usageList;
 
-}
-
-
-export const getCloudletLevelMatric = async (serviceBody: any, pToken: string) => {
-    console.log('token2===>', pToken);
-    let result = await axios({
-        url: '/api/v1/auth/metrics/cloudlet',
-        method: 'post',
-        data: serviceBody['params'],
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + pToken
-        },
-        timeout: 15 * 1000
-    }).then(async response => {
-        return response.data;
-    }).catch(e => {
-        //showToast(e.toString())
-    })
-    return result;
 }
 
