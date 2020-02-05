@@ -427,13 +427,11 @@ export const renderLineChartCore00002 = (paramLevelTypeNameList, usageSetList, n
 export const renderUsageByType2 = (usageOne, hardwareType) => {
 
     if (hardwareType === HARDWARE_TYPE.VCPU) {
-        return usageOne.sumCpuUsage;
+        return usageOne.sumVCpuUsage;
     }
-
     if (hardwareType === HARDWARE_TYPE.FLOATING_IPS) {
         return usageOne.sumFloatingIpsUsage;
     }
-
     if (hardwareType === HARDWARE_TYPE.IPV4) {
         return usageOne.sumIpv4Usage;
     }

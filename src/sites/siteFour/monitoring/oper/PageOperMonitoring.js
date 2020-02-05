@@ -274,11 +274,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
 
             let maxCpu = Math.max.apply(Math, allCloudletUsageList.map(function (o) {
-                return o.avgVCpuUsed;
+                return o.sumVCpuUsage;
             }));
 
             let maxMem = Math.max.apply(Math, allCloudletUsageList.map(function (o) {
-                return o.avgMemUsed;
+                return o.sumMemUsage;
             }));
 
             await this.setState({

@@ -295,31 +295,7 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
     }
 
     if (hardwareType === HARDWARE_TYPE.VCPU) {
-        return numberWithCommas(usageOne.avgVCpuUsed) + " %"
-    }
-
-    if (hardwareType === HARDWARE_TYPE.MEM_USED) {
-        return numberWithCommas(usageOne.avgMemUsed) + " Byte"
-    }
-
-    if (hardwareType === HARDWARE_TYPE.DISK_USED) {
-        return numberWithCommas(usageOne.avgDiskUsed) + " Byte"
-    }
-
-    if (hardwareType === HARDWARE_TYPE.FLOATING_IPS_USED) {
-        return usageOne.avgFloatingIpsUsed;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.IPV4_USED) {
-        return usageOne.avgIpv4Used;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.NET_SEND) {
-        return usageOne.avgNetSend;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.NET_RECV) {
-        return usageOne.avgNetRecv;
+        return numberWithCommas(usageOne.sumVCpuUsage) + " %"
     }
 
     if (hardwareType === HARDWARE_TYPE.MEM) {
@@ -510,23 +486,20 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
 }
 
 export const sortUsageListByType = (usageList, hardwareType) => {
-
     if (hardwareType === HARDWARE_TYPE.VCPU) {
-        usageList.sort((a, b) => b.avgVCpuUsed - a.avgVCpuUsed);
-    } else if (hardwareType === HARDWARE_TYPE.MEM_USED) {
-        usageList.sort((a, b) => b.avgMemUsed - a.avgMemUsed);
-    } else if (hardwareType === HARDWARE_TYPE.DISK_USED) {
-        usageList.sort((a, b) => b.avgDiskUsed - a.avgDiskUsed);
-    } else if (hardwareType === HARDWARE_TYPE.FLOATING_IPS_MAX) {
-        usageList.sort((a, b) => b.avgFloatingIpsUsed - a.avgFloatingIpsUsed);
-    } else if (hardwareType === HARDWARE_TYPE.IPV4_USED) {
-        usageList.sort((a, b) => b.avgIpv4Used - a.avgIpv4Used);
-    } else if (hardwareType === HARDWARE_TYPE.NET_SEND) {
-        usageList.sort((a, b) => b.avgNetRecv - a.avgNetRecv);
-    } else if (hardwareType === HARDWARE_TYPE.NET_SEND) {
-        usageList.sort((a, b) => b.avgNetSend - a.avgNetSend);
+        usageList.sort((a, b) => b.sumVCpuUsage - a.sumVCpuUsage);
+    } else if (hardwareType === HARDWARE_TYPE.MEM) {
+        usageList.sort((a, b) => b.sumMemUsage - a.sumMemUsage);
+    } else if (hardwareType === HARDWARE_TYPE.DISK) {
+        usageList.sort((a, b) => b.sumDiskUsage - a.sumDiskUsage);
+    } else if (hardwareType === HARDWARE_TYPE.FLOATING_IPS) {
+        usageList.sort((a, b) => b.sumFloatingIpsUsage - a.sumFloatingIpsUsage);
+    } else if (hardwareType === HARDWARE_TYPE.IPV4) {
+        usageList.sort((a, b) => b.sumIpv4Usage - a.sumIpv4Usage);
+    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+        usageList.sort((a, b) => b.sumRecvBytes - a.sumRecvBytes);
+        usageList.sort((a, b) => b.sumSendBytes - a.sumSendBytes);
     }
-
     return usageList;
 }
 
@@ -1821,7 +1794,7 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
         })
 
         usageList.push({
-            sumCpuUsage: sumVirtualCpuUsed / RECENT_DATA_LIMIT_COUNT,
+            sumVCpuUsage: sumVirtualCpuUsed / RECENT_DATA_LIMIT_COUNT,
             sumMemUsage: sumMemUsed / RECENT_DATA_LIMIT_COUNT,
             sumDiskUsage: sumDiskUsed / RECENT_DATA_LIMIT_COUNT,
             sumRecvBytes: sumNetRecv / RECENT_DATA_LIMIT_COUNT,
