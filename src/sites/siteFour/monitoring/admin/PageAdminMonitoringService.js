@@ -10,8 +10,8 @@ import Lottie from "react-lottie";
 import BubbleChart from "../../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../../shared/Types";
 import PageMonitoring from "./PageAdminMonitoring";
-import {numberWithCommas, showToast} from "../PageMonitoringCommonService";
-import {SHOW_CLOUDLET} from "../../../../services/endPointTypes";
+import {numberWithCommas, renderUsageByType2, showToast} from "../PageMonitoringCommonService";
+import {SHOW_ORG_CLOUDLET} from "../../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../../services/serviceMC";
 
 
@@ -323,7 +323,7 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
     }
 
     if (hardwareType === HARDWARE_TYPE.MEM) {
-        return numberWithCommas((usageOne.sumMemUsage/1000000).toFixed(2)) + " MByte"
+        return numberWithCommas((usageOne.sumMemUsage / 1000000).toFixed(2)) + " MByte"
     }
 
     if (hardwareType === HARDWARE_TYPE.DISK) {
@@ -351,67 +351,6 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
     }
 
 
-}
-
-export const renderUsageByType = (usageOne, hardwareType) => {
-
-    if (hardwareType === HARDWARE_TYPE.VCPU) {
-        return usageOne.avgVCpuUsed;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.MEM_USED) {
-        return usageOne.avgMemUsed;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.DISK_USED) {
-        return usageOne.avgDiskUsed;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.FLOATING_IPS_USED) {
-        return usageOne.avgFloatingIpsUsed;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.IPV4_USED) {
-        return usageOne.avgIpv4Used;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.NET_SEND) {
-        return usageOne.avgNetSend;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.NET_RECV) {
-        return usageOne.avgNetRecv;
-    }
-
-
-    if (hardwareType === HARDWARE_TYPE.CPU) {
-        return usageOne.sumCpuUsage
-    }
-    if (hardwareType === HARDWARE_TYPE.MEM) {
-        return usageOne.sumMemUsage
-    }
-    if (hardwareType === HARDWARE_TYPE.DISK) {
-        return usageOne.sumDiskUsage
-    }
-    if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
-        return usageOne.sumRecvBytes
-    }
-
-    if (hardwareType === HARDWARE_TYPE.SEND_BYTES) {
-        return usageOne.sumSendBytes
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-        return usageOne.sumActiveConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
-        return usageOne.sumHandledConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-        return usageOne.sumAcceptsConnection
-    }
 }
 
 export const renderLottie = () => {
@@ -455,7 +394,7 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
         for (let index = 0; index < usageList.length; index++) {
             if (index < 5) {
                 let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...",
-                    renderUsageByType(usageList[index], hardwareType),
+                    renderUsageByType2(usageList[index], hardwareType),
                     CHART_COLOR_LIST[index],
                     renderUsageLabelByType(usageList[index], hardwareType)]
                 chartDataList.push(barDataOne);
@@ -1425,37 +1364,48 @@ export const filterUsageListByRegion = (pRegion, usageList) => {
 }
 
 export const getCloudletList = async () => {
-   try{
-       let store = JSON.parse(localStorage.PROJECT_INIT);
-       let token = store ? store.userToken : 'null';
-       let requestData = {token: token, method: SHOW_CLOUDLET, data: {region: REGION.EU}};
-       let requestData2 = {token: token, method: SHOW_CLOUDLET, data: {region: REGION.US}};
-       let promiseList = []
+    try {
+        let store = JSON.parse(localStorage.PROJECT_INIT);
+        let token = store ? store.userToken : 'null';
+        //data: { region: region, org: _self.props.selectOrg || localStorage.selectOrg }
 
-       promiseList.push(sendSyncRequest(this, requestData))
-       promiseList.push(sendSyncRequest(this, requestData2))
-       let showCloudletList = await Promise.all(promiseList);
-       console.log('results===EU>', showCloudletList[0].response.data);
-       console.log('results===US>', showCloudletList[1].response.data);
+        let requestData = {token: token, method: SHOW_ORG_CLOUDLET, data: {region: REGION.EU, org: localStorage.selectOrg}};
+        let requestData2 = {token: token, method: SHOW_ORG_CLOUDLET, data: {region: REGION.US, org: localStorage.selectOrg}};
+        let promiseList = []
 
-       let cloudletEU =showCloudletList[0].response.data;
-       let cloudletUS =showCloudletList[1].response.data;
+        promiseList.push(sendSyncRequest(this, requestData))
+        promiseList.push(sendSyncRequest(this, requestData2))
+        let orgCloudletList = await Promise.all(promiseList);
+        console.log('results===EU>', orgCloudletList[0].response.data);
+        console.log('results===US>', orgCloudletList[1].response.data);
 
+        let cloudletEU = orgCloudletList[0].response.data;
+        let cloudletUS = orgCloudletList[1].response.data;
 
-       let mergedCloudletList = cloudletEU.concat(cloudletUS)
-
-        let newCloudletList = []
-       mergedCloudletList.map(item => {
-            if (item.Operator === localStorage.selectOrg) {
-                newCloudletList.push(item)
+        let mergedCloudletList = [];
+        orgCloudletList.map(item => {
+            //@todo : null check
+            if (item.response.data["0"].Region !== '') {
+                let cloudletList = item.response.data;
+                cloudletList.map(item => {
+                    mergedCloudletList.push(item);
+                })
             }
         })
 
+        let mergedOrgCloudletList = []
+        mergedCloudletList.map(item => {
+            if (item.Operator === localStorage.selectOrg) {
+                mergedOrgCloudletList.push(item)
+            }
+        })
 
-       return newCloudletList;
-   }catch (e) {
+        console.log('mergedOrgCloudletList===>', mergedOrgCloudletList);
 
-   }
+        return mergedOrgCloudletList;
+    } catch (e) {
+
+    }
 }
 
 
@@ -1799,6 +1749,8 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
 
+    console.log('cloudletList===>', cloudletList);
+
     for (let index = 0; index < cloudletList.length; index++) {
         let instanceInfoOneForm = makeFormForCloudletLevelMatric(cloudletList[index], pHardwareType, token, recentDataLimitCount, pStartTime, pEndTime)
         instanceBodyList.push(instanceInfoOneForm);
@@ -1811,33 +1763,14 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
     console.log('instanceBodyList===>', instanceBodyList)
 
     let cloudletLevelMatricUsageList = await Promise.all(promiseList);
-    /*
-    [
-        "time",0
-        "cloudlet",1
-        "operator",2
-        "netSend",3
-        "netRecv",4
-        "vCpuUsed",5
-        "vCpuMax",6
-        "memUsed",7
-        "memMax",8
-        "diskUsed",9
-        "diskMax",10
-        "floatingIpsUsed",11
-        "floatingIpsMax",12
-        "ipv4Used",13
-        "ipv4Max"14
-    ]
-    */
 
+    console.log('cloudletLevelMatricUsageList===>', cloudletLevelMatricUsageList);
 
     let usageList = []
     cloudletLevelMatricUsageList.map(item => {
 
         let series = item.data["0"].Series["0"].values
         let columns = item.data["0"].Series["0"].columns
-
 
         let sumVirtualCpuUsed = 0;
         let sumVirtualCpuMax = 0;
@@ -1888,18 +1821,13 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
         })
 
         usageList.push({
-            avgVCpuUsed: sumVirtualCpuUsed / RECENT_DATA_LIMIT_COUNT,
-            avgVCpuMax: sumVirtualCpuMax / RECENT_DATA_LIMIT_COUNT,
-            avgMemUsed: sumMemUsed / RECENT_DATA_LIMIT_COUNT,
-            avgMemMax: sumMemMax / RECENT_DATA_LIMIT_COUNT,
-            avgDiskUsed: sumDiskUsed / RECENT_DATA_LIMIT_COUNT,
-            avgDiskMax: sumDiskMax / RECENT_DATA_LIMIT_COUNT,
-            avgNetSend: sumNetSend / RECENT_DATA_LIMIT_COUNT,
-            avgNetRecv: sumNetRecv / RECENT_DATA_LIMIT_COUNT,
-            avgFloatingIpsUsed: sumFloatingIpsUsed / RECENT_DATA_LIMIT_COUNT,
-            avgFloatingIpsMax: sumFloatingIpsMax / RECENT_DATA_LIMIT_COUNT,
-            avgIpv4Used: sumIpv4Used / RECENT_DATA_LIMIT_COUNT,
-            avgIpv4Max: sumIpv4Max / RECENT_DATA_LIMIT_COUNT,
+            sumCpuUsage: sumVirtualCpuUsed / RECENT_DATA_LIMIT_COUNT,
+            sumMemUsage: sumMemUsed / RECENT_DATA_LIMIT_COUNT,
+            sumDiskUsage: sumDiskUsed / RECENT_DATA_LIMIT_COUNT,
+            sumRecvBytes: sumNetRecv / RECENT_DATA_LIMIT_COUNT,
+            sumSendBytes: sumNetSend / RECENT_DATA_LIMIT_COUNT,
+            sumFloatingIpsUsage: sumFloatingIpsUsed / RECENT_DATA_LIMIT_COUNT,
+            sumIpv4Usage: sumIpv4Used / RECENT_DATA_LIMIT_COUNT,
             columns: columns,
             series: series,
             cloudlet: cloudlet,
@@ -1909,7 +1837,7 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
 
     })
 
-    console.log('usageList====>', usageList);
+    console.log('getClouletLevelUsageList====>', usageList);
 
     return usageList;
 

@@ -359,7 +359,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             await this.setState({
                 clusterListLoading: false,
-                allClusterUsageList: allClusterUsageList,
+                allCloudletUsageList: allClusterUsageList,
                 allClusterUsageList003: allClusterUsageList,
                 filteredClusterUsageList: allClusterUsageList,
                 maxCpu: maxCpu,

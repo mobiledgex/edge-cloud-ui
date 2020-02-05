@@ -8,7 +8,7 @@ import * as actions from '../../../actions';
 import {hot} from "react-hot-loader/root";
 import './PageMonitoring.css'
 import {USER_ROLE} from "../../../shared/Constants";
-import PageMonitoringForOperator from "./oper/PageOperatorMonitoring";
+import PageMonitoringForOperator from "./oper/PageOperMonitoring";
 import {Grid} from "semantic-ui-react";
 import PageMonitoringForDeveloper from "./dev/PageDevMonitoring";
 import PageMonitoringForAdmin from "./admin/PageAdminMonitoring";

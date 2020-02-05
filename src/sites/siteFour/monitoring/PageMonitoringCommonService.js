@@ -423,6 +423,52 @@ export const renderLineChartCore00002 = (paramLevelTypeNameList, usageSetList, n
     )
 }
 
+
+export const renderUsageByType2 = (usageOne, hardwareType) => {
+
+    if (hardwareType === HARDWARE_TYPE.VCPU) {
+        return usageOne.sumCpuUsage;
+    }
+
+    if (hardwareType === HARDWARE_TYPE.FLOATING_IPS) {
+        return usageOne.sumFloatingIpsUsage;
+    }
+
+    if (hardwareType === HARDWARE_TYPE.IPV4) {
+        return usageOne.sumIpv4Usage;
+    }
+
+    if (hardwareType === HARDWARE_TYPE.CPU) {
+        return usageOne.sumCpuUsage
+    }
+    if (hardwareType === HARDWARE_TYPE.MEM) {
+        return usageOne.sumMemUsage
+    }
+    if (hardwareType === HARDWARE_TYPE.DISK) {
+        return usageOne.sumDiskUsage
+    }
+    if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+        return usageOne.sumRecvBytes
+    }
+
+    if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+        return usageOne.sumSendBytes
+    }
+
+    if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+        return usageOne.sumActiveConnection
+    }
+
+    if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+        return usageOne.sumHandledConnection
+    }
+
+    if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+        return usageOne.sumAcceptsConnection
+    }
+}
+
+
 export const renderUsageByType = (usageOne, hardwareType, role = '',) => {
 
     if (hardwareType === HARDWARE_TYPE.CPU) {

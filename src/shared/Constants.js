@@ -160,8 +160,6 @@ export const USAGE_INDEX_FOR_CLUSTER = {
 export const NETWORK_TYPE = {
     RECV_BYTES: 'RECV_BYTES',
     SEND_BYTES: 'SEND_BYTES',
-    NET_SEND: 'NET_SEND',
-    NET_RECV: 'NET_RECV',
 }
 
 

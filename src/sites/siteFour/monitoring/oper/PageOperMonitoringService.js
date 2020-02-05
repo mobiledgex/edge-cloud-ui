@@ -1,10 +1,11 @@
 import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX} from "../../../../shared/Constants";
 import React from "react";
-import {renderUsageByType, renderUsageLabelByType, sortUsageListByType, StylesForMonitoring} from "../admin/PageAdminMonitoringService";
+import {renderUsageByType, renderUsageByTypeForCluster, renderUsageLabelByType, sortUsageListByType, StylesForMonitoring} from "../admin/PageAdminMonitoringService";
 import PageMonitoring from "../admin/PageAdminMonitoring";
-import {renderBarChartCore, renderLineChartCore} from "../PageMonitoringCommonService";
+import {renderBarChartCore, renderLineChartCore, renderUsageByType2} from "../PageMonitoringCommonService";
+import PageOperMonitoring from "./PageOperMonitoring";
 
-export const renderBarGraphForCloutdlet = (usageList, hardwareType, _this) => {
+export const renderBarGraphForCloudlet = (usageList, hardwareType, _this) => {
 
     console.log('renderBarGraph2===>', usageList);
 
@@ -18,28 +19,27 @@ export const renderBarGraphForCloutdlet = (usageList, hardwareType, _this) => {
             </div>
         )
     } else {
-
         let chartDataList = [];
         chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
         for (let index = 0; index < usageList.length; index++) {
             if (index < 5) {
                 let barDataOne = [
                     usageList[index].cloudlet.toString().substring(0, 10) + "...",
-                    renderUsageByType(usageList[index], hardwareType),
+                    renderUsageByType2(usageList[index], hardwareType),
                     CHART_COLOR_LIST[index],
                     renderUsageLabelByType(usageList[index], hardwareType)
                 ]
                 chartDataList.push(barDataOne);
             }
         }
-        console.log(`chartDataList====>${hardwareType}`, chartDataList)
+        console.log(`renderBarGraphForCloudlet====>${hardwareType}`, chartDataList)
 
         return renderBarChartCore(chartDataList, hardwareType)
     }
 }
 
 
-export const renderLineChartForCloudlet = (_this: PageMonitoring, pUsageList: Array, hardwareType: string) => {
+export const renderLineChartForCloudlet = (_this: PageOperMonitoring, pUsageList: Array, hardwareType: string) => {
 
     console.log('usageList22222====>', pUsageList);
 
@@ -101,6 +101,8 @@ export const renderLineChartForCloudlet = (_this: PageMonitoring, pUsageList: Ar
 
         }
 
-        return renderLineChartCore(instanceNameList, usageSetList, hardwareType)
+        console.log('instanceNameList===>', instanceNameList);
+
+        return renderLineChartCore(instanceNameList, usageSetList, newDateTimeList, hardwareType)
     }
 }
