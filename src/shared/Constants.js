@@ -29,18 +29,6 @@ export const USAGE_TYPE = {
     SUM_TCP_CONNS: 'sumTcpConns',
     SUM_TCP_RETRANS: 'sumTcpRetrans',
 
-
-    /*sumUdpRecv: 1087
-    sumUdpRecvErr: 0
-    sumTcpConns: 196
-    sumTcpRetrans: 865*/
-    /*  sumUdpSent: 6827
-      sumSendBytes: 435582.3
-      sumRecvBytes: 136609.3
-      sumMemUsage: 29.078074012239632
-      sumDiskUsage: 10.561762070574607
-      sumCpuUsage: 4.878710078764074*/
-
 }
 
 export const CLASSIFICATION = {
@@ -160,8 +148,6 @@ export const USAGE_INDEX_FOR_CLUSTER = {
 export const NETWORK_TYPE = {
     RECV_BYTES: 'RECV_BYTES',
     SEND_BYTES: 'SEND_BYTES',
-    NET_SEND: 'NET_SEND',
-    NET_RECV: 'NET_RECV',
 }
 
 

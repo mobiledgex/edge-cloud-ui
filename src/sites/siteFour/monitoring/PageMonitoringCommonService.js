@@ -41,6 +41,43 @@ export const cutArrayList = (length: number = 5, paramArrayList: any) => {
     return newArrayList;
 }
 
+export const renderLottieLoader = (width, height) => {
+    return (
+        <Lottie
+            options={{
+                loop: true,
+                autoplay: true,
+                animationData: require('../../../lotties/3080-heartrate33'),
+                rendererSettings: {
+                    preserveAspectRatio: 'xMidYMid slice'
+                }
+            }}
+            height={height}
+            width={width}
+            isStopped={false}
+            isPaused={false}
+        />
+    )
+}
+export const renderLottieLoader2 = (width, height) => {
+    return (
+        <Lottie
+            options={{
+                loop: true,
+                autoplay: true,
+                animationData: require('../../../lotties/1981-standard-hex-loader777'),
+                rendererSettings: {
+                    preserveAspectRatio: 'xMidYMid slice'
+                }
+            }}
+            height={height}
+            width={width}
+            isStopped={false}
+            isPaused={false}
+        />
+    )
+}
+
 /**
  * @todo: 로딩이 완료 되기전에 placeholder를 보여준다..
  * @returns {*}
@@ -53,7 +90,7 @@ export const renderPlaceHolder = (type: string = '') => {
                 options={{
                     loop: true,
                     autoplay: true,
-                    animationData: require('../../../lotties/loader001'),
+                    animationData: require('../../../lotties/13626-loading11'),
                     rendererSettings: {
                         preserveAspectRatio: 'xMidYMid slice'
                     }
@@ -75,6 +112,21 @@ export const renderPlaceHolder3 = (type: string = '') => {
 
         </div>
     )
+}
+
+export const convertByteToMegaByte = (value, hardwareType) => {
+    if (value > 1000000) {
+        return numberWithCommas(value / 1000000) + ' MByte'
+    } else {
+        return numberWithCommas(value)
+    }
+}
+export const convertByteToMegaByte2 = (value, hardwareType) => {
+    if (value > 1000000) {
+        return value / 1000000
+    } else {
+        return value;
+    }
 }
 
 
@@ -120,6 +172,7 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
         }
     }
 
+
     let height = 500 + 100;
     let options = {
         plugins: {
@@ -159,7 +212,7 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
                     beginAtZero: true,
                     fontColor: 'white',
                     callback(value, index, label) {
-                        return numberWithCommas(value);
+                        return convertByteToMegaByte(value, hardwareType)
 
                     },
                 },
@@ -226,7 +279,6 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
         </div>
     );
 }
-
 
 export const renderLineChartCore00002 = (paramLevelTypeNameList, usageSetList, newDateTimeList, hardwareType) => {
 
@@ -406,6 +458,68 @@ export const renderLineChartCore00002 = (paramLevelTypeNameList, usageSetList, n
         </div>
     )
 }
+
+
+export const renderUsageByType2 = (usageOne, hardwareType) => {
+
+    if (hardwareType === HARDWARE_TYPE.VCPU) {
+        return usageOne.sumVCpuUsage;
+    }
+    if (hardwareType === HARDWARE_TYPE.FLOATING_IPS) {
+        return usageOne.sumFloatingIpsUsage;
+    }
+    if (hardwareType === HARDWARE_TYPE.IPV4) {
+        return usageOne.sumIpv4Usage;
+    }
+
+    if (hardwareType === HARDWARE_TYPE.CPU) {
+        return usageOne.sumCpuUsage
+    }
+    if (hardwareType === HARDWARE_TYPE.MEM) {
+        return usageOne.sumMemUsage
+    }
+    if (hardwareType === HARDWARE_TYPE.DISK) {
+        return usageOne.sumDiskUsage
+    }
+    if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+        return usageOne.sumRecvBytes
+    }
+
+    if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+        return usageOne.sumSendBytes
+    }
+
+    if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+        return usageOne.sumActiveConnection
+    }
+
+    if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+        return usageOne.sumHandledConnection
+    }
+
+    if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+        return usageOne.sumAcceptsConnection
+    }
+}
+
+export const sortUsageListByType = (usageList, hardwareType) => {
+    if (hardwareType === HARDWARE_TYPE.VCPU) {
+        usageList.sort((a, b) => b.sumVCpuUsage - a.sumVCpuUsage);
+    } else if (hardwareType === HARDWARE_TYPE.MEM) {
+        usageList.sort((a, b) => b.sumMemUsage - a.sumMemUsage);
+    } else if (hardwareType === HARDWARE_TYPE.DISK) {
+        usageList.sort((a, b) => b.sumDiskUsage - a.sumDiskUsage);
+    } else if (hardwareType === HARDWARE_TYPE.FLOATING_IPS) {
+        usageList.sort((a, b) => b.sumFloatingIpsUsage - a.sumFloatingIpsUsage);
+    } else if (hardwareType === HARDWARE_TYPE.IPV4) {
+        usageList.sort((a, b) => b.sumIpv4Usage - a.sumIpv4Usage);
+    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+        usageList.sort((a, b) => b.sumRecvBytes - a.sumRecvBytes);
+        usageList.sort((a, b) => b.sumSendBytes - a.sumSendBytes);
+    }
+    return usageList;
+}
+
 
 export const renderUsageByType = (usageOne, hardwareType, role = '',) => {
 
@@ -696,14 +810,19 @@ export const filterAppInstanceListByCloudLet = (appInstanceList, pCloudLet = '')
  * @returns {[]}
  */
 export const filterAppInstanceListByClusterInst = (appInstanceList, pCluster = '') => {
-    let instanceListFilteredByClusterInst = []
-    appInstanceList.map(item => {
-        if (item.ClusterInst === pCluster) {
-            instanceListFilteredByClusterInst.push(item);
-        }
-    })
+    try {
+        let instanceListFilteredByClusterInst = []
+        appInstanceList.map(item => {
+            if (item.ClusterInst === pCluster) {
+                instanceListFilteredByClusterInst.push(item);
+            }
+        })
 
-    return instanceListFilteredByClusterInst;
+        return instanceListFilteredByClusterInst;
+    } catch (e) {
+
+    }
+
 }
 
 export const showToast = (title: string) => {

@@ -41,15 +41,7 @@ import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import '../PageMonitoring.css'
-import {
-    getOneYearStartEndDatetime,
-    makeBubbleChartDataForCluster,
-    numberWithCommas,
-    renderBarChartCore,
-    renderLineChartCore,
-    renderPlaceHolder,
-    showToast
-} from "../PageMonitoringCommonService";
+import {getOneYearStartEndDatetime, makeBubbleChartDataForCluster, numberWithCommas, renderBarChartCore, renderLineChartCore, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
 import {getAppInstList, getAppLevelUsageList, getCloudletList, StylesForMonitoring} from "../admin/PageAdminMonitoringService";
 import MapboxComponent from "./MapboxComponent";
 import * as reducer from "../../../../utils";
@@ -295,6 +287,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         async loadInitDataForCluster(isInterval: boolean = false) {
+            clearInterval(this.interval)
             this.setState({dropdownRequestLoading: true})
             let clusterList = await getClusterList();
             let cloudletList = await getCloudletList()
@@ -343,6 +336,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //fixme: fakeData
             //let allClusterUsageList = require('./allClusterUsageList')
 
+
             console.log('filteredAppInstanceList===>', appInstanceList)
 
             let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
@@ -365,7 +359,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             await this.setState({
                 clusterListLoading: false,
-                allClusterUsageList: allClusterUsageList,
+                allCloudletUsageList: allClusterUsageList,
                 allClusterUsageList003: allClusterUsageList,
                 filteredClusterUsageList: allClusterUsageList,
                 maxCpu: maxCpu,
@@ -378,6 +372,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         async resetAllData() {
+            clearInterval(this.interval)
             await this.setState({
                 currentGridIndex: -1,
                 currentTabIndex: 0,
@@ -406,7 +401,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         async refreshAllData() {
-
+            clearInterval(this.interval)
             toast({
                 type: 'success',
                 //icon: 'smile',
@@ -437,19 +432,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentCluster: '',
                 currentAppInst: '',
             })
+
         }
 
         makeChartDataAndRenderTabBody(hwType, subCategoryType = '') {
             let barChartDataSet: TypeBarChartData = [];
             let lineChartDataSet: TypeLineChartData = [];
-            if (this.state.currentClassification === CLASSIFICATION.APPINST) {
-                barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
-                lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
-            }
-            //@todo:클러스터인 경우
-            else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+            if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                 barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
                 lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
+            } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
+                barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
+                lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
             }
 
             console.log(`barChartDataSet===${hwType}>`, barChartDataSet);
@@ -482,6 +476,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         renderGraphAreaMulti(pHardwareType, barChartDataSet, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column'>
+
+                    {/*@todo:BarChart*/}
+                    {/*@todo:BarChart*/}
+                    {/*@todo:BarChart*/}
+                    <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                Top 5 {convertHwTypePhrases(pHardwareType)} usage of {this.convertToClassification(this.state.currentClassification)}
+                            </div>
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
+                        </div>
+                    </div>
                     {/*@todo:LInechart*/}
                     {/*@todo:LInechart*/}
                     {/*@todo:LInechart*/}
@@ -496,6 +504,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
                         </div>
                     </div>
+
+                </div>
+            )
+        }
+
+
+        renderGraphArea(pHardwareType, barChartDataSet, lineChartDataSet) {
+            return (
+                <div className='page_monitoring_dual_column'>
+
                     {/*@todo:BarChart*/}
                     {/*@todo:BarChart*/}
                     {/*@todo:BarChart*/}
@@ -509,15 +527,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
                         </div>
                     </div>
-
-                </div>
-            )
-        }
-
-
-        renderGraphArea(pHardwareType, barChartDataSet, lineChartDataSet) {
-            return (
-                <div className='page_monitoring_dual_column'>
                     {/*@todo:LInechart*/}
                     {/*@todo:LInechart*/}
                     {/*@todo:LInechart*/}
@@ -535,19 +544,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </div>
                         <div className='page_monitoring_container'>
                             {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
-                        </div>
-                    </div>
-                    {/*@todo:BarChart*/}
-                    {/*@todo:BarChart*/}
-                    {/*@todo:BarChart*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                Top 5 {convertHwTypePhrases(pHardwareType)} usage of {this.convertToClassification(this.state.currentClassification)}
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
                         </div>
                     </div>
 
@@ -857,16 +853,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <div style={{marginLeft: 50, color: '#6de1ff', fontWeight: 'bold', fontFamily: 'Encode Sans Condensed'}}>
                             {this.state.selectOrg}
                         </div>*/}
-                      {/*  {this.state.intervalLoading &&
+                        {this.state.intervalLoading &&
 
                         <div style={{marginLeft: 15}}>
                             <div style={{marginLeft: 15}}>
-                                <CircularProgress style={{color: 'grey', zIndex: 9999999, fontSize: 10}}
+                                <CircularProgress style={{color: this.state.currentClassification === CLASSIFICATION.APPINST ? 'grey' : 'green', zIndex: 9999999, fontSize: 10}}
                                                   size={20}/>
                             </div>
                         </div>
                         }
-                        */}
+
                         {/*   {this.state.dropdownRequestLoading &&
 
                         <div style={{marginLeft: 15}}>
@@ -1027,6 +1023,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             } finally {
                 this.setState({dropdownRequestLoading: false})
             }
+
+            console.log('allAppInstUsageList===>', allAppInstUsageList)
             // Cluster | AppInst
             let currentCluster = pCurrentAppInst.split("|")[2].trim() + " | " + pCurrentAppInst.split('|')[1].trim()
             pCurrentAppInst = pCurrentAppInst.trim();
@@ -1045,25 +1043,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentTabIndex: 0,
             })
 
-            //@fixme: interval on appInstance view
-            //@fixme: interval on appInstance view
-            //@fixme: interval on appInstance view
+        }
+
+
+        setAppInstInterval(filteredAppList) {
             this.interval = setInterval(async () => {
-                   this.setState({
-                       intervalLoading: true,
-                   })
-                   let arrDateTime2 = getOneYearStartEndDatetime();
-                   allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime2[0], arrDateTime2[1]);
-
-                   console.log('allAppInstUsageList77===>', allAppInstUsageList);
-
-                   this.setState({
-                       intervalLoading: false,
-                       filteredAppInstUsageList: allAppInstUsageList,
-                   })
-
-               }, 1000 * 7)
-
+                this.setState({
+                    intervalLoading: true,
+                })
+                let arrDateTime2 = getOneYearStartEndDatetime();
+                let allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime2[0], arrDateTime2[1]);
+                console.log('allAppInstUsageList77===>', allAppInstUsageList);
+                this.setState({
+                    intervalLoading: false,
+                    filteredAppInstUsageList: allAppInstUsageList,
+                })
+            }, 1000 * 3.0)
         }
 
         async handleClusterDropdown(value) {
@@ -1284,13 +1279,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         options={{
                                             loop: true,
                                             autoplay: true,
-                                            animationData: require('../../../../lotties/loader001'),
+                                            animationData: require('../../../../lotties/3080-heartrate33'),
                                             rendererSettings: {
                                                 preserveAspectRatio: 'xMidYMid slice'
                                             }
                                         }}
-                                        height={240}
-                                        width={240}
+                                        height={250}
+                                        width={250}
                                         isStopped={false}
                                         isPaused={false}
                                     />

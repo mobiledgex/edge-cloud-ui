@@ -1,20 +1,18 @@
 import React from 'react';
-import {Chart} from "react-google-charts";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import axios from "axios";
 import {formatData} from "../../../../services/formatter/formatComputeInstance";
 import '../PageMonitoring.css';
 import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../../shared/Constants";
-import {Line as ReactChartJs} from 'react-chartjs-2';
 import Lottie from "react-lottie";
 import BubbleChart from "../../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../../shared/Types";
 import PageMonitoring from "./PageAdminMonitoring";
-import {numberWithCommas, showToast} from "../PageMonitoringCommonService";
-import {SHOW_CLOUDLET} from "../../../../services/endPointTypes";
+import {numberWithCommas, renderBarChartCore, renderLineChartCore, renderUsageByType2, showToast} from "../PageMonitoringCommonService";
+import {SHOW_ORG_CLOUDLET} from "../../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../../services/serviceMC";
 
-export const cutArrayList = (length: number = 5, paramArrayList: any) => {
+
+export const cutArrayList = async (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];
     for (let index in paramArrayList) {
         if (index < 5) {
@@ -126,14 +124,19 @@ export const isEmpty = (value) => {
  * @returns {[]}
  */
 export const filterInstanceCountOnCloutLetOne = (appInstanceListGroupByCloudlet, pCloudLet) => {
-    let filterInstanceCountOnCloutLetOne = [];
-    for (let [key, value] of Object.entries(appInstanceListGroupByCloudlet)) {
-        if (key === pCloudLet) {
-            filterInstanceCountOnCloutLetOne.push(value)
-            break;
+    try {
+        let filterInstanceCountOnCloutLetOne = [];
+        for (let [key, value] of Object.entries(appInstanceListGroupByCloudlet)) {
+            if (key === pCloudLet) {
+                filterInstanceCountOnCloutLetOne.push(value)
+                break;
+            }
         }
+        return filterInstanceCountOnCloutLetOne;
+    } catch (e) {
+        //throw new Error(e.toString())
     }
-    return filterInstanceCountOnCloutLetOne;
+
 }
 
 /**
@@ -159,13 +162,49 @@ export const filterUsageByType = (pTypeKey, pTypeValue, usageList,) => {
  * @returns {[]}
  */
 export const filterAppInstanceListByCloudLet = (appInstanceList, pCloudLet = '') => {
-    let instanceListFilteredByCloudlet = []
-    appInstanceList.map(item => {
-        if (item.Cloudlet === pCloudLet) {
-            instanceListFilteredByCloudlet.push(item);
-        }
+    try {
+        let instanceListFilteredByCloudlet = []
+        appInstanceList.map(item => {
+            if (item.Cloudlet === pCloudLet) {
+                instanceListFilteredByCloudlet.push(item);
+            }
+        })
+        return instanceListFilteredByCloudlet;
+    } catch (e) {
+
+    }
+}
+
+export const makeSelectBoxListByInstAppName = (arrList, keyName) => {
+    let newArrList = [];
+    arrList.map(item => {
+        newArrList.push({
+            value: item.instance.AppName,
+            text: item.instance.AppName,
+        })
     })
-    return instanceListFilteredByCloudlet;
+    return newArrList;
+}
+
+
+/**
+ *
+ * @param appInstanceList
+ * @param pCloudLet
+ * @param classification
+ * @returns {[]}
+ */
+export const filterAppInstanceListByClassification = (appInstanceList, pCloudLet = '', classification) => {
+    try {
+        let instanceListFilteredByCloudlet = []
+        appInstanceList.map(item => {
+            if (item[classification] === pCloudLet) {
+                instanceListFilteredByCloudlet.push(item);
+            }
+        })
+        return instanceListFilteredByCloudlet;
+    } catch (e) {
+    }
 }
 
 
@@ -294,36 +333,11 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
     }
 
     if (hardwareType === HARDWARE_TYPE.VCPU) {
-        return numberWithCommas(usageOne.avgVCpuUsed) + " %"
+        return numberWithCommas(usageOne.sumVCpuUsage) + " %"
     }
-
-    if (hardwareType === HARDWARE_TYPE.MEM_USED) {
-        return numberWithCommas(usageOne.avgMemUsed) + " Byte"
-    }
-
-    if (hardwareType === HARDWARE_TYPE.DISK_USED) {
-        return numberWithCommas(usageOne.avgDiskUsed) + " Byte"
-    }
-
-    if (hardwareType === HARDWARE_TYPE.FLOATING_IPS_USED) {
-        return usageOne.avgFloatingIpsUsed;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.IPV4_USED) {
-        return usageOne.avgIpv4Used;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.NET_SEND) {
-        return usageOne.avgNetSend;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.NET_RECV) {
-        return usageOne.avgNetRecv;
-    }
-
 
     if (hardwareType === HARDWARE_TYPE.MEM) {
-        return numberWithCommas(usageOne.sumMemUsage) + " Byte"
+        return numberWithCommas((usageOne.sumMemUsage / 1000000).toFixed(2)) + " MByte"
     }
 
     if (hardwareType === HARDWARE_TYPE.DISK) {
@@ -353,67 +367,6 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
 
 }
 
-export const renderUsageByType = (usageOne, hardwareType) => {
-
-    if (hardwareType === HARDWARE_TYPE.VCPU) {
-        return usageOne.avgVCpuUsed;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.MEM_USED) {
-        return usageOne.avgMemUsed;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.DISK_USED) {
-        return usageOne.avgDiskUsed;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.FLOATING_IPS_USED) {
-        return usageOne.avgFloatingIpsUsed;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.IPV4_USED) {
-        return usageOne.avgIpv4Used;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.NET_SEND) {
-        return usageOne.avgNetSend;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.NET_RECV) {
-        return usageOne.avgNetRecv;
-    }
-
-
-    if (hardwareType === HARDWARE_TYPE.CPU) {
-        return usageOne.sumCpuUsage
-    }
-    if (hardwareType === HARDWARE_TYPE.MEM) {
-        return usageOne.sumMemUsage
-    }
-    if (hardwareType === HARDWARE_TYPE.DISK) {
-        return usageOne.sumDiskUsage
-    }
-    if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
-        return usageOne.sumRecvBytes
-    }
-
-    if (hardwareType === HARDWARE_TYPE.SEND_BYTES) {
-        return usageOne.sumSendBytes
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-        return usageOne.sumActiveConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
-        return usageOne.sumHandledConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-        return usageOne.sumAcceptsConnection
-    }
-}
-
 export const renderLottie = () => {
     return (
         <div style={{position: 'absolute', top: '-20%', left: '48%'}}>
@@ -438,7 +391,7 @@ export const renderLottie = () => {
 }
 
 
-export const renderBarGraph = (usageList, hardwareType, _this) => {
+export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
 
     console.log('renderBarGraphusageList===>', usageList);
 
@@ -455,140 +408,17 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
         for (let index = 0; index < usageList.length; index++) {
             if (index < 5) {
                 let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...",
-                    renderUsageByType(usageList[index], hardwareType),
+                    renderUsageByType2(usageList[index], hardwareType),
                     CHART_COLOR_LIST[index],
                     renderUsageLabelByType(usageList[index], hardwareType)]
                 chartDataList.push(barDataOne);
             }
         }
 
-        return (
-            <Chart
-                width="100%"
-                //height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
-                height={'100%'}
-                chartType="BarChart"
-                loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
-                data={chartDataList}
-                options={{
-                    annotations: {
-                        style: 'line',
-                        textStyle: {
-                            //fontName: 'Righteous',
-                            fontSize: 12,
-                            //bold: true,
-                            //italic: true,
-                            // The color of the text.
-                            color: '#fff',
-                            // The color of the text outline.
-                            //auraColor: 'black',
-                            // The transparency of the text.
-                            opacity: 1.0
-                        },
-                        boxStyle: {
-                            // Color of the box outline.
-                            stroke: '#ffffff',
-                            // Thickness of the box outline.
-                            strokeWidth: 1,
-                            // x-radius of the corner curvature.
-                            rx: 10,
-                            // y-radius of the corner curvature.
-                            ry: 10,
-                        }
-                    },
-
-                    is3D: true,
-                    title: '',
-                    titleTextStyle: {
-                        color: '#fff',
-                        fontSize: 12,
-                        /*fontName: <string>, // i.e. 'Times New Roman'
-                        fontSize: <number>, // 12, 18 whatever you want (don't specify px)
-                         bold: <boolean>,    // true or false
-                          // true of false*/
-                    },
-                    //titlePosition: 'out',
-                    chartArea: {
-                        // left: 20, right: 150, top: 50, bottom: 25,
-                        width: "60%", height: "80%",
-                    },
-                    legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
-                    //xAxis
-                    hAxis: {
-                        textPosition: 'none',//HIDE xAxis
-                        title: '',
-                        titleTextStyle: {
-                            //fontName: "Times",
-                            fontSize: 12,
-                            fontStyle: "italic",
-                            color: 'white'
-                        },
-                        minValue: 0,
-                        textStyle: {
-                            color: "white"
-                        },
-                        gridlines: {
-                            color: "grey"
-                        },
-                        format: hardwareType === HARDWARE_TYPE.CPU ? '#\'%\'' : '0.##\' byte\'',
-                        baselineColor: "grey",
-                        //out', 'in', 'none'.
-                    },
-                    //Y축
-                    vAxis: {
-                        title: '',
-                        titleTextStyle: {
-                            fontSize: 20,
-                            fontStyle: "normal",
-                            color: 'white'
-                        },
-                        textStyle: {
-                            color: "white",
-                            fontSize: 12,
-                        },
-
-                    },
-                    //colors: ['#FB7A21'],
-                    fontColor: 'white',
-                    backgroundColor: {
-                        fill: '#1e2124'
-                    },
-                    /*  animation: {
-                          duration: 300,
-                          easing: 'out',
-                          startup: true
-                      }*/
-                    //colors: ['green']
-                }}
-
-                // For tests
-                rootProps={{'data-testid': '1'}}
-            />
-        );
+        return renderBarChartCore(chartDataList, hardwareType)
     }
 
 
-}
-
-export const sortUsageListByType = (usageList, hardwareType) => {
-
-    if (hardwareType === HARDWARE_TYPE.VCPU) {
-        usageList.sort((a, b) => b.avgVCpuUsed - a.avgVCpuUsed);
-    } else if (hardwareType === HARDWARE_TYPE.MEM_USED) {
-        usageList.sort((a, b) => b.avgMemUsed - a.avgMemUsed);
-    } else if (hardwareType === HARDWARE_TYPE.DISK_USED) {
-        usageList.sort((a, b) => b.avgDiskUsed - a.avgDiskUsed);
-    } else if (hardwareType === HARDWARE_TYPE.FLOATING_IPS_MAX) {
-        usageList.sort((a, b) => b.avgFloatingIpsUsed - a.avgFloatingIpsUsed);
-    } else if (hardwareType === HARDWARE_TYPE.IPV4_USED) {
-        usageList.sort((a, b) => b.avgIpv4Used - a.avgIpv4Used);
-    } else if (hardwareType === HARDWARE_TYPE.NET_SEND) {
-        usageList.sort((a, b) => b.avgNetRecv - a.avgNetRecv);
-    } else if (hardwareType === HARDWARE_TYPE.NET_SEND) {
-        usageList.sort((a, b) => b.avgNetSend - a.avgNetSend);
-    }
-
-    return usageList;
 }
 
 
@@ -677,14 +507,18 @@ export const instanceFlavorToPerformanceValue = (flavor) => {
  * @returns {[]}
  */
 export const filterAppInstOnCloudlet = (CloudLetOneList, pCluster) => {
+    try {
+        let filteredAppInstOnCloudlet = []
+        CloudLetOneList.map(item => {
+            if (item.ClusterInst === pCluster) {
+                filteredAppInstOnCloudlet.push(item);
+            }
+        })
+        return filteredAppInstOnCloudlet;
+    } catch (e) {
 
-    let filteredAppInstOnCloudlet = []
-    CloudLetOneList.map(item => {
-        if (item.ClusterInst === pCluster) {
-            filteredAppInstOnCloudlet.push(item);
-        }
-    })
-    return filteredAppInstOnCloudlet;
+    }
+
 }
 
 /**
@@ -767,20 +601,8 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
                             weight: 'bold',
                         }}
                         bubbleClickFun={async (label, index) => {
-                            /*  await _this.setState({
-                                  currentAppInst: label,
-                                  currentGridIndex: index,
-                              })
-                              await _this.handleSelectBoxChanges(_this.state.currentRegion, _this.state.currentCloudLet, _this.state.currentCluster, label)*/
-
                         }}
                         legendClickFun={async (label, index) => {
-                            await _this.setState({
-                                currentAppInst: label,
-                                currentGridIndex: index,
-                            })
-                            await _this.filterByEachTypes(_this.state.currentRegion, _this.state.currentCloudLet, _this.state.currentCluster, label)
-
                         }}
                         data={pBubbleChartData}
                     />
@@ -935,15 +757,13 @@ export const getMetricsUtilizationAtAtClusterLevel = async (appInstanceOne) => {
 
 
 /**
- * @TODO: react_chartjs를 이용해서 라인 차트를 랜더링.
- * @desc : React wrapper for Chart.js 2 Open for PRs and contributions!
- * @desc : https://github.com/jerairrest/react-chartjs-2
+ *
+ * @param _this
  * @param hardwareUsageList
  * @param hardwareType
  * @returns {*}
  */
-export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array, hardwareType: string) => {
-
+export const makeLineChartDataForAppInst = (_this: PageMonitoring, hardwareUsageList: Array, hardwareType: string) => {
     if (hardwareUsageList.length === 0) {
         return (
             <div style={StylesForMonitoring.noData}>
@@ -993,8 +813,7 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
             usageSetList.push(usageList);
         }
 
-
-        //@todo: CUST LIST INTO RECENT_DATA_LIMIT_COUNT
+        //@todo: CUT LIST INTO RECENT_DATA_LIMIT_COUNT
         let newDateTimeList = []
         for (let i in dateTimeList) {
             if (i < RECENT_DATA_LIMIT_COUNT) {
@@ -1004,140 +823,7 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
             }
 
         }
-
-        const lineChartData = (canvas) => {
-
-            let gradientList = makeGradientColor(canvas, height);
-
-            let finalSeriesDataSets = [];
-            for (let i in usageSetList) {
-                //@todo: top5 만을 추린다
-                if (i < 5) {
-                    let datasetsOne = {
-                        label: instanceNameList[i],
-                        // backgroundColor: hardwareType === HARDWARE_TYPE.CPU ? gradientList[i] : '',
-                        backgroundColor: '',
-                        borderColor: gradientList[i],
-                        borderWidth: 2,
-                        pointColor: "#fff",
-                        pointStrokeColor: 'white',
-                        pointHighlightFill: "#fff",
-                        pointHighlightStroke: 'white',
-                        data: usageSetList[i],
-                        radius: 0,
-                        pointRadius: 1,
-                    }
-
-                    finalSeriesDataSets.push(datasetsOne)
-                }
-
-            }
-            return {
-                labels: newDateTimeList,
-                datasets: finalSeriesDataSets,
-            }
-        }
-
-        let height = 500 + 100;
-        let options = {
-            plugins: {
-                zoom: {
-                    pan: {
-                        enabled: true,
-                        mode: 'y'
-                    },
-                    zoom: {
-                        enabled: true,
-                        mode: 'xy'
-                    }
-                }
-            },
-            maintainAspectRatio: true,
-            responsive: true,
-            datasetStrokeWidth: 3,
-            pointDotStrokeWidth: 4,
-            layout: {
-                padding: {
-                    left: 0,
-                    right: 10,
-                    top: 0,
-                    bottom: 0
-                }
-            },
-            legend: {
-                position: 'top',
-                labels: {
-                    boxWidth: 10,
-                    fontColor: 'white'
-                }
-            },
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                        fontColor: 'white',
-                        callback(value, index, label) {
-                            return numberWithCommas(value);
-
-                        },
-                    },
-                    gridLines: {
-                        color: "#505050",
-                    },
-                    //stacked: true
-
-                }],
-                xAxes: [{
-                    /*ticks: {
-                        fontColor: 'white'
-                    },*/
-                    gridLines: {
-                        color: "#505050",
-                    },
-                    ticks: {
-                        fontSize: 14,
-                        fontColor: 'white',
-                        //maxRotation: 0.05,
-                        //autoSkip: true,
-                        maxRotation: 45,
-                        minRotation: 45,
-                        padding: 10,
-                        labelOffset: 0,
-                        callback(value, index, label) {
-                            return value;
-
-                        },
-                    },
-                    beginAtZero: false,
-                    /* gridLines: {
-                         drawTicks: true,
-                     },*/
-                }],
-                backgroundColor: {
-                    fill: "#1e2124"
-                },
-            }
-
-        }
-
-
-        let chartWidth = ((window.innerWidth - 300) * 2 / 3 - 50) / 2
-        let chartHeight = window.innerWidth > 1700 ? ((window.innerHeight - 320) / 2 - 80) - 10 : ((window.innerHeight - 370) / 2 - 80) - 10 //(height 사이즈)-(여유공백)
-        // let chartNetHeight = window.innerWidth > 1782 ? (window.innerHeight-320)/2-50 : (window.innerHeight-370)/2-50
-        //todo :#######################
-        //todo : chart rendering part
-        //todo :#######################
-        return (
-            <div style={{width: '100%', height: '100%'}}>
-                <ReactChartJs
-                    width={chartWidth}
-                    height={hardwareType === "recv_bytes" || hardwareType === "send_bytes" ? chartHeight + 20 : chartHeight}
-                    data={lineChartData}
-                    options={options}
-
-                />
-            </div>
-        );
+        return renderLineChartCore(instanceNameList, usageSetList, newDateTimeList, hardwareType)
     }
 
 
@@ -1425,39 +1111,60 @@ export const filterUsageListByRegion = (pRegion, usageList) => {
 }
 
 export const getCloudletList = async () => {
-   try{
-       let store = JSON.parse(localStorage.PROJECT_INIT);
-       let token = store ? store.userToken : 'null';
-       let requestData = {token: token, method: SHOW_CLOUDLET, data: {region: REGION.EU}};
-       let requestData2 = {token: token, method: SHOW_CLOUDLET, data: {region: REGION.US}};
-       let promiseList = []
-       promiseList.push(sendSyncRequest(this, requestData))
-       promiseList.push(sendSyncRequest(this, requestData2))
-       let showCloudletList = await Promise.all(promiseList);
-       /*console.log('results===EU>', showCloudletList[0].response.data);
-       console.log('results===US>', showCloudletList[1].response.data);*/
-       let resultList = [];
-       showCloudletList.map(item => {
-           //@todo : null check
-           if (item.response.data["0"].Region !== '') {
-               let cloudletList = item.response.data;
-               cloudletList.map(item => {
-                   resultList.push(item);
-               })
-           }
-       })
+    try {
+        let store = JSON.parse(localStorage.PROJECT_INIT);
+        let token = store ? store.userToken : 'null';
+        //data: { region: region, org: _self.props.selectOrg || localStorage.selectOrg }
 
-       /* let newCloudletList = []
-        resultList.map(item => {
-            if (item.Operator === localStorage.selectOrg) {
-                newCloudletList.push(item)
+        let requestData = {token: token, method: SHOW_ORG_CLOUDLET, data: {region: REGION.EU, org: localStorage.selectOrg}};
+        let requestData2 = {token: token, method: SHOW_ORG_CLOUDLET, data: {region: REGION.US, org: localStorage.selectOrg}};
+        let promiseList = []
+
+        promiseList.push(sendSyncRequest(this, requestData))
+        promiseList.push(sendSyncRequest(this, requestData2))
+        let orgCloudletList = await Promise.all(promiseList);
+        console.log('results===EU>', orgCloudletList[0].response.data);
+        console.log('results===US>', orgCloudletList[1].response.data);
+
+        let cloudletEU = orgCloudletList[0].response.data;
+        let cloudletUS = orgCloudletList[1].response.data;
+
+        let mergedCloudletList = [];
+        orgCloudletList.map(item => {
+            //@todo : null check
+            if (item.response.data["0"].Region !== '') {
+                let cloudletList = item.response.data;
+                cloudletList.map(item => {
+                    mergedCloudletList.push(item);
+                })
             }
-        })*/
+        })
 
-       return resultList;
-   }catch (e) {
+        let mergedOrgCloudletList = []
+        mergedCloudletList.map(item => {
+            if (item.Operator === localStorage.selectOrg) {
+                mergedOrgCloudletList.push(item)
+            }
+        })
 
-   }
+        console.log('mergedOrgCloudletList===>', mergedOrgCloudletList);
+
+        return mergedOrgCloudletList;
+    } catch (e) {
+
+    }
+}
+
+
+export const makeSelectBoxList2 = (arrList, keyName) => {
+    let newArrList = [];
+    for (let i in arrList) {
+        newArrList.push({
+            value: arrList[i].instance.AppName,
+            text: arrList[i].instance.AppName,
+        })
+    }
+    return newArrList;
 }
 
 
@@ -1533,7 +1240,7 @@ export const getAppLevelMetrics = async (serviceBodyForAppInstanceOneInfo: any) 
             'Content-Type': 'application/json',
             Authorization: 'Bearer ' + store.userToken
         },
-        timeout: 15 * 1000
+        timeout: 30 * 1000
     }).then(async response => {
         return response.data;
     }).catch(e => {
@@ -1576,7 +1283,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
     try {
         appInstanceHealthCheckList = await Promise.all(promiseList);
     } catch (e) {
-        //alert(e)
+        throw new Error(e)
     }
 
     let usageListForAllInstance = []
@@ -1801,6 +1508,8 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
 
+    console.log('cloudletList===>', cloudletList);
+
     for (let index = 0; index < cloudletList.length; index++) {
         let instanceInfoOneForm = makeFormForCloudletLevelMatric(cloudletList[index], pHardwareType, token, recentDataLimitCount, pStartTime, pEndTime)
         instanceBodyList.push(instanceInfoOneForm);
@@ -1813,33 +1522,14 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
     console.log('instanceBodyList===>', instanceBodyList)
 
     let cloudletLevelMatricUsageList = await Promise.all(promiseList);
-    /*
-    [
-        "time",0
-        "cloudlet",1
-        "operator",2
-        "netSend",3
-        "netRecv",4
-        "vCpuUsed",5
-        "vCpuMax",6
-        "memUsed",7
-        "memMax",8
-        "diskUsed",9
-        "diskMax",10
-        "floatingIpsUsed",11
-        "floatingIpsMax",12
-        "ipv4Used",13
-        "ipv4Max"14
-    ]
-    */
 
+    console.log('cloudletLevelMatricUsageList===>', cloudletLevelMatricUsageList);
 
     let usageList = []
     cloudletLevelMatricUsageList.map(item => {
 
         let series = item.data["0"].Series["0"].values
         let columns = item.data["0"].Series["0"].columns
-
 
         let sumVirtualCpuUsed = 0;
         let sumVirtualCpuMax = 0;
@@ -1890,18 +1580,13 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
         })
 
         usageList.push({
-            avgVCpuUsed: sumVirtualCpuUsed / RECENT_DATA_LIMIT_COUNT,
-            avgVCpuMax: sumVirtualCpuMax / RECENT_DATA_LIMIT_COUNT,
-            avgMemUsed: sumMemUsed / RECENT_DATA_LIMIT_COUNT,
-            avgMemMax: sumMemMax / RECENT_DATA_LIMIT_COUNT,
-            avgDiskUsed: sumDiskUsed / RECENT_DATA_LIMIT_COUNT,
-            avgDiskMax: sumDiskMax / RECENT_DATA_LIMIT_COUNT,
-            avgNetSend: sumNetSend / RECENT_DATA_LIMIT_COUNT,
-            avgNetRecv: sumNetRecv / RECENT_DATA_LIMIT_COUNT,
-            avgFloatingIpsUsed: sumFloatingIpsUsed / RECENT_DATA_LIMIT_COUNT,
-            avgFloatingIpsMax: sumFloatingIpsMax / RECENT_DATA_LIMIT_COUNT,
-            avgIpv4Used: sumIpv4Used / RECENT_DATA_LIMIT_COUNT,
-            avgIpv4Max: sumIpv4Max / RECENT_DATA_LIMIT_COUNT,
+            sumVCpuUsage: sumVirtualCpuUsed / RECENT_DATA_LIMIT_COUNT,
+            sumMemUsage: sumMemUsed / RECENT_DATA_LIMIT_COUNT,
+            sumDiskUsage: sumDiskUsed / RECENT_DATA_LIMIT_COUNT,
+            sumRecvBytes: sumNetRecv / RECENT_DATA_LIMIT_COUNT,
+            sumSendBytes: sumNetSend / RECENT_DATA_LIMIT_COUNT,
+            sumFloatingIpsUsage: sumFloatingIpsUsed / RECENT_DATA_LIMIT_COUNT,
+            sumIpv4Usage: sumIpv4Used / RECENT_DATA_LIMIT_COUNT,
             columns: columns,
             series: series,
             cloudlet: cloudlet,
@@ -1911,7 +1596,7 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
 
     })
 
-    console.log('usageList====>', usageList);
+    console.log('getClouletLevelUsageList====>', usageList);
 
     return usageList;
 
