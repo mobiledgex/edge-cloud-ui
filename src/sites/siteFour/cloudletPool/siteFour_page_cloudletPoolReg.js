@@ -160,7 +160,6 @@ class SiteFourPageCloudletPoolReg extends React.Component {
         
     }
     componentWillReceiveProps(nextProps) {
-        console.log('20200104 cloudletPoolReg props props props = ', nextProps)
         //
         if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
             //{ key: 1, text: 'All', value: 'All' }

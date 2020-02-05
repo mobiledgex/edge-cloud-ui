@@ -139,11 +139,11 @@ class SiteFourPoolThree extends React.Component {
         if (mcRequest) {
             if (mcRequest.response) {
                 let response = mcRequest.response
-                console.log('20191231 result .. ', response.data)
+                //console.log('20191231 result .. ', response.data)
                 let createdState = [];
                 if (response.data && response.data.length) {
                     response.data.map((item) => {
-                        console.log('20191231 devdata -- ', item, ":", this.props.selectedData)
+                        //console.log('20191231 devdata -- ', item, ":", this.props.selectedData)
                         if (item.Region === this.props.selectedData.region && item.CloudletPool === this.props.selectedData.poolName) {
                             createdState.push({ region: item.Region, org: item.Org, pool: item.CloudletPool })
                         }
@@ -161,7 +161,7 @@ class SiteFourPoolThree extends React.Component {
     }
 
     componentDidMount() {
-        console.log('20191231 props info --', this.props.selectedData)
+        //console.log('20191231 props info --', this.props.selectedData)
         this.loadData();   
     }
     loadData() {
@@ -183,7 +183,7 @@ class SiteFourPoolThree extends React.Component {
     render (){
         const { handleSubmit, reset, org, type } = this.props;
         const { devData } = this.state;
-        console.log('20191231 devdata -- ', devData)
+        //console.log('20191231 devdata -- ', devData)
         return (
             <Fragment>
                 <Grid>
