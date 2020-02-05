@@ -41,8 +41,17 @@ import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import '../PageMonitoring.css'
-import {getOneYearStartEndDatetime, makeBubbleChartDataForCluster, numberWithCommas, renderBarChartCore, renderLineChartCore, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
-import {getAppInstList, getAppLevelUsageList, getCloudletList, StylesForMonitoring} from "../admin/PageAdminMonitoringService";
+import {
+    getOneYearStartEndDatetime,
+    makeBubbleChartDataForCluster,
+    numberWithCommas,
+    renderBarChartCore,
+    renderLineChartCore,
+    renderPlaceHolder,
+    showToast,
+    StylesForMonitoring
+} from "../PageMonitoringCommonService";
+import {getAppInstList, getAppLevelUsageList, getCloudletList,} from "../admin/PageAdminMonitoringService";
 import MapboxComponent from "./MapboxComponent";
 import * as reducer from "../../../../utils";
 import {CircularProgress} from "@material-ui/core";

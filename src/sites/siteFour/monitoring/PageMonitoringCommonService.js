@@ -1,15 +1,15 @@
 import React from 'react';
 import './PageMonitoring.css';
 import {toast} from "react-semantic-toasts";
-import {HARDWARE_TYPE, HARDWARE_TYPE_FOR_CLOUDLET, USAGE_TYPE,} from "../../../shared/Constants";
+import {HARDWARE_TYPE, USAGE_TYPE,} from "../../../shared/Constants";
 import Lottie from "react-lottie";
-import {makeGradientColor, removeDuplication} from "./dev/PageDevMonitoringService";
+import {makeGradientColor} from "./dev/PageDevMonitoringService";
 import {Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import PageMonitoringForDeveloper from "./dev/PageDevMonitoring";
 import {makeCompleteDateTime} from "./admin/PageAdminMonitoringService";
 import moment from "moment";
 import {Line as ReactChartJs} from "react-chartjs-2";
+
 
 
 export const renderLottieLoader = (width, height) => {
@@ -468,19 +468,8 @@ export const numberWithCommas = (x) => {
     }
 }
 
-export const covertToComparableDate = (paramDate) => {
-    let arrayDate = paramDate.toString().split("-");
-    let compareableFullDate = arrayDate[0] + arrayDate[1] + arrayDate[2]
-    return compareableFullDate
-
-}
-
 
 export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
-
-
-    console.log('dataOne====>', dataOne);
-
     return (
         {
             "token": token,
@@ -594,6 +583,73 @@ export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType) => 
     })
 
     return bubbleChartData;
+}
+
+
+export const StylesForMonitoring = {
+    selectBoxRow: {
+        alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,
+    },
+    tabPaneDiv: {
+        display: 'flex', flexDirection: 'row', height: 380,
+    },
+    selectHeader: {
+        color: 'white',
+        backgroundColor: '#565656',
+        height: 35,
+        alignItems: 'center',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        marginTop: -10,
+        width: 100,
+        display: 'flex'
+    },
+    header00001: {
+        fontSize: 21,
+        marginLeft: 5,
+        color: 'white',
+    },
+    div001: {
+        fontSize: 25,
+        color: 'white',
+    },
+    dropDown: {
+        //minWidth: 150,
+        minWidth: '350px',
+        //fontSize: '12px',
+        minHeight: '40px'
+        //height: '50px',
+    },
+    cell000: {
+        marginLeft: 0,
+        backgroundColor: '#a3a3a3',
+        flex: .4,
+        alignItems: 'center',
+        fontSize: 13,
+    },
+    noData: {
+        fontSize: 30,
+        display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', alignSelf: 'center', width: '100%'
+    },
+    cell001: {
+        marginLeft: 0,
+        backgroundColor: 'transparent',
+        flex: .6,
+        alignItems: 'center',
+        fontSize: 13
+    },
+    cpuDiskCol001: {
+        marginTop: 0, height: 33, width: '100%'
+    },
+    cell003: {
+        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center'
+        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 35, marginTop: -9,
+    },
+    cell004: {
+        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center', backgroundColor: 'transparent'
+        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 35
+    },
+
 }
 
 

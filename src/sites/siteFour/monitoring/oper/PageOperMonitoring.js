@@ -10,7 +10,7 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker, Progress,} from 'antd';
-import {getCloudletList, getClouletLevelUsageList, renderBubbleChartForCloudlet, StylesForMonitoring} from "../admin/PageAdminMonitoringService";
+import {getCloudletList, renderBubbleChartForCloudlet,} from "../admin/PageAdminMonitoringService";
 import {HARDWARE_OPTIONS_FOR_CLOUDLET, HARDWARE_TYPE, HARDWARE_TYPE_FOR_CLOUDLET, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeCloudletUsageList, TypeGridInstanceList} from "../../../../shared/Types";
@@ -19,10 +19,10 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {numberWithCommas, renderLottieLoader, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
+import {numberWithCommas, renderLottieLoader, renderPlaceHolder, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
 import MiniMap from "./MiniMap";
 import {CircularProgress} from "@material-ui/core";
-import {renderBarGraphForCloudlet, renderLineChartForCloudlet} from "./PageOperMonitoringService";
+import {getClouletLevelUsageList, renderBarGraphForCloudlet, renderLineChartForCloudlet} from "./PageOperMonitoringService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -267,7 +267,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
 
             let allCloudletUsageList = await getClouletLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
-
             let bubbleChartData = await this.makeBubbleChartDataForCloudlet(allCloudletUsageList);
             await this.setState({
                 bubbleChartData: bubbleChartData,

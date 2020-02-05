@@ -2,17 +2,13 @@ import React from 'react';
 import axios from "axios";
 import '../PageMonitoring.css';
 import {APP_INST_USAGE_TYPE_INDEX, CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION, USAGE_INDEX_FOR_CLUSTER} from "../../../../shared/Constants";
-import Lottie from "react-lottie";
 import BubbleChart from "../../../../components/BubbleChart";
-import type {TypeGridInstanceList} from "../../../../shared/Types";
-import {TypeAppInstance} from "../../../../shared/Types";
 import PageMonitoring from "./PageDevMonitoring";
 import PageMonitoringForDeveloper from "./PageDevMonitoring";
-import {makeFormForClusterLevelMatric, numberWithCommas, renderUsageByType} from "../PageMonitoringCommonService";
-import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
+import {makeFormForClusterLevelMatric, numberWithCommas, renderUsageByType, StylesForMonitoring} from "../PageMonitoringCommonService";
+import {SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../../services/serviceMC";
-import {Table} from "semantic-ui-react";
-import {renderLineChartCore, renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
+import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
 
 export const getClusterLevelMatric = async (serviceBody: any, pToken: string) => {
     console.log('token2===>', pToken);
@@ -38,8 +34,6 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
 
-    console.log('getClusterLevelUsageList====>clusterList', clusterList);
-
     for (let index = 0; index < clusterList.length; index++) {
         let instanceInfoOneForm = makeFormForClusterLevelMatric(clusterList[index], pHardwareType, token, recentDataLimitCount, pStartTime, pEndTime)
         instanceBodyList.push(instanceInfoOneForm);
@@ -49,13 +43,9 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
     for (let index = 0; index < instanceBodyList.length; index++) {
         promiseList.push(getClusterLevelMatric(instanceBodyList[index], token))
     }
-    console.log('instanceBodyList===>', instanceBodyList)
-
     let clusterLevelUsageList = await Promise.all(promiseList);
-
     let newClusterLevelUsageList = []
     clusterLevelUsageList.map((item, index) => {
-
 
         let sumSendBytes = 0;
         let sumRecvBytes = 0;
@@ -140,11 +130,6 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
 
         } else {//Seires is null
             newClusterLevelUsageList.push({
-                /*Region: "EU"
-                ClusterName: "hackathon-alex-cluster"
-                OrganizationName: "MobiledgeX"
-                Operator: "mex"
-                Cloudlet: "hackathon-alex"*/
                 cluster: clusterList[index].ClusterName,
                 cloudletLocation: clusterList[index].CloudletLocation,
                 dev: clusterList[index].Region,
@@ -216,65 +201,6 @@ export const getClusterList = async () => {
     console.log('orgClusterList====>', orgClusterList);
 
     return orgClusterList;
-}
-
-
-export const makeFormForAppInstance = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
-
-    if (pStartTime !== '' && pEndTime !== '') {
-        return (
-            {
-                "token": token,
-                "params": {
-                    "region": dataOne.Region,
-                    "appinst": {
-                        "app_key": {
-                            "developer_key": {"name": dataOne.OrganizationName},
-                            "name": dataOne.AppName.toLowerCase().replace(/\s+/g, ''),
-                            "version": dataOne.Version
-                        },
-                        "cluster_inst_key": {
-                            "cluster_key": {"name": dataOne.ClusterInst},
-                            "cloudlet_key": {
-                                "name": dataOne.Cloudlet,
-                                "operator_key": {"name": dataOne.Operator}
-                            }
-                        }
-                    },
-                    "selector": valid,
-                    "last": fetchingDataNo,
-                    "starttime": pStartTime,
-                    "endtime": pEndTime,
-                }
-            }
-        )
-    } else {
-        return (
-            {
-                "token": token,
-                "params": {
-                    "region": dataOne.Region,
-                    "appinst": {
-                        "app_key": {
-                            "developer_key": {"name": dataOne.OrganizationName},
-                            "name": dataOne.AppName.toLowerCase().replace(/\s+/g, ''),
-                            "version": dataOne.Version
-                        },
-                        "cluster_inst_key": {
-                            "cluster_key": {"name": dataOne.ClusterInst},
-                            "cloudlet_key": {
-                                "name": dataOne.Cloudlet,
-                                "operator_key": {"name": dataOne.Operator}
-                            }
-                        }
-                    },
-                    "selector": valid,
-                    //"last": 25
-                    "last": fetchingDataNo,
-                }
-            }
-        )
-    }
 }
 
 
@@ -434,7 +360,7 @@ export const renderBubbleChartForCloudlet = (_this: PageMonitoring, hardwareType
 
     if (pBubbleChartData.length === 0 && _this.loading === false) {
         return (
-            <div style={Styles.noData}>
+            <div style={StylesForMonitoring.noData}>
                 NO DATA
             </div>
         )
@@ -548,7 +474,7 @@ export const makeLineChartDataForAppInst = (allHWUsageList: Array, hardwareType:
 
     if (oneTypedUsageList.length === 0) {
         return (
-            <div style={Styles.noData}>
+            <div style={StylesForMonitoring.noData}>
                 NO DATA
             </div>
         )
@@ -775,51 +701,6 @@ export const makeGradientColor = (canvas, height) => {
 }
 
 
-/**
- * @todo: 앱의 인스턴스 리스트를 리전에 맞게 필터링처리..
- * @param pRegion
- * @param appInstanceList
- * @returns {TypeAppInstance[]|Array<TypeAppInstance>}
- */
-export const filterAppInstanceListByRegion = (pRegion, appInstanceList) => {
-    if (pRegion === REGION.ALL) {
-        return appInstanceList;
-    } else {
-        let filteredAppInstanceList = appInstanceList.filter((item) => {
-            if (item.Region === pRegion) {
-                return item;
-            }
-        });
-        return filteredAppInstanceList;
-    }
-}
-
-/**
- *
- * @param serviceBodyForAppInstanceOneInfo
- * @returns {Promise<AxiosResponse<any>>}
- */
-export const getAppLevelMetrics = async (serviceBodyForAppInstanceOneInfo: any) => {
-    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-    let result = await axios({
-        url: '/api/v1/auth/metrics/app',
-        method: 'post',
-        data: serviceBodyForAppInstanceOneInfo['params'],
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + store.userToken
-        },
-        timeout: 15 * 1000
-    }).then(async response => {
-        return response.data;
-    }).catch(e => {
-        //throw new Error(e)
-        //showToast(e.toString())
-    })
-    return result;
-}
-
-
 
 export const makeSelectBoxListWithKeyValuePipe = (arrList, keyName, valueName) => {
     let newArrList = [];
@@ -861,68 +742,4 @@ export const removeDuplication = (originalArray, prop) => {
 }
 
 
-export const Styles = {
-    selectBoxRow: {
-        alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,
-    },
-    tabPaneDiv: {
-        display: 'flex', flexDirection: 'row', height: 380,
-    },
-    selectHeader: {
-        color: 'white',
-        backgroundColor: '#565656',
-        height: 35,
-        alignItems: 'center',
-        alignSelf: 'center',
-        justifyContent: 'center',
-        marginTop: -10,
-        width: 100,
-        display: 'flex'
-    },
-    header00001: {
-        fontSize: 21,
-        marginLeft: 5,
-        color: 'white',
-    },
-    div001: {
-        fontSize: 25,
-        color: 'white',
-    },
-    dropDown: {
-        //minWidth: 150,
-        height: '20px',
-        minWidth: '140px',
-        fontSize: '12px',
-        verticalAlign: 'middle',
-    },
-    cell000: {
-        marginLeft: 0,
-        backgroundColor: '#a3a3a3',
-        flex: .4,
-        alignItems: 'center',
-        fontSize: 13,
-    },
-    noData: {
-        fontSize: 30,
-        display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', alignSelf: 'center', width: '100%'
-    },
-    cell001: {
-        marginLeft: 0,
-        backgroundColor: 'transparent',
-        flex: .6,
-        alignItems: 'center',
-        fontSize: 13
-    },
-    cpuDiskCol001: {
-        marginTop: 0, height: 33, width: '100%'
-    },
-    cell003: {
-        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center'
-        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 35, marginTop: -9,
-    },
-    cell004: {
-        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center', backgroundColor: 'transparent'
-        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 35
-    }
-}
 

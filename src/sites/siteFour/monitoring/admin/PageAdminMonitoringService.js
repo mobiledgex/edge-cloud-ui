@@ -7,7 +7,7 @@ import Lottie from "react-lottie";
 import BubbleChart from "../../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../../shared/Types";
 import PageMonitoring from "./PageAdminMonitoring";
-import {numberWithCommas, renderBarChartCore, renderLineChartCore, renderUsageByType2, showToast} from "../PageMonitoringCommonService";
+import {numberWithCommas, renderBarChartCore, renderLineChartCore, renderUsageByType2, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
 import {SHOW_ORG_CLOUDLET} from "../../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../../services/serviceMC";
 
@@ -154,7 +154,6 @@ export const filterAppInstanceListByClassification = (appInstanceList, pCloudLet
 }
 
 
-
 /**
  * @todo: Remove duplicates from an array.
  * @param names
@@ -245,8 +244,6 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
             cpuUsageOne = (usageOne.sumCpuUsage * 1).toFixed(2) + " %";
         } catch (e) {
             cpuUsageOne = 0;
-        } finally {
-            //cpuUsageOne = 0;
         }
         return cpuUsageOne;
     }
@@ -287,8 +284,6 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
 }
 
 export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
-
-    console.log('renderBarGraphusageList===>', usageList);
 
     if (usageList.length === 0) {
         return (
@@ -510,11 +505,6 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
 }
 
 export const renderBubbleChartForCloudlet = (_this: PageMonitoring, hardwareType: string, pBubbleChartData: any) => {
-
-
-    console.log('pBubbleChartData====>', pBubbleChartData);
-
-
     if (pBubbleChartData.length === 0 && _this.loading === false) {
         return (
             <div style={StylesForMonitoring.noData}>
@@ -524,6 +514,7 @@ export const renderBubbleChartForCloudlet = (_this: PageMonitoring, hardwareType
     } else {
         let appInstanceList = _this.state.appInstanceList;
         let boxWidth = (window.innerWidth - 300) / 3 - 20
+
         function renderZoomLevel(appInstanceListLength) {
             if (appInstanceListLength <= 4) {
                 return 0.5;
@@ -1298,191 +1289,5 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
     matrixedUsageList.push(diskUsageList)
     matrixedUsageList.push(connectionsUsageList)
     return matrixedUsageList;
-}
-
-
-export const getClouletLevelUsageList = async (cloudletList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
-    let instanceBodyList = []
-    let store = JSON.parse(localStorage.PROJECT_INIT);
-    let token = store ? store.userToken : 'null';
-
-    console.log('cloudletList===>', cloudletList);
-
-    for (let index = 0; index < cloudletList.length; index++) {
-        let instanceInfoOneForm = makeFormForCloudletLevelMatric(cloudletList[index], pHardwareType, token, recentDataLimitCount, pStartTime, pEndTime)
-        instanceBodyList.push(instanceInfoOneForm);
-    }
-
-    let promiseList = []
-    for (let index = 0; index < instanceBodyList.length; index++) {
-        promiseList.push(getCloudletLevelMatric(instanceBodyList[index], token))
-    }
-    console.log('instanceBodyList===>', instanceBodyList)
-
-    let cloudletLevelMatricUsageList = await Promise.all(promiseList);
-
-    console.log('cloudletLevelMatricUsageList===>', cloudletLevelMatricUsageList);
-
-    let usageList = []
-    cloudletLevelMatricUsageList.map(item => {
-
-        let series = item.data["0"].Series["0"].values
-        let columns = item.data["0"].Series["0"].columns
-
-        let sumVirtualCpuUsed = 0;
-        let sumVirtualCpuMax = 0;
-        let sumMemUsed = 0;
-        let sumMemMax = 0;
-        let sumDiskUsed = 0;
-        let sumDiskMax = 0;
-        let sumNetSend = 0;
-        let sumNetRecv = 0;
-        let sumFloatingIpsUsed = 0;
-        let sumFloatingIpsMax = 0
-        let sumIpv4Used = 0;
-        let sumIpv4Max = 0;
-
-        let cloudlet = "";
-        let operator = "";
-        series.map(item => {
-            cloudlet = item[1]
-            operator = item[2]
-
-            //todo: CPU
-            let vCpuUsed = item["5"];
-            let vCpuMax = item["6"];
-            sumVirtualCpuUsed += vCpuUsed;
-            sumVirtualCpuMax += vCpuMax;
-
-            //todo: MEM
-            sumMemUsed += item["7"];
-            sumMemMax += item["8"];
-
-            //todo: DISK
-            sumDiskUsed += item["9"];
-            sumDiskMax += item["10"];
-
-            //todo: NETWORK(RECV,SEND)
-            sumNetSend += item["3"];
-            sumNetRecv += item["4"];
-
-            //todo: FLOATIP
-            sumFloatingIpsUsed += item["11"];
-            sumFloatingIpsMax += item["12"];
-
-            //todo: IPV4
-            sumIpv4Used += item["13"];
-            sumIpv4Max += item["14"];
-
-
-        })
-
-        usageList.push({
-            sumVCpuUsage: sumVirtualCpuUsed / RECENT_DATA_LIMIT_COUNT,
-            sumMemUsage: sumMemUsed / RECENT_DATA_LIMIT_COUNT,
-            sumDiskUsage: sumDiskUsed / RECENT_DATA_LIMIT_COUNT,
-            sumRecvBytes: sumNetRecv / RECENT_DATA_LIMIT_COUNT,
-            sumSendBytes: sumNetSend / RECENT_DATA_LIMIT_COUNT,
-            sumFloatingIpsUsage: sumFloatingIpsUsed / RECENT_DATA_LIMIT_COUNT,
-            sumIpv4Usage: sumIpv4Used / RECENT_DATA_LIMIT_COUNT,
-            columns: columns,
-            series: series,
-            cloudlet: cloudlet,
-            operator: operator,
-
-        })
-
-    })
-
-    console.log('getClouletLevelUsageList====>', usageList);
-
-    return usageList;
-
-}
-
-
-export const getCloudletLevelMatric = async (serviceBody: any, pToken: string) => {
-    console.log('token2===>', pToken);
-    let result = await axios({
-        url: '/api/v1/auth/metrics/cloudlet',
-        method: 'post',
-        data: serviceBody['params'],
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + pToken
-        },
-        timeout: 15 * 1000
-    }).then(async response => {
-        return response.data;
-    }).catch(e => {
-        //showToast(e.toString())
-    })
-    return result;
-}
-
-
-export const StylesForMonitoring = {
-    selectBoxRow: {
-        alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,
-    },
-    tabPaneDiv: {
-        display: 'flex', flexDirection: 'row', height: 380,
-    },
-    selectHeader: {
-        color: 'white',
-        backgroundColor: '#565656',
-        height: 35,
-        alignItems: 'center',
-        alignSelf: 'center',
-        justifyContent: 'center',
-        marginTop: -10,
-        width: 100,
-        display: 'flex'
-    },
-    header00001: {
-        fontSize: 21,
-        marginLeft: 5,
-        color: 'white',
-    },
-    div001: {
-        fontSize: 25,
-        color: 'white',
-    },
-    dropDown: {
-        //minWidth: 150,
-        minWidth: '350px',
-        //fontSize: '12px',
-        minHeight: '40px'
-        //height: '50px',
-    },
-    cell000: {
-        marginLeft: 0,
-        backgroundColor: '#a3a3a3',
-        flex: .4,
-        alignItems: 'center',
-        fontSize: 13,
-    },
-    noData: {
-        fontSize: 30,
-        display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', alignSelf: 'center', width: '100%'
-    },
-    cell001: {
-        marginLeft: 0,
-        backgroundColor: 'transparent',
-        flex: .6,
-        alignItems: 'center',
-        fontSize: 13
-    },
-    cpuDiskCol001: {
-        marginTop: 0, height: 33, width: '100%'
-    },
-    cell003: {
-        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center'
-        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 35, marginTop: -9,
-    },
-    cell004: {
-        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center', backgroundColor: 'transparent'
-        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 35
-    }
 }
 

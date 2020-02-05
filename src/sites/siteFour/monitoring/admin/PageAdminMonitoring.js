@@ -33,7 +33,6 @@ import {
     renderBubbleChart,
     renderPlaceHolder2,
     renderSixGridInstanceOnCloudletGrid,
-    StylesForMonitoring
 } from "./PageAdminMonitoringService";
 import {
     APPINSTANCE_INIT_VALUE,
@@ -53,7 +52,7 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {numberWithCommas, renderLottieLoader, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
+import {numberWithCommas, renderLottieLoader, renderPlaceHolder, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
