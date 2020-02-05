@@ -213,7 +213,7 @@ export default hot(
                             >
                                 <div style={{display: 'flex', flexDirection: 'column'}}>
                                     <div style={{fontSize: 20, fontFamily: 'Acme'}}>
-                                        Rahul...dolai
+                                        Rahul..
                                     </div>
                                     <button style={{backgroundColor: 'green', color: "white"}} onClick={() => {
                                         alert('eundew')
