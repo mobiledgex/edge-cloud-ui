@@ -373,7 +373,7 @@ class InsideListView extends React.Component {
             this.addCloudlet(this.state.item)
         } else if(b.children === 'Link Organization') {
             this.linkOrganize(this.state.item)
-        } else if(b.children === 'Delete Cloudlet Pools') {
+        } else if(b.children === 'Delete Cloudlet Pool') {
             this.setState({openDelete: true, selected:this.state.item})
         }
 
