@@ -1,16 +1,9 @@
 import React, { Component } from 'react';
-
-//ajax test
-
-//redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-//service
 import * as serviceMC from "../services/serviceMC";
 import {GridLoader} from "react-spinners";
 import Alert from 'react-s-alert';
-
-
 
 let _self = null;
 class VerifyContent extends Component {
@@ -30,20 +23,13 @@ class VerifyContent extends Component {
 
     }
     componentDidMount() {
-        console.log('verify content props.. ', this.props)
         let strArr = this.props.params.subPath.split('=')
         let token = strArr[1];
-        //verify user email as user token
         this.requestVerify(token);
-
-
     }
-    componentWillReceiveProps(nextProps, nextContext) {
-        console.log('verify content props.. ', nextProps)
-    }
+   
 
     goToNext(site) {
-        //브라우져 입력창에 주소 기록
         let mainPath = site;
         let subPath = 'pg=0';
         _self.props.history.push({
@@ -69,11 +55,10 @@ class VerifyContent extends Component {
         }
     }
     requestVerify(token) {
-        serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().VERIFY_EMAIL, data: { service: 'verifyemail' } }, this.receiveData)
+        serviceMC.sendRequest(_self, {method: serviceMC.getEP().VERIFY_EMAIL, data: {token: token} }, this.receiveData)
     }
 
 
-    /* http://docs.nativebase.io/docs/examples/ReduxFormExample.html */
     render() {
         return (
 
@@ -94,12 +79,6 @@ class VerifyContent extends Component {
     }
 }
 
-// const mapStateToProps = (state, ownProps) => {
-//     return {
-//         data: state.receiveDataReduce.data,
-//         tabIdx: state.tabChanger
-//     };
-// };
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
