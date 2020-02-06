@@ -1000,11 +1000,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         renderHeader = () => {
 
             return (
-
                 <div>
                     <Grid.Row className='content_title'
                               style={{width: 'fit-content', display: 'inline-block'}}>
-                        <Grid.Column className='title_align'
+                        <Grid.Column className='title_align2'
                                      style={{lineHeight: '36px'}}>Monitoring</Grid.Column>
                         <div style={{marginLeft: '10px'}}>
                             <button className="ui circular icon button"><i aria-hidden="true"
@@ -1388,7 +1387,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             return (
 
-                <Grid.Row className='view_contents'>
+                <Grid.Row className='view_contents' >
                     {/*todo:---------------------------------*/}
                     {/*todo: POPUP APP INSTACE LIST DIV      */}
                     {/*todo:---------------------------------*/}
@@ -1414,7 +1413,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:Content Header                   */}
                         {/*todo:---------------------------------*/}
                         {this.renderHeader()}
-                        <Grid.Row className='site_content_body'>
+                        <Grid.Row className='site_content_body' style={{marginTop:22}}>
                             <Grid.Column>
                                 <div className="table-no-resized"
                                      style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
