@@ -11,7 +11,15 @@ import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker, Progress,} from 'antd';
 import {getCloudletList, renderBubbleChartForCloudlet,} from "../admin/PageAdminMonitoringService";
-import {HARDWARE_OPTIONS_FOR_CLOUDLET, HARDWARE_TYPE, HARDWARE_TYPE_FOR_CLOUDLET, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../../shared/Constants";
+import {
+    HARDWARE_OPTIONS_FOR_CLOUDLET,
+    HARDWARE_TYPE,
+    HARDWARE_TYPE_FOR_CLOUDLET,
+    NETWORK_OPTIONS,
+    NETWORK_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    REGIONS_OPTIONS
+} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeCloudletUsageList, TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
@@ -676,8 +684,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 <div>
                     <Grid.Row className='content_title'
                               style={{width: 'fit-content', display: 'inline-block'}}>
-                        <Grid.Column className='title_align'
-                                     style={{lineHeight: '36px'}}>Monitoring</Grid.Column>
+                        <Grid.Column className='title_align2' style={{lineHeight: '36px'}}>Monitoring</Grid.Column>
                         <div style={{marginLeft: '10px'}}>
                             <button className="ui circular icon button"><i aria-hidden="true"
                                                                            className="info icon"></i></button>
@@ -1031,7 +1038,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:Content Header                   */}
                         {/*todo:---------------------------------*/}
                         {this.renderHeader()}
-                        <Grid.Row className='site_content_body'>
+                        <Grid.Row className='site_content_body' style={{marginTop:22}}>
                             <Grid.Column>
                                 <div className="table-no-resized"
                                      style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
