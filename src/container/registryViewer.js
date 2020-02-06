@@ -352,7 +352,7 @@ class RegistryViewer extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({toggleSubmit:false});
         if(nextProps.submitValues && !this.state.toggleSubmit) {
-            const apps = ['Region','OrganizationName','AppName','Version','DeploymentType','DefaultFlavor', 'Ports', 'Ports_0']
+            const apps = ['Region','OrganizationName','AppName','Version','DeploymentType','DefaultFlavor', 'Ports_0']
             let error = [];
             apps.map((item) => {
                 if(!nextProps.validateValue[item]) {
