@@ -10,8 +10,16 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker, Progress,} from 'antd';
-import {getCloudletList, getClouletLevelUsageList, renderBubbleChartForCloudlet, StylesForMonitoring} from "../admin/PageAdminMonitoringService";
-import {HARDWARE_OPTIONS_FOR_CLOUDLET, HARDWARE_TYPE, HARDWARE_TYPE_FOR_CLOUDLET, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../../shared/Constants";
+import {getCloudletList, renderBubbleChartForCloudlet,} from "../admin/PageAdminMonitoringService";
+import {
+    HARDWARE_OPTIONS_FOR_CLOUDLET,
+    HARDWARE_TYPE,
+    HARDWARE_TYPE_FOR_CLOUDLET,
+    NETWORK_OPTIONS,
+    NETWORK_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    REGIONS_OPTIONS
+} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeCloudletUsageList, TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
@@ -19,10 +27,10 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {numberWithCommas, renderLottieLoader, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
+import {numberWithCommas, renderGridLoader, renderLottieLoader, renderPlaceHolder, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
 import MiniMap from "./MiniMap";
 import {CircularProgress} from "@material-ui/core";
-import {renderBarGraphForCloudlet, renderLineChartForCloudlet} from "./PageOperMonitoringService";
+import {getClouletLevelUsageList, renderBarGraphForCloudlet, renderLineChartForCloudlet} from "./PageOperMonitoringService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -131,9 +139,7 @@ type State = {
     intervalLoading: boolean,
     isRequesting: false,
     allCloudletUsageList: Array,
-
 }
-
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class PageOperMonitoring extends Component<Props, State> {
@@ -267,7 +273,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
 
             let allCloudletUsageList = await getClouletLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
-
             let bubbleChartData = await this.makeBubbleChartDataForCloudlet(allCloudletUsageList);
             await this.setState({
                 bubbleChartData: bubbleChartData,
@@ -679,8 +684,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 <div>
                     <Grid.Row className='content_title'
                               style={{width: 'fit-content', display: 'inline-block'}}>
-                        <Grid.Column className='title_align'
-                                     style={{lineHeight: '36px'}}>Monitoring</Grid.Column>
+                        <Grid.Column className='title_align2' style={{lineHeight: '36px'}}>Monitoring</Grid.Column>
                         <div style={{marginLeft: '10px'}}>
                             <button className="ui circular icon button"><i aria-hidden="true"
                                                                            className="info icon"></i></button>
@@ -997,7 +1001,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.renderHeader()}
                             <div style={{position: 'absolute', top: '37%', left: '48%'}}>
                                 <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                    {renderLottieLoader(250, 250)}
+                                    {renderGridLoader()}
                                 </div>
                             </div>
                         </Grid.Column>
@@ -1034,7 +1038,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:Content Header                   */}
                         {/*todo:---------------------------------*/}
                         {this.renderHeader()}
-                        <Grid.Row className='site_content_body'>
+                        <Grid.Row className='site_content_body' style={{marginTop:22}}>
                             <Grid.Column>
                                 <div className="table-no-resized"
                                      style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
