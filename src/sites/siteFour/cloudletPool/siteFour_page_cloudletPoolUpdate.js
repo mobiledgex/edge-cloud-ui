@@ -79,7 +79,6 @@ class SiteFourPageCloudletPoolUpdate extends React.Component {
 
     }
     receiveResultCloudlet = (result) => {
-        console.log('20200107 result -- ',JSON.stringify(result.response), ":renderCount=", this.renderCount,":total=", this.renderTotalCount)
 
 
         if(result.response) {
@@ -116,7 +115,6 @@ class SiteFourPageCloudletPoolUpdate extends React.Component {
         this.setState({submitValues: nextProps.formClusterInst.values})
         /** when click context menu there positioned right on the list**/
         if(nextProps.appLaunch){
-            console.log('20200106 app launch props.. ', nextProps.appLaunch)
             let props = nextProps.appLaunch.data;
             this.setState({selectedRegion:props['Region'], gavePoolName:props['PoolName']})
         }
@@ -133,7 +131,6 @@ class SiteFourPageCloudletPoolUpdate extends React.Component {
             let selectedNumber = JSON.parse(nextProps.formClusterInst.values.invisibleField);
             let cloudletPool = nextProps.formClusterInst.values.poolName;
             let region = nextProps.formClusterInst.values.Region;
-            console.log('20200106 create link pool org.. ', region,":", cloudletPool, ":", selectedNumber)
             if(selectedNumber.length) {
                 this.pauseRender = true;
                 this.renderTotalCount = selectedNumber.length;

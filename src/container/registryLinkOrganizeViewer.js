@@ -164,7 +164,6 @@ class RegistryLinkOrganizeViewer extends React.Component {
         }
     }
     receiveSubmit = (result, body) => {
-        console.log("20191119 cloudlet paseDatapaseDatapaseData",result, ": this.props.changeRegion=", this.props.changeRegion,": region = ", this.props.region, ":", this.props.regionInfo, ":", this.props.getRegion)
         this.pauseRender = false;
         let paseData = result.data;
         if(paseData.error && !this.state.errorClose) {

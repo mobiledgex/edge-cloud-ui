@@ -447,7 +447,7 @@ const mapStateToProps = (state) => {
 
 
     if(state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
-        console.log('20200104 state form., ', state.form)
+        //console.log('20200104 state form., ', state.form)
         let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
         submitVal = createFormat(enableValue,state.getRegion.region);
         validateValue = state.form.createAppFormDefault.values;

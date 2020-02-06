@@ -89,7 +89,7 @@ class SiteFourPoolTwo extends React.Component {
             'LinkDiagram':''
         }]
 
-        console.log('20200104 props appLaunch .. orgList =-- ', fieldValue)
+        //console.log('20200104 props appLaunch .. orgList =-- ', fieldValue)
         //
         let panelParams = {data:fieldValue, keys:keys, region:''}
         _self.setState({devData:panelParams})

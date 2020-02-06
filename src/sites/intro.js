@@ -57,7 +57,7 @@ class Intro extends React.Component  {
 
     }
     componentWillReceiveProps(nextProps) {
-        console.log('receive props ----- '+JSON.stringify(nextProps))
+        //console.log('receive props ----- '+JSON.stringify(nextProps))
 
 
     }

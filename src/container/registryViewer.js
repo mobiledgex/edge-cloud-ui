@@ -408,7 +408,6 @@ class RegistryViewer extends React.Component {
             }
             //if(ImagePath == '') ImagePath = ''
             assObj[0].ImagePath.items = ImagePath;
-            console.log("ImagePathImagePath",ImagePath)
             submitImgPath = ImagePath;
 
         }

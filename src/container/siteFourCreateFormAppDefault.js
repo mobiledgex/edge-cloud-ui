@@ -251,9 +251,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("editmode333", nextProps.data)
         if (nextProps.data.editMode && nextProps.data.editData && !this.state.editToggle) {
-            console.log("nextPropsnextPropsds", nextProps.data.editData)
             this.setState({ editToggle: true, editDsb: true });
             this.handleInitialize(nextProps.data.editData, nextProps.data.editMode);
         }
