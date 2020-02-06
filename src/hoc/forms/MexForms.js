@@ -22,22 +22,23 @@ const MexForms = (props) => {
                     <Grid columns={2}>
                         {forms.map((form, i) => {
                             return (
-                                <Grid.Row columns={3} key={i}>
-                                    <Grid.Column width={4} className='detail_item'>
-                                        <div>{form.label}{form.required ? ' *' : ''}</div>
-                                    </Grid.Column>
-                                    <Grid.Column width={11}>
-                                        {
-                                            form.type === SELECT ?
-                                                <MexSelect form={form} onChange={onValueSelect} /> :
-                                                form.type === DUAL_LIST ?
-                                                    <MexDualList /> :
-                                                    form.type === Input ?
-                                                        <MexInput form={form} onChange={onValueSelect}/> :
-                                                        null
-                                        }
-                                    </Grid.Column>
-                                </Grid.Row>
+                                form.field ?
+                                    <Grid.Row columns={3} key={i}>
+                                        <Grid.Column width={4} className='detail_item'>
+                                            <div>{form.label}{form.rules.required ? ' *' : ''}</div>
+                                        </Grid.Column>
+                                        <Grid.Column width={11}>
+                                            {
+                                                form.type === SELECT ?
+                                                    <MexSelect form={form} onChange={onValueSelect} /> :
+                                                    form.type === DUAL_LIST ?
+                                                        <MexDualList /> :
+                                                        form.type === Input ?
+                                                            <MexInput form={form} onChange={onValueSelect} /> :
+                                                            null
+                                            }
+                                        </Grid.Column>
+                                    </Grid.Row> : null
                             )
                         })}
                     </Grid>

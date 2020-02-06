@@ -98,12 +98,11 @@ class AutoProvPolicyReg extends React.Component {
             console.log('Rahul1234', data)
 
             let step1 = [
-                { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', required: true, data: this.getRegionData() },
+                { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { required: true } , data: this.getRegionData() },
                 { field: 'AutoPolicyName', label: 'Auto Policy Name', type: 'Input', placeholder: 'Enter Auto Prov Name', rules: { required: true } },
-                { field: 'DeployClientCount', label: 'Deploy Client Count', type: 'Input', rules: { type: 'number', required: true } },
-                { field: 'DeployIntervalCount', label: 'Deploy Interval Count', type: 'Input', rules: { type: 'number', required: true } },
-                { field: 'Cloudlets', label: 'Select Cloudlet', type: 'DualList' },
-                { label: 'Create Cloudlet Pool', type: 'Button', onClick: this.onCreate }
+                { field: 'DeployClientCount', label: 'Deploy Client Count', type: 'Input', rules: { type: 'number'} },
+                { field: 'DeployIntervalCount', label: 'Deploy Interval Count', type: 'Input', rules: { type: 'number' } },
+                { label: 'Create Cloudlet Pool', type: 'Button', onClick: this.onCreate}
             ]
             this.setState({
                 forms: step1
