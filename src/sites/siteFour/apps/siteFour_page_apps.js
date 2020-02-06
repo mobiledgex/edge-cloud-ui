@@ -149,7 +149,7 @@ class SiteFourPageApps extends React.Component {
 
         if (rgn && rgn.length > 0) {
             this.requestCount = rgn.length;
-            if (localStorage.selectRole == 'AdminManager') {
+            if (localStorage.selectRole === 'AdminManager') {
                 rgn.map((item) => {
                     serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_APP, data: { region: item } }, _self.receiveResult)
                 })
