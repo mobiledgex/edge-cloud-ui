@@ -18,7 +18,7 @@ export const renderLottieLoader = (width, height) => {
             options={{
                 loop: true,
                 autoplay: true,
-                animationData: require('../../../lotties/13255-loader22'),
+                animationData: require('../../../lotties/10045-loading-gradient-strokes1234'),
                 rendererSettings: {
                     preserveAspectRatio: 'xMidYMid slice'
                 }

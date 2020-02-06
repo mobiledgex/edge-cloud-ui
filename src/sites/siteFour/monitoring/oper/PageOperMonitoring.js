@@ -31,6 +31,7 @@ import {numberWithCommas, renderGridLoader, renderLottieLoader, renderPlaceHolde
 import MiniMap from "./MiniMap";
 import {CircularProgress} from "@material-ui/core";
 import {getClouletLevelUsageList, renderBarGraphForCloudlet, renderLineChartForCloudlet} from "./PageOperMonitoringService";
+import LeafletMap from "./LeafletMap";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -1001,7 +1002,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.renderHeader()}
                             <div style={{position: 'absolute', top: '37%', left: '48%'}}>
                                 <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                    {renderGridLoader()}
+                                    {renderLottieLoader()}
                                 </div>
                             </div>
                         </Grid.Column>
@@ -1064,7 +1065,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        <MiniMap loading={this.state.loading} cloudletList={this.state.cloudletList}/>
+                                                       {/* <MiniMap loading={this.state.loading} cloudletList={this.state.cloudletList}/>*/}
+                                                       <LeafletMap cloudletList={this.state.cloudletList}/>
                                                     </div>
                                                 </div>
 

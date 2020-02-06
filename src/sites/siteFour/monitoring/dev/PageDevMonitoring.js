@@ -46,7 +46,7 @@ import {
     makeBubbleChartDataForCluster,
     numberWithCommas,
     renderBarChartCore, renderGridLoader,
-    renderLineChartCore,
+    renderLineChartCore, renderLottieLoader,
     renderPlaceHolder,
     showToast,
     StylesForMonitoring
@@ -1275,7 +1275,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.renderHeader()}
                             <div style={{position: 'absolute', top: '37%', left: '48%'}}>
                                 <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                    {renderGridLoader()}
+                                    {renderLottieLoader()}
                                 </div>
                             </div>
                         </Grid.Column>
