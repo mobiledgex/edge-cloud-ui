@@ -482,7 +482,6 @@ class SiteFourLinkOrganizeForm extends React.PureComponent {
         }
         // handle input value to input filed that lat/long fileds as redux
         let location = {region:'',name:'', lat:lat, long:long}
-        console.log("locationlocationlocation",location)
         _self.props.handleGetRegion(location)
 
         // handle send value to map for indicate lat/long

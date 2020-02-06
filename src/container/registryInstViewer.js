@@ -1,6 +1,6 @@
 import React from 'react';
-import {Tab} from 'semantic-ui-react';
-import {connect} from 'react-redux';
+import { Tab } from 'semantic-ui-react';
+import { connect } from 'react-redux';
 import * as actions from '../actions';
 
 import PopDetailViewer from './popDetailViewer';
@@ -11,24 +11,18 @@ import _ from "lodash";
 import * as reducer from '../utils'
 import * as serviceMC from '../services/serviceMC';
 import SiteFourCreateFormAppInstDefault from "./siteFourCreateFormAppInstDefault";
-import {withRouter} from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import MexMessageDialog from '../hoc/mexDialogMessage';
 
 
 var layout = [
-    {"w": 19, "h": 20, "x": 0, "y": 0, "i": "0", "minW": 5, "minH": 5, "moved": false, "static": false, "title": "Developer"}
+    { "w": 19, "h": 20, "x": 0, "y": 0, "i": "0", "minW": 5, "minH": 5, "moved": false, "static": false, "title": "Developer" }
 ]
 let _self = null;
 
 const panes = [
-    {
-        menuItem: 'App Instance Deployment',
-        render: (props) => <Tab.Pane style={{overflow: 'auto'}} attached={false}><SiteFourCreateFormAppInstDefault data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl}
-                                                                                                                   toggleSubmit={props.toggleSubmit} validError={props.error}
-                                                                                                                   autoClusterDisable={props.autoClusterDisable} onSubmit={props.onSubmit}/></Tab.Pane>
-    },
+    { menuItem: 'App Instance Deployment', render: (props) => <Tab.Pane style={{ overflow: 'auto' }} attached={false}><SiteFourCreateFormAppInstDefault data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} autoClusterDisable={props.autoClusterDisable} onSubmit={props.onSubmit} /></Tab.Pane> },
 ]
-
 class RegistryInstViewer extends React.Component {
     constructor(props) {
         super(props);
@@ -62,67 +56,18 @@ class RegistryInstViewer extends React.Component {
             autoClusterDisable: false,
             keysData: [
                 {
-                    'Region': {
-                        label: 'Region',
-                        type: 'RenderSelect',
-                        necessary: true,
-                        tip: 'Select region where you want to deploy.',
-                        disable: (Object.keys(this.props.appLaunch).length == 0) ? true : false,
-                        active: true,
-                        items: []
-                    },
-                    'DeveloperName': {
-                        label: 'Organization Name',
-                        type: (Object.keys(this.props.appLaunch).length == 0) ? 'RenderSelect' : '',
-                        disable: (Object.keys(this.props.appLaunch).length == 0) ? true : false,
-                        necessary: true,
-                        tip: 'The name of the organization you are currently managing.',
-                        active: true,
-                        items: [null]
-                    },
-                    'AppName': {
-                        label: 'App Name',
-                        type: (Object.keys(this.props.appLaunch).length == 0) ? 'RenderSelect' : '',
-                        disable: (Object.keys(this.props.appLaunch).length == 0) ? true : false,
-                        necessary: true,
-                        tip: 'The name of the application to deploy.',
-                        active: true,
-                        items: [null]
-                    },
-                    'Version': {
-                        label: 'App Version',
-                        type: (Object.keys(this.props.appLaunch).length == 0) ? 'RenderSelect' : '',
-                        disable: (Object.keys(this.props.appLaunch).length == 0) ? true : false,
-                        necessary: true,
-                        tip: 'The version of the application to deploy.',
-                        active: true,
-                        items: [null]
-                    },
-                    'Operator': {
-                        label: 'Operator',
-                        type: 'RenderSelect',
-                        necessary: true,
-                        tip: 'Which operator do you want to deploy this applicaton? Please select one.',
-                        active: true,
-                        items: [null]
-                    },
-                    'Cloudlet': {label: 'Cloudlet', type: 'RenderDropDown', necessary: true, tip: 'Which cloudlet(s) do you want to deploy this application?', active: true, items: [null]},
-                    'AutoClusterInst': {
-                        label: 'Auto Cluster Instance',
-                        type: 'RenderCheckbox',
-                        necessary: false,
-                        tip: 'If you have yet to create a cluster, you can select this to auto create cluster instance.'
-                    },
-                    'ClusterInst': {
-                        label: 'Cluster Instance',
-                        type: 'RenderClusterDisabled',
-                        necessary: true,
-                        tip: 'Name of cluster instance to deploy this application.',
-                        active: true,
-                        items: [null]
-                    },
+                    'Region': { label: 'Region', type: 'RenderSelect', necessary: true, tip: 'Select region where you want to deploy.', disable: (Object.keys(this.props.appLaunch).length == 0) ? true : false, active: true, items: [] },
+                    'DeveloperName': { label: 'Organization Name', type: (Object.keys(this.props.appLaunch).length == 0) ? 'RenderSelect' : '', disable: (Object.keys(this.props.appLaunch).length == 0) ? true : false, necessary: true, tip: 'The name of the organization you are currently managing.', active: true, items: [null] },
+                    'AppName': { label: 'App Name', type: (Object.keys(this.props.appLaunch).length == 0) ? 'RenderSelect' : '', disable: (Object.keys(this.props.appLaunch).length == 0) ? true : false, necessary: true, tip: 'The name of the application to deploy.', active: true, items: [null] },
+                    'Version': { label: 'App Version', type: (Object.keys(this.props.appLaunch).length == 0) ? 'RenderSelect' : '', disable: (Object.keys(this.props.appLaunch).length == 0) ? true : false, necessary: true, tip: 'The version of the application to deploy.', active: true, items: [null] },
+                    'Operator': { label: 'Operator', type: 'RenderSelect', necessary: true, tip: 'Which operator do you want to deploy this applicaton? Please select one.', active: true, items: [null] },
+                    'Cloudlet': { label: 'Cloudlet', type: 'RenderDropDown', necessary: true, tip: 'Which cloudlet(s) do you want to deploy this application?', active: true, items: [null] },
+                    'AutoClusterInst': { label: 'Auto Cluster Instance', type: 'RenderCheckbox', necessary: false, tip: 'If you have yet to create a cluster, you can select this to auto create cluster instance.' },
+                    'ClusterInst': { label: 'Cluster Instance', type: 'RenderClusterDisabled', necessary: true, tip: 'Name of cluster instance to deploy this application.', active: true, items: [null] },
                 },
-                {}
+                {
+
+                }
             ],
             fakeData: [
                 {
@@ -143,28 +88,26 @@ class RegistryInstViewer extends React.Component {
     }
 
     onHandleClick(dim, data) {
-        this.setState({dimmer: dim, open: true, selected: data})
+        this.setState({ dimmer: dim, open: true, selected: data })
     }
-
     onHandleClicAdd(dim, data) {
-        this.setState({dimmer: dim, openAdd: true, selected: data})
+        this.setState({ dimmer: dim, openAdd: true, selected: data })
     }
-
     getDataDeveloper(token, _region) {
-        serviceMC.sendRequest(_self, {token: token, method: serviceMC.getEP().SHOW_APP, data: {region: _region}}, this.receiveResultApp)
+        serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_APP, data: { region: _region } }, this.receiveResultApp)
         setTimeout(() => {
             let requestList = [];
             if (localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
-                requestList.push({token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: {region: _region}})
-                requestList.push({token: token, method: serviceMC.getEP().SHOW_CLOUDLET_INFO, data: {region: _region}})
+                requestList.push({ token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: _region } })
+                requestList.push({ token: token, method: serviceMC.getEP().SHOW_CLOUDLET_INFO, data: { region: _region } })
             } else {
-                requestList.push({token: token, method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: {region: _region, org: localStorage.selectOrg}})
-                requestList.push({token: token, method: serviceMC.getEP().SHOW_CLOUDLET_INFO, data: {region: _region}})
+                requestList.push({ token: token, method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: _region, org: localStorage.selectOrg } })
+                requestList.push({ token: token, method: serviceMC.getEP().SHOW_CLOUDLET_INFO, data: { region: _region } })
             }
             serviceMC.sendMultiRequest(_self, requestList, _self.receiveResultCloudlet)
         }, 200);
 
-        setTimeout(() => serviceMC.sendRequest(_self, {token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: {region: _region}}, this.receiveResultClusterInst), 400);
+        setTimeout(() => serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: { region: _region } }, this.receiveResultClusterInst), 400);
 
     }
 
@@ -174,10 +117,9 @@ class RegistryInstViewer extends React.Component {
             let cloudletInfoList = null;
             mcRequestList.map(mcRequest => {
                 if (mcRequest.request.method === serviceMC.getEP().SHOW_CLOUDLET || mcRequest.request.method === serviceMC.getEP().SHOW_ORG_CLOUDLET) {
-                    cloudletList = mcRequest.response.data.filter((item) => {
-                        return item.State === 5
-                    });
-                } else if (mcRequest.request.method === serviceMC.getEP().SHOW_CLOUDLET_INFO) {
+                    cloudletList = mcRequest.response.data.filter((item) => { return item.State === 5 });
+                }
+                else if (mcRequest.request.method === serviceMC.getEP().SHOW_CLOUDLET_INFO) {
                     cloudletInfoList = mcRequest.response.data
                 }
             })
@@ -203,13 +145,13 @@ class RegistryInstViewer extends React.Component {
                 } else {
                     assObj[0].Operator.items = [];
                 }
-                this.setState({keysData: assObj, operators: operatorGroup})
+                this.setState({ keysData: assObj, operators: operatorGroup })
 
                 // set list of operators
                 if (this.props.devData.length > 0) {
-                    this.setState({dummyData: this.props.devData, resultData: (!this.state.resultData) ? this.props.devData : this.state.resultData})
+                    this.setState({ dummyData: this.props.devData, resultData: (!this.state.resultData) ? this.props.devData : this.state.resultData })
                 } else {
-                    this.setState({dummyData: this.state.fakeData, resultData: (!this.state.resultData) ? this.props.devData : this.state.resultData})
+                    this.setState({ dummyData: this.state.fakeData, resultData: (!this.state.resultData) ? this.props.devData : this.state.resultData })
                 }
                 this.props.handleLoadingSpinner(false);
             }
@@ -224,7 +166,7 @@ class RegistryInstViewer extends React.Component {
                 let keys = Object.keys(appGroup);
                 let assObj = Object.assign([], this.state.keysData);
                 assObj[0].DeveloperName.items = keys;
-                this.setState({keysData: assObj, apps: appGroup})
+                this.setState({ keysData: assObj, apps: appGroup })
                 this.props.handleLoadingSpinner(false);
 
             }
@@ -237,32 +179,33 @@ class RegistryInstViewer extends React.Component {
 
                 let clinstGroup = reducer.groupBy(response.data, 'ClusterName')
                 let cloudletGroup = reducer.groupBy(response.data, 'Cloudlet')
-                this.setState({clustinst: clinstGroup, cloudlets: cloudletGroup})
+                this.setState({ clustinst: clinstGroup, cloudlets: cloudletGroup })
 
                 // set list of operators
                 if (this.props.devData.length > 0) {
-                    this.setState({dummyData: this.props.devData, resultData: (!this.state.resultData) ? this.props.devData : this.state.resultData})
+                    this.setState({ dummyData: this.props.devData, resultData: (!this.state.resultData) ? this.props.devData : this.state.resultData })
                 } else {
-                    this.setState({dummyData: this.state.fakeData, resultData: (!this.state.resultData) ? this.props.devData : this.state.resultData})
+                    this.setState({ dummyData: this.state.fakeData, resultData: (!this.state.resultData) ? this.props.devData : this.state.resultData })
                 }
             }
         }
     }
 
 
-    show = (dim) => this.setState({dimmer: dim, openDetail: true})
+
+    show = (dim) => this.setState({ dimmer: dim, openDetail: true })
     close = () => {
-        this.setState({open: false})
+        this.setState({ open: false })
         this.props.handleInjectDeveloper(null)
     }
     closeDetail = () => {
-        this.setState({openDetail: false})
+        this.setState({ openDetail: false })
     }
     closeUser = () => {
-        this.setState({openUser: false})
+        this.setState({ openUser: false })
     }
     closeAddUser = () => {
-        this.setState({openAdd: false})
+        this.setState({ openAdd: false })
     }
 
     gotoUrl(msg, state) {
@@ -278,22 +221,26 @@ class RegistryInstViewer extends React.Component {
             search: pg,
         });
         _self.props.history.location.search = pg;
-        if (state !== 'error' && _self.props.submitData.createAppFormDefault.values && _self.props.submitData.createAppFormDefault.values.AutoClusterInst) {
-            _self.props.history.location.pgname = 'appinst';
-            _self.props.history.location.pgnameData = {
-                AppName: _self.props.submitData.createAppFormDefault.values.AppName,
-                Operator: _self.props.submitData.createAppFormDefault.values.Operator,
-                Cloudlet: _self.props.submitData.createAppFormDefault.values.Cloudlet[0],
-                ClusterInst: 'autocluster' + _self.props.submitData.createAppFormDefault.values.AppName.replace(/(\s*)/g, ""),
-                State: 3
+        if (state !== 'error' && _self.props.submitData.createAppFormDefault && _self.props.submitData.createAppFormDefault.values) {
+            let values = _self.props.submitData.createAppFormDefault.values;
+            if (values && values.AutoClusterInst) {
+                
+                _self.props.history.location.pgname = 'appinst';
+                _self.props.history.location.pgnameData = {
+                    AppName: values.AppName,
+                    Operator: values.Operator,
+                    Cloudlet: values.Cloudlet[0],
+                    ClusterInst: 'autocluster' + values.AppName.replace(/(\s*)/g, ""),
+                    State: 3
+                }
             }
         }
-        _self.props.handleChangeSite({mainPath: '/site4', subPath: pg})
+        _self.props.handleChangeSite({ mainPath: '/site4', subPath: pg })
     }
 
     generateDOM(open, dimmer, data, keysData, hideHeader) {
 
-        let panelParams = {data: data, keys: keysData, userrole: localStorage.selectRole, editMode: this.state.editMode, editData: this.props.editData}
+        let panelParams = { data: data, keys: keysData, userrole: localStorage.selectRole, editMode: this.state.editMode, editData: this.props.editData }
 
         return layout.map((item, i) => (
 
@@ -301,8 +248,7 @@ class RegistryInstViewer extends React.Component {
                 <div className="round_panel" key={i}>
                     <div className="grid_table">
 
-                        <Tab className="grid_tabs" menu={{secondary: true, pointing: true, inverted: true, attached: false, tabular: false}} panes={panes}{...panelParams} gotoUrl={this.gotoUrl}
-                             toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} autoClusterDisable={this.state.autoClusterDisable} onSubmit={this.onSubmit}/>
+                        <Tab className="grid_tabs" menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} autoClusterDisable={this.state.autoClusterDisable} onSubmit={this.onSubmit} />
 
                     </div>
                 </div>
@@ -343,7 +289,7 @@ class RegistryInstViewer extends React.Component {
             assObj[0].Version = this.props.appLaunch.Version;
             assObj[0].DeveloperName = this.props.appLaunch.OrganizationName;
         }
-        this.setState({fakeData: assObj})
+        this.setState({ fakeData: assObj })
 
     }
 
@@ -368,22 +314,21 @@ class RegistryInstViewer extends React.Component {
         this.props.handleLoadingSpinner(true);
         serviceMC.sendWSRequest(serviceBody, _self.receiveResult)
     }
-
     componentWillReceiveProps(nextProps, nextContext) {
         if (nextProps.accountInfo) {
-            this.setState({dimmer: 'blurring', open: true})
+            this.setState({ dimmer: 'blurring', open: true })
         }
         if (nextProps.devData.length > 1) {
-            this.setState({dummyData: nextProps.devData, resultData: (!this.state.resultData) ? nextProps.devData : this.state.resultData})
+            this.setState({ dummyData: nextProps.devData, resultData: (!this.state.resultData) ? nextProps.devData : this.state.resultData })
         } else {
-            this.setState({dummyData: this.state.fakeData, resultData: (!this.state.resultData) ? nextProps.devData : this.state.resultData})
+            this.setState({ dummyData: this.state.fakeData, resultData: (!this.state.resultData) ? nextProps.devData : this.state.resultData })
         }
         if (nextProps.regionInfo.region.length) {
             let assObj = Object.assign([], this.state.keysData);
             assObj[0].Region.items = nextProps.regionInfo.region;
         }
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        this.setState({toggleSubmit: false});
+        this.setState({ toggleSubmit: false });
         if (nextProps.submitValues && !this.state.toggleSubmit) {
 
             const apps = ['Region', 'DeveloperName', 'AppName', 'Version', 'Operator', 'Cloudlet', 'ClusterInst']
@@ -401,7 +346,7 @@ class RegistryInstViewer extends React.Component {
 
                 let submitData = nextProps.submitValues
                 this.props.handleSubmitObject(submitData)
-                this.setState({toggleSubmit: true, validateError: error, regSuccess: true});
+                this.setState({ toggleSubmit: true, validateError: error, regSuccess: true });
                 this.props.handleLoadingSpinner(true);
 
 
@@ -442,7 +387,8 @@ class RegistryInstViewer extends React.Component {
                         if (String(multiData.ClusterInst[0]).indexOf('autocluster') > -1 || multiData.ClusterInst[0] == "") {
                             multiData.ClusterInst = [];
                         }
-                    } else if (vmCheck) {
+                    }
+                    else if (vmCheck) {
                         multiData.Cloudlet.map((item) => {
                             let data = JSON.parse(JSON.stringify(submitData));
                             data.appinst.key.cluster_inst_key.cloudlet_key.name = item;
@@ -455,7 +401,7 @@ class RegistryInstViewer extends React.Component {
                     }
                 })
             } else {
-                this.setState({validateError: error, toggleSubmit: true})
+                this.setState({ validateError: error, toggleSubmit: true })
             }
 
         }
@@ -476,7 +422,7 @@ class RegistryInstViewer extends React.Component {
             assObj[0].ClusterInst.items = [];
             assObj[0].Cloudlet.items = this.state.operators[nextProps.selectedOperator].map(cld => cld);
             assObj[0].Cloudlet.items = reducer.removeDuplicate(assObj[0].Cloudlet.items)
-            this.setState({keysData: assObj})
+            this.setState({ keysData: assObj })
         }
         /************
          * set list of Organization
@@ -485,9 +431,9 @@ class RegistryInstViewer extends React.Component {
             if (Object.keys(this.props.appLaunch).length == 0) {
                 let assObj = Object.assign([], this.state.keysData);
                 assObj[0].AppName.items = this.state.apps[nextProps.selectedOrgName].map((cld) => (cld.AppName));
-                this.setState({keysData: assObj})
+                this.setState({ keysData: assObj })
                 let appGroup = reducer.groupBy(this.state.apps[nextProps.selectedOrgName], 'AppName');
-                this.setState({versions: appGroup})
+                this.setState({ versions: appGroup })
             }
         }
         /************
@@ -497,47 +443,50 @@ class RegistryInstViewer extends React.Component {
             if (Object.keys(this.props.appLaunch).length == 0) {
                 let assObj = Object.assign([], this.state.keysData);
                 assObj[0].Version.items = this.state.versions[nextProps.selectedApp].map((cld) => (cld.Version));
-                this.setState({keysData: assObj})
+                this.setState({ keysData: assObj })
             }
         }
         if (nextProps.selectedVersion && this.state.versions[nextProps.selectedApp]) {
             if (Object.keys(this.state.versions).length !== 0 && this.state.versions[nextProps.selectedApp][0].DeploymentType === 'vm') {
-                this.setState({autoClusterDisable: true})
+                this.setState({ autoClusterDisable: true })
             } else if (Object.keys(this.state.versions).length !== 0) {
-                this.setState({autoClusterDisable: false})
+                this.setState({ autoClusterDisable: false })
             }
 
             if (Object.keys(nextProps.appLaunch).length !== 0) {
                 if (nextProps.appLaunch.DeploymentType === 'vm') {
-                    this.setState({autoClusterDisable: true})
+                    this.setState({ autoClusterDisable: true })
                 } else {
-                    this.setState({autoClusterDisable: false})
+                    this.setState({ autoClusterDisable: false })
                 }
             }
         }
 
         //set list of clusterInst filter
         if (Object.keys(nextProps.submitData).length > 0) {
-            if (nextProps.submitData.createAppFormDefault && nextProps.submitData.createAppFormDefault.values.Operator && nextProps.submitData.createAppFormDefault.values.Cloudlet) {
-                let keys = Object.keys(this.state.clustinst);
-                let arr = []
-                let assObj = Object.assign([], this.state.keysData);
-                keys.map((item, i) => {
-                    this.state.clustinst[item].map((items, j) => {
-                        nextProps.submitData.createAppFormDefault.values.Cloudlet.map((cItem) => {
-                            if (cItem == items.Cloudlet && nextProps.submitData.createAppFormDefault.values.DeveloperName == items.OrganizationName) {
-                                arr.push(item);
-                            }
+            if (nextProps.submitData.createAppFormDefault) {
+                let values = nextProps.submitData.createAppFormDefault.values;
+                if (values) {
+                    let keys = Object.keys(this.state.clustinst);
+                    let arr = []
+                    let assObj = Object.assign([], this.state.keysData);
+                    keys.map((item, i) => {
+                        this.state.clustinst[item].map((items, j) => {
+                            values.Cloudlet.map((cItem) => {
+                                if (cItem == items.Cloudlet && values.DeveloperName == items.OrganizationName) {
+                                    arr.push(item);
+                                }
+                            })
                         })
                     })
-                })
-                arr = reducer.removeDuplicate(arr)
-                assObj[0].ClusterInst.items = arr;
-                this.setState({keysData: assObj})
+                    arr = reducer.removeDuplicate(arr)
+                    assObj[0].ClusterInst.items = arr;
+                    this.setState({ keysData: assObj })
+                }
             }
         }
 
-        if (nextProps.editMode) this.setState({editMode: nextProps.editMode})
+        if (nextProps.editMode) this.setState({ editMode: nextProps.editMode })
     }
 
     receiveResult = (mcRequest) => {
@@ -559,7 +508,8 @@ class RegistryInstViewer extends React.Component {
                 })
                 if (valid) {
                     this.gotoUrl('submit');
-                } else {
+                }
+                else {
                     this.setState({
                         dialogMessage: messageArray
                     })
@@ -581,8 +531,8 @@ class RegistryInstViewer extends React.Component {
     }
 
     render() {
-        const {open, dimmer, dummyData, editMode} = this.state;
-        const {hiddenKeys} = this.props;
+        const { open, dimmer, dummyData, editMode } = this.state;
+        const { hiddenKeys } = this.props;
         return (
             <div className="regis_container">
                 <div
@@ -597,12 +547,11 @@ class RegistryInstViewer extends React.Component {
                 <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
                 <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
                 <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>
-                <MexMessageDialog close={this.closeDialog} message={this.state.dialogMessage}/>
+                <MexMessageDialog close={this.closeDialog} message={this.state.dialogMessage} />
             </div>
 
         );
     }
-
     static defaultProps = {
         className: "layout",
         items: 20,
@@ -617,10 +566,10 @@ const createFormat = (data) => (
         "region": data['Region'],
         "appinst": {
             "key": {
-                "app_key": {"developer_key": {"name": data['DeveloperName']}, "name": data['AppName'], "version": data['Version']},
+                "app_key": { "developer_key": { "name": data['DeveloperName'] }, "name": data['AppName'], "version": data['Version'] },
                 "cluster_inst_key": {
-                    "cluster_key": {"name": data['ClusterInst']},
-                    "cloudlet_key": {"operator_key": {"name": data['Operator']}, "name": data['Cloudlet']}
+                    "cluster_key": { "name": data['ClusterInst'] },
+                    "cloudlet_key": { "operator_key": { "name": data['Operator'] }, "name": data['Cloudlet'] }
                 }
             },
         }
@@ -639,7 +588,7 @@ const mapStateToProps = (state) => {
     let validateValue = null;
     let selectedOrgName = null;
     let selectedRegion = null;
-    let region = state.changeRegion ? {value: state.changeRegion.region} : {};
+    let region = state.changeRegion ? { value: state.changeRegion.region } : {};
     let regionInfo = (state.regionInfo) ? state.regionInfo : null;
     let formAppInst = {};
 
@@ -690,7 +639,7 @@ const mapStateToProps = (state) => {
         selectedVersion: selectedVersion,
         selectedCloudlet: selectedCloudlet,
         selectedOperator: selectedOperator,
-        //selectOrg: state.selectOrg.org ? state.selectOrg.org : null,
+        selectOrg: state.selectOrg.org ? state.selectOrg.org : null,
         submitData: state.form ? state.form : null,
         userRole: state.showUserRole ? state.showUserRole.role : null,
         appLaunch: state.appLaunch ? state.appLaunch.data : null,
@@ -705,27 +654,13 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeSite: (data) => {
-            dispatch(actions.changeSite(data))
-        },
-        handleInjectDeveloper: (data) => {
-            dispatch(actions.registDeveloper(data))
-        },
-        handleLoadingSpinner: (data) => {
-            dispatch(actions.loadingSpinner(data))
-        },
-        handleAppLaunch: (data) => {
-            dispatch(actions.appLaunch(data))
-        },
-        handleAlertInfo: (mode, msg) => {
-            dispatch(actions.alertInfo(mode, msg))
-        },
-        handleSubmitInfo: (data) => {
-            dispatch(actions.submitInfo(data))
-        },
-        handleSubmitObject: (data) => {
-            dispatch(actions.submitObj(data))
-        }
+        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
+        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data)) },
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleAppLaunch: (data) => { dispatch(actions.appLaunch(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
+        handleSubmitInfo: (data) => { dispatch(actions.submitInfo(data)) },
+        handleSubmitObject: (data) => { dispatch(actions.submitObj(data)) }
     };
 };
 

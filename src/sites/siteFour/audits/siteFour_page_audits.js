@@ -68,7 +68,6 @@ class SiteFourPageAudits extends React.Component {
     }
 
     readyToData(subPaths) {
-        console.log('20191018 subPaths.subPaths...', subPaths, ":", subPaths.indexOf('&org='))
         let subPath = '';
         let subParam = null;
         if (subPaths.indexOf('&org=') > -1) {
@@ -118,7 +117,6 @@ class SiteFourPageAudits extends React.Component {
         }
         //
         if (nextProps.location && nextProps.location.search && (nextProps.location.search !== this.props.location.search)) {
-            console.log('20191018 nextProps.props...', nextProps.location.search, ":", this.props.location.search)
             this.setState({auditMounted: true})
             this.readyToData(nextProps.location.search);
         }
@@ -131,13 +129,12 @@ class SiteFourPageAudits extends React.Component {
         let savedArray = localStorage.getItem('auditUnChecked');
         let checkedArray = localStorage.getItem('auditChecked');
         let checked = [];
-        console.log('20191105 item is -- ', all, "  :  ", JSON.parse(savedArray), typeof JSON.parse(savedArray))
         if (all.error) {
             this.props.handleAlertInfo('error', all.error)
         } else {
             all.map((item, i) => {
                 if (savedArray && JSON.parse(savedArray).length) {
-                    console.log('20191022 item is -- ', JSON.parse(savedArray).findIndex(k => k == item.traceid))
+
                     //이전에 없던 데이터 이면 추가하기
                     if (JSON.parse(savedArray).findIndex(k => k == item.traceid) === -1) addArray.push(item.traceid)
                 } else {
@@ -146,7 +143,6 @@ class SiteFourPageAudits extends React.Component {
             })
 
             if (addArray.length) {
-                console.log('20191022 if has new data ... ', addArray)
                 JSON.parse(savedArray).concat(addArray);
             }
 
@@ -161,7 +157,6 @@ class SiteFourPageAudits extends React.Component {
             }
 
             checked = (checkedArray) ? JSON.parse(checkedArray) : [];
-            console.log('20191022  unchecked... is -- ', checkResult.length, ":", checked.length, " - ", (checkResult.length - checked.length))
             this.props.handleAuditCheckCount(checkResult.length - checked.length)
             localStorage.setItem('auditUnChecked', JSON.stringify(checkResult))
         }
@@ -243,7 +238,6 @@ class SiteFourPageAudits extends React.Component {
             } else {
                 newCheckData = [selectedAudit.traceid]
             }
-            console.log('20191022 newData // newCheckData ...', newCheckData, ":", typeof newCheckData)
 
 
         }

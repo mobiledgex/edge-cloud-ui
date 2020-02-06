@@ -7,7 +7,6 @@ import MaterialIcon from "material-icons-react";
 import './styles.css';
 
 const validate = values => {
-    console.log("validatedfsf",values)
     const errors = {}
     if (!values.username) {
         errors.username = 'Required'
@@ -224,7 +223,6 @@ class SiteFourOrgaAdduser extends React.Component {
     }
     
     componentWillReceiveProps(nextProps) {
-        console.log("twoProps",nextProps)
         if(this.props.toggleSubmit) {
             this.props.dispatch(stopSubmit('orgaStepAddUser',{}))
         }
@@ -253,7 +251,6 @@ class SiteFourOrgaAdduser extends React.Component {
     
     render (){
         const { handleSubmit, reset, org, type } = this.props;
-        console.log("ororororo@@",org,":::",type)
         //let cType = type.substring(0,1).toUpperCase() + type.substring(1);
         return (
             <Fragment>

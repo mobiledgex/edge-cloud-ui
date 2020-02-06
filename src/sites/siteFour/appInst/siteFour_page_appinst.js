@@ -208,7 +208,6 @@ class SiteFourPageAppInst extends React.Component {
         }
     }
     getDataDeveloperSub = (region) => {
-        console.log("getDataDeveloperSubsss", region)
         this._diffRev = []
         let _region = (region) ? region : 'All';
         this.getDataDeveloper(_region);
