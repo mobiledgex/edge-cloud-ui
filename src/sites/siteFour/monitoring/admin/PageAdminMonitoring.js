@@ -1139,7 +1139,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         setTimeout(() => {
                                             this.setState({
                                                 appInstSelectBoxPlaceholder: "Select App Instance",
-                                                currentAppInst: '',
                                             })
                                         }, 500)
                                     } catch (e) {
