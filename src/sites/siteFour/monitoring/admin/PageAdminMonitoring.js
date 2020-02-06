@@ -279,12 +279,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     isReady: false,
                     userType: userRole,
                 })
-                //fixme: REALDATA
-                //fixme: REALDATA
+
+
                 let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
 
-                //@test: FAKE JSON FOR DEV
-                //let appInstanceList: Array<TypeAppInstance> = require('../temp/appInstList')
                 appInstanceList.map(async (item: TypeAppInstance, index) => {
                     if (index === 0) {
                         await this.setState({
@@ -324,9 +322,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 } catch (e) {
                     showToast(e.toString())
                 }
-
-                //fixme: fakedata
-                //usageList = require('../temp/appLevelUsageList')
 
                 //todo: MAKE SELECTBOX.
                 let clusterInstanceGroupList = reducer.groupBy(appInstanceList, CLASSIFICATION.CLUSTER_INST)
