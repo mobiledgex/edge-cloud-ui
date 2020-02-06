@@ -46,20 +46,7 @@ export const renderGridLoader = () =>{
 export const renderPlaceHolder = (type: string = '') => {
     return (
         <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
-            <Lottie
-                options={{
-                    loop: true,
-                    autoplay: true,
-                    animationData: require('../../../lotties/13626-loading11'),
-                    rendererSettings: {
-                        preserveAspectRatio: 'xMidYMid slice'
-                    }
-                }}
-                height={120}
-                width={120}
-                isStopped={false}
-                isPaused={false}
-            />
+           <CircularProgress style={{ color: '#77BD25', zIndex: 9999999, fontSize: 45 }}/>
         </div>
     )
 }
