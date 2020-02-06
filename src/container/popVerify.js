@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Divider, Modal, Grid, Input, TextArea, Dropdown} from "semantic-ui-react";
+import {Button, Modal} from "semantic-ui-react";
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import { withRouter } from 'react-router-dom';
@@ -34,10 +34,11 @@ class PopVerify extends React.Component {
             _self.onSendEmail()
         }
     }
+    
     onSendEmail() {
-        _self.props.handleLoadingSpinner(true);
         let requestBody = {
-            data: { method: serviceMC.getEP().RESEND_VERIFY, data: { username: _self.props.userName, email: _self.props.email, callbackurl: `https://${host}/verify` } }
+            method: serviceMC.getEP().RESEND_VERIFY,
+            data: { username: _self.props.userName, email: _self.props.email, callbackurl: `https://${host}/verify` }
         }
         serviceMC.sendRequest(_self, requestBody, _self.props.receiveResendVerify)
     }
@@ -60,7 +61,6 @@ class PopVerify extends React.Component {
             >
                 <Modal.Header>{`Verify Email ${this.props.email}`}</Modal.Header>
                 <Modal.Content>
-                    {/* <p>{`Thank you for signing up. Please verify your account. In order to login to your account, you must verify your account. An email has been sent to ${this.props.email} with a link to verify your account. If you have not received the email after a few minutes check your spam folder or resend the verification email.`}</p> */}
                     <p>{`Are you sure you want to send a verification email to ${this.props.email}?`}</p>
                 </Modal.Content>
                 <Modal.Actions>

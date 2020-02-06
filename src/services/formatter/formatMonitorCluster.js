@@ -92,7 +92,7 @@ const formatDigit = (dNum, value) => (
  */
 export const formatData = (datas) => {
     let values = [];
-    if (datas.data && datas.data.length > 0) {
+    if (datas.data) {
         let result = datas.data.data[0].Series[0];
         if (result) {
             let _name = result.name;
