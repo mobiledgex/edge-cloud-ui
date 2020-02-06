@@ -19,7 +19,7 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {numberWithCommas, renderLottieLoader, renderPlaceHolder, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
+import {numberWithCommas, renderGridLoader, renderLottieLoader, renderPlaceHolder, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
 import MiniMap from "./MiniMap";
 import {CircularProgress} from "@material-ui/core";
 import {getClouletLevelUsageList, renderBarGraphForCloudlet, renderLineChartForCloudlet} from "./PageOperMonitoringService";
@@ -994,7 +994,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.renderHeader()}
                             <div style={{position: 'absolute', top: '37%', left: '48%'}}>
                                 <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                    {renderLottieLoader(250, 250)}
+                                    {renderGridLoader()}
                                 </div>
                             </div>
                         </Grid.Column>

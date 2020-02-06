@@ -45,7 +45,7 @@ import {
     getOneYearStartEndDatetime,
     makeBubbleChartDataForCluster,
     numberWithCommas,
-    renderBarChartCore,
+    renderBarChartCore, renderGridLoader,
     renderLineChartCore,
     renderPlaceHolder,
     showToast,
@@ -1276,20 +1276,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.renderHeader()}
                             <div style={{position: 'absolute', top: '37%', left: '48%'}}>
                                 <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                    <Lottie
-                                        options={{
-                                            loop: true,
-                                            autoplay: true,
-                                            animationData: require('../../../../lotties/3080-heartrate33'),
-                                            rendererSettings: {
-                                                preserveAspectRatio: 'xMidYMid slice'
-                                            }
-                                        }}
-                                        height={250}
-                                        width={250}
-                                        isStopped={false}
-                                        isPaused={false}
-                                    />
+                                    {renderGridLoader()}
                                 </div>
                             </div>
                         </Grid.Column>

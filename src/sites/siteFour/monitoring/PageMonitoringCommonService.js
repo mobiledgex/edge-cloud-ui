@@ -10,6 +10,7 @@ import {makeCompleteDateTime} from "./admin/PageAdminMonitoringService";
 import moment from "moment";
 import {Line as ReactChartJs} from "react-chartjs-2";
 import axios from "axios";
+import {GridLoader} from "react-spinners";
 
 export const renderLottieLoader = (width, height) => {
     return (
@@ -17,7 +18,7 @@ export const renderLottieLoader = (width, height) => {
             options={{
                 loop: true,
                 autoplay: true,
-                animationData: require('../../../lotties/3080-heartrate33'),
+                animationData: require('../../../lotties/13255-loader22'),
                 rendererSettings: {
                     preserveAspectRatio: 'xMidYMid slice'
                 }
@@ -26,6 +27,17 @@ export const renderLottieLoader = (width, height) => {
             width={width}
             isStopped={false}
             isPaused={false}
+        />
+    )
+}
+
+export const renderGridLoader = () =>{
+    return (
+        <GridLoader
+            sizeUnit={"px"}
+            size={20}
+            color={'#70b2bc'}
+            loading={true}
         />
     )
 }
@@ -523,13 +535,23 @@ export const getOneYearStartEndDatetime = () => {
 }
 
 
-export const showToast = (title: string) => {
+export const showToast = (title: string, time=2) => {
     toast({
         type: 'success',
         //icon: 'smile',
         title: title,
         //animation: 'swing left',
-        time: 3 * 1000,
+        time: time * 1000,
+        color: 'black',
+    });
+}
+export const showToast2 = (title: string, time=2) => {
+    toast({
+        type: 'success',
+        icon: 'star',
+        title: title,
+        //animation: 'swing left',
+        time: time * 1000,
         color: 'black',
     });
 }
