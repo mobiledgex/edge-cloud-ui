@@ -960,7 +960,7 @@ class SiteFour extends React.Component {
                                                     }
                                                     <div>
                                                         {
-                                                            localStorage.selectRole && localStorage.selectRole!='null' ? localStorage.selectRole : 'Please select a role'
+                                                            localStorage.selectRole && localStorage.selectRole!='null' ? localStorage.selectRole : <strong style={{fontSize:12}}>Please select an organization</strong>
                                                         }
                                                     </div>
                                                 </Grid.Column>
@@ -1047,7 +1047,7 @@ class SiteFour extends React.Component {
                                             }
                                             {
                                                 (this.state.headerTitle == 'User Roles') ?
-                                                    <div className='user_search' style={{ top: 15, right: 65, position: 'absolute', zIndex: 99 }}>
+                                                    <div className='' style={{display:'inline'}}>
                                                         <Input icon='search' placeholder={'Search ' + this.state.searchChangeValue} style={{ marginRight: '20px' }} onChange={this.searchClick} />
                                                         <Dropdown defaultValue={this.searchOptions[0].value} search selection options={this.searchOptions} onChange={this.searchChange} />
                                                     </div>
