@@ -590,8 +590,11 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                                                     <span style={{ marginRight: '1em' }}>
                                                                                                                         <Button positive onClick={this.AddPorts}>Add Port Mapping</Button>
                                                                                                                     </span>
-                                                                                                                    <Button positive onClick={this.AddMultiPorts}>Add MultiPort Mapping</Button>
+                                                                                                                    <span style={{ marginRight: '1em' }}>
+                                                                                                                        <Button positive onClick={this.AddMultiPorts}>Add MultiPort Mapping</Button>
+                                                                                                                    </span>
                                                                                                                     {/*<div className="addPortMapping" onClick={this.AddPorts}>+ Add Port Mapping</div>*/}
+                                                                                                                    {this.props.validError.indexOf(key+'_0') !== -1 ? <span className="text-danger">Required</span> : null }
                                                                                                                 </Grid.Column>
                                                                                                             </Grid.Row>
                                                                                                         </Grid>

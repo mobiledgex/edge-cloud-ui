@@ -80,7 +80,7 @@ class RegistryViewer extends React.Component {
                     'ImagePath':{label:'Image Path', type:'RenderPath', necessary:true, tip:'URI of where image resides', active:true,items:''},
                     'AuthPublicKey':{label:'Auth Public Key', type:'RenderTextArea', necessary:false, tip:'auth_public_key', active:true},
                     'DefaultFlavor':{label:'Default Flavor', type:'FlavorSelect', necessary:true, tip:'FlavorKey uniquely identifies a Flavor.', active:true},
-                    'Ports':{label:'Ports', type:'CustomPorts', necessary:false, tip:'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443', active:true, items:['tcp', 'udp']},
+                    'Ports':{label:'Ports', type:'CustomPorts', necessary:true, tip:'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443', active:true, items:['tcp', 'udp']},
                     'DefaultFQDN':{label:'Official FQDN', type:'RenderInput', necessary:false, tip:'Official FQDN', active:true},
                     'PackageName':{label:'Package Name', type:'RenderInput', necessary:false, tip:'Package Name', active:true},
                     // 'IpAccess':{label:'IP Access', type:'IPSelect', necessary:false, tip:'aaa', active:true, items:['IpAccessShared', 'IpAcessDedicaterd']},
@@ -352,7 +352,7 @@ class RegistryViewer extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({toggleSubmit:false});
         if(nextProps.submitValues && !this.state.toggleSubmit) {
-            const apps = ['Region','OrganizationName','AppName','Version','DeploymentType','DefaultFlavor']
+            const apps = ['Region','OrganizationName','AppName','Version','DeploymentType','DefaultFlavor', 'Ports', 'Ports_0']
             let error = [];
             apps.map((item) => {
                 if(!nextProps.validateValue[item]) {
