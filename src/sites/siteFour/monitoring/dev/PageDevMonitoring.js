@@ -41,8 +41,17 @@ import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import '../PageMonitoring.css'
-import {getOneYearStartEndDatetime, makeBubbleChartDataForCluster, numberWithCommas, renderBarChartCore, renderLineChartCore, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
-import {getAppInstList, getAppLevelUsageList, getCloudletList, StylesForMonitoring} from "../admin/PageAdminMonitoringService";
+import {
+    getOneYearStartEndDatetime,
+    makeBubbleChartDataForCluster,
+    numberWithCommas,
+    renderBarChartCore, renderGridLoader,
+    renderLineChartCore,
+    renderPlaceHolder,
+    showToast,
+    StylesForMonitoring
+} from "../PageMonitoringCommonService";
+import {getAppInstList, getAppLevelUsageList, getCloudletList,} from "../admin/PageAdminMonitoringService";
 import MapboxComponent from "./MapboxComponent";
 import * as reducer from "../../../../utils";
 import {CircularProgress} from "@material-ui/core";
@@ -336,7 +345,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //fixme: fakeData
             //let allClusterUsageList = require('./allClusterUsageList')
 
-
             console.log('filteredAppInstanceList===>', appInstanceList)
 
             let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
@@ -360,13 +368,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 clusterListLoading: false,
                 allCloudletUsageList: allClusterUsageList,
-                allClusterUsageList003: allClusterUsageList,
+                allClusterUsageList: allClusterUsageList,
                 filteredClusterUsageList: allClusterUsageList,
                 maxCpu: maxCpu,
                 maxMem: maxMem,
                 isRequesting: false,
                 currentCluster: '',
-
             })
 
         }
@@ -383,22 +390,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredClusterUsageList: this.state.allClusterUsageList,
                 filteredAppInstanceList: this.state.appInstanceList,
                 appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
-            }, () => {
-
-            })
-
+            });
             //todo: reset bubble chart data
             let bubbleChartData = await makeBubbleChartDataForCluster(this.state.allClusterUsageList, HARDWARE_TYPE.CPU);
             await this.setState({
                 bubbleChartData: bubbleChartData,
-            })
-            await this.setState({
                 dropdownRequestLoading: false,
                 currentCluster: '',
                 currentAppInst: '',
             })
         }
-
 
         async refreshAllData() {
             clearInterval(this.interval)
@@ -814,8 +815,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <SemanticToastContainer position="center-left"/>
                     <Grid.Row className='content_title'
                               style={{width: 'fit-content', display: 'inline-block'}}>
-                        <Grid.Column className='title_align'
-                                     style={{lineHeight: '36px'}}>Monitoring</Grid.Column>
+                        <Grid.Column className='title_align2' style={{lineHeight: '36px'}}>Monitoring</Grid.Column>
                         <div style={{marginLeft: '10px'}}>
                             <button className="ui circular icon button"><i aria-hidden="true"
                                                                            className="info icon"></i></button>
@@ -1275,20 +1275,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.renderHeader()}
                             <div style={{position: 'absolute', top: '37%', left: '48%'}}>
                                 <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                    <Lottie
-                                        options={{
-                                            loop: true,
-                                            autoplay: true,
-                                            animationData: require('../../../../lotties/3080-heartrate33'),
-                                            rendererSettings: {
-                                                preserveAspectRatio: 'xMidYMid slice'
-                                            }
-                                        }}
-                                        height={250}
-                                        width={250}
-                                        isStopped={false}
-                                        isPaused={false}
-                                    />
+                                    {renderGridLoader()}
                                 </div>
                             </div>
                         </Grid.Column>
@@ -1324,7 +1311,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:Content Header                   */}
                         {/*todo:---------------------------------*/}
                         {this.renderHeader()}
-                        <Grid.Row className='site_content_body'>
+                        <Grid.Row className='site_content_body' style={{marginTop:22}}>
                             <Grid.Column>
                                 <div className="table-no-resized"
                                      style={{height: '100%', display: 'flex', overflow: 'hidden'}}>

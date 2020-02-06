@@ -33,7 +33,6 @@ import {
     renderBubbleChart,
     renderPlaceHolder2,
     renderSixGridInstanceOnCloudletGrid,
-    StylesForMonitoring
 } from "./PageAdminMonitoringService";
 import {
     APPINSTANCE_INIT_VALUE,
@@ -53,7 +52,7 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {numberWithCommas, renderLottieLoader, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
+import {numberWithCommas, renderGridLoader, renderLottieLoader, renderPlaceHolder, showToast, showToast2, StylesForMonitoring} from "../PageMonitoringCommonService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -232,7 +231,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             connectionsTabIndex: 0,
         };
 
-
         constructor(props) {
             super(props);
 
@@ -281,11 +279,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     isReady: false,
                     userType: userRole,
                 })
-                //todo: REALDATA
-                let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
 
-                //@test: FAKE JSON FOR DEV
-                //let appInstanceList: Array<TypeAppInstance> = require('./appInstanceList')
+
+                let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
 
                 appInstanceList.map(async (item: TypeAppInstance, index) => {
                     if (index === 0) {
@@ -326,9 +322,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 } catch (e) {
                     showToast(e.toString())
                 }
-
-                //fixme: fakedata
-                //usageList = require('./appLevelUsageList')
 
                 //todo: MAKE SELECTBOX.
                 let clusterInstanceGroupList = reducer.groupBy(appInstanceList, CLASSIFICATION.CLUSTER_INST)
@@ -493,12 +486,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
         }
 
-        /**
-         * @todo: 셀렉트박스 Region, CloudLet, Cluster을 변경할때 처리되는 프로세스..
-         * @todo: Process to be processed when changing select box Region, CloudLet, Cluster
-         */
-        async filterByClassification(pRegion: string = '', pCloudLet: string = '', pCluster: string = '', pAppInstance: string = '', isDateFiltering: boolean = false,) {
 
+        async filterByClassification(pRegion: string = '', pCloudLet: string = '', pCluster: string = '', pAppInstance: string = '', isDateFiltering: boolean = false,) {
             try {
                 let appInstanceList = []
                 let allCpuUsageList = []
@@ -541,13 +530,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
                 let cloudletSelectBoxList = makeCloudletListSelectBox(appInstanceList)
                 let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
-
                 let filteredCpuUsageList = filterUsageListByRegion(pRegion, allCpuUsageList);
                 let filteredMemUsageList = filterUsageListByRegion(pRegion, allMemUsageList);
                 let filteredDiskUsageList = filterUsageListByRegion(pRegion, allDiskUsageList);
                 let filteredNetworkUsageList = filterUsageListByRegion(pRegion, allNetworkUsageList);
                 let filteredConnectionsUsageList = filterUsageListByRegion(pRegion, allConnectionsUsageList);
-
                 let filteredGridInstanceList = filterUsageListByRegion(pRegion, allGridInstanceList);
 
                 //todo: -------------------------------------------
@@ -576,7 +563,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     filteredMemUsageList = filterUsageByType(CLASSIFICATION.CLUSTER_INST, pCluster, filteredMemUsageList);
                     filteredDiskUsageList = filterUsageByType(CLASSIFICATION.CLUSTER_INST, pCluster, filteredDiskUsageList);
                     filteredNetworkUsageList = filterUsageByType(CLASSIFICATION.CLUSTER_INST, pCluster, filteredNetworkUsageList);
-                    filteredConnectionsUsageList = filterUsageByType(CLASSIFICATION.CLUSTER_INST, pCloudLet, filteredConnectionsUsageList);
+                    filteredConnectionsUsageList = filterUsageByType(CLASSIFICATION.CLUSTER_INST, pCluster, filteredConnectionsUsageList);
                     filteredGridInstanceList = filterUsageByType(CLASSIFICATION.CLUSTER_INST, pCluster, filteredGridInstanceList);
 
                 }
@@ -736,14 +723,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                             return (
                                 <Table.Row className='page_monitoring_popup_table_row'
-                                           onClick={async () => {
-                                               //alert(item.AppName)
-                                               /*await this.setState({
-                                                   currentAppInst: item.instance.AppName,
-                                                   currentGridIndex: index,
-                                               })
-                                               await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, item.instance.AppName)*/
-                                           }}
                                 >
                                     <Table.Cell>
                                         {index}
@@ -1009,15 +988,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+        handleReset = async () => {
+            await this.setState({
+                currentGridIndex: -1,
+                currentTabIndex: 0,
+            })
+            showToast2('Reset data', 1)
+            await this.filterByClassification('ALL', '', '', '')
+        }
 
         renderHeader = () => {
 
             return (
-
                 <div>
                     <Grid.Row className='content_title'
                               style={{width: 'fit-content', display: 'inline-block'}}>
-                        <Grid.Column className='title_align'
+                        <Grid.Column className='title_align2'
                                      style={{lineHeight: '36px'}}>Monitoring</Grid.Column>
                         <div style={{marginLeft: '10px'}}>
                             <button className="ui circular icon button"><i aria-hidden="true"
@@ -1044,14 +1030,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </div>
                         <div style={{marginLeft: '10px'}}>
                             <Button
-                                onClick={async () => {
-                                    await this.setState({
-                                        currentGridIndex: -1,
-                                        currentTabIndex: 0,
-                                    })
-                                    showToast('Reset data')
-                                    await this.filterByClassification('ALL', '', '', '')
-                                }}
+                                onClick={this.handleReset}
                             >RESET</Button>
                         </div>
                     </Grid.Row>
@@ -1397,7 +1376,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.renderHeader()}
                             <div style={{position: 'absolute', top: '37%', left: '48%'}}>
                                 <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                    {renderLottieLoader(250, 250)}
+                                    {renderGridLoader()}
                                 </div>
                             </div>
                         </Grid.Column>
@@ -1408,7 +1387,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             return (
 
-                <Grid.Row className='view_contents'>
+                <Grid.Row className='view_contents' >
                     {/*todo:---------------------------------*/}
                     {/*todo: POPUP APP INSTACE LIST DIV      */}
                     {/*todo:---------------------------------*/}
@@ -1428,13 +1407,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.renderBottomGridArea()}
                         </Modal.Content>
                     </Modal>
-                    <SemanticToastContainer/>
+                    <SemanticToastContainer position={"top-left"}/>
                     <Grid.Column className='contents_body'>
                         {/*todo:---------------------------------*/}
                         {/*todo:Content Header                   */}
                         {/*todo:---------------------------------*/}
                         {this.renderHeader()}
-                        <Grid.Row className='site_content_body'>
+                        <Grid.Row className='site_content_body' style={{marginTop:22}}>
                             <Grid.Column>
                                 <div className="table-no-resized"
                                      style={{height: '100%', display: 'flex', overflow: 'hidden'}}>

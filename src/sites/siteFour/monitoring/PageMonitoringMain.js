@@ -28,19 +28,10 @@ const mapDispatchProps = (dispatch) => {
 type Props = {
     handleLoadingSpinner: Function,
     toggleLoading: Function,
-    history: any,
-    onSubmit: any,
-    sendingContent: any,
-    loading: boolean,
-    isLoading: boolean,
-    toggleLoading: Function,
-    userRole: any,
 }
 
 type State = {
     date: string,
-    userRole: string,
-
 }
 
 
@@ -49,13 +40,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         state = {
             date: '',
         };
-
-
         constructor(props) {
             super(props);
-
         }
-
         componentWillMount(): void {
             let store = JSON.parse(localStorage.PROJECT_INIT);
             let token = store ? store.userToken : 'null';
@@ -66,10 +53,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             this.setState({
                 userRole: userRole,
             })
-        }
-
-        componentDidMount = async () => {
-
         }
 
         renderMainPage() {
