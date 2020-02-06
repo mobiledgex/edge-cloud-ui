@@ -46,8 +46,8 @@ import {
     REGIONS_OPTIONS
 } from "../../../../shared/Constants";
 import Lottie from "react-lottie";
-import type {TypeGridInstanceList} from "../../../../shared/Types";
-import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
+import type {TypeAppInstance, TypeGridInstanceList} from "../../../../shared/Types";
+import {TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
@@ -280,8 +280,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     userType: userRole,
                 })
 
+                //@test: FAKE JSON FOR DEV
+                let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
 
-                let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
+                //@todo: realdata
+                //let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
 
                 appInstanceList.map(async (item: TypeAppInstance, index) => {
                     if (index === 0) {
@@ -317,11 +320,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 let usageList = [];
 
                 //@todo:realdata
-                try {
+             /*   try {
                     usageList = await getAppLevelUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
                 } catch (e) {
                     showToast(e.toString())
-                }
+                }*/
+
+                //fixme: fakedata
+                usageList = require('../temp/appLevelUsageList')
 
                 //todo: MAKE SELECTBOX.
                 let clusterInstanceGroupList = reducer.groupBy(appInstanceList, CLASSIFICATION.CLUSTER_INST)
@@ -1387,7 +1393,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             return (
 
-                <Grid.Row className='view_contents' >
+                <Grid.Row className='view_contents'>
                     {/*todo:---------------------------------*/}
                     {/*todo: POPUP APP INSTACE LIST DIV      */}
                     {/*todo:---------------------------------*/}
@@ -1413,7 +1419,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:Content Header                   */}
                         {/*todo:---------------------------------*/}
                         {this.renderHeader()}
-                        <Grid.Row className='site_content_body' style={{marginTop:22}}>
+                        <Grid.Row className='site_content_body' style={{marginTop: 22}}>
                             <Grid.Column>
                                 <div className="table-no-resized"
                                      style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
