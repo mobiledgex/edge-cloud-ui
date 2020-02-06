@@ -78,15 +78,6 @@ const FormForgotPass = (props) => (
                 <Button onClick={() => props.self.onSendEmail('back')}>Return to Log In</Button>
             </Grid.Column>
         </Grid.Row>
-        {/*<Grid.Row columns={2}>*/}
-        {/*    <Grid.Column>*/}
-        {/*        <Button style={{width:'50%'}} onClick={() => props.self.onSendEmail('back')}>Return to Log In</Button>*/}
-        {/*    </Grid.Column>*/}
-        {/*    <Grid.Column>*/}
-        {/*        <Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSendEmail()}>Send Password reset email</Button>*/}
-        {/*    </Grid.Column>*/}
-        {/*</Grid.Row>*/}
-
     </Grid>
 )
 const ForgotMessage = (props) => (
@@ -211,12 +202,6 @@ const validate = values => {
     if(ema.length < 4 && ema !== ''){
         error.email= 'too short';
     }
-    // if(!ema.includes('@') && ema !== ''){
-    //     error.email= '@ not included';
-    // }
-    if(nm.length > 4){
-        //error.name= 'max 8 characters';
-    }
 
     return error;
 }
@@ -296,7 +281,7 @@ class Login extends Component {
                 //in case user press the button as a submit no matter send params
                 localStorage.setItem('userInfo', JSON.stringify({email:nextProps.values.email, username:nextProps.values.username, date:new Date()}))
                 if(nextProps.loginMode === 'resetPass'){
-                    serviceMC.sendRequest(self, {token: store ? store.resetToken : 'null', method:serviceMC.getEP().RESET_PASSWORD, data : {password:nextProps.values.password}}, self.resultNewPass)
+                    serviceMC.sendRequest(self, {method:serviceMC.getEP().RESET_PASSWORD, data : {token: store ? store.resetToken : 'null', password:nextProps.values.password}}, self.resultNewPass)
                 } else {
                     let requestBody ={
                         method:serviceMC.getEP().CREATE_USER, 
@@ -463,7 +448,7 @@ class Login extends Component {
     }
 
     receiveForgoten(mcRequest) {
-        self.props.handleAlertInfo('success', 'Success')
+        self.props.handleAlertInfo('success', 'We have e-mailed your password reset link!')
         self.setState({loginMode:'forgotMessage', forgotMessage: true})
     }
     receiveResendVerify(mcRequest) {
@@ -484,24 +469,25 @@ class Login extends Component {
     onSendEmail(mode) {
         if (mode === 'verify') {
             let requestBody = {
-                method:serviceMC.getEP().RESEND_VERIFY, 
-                data:{email: self.state.email, callbackurl: `https://${host}/verify`
-            }}
+                method: serviceMC.getEP().RESEND_VERIFY,
+                data: {
+                    email: self.state.email, callbackurl: `https://${host}/verify`
+                }
+            }
             serviceMC.sendRequest(self, requestBody, self.receiveResendVerify)
-        } else if (mode === 'resetPass') 
-        {
-            let pass = '';
-            let strArr = self.props.params.subPath.split('=')
-            let token = strArr[1];
-            serviceMC.sendRequest(self, { token: token, method: serviceMC.getEP().RESET_PASSWORD, data: { password: pass } }, this.receiveData, this)
-
         } else if (mode === 'back') {
 
             self.setState({ loginMode: 'login' })
         }
-        else 
-        {
-            serviceMC.sendRequest(self, {method: serviceMC.getEP().RESET_PASSWORD, data: { email: self.state.email } }, this.receiveForgoten, this)
+        else {
+            let data = {
+                email: self.state.email,
+                operatingsystem: self.clientSysInfo.os.name,
+                browser: self.clientSysInfo.browser.name,
+                callbackurl: 'https://' + host + '/passwordreset',
+                clientip: self.clientSysInfo.clientIP
+            }
+            serviceMC.sendRequest(self, { method: serviceMC.getEP().RESET_PASSWORD_REQUEST, data: data }, this.receiveForgoten, this)
         }
     }
 
@@ -526,7 +512,6 @@ class Login extends Component {
     }
 
     render() {
-        const { reset, data, loginState } = this.props;
         return (
 
                 (this.state.session !== 'open') ?
