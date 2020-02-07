@@ -1,19 +1,27 @@
 import 'react-hot-loader'
 import React from "react";
-import {Map, Marker, Popup, TileLayer, Tooltip} from "react-leaflet";
+import {Circle, LayerGroup, Map, Marker, Popup, Rectangle, TileLayer, Tooltip} from "react-leaflet";
 import * as L from 'leaflet';
 import "./PageMonitoring.css";
 import {hot} from "react-hot-loader/root";
 import 'react-leaflet-fullscreen-control'
-import {Button, Icon} from "semantic-ui-react";
 import {renderPlaceHolderLottiePinJump} from "./PageMonitoringCommonService";
+import {FeatureGroup} from "leaflet";
 
+const rectangle = [
+    [51.49, -0.08],
+    [51.5, -0.06],
+]
+const center = [51.505, -0.09]
+const outer = [
+    [50.505, -29.09],
+    [52.505, 29.09],
+]
 
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
     zoom: 13,
 }
-
 const multiPolygon = [
     [
         [51.51, -0.12],
@@ -35,9 +43,24 @@ let greenIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
+type Props = {
+    handleSelectCloudlet: Function,
+    cloudletList: Array,
+
+}
+
+type State = {
+    date: string,
+
+}
 
 export default hot(
-    class LeafletMap extends React.Component {
+    class LeafletMap extends React.Component<Props, State> {
+
+        constructor(props: Props) {
+            super(props)
+        }
+
         state = {
             viewport: DEFAULT_VIEWPORT,
             markers: [
@@ -102,18 +125,43 @@ export default hot(
                 <Marker
                     ref={c => this.marker1 = c}
                     icon={greenIcon}
-                    className='marker1'
+                    //className='marker1'
                     position={
-                        [item.CloudletLocation.latitude, item.CloudletLocation.longitude,]
+                        [item.instanceOne.CloudletLocation.latitude, item.instanceOne.CloudletLocation.longitude,]
                     }
                     onClick={() => {
-
-                        alert(item.CloudletName)
+                        //this.props.handleSelectCloudlet(item.CloudletName)
                     }}
                 >
-                    <Tooltip direction='right' offset={[0, 0]} opacity={0.5} permanent>
-                        <span>{item.CloudletName}</span>
-                    </Tooltip>
+                    {/*  <Tooltip direction='right' offset={[0, 0]} opacity={1.0} permanent onClick={() => {
+
+                    }}>
+
+                        <span onClick={() => {
+
+                        }}>{item.CloudletName} [7]</span>
+                    </Tooltip>*/}
+                    <Popup
+                        //position={[100.110924, 8.682127]}
+                        offset={[0, 0]}
+                        opacity={0.7}
+                        className="tooltip1"
+                    >
+                        <div style={{fontSize: 20, color: 'navy', fontWeight: 'bold', marginBottom: 10,}}>
+                            [{item.instanceOne.CloudletName}]
+                        </div>
+                        {item.cloudletList.map(instanceOne => {
+                            return (
+                                <div>
+                                    <div>
+                                        {instanceOne.AppName}
+                                    </div>
+                                    <br/>
+                                </div>
+
+                            )
+                        })}
+                    </Popup>
                 </Marker>
             )
         }
@@ -121,13 +169,12 @@ export default hot(
 
         render() {
 
-
             return (
                 <div style={{height: '100%', width: '100%'}}>
                     {!this.props.loading ?
                         <Map center={[45.4, 51.7]}
                              duration={0.9}
-                             zoom={1.0}
+                             zoom={1}
                              style={{width: '100%', height: '100%'}}
                              easeLinearity={1}
                              useFlyTo={true}
@@ -140,6 +187,14 @@ export default hot(
                                 minZoom={2}
                                 //maxZoom={15}
                             />
+                            <LayerGroup>
+                                <Circle
+                                    center={[51.51, -0.08]}
+                                    color="green"
+                                    fillColor="green"
+                                    radius={100}
+                                />
+                            </LayerGroup>
                             {this.props.cloudletList.map(item => {
 
                                 return this.renderMarkerOne(item)
@@ -147,31 +202,6 @@ export default hot(
                         </Map> :
                         renderPlaceHolderLottiePinJump()
                     }
-
-
-                    <div className="controls" style={{marginTop: -250, zIndex: 9999999}}>
-                        <Button id="mapZoomCtl" size='larges' icon onClick={() => {
-                            this.setState({
-                                zoom: 0.45,
-                            })
-                        }}>
-                            <Icon name="refresh"/>
-                        </Button>
-                        <Button id="mapZoomCtl" size='large' icon onClick={() => {
-                            this.setState({
-                                zoom: this.state.zoom * 1.2
-                            })
-                        }}>
-                            <Icon name="plus square outline"/>
-                        </Button>
-                        <Button id="mapZoomCtl" size='large' icon onClick={() => {
-                            this.setState({
-                                zoom: this.state.zoom * 0.8
-                            })
-                        }}>
-                            <Icon name="minus square outline"/>
-                        </Button>
-                    </div>
                 </div>
             );
         }
