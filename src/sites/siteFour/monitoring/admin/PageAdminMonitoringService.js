@@ -780,20 +780,14 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
             })
         }
 
-        function toChunkArray(myArray, chunkSize) {
-            let results = [];
-            while (myArray.length) {
-                results.push(myArray.splice(0, chunkSize));
-            }
-            return results;
-        }
-
         let chunkedArraysOfColSize = toChunkArray(cloudletList, 6);
-
-        console.log('chunkedArraysOfColSize===>', chunkedArraysOfColSize)
 
         return (
             <Tabs selectedIndex={_this.state.currentSixGridIndex}>
+
+                {/*todo:###############################..*/}
+                {/*todo:그리드를 페이지(tab당) 6개씩 그리는 부분..*/}
+                {/*todo:###############################..*/}
                 {chunkedArraysOfColSize.map((listItem, index) => {
                     return (
                         <TabPanel>
@@ -802,6 +796,10 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
                     )
                 })}
 
+
+                {/*todo:#####################..*/}
+                {/*todo:하단의 dot paging ..*/}
+                {/*todo:#####################..*/}
                 <div style={{flexDirection: 'row', display: 'flex',}}>
                     {chunkedArraysOfColSize.map((item, index) => {
                         return (
@@ -822,6 +820,16 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
         )
 
     }
+
+
+    function toChunkArray(myArray, chunkSize) {
+        let results = [];
+        while (myArray.length) {
+            results.push(myArray.splice(0, chunkSize));
+        }
+        return results;
+    }
+
 
     function renderGrid(pListItem) {
         return (
