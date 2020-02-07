@@ -472,7 +472,7 @@ class RegistryInstViewer extends React.Component {
                     let assObj = Object.assign([], this.state.keysData);
                     keys.map((item, i) => {
                         this.state.clustinst[item].map((items, j) => {
-                            values.Cloudlet.map((cItem) => {
+                            if(values.Cloudlet !== '') values.Cloudlet.map((cItem) => {
                                 if (cItem == items.Cloudlet && values.DeveloperName == items.OrganizationName) {
                                     arr.push(item);
                                 }
