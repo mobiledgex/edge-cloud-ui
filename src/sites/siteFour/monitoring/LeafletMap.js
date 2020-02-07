@@ -127,13 +127,13 @@ export default hot(
                     icon={greenIcon}
                     //className='marker1'
                     position={
-                        [item.CloudletLocation.latitude, item.CloudletLocation.longitude,]
+                        [item.instanceOne.CloudletLocation.latitude, item.instanceOne.CloudletLocation.longitude,]
                     }
                     onClick={() => {
                         //this.props.handleSelectCloudlet(item.CloudletName)
                     }}
                 >
-                  {/*  <Tooltip direction='right' offset={[0, 0]} opacity={1.0} permanent onClick={() => {
+                    {/*  <Tooltip direction='right' offset={[0, 0]} opacity={1.0} permanent onClick={() => {
 
                     }}>
 
@@ -147,15 +147,24 @@ export default hot(
                         opacity={0.7}
                         className="tooltip1"
                     >
-                        <button onClick={() => {
-                            alert('redstar')
-                        }}>{item.CloudletName} [7]
-                        </button>
+                        <div style={{fontSize: 20, color: 'navy', fontWeight: 'bold', marginBottom: 10,}}>
+                            [{item.instanceOne.CloudletName}]
+                        </div>
+                        {item.cloudletList.map(instanceOne => {
+                            return (
+                                <div>
+                                    <div>
+                                        {instanceOne.AppName}
+                                    </div>
+                                    <br/>
+                                </div>
+
+                            )
+                        })}
                     </Popup>
                 </Marker>
             )
         }
-
 
 
         render() {
