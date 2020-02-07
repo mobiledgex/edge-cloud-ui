@@ -325,7 +325,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 isReady: true,
                 clusterDropdownList: clusterDropdownList,
-                cloudletList: cloudletList,
+                dropDownCloudletList: cloudletList,
                 clusterList: clusterList,
                 isAppInstaceDataReady: true,
                 appInstanceList: appInstanceList,

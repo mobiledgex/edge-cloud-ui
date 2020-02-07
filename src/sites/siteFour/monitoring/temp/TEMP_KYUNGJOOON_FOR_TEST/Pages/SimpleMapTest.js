@@ -21,7 +21,7 @@ export default class SimpleMapTest extends Component<Props, State> {
         super(props);
         this.state = {
             zoom: 1,
-            cloudletList: [],
+            dropDownCloudletList: [],
         }
 
         this.handleWheel = this.handleWheel.bind(this);

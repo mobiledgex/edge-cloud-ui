@@ -26,7 +26,7 @@ export default class MiniMap extends Component<Props, State> {
         super(props);
         this.state = {
             zoom: 0.45,
-            cloudletList: [],
+            dropDownCloudletList: [],
         }
 
         this.handleWheel = this.handleWheel.bind(this);

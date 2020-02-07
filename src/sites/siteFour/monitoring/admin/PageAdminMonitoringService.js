@@ -8,7 +8,7 @@ import BubbleChart from "../../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../../shared/Types";
 import PageMonitoring from "./PageAdminMonitoring";
 import {numberWithCommas, renderBarChartCore, renderLineChartCore, renderUsageByType2, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
-import {SHOW_ORG_CLOUDLET} from "../../../../services/endPointTypes";
+import {SHOW_CLOUDLET, SHOW_ORG_CLOUDLET} from "../../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../../services/serviceMC";
 
 export const cutArrayList = async (length: number = 5, paramArrayList: any) => {
@@ -78,7 +78,6 @@ export const makeFormForAppInstance = (dataOne, valid = "*", token, fetchingData
         )
     }
 }
-
 
 
 export const filterInstanceCountOnCloutLetOne = (appInstanceListGroupByCloudlet, pCloudLet) => {
@@ -912,6 +911,44 @@ export const getCloudletList = async () => {
         console.log('mergedOrgCloudletList===>', mergedOrgCloudletList);
 
         return mergedOrgCloudletList;
+    } catch (e) {
+
+    }
+}
+
+export const getCloudletListAll = async () => {
+    try {
+
+        let store = JSON.parse(localStorage.PROJECT_INIT);
+        let token = store ? store.userToken : 'null';
+        //data: { region: region, org: _self.props.selectOrg || localStorage.selectOrg }
+
+        let requestData = {token: token, method: SHOW_CLOUDLET, data: {region: REGION.EU}};
+        let requestData2 = {token: token, method: SHOW_CLOUDLET, data: {region: REGION.US}};
+        let promiseList = []
+
+        promiseList.push(sendSyncRequest(this, requestData))
+        promiseList.push(sendSyncRequest(this, requestData2))
+        let orgCloudletList = await Promise.all(promiseList);
+        console.log('results===EU>', orgCloudletList[0].response.data);
+        console.log('results===US>', orgCloudletList[1].response.data);
+
+        let cloudletEU = orgCloudletList[0].response.data;
+        let cloudletUS = orgCloudletList[1].response.data;
+
+        let mergedCloudletList = [];
+        orgCloudletList.map(item => {
+            //@todo : null check
+            if (item.response.data["0"].Region !== '') {
+                let cloudletList = item.response.data;
+                cloudletList.map(item => {
+                    mergedCloudletList.push(item);
+                })
+            }
+        })
+
+
+        return mergedCloudletList;
     } catch (e) {
 
     }

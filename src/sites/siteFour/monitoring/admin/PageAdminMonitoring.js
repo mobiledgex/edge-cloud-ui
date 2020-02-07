@@ -21,6 +21,7 @@ import {
     filterUsageListByRegion,
     getAppInstList,
     getAppLevelUsageList,
+    getCloudletListAll,
     instanceFlavorToPerformanceValue,
     makeBarChartDataForInst,
     makeCloudletListSelectBox,
@@ -31,8 +32,7 @@ import {
     makeNetworkBarData,
     makeNetworkLineChartData,
     renderBubbleChart,
-    renderPlaceHolder2,
-    renderSixGridInstanceOnCloudletGrid,
+    renderPlaceHolder2, renderSixGridInstanceOnCloudletGrid,
 } from "./PageAdminMonitoringService";
 import {
     APPINSTANCE_INIT_VALUE,
@@ -52,7 +52,9 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {numberWithCommas, renderGridLoader, renderLottieLoader, renderPlaceHolderLottie, showToast, showToast2, StylesForMonitoring} from "../PageMonitoringCommonService";
+import {numberWithCommas, renderLottieLoader, renderPlaceHolderLottie, showToast, showToast2, StylesForMonitoring} from "../PageMonitoringCommonService";
+import LeafletMap from "../LeafletMap";
+import {filterUsageByClassification} from "../dev/PageDevMonitoringService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -154,6 +156,8 @@ type State = {
     allConnectionsUsageList: Array,
     filteredConnectionsUsageList: Array,
     connectionsTabIndex: number,
+    dropDownCloudletList: Array,
+    cloudletList: Array,
 
 }
 
@@ -167,7 +171,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             appInstanceListGroupByCloudlet: [],
             loading: false,
             loading0: false,
-            cloudletList: [],
             clusterInstanceGroupList: [],
             clusterList: [],
             filteredCpuUsageList: [],
@@ -229,6 +232,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             allConnectionsUsageList: [],
             filteredConnectionsUsageList: [],
             connectionsTabIndex: 0,
+            dropDownCloudletList: [],
+            cloudletList: [],
         };
 
         constructor(props) {
@@ -263,6 +268,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     filteredGridInstanceList: [],
                     gridInstanceListMemMax: 0,
                     gridInstanceListCpuMax: 0,
+
                 })
             }
 
@@ -282,6 +288,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 //@test: FAKE JSON FOR DEV
                 //let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
+                let allCloudletList = await getCloudletListAll();
+
+                console.log('allCloudletList===>', allCloudletList)
+                await this.setState({
+                    cloudletList: allCloudletList,
+                })
+                console.log('cloudletList===>', allCloudletList);
 
                 //@todo: realdata
                 let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
@@ -294,11 +307,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     }
                 })
 
+
                 let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
                 await this.setState({
                     appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                     appInstanceList: appInstanceList,
                     allAppInstanceList: appInstanceList,
+
+
                 })
                 await this.setState({
                     isAppInstaceDataReady: true,
@@ -331,7 +347,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 //todo: MAKE SELECTBOX.
                 let clusterInstanceGroupList = reducer.groupBy(appInstanceList, CLASSIFICATION.CLUSTER_INST)
-                let cloudletList = this.makeSelectBoxList(appInstanceListGroupByCloudlet, CLASSIFICATION.CLOUDLET)
+                let dropDownCloudletList = this.makeSelectBoxList(appInstanceListGroupByCloudlet, CLASSIFICATION.CLOUDLET)
                 let clusterList = this.makeSelectBoxList(clusterInstanceGroupList, CLASSIFICATION.CLUSTER_INST)
 
                 await this.setState({
@@ -340,7 +356,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     allNetworkUsageList: usageList[2],//networkUsage
                     allDiskUsageList: usageList[3],//disk is last array
                     allConnectionsUsageList: usageList[4],
-                    cloudletList: cloudletList,
+                    dropDownCloudletList: dropDownCloudletList,
                     clusterList: clusterList,
                     filteredCpuUsageList: usageList[0],
                     filteredMemUsageList: usageList[1],
@@ -527,7 +543,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     loading0: true,
                     appInstanceListSortByCloudlet: [],
                     currentRegion: pRegion,
-                    cloudletList: [],
+                    dropDownCloudletList: [],
                 })
 
                 //todo: -------------------------------------------
@@ -609,7 +625,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     appInstanceList: appInstanceList,
                     appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                     loading0: false,
-                    cloudletList: cloudletSelectBoxList,
+                    dropDownCloudletList: cloudletSelectBoxList,
                     clusterList: clusterSelectBoxList,
                     currentCloudLet: pCloudLet,
                     currentCluster: pCluster,
@@ -656,6 +672,25 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
 
         }
+
+        handleSelectCloudlet = async (cloudletSelectedOne) => {
+
+            showToast(cloudletSelectedOne)
+/*
+            this.setState({
+                currentCloudLet: cloudletSelectedOne,
+            })
+
+            let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, cloudletSelectedOne, 'cloudlet')
+
+            console.log('filterCloudletList===>', filteredCloudletUsageList);
+
+            this.setState({
+                filteredCloudletUsageList: filteredCloudletUsageList,
+            })*/
+
+        }
+
 
 
         renderBottomGridArea() {
@@ -1044,7 +1079,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:REGION Dropdown           */}
                         {/*todo:---------------------------*/}
                         <div className="page_monitoring_dropdown_box">
-                            <div className="page_monitoring_dropdown_label">
+                            <div className="page_monitoring_dropdown_label" >
                                 Region
                             </div>
                             <Dropdown
@@ -1068,6 +1103,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     }
 
                                 }}
+                                style={{zIndex:9999}}
                                 value={this.state.currentRegion}
                                 // style={Styles.dropDown}
                             />
@@ -1078,18 +1114,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:CloudLet Dropdown       */}
                         {/*todo:---------------------------*/}
 
-                        <div className="page_monitoring_dropdown_box">
+                        <div className="page_monitoring_dropdown_box" >
                             <div className="page_monitoring_dropdown_label">
                                 CloudLet
                             </div>
                             <Dropdown
+                                style={{zIndex:9999}}
                                 disabled={this.state.loading}
                                 value={this.state.currentCloudLet}
                                 clearable={this.state.cloudLetSelectBoxClearable}
                                 loading={this.state.loading}
                                 placeholder={this.state.cloudLetSelectBoxPlaceholder}
                                 selection={true}
-                                options={this.state.cloudletList}
+                                options={this.state.dropDownCloudletList}
                                 // style={Styles.dropDown}
                                 onChange={async (e, {value}) => {
                                     try {
@@ -1109,11 +1146,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:---------------------------*/}
                         {/*todo:Cluster Dropdown         */}
                         {/*todo:---------------------------*/}
-                        <div className="page_monitoring_dropdown_box">
+                        <div className="page_monitoring_dropdown_box" style={{zIndex:9999}}>
                             <div className="page_monitoring_dropdown_label">
                                 Cluster
                             </div>
                             <Dropdown
+                                style={{zIndex:9999}}
                                 disabled={this.state.loading}
                                 value={this.state.currentCluster}
                                 clearable={this.state.clusterSelectBoxClearable}
@@ -1143,11 +1181,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:---------------------------*/}
                         {/*todo: App Instance Dropdown      */}
                         {/*todo:---------------------------*/}
-                        <div className="page_monitoring_dropdown_box">
+                        <div className="page_monitoring_dropdown_box" style={{zIndex:9999}}>
                             <div className="page_monitoring_dropdown_label">
                                 App Inst
                             </div>
                             <Dropdown
+                                style={{zIndex:9999}}
                                 disabled={this.state.currentCluster === '' || this.state.loading}
                                 clearable={this.state.appInstSelectBoxClearable}
                                 loading={this.state.loading}
@@ -1174,7 +1213,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:---------------------------*/}
                         {/*todo: Time Range Dropdown       */}
                         {/*todo:---------------------------*/}
-                        <div className="page_monitoring_dropdown_box">
+                        <div className="page_monitoring_dropdown_box" style={{zIndex:9999}}>
                             {/* <div className="page_monitoring_dropdown_label">
                                 TimeRange
                             </div>*/}
@@ -1374,7 +1413,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <div className="table-no-resized">
                                         <div style={{position: 'absolute', top: '37%', left: '48%'}}>
                                             <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                                {renderLottieLoader(150,150)}
+                                                {renderLottieLoader(150, 150)}
                                             </div>
                                         </div>
                                     </div>
@@ -1439,8 +1478,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolderLottie() : renderSixGridInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet, this)}
+                                                        <LeafletMap cloudletList={this.state.cloudletList} loading={this.state.loading} handleSelectCloudlet={this.handleSelectCloudlet}/>
                                                     </div>
+                                                    {/*{!this.state.isAppInstaceDataReady ? renderPlaceHolderLottie() : renderSixGridInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet, this)}*/}
                                                 </div>
 
                                                 {/* ___col___2nd*/}

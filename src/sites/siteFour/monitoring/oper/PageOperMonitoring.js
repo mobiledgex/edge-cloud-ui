@@ -3,14 +3,14 @@ import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import OutsideClickHandler from 'react-outside-click-handler';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Button, Dropdown, Grid, Modal, Tab, Table} from 'semantic-ui-react'
+import {Button, Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
-import {DatePicker, Progress,} from 'antd';
-import {getCloudletList, makeCloudletListSelectBox, renderBubbleChartForCloudlet, renderPlaceHolder2,} from "../admin/PageAdminMonitoringService";
+import {DatePicker,} from 'antd';
+import {getCloudletList, renderBubbleChartForCloudlet,} from "../admin/PageAdminMonitoringService";
 import {
     CLASSIFICATION,
     HARDWARE_OPTIONS_FOR_CLOUDLET,
@@ -21,20 +21,17 @@ import {
     RECENT_DATA_LIMIT_COUNT,
     REGIONS_OPTIONS
 } from "../../../../shared/Constants";
-import Lottie from "react-lottie";
-import type {TypeCloudletUsageList, TypeGridInstanceList} from "../../../../shared/Types";
+import type {TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {makeBubbleChartDataForCluster, numberWithCommas, renderGridLoader, renderLottieLoader, renderPlaceHolderLottie, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
-import MiniMap from "./MiniMap";
+import {renderLottieLoader, renderPlaceHolderLottie, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
 import {getClouletLevelUsageList, makeBarChartDataForCloudlet, makeLineChartForCloudlet, renderBottomGridAreaForCloudlet} from "./PageOperMonitoringService";
-import LeafletMap from "./LeafletMap";
-import {filterUsageByClassification, makeSelectBoxListWithKey, makeSelectBoxListWithKeyValuePipe, makeSelectBoxListWithThreeValuePipe} from "../dev/PageDevMonitoringService";
-import * as reducer from "../../../../utils";
+import LeafletMap from "../LeafletMap";
+import {filterUsageByClassification, makeSelectBoxListWithKey} from "../dev/PageDevMonitoringService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -646,7 +643,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         handleSelectCloudlet = async (cloudletSelectedOne) => {
 
-            // showToast(cloudletSelectedOne)
+             showToast(cloudletSelectedOne)
 
              this.setState({
                  currentCloudLet: cloudletSelectedOne,
