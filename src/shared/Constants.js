@@ -33,12 +33,14 @@ export const USAGE_TYPE = {
 
 export const CLASSIFICATION = {
     CLOUDLET: 'Cloudlet',
+    CloudletName: 'CloudletName',
     cloudlet: 'cloudlet',
     APP_NAME: 'AppName',
     APPNAME: 'AppName',
     APPINST: 'AppInst',
     CLUSTER_INST: 'ClusterInst',
     CLUSTER: 'Cluster',
+    REGION: 'Region',
 }
 
 export const APP_INST_USAGE_TYPE_INDEX = {

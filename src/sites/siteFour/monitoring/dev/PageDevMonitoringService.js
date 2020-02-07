@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from "axios";
 import '../PageMonitoring.css';
-import {APP_INST_USAGE_TYPE_INDEX, CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION, USAGE_INDEX_FOR_CLUSTER} from "../../../../shared/Constants";
+import {APP_INST_USAGE_TYPE_INDEX, CHART_COLOR_LIST, CLASSIFICATION, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION, USAGE_INDEX_FOR_CLUSTER} from "../../../../shared/Constants";
 import BubbleChart from "../../../../components/BubbleChart";
 import PageMonitoring from "./PageDevMonitoring";
 import PageMonitoringForDeveloper from "./PageDevMonitoring";
@@ -185,14 +185,31 @@ export const getClusterList = async () => {
 }
 
 
-export const filterUsageByClassification = (usageList, selectOne, mapKey,) => {
-    let filteredInstanceList = []
-    usageList.map(item => {
-        if (item[mapKey] === selectOne) {
-            filteredInstanceList.push(item);
+export const filterUsageByClassification = (originalList, selectOne, filterKey,) => {
+
+    //todo:리전인 경우.....
+    if (filterKey === CLASSIFICATION.REGION) {
+        if (selectOne !== 'ALL') {
+            let filteredList = []
+            originalList.map(item => {
+                if (item[filterKey] === selectOne) {
+                    filteredList.push(item);
+                }
+            })
+            return filteredList;
+        } else {
+            return originalList;
         }
-    })
-    return filteredInstanceList;
+    } else {
+        let filteredInstanceList = []
+        originalList.map(item => {
+            if (item[filterKey] === selectOne) {
+                filteredInstanceList.push(item);
+            }
+        })
+        return filteredInstanceList;
+    }
+
 }
 
 
@@ -226,7 +243,6 @@ export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, userTyp
         return numberWithCommas((usageOne.sumRecvBytes / 1000000).toFixed(0)) + " MByte"
     }
 }
-
 
 
 export const sortUsageListByTypeForCluster = (usageList, hardwareType) => {
@@ -682,7 +698,6 @@ export const makeGradientColor = (canvas, height) => {
 }
 
 
-
 export const makeSelectBoxListWithKeyValuePipe = (arrList, keyName, valueName) => {
     let newArrList = [];
     for (let i in arrList) {
@@ -690,6 +705,19 @@ export const makeSelectBoxListWithKeyValuePipe = (arrList, keyName, valueName) =
             key: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim(),
             value: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim(),
             text: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim(),
+        })
+    }
+    return newArrList;
+}
+
+
+export const makeSelectBoxListWithKey = (arrList, keyName) => {
+    let newArrList = [];
+    for (let i in arrList) {
+        newArrList.push({
+            key: arrList[i][keyName].trim(),
+            value: arrList[i][keyName].trim(),
+            text: arrList[i][keyName].trim(),
         })
     }
     return newArrList;

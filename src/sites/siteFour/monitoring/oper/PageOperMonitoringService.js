@@ -232,6 +232,8 @@ export const makeLineChartForCloudlet = (_this: PageOperMonitoring, pUsageList: 
 }
 
 export const getClouletLevelUsageList = async (cloudletList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
+
+
     let instanceBodyList = []
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
@@ -246,10 +248,15 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
     }
 
     let cloudletLevelMatricUsageList = await Promise.all(promiseList);
-    let usageList = []
-    cloudletLevelMatricUsageList.map(item => {
 
-        if ( item.data["0"]!==undefined){
+    console.log('cloudletList===>', cloudletList);
+
+
+    let usageList = []
+    cloudletLevelMatricUsageList.map((item, index) => {
+
+        let Region = cloudletList[index].Region
+        if (item.data["0"] !== undefined) {
             let series = item.data["0"].Series["0"].values
             let columns = item.data["0"].Series["0"].columns
 
@@ -313,6 +320,7 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
                 series: series,
                 cloudlet: cloudlet,
                 operator: operator,
+                Region: Region,
 
             })
         }

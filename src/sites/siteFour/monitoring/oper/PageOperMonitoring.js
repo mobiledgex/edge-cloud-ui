@@ -10,7 +10,7 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker, Progress,} from 'antd';
-import {getCloudletList, renderBubbleChartForCloudlet, renderPlaceHolder2,} from "../admin/PageAdminMonitoringService";
+import {getCloudletList, makeCloudletListSelectBox, renderBubbleChartForCloudlet, renderPlaceHolder2,} from "../admin/PageAdminMonitoringService";
 import {
     CLASSIFICATION,
     HARDWARE_OPTIONS_FOR_CLOUDLET,
@@ -33,7 +33,7 @@ import MiniMap from "./MiniMap";
 import {CircularProgress} from "@material-ui/core";
 import {getClouletLevelUsageList, makeBarChartDataForCloudlet, makeLineChartForCloudlet, renderBottomGridAreaForCloudlet} from "./PageOperMonitoringService";
 import LeafletMap from "./LeafletMap";
-import {filterUsageByClassification, makeSelectBoxListWithThreeValuePipe} from "../dev/PageDevMonitoringService";
+import {filterUsageByClassification, makeSelectBoxListWithKey, makeSelectBoxListWithKeyValuePipe, makeSelectBoxListWithThreeValuePipe} from "../dev/PageDevMonitoringService";
 import * as reducer from "../../../../utils";
 
 const FA = require('react-fontawesome')
@@ -144,7 +144,7 @@ type State = {
     isRequesting: false,
     allCloudletUsageList: Array,
     filteredCloudletUsageList: Array,
-    fliteredCloudletList: Array,
+    filteredCloudletList: Array,
 }
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
@@ -227,7 +227,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             isRequesting: false,
             allCloudletUsageList: [],
             filteredCloudletUsageList: [],
-            fliteredCloudletList: [],
+            filteredCloudletList: [],
         };
 
         interval = null;
@@ -259,10 +259,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
 
             let cloudletList = []
-            //cloudletList = await getCloudletList();
+            cloudletList = await getCloudletList();
 
             //fixme : fakedata
-            cloudletList = require('./cloudletList')
+            //cloudletList = require('./cloudletList')
 
             console.log('cloudletList222===>', cloudletList)
 
@@ -301,7 +301,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 allCloudletUsageList: allCloudletUsageList,
                 cloudletList: cloudletList,
                 filteredCloudletUsageList: allCloudletUsageList,
-                fliteredCloudletList: cloudletList,
+                filteredCloudletList: cloudletList,
                 maxCpu: maxCpu,
                 maxMem: maxMem,
                 isRequesting: false,
@@ -567,9 +567,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         async handleResetData() {
+            showToast('reset')
             await this.setState({
-                currentGridIndex: -1,
-                currentTabIndex: 0,
+                currentRegion: 'ALL',
+                filteredCloudletUsageList: this.state.filteredCloudletUsageList,
+                filteredCloudletList: this.state.cloudletList,
             })
         }
 
@@ -620,6 +622,47 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+        handleSelectRegion = (selectedRegion) => {
+            //showToast(selectedRegion)
+
+            this.setState({
+                currentRegion: selectedRegion,
+            }, async () => {
+                let filteredCloudletList = filterUsageByClassification(this.state.cloudletList, selectedRegion, CLASSIFICATION.REGION)
+                let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, selectedRegion, CLASSIFICATION.REGION)
+                let dropdownCloudletList = makeSelectBoxListWithKey(filteredCloudletList, "CloudletName")
+                console.log('dropdownCloudletList===>', dropdownCloudletList);
+                await this.setState({
+                    cloudLetSelectBoxPlaceholder: 'Select cloudlet',
+                    filteredCloudletList: filteredCloudletList,
+                    filteredCloudletUsageList: filteredCloudletUsageList,
+                    dropdownCloudletList: dropdownCloudletList
+                })
+
+            })
+
+        }
+
+
+        handleSelectCloudlet = async (cloudletSelectedOne) => {
+
+            // showToast(cloudletSelectedOne)
+
+             this.setState({
+                 currentCloudLet: cloudletSelectedOne,
+             })
+
+             let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, cloudletSelectedOne, 'cloudlet')
+
+             console.log('filterCloudletList===>', filteredCloudletUsageList);
+
+             this.setState({
+                 filteredCloudletUsageList: filteredCloudletUsageList,
+             })
+
+        }
+
+
         renderDropdownAreaOper() {
 
             return (
@@ -643,16 +686,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 defaultValue={REGIONS_OPTIONS[0].value}
                                 onChange={async (e, {value}) => {
 
-                                    this.setState({
+                                    await this.setState({
                                         currentRegion: value,
                                     })
 
-                                    /* await this.filterByEachTypes(value)
-                                     setTimeout(() => {
-                                         this.setState({
-                                             cloudLetSelectBoxPlaceholder: 'Select CloudLet'
-                                         })
-                                     }, 1000)*/
+
+                                    await this.handleSelectRegion(value)
+
+
                                 }}
                                 value={this.state.currentRegion}
                                 // style={Styles.dropDown}
@@ -882,28 +923,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderLeafletMap() {
             return (
-                <LeafletMap cloudletList={this.state.cloudletList} loading={this.state.loading} handleSelectCloudlet={this.handleSelectCloudlet}/>
+                <LeafletMap cloudletList={this.state.filteredCloudletList} loading={this.state.loading} handleSelectCloudlet={this.handleSelectCloudlet}/>
             )
         }
 
-
-        handleSelectCloudlet = async (cloudletSelectedOne) => {
-
-            showToast(cloudletSelectedOne)
-
-            this.setState({
-                currentCloudLet: cloudletSelectedOne,
-            })
-
-            let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, cloudletSelectedOne, 'cloudlet')
-
-            console.log('filterCloudletList===>', filteredCloudletUsageList);
-
-            this.setState({
-                filteredCloudletUsageList: filteredCloudletUsageList,
-            })
-
-        }
 
         render() {
             // todo: Components showing when the loading of graph data is not completed.

@@ -224,7 +224,7 @@ class RegistryInstViewer extends React.Component {
         if (state !== 'error' && _self.props.submitData.createAppFormDefault && _self.props.submitData.createAppFormDefault.values) {
             let values = _self.props.submitData.createAppFormDefault.values;
             if (values && values.AutoClusterInst) {
-                
+
                 _self.props.history.location.pgname = 'appinst';
                 _self.props.history.location.pgnameData = {
                     AppName: values.AppName,
@@ -639,7 +639,7 @@ const mapStateToProps = (state) => {
         selectedVersion: selectedVersion,
         selectedCloudlet: selectedCloudlet,
         selectedOperator: selectedOperator,
-        selectOrg: state.selectOrg.org ? state.selectOrg.org : null,
+        //selectOrg: state.selectOrg.org ? state.selectOrg.org : null, //fixme : comment by kyungjoongo. [두개의 selectOrg 가 존재]
         submitData: state.form ? state.form : null,
         userRole: state.showUserRole ? state.showUserRole.role : null,
         appLaunch: state.appLaunch ? state.appLaunch.data : null,
