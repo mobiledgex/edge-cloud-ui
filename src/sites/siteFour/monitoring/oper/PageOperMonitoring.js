@@ -30,7 +30,7 @@ import '../PageMonitoring.css'
 import {renderLottieLoader, renderPlaceHolderLottie, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
 import {getClouletLevelUsageList, makeBarChartDataForCloudlet, makeLineChartForCloudlet, renderBottomGridAreaForCloudlet} from "./PageOperMonitoringService";
-import LeafletMap from "../LeafletMap";
+import LeafletMap from "./LeafletMapWrapper";
 import {filterUsageByClassification, makeSelectBoxListWithKey} from "../dev/PageDevMonitoringService";
 
 const FA = require('react-fontawesome')
@@ -642,8 +642,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         handleSelectCloudlet = async (cloudletSelectedOne) => {
-
-             showToast(cloudletSelectedOne)
 
              this.setState({
                  currentCloudLet: cloudletSelectedOne,

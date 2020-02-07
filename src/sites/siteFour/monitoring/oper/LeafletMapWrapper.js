@@ -2,11 +2,11 @@ import 'react-hot-loader'
 import React from "react";
 import {Map, Marker, Popup, TileLayer, Tooltip} from "react-leaflet";
 import * as L from 'leaflet';
-import "./PageMonitoring.css";
+import "../PageMonitoring.css";
 import {hot} from "react-hot-loader/root";
 import 'react-leaflet-fullscreen-control'
 import {Button, Icon} from "semantic-ui-react";
-import {renderPlaceHolderLottiePinJump} from "./PageMonitoringCommonService";
+import {renderPlaceHolderLottiePinJump} from "../PageMonitoringCommonService";
 
 
 const DEFAULT_VIEWPORT = {
@@ -27,7 +27,7 @@ const multiPolygon = [
     ],
 ]
 let greenIcon = new L.Icon({
-    iconUrl: require('./leaflet_markers/marker-icon-2x-green.png'),
+    iconUrl: require('../leaflet_markers/marker-icon-2x-green.png'),
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -108,7 +108,7 @@ export default hot(
                     }
                     onClick={() => {
 
-                        alert(item.CloudletName)
+                        this.props.handleSelectCloudlet(item.CloudletName)
                     }}
                 >
                     <Tooltip direction='right' offset={[0, 0]} opacity={0.5} permanent>
@@ -147,31 +147,6 @@ export default hot(
                         </Map> :
                         renderPlaceHolderLottiePinJump()
                     }
-
-
-                    <div className="controls" style={{marginTop: -250, zIndex: 9999999}}>
-                        <Button id="mapZoomCtl" size='larges' icon onClick={() => {
-                            this.setState({
-                                zoom: 0.45,
-                            })
-                        }}>
-                            <Icon name="refresh"/>
-                        </Button>
-                        <Button id="mapZoomCtl" size='large' icon onClick={() => {
-                            this.setState({
-                                zoom: this.state.zoom * 1.2
-                            })
-                        }}>
-                            <Icon name="plus square outline"/>
-                        </Button>
-                        <Button id="mapZoomCtl" size='large' icon onClick={() => {
-                            this.setState({
-                                zoom: this.state.zoom * 0.8
-                            })
-                        }}>
-                            <Icon name="minus square outline"/>
-                        </Button>
-                    </div>
                 </div>
             );
         }

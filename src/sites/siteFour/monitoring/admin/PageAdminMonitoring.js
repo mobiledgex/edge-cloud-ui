@@ -53,7 +53,7 @@ import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
 import {numberWithCommas, renderGridLoader, renderLottieLoader, renderPlaceHolderLottie, showToast, showToast2, StylesForMonitoring} from "../PageMonitoringCommonService";
-import LeafletMap from "../LeafletMap";
+import LeafletMap from "../oper/LeafletMapWrapper";
 import {filterUsageByClassification} from "../dev/PageDevMonitoringService";
 
 const FA = require('react-fontawesome')
