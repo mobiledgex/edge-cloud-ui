@@ -309,6 +309,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
                 let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
+
                 await this.setState({
                     appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                     appInstanceList: appInstanceList,
@@ -1478,7 +1479,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        <LeafletMap cloudletList={this.state.cloudletList} loading={this.state.loading} handleSelectCloudlet={this.handleSelectCloudlet}/>
+                                                        <LeafletMap cloudletList={this.state.cloudletList} />
                                                     </div>
                                                     {/*{!this.state.isAppInstaceDataReady ? renderPlaceHolderLottie() : renderSixGridInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet, this)}*/}
                                                 </div>

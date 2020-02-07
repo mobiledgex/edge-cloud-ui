@@ -277,7 +277,7 @@ export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
         chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
         for (let index = 0; index < usageList.length; index++) {
             if (index < 5) {
-                let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...",
+                let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10),
                     renderUsageByType2(usageList[index], hardwareType),
                     CHART_COLOR_LIST[index],
                     renderUsageLabelByType(usageList[index], hardwareType)]
