@@ -780,7 +780,7 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
             })
         }
 
-        let chunkedArraysOfColSize = toChunkArray(cloudletList, 6);
+        let chunkedCloudletListOfColSize = toChunkArray(cloudletList, 6);
 
         return (
             <Tabs selectedIndex={_this.state.currentSixGridIndex}>
@@ -788,7 +788,7 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
                 {/*todo:###############################..*/}
                 {/*todo:그리드를 페이지(tab당) 6개씩 그리는 부분..*/}
                 {/*todo:###############################..*/}
-                {chunkedArraysOfColSize.map((listItem, index) => {
+                {chunkedCloudletListOfColSize.map((listItem, index) => {
                     return (
                         <TabPanel>
                             {renderGrid(listItem)}
@@ -801,7 +801,7 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
                 {/*todo:하단의 dot paging ..*/}
                 {/*todo:#####################..*/}
                 <div style={{flexDirection: 'row', display: 'flex',}}>
-                    {chunkedArraysOfColSize.map((item, index) => {
+                    {chunkedCloudletListOfColSize.map((item, index) => {
                         return (
                             <div
                                 style={{width: 50, display: 'flex',}}
@@ -811,6 +811,9 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
                                     })
                                 }}
                             >
+                                {/*todo:#####################..*/}
+                                {/*todo:선택된 index는 그린Color */}
+                                {/*todo:#####################..*/}
                                 <Icon name='circle' style={{color: _this.state.currentSixGridIndex === index ? 'green' : ''}}/>
                             </div>
                         )
