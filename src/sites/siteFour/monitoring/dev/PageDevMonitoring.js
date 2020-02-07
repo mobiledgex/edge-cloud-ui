@@ -814,47 +814,37 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             return (
 
-                <div>
-                    <SemanticToastContainer position="center-left"/>
-                    <Grid.Row className='content_title'
-                              style={{width: 'fit-content', display: 'inline-block'}}>
-                        <Grid.Column className='title_align2' style={{lineHeight: '36px'}}>Monitoring</Grid.Column>
-                        <div style={{marginLeft: '10px'}}>
-                            <button className="ui circular icon button"><i aria-hidden="true"
-                                                                           className="info icon"></i></button>
-                        </div>
+                <Grid.Row className='content_title'>
+                    <div className='content_title_wrap'>
+                        <div className='content_title_label'>Monitoring</div>
                         {/*todo:---------------------------*/}
                         {/*todo:REFRESH, RESET BUTTON DIV  */}
                         {/*todo:---------------------------*/}
-                        <div style={{marginLeft: '10px'}}>
-                            <Button
-                                onClick={async () => {
-                                    if (!this.state.loading) {
-                                        this.refreshAllData();
-                                    } else {
-                                        showToast('Currently loading, you can\'t request again.')
-                                    }
+                        <Button
+                            onClick={async () => {
+                                if (!this.state.loading) {
+                                    this.refreshAllData();
+                                } else {
+                                    showToast('Currently loading, you can\'t request again.')
+                                }
 
-                                }}
-                                className="ui circular icon button"
-                            >
-                                <i aria-hidden="true"
-                                   className="sync alternate icon"></i>
-                            </Button>
-                        </div>
-                        <div style={{marginLeft: '10px'}}>
-                            <Button
-                                onClick={async () => {
-                                    this.resetAllData();
-                                }}
-                            >RESET</Button>
-                        </div>
+                            }}
+                            className="ui circular icon button"
+                        >
+                            <i aria-hidden="true"
+                               className="sync alternate icon"></i>
+                        </Button>
+                        <Button
+                            onClick={async () => {
+                                this.resetAllData();
+                            }}
+                        >Reset</Button>
 
 
                         {/*{this.state.currentClassification.toString()}*/}
                         {/*{this.state.currentAppInst}*/}
                         {this.state.currentClassification=== CLASSIFICATION.APPINST &&
-                        <div style={{marginLeft: '10px', marginBottom: 3}}>
+                        <div>
                             <MButton
                                 style={{backgroundColor: this.state.isStream ? 'green' : 'grey', color: 'white', height: 36}}
                                 onClick={async () => {
@@ -879,7 +869,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.state.selectOrg}
                         </div>*/}
                         {this.state.intervalLoading &&
-                        <div style={{marginLeft: 15}}>
+                        <div>
                             <div style={{marginLeft: 15}}>
                                 <CircularProgress style={{color: this.state.currentClassification === CLASSIFICATION.APPINST ? 'grey' : 'green', zIndex: 9999999, fontSize: 10}}
                                                   size={20}/>
@@ -894,8 +884,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                               size={20}/>
                         </div>
                         }*/}
-                    </Grid.Row>
-                </div>
+                    </div>
+                </Grid.Row>
             )
         }
 
@@ -1343,10 +1333,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:Content Header                   */}
                         {/*todo:---------------------------------*/}
                         {this.renderHeader()}
-                        <Grid.Row className='site_content_body' style={{marginTop: 22}}>
+                        <Grid.Row className='site_content_body'>
                             <Grid.Column>
-                                <div className="table-no-resized"
-                                     style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
+                                <div className="table-no-resized">
 
                                     <div className="page_monitoring">
                                         {/*todo:---------------------------------*/}

@@ -682,57 +682,48 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             return (
 
-                <div>
-                    <Grid.Row className='content_title'
-                              style={{width: 'fit-content', display: 'inline-block'}}>
-                        <Grid.Column className='title_align2' style={{lineHeight: '36px'}}>Monitoring</Grid.Column>
-                        <div style={{marginLeft: '10px'}}>
-                            <button className="ui circular icon button"><i aria-hidden="true"
-                                                                           className="info icon"></i></button>
-                        </div>
+                <Grid.Row className='content_title'>
+                    <div className='content_title_wrap'>
+                        <div className='content_title_label'>Monitoring</div>
                         {/*todo:---------------------------*/}
                         {/*todo:REFRESH, RESET BUTTON DIV  */}
                         {/*todo:---------------------------*/}
-                        <div style={{marginLeft: '10px'}}>
-                            <Button
-                                onClick={async () => {
-                                    if (!this.state.loading) {
-                                        this.refreshAllData();
-                                    } else {
-                                        showToast('Currently loading, you can\'t request again.')
-                                    }
+                        <Button
+                            onClick={async () => {
+                                if (!this.state.loading) {
+                                    this.refreshAllData();
+                                } else {
+                                    showToast('Currently loading, you can\'t request again.')
+                                }
 
-                                }}
-                                className="ui circular icon button"
-                            >
-                                <i aria-hidden="true"
-                                   className="sync alternate icon"></i>
-                            </Button>
-                        </div>
-                        <div style={{marginLeft: '10px'}}>
-                            <Button
-                                onClick={async () => {
-                                    await this.setState({
-                                        currentGridIndex: -1,
-                                        currentTabIndex: 0,
-                                    })
-                                    //await this.filterByEachTypes('ALL', '', '', '')
-                                }}
-                            >RESET</Button>
-                        </div>
-                        <div style={{marginLeft: 50}}>
+                            }}
+                            className="ui circular icon button"
+                        >
+                            <i aria-hidden="true"
+                               className="sync alternate icon"></i>
+                        </Button>
+                        <Button
+                            onClick={async () => {
+                                await this.setState({
+                                    currentGridIndex: -1,
+                                    currentTabIndex: 0,
+                                })
+                                //await this.filterByEachTypes('ALL', '', '', '')
+                            }}
+                        >RESET</Button>
+                        <div>
                             {this.state.userType}
                         </div>
                         {/*<div style={{color: 'yellow'}}>
                             [OPER_VIEW]
                         </div>*/}
                         {this.state.intervalLoading &&
-                        <div style={{marginLeft: 50}}>
+                        <div>
                             <CircularProgress size={9} style={{fontSize: 9}}/>
                         </div>
                         }
-                    </Grid.Row>
-                </div>
+                    </div>
+                </Grid.Row>
             )
         }
 
@@ -1039,10 +1030,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:Content Header                   */}
                         {/*todo:---------------------------------*/}
                         {this.renderHeader()}
-                        <Grid.Row className='site_content_body' style={{marginTop:22}}>
+                        <Grid.Row className='site_content_body'>
                             <Grid.Column>
-                                <div className="table-no-resized"
-                                     style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
+                                <div className="table-no-resized">
 
                                     <div className="page_monitoring">
                                         {/*todo:---------------------------------*/}
