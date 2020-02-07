@@ -786,7 +786,7 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
             <Tabs selectedIndex={_this.state.currentSixGridIndex}>
 
                 {/*todo:###############################..*/}
-                {/*todo:그리드를 페이지(tab당) 6개씩 그리는 부분..*/}
+                {/*todo:그리드를 페이지(tab)당 6개씩 그리는 부분..*/}
                 {/*todo:###############################..*/}
                 {chunkedCloudletListOfColSize.map((listItem, index) => {
                     return (
