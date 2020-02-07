@@ -18,7 +18,7 @@ export const renderLottieLoader = (width, height) => {
             options={{
                 loop: true,
                 autoplay: true,
-                animationData: require('../../../lotties/10045-loading-gradient-strokes1234'),
+                animationData: require('../../../lotties/14112-heartrate_777'),
                 rendererSettings: {
                     preserveAspectRatio: 'xMidYMid slice'
                 }
@@ -27,6 +27,7 @@ export const renderLottieLoader = (width, height) => {
             width={width}
             isStopped={false}
             isPaused={false}
+            speed={3.0}
         />
     )
 }
@@ -43,13 +44,48 @@ export const renderGridLoader = () =>{
 }
 
 
-export const renderPlaceHolder = (type: string = '') => {
+export const renderPlaceHolderLottie = (type: string = '') => {
     return (
         <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
-           <CircularProgress style={{ color: '#77BD25', zIndex: 9999999, fontSize: 45 }}/>
+            <Lottie
+                options={{
+                    loop: true,
+                    autoplay: true,
+                    animationData: require('../../../lotties/14112-heartrate_777'),
+                    rendererSettings: {
+                        preserveAspectRatio: 'xMidYMid slice'
+                    }
+                }}
+                speed={2.5}
+                height={150}
+                width={150}
+                isStopped={false}
+                isPaused={false}
+            />
         </div>
     )
 }
+/*
+export const renderPlaceHolderLottie = (type: string = '') => {
+    return (
+        <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
+            <Lottie
+                options={{
+                    loop: true,
+                    autoplay: true,
+                    animationData: require('../../../lotties/11052-green-loader-ring_555'),
+                    rendererSettings: {
+                        preserveAspectRatio: 'xMidYMid slice'
+                    }
+                }}
+                height={150}
+                width={150}
+                isStopped={false}
+                isPaused={false}
+            />
+        </div>
+    )
+}*/
 
 export const renderPlaceHolder3 = (type: string = '') => {
     // let boxWidth = window.innerWidth / 3 - 50;
@@ -514,6 +550,18 @@ export const getOneYearStartEndDatetime = () => {
     let arrDateTime = []
     let startTime = makeCompleteDateTime(moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'));
     let endTime = makeCompleteDateTime(moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'));
+
+    arrDateTime.push(startTime)
+    arrDateTime.push(endTime)
+
+    return arrDateTime;
+}
+
+export const getOneYearStartEndDatetime2 = () => {
+
+    let arrDateTime = []
+    let startTime = makeCompleteDateTime(moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm:ss'));
+    let endTime = makeCompleteDateTime(moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm:ss'));
 
     arrDateTime.push(startTime)
     arrDateTime.push(endTime)

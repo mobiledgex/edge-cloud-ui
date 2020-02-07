@@ -52,7 +52,7 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {numberWithCommas, renderGridLoader, renderLottieLoader, renderPlaceHolder, showToast, showToast2, StylesForMonitoring} from "../PageMonitoringCommonService";
+import {numberWithCommas, renderGridLoader, renderLottieLoader, renderPlaceHolderLottie, showToast, showToast2, StylesForMonitoring} from "../PageMonitoringCommonService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -281,10 +281,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
 
                 //@test: FAKE JSON FOR DEV
-                let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
+                //let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
 
                 //@todo: realdata
-                //let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
+                let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
 
                 appInstanceList.map(async (item: TypeAppInstance, index) => {
                     if (index === 0) {
@@ -320,14 +320,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 let usageList = [];
 
                 //@todo:realdata
-             /*   try {
+                try {
                     usageList = await getAppLevelUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
                 } catch (e) {
                     showToast(e.toString())
-                }*/
+                }
 
                 //fixme: fakedata
-                usageList = require('../temp/appLevelUsageList')
+                //usageList = require('../temp/appLevelUsageList')
 
                 //todo: MAKE SELECTBOX.
                 let clusterInstanceGroupList = reducer.groupBy(appInstanceList, CLASSIFICATION.CLUSTER_INST)
@@ -805,7 +805,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : makeBarChartDataForInst(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeBarChartDataForInst(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -818,7 +818,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : makeLineChartDataForAppInst(this, this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeLineChartDataForAppInst(this, this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
                         </div>
                     </div>
                 </div>
@@ -838,7 +838,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : makeBarChartDataForInst(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeBarChartDataForInst(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -851,7 +851,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : makeLineChartDataForAppInst(this, this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeLineChartDataForAppInst(this, this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
                         </div>
                     </div>
 
@@ -870,7 +870,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : makeBarChartDataForInst(this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeBarChartDataForInst(this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -881,7 +881,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : makeLineChartDataForAppInst(this, this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeLineChartDataForAppInst(this, this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
                         </div>
                     </div>
                 </div>
@@ -899,7 +899,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder('network') : makeBarChartDataForInst(this.state.filteredConnectionsUsageList, connectionsType, this)}
+                            {this.state.loading ? renderPlaceHolderLottie('network') : makeBarChartDataForInst(this.state.filteredConnectionsUsageList, connectionsType, this)}
                         </div>
                     </div>
                     <div className='page_monitoring_dual_container'>
@@ -937,7 +937,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder('network') : makeLineChartDataForAppInst(this, this.state.filteredConnectionsUsageList, connectionsType)}
+                            {this.state.loading ? renderPlaceHolderLottie('network') : makeLineChartDataForAppInst(this, this.state.filteredConnectionsUsageList, connectionsType)}
                         </div>
                     </div>
                 </div>
@@ -954,7 +954,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder('network') : makeBarChartDataForInst(this.state.filteredNetworkUsageList, networkType, this)}
+                            {this.state.loading ? renderPlaceHolderLottie('network') : makeBarChartDataForInst(this.state.filteredNetworkUsageList, networkType, this)}
                         </div>
                     </div>
                     <div className='page_monitoring_dual_container'>
@@ -987,7 +987,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder('network') : makeLineChartDataForAppInst(this, this.state.filteredNetworkUsageList, networkType)}
+                            {this.state.loading ? renderPlaceHolderLottie('network') : makeLineChartDataForAppInst(this, this.state.filteredNetworkUsageList, networkType)}
                         </div>
                     </div>
                 </div>
@@ -1379,11 +1379,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <Grid.Row className='view_contents'>
                         <Grid.Column className='contents_body'>
                             {this.renderHeader()}
-                            <div style={{position: 'absolute', top: '37%', left: '48%'}}>
-                                <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                    {renderGridLoader()}
-                                </div>
-                            </div>
+                            <Grid.Row className='site_content_body' style={{marginTop: 22}}>
+                                <Grid.Column>
+                                    <div className="table-no-resized"
+                                         style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
+                                        <div style={{position: 'absolute', top: '37%', left: '48%'}}>
+                                            <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
+                                                {renderLottieLoader(150,150)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Grid.Column>
+                            </Grid.Row>
                         </Grid.Column>
                     </Grid.Row>
                 )
@@ -1412,7 +1419,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.renderBottomGridArea()}
                         </Modal.Content>
                     </Modal>
-                    <SemanticToastContainer position={"top-left"}/>
+                    <SemanticToastContainer position={"top-right"}/>
                     <Grid.Column className='contents_body'>
                         {/*todo:---------------------------------*/}
                         {/*todo:Content Header                   */}
@@ -1444,7 +1451,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolder() : renderSixGridInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet, this)}
+                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolderLottie() : renderSixGridInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet, this)}
                                                     </div>
                                                 </div>
 

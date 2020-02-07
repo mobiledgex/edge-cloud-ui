@@ -206,14 +206,14 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Nzg3MDU5M
   "appinst": {
     "app_key": {
       "developer_key": {
-        "name": "MobiledgeX"
+        "name": "WonhoOrg1"
       },
-      "name": "bicTestApp1112-01",
+      "name": "BICAPP",
       "version": "1.0"
     },
     "cluster_inst_key": {
       "cluster_key": {
-        "name": "qqqaaa"
+        "name": "autoclusterbicapp"
       },
       "cloudlet_key": {
         "operator_key": {

@@ -4,6 +4,7 @@ import OutsideClickHandler from 'react-outside-click-handler';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
 import {Button, Dropdown, Grid, Modal, Tab, Table} from 'semantic-ui-react'
+import {Button as MButton} from "@material-ui/core";
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
@@ -42,12 +43,12 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import '../PageMonitoring.css'
 import {
-    getOneYearStartEndDatetime,
+    getOneYearStartEndDatetime, getOneYearStartEndDatetime2,
     makeBubbleChartDataForCluster,
     numberWithCommas,
     renderBarChartCore, renderGridLoader,
     renderLineChartCore, renderLottieLoader,
-    renderPlaceHolder,
+    renderPlaceHolderLottie,
     showToast,
     StylesForMonitoring
 } from "../PageMonitoringCommonService";
@@ -268,9 +269,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             allAppInstUsageList: [],
             clusterListLoading: true,
             allClusterUsageList003: [],
+            isStream: false,
         };
 
-        interval = null;
+        intervalForAppInst = null;
 
 
         constructor(props) {
@@ -291,12 +293,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         componentWillUnmount(): void {
-            clearInterval(this.interval)
+            clearInterval(this.intervalForAppInst)
         }
 
 
         async loadInitDataForCluster(isInterval: boolean = false) {
-            clearInterval(this.interval)
+            clearInterval(this.intervalForAppInst)
             this.setState({dropdownRequestLoading: true})
             let clusterList = await getClusterList();
             let cloudletList = await getCloudletList()
@@ -379,7 +381,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         async resetAllData() {
-            clearInterval(this.interval)
+            clearInterval(this.intervalForAppInst)
             await this.setState({
                 currentGridIndex: -1,
                 currentTabIndex: 0,
@@ -402,7 +404,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         async refreshAllData() {
-            clearInterval(this.interval)
+            clearInterval(this.intervalForAppInst)
             toast({
                 type: 'success',
                 //icon: 'smile',
@@ -488,7 +490,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
+                            {this.state.loading ? renderPlaceHolderLottie() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
                         </div>
                     </div>
                     {/*@todo:LInechart*/}
@@ -502,7 +504,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {!this.state.loading && this.renderDropDownForMultiTab(pHardwareType)}
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
+                            {this.state.loading ? renderPlaceHolderLottie() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
                         </div>
                     </div>
 
@@ -515,19 +517,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
                 <div className='page_monitoring_dual_column'>
 
-                    {/*@todo:BarChart*/}
-                    {/*@todo:BarChart*/}
-                    {/*@todo:BarChart*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                Top 5 {convertHwTypePhrases(pHardwareType)} usage of {this.convertToClassification(this.state.currentClassification)}
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
-                        </div>
-                    </div>
+
                     {/*@todo:LInechart*/}
                     {/*@todo:LInechart*/}
                     {/*@todo:LInechart*/}
@@ -544,7 +534,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
+                            {this.state.loading ? renderPlaceHolderLottie() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
+                        </div>
+                    </div>
+                    {/*@todo:BarChart*/}
+                    {/*@todo:BarChart*/}
+                    {/*@todo:BarChart*/}
+                    <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                Top 5 {convertHwTypePhrases(pHardwareType)} usage of {this.convertToClassification(this.state.currentClassification)}
+                            </div>
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {this.state.loading ? renderPlaceHolderLottie() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
                         </div>
                     </div>
 
@@ -846,6 +849,28 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                             >RESET</Button>
                         </div>
+
+
+                        {/*{this.state.currentClassification.toString()}*/}
+                        {/*{this.state.currentAppInst}*/}
+                        {this.state.currentClassification=== CLASSIFICATION.APPINST &&
+                        <div style={{marginLeft: '10px', marginBottom: 3}}>
+                            <MButton
+                                style={{backgroundColor: this.state.isStream ? 'green' : 'grey', color: 'white', height: 36}}
+                                onClick={async () => {
+                                    this.setState({
+                                        isStream: !this.state.isStream,
+                                    },()=>{
+                                        if(!this.state.isStream){
+                                            clearInterval(this.intervalForAppInst)
+                                        }else{
+                                            this.handleAppInstDropdown(this.state.currentAppInst)
+                                        }
+                                    })
+                                }}
+                            >STREAM {this.state.isStream ? 'on' : 'off'}</MButton>
+                        </div>
+                        }
                         {/*<div style={{marginLeft: 50, color: 'green', fontWeight: 'bold', fontFamily: 'Righteous'}}>
                             {this.state.userType}
                             [ This is Developer View ]
@@ -854,7 +879,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.state.selectOrg}
                         </div>*/}
                         {this.state.intervalLoading &&
-
                         <div style={{marginLeft: 15}}>
                             <div style={{marginLeft: 15}}>
                                 <CircularProgress style={{color: this.state.currentClassification === CLASSIFICATION.APPINST ? 'grey' : 'green', zIndex: 9999999, fontSize: 10}}
@@ -974,7 +998,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         handleAppInstDropdown = async (pCurrentAppInst) => {
-            clearInterval(this.interval)
+            clearInterval(this.intervalForAppInst)
             await this.setState({
                 currentAppInst: pCurrentAppInst,
                 loading: true,
@@ -1043,26 +1067,35 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentTabIndex: 0,
             })
 
+            if (this.state.isStream) {
+                this.setAppInstInterval(filteredAppList)
+            } else {
+                clearInterval(this.intervalForAppInst)
+            }
+
         }
 
 
         setAppInstInterval(filteredAppList) {
-            this.interval = setInterval(async () => {
+            this.intervalForAppInst = setInterval(async () => {
                 this.setState({
                     intervalLoading: true,
                 })
                 let arrDateTime2 = getOneYearStartEndDatetime();
-                let allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime2[0], arrDateTime2[1]);
+
+                console.log('allAppInstUsageList77===>startDate', arrDateTime2[0]);
+                console.log('allAppInstUsageList77===>EndDate', arrDateTime2[1]);
+                let allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT);
                 console.log('allAppInstUsageList77===>', allAppInstUsageList);
                 this.setState({
                     intervalLoading: false,
                     filteredAppInstUsageList: allAppInstUsageList,
                 })
-            }, 1000 * 3.0)
+            }, 1000 * 7.0)
         }
 
         async handleClusterDropdown(value) {
-            clearInterval(this.interval)
+            clearInterval(this.intervalForAppInst)
 
             let selectData = value.split("|")
             let selectedCluster = selectData[0].trim();
@@ -1124,7 +1157,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderBottomGridAreaForCluster(pClusterList) {
 
-            //pClusterList
             pClusterList = sortUsageListByTypeForCluster(pClusterList, HARDWARE_TYPE.CPU)
 
             return (
@@ -1275,7 +1307,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.renderHeader()}
                             <div style={{position: 'absolute', top: '37%', left: '48%'}}>
                                 <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                    {renderLottieLoader()}
+                                    {renderLottieLoader(150, 150)}
                                 </div>
                             </div>
                         </Grid.Column>
@@ -1311,7 +1343,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:Content Header                   */}
                         {/*todo:---------------------------------*/}
                         {this.renderHeader()}
-                        <Grid.Row className='site_content_body' style={{marginTop:22}}>
+                        <Grid.Row className='site_content_body' style={{marginTop: 22}}>
                             <Grid.Column>
                                 <div className="table-no-resized"
                                      style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
@@ -1352,7 +1384,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*fixme:---------------------------------*/}
                                                     {/*fixme: RENDER TAB_AREA                 */}
                                                     {/*fixme:---------------------------------*/}
-                                                    {this.state.loading ? renderPlaceHolder()
+                                                    {this.state.loading ? renderPlaceHolderLottie()
                                                         :
                                                         <Tab
                                                             className='page_monitoring_tab'
@@ -1413,7 +1445,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*todo: RENDER BUBBLE_CHART          */}
                                                     {/*todo:---------------------------------*/}
                                                     <div className='page_monitoring_container'>
-                                                        {this.state.loading ? renderPlaceHolder() : renderBubbleChartForCloudlet(this, this.state.currentHardwareType, this.state.bubbleChartData)}
+                                                        {this.state.loading ? renderPlaceHolderLottie() : renderBubbleChartForCloudlet(this, this.state.currentHardwareType, this.state.bubbleChartData)}
                                                     </div>
                                                 </div>
                                                 {/* row2___col___2*/}
