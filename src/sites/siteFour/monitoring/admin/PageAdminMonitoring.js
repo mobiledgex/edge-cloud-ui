@@ -1416,7 +1416,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <div className="table-no-resized">
                                         <div style={{position: 'absolute', top: '37%', left: '48%'}}>
                                             <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                                {renderGridLoader(150, 150)}
+                                                {renderLottieLoader(150, 150)}
                                             </div>
                                         </div>
                                     </div>

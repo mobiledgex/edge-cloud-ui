@@ -18,7 +18,7 @@ export const renderLottieLoader = (width, height) => {
             options={{
                 loop: true,
                 autoplay: true,
-                animationData: require('../../../lotties/14112-heartrate_777'),
+                animationData: require('../../../lotties/10910-loade_dots.json'),
                 rendererSettings: {
                     preserveAspectRatio: 'xMidYMid slice'
                 }
@@ -62,7 +62,7 @@ export const renderPlaceHolderLottie = (type: string = '') => {
                 isStopped={false}
                 isPaused={false}
             />*/}
-            <CircularProgress style={{color: 'orange', zIndex: 9999999, fontSize: 100}}
+            <CircularProgress style={{color: '#70b2bc', zIndex: 9999999, fontSize: 100}}
             />
         </div>
     )
