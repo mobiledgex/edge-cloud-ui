@@ -852,10 +852,9 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
                     </div>
                 )}
 
-                {/*@todo:------------------------------------------------------------------*/}
-                {/*@todo:Logic to fill 2nd row with blank if only first row exists           */}
-                {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직                     */}
-                {/*@todo:------------------------------------------------------------------*/}
+                {/*todo:##################################################....*/}
+                {/*todo:Logic to fill 2nd row with blank if only first row exists           */}
+                {/*todo:##################################################....*/}
                 {pListItem.length === 1 &&
                 <div className='page_monitoring_grid'>
                     {[1, 2, 3].map((item, index) =>
