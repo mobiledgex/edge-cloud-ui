@@ -1,9 +1,9 @@
-import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX} from "../../../../shared/Constants";
+import {CHART_COLOR_LIST, HARDWARE_TYPE, HARDWARE_TYPE_FOR_CLOUDLET, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX} from "../../../../shared/Constants";
 import React from "react";
 import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
 import {
     getCloudletLevelMatric,
-    makeFormForCloudletLevelMatric,
+    makeFormForCloudletLevelMatric, numberWithCommas,
     renderBarChartCore,
     renderLineChartCore,
     renderUsageByType2,
@@ -11,6 +11,10 @@ import {
     StylesForMonitoring
 } from "../PageMonitoringCommonService";
 import PageOperMonitoring from "./PageOperMonitoring";
+import {Table} from "semantic-ui-react";
+import Lottie from "react-lottie";
+import type {TypeCloudletUsageList} from "../../../../shared/Types";
+import {Progress} from "antd";
 
 export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
     console.log('renderBarGraph2===>', usageList);
@@ -40,6 +44,127 @@ export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
 
         return renderBarChartCore(chartDataList, hardwareType)
     }
+}
+
+
+export const renderBottomGridAreaForCloudlet = (_this: PageOperMonitoring) => {
+    return (
+        <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
+            <Table.Header className="viewListTableHeader">
+                <Table.Row>
+                    <Table.HeaderCell>
+                        index
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        CLOUDLET
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        vCPU(%)
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        MEM
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        DISK
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        RECV BYTES
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        SEND BYTES
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        FLOATING IPS
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        IPV4
+                    </Table.HeaderCell>
+
+                </Table.Row>
+            </Table.Header>
+            <Table.Body className="tbBodyList">
+
+
+                {/*-----------------------*/}
+                {/*todo:ROW HEADER        */}
+                {/*-----------------------*/}
+                {!_this.state.isReady &&
+                <Table.Row className='page_monitoring_popup_table_empty'>
+                    <Table.Cell>
+                        <Lottie
+                            options={{
+                                loop: true,
+                                autoplay: true,
+                                animationData: require('../../../../lotties/loader001'),
+                                rendererSettings: {
+                                    preserveAspectRatio: 'xMidYMid slice'
+                                }
+                            }}
+                            height={240}
+                            width={240}
+                            isStopped={false}
+                            isPaused={false}
+                        />
+                    </Table.Cell>
+                </Table.Row>}
+                {_this.state.isReady && _this.state.allUsageList.map((item: TypeCloudletUsageList, index) => {
+                    return (
+                        <Table.Row className='page_monitoring_popup_table_row'>
+
+                            <Table.Cell>
+                                {index}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {item.cloudlet}
+                            </Table.Cell>
+                            <Table.Cell>
+                                <div>
+                                    <div>
+                                        {item.avgVCpuUsed.toFixed(2) + '%'}
+                                    </div>
+                                    <div>
+                                        <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                                  percent={(item.avgVCpuUsed / this.state.maxCpu * 100)}
+                                            //percent={(item.sumCpuUsage / this.state.gridInstanceListCpuMax) * 100}
+                                                  strokeColor={'#29a1ff'} status={'normal'}/>
+                                    </div>
+                                </div>
+                            </Table.Cell>
+                            <Table.Cell>
+                                <div>
+                                    <div>
+                                        {numberWithCommas(item.avgMemUsed) + ' Byte'}
+                                    </div>
+                                    <div>
+                                        <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                                  percent={(item.avgMemUsed / this.state.maxMem * 100)}
+                                                  strokeColor={'#29a1ff'} status={'normal'}/>
+                                    </div>
+
+                                </div>
+                            </Table.Cell>
+                            <Table.Cell>
+                                {numberWithCommas(item.avgDiskUsed) + ' Byte'}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {numberWithCommas(item.avgNetRecv) + ' Byte'}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {numberWithCommas(item.avgNetSend) + ' Byte'}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {item.avgFloatingIpsUsed}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {item.avgIpv4Used}
+                            </Table.Cell>
+                        </Table.Row>
+
+                    )
+                })}
+            </Table.Body>
+        </Table>
+    )
 }
 
 
