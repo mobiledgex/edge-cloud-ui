@@ -158,8 +158,9 @@ type State = {
     connectionsTabIndex: number,
     dropDownCloudletList: Array,
     cloudletList: Array,
-    newCloudletList:Array,
-    currentSixGridIndex:number,
+    newCloudletList: Array,
+    currentSixGridIndex: number,
+    isAppInstaceOnCloudletDataReady: boolean,
 
 }
 
@@ -236,8 +237,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             connectionsTabIndex: 0,
             dropDownCloudletList: [],
             cloudletList: [],
-            newCloudletList:[],
-            currentSixGridIndex:0,
+            newCloudletList: [],
+            currentSixGridIndex: 0,
+            isAppInstaceOnCloudletDataReady: false,
         };
 
         constructor(props) {
@@ -284,6 +286,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 console.log('userRole====>', userRole);
 
                 this.setState({
+                    isAppInstaceOnCloudletDataReady: false,
                     loading: true,
                     loading0: true,
                     isReady: false,
@@ -313,37 +316,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
 
-
-                let cloutletKeyList = Object.keys(appInstanceListGroupByCloudlet)
-
-                let newCloudletList = []
-                cloutletKeyList.map((key, index) => {
-
-                    console.log('index===>', index);
-
-                    let count = appInstanceListGroupByCloudlet[key].length
-                    let cloudletList = appInstanceListGroupByCloudlet[key];
-
-                    console.log('count===>', count);
-
-                    newCloudletList.push({
-                        count: count,
-                        instanceOne: allCloudletList[index],
-                        cloudletList:cloudletList,
-                    })
-                })
-
-                console.log('newCloudletList===>', newCloudletList);
-
-
                 await this.setState({
-                    newCloudletList:newCloudletList,
+                    //newCloudletList:newCloudletList,
                     appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                     appInstanceList: appInstanceList,
                     allAppInstanceList: appInstanceList,
-
-                })
-                await this.setState({
                     isAppInstaceDataReady: true,
                 })
 

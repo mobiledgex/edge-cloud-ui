@@ -740,6 +740,30 @@ export const makeNetworkLineChartData = (filteredNetworkUsageList, pHardwareType
 
 }
 
+function makeAppInstOnCloudletList () {
+   /* let cloutletKeyList = Object.keys(appInstanceListGroupByCloudlet)
+
+    let newCloudletList = []
+    cloutletKeyList.map((key, index) => {
+
+        console.log('index===>', index);
+
+        let count = appInstanceListGroupByCloudlet[key].length
+        let cloudletList = appInstanceListGroupByCloudlet[key];
+
+        console.log('count===>', count);
+
+        newCloudletList.push({
+            count: count,
+            instanceOne: allCloudletList[index],
+            cloudletList:cloudletList,
+        })
+    })
+
+    console.log('newCloudletList===>', newCloudletList);*/
+}
+
+
 function isEmptyObject(obj) {
     //Loop through and check if a property
     //exists
