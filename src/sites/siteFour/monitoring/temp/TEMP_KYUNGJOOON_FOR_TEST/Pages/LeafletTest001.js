@@ -1,28 +1,12 @@
 import 'react-hot-loader'
 import React from "react";
-import {LayersControl, Map, Marker, Pane, Popup, TileLayer, Tooltip, ZoomControl} from "react-leaflet";
-import {divIcon} from 'leaflet';
-import * as L from 'leaflet'
+import {LayersControl, Map, Marker, Popup, TileLayer} from "react-leaflet";
+//import * as L from 'leaflet';
 
 import "./leaflet.css";
 import {hot} from "react-hot-loader/root";
 import 'react-leaflet-fullscreen-control'
 import {showToast} from "../../../PageMonitoringCommonService";
-import TouchRipple from "@material-ui/core/ButtonBase/TouchRipple";
-import Ripples from "react-ripples";
-import $ from 'jquery';
-import {Button, Icon} from "semantic-ui-react";
-
-const {BaseLayer, Overlay} = LayersControl
-const rectangle = [
-    [51.49, -0.08],
-    [51.5, -0.06],
-]
-const center = [51.505, -0.09]
-const outer = [
-    [50.505, -29.09],
-    [52.505, 29.09],
-]
 
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
@@ -81,35 +65,36 @@ export default hot(
 
         render() {
 
-            var greenIcon = new L.Icon({
+          /*  var greenIcon = new L.Icon({
                 iconUrl: require('./leaflet_icons/marker-icon-2x-green.png'),
                 shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
                 iconSize: [25, 41],
                 iconAnchor: [12, 41],
                 popupAnchor: [1, -34],
                 shadowSize: [41, 41]
-            });
+            });*/
 
 
             return (
-                <div style={{height: '100%', width: '100%'}}>
+                <div style={{}}>
                     <Map center={[45.4, 51.7]}
-                         zoom={1.5}
-                        /* bound={[
-                             [25.505, -29.09],
-                             [25.505, 29.09],
-                         ]}*/
-                         boundsOptions={{padding: [50, 50]}}
+                         zoom={3}
+                         style={{width:'100%', height:'100%'}}
+                         easeLinearity={1}
+                         useFlyTo={true}
                     >
                         <TileLayer
-                            //url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
-                            url={'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'}
-                            minZoom={1}
+
+                            url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
+                            //url={'https://{s}.basemaps.cartocdn.com/{z}/{x}/{y}'}
+                            minZoom={2}
+                            zIndex={9999}
+                            opacity={1}
                             //maxZoom={15}
                         />
                         <Marker
                             ref={c => this.marker1 = c}
-                            icon={greenIcon}
+                            //icon={greenIcon}
                             className='marker1'
                             position={
                                 [37.404945, 127.106259]
@@ -239,7 +224,7 @@ export default hot(
 
                     </Map>
 
-                    <div className="controls" style={{marginTop: -250, zIndex:9999999}}>
+                   {/* <div className="controls" style={{marginTop: -250, zIndex:9999999}}>
                         <Button id="mapZoomCtl" size='larges' icon onClick={() => {
                             this.setState({
                                 zoom: 0.45,
@@ -261,7 +246,7 @@ export default hot(
                         }}>
                             <Icon name="minus square outline"/>
                         </Button>
-                    </div>
+                    </div>*/}
                 </div>
             );
         }

@@ -331,7 +331,7 @@ class App extends Component {
                     <Route exact path='/createAccount' component={DashboardContainer.bind(this, {mainPath:'/createAccount'})} />
                     <Route exact path='/passwordreset' component={DashboardContainer.bind(this, {mainPath:'/passwordreset'})} />
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
-                    <Route exact path='/LeafletTest001' component={<LeafletTest001/>} />
+                    <Route exact path='/LeafletTest001' component={LeafletTest001} />
                 </div>
             </Router>
         );
