@@ -6,6 +6,7 @@ import MexForms from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
+import * as serviceMC from '../../../services/serviceMC';
 import * as serverData from '../../../services/ServerData';
 
 const stepData = [
@@ -58,8 +59,19 @@ class AutoProvPolicyReg extends React.Component {
         })
     }
 
-    onCreate = (data) => {
-        alert(JSON.stringify(data))
+    onCreateAutoProvPolicyResponse = (mcRequest)=>
+    {
+        console.log('Rahul1234', mcRequest)
+    }
+
+    onCreateAutoProvPolicy = (data) => {
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        let token  = store.userToken;
+        if(token)
+        {
+            let method = serviceMC.getEP().CREATE_AUTO_PROV_POLICY;
+            serviceMC.sendRequest(this, {token:token, method:method, data:data}, this.onCreateAutoProvPolicyResponse)
+        }
     }
 
 
@@ -84,7 +96,6 @@ class AutoProvPolicyReg extends React.Component {
                         </Step.Group>
                         <MexForms forms={this.state.forms} />
                     </Item>
-
                 </div>
             </div>
         )
@@ -94,21 +105,20 @@ class AutoProvPolicyReg extends React.Component {
 
     getFormData = ()=>
     {
-        serverData.getCloudletInfo(this, this.regions).then(data => {
-            console.log('Rahul1234', data)
-
-            let step1 = [
-                { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { required: true } , data: this.getRegionData() },
-                { field: 'AutoPolicyName', label: 'Auto Policy Name', type: 'Input', placeholder: 'Enter Auto Prov Name', rules: { required: true } },
-                { field: 'DeployClientCount', label: 'Deploy Client Count', type: 'Input', rules: { type: 'number'} },
-                { field: 'DeployIntervalCount', label: 'Deploy Interval Count', type: 'Input', rules: { type: 'number' } },
-                { label: 'Create Cloudlet Pool', type: 'Button', onClick: this.onCreate}
-            ]
-            this.setState({
-                forms: step1
-            })
+        serverData.getOrganizationInfo(this).then(data => {
+            alert(JSON.stringify(data))
         })
-        
+        let step1 = [
+            { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { required: true }, data: this.getRegionData() },
+            { field: 'AutoPolicyName', label: 'Auto Policy Name', type: 'Input', placeholder: 'Enter Auto Prov Name', rules: { required: true } },
+            { field: 'DeployClientCount', label: 'Deploy Client Count', type: 'Input', rules: { type: 'number' } },
+            { field: 'DeployIntervalCount', label: 'Deploy Interval Count', type: 'Input', rules: { type: 'number' } },
+            { label: 'Create Cloudlet Pool', type: 'Button', onClick: this.onCreateAutoProvPolicy }
+        ]
+        this.setState({
+            forms: step1
+        })
+
     }
 
     componentDidMount() {
