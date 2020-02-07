@@ -10,7 +10,7 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker, Progress,} from 'antd';
-import {getCloudletList, renderBubbleChartForCloudlet,} from "../admin/PageAdminMonitoringService";
+import {getCloudletList, renderBubbleChartForCloudlet, renderPlaceHolder2,} from "../admin/PageAdminMonitoringService";
 import {
     HARDWARE_OPTIONS_FOR_CLOUDLET,
     HARDWARE_TYPE,
@@ -30,7 +30,7 @@ import '../PageMonitoring.css'
 import {numberWithCommas, renderGridLoader, renderLottieLoader, renderPlaceHolderLottie, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
 import MiniMap from "./MiniMap";
 import {CircularProgress} from "@material-ui/core";
-import {getClouletLevelUsageList, renderBarGraphForCloudlet, renderLineChartForCloudlet} from "./PageOperMonitoringService";
+import {getClouletLevelUsageList, makeBarChartDataForCloudlet, makeLineChartForCloudlet} from "./PageOperMonitoringService";
 import LeafletMap from "./LeafletMap";
 
 const FA = require('react-fontawesome')
@@ -140,6 +140,8 @@ type State = {
     intervalLoading: boolean,
     isRequesting: false,
     allCloudletUsageList: Array,
+    filteredCloudletUsageList: Array,
+    fliteredCloudletList: Array,
 }
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
@@ -221,6 +223,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             intervalLoading: false,
             isRequesting: false,
             allCloudletUsageList: [],
+            filteredCloudletUsageList: [],
+            fliteredCloudletList: [],
         };
 
         interval = null;
@@ -252,7 +256,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
 
             let cloudletList = []
-            cloudletList = await getCloudletList();
+            //cloudletList = await getCloudletList();
+
+            //fixme : fakedata
+            cloudletList = require('./cloudletList')
 
             console.log('cloudletList222===>', cloudletList)
 
@@ -290,6 +297,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 allCloudletUsageList: allCloudletUsageList,
                 cloudletList: cloudletList,
+                filteredCloudletUsageList: allCloudletUsageList,
+                fliteredCloudletList: cloudletList,
                 maxCpu: maxCpu,
                 maxMem: maxMem,
                 isRequesting: false,
@@ -485,7 +494,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : renderBarGraphForCloudlet(this.state.allCloudletUsageList, HARDWARE_TYPE.VCPU)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeBarChartDataForCloudlet(this.state.allCloudletUsageList, HARDWARE_TYPE.VCPU)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -498,7 +507,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : renderLineChartForCloudlet(this, this.state.allCloudletUsageList, HARDWARE_TYPE.VCPU)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeLineChartForCloudlet(this, this.state.allCloudletUsageList, HARDWARE_TYPE.VCPU)}
                         </div>
                     </div>
                 </div>
@@ -518,7 +527,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : renderBarGraphForCloudlet(this.state.allCloudletUsageList, HARDWARE_TYPE.MEM)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeBarChartDataForCloudlet(this.state.allCloudletUsageList, HARDWARE_TYPE.MEM)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -531,7 +540,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : renderLineChartForCloudlet(this, this.state.allCloudletUsageList, HARDWARE_TYPE.MEM)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeLineChartForCloudlet(this, this.state.allCloudletUsageList, HARDWARE_TYPE.MEM)}
                         </div>
                     </div>
 
@@ -550,7 +559,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : renderBarGraphForCloudlet(this.state.allCloudletUsageList, HARDWARE_TYPE.DISK)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeBarChartDataForCloudlet(this.state.allCloudletUsageList, HARDWARE_TYPE.DISK)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -561,7 +570,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : renderLineChartForCloudlet(this, this.state.allCloudletUsageList, HARDWARE_TYPE.DISK)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeLineChartForCloudlet(this, this.state.allCloudletUsageList, HARDWARE_TYPE.DISK)}
                         </div>
                     </div>
                 </div>
@@ -579,7 +588,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : renderBarGraphForCloudlet(this.state.allCloudletUsageList, HARDWARE_TYPE.FLOATING_IPS)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeBarChartDataForCloudlet(this.state.allCloudletUsageList, HARDWARE_TYPE.FLOATING_IPS)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -590,7 +599,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : renderLineChartForCloudlet(this, this.state.allCloudletUsageList, HARDWARE_TYPE.FLOATING_IPS)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeLineChartForCloudlet(this, this.state.allCloudletUsageList, HARDWARE_TYPE.FLOATING_IPS)}
                         </div>
                     </div>
                 </div>
@@ -608,7 +617,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : renderBarGraphForCloudlet(this.state.allCloudletUsageList, HARDWARE_TYPE.IPV4)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeBarChartDataForCloudlet(this.state.allCloudletUsageList, HARDWARE_TYPE.IPV4)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -619,7 +628,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : renderLineChartForCloudlet(this, this.state.allCloudletUsageList, HARDWARE_TYPE.IPV4)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeLineChartForCloudlet(this, this.state.allCloudletUsageList, HARDWARE_TYPE.IPV4)}
                         </div>
                     </div>
                 </div>
@@ -637,7 +646,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie('network') : renderBarGraphForCloudlet(this.state.allCloudletUsageList, networkType, this)}
+                            {this.state.loading ? renderPlaceHolderLottie('network') : makeBarChartDataForCloudlet(this.state.allCloudletUsageList, networkType, this)}
                         </div>
                     </div>
                     <div className='page_monitoring_dual_container'>
@@ -670,7 +679,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie('network') : renderLineChartForCloudlet(this, this.state.allCloudletUsageList, networkType)}
+                            {this.state.loading ? renderPlaceHolderLottie('network') : makeLineChartForCloudlet(this, this.state.allCloudletUsageList, networkType)}
                         </div>
                     </div>
                 </div>
@@ -993,6 +1002,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         ]
 
+        renderLeafletMap() {
+            return (
+               <LeafletMap cloudletList={this.state.cloudletList} loading={this.state.loading}/>
+            )
+        }
+
         render() {
             // todo: Components showing when the loading of graph data is not completed.
             if (!this.state.isAppInstaceDataReady) {
@@ -1002,7 +1017,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.renderHeader()}
                             <div style={{position: 'absolute', top: '37%', left: '48%'}}>
                                 <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                    {renderLottieLoader()}
+                                    {renderLottieLoader(150, 150)}
                                 </div>
                             </div>
                         </Grid.Column>
@@ -1039,7 +1054,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:Content Header                   */}
                         {/*todo:---------------------------------*/}
                         {this.renderHeader()}
-                        <Grid.Row className='site_content_body' style={{marginTop:22}}>
+                        <Grid.Row className='site_content_body' style={{marginTop: 22}}>
                             <Grid.Column>
                                 <div className="table-no-resized"
                                      style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
@@ -1064,9 +1079,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             Status of Launched Cloudlet
                                                         </div>
                                                     </div>
-                                                    <div className='page_monitoring_container'>
-                                                       {/* <MiniMap loading={this.state.loading} cloudletList={this.state.cloudletList}/>*/}
-                                                       <LeafletMap cloudletList={this.state.cloudletList}/>
+                                                    {/*todo:---------------------------------*/}
+                                                    {/*todo:MAP*/}
+                                                    {/*todo:MAP*/}
+                                                    {/*todo:MAP*/}
+                                                    {/*todo:MAP*/}
+                                                    {/*todo:MAP*/}
+                                                    {/*todo:---------------------------------*/}
+                                                    <div className='leafMapDiv'>
+                                                        {/* <MiniMap loading={this.state.loading} cloudletList={this.state.cloudletList}/>*/}
+                                                        {this.renderLeafletMap()}
                                                     </div>
                                                 </div>
 

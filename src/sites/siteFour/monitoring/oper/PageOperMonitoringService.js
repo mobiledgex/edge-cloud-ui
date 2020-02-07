@@ -12,7 +12,7 @@ import {
 } from "../PageMonitoringCommonService";
 import PageOperMonitoring from "./PageOperMonitoring";
 
-export const renderBarGraphForCloudlet = (usageList, hardwareType, _this) => {
+export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
     console.log('renderBarGraph2===>', usageList);
     usageList = sortUsageListByType(usageList, hardwareType)
 
@@ -43,7 +43,7 @@ export const renderBarGraphForCloudlet = (usageList, hardwareType, _this) => {
 }
 
 
-export const renderLineChartForCloudlet = (_this: PageOperMonitoring, pUsageList: Array, hardwareType: string) => {
+export const makeLineChartForCloudlet = (_this: PageOperMonitoring, pUsageList: Array, hardwareType: string) => {
 
     console.log('usageList22222====>', pUsageList);
 
@@ -90,11 +90,7 @@ export const renderLineChartForCloudlet = (_this: PageOperMonitoring, pUsageList
             instanceNameList.push(cloudletName)
             usageSetList.push(usageList);
         }
-
-        console.log('usageSetList====>', usageSetList);
-
-
-        //@todo: CUST LIST INTO RECENT_DATA_LIMIT_COUNT
+        //@todo: CUT LIST INTO RECENT_DATA_LIMIT_COUNT
         let newDateTimeList = []
         for (let i in dateTimeList) {
             if (i < RECENT_DATA_LIMIT_COUNT) {

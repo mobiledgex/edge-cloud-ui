@@ -335,7 +335,7 @@ export const renderPlaceHolder2 = () => {
                     options={{
                         loop: true,
                         autoplay: true,
-                        animationData: require('../../../../lotties/11052-green-loader-ring_555'),
+                        animationData: require('../../../../lotties/13255-loader22'),
                         rendererSettings: {
                             preserveAspectRatio: 'xMidYMid slice'
                         }

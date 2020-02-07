@@ -32,7 +32,7 @@ export const renderLottieLoader = (width, height) => {
     )
 }
 
-export const renderGridLoader = () =>{
+export const renderGridLoader = () => {
     return (
         <GridLoader
             sizeUnit={"px"}
@@ -47,7 +47,7 @@ export const renderGridLoader = () =>{
 export const renderPlaceHolderLottie = (type: string = '') => {
     return (
         <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
-            <Lottie
+            {/*<Lottie
                 options={{
                     loop: true,
                     autoplay: true,
@@ -57,6 +57,31 @@ export const renderPlaceHolderLottie = (type: string = '') => {
                     }
                 }}
                 speed={2.5}
+                height={150}
+                width={150}
+                isStopped={false}
+                isPaused={false}
+            />*/}
+            <CircularProgress style={{color: 'orange', zIndex: 9999999, fontSize: 100}}
+            />
+        </div>
+    )
+}
+
+
+export const renderPlaceHolderLottiePinJump = (type: string = '') => {
+    return (
+        <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
+            <Lottie
+                options={{
+                    loop: true,
+                    autoplay: true,
+                    animationData: require('../../../lotties/pinjump'),
+                    rendererSettings: {
+                        preserveAspectRatio: 'xMidYMid slice'
+                    }
+                }}
+                speed={2.1}
                 height={150}
                 width={150}
                 isStopped={false}
@@ -570,7 +595,7 @@ export const getOneYearStartEndDatetime2 = () => {
 }
 
 
-export const showToast = (title: string, time=2) => {
+export const showToast = (title: string, time = 2) => {
     toast({
         type: 'success',
         //icon: 'smile',
@@ -580,7 +605,7 @@ export const showToast = (title: string, time=2) => {
         color: 'black',
     });
 }
-export const showToast2 = (title: string, time=2) => {
+export const showToast2 = (title: string, time = 2) => {
     toast({
         type: 'success',
         icon: 'star',
@@ -693,7 +718,6 @@ export const getClusterLevelMatric = async (serviceBody: any, pToken: string) =>
     })
     return result;
 }
-
 
 
 export const StylesForMonitoring = {
