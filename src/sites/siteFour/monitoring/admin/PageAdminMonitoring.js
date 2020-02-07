@@ -52,7 +52,7 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {numberWithCommas, renderLottieLoader, renderPlaceHolderLottie, showToast, showToast2, StylesForMonitoring} from "../PageMonitoringCommonService";
+import {numberWithCommas, renderGridLoader, renderLottieLoader, renderPlaceHolderLottie, showToast, showToast2, StylesForMonitoring} from "../PageMonitoringCommonService";
 import LeafletMap from "../LeafletMap";
 import {filterUsageByClassification} from "../dev/PageDevMonitoringService";
 
@@ -159,6 +159,7 @@ type State = {
     dropDownCloudletList: Array,
     cloudletList: Array,
     newCloudletList:Array,
+    currentSixGridIndex:number,
 
 }
 
@@ -236,6 +237,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             dropDownCloudletList: [],
             cloudletList: [],
             newCloudletList:[],
+            currentSixGridIndex:0,
         };
 
         constructor(props) {
@@ -1437,7 +1439,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <div className="table-no-resized">
                                         <div style={{position: 'absolute', top: '37%', left: '48%'}}>
                                             <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                                {renderLottieLoader(150, 150)}
+                                                {renderGridLoader(150, 150)}
                                             </div>
                                         </div>
                                     </div>
@@ -1502,8 +1504,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        <LeafletMap cloudletList={this.state.newCloudletList}/>
-                                                        {/*{!this.state.isAppInstaceDataReady ? renderPlaceHolderLottie() : renderSixGridInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet, this)}*/}
+
+                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolderLottie() : renderSixGridInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet, this)}
                                                     </div>
 
                                                 </div>

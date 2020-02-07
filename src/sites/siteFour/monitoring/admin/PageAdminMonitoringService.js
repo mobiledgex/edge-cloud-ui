@@ -6,10 +6,12 @@ import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "
 import Lottie from "react-lottie";
 import BubbleChart from "../../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../../shared/Types";
-import PageMonitoring from "./PageAdminMonitoring";
+import PageAdminMonitoring from "./PageAdminMonitoring";
 import {numberWithCommas, renderBarChartCore, renderLineChartCore, renderUsageByType2, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
 import {SHOW_CLOUDLET, SHOW_ORG_CLOUDLET} from "../../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../../services/serviceMC";
+import {Tab, TabList, TabPanel, Tabs} from "react-tabs";
+import {Icon} from "semantic-ui-react";
 
 export const cutArrayList = async (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];
@@ -395,7 +397,7 @@ export const filterAppInstOnCloudlet = (CloudLetOneList, pCluster) => {
  * todo: render a bubble chart with https://github.com/weknowinc/react-bubble-chart-d3
  * @returns {*}
  */
-export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, pBubbleChartData: any) => {
+export const renderBubbleChart = (_this: PageAdminMonitoring, hardwareType: string, pBubbleChartData: any) => {
 
     if (pBubbleChartData.length === 0) {
         return (
@@ -484,7 +486,7 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
     }
 }
 
-export const renderBubbleChartForCloudlet = (_this: PageMonitoring, hardwareType: string, pBubbleChartData: any) => {
+export const renderBubbleChartForCloudlet = (_this: PageAdminMonitoring, hardwareType: string, pBubbleChartData: any) => {
     if (pBubbleChartData.length === 0 && _this.loading === false) {
         return (
             <div style={StylesForMonitoring.noData}>
@@ -575,7 +577,7 @@ export const renderBubbleChartForCloudlet = (_this: PageMonitoring, hardwareType
 }
 
 
-export const makeLineChartDataForAppInst = (_this: PageMonitoring, hardwareUsageList: Array, hardwareType: string) => {
+export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardwareUsageList: Array, hardwareType: string) => {
     if (hardwareUsageList.length === 0) {
         return (
             <div style={StylesForMonitoring.noData}>
@@ -758,7 +760,7 @@ function isEmptyObject(obj) {
  * @param appInstanceListSortByCloudlet
  * @returns {*}
  */
-export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudlet, _this) => {
+export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudlet, _this: PageAdminMonitoring) => {
 
     if (isEmptyObject(appInstanceListSortByCloudlet)) {
         //do something
@@ -770,9 +772,9 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
 
     } else {
 
-        let cloudletCountList = []
+        let cloudletList = []
         for (let i in appInstanceListSortByCloudlet) {
-            cloudletCountList.push({
+            cloudletList.push({
                 name: appInstanceListSortByCloudlet[i][0].Cloudlet,
                 length: appInstanceListSortByCloudlet[i].length,
             })
@@ -786,27 +788,56 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
             return results;
         }
 
-        let chunkedArraysOfColSize = toChunkArray(cloudletCountList, 3);
+        let chunkedArraysOfColSize = toChunkArray(cloudletList, 6);
+
+        console.log('chunkedArraysOfColSize===>', chunkedArraysOfColSize)
+
         return (
-            <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
-                {chunkedArraysOfColSize.map((colSizeArray, index) =>
-                    <div className='page_monitoring_grid' key={index.toString()}>
-                        {colSizeArray.map((item, index) =>
+            <Tabs selectedIndex={_this.state.currentSixGridIndex}>
+                {chunkedArraysOfColSize.map((listItem, index) => {
+                    return (
+                        <TabPanel>
+                            {renderGrid(listItem)}
+                        </TabPanel>
+                    )
+                })}
 
-                            <div className='page_monitoring_grid_box_layout'
+                <div style={{flexDirection: 'row', display: 'flex',}}>
+                    {chunkedArraysOfColSize.map((item, index) => {
+                        return (
+                            <div
+                                style={{width: 50, display: 'flex',}}
+                                onClick={() => {
+                                    _this.setState({
+                                        currentSixGridIndex: index,
+                                    })
+                                }}
                             >
-                                <div className='page_monitoring_grid_box'>
-                                    <div className='page_monitoring_grid_box_name'>
-                                        {item.name}
-                                        {/*{item.name.toString().substring(0, 19) + "..."}*/}
-                                    </div>
-                                    <div className='page_monitoring_grid_box_num'>
-                                        {item.length}
-                                    </div>
-
-                                </div>
+                                <Icon name='circle' style={{color: _this.state.currentSixGridIndex === index ? 'green' : ''}}/>
                             </div>
-                        )}
+                        )
+                    })}
+                </div>
+            </Tabs>
+        )
+
+    }
+
+    function renderGrid(pListItem) {
+        return (
+            <div style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
+                {pListItem.map((item, index) =>
+                    <div className='page_monitoring_grid_box_layout2' style={{display: 'flex', flexWrap: 'row'}}
+                    >
+                        <div className='page_monitoring_grid_box' style={{width: 120, height: 120}}>
+                            <div className='page_monitoring_grid_box_name'>
+                                {item.name}
+                            </div>
+                            <div className='page_monitoring_grid_box_num'>
+                                {item.length}
+                            </div>
+
+                        </div>
                     </div>
                 )}
 
@@ -814,7 +845,7 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
                 {/*@todo:Logic to fill 2nd row with blank if only first row exists           */}
                 {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직                     */}
                 {/*@todo:------------------------------------------------------------------*/}
-                {chunkedArraysOfColSize.length === 1 &&
+                {pListItem.length === 1 &&
                 <div className='page_monitoring_grid'>
                     {[1, 2, 3].map((item, index) =>
                         <div className='page_monitoring_grid_box_layout'>
@@ -826,9 +857,8 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
                 }
 
             </div>
-        );
+        )
     }
-
 
 }
 

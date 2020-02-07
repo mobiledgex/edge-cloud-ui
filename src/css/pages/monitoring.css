@@ -408,6 +408,14 @@
     height: 100%;
     padding:0 5px;
 }
+
+.page_monitoring_grid_box_layout2 {
+    /*flex-grow: 1;*/
+    width: 250%;
+    height: 250px;
+}
+
+
 .page_monitoring_grid_box{
     display: flex;
     flex-direction: column;
@@ -419,6 +427,8 @@
     align-items: center;
     padding: 10px;
 }
+
+
 
 .page_monitoring_grid_box_name {
     color: #c5c6c8;

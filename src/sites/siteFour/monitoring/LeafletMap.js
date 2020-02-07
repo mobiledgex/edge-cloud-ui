@@ -174,7 +174,7 @@ export default hot(
                     {!this.props.loading ?
                         <Map center={[45.4, 51.7]}
                              duration={0.9}
-                             zoom={0.7}
+                             zoom={1}
                              style={{width: '100%', height: '100%'}}
                              easeLinearity={1}
                              useFlyTo={true}

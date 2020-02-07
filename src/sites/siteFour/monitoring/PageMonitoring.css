@@ -15,6 +15,13 @@
 }*/
 
 
+.leaflet-control-container{
+    background-color: #3b3f47;
+}
+.leaflet-control-zoom-out {
+    background-color: #3b3f47;
+}
+
 .leaflet-control-attribution{
     display: none;
 }
@@ -87,147 +94,7 @@
 }
 
 
-/*.gridRow {*/
-/*    color: #808080;*/
-/*    height: 30px;*/
-/*}*/
 
-/*!*.gridRow:hover {*/
-/*    background-color: #645491;*/
-
-/*}*!*/
-
-/*.bottomGridArea {*/
-/*    opacity: 1.0 !important;*/
-/*    z-index: 99999999999999;*/
-/*}*/
-
-
-/*.grid00001 {*/
-/*    marginTop: 10;*/
-/*    overflow-y: scroll;*/
-/*    height: 400px;*/
-/*}*/
-
-
-/*.page_monitoring_column_for_grid {*/
-/*    display: flex;*/
-/*    flex-direction: column;*/
-/*    width: 101%;*/
-/*    flex-grow: 1;*/
-/*    overflow: hidden;*/
-/*    border: 1px solid #4b4d52;*/
-/*    border-radius: 5px;*/
-/*    padding: 10px;*/
-/*    margin-right: 20px;*/
-/*    height: 200px;*/
-/*    margin-top: 12px;*/
-/*    margin-left: -10px;*/
-/*    margin-bottom: -10px;*/
-/*}*/
-
-/*.ui.tabular.menu .active.item {*/
-/*    background-color: transparent;*/
-/*    color: greenyellow;*/
-/*}*/
-
-/*.ui.tabular.menu .active.item {*/
-/*    background: transparent;*/
-/*    color: greenyellow;*/
-/*    border-top-width: 0px;*/
-/*    border-color: rgba(0, 0, 0, .95);*/
-/*    font-weight: 700;*/
-/*    margin-bottom: -1px;*/
-/*    box-shadow: none;*/
-/*    border-bottom: 1px solid greenyellow;*/
-/*    border-radius: .28571429rem .28571429rem 0 0 !important;*/
-/*}*/
-
-/*.ui.tabular.menu .item {*/
-/*    background: 0 0;*/
-/*    border-bottom: none;*/
-/*    border-left: 0px solid transparent;*/
-/*    border-right: 0px solid transparent;*/
-/*    border-top: 2px solid transparent;*/
-/*    padding: .92857143em 1.42857143em;*/
-/*    color: rgba(0, 0, 0, .87);*/
-/*}*/
-
-
-/*.ui.tabular.menu .item {*/
-/*    color: #9c9c9c;*/
-/*}*/
-
-/*.ui.attached.tabular.menu {*/
-/*    border-bottom-color: #525252;*/
-/*}*/
-
-/*.ui.attached:not(.message) + .ui.attached.segment:not(.top) {*/
-/*    border-top: none;*/
-/*    border-top-color: #525252;*/
-/*    border-color: #525252;*/
-/*}*/
-
-/*.ui.selection.dropdown > .dropdown.icon::after {*/
-/*    border-color: #24ffec;*/
-/*}*/
-
-
-/*.center001 {*/
-/*    justify-content: center;*/
-/*    align-items: center;*/
-/*    align-self: center;*/
-/*    height: 135px;*/
-/*    width: 150px;*/
-/*}*/
-
-/*svg .bubble-chart {*/
-/*    background-color: red;*/
-/*}*/
-
-
-/*.recharts-default-legend {*/
-/*    visibility: hidden;*/
-/*}*/
-
-/*!**!!*line chart 백그라운드 설정*!*/
-/*!**!!*line chart 백그라운드 설정*!*/
-/*.chartjs-render-monitor {*/
-/*    background-color: black;*/
-/*}*/
-
-/*.bubble_left_div {*/
-
-
-/*.parent {*/
-/*    width: 100%;*/
-/*    height: 200px;*/
-/*    display: flex;*/
-/*    flex-direction: row;*/
-/*    justify-content: space-between;*/
-/*}*/
-
-/*.col {*/
-/*    flex-grow: 1;*/
-/*    height: 200px;*/
-/*    border: 1px solid black;*/
-/*}*/
-
-/*#reactgooglegraph-4 text {*/
-/*    color: #fff*/
-/*}*/
-
-/*.barChart rect {*/
-/*    fill: black*/
-/*}*/
-
-/*.pieChart text {*/
-/*    fill: white*/
-/*}*/
-
-/*.barChart text {*/
-/*    fill: white*/
-/*}*/
 
 
 /*######################################################################*/
