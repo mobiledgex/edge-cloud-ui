@@ -101,13 +101,22 @@ export const filterInstanceCountOnCloutLetOne = (appInstanceListGroupByCloudlet,
 /**
  *
  * @param usageList
- * @param pTypeKey
+ * @param pFilterKey
  * @param pTypeValue
  * @returns {*}
  */
-export const filterUsageByType = (pTypeKey, pTypeValue, usageList,) => {
+export const filterListBykey = (pFilterKey, pTypeValue, usageList,) => {
     let filteredUsageList = usageList.filter((item) => {
-        if (item.instance[pTypeKey] === pTypeValue) {
+        if (item.instance[pFilterKey] === pTypeValue) {
+            return item;
+        }
+    });
+    return filteredUsageList
+}
+
+export const filterListBykeyForCloudlet = (pFilterKey, selectedCloudletOne, usageList,) => {
+    let filteredUsageList = usageList.filter((item) => {
+        if (item[pFilterKey] === selectedCloudletOne) {
             return item;
         }
     });

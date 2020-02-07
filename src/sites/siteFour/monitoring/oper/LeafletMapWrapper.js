@@ -107,8 +107,7 @@ export default hot(
                         [item.CloudletLocation.latitude, item.CloudletLocation.longitude,]
                     }
                     onClick={() => {
-
-                        this.props.handleSelectCloudlet(item.CloudletName)
+                        this.props.handleSelectCloudletForMapkerClicked(item.CloudletName)
                     }}
                 >
                     <Tooltip direction='right' offset={[0, 0]} opacity={0.5} permanent>

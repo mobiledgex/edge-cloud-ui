@@ -10,7 +10,7 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker,} from 'antd';
-import {getCloudletList, renderBubbleChartForCloudlet,} from "../admin/PageAdminMonitoringService";
+import {filterListBykey, filterListBykeyForCloudlet, getCloudletList, renderBubbleChartForCloudlet,} from "../admin/PageAdminMonitoringService";
 import {
     CLASSIFICATION,
     HARDWARE_OPTIONS_FOR_CLOUDLET,
@@ -567,6 +567,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             showToast('reset')
             await this.setState({
                 currentRegion: 'ALL',
+                currentCloudLet: '',
                 filteredCloudletUsageList: this.state.filteredCloudletUsageList,
                 filteredCloudletList: this.state.cloudletList,
             })
@@ -641,19 +642,36 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
+        handleSelectCloudletForMapkerClicked = async (cloudletSelectedOne) => {
+
+            this.setState({
+                currentCloudLet: cloudletSelectedOne,
+            })
+
+            let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, cloudletSelectedOne, CLASSIFICATION.cloudlet)
+
+            //let filteredCloudletList = filterUsageByClassification(this.state.cloudletList, selectedRegion, CLASSIFICATION.REGION)
+
+            this.setState({
+                filteredCloudletUsageList: filteredCloudletUsageList,
+            })
+        }
+
+
         handleSelectCloudlet = async (cloudletSelectedOne) => {
 
-             this.setState({
-                 currentCloudLet: cloudletSelectedOne,
-             })
+            this.setState({
+                currentCloudLet: cloudletSelectedOne,
+            })
 
-             let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, cloudletSelectedOne, 'cloudlet')
-
-             console.log('filterCloudletList===>', filteredCloudletUsageList);
-
-             this.setState({
-                 filteredCloudletUsageList: filteredCloudletUsageList,
-             })
+            console.log('cloudletList===>', this.state.cloudletList);
+            let filteredCloudletList = filterListBykeyForCloudlet('CloudletName', cloudletSelectedOne, this.state.cloudletList)
+            console.log('filteredCloudletList===>', filteredCloudletList);
+            let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, cloudletSelectedOne, CLASSIFICATION.cloudlet)
+            this.setState({
+                filteredCloudletUsageList: filteredCloudletUsageList,
+                filteredCloudletList: filteredCloudletList,
+            })
 
         }
 
@@ -918,7 +936,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderLeafletMap() {
             return (
-                <LeafletMap cloudletList={this.state.filteredCloudletList} loading={this.state.loading} handleSelectCloudlet={this.handleSelectCloudlet}/>
+                <LeafletMap cloudletList={this.state.filteredCloudletList} loading={this.state.loading} handleSelectCloudletForMapkerClicked={this.handleSelectCloudletForMapkerClicked}/>
             )
         }
 

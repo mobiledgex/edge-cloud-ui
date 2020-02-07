@@ -17,7 +17,7 @@ import {
     filterAppInstanceListByRegion,
     filterAppInstOnCloudlet,
     filterInstanceCountOnCloutLetOne,
-    filterUsageByType,
+    filterListBykey,
     filterUsageListByRegion,
     getAppInstList,
     getAppLevelUsageList,
@@ -571,12 +571,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     appInstanceListGroupByCloudlet = filterInstanceCountOnCloutLetOne(appInstanceListGroupByCloudlet, pCloudLet)
                     appInstanceList = filterAppInstanceListByClassification(appInstanceList, pCloudLet, CLASSIFICATION.CLOUDLET);
                     clusterSelectBoxList = makeClusterListSelectBox(appInstanceList, pCloudLet)
-                    filteredCpuUsageList = filterUsageByType(CLASSIFICATION.CLOUDLET, pCloudLet, filteredCpuUsageList);
-                    filteredMemUsageList = filterUsageByType(CLASSIFICATION.CLOUDLET, pCloudLet, filteredMemUsageList);
-                    filteredDiskUsageList = filterUsageByType(CLASSIFICATION.CLOUDLET, pCloudLet, filteredDiskUsageList);
-                    filteredNetworkUsageList = filterUsageByType(CLASSIFICATION.CLOUDLET, pCloudLet, filteredNetworkUsageList);
-                    filteredConnectionsUsageList = filterUsageByType(CLASSIFICATION.CLOUDLET, pCloudLet, filteredConnectionsUsageList);
-                    filteredGridInstanceList = filterUsageByType(CLASSIFICATION.CLOUDLET, pCloudLet, filteredGridInstanceList);
+                    filteredCpuUsageList = filterListBykey(CLASSIFICATION.CLOUDLET, pCloudLet, filteredCpuUsageList);
+                    filteredMemUsageList = filterListBykey(CLASSIFICATION.CLOUDLET, pCloudLet, filteredMemUsageList);
+                    filteredDiskUsageList = filterListBykey(CLASSIFICATION.CLOUDLET, pCloudLet, filteredDiskUsageList);
+                    filteredNetworkUsageList = filterListBykey(CLASSIFICATION.CLOUDLET, pCloudLet, filteredNetworkUsageList);
+                    filteredConnectionsUsageList = filterListBykey(CLASSIFICATION.CLOUDLET, pCloudLet, filteredConnectionsUsageList);
+                    filteredGridInstanceList = filterListBykey(CLASSIFICATION.CLOUDLET, pCloudLet, filteredGridInstanceList);
                 }
 
                 //todo: -------------------------------------------
@@ -585,12 +585,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 if (pCluster !== '') {
                     appInstanceListGroupByCloudlet[0] = filterAppInstOnCloudlet(appInstanceListGroupByCloudlet[0], pCluster)
                     appInstanceList = filterAppInstanceListByClassification(appInstanceList, pCluster, CLASSIFICATION.CLUSTER_INST);
-                    filteredCpuUsageList = filterUsageByType(CLASSIFICATION.CLUSTER_INST, pCluster, filteredCpuUsageList);
-                    filteredMemUsageList = filterUsageByType(CLASSIFICATION.CLUSTER_INST, pCluster, filteredMemUsageList);
-                    filteredDiskUsageList = filterUsageByType(CLASSIFICATION.CLUSTER_INST, pCluster, filteredDiskUsageList);
-                    filteredNetworkUsageList = filterUsageByType(CLASSIFICATION.CLUSTER_INST, pCluster, filteredNetworkUsageList);
-                    filteredConnectionsUsageList = filterUsageByType(CLASSIFICATION.CLUSTER_INST, pCluster, filteredConnectionsUsageList);
-                    filteredGridInstanceList = filterUsageByType(CLASSIFICATION.CLUSTER_INST, pCluster, filteredGridInstanceList);
+                    filteredCpuUsageList = filterListBykey(CLASSIFICATION.CLUSTER_INST, pCluster, filteredCpuUsageList);
+                    filteredMemUsageList = filterListBykey(CLASSIFICATION.CLUSTER_INST, pCluster, filteredMemUsageList);
+                    filteredDiskUsageList = filterListBykey(CLASSIFICATION.CLUSTER_INST, pCluster, filteredDiskUsageList);
+                    filteredNetworkUsageList = filterListBykey(CLASSIFICATION.CLUSTER_INST, pCluster, filteredNetworkUsageList);
+                    filteredConnectionsUsageList = filterListBykey(CLASSIFICATION.CLUSTER_INST, pCluster, filteredConnectionsUsageList);
+                    filteredGridInstanceList = filterListBykey(CLASSIFICATION.CLUSTER_INST, pCluster, filteredGridInstanceList);
 
                 }
 
@@ -599,12 +599,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //todo: -------------------------------------------
                 if (pAppInstance !== '') {
                     appInstanceList = filterAppInstanceListByClassification(appInstanceList, pAppInstance, CLASSIFICATION.APP_NAME);
-                    filteredCpuUsageList = filterUsageByType(CLASSIFICATION.APP_NAME, pAppInstance, filteredCpuUsageList);
-                    filteredMemUsageList = filterUsageByType(CLASSIFICATION.APP_NAME, pAppInstance, filteredMemUsageList);
-                    filteredDiskUsageList = filterUsageByType(CLASSIFICATION.APP_NAME, pAppInstance, filteredDiskUsageList);
-                    filteredNetworkUsageList = filterUsageByType(CLASSIFICATION.APP_NAME, pAppInstance, filteredNetworkUsageList);
-                    filteredConnectionsUsageList = filterUsageByType(CLASSIFICATION.APP_NAME, pAppInstance, filteredConnectionsUsageList);
-                    filteredGridInstanceList = filterUsageByType(CLASSIFICATION.APP_NAME, pAppInstance, filteredGridInstanceList);
+                    filteredCpuUsageList = filterListBykey(CLASSIFICATION.APP_NAME, pAppInstance, filteredCpuUsageList);
+                    filteredMemUsageList = filterListBykey(CLASSIFICATION.APP_NAME, pAppInstance, filteredMemUsageList);
+                    filteredDiskUsageList = filterListBykey(CLASSIFICATION.APP_NAME, pAppInstance, filteredDiskUsageList);
+                    filteredNetworkUsageList = filterListBykey(CLASSIFICATION.APP_NAME, pAppInstance, filteredNetworkUsageList);
+                    filteredConnectionsUsageList = filterListBykey(CLASSIFICATION.APP_NAME, pAppInstance, filteredConnectionsUsageList);
+                    filteredGridInstanceList = filterListBykey(CLASSIFICATION.APP_NAME, pAppInstance, filteredGridInstanceList);
                 }
 
                 //todo: -------------------------------------------
