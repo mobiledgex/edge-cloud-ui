@@ -32,7 +32,7 @@ import {
     makeNetworkBarData,
     makeNetworkLineChartData,
     renderBubbleChart,
-    renderPlaceHolder2, renderSixGridInstanceOnCloudletGrid,
+    renderPlaceHolder2, renderSixGridForAppInstOnCloudlet,
 } from "./PageAdminMonitoringService";
 import {
     APPINSTANCE_INIT_VALUE,
@@ -1505,7 +1505,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     </div>
                                                     <div className='page_monitoring_container'>
 
-                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolderLottie() : renderSixGridInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet, this)}
+                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolderLottie() : renderSixGridForAppInstOnCloudlet(this.state.appInstanceListGroupByCloudlet, this)}
                                                     </div>
 
                                                 </div>

@@ -760,7 +760,8 @@ function isEmptyObject(obj) {
  * @param appInstanceListSortByCloudlet
  * @returns {*}
  */
-export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudlet, _this: PageAdminMonitoring) => {
+export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet, _this: PageAdminMonitoring) => {
+
 
     if (isEmptyObject(appInstanceListSortByCloudlet)) {
         //do something
