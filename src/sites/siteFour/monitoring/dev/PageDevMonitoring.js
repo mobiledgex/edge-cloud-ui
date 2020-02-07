@@ -1114,7 +1114,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             });
 
             let allUsageList = allClusterUsageList;
-            console.log('allUsageList===>', allUsageList)
+            console.log('allClusterUsageList===>', allClusterUsageList)
             let filteredClusterUsageList = []
             allUsageList.map(item => {
                 if (item.cluster === selectedCluster && item.cloudlet === selectedCloudlet) {

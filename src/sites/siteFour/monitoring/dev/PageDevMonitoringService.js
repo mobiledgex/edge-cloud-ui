@@ -185,10 +185,10 @@ export const getClusterList = async () => {
 }
 
 
-export const filterUsageByClassification = (classificationList, pTypeValue, mapKey,) => {
+export const filterUsageByClassification = (usageList, selectOne, mapKey,) => {
     let filteredInstanceList = []
-    classificationList.map(item => {
-        if (item[mapKey] === pTypeValue) {
+    usageList.map(item => {
+        if (item[mapKey] === selectOne) {
             filteredInstanceList.push(item);
         }
     })

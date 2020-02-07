@@ -33,6 +33,7 @@ export const USAGE_TYPE = {
 
 export const CLASSIFICATION = {
     CLOUDLET: 'Cloudlet',
+    cloudlet: 'cloudlet',
     APP_NAME: 'AppName',
     APPNAME: 'AppName',
     APPINST: 'AppInst',

@@ -9,6 +9,7 @@ import {Button, Icon} from "semantic-ui-react";
 import {renderPlaceHolderLottie, renderPlaceHolderLottiePinJump, showToast} from "../PageMonitoringCommonService";
 import {Markers} from "react-simple-maps";
 import {CircularProgress} from "@material-ui/core";
+import type {TypeAppInstance, TypeGridInstanceList, TypeUtilization} from "../../../../shared/Types";
 
 const rectangle = [
     [51.49, -0.08],
@@ -45,9 +46,23 @@ let greenIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
+type Props = {
+    handleSelectCloudlet: Function,
+
+}
+
+type State = {
+    date: string,
+
+}
 
 export default hot(
-    class LeafletMap extends React.Component {
+    class LeafletMap extends React.Component<Props, State> {
+
+        constructor(props: Props) {
+            super(props)
+        }
+
         state = {
             viewport: DEFAULT_VIEWPORT,
             markers: [
@@ -70,7 +85,7 @@ export default hot(
               }
           }*/
 
-        renderPopup(){
+        renderPopup() {
             return (
                 <Popup
                     //position={[100.110924, 8.682127]}
@@ -118,7 +133,9 @@ export default hot(
                     }
                     onClick={() => {
 
-                        alert(item.CloudletName)
+                        //alert(item.CloudletName)
+
+                        this.props.handleSelectCloudlet(item.CloudletName)
                     }}
                 >
                     <Tooltip direction='right' offset={[0, 0]} opacity={0.5} permanent>

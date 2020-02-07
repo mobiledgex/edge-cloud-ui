@@ -12,6 +12,7 @@ import {hot} from "react-hot-loader/root";
 import {DatePicker, Progress,} from 'antd';
 import {getCloudletList, renderBubbleChartForCloudlet, renderPlaceHolder2,} from "../admin/PageAdminMonitoringService";
 import {
+    CLASSIFICATION,
     HARDWARE_OPTIONS_FOR_CLOUDLET,
     HARDWARE_TYPE,
     HARDWARE_TYPE_FOR_CLOUDLET,
@@ -27,11 +28,13 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {numberWithCommas, renderGridLoader, renderLottieLoader, renderPlaceHolderLottie, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
+import {makeBubbleChartDataForCluster, numberWithCommas, renderGridLoader, renderLottieLoader, renderPlaceHolderLottie, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
 import MiniMap from "./MiniMap";
 import {CircularProgress} from "@material-ui/core";
 import {getClouletLevelUsageList, makeBarChartDataForCloudlet, makeLineChartForCloudlet, renderBottomGridAreaForCloudlet} from "./PageOperMonitoringService";
 import LeafletMap from "./LeafletMap";
+import {filterUsageByClassification, makeSelectBoxListWithThreeValuePipe} from "../dev/PageDevMonitoringService";
+import * as reducer from "../../../../utils";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -357,7 +360,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-
         renderCpuTabArea() {
             return (
                 <div className='page_monitoring_dual_column'>
@@ -368,7 +370,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                TOP5 of CPU Usage
+                                TOP5 of CPU Count
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
@@ -564,6 +566,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+        async handleResetData() {
+            await this.setState({
+                currentGridIndex: -1,
+                currentTabIndex: 0,
+            })
+        }
+
 
         renderHeader = () => {
 
@@ -599,10 +608,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <div style={{marginLeft: '10px'}}>
                             <Button
                                 onClick={async () => {
-                                    await this.setState({
-                                        currentGridIndex: -1,
-                                        currentTabIndex: 0,
-                                    })
+                                    this.handleResetData()
                                     //await this.filterByEachTypes('ALL', '', '', '')
                                 }}
                             >RESET</Button>
@@ -623,7 +629,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderSelectBoxRow() {
+        renderDropdownAreaOper() {
 
             return (
                 <div className='page_monitoring_select_row'>
@@ -682,13 +688,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 onChange={async (e, {value}) => {
                                     this.setState({
                                         currentCloudLet: value,
+                                    }, () => {
+
+                                        this.handleSelectCloudlet(value)
                                     })
-                                    /*   await this.filterByEachTypes(this.state.currentRegion, value)
-                                       setTimeout(() => {
-                                           this.setState({
-                                               clusterSelectBoxPlaceholder: 'Select Cluster'
-                                           })
-                                       }, 1000)*/
+
                                 }}
                             />
                         </div>
@@ -882,8 +886,27 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderLeafletMap() {
             return (
-               <LeafletMap cloudletList={this.state.cloudletList} loading={this.state.loading}/>
+                <LeafletMap cloudletList={this.state.cloudletList} loading={this.state.loading} handleSelectCloudlet={this.handleSelectCloudlet}/>
             )
+        }
+
+
+        handleSelectCloudlet = async (cloudletSelectedOne) => {
+
+            showToast(cloudletSelectedOne)
+
+            this.setState({
+                currentCloudLet: cloudletSelectedOne,
+            })
+
+            let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, cloudletSelectedOne, 'cloudlet')
+
+            console.log('filterCloudletList===>', filteredCloudletUsageList);
+
+            this.setState({
+                filteredCloudletUsageList: filteredCloudletUsageList,
+            })
+
         }
 
         render() {
@@ -926,7 +949,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {renderBottomGridAreaForCloudlet(this)}
                         </Modal.Content>
                     </Modal>
-                    <SemanticToastContainer/>
+                    <SemanticToastContainer position={"top-left"}/>
                     <Grid.Column className='contents_body'>
                         {/*todo:---------------------------------*/}
                         {/*todo:Content Header                   */}
@@ -941,7 +964,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         {/*todo:---------------------------------*/}
                                         {/*todo:SELECTBOX_ROW        */}
                                         {/*todo:---------------------------------*/}
-                                        {this.renderSelectBoxRow()}
+                                        {this.renderDropdownAreaOper()}
 
                                         <div className='page_monitoring_dashboard'>
                                             {/*_____row____1*/}
@@ -1088,9 +1111,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                           })*/
                                                     }}
                                                 >
-                                                    <div className='page_monitoring_popup_column' style={{zIndex:999999}}>
+                                                    <div className='page_monitoring_popup_column' style={{zIndex: 999999}}>
                                                         <div className='page_monitoring_popup_header_row'
-                                                             style={{zIndex:999999}}
+                                                             style={{zIndex: 999999}}
                                                              onClick={() => {
                                                                  this.setState({
                                                                      isShowBottomGrid: !this.state.isShowBottomGrid,
@@ -1098,14 +1121,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                                              }}
                                                         >
-                                                            <div className='page_monitoring_popup_header_title' style={{zIndex:999999}}>
+                                                            <div className='page_monitoring_popup_header_title' style={{zIndex: 999999}}>
                                                                 Status of App
                                                             </div>
-                                                            <div className='page_monitoring_popup_header_button' style={{zIndex:999999}}>
+                                                            <div className='page_monitoring_popup_header_button' style={{zIndex: 999999}}>
                                                                 <div>
                                                                     HIDE CLOUDLET LIST
                                                                 </div>
-                                                                <div style={{marginLeft: 10}} >
+                                                                <div style={{marginLeft: 10}}>
                                                                     <FA name="chevron-down"/>
                                                                 </div>
                                                             </div>
@@ -1114,7 +1137,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*todo:---------------------------------*/}
                                                         {/*todo: BOTTOM APP INSTACE LIST         */}
                                                         {/*todo:---------------------------------*/}
-                                                        <div className='page_monitoring_popup_table' style={{zIndex:999999}}>
+                                                        <div className='page_monitoring_popup_table' style={{zIndex: 999999}}>
                                                             {this.state.cloudletList.length && this.state.isReady === 0 ?
                                                                 <div style={StylesForMonitoring.noData}>
                                                                     NO DATA

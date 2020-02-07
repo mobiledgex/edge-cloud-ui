@@ -278,7 +278,7 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODAxNTkzO
 
 POST https://console-stage.mobiledgex.net:443/api/v1/auth/metrics/cloudlet
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODAyNDMwNTEsImlhdCI6MTU4MDE1NjY1MSwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.Be9RzTN2aNIavDRLnkjkuy8v7ikiPM-FLS48Cn3sSENHl1By0--knyJL1_qhgFMufT_k1mizhh0ZDqL2OTk1Mw
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODExMjMxNzAsImlhdCI6MTU4MTAzNjc3MCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.PlCaUm_y93cCQeeK4e8-6rwP4eXOzvomWBTtT2KWKyH4So1R5R99sO6NZ0obcc_HwkHDe3nGbHcsYnNAGDo5QA
 
 {
   "region": "EU",
@@ -286,7 +286,7 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODAyNDMwN
     "operator_key": {
       "name": "TDG"
     },
-    "name":"berlin-staging"
+    "name":"hamburg-stage"
   },
   "last": 100,
   "selector": "*"

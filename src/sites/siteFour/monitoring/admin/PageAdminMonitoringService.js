@@ -230,7 +230,7 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
     }
 
     if (hardwareType === HARDWARE_TYPE.VCPU) {
-        return numberWithCommas(usageOne.sumVCpuUsage) + " %"
+        return numberWithCommas(usageOne.sumVCpuUsage) + ""
     }
 
     if (hardwareType === HARDWARE_TYPE.MEM) {
