@@ -17,6 +17,15 @@
     background-color: #0a0a0c;
 
 }*/
+.map_outer_background {
+    background-color: #262626
+}
+
+.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom {
+    -ms-touch-action: none;
+    touch-action: none;
+    background-color: #262626
+}
 
 
 .leaflet-control-container{

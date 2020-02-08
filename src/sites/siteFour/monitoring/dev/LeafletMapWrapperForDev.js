@@ -5,8 +5,6 @@ import * as L from 'leaflet';
 import "../PageMonitoring.css";
 import {hot} from "react-hot-loader/root";
 import 'react-leaflet-fullscreen-control'
-import {Button, Icon} from "semantic-ui-react";
-import {renderPlaceHolderLottiePinJump} from "../PageMonitoringCommonService";
 import type {TypeAppInstance} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 
