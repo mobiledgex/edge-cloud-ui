@@ -751,7 +751,8 @@ export const StylesForMonitoring = {
         //minWidth: 150,
         minWidth: '350px',
         //fontSize: '12px',
-        minHeight: '40px'
+        minHeight: '40px',
+        zIndex: 9999999,
         //height: '50px',
     },
     cell000: {

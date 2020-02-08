@@ -57,6 +57,7 @@ import MapboxComponent from "./MapboxComponent";
 import * as reducer from "../../../../utils";
 import {CircularProgress} from "@material-ui/core";
 import {TabPanel, Tabs} from "react-tabs";
+import LeafletMapWrapperForDev from "./LeafletMapWrapperForDev";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -385,6 +386,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 currentGridIndex: -1,
                 currentTabIndex: 0,
+                intervalLoading: false,
                 currentClassification: CLASSIFICATION.CLUSTER,
             })
 
@@ -843,17 +845,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                         {/*{this.state.currentClassification.toString()}*/}
                         {/*{this.state.currentAppInst}*/}
-                        {this.state.currentClassification=== CLASSIFICATION.APPINST &&
+                        {this.state.currentClassification === CLASSIFICATION.APPINST &&
                         <div>
                             <MButton
                                 style={{backgroundColor: this.state.isStream ? 'green' : 'grey', color: 'white', height: 36}}
                                 onClick={async () => {
                                     this.setState({
                                         isStream: !this.state.isStream,
-                                    },()=>{
-                                        if(!this.state.isStream){
+                                    }, () => {
+                                        if (!this.state.isStream) {
                                             clearInterval(this.intervalForAppInst)
-                                        }else{
+                                        } else {
                                             this.handleAppInstDropdown(this.state.currentAppInst)
                                         }
                                     })
@@ -1361,7 +1363,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*@todo: MapboxComponent*/}
                                                     {/*todo:---------------------------------*/}
                                                     <div className='page_monitoring_container'>
-                                                        <MapboxComponent handleAppInstDropdown={this.handleAppInstDropdown} markerList={this.state.appInstanceListGroupByCloudlet}/>
+                                                        {/*<MapboxComponent handleAppInstDropdown={this.handleAppInstDropdown} markerList={this.state.appInstanceListGroupByCloudlet}/>*/}
+
+                                                        <LeafletMapWrapperForDev handleAppInstDropdown={this.handleAppInstDropdown} markerList={this.state.appInstanceListGroupByCloudlet}/>
                                                     </div>
                                                 </div>
 
