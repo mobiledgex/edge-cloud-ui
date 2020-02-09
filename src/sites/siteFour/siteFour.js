@@ -9,7 +9,6 @@ import {
     Popup,
     Label,
     Modal,
-    Item,
     Input,
     Segment,
     Icon,
@@ -53,8 +52,6 @@ import PageMonitoringMain from './monitoring/PageMonitoringMain'
 import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
 import RefreshOutlinedIcon from '@material-ui/icons/RefreshOutlined';
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
-import CallEndOutlinedIcon from '@material-ui/icons/CallEndOutlined';
-import SiteFourAutoScalePolicy from './autoPolicy/siteFour_page_autoScalePolicy';
 import SiteFourAutoProvPolicy from './autoProvPolicy/siteFour_page_autoProvPolicy';
 import SiteFourAutoProvPolicyReg from './autoProvPolicy/autoProvPolicyReg';
 
@@ -69,32 +66,7 @@ import Alert from 'react-s-alert';
 
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
-import { IconButton } from '@material-ui/core';
 
-let devOptions = [{ key: 'af', value: 'af', text: 'SK Telecom' }]
-const locationOptions = [
-    { key: 'Arabic', text: 'Arabic', value: 'Arabic' },
-    { key: 'Chinese', text: 'Chinese', value: 'Chinese' },
-    { key: 'Danish', text: 'Danish', value: 'Danish' },
-    { key: 'Dutch', text: 'Dutch', value: 'Dutch' },
-    { key: 'English', text: 'English', value: 'English' },
-    { key: 'French', text: 'French', value: 'French' },
-    { key: 'German', text: 'German', value: 'German' },
-    { key: 'Greek', text: 'Greek', value: 'Greek' },
-    { key: 'Hungarian', text: 'Hungarian', value: 'Hungarian' },
-    { key: 'Italian', text: 'Italian', value: 'Italian' },
-    { key: 'Japanese', text: 'Japanese', value: 'Japanese' },
-    { key: 'Korean', text: 'Korean', value: 'Korean' },
-    { key: 'Lithuanian', text: 'Lithuanian', value: 'Lithuanian' },
-    { key: 'Persian', text: 'Persian', value: 'Persian' },
-    { key: 'Polish', text: 'Polish', value: 'Polish' },
-    { key: 'Portuguese', text: 'Portuguese', value: 'Portuguese' },
-    { key: 'Russian', text: 'Russian', value: 'Russian' },
-    { key: 'Spanish', text: 'Spanish', value: 'Spanish' },
-    { key: 'Swedish', text: 'Swedish', value: 'Swedish' },
-    { key: 'Turkish', text: 'Turkish', value: 'Turkish' },
-    { key: 'Vietnamese', text: 'Vietnamese', value: 'Vietnamese' },
-]
 let defaultMotion = { left: window.innerWidth / 2, top: window.innerHeight / 2, opacity: 1 }
 
 const orgaSteps = organizationTutor();
@@ -131,7 +103,6 @@ class SiteFour extends React.Component {
             OrganizationName: '',
             adminShow: false,
             createState: '',
-            // toggleState:true,
             noData: false,
             viewMode: 'listView',
             toggleDisable: true,
@@ -140,7 +111,6 @@ class SiteFour extends React.Component {
             menuClick: false,
             showItem: false,
             learned: false,
-
             stepsEnabled: false,
             initialStep: 0,
             steps: [],
@@ -151,8 +121,10 @@ class SiteFour extends React.Component {
             hideNext: true,
             camBtnStat: 'leave',
             regionToggle: false,
-            intoCity: false
+            intoCity: false,
+            currentPage:null
         };
+
         this.headerH = 70;
         this.menuW = 240;
         this.hgap = 0;
@@ -169,8 +141,7 @@ class SiteFour extends React.Component {
             { label: 'Apps', icon: 'apps', pg: 5 },
             { label: 'App Instances', icon: 'storage', pg: 6 },
             { label: 'Monitoring', icon: 'tv', pg: 'Monitoring' },
-            { label: 'Auto Scale Policy', icon: 'policy', pg: '8' },
-            { label: 'Auto Prov Policy', icon: 'policy', pg: '9' },
+            { label: 'Policy', icon: 'policy', pg: 8 },
             { label: 'Audit Log', icon: 'check', pg: 'audits' }
         ]
         this.menuItems = [ //developer menu
@@ -269,6 +240,8 @@ class SiteFour extends React.Component {
 
     }
 
+
+
     onHandleRegistry() {
         if (localStorage.selectMenu === 'Organizations') {
             this.setState({ page: 'pg=newOrg' })
@@ -294,9 +267,9 @@ class SiteFour extends React.Component {
         } else if (localStorage.selectMenu === 'Cloudlet Pools') {
             this.setState({ page: 'pg=createCloudletPool' })
             this.gotoUrl('/site4', 'pg=createCloudletPool')
-        }else if (localStorage.selectMenu === 'Auto Prov Policy') {
-            this.setState({ page: 'pg=createAutoProvPolicy' })
-            this.gotoUrl('/site4', 'pg=createAutoProvPolicy')
+        }else if (localStorage.selectMenu === 'Policy') {
+            this.setState({ page: 'pg=createPolicy' })
+            this.gotoUrl('/site4', 'pg=createPolicy')
         } else {
             this.props.handleInjectDeveloper('newRegist');
         }
@@ -847,6 +820,13 @@ class SiteFour extends React.Component {
 
     /** audit ********/
 
+    showChildPage = (currentPage)=>
+    {
+        this.setState({
+            currentPage : currentPage
+        })
+    }
+
 
 
     render() {
@@ -1030,7 +1010,7 @@ class SiteFour extends React.Component {
                                         <Grid.Column floated='left' width={10}>
                                             <label style={{fontSize:25, marginRight:20}}>{this.state.headerTitle}</label>
                                             {
-                                                (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'User Roles' && this.state.headerTitle !== 'Accounts' && this.state.headerTitle !== 'Audit Log' && viewMode !== 'detailView' && this.state.page.indexOf('create') == -1 && this.state.page.indexOf('edit') == -1) ?
+                                                (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'User Roles' && this.state.headerTitle !== 'Accounts' && this.state.headerTitle !== 'Audit Log' && viewMode !== 'detailView' && this.state.page.indexOf('create') === -1 && this.state.page.indexOf('edit') == -1 && !this.state.currentPage) ?
                                                     (this.state.intoCity) ? 
                                                         <Button onClick={this.onClickBackBtn}>Back</Button> :
                                                         <Dropdown className='selection'
@@ -1042,7 +1022,7 @@ class SiteFour extends React.Component {
                                                     : null
                                             }
                                             {
-                                                (this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView' && this.props.location.search.indexOf('audits') === -1) ?
+                                                (!this.state.currentPage && this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView' && this.props.location.search.indexOf('audits') === -1) ?
                                                     <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>New</Button>
                                                     : null
                                             }
@@ -1064,7 +1044,6 @@ class SiteFour extends React.Component {
                                             }
                                         </Grid.Column>
                                     </Grid>
-
                                 </div>
 
                                 <Grid.Row className='site_content_body'>
@@ -1072,6 +1051,7 @@ class SiteFour extends React.Component {
                                         <div className="table-no-resized"
                                             style={{ height: '100%', display: 'flex', overflow: 'hidden' }}>
                                             {
+                                                this.state.currentPage ? this.state.currentPage : 
                                                 (this.state.page === 'pg=0') ? <SiteFourPageOrganization></SiteFourPageOrganization> :
                                                     (this.state.page === 'pg=1') ? <SiteFourPageUser></SiteFourPageUser> :
                                                         (this.state.page === 'pg=101') ? <SiteFourPageAccount></SiteFourPageAccount> :
@@ -1081,14 +1061,13 @@ class SiteFour extends React.Component {
                                                                         (this.state.page === 'pg=5') ? <SiteFourPageApps></SiteFourPageApps> :
                                                                             (this.state.page === 'pg=6') ? <SiteFourPageAppInst></SiteFourPageAppInst> :
                                                                                 (this.state.page === 'pg=7') ? <SiteFourPageCloudletPool></SiteFourPageCloudletPool> :
-                                                                                    (this.state.page === 'pg=8') ? <SiteFourAutoScalePolicy></SiteFourAutoScalePolicy> :
-                                                                                    (this.state.page === 'pg=9') ? <SiteFourAutoProvPolicy></SiteFourAutoProvPolicy> :
+                                                                                    (this.state.page === 'pg=8') ? <SiteFourAutoProvPolicy childPage={this.showChildPage}></SiteFourAutoProvPolicy> :
                                                                                     (this.state.page === 'pg=newOrg') ? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
                                                                                         (this.state.page === 'pg=createApp') ? <SiteFourPageAppReg editable={false}></SiteFourPageAppReg> :
                                                                                             (this.state.page === 'pg=editApp') ? <SiteFourPageAppReg editable={true}></SiteFourPageAppReg> :
                                                                                                 (this.state.page === 'pg=createAppInst') ? <SiteFourPageAppInstReg editable={false}></SiteFourPageAppInstReg> :
                                                                                                     (this.state.page === 'pg=createCloudletPool') ? <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
-                                                                                                    (this.state.page === 'pg=createAutoProvPolicy') ? <SiteFourAutoProvPolicyReg></SiteFourAutoProvPolicyReg> :
+                                                                                                    (this.state.page === 'pg=createAutoProvPolicy') ? <SiteFourAutoProvPolicyReg></SiteFourAutoProvPolicyReg>  :
                                                                                                         (this.state.page === 'pg=updateCloudletPool') ? <SiteFourPageCloudletPoolUpdate></SiteFourPageCloudletPoolUpdate> :
                                                                                                             (this.state.page === 'pg=linkOrganize') ? <SiteFourPageLinkOrganizeReg></SiteFourPageLinkOrganizeReg> :
                                                                                                                 (this.state.page === 'pg=createCloudletPool') ? <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
@@ -1097,7 +1076,7 @@ class SiteFour extends React.Component {
                                                                                                                             (this.state.page === 'pg=createCloudlet') ? <SiteFourPageCloudletReg></SiteFourPageCloudletReg> :
                                                                                                                                 (this.state.page === 'pg=createFlavor') ? <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
                                                                                                                                     (this.state.page === 'pg=audits') ? <SiteFourPageAudits></SiteFourPageAudits> :
-                                                                                                                                        null
+                                                                                                                                    null
                                             }
                                         </div>
                                     </Grid.Column>

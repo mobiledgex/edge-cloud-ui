@@ -80,6 +80,9 @@ export const DELETE_LINK_POOL_ORG = "DeleteLinkPoolOrg";
 export const RUN_COMMAND = "RunCommand";
 export const SHOW_AUTO_PROV_POLICY = "ShowAutoProvPolicy";
 export const CREATE_AUTO_PROV_POLICY = "CreateAutoProvPolicy";
+export const DELETE_AUTO_PROV_POLICY= "DeleteAutoProvPolicy";
+export const ADD_AUTO_PROV_POLICY_CLOUDLET = "AddAutoProvPolicyCloudlet";
+export const REMOVE_AUTO_PROV_POLICY_CLOUDLET = "RemoveAutoProvPolicyCloudlet";
 
 export function getPath(request) {
     switch (request.method) {
@@ -112,7 +115,6 @@ export function getPath(request) {
         case CREATE_ORG:
             return '/api/v1/auth/org/create';
         case SHOW_CLOUDLET:
-            return '/api/v1/auth/ctrl/ShowCloudlet';
         case SHOW_CLOUDLET_INFO:
         case CREATE_CLOUDLET:
         case DELETE_CLOUDLET:
@@ -142,6 +144,9 @@ export function getPath(request) {
         case DELETE_CLOUDLET_POOL_MEMBER:
         case SHOW_AUTO_PROV_POLICY:
         case CREATE_AUTO_PROV_POLICY:
+        case DELETE_AUTO_PROV_POLICY:
+        case ADD_AUTO_PROV_POLICY_CLOUDLET:
+        case REMOVE_AUTO_PROV_POLICY_CLOUDLET:
         case RUN_COMMAND:
             return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:

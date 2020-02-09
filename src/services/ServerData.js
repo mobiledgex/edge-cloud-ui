@@ -7,16 +7,33 @@ const getToken = ()=>
     return store.userToken
 }
 
-export const getCloudletInfo = (self, regions) => {
-    return Promise.all(regions.map(async (item, i) => {
-        let requestData = { token: getToken(), method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } };
-        let data = await serviceMC.sendSyncRequest(self, requestData)
-        return data
-    }))  
+const processData = (mcRequest)=>
+{
+    let dataList = [];
+    if(mcRequest.response)
+    {
+        let response  = mcRequest.response;
+        if(response.data)
+        {
+            let data = response.data
+            if(data.length>0)
+            {
+                dataList = data
+            }
+        }
+    }
+    return dataList;
 }
 
-export const getOrganizationInfo = (self) => {
+export const getOrganizationInfo = async (self) => {
     let requestData = { token: getToken(), method: serviceMC.getEP().SHOW_ORG };
-    let data = await serviceMC.sendSyncRequest(self, requestData)
-    return Promise.all(data)
+    let mcRequest = await serviceMC.sendSyncRequest(self, requestData)
+    return processData(mcRequest)
 }
+
+export const getCloudletInfo = async (self, data) => {
+        let requestData = { token: getToken(), method: serviceMC.getEP().SHOW_CLOUDLET, data: data };
+        let mcRequest = await serviceMC.sendSyncRequest(self, requestData)
+        return processData(mcRequest)
+}
+

@@ -1,26 +1,24 @@
 import React from 'react';
 import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
-import { Item, Step, Icon } from 'semantic-ui-react';
+import { Item, Step } from 'semantic-ui-react';
 import MexForms from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as serviceMC from '../../../services/serviceMC';
-import * as serverData from '../../../services/ServerData';
+import * as ServerData from '../../../services/ServerData';
+
+
 
 const stepData = [
     {
         step: "Step 1",
-        description: "Create New Policy"
+        description: "Create Policy"
     },
     {
         step: "Step 2",
-        description: "Link the organization to the cloudlet pool"
-    },
-    {
-        step: "Step 3",
-        description: "Review your Cloudlet Pool"
+        description: "Add Cloudlets"
     }
 ]
 
@@ -28,26 +26,35 @@ class AutoProvPolicyReg extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            step: 1,
+            step: 0,
             forms: [],
             info: { region: 'US' }
         }
         this.regions = props.regionInfo.region
-    }
-
-
-    onChangeActive(num) {
-        if (this.state.step == num + 1) {
-            return true;
-        } else {
-            return false;
-        }
+        this.OrganizationList = []
+        this.cloudletList = []
     }
 
     getRegionData = () => {
         if (this.regions && this.regions.length > 0)
             return this.regions.map(region => {
                 return { key: region, value: region, text: region }
+            })
+    }
+
+    getOrganizationData = (dataList) => {
+        if (dataList && dataList.length > 0)
+            return dataList.map(data => {
+                let organization = data.Organization;
+                return { key: organization, value: organization, text: organization }
+            })
+    }
+
+    getCloudletData = (dataList) =>{
+        if (dataList && dataList.length > 0)
+            return dataList.map(data => {
+                let clouldlet = data.CloudletName;
+                return { value: JSON.stringify(data), label: clouldlet}
             })
     }
 
@@ -59,41 +66,179 @@ class AutoProvPolicyReg extends React.Component {
         })
     }
 
+    removeSelectedCloudlets=()=>
+    {
+        if(this.props.data)
+        {
+            let  selectedCloudlets = this.props.data.Cloudlets
+            if(selectedCloudlets && selectedCloudlets.length>0)
+            {
+                for(let i=0;i<this.cloudletList.length>0;i++)
+                {
+                    let cloudlet = this.cloudletList[i];
+                    for (let j = 0; j < selectedCloudlets.length > 0; j++) {
+                        let selectedCloudlet = selectedCloudlets[j]
+                        if(selectedCloudlet.key.name === cloudlet.CloudletName)
+                        {
+                            this.cloudletList.splice(i, 1)
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    removeUnSelectedCloudlets=()=>
+    {
+        let newCloudletList = []
+        if(this.props.data)
+        {
+            let  selectedCloudlets = this.props.data.Cloudlets
+            if(selectedCloudlets && selectedCloudlets.length>0)
+            {
+                for(let i=0;i<this.cloudletList.length>0;i++)
+                {
+                    let cloudlet = this.cloudletList[i];
+                    for (let j = 0; j < selectedCloudlets.length > 0; j++) {
+                        let selectedCloudlet = selectedCloudlets[j]
+                        if(selectedCloudlet.key.name === cloudlet.CloudletName)
+                        {
+                            newCloudletList.push(cloudlet)
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        this.cloudletList = newCloudletList;
+    }
+
+
+    selectCloudlet = async (region, organization) => {
+        this.cloudletList = await ServerData.getCloudletInfo(this, {Region:region})
+        
+        let action = 'Add'
+        if (this.props.action === 'Add') {
+            this.removeSelectedCloudlets();
+        }
+        else if (this.props.action === 'Delete') {
+            action = 'Delete'
+            this.removeUnSelectedCloudlets();
+        }
+
+        let step2 = [
+            { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { disabled: true }, options: this.getRegionData(), value: region },
+            { field: 'Organization', label: 'Organization', type: 'Select', placeholder: 'Select Organization', rules: { disabled: true }, options: this.getOrganizationData(this.OrganizationList), value: organization },
+            { field: 'Cloudlets', label: 'Clouldets', type: 'DualList', rules: { required: true }, options: this.getCloudletData(this.cloudletList) },
+            { label: `${action} Cloudlets`, type: 'Button', onClick: this.onAddCloudlets },
+            { label: 'Cancel', type: 'Button', onClick: this.onAddCancel },
+            { label: 'Reset', type: 'Button', onClick:this.onReset }
+        ]
+
+        this.setState({
+            step:1,
+            forms: step2
+        })
+    }
+
+    addCloudletResponse = (mcRequestList)=>
+    {
+        console.log('Rahul1234',mcRequestList)
+    }
+
     onCreateAutoProvPolicyResponse = (mcRequest)=>
     {
-        console.log('Rahul1234', mcRequest)
+        if(mcRequest.response)
+        {
+            let response = mcRequest.response;
+            if(response.status === 200)
+            {
+                let data = mcRequest.request.data;
+                let region = data.Region
+                let organization = data.AutoProvPolicy.key.developer;
+                this.selectCloudlet(region, organization)
+            }
+        }
     }
 
     onCreateAutoProvPolicy = (data) => {
+
+        let AutoProvPolicy = {
+            deploy_client_count: parseInt(data.DeployClientCount),
+            deploy_interval_count: parseInt(data.DeployIntervalCount), 
+            key:{ developer: data.Organization, name: data.AutoPolicyName }
+        }
+
+        let requestData = {
+            Region : data.Region,
+            AutoProvPolicy:AutoProvPolicy
+        }
+
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let token  = store.userToken;
         if(token)
         {
             let method = serviceMC.getEP().CREATE_AUTO_PROV_POLICY;
-            serviceMC.sendRequest(this, {token:token, method:method, data:data}, this.onCreateAutoProvPolicyResponse)
+            serviceMC.sendRequest(this, {token:token, method:method, data:requestData}, this.onCreateAutoProvPolicyResponse)
         }
     }
 
+    onAddCloudlets = (data)=>{
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        let token = store.userToken;
+
+        let method = serviceMC.getEP().REMOVE_AUTO_PROV_POLICY_CLOUDLET;
+
+        if(this.props.action === 'Delete')
+        {
+            method = serviceMC.getEP().DELETE_AUTO_PROV_POLICY;
+        }
+
+        let requestDataList = []
+        let cloudletList = data.Cloudlets
+        if (cloudletList && cloudletList.length > 0) {
+            for (let i = 0; i < cloudletList.length; i++) {
+                let cloudlet = JSON.parse(cloudletList[i])
+                let requestData = {
+                    Region: data.Region,
+                    AutoProvPolicyCloudlet: {
+                        key: { developer: data.Organization, name: data.AutoPolicyName },
+                        cloudlet_key: { name: cloudlet.CloudletName, operator_key: { name: cloudlet.Operator } }
+                    }
+                }
+                requestDataList.push({ token: token, method: method, data: requestData })
+            }
+        }
+        serviceMC.sendMultiRequest(this, requestDataList, this.addCloudletResponse)
+    }
+
+    onReset = ()=>
+    {
+        
+    }
 
     render() {
         return (
             <div className="round_panel">
                 <div className="grid_table" style={{ overflow: 'auto' }}>
                     <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
-                        <div className='content_title' style={{ padding: '0px 0px 10px 0' }}>Create New Cloudlet Policy</div>
-                        <Step.Group stackable='tablet' style={{ width: '100%' }}>
-                            {
-                                stepData.map((item, i) => (
-                                    <Step active={this.onChangeActive(i)} key={i} >
-                                        <Icon name='info circle' />
-                                        <Step.Content>
-                                            <Step.Title>{item.step}</Step.Title>
-                                            <Step.Description>{item.description}</Step.Description>
-                                        </Step.Content>
-                                    </Step>
-                                ))
-                            }
-                        </Step.Group>
+                    {this.props.action ? null :
+                            <div>
+                                <div className='content_title' style={{ padding: '0px 0px 10px 0' }}>Create New Cloudlet Policy</div>
+
+                                <Step.Group stackable='tablet' style={{ width: '100%' }}>
+                                    {
+                                        stepData.map((item, i) => (
+                                            <Step active={this.state.step === i} key={i} >
+                                                <Step.Content>
+                                                    <Step.Title>{item.step}</Step.Title>
+                                                    <Step.Description>{item.description}</Step.Description>
+                                                </Step.Content>
+                                            </Step>
+                                        ))
+                                    }
+                                </Step.Group></div>}
                         <MexForms forms={this.state.forms} />
                     </Item>
                 </div>
@@ -101,28 +246,59 @@ class AutoProvPolicyReg extends React.Component {
         )
     }
 
+    gotoUrl(site, subPath) {
+        this.props.history.push({
+            pathname: site,
+            search: subPath
+        });
+        this.props.history.location.search = subPath;
+        this.props.handleChangeSite({ mainPath: site, subPath: subPath })
+        this.setState({ page: subPath })
+    }
+
+    onAddCancel = ()=>
+    {
+        this.gotoUrl('site4', 'pg=8')
+    }
+
     
 
-    getFormData = ()=>
+    getFormData = async(data)=>
     {
-        serverData.getOrganizationInfo(this).then(data => {
-            alert(JSON.stringify(data))
-        })
-        let step1 = [
-            { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { required: true }, data: this.getRegionData() },
-            { field: 'AutoPolicyName', label: 'Auto Policy Name', type: 'Input', placeholder: 'Enter Auto Prov Name', rules: { required: true } },
-            { field: 'DeployClientCount', label: 'Deploy Client Count', type: 'Input', rules: { type: 'number' } },
-            { field: 'DeployIntervalCount', label: 'Deploy Interval Count', type: 'Input', rules: { type: 'number' } },
-            { label: 'Create Cloudlet Pool', type: 'Button', onClick: this.onCreateAutoProvPolicy }
-        ]
-        this.setState({
-            forms: step1
-        })
+        if(data)
+        {
+            this.OrganizationList = [{Organization:data.OrganizationName}]
+            this.selectCloudlet(data.Region, data.OrganizationName)
+        }
+        else {
+            this.OrganizationList = await ServerData.getOrganizationInfo(this)
+            let step1 = [
+                { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { required: true }, options: this.getRegionData() },
+                { field: 'Organization', label: 'Organization', type: 'Select', placeholder: 'Select Organization', rules: { required: true }, options: this.getOrganizationData(this.OrganizationList) },
+                { field: 'AutoPolicyName', label: 'Auto Policy Name', type: 'Input', placeholder: 'Enter Auto Prov Name', rules: { required: true } },
+                { field: 'DeployClientCount', label: 'Deploy Client Count', type: 'Input', rules: { type: 'number' } },
+                { field: 'DeployIntervalCount', label: 'Deploy Interval Count (S)', type: 'Input', rules: { type: 'number' } },
+                { label: 'Create Policy', type: 'Button', onClick: this.onCreateAutoProvPolicy },
+                { label: 'Cancel', type: 'Button', onClick: this.onAddCancel }
+            ]
+
+            this.setState({
+                forms: step1
+            })
+        }
 
     }
 
     componentDidMount() {
-        this.getFormData()
+        this.getFormData(this.props.data)
+    }
+
+    componentWillUnmount()
+    {
+        if(this.props.childPage)
+        {
+            this.props.childPage(null)
+        }
     }
 
 };
@@ -134,23 +310,20 @@ const mapStateToProps = (state) => {
         }
         : {};
     let regionInfo = (state.regionInfo) ? state.regionInfo : null;
-    let appLaunch = state.appLaunch;
-    let changeNext = state.changeNext ? state.changeNext.next : null;
     let _changedRegion = (state.form && state.form.createAppFormDefault && state.form.createAppFormDefault.values) ? state.form.createAppFormDefault.values.Region : null;
     return {
         getRegion: (state.getRegion) ? state.getRegion.region : null,
         regionInfo: regionInfo,
         region: region,
         changeRegion: state.changeRegion ? state.changeRegion.region : null,
-        changedRegion: _changedRegion,
-        appLaunch,
-        changeNext
+        changedRegion: _changedRegion
     }
 };
 
 
 const mapDispatchProps = (dispatch) => {
     return {
+        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
     };

@@ -114,6 +114,7 @@ export const formatData = (datas, body) => {
           let AutoPolicyName = dataResult.data.key.name || '-';
           let DeployClientCount = dataResult.data.deploy_client_count || 0;
           let DeployIntervalCount = dataResult.data.deploy_interval_count || 0;
+          let Cloudlets = dataResult.data.cloudlets ? dataResult.data.cloudlets : [];
           let CloudletCount = dataResult.data.cloudlets ? dataResult.data.cloudlets.length : 0
 
           values.push({
@@ -123,6 +124,7 @@ export const formatData = (datas, body) => {
             AutoPolicyName: AutoPolicyName,
             DeployClientCount: DeployClientCount,
             DeployIntervalCount: DeployIntervalCount,
+            Cloudlets:Cloudlets,
             CloudletCount: CloudletCount,
             Edit: newRegistKey,
           })
@@ -130,7 +132,6 @@ export const formatData = (datas, body) => {
       })
     }
   }
-  console.log('Rahul1234', values)
   return values
 
 }

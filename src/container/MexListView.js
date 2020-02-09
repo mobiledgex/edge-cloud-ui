@@ -1,10 +1,8 @@
 import React from 'react';
 import { Table } from 'semantic-ui-react';
 import {IconButton, Grow, Popper, Paper, ClickAwayListener, MenuList} from '@material-ui/core';
-import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import AlarmIcon from '@material-ui/icons/List';
-import { green } from '@material-ui/core/colors';
+import ListIcon from '@material-ui/icons/List';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
@@ -28,6 +26,7 @@ class DeveloperListView extends React.Component {
             dummyData: [],
             anchorEl : null
         };
+        this.selectedRow = {};
         this.sorting = false;
     }
 
@@ -98,27 +97,27 @@ class DeveloperListView extends React.Component {
 
 
     getCellClick = (field, item) => {
-        return (
-                field === 'Actions' ?
-                    null :
-                    this.detailView(item)
-        )
+        this.selectedRow = item
+        // return (
+        //         field === 'Actions' ?
+        //             null :
+        //             this.detailView(item)
+        // )
     }
 
     onActionClose = (action) => {
         if (action.onClick != null) {
-            action.onClick()
+            action.onClick(this.selectedRow)
         }
         this.setState({
             anchorEl: null
         })
     }
 
-    getAction = () => {
-
+    getAction = (item) => {
         return (
             <IconButton aria-label="Action" onClick={e => this.setState({ anchorEl: e.currentTarget })}>
-                <AlarmIcon style={{ color: '#76ff03' }} />
+                <ListIcon style={{ color: '#76ff03' }} />
             </IconButton>
         )
     }
@@ -129,7 +128,7 @@ class DeveloperListView extends React.Component {
                 let field = header.field;
                 return <Table.Cell key={j} className="table_actions" textAlign='center' onClick={() => this.getCellClick(field, item)} style={(this.state.selectedItem == i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }}>
                     {
-                        field === 'Actions' ? this.getAction()
+                        field === 'Actions' ? this.getAction(item)
                         :
                         <div ref={ref => this.tooltipref = ref}
                             data-tip='tooltip' data-for='happyFace'>
