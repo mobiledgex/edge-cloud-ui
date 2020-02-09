@@ -205,11 +205,11 @@ export default hot(
 
 
             return (
-                <div style={{height: '100%', width: '100%'}}>
+                <div style={{height: '100%', width: '100%', zIndex: 1}}>
                     <Map center={[45.4, 51.7]}
                          duration={0.9}
                          zoom={1.0}
-                         style={{width: '100%', height: '100%'}}
+                         style={{width: '100%', height: '100%', zIndex: 1,}}
                          easeLinearity={1}
                          useFlyTo={true}
                          dragging={true}
@@ -219,6 +219,7 @@ export default hot(
                             url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
                             //url={'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'}
                             minZoom={2}
+                            style={{zIndex: 1}}
                             //maxZoom={15}
                         />
                         {this.state.newCloudLetLocationList.map((item, outerIndex) => {

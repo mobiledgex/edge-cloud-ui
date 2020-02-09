@@ -27,6 +27,10 @@
     background-color: #262626
 }
 
+.bottomGridArea{
+    zIndex:999999
+}
+
 
 .leaflet-control-container{
     background-color: #3b3f47;

@@ -1152,8 +1152,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             pClusterList = sortUsageListByTypeForCluster(pClusterList, HARDWARE_TYPE.CPU)
 
             return (
-                <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
-                    <Table.Header className="viewListTableHeader">
+                <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing styles={{zIndex: 999999999999}}>
+                    <Table.Header className="viewListTableHeader" styles={{zIndex: 99999999999}}>
                         <Table.Row>
                             <Table.HeaderCell>
                                 index
@@ -1495,8 +1495,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     onOutsideClick={() => {
                                                     }}
                                                 >
-                                                    <div className='page_monitoring_popup_column'>
-                                                        <div className='page_monitoring_popup_header_row'
+                                                    <div className='page_monitoring_popup_column' style={{zIndex: 999999}}>
+                                                        <div className='page_monitoring_popup_header_row' style={{zIndex: 999999}}
                                                              onClick={() => {
                                                                  this.setState({
                                                                      isShowBottomGrid: !this.state.isShowBottomGrid,
@@ -1504,10 +1504,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                                              }}
                                                         >
-                                                            <div className='page_monitoring_popup_header_title'>
+                                                            <div className='page_monitoring_popup_header_title' style={{zIndex: 999999}}>
                                                                 Status of Cluster
                                                             </div>
-                                                            <div className='page_monitoring_popup_header_button'>
+                                                            <div className='page_monitoring_popup_header_button' style={{zIndex: 999999}}>
                                                                 <div>
                                                                     HIDE CLUSTER LIST
                                                                 </div>

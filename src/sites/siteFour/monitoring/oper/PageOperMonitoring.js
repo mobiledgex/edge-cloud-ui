@@ -1143,8 +1143,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     }}
                                                 >
                                                     <div className='page_monitoring_popup_column' style={{zIndex: 999999}}>
-                                                        <div className='page_monitoring_popup_header_row'
-                                                             style={{zIndex: 999999}}
+                                                        <div className='page_monitoring_popup_header_row' style={{zIndex: 999999}}
                                                              onClick={() => {
                                                                  this.setState({
                                                                      isShowBottomGrid: !this.state.isShowBottomGrid,
