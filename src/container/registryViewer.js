@@ -74,7 +74,7 @@ class RegistryViewer extends React.Component {
                     'Region':{label:'Region', type:'RegionSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:[], editDisabled:true},
                     'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:'Organization or Company Name that a Developer is part of', active:true, editDisabled:true},
                     'AppName':{label:'App Name', type:'RenderInputApp', necessary:true, tip:'App name', active:true, editDisabled:true},
-                    'Version':{label:'App Version', type:'RenderInput', necessary:true, tip:'App version', active:true, editDisabled:true},
+                    'Version':{label:'App Version', type:'RenderInputVersion', necessary:true, tip:'App version', active:true, editDisabled:false},
                     'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'Deployment type (Kubernetes, Docker, or VM)', active:true, items:['Docker', 'Kubernetes', 'VM'], editDisabled:true},
                     'ImageType':{label:'Image Type', type:'RenderDT', necessary:true, tip:'ImageType specifies image type of an App',items:''},
                     'ImagePath':{label:'Image Path', type:'RenderPath', necessary:true, tip:'URI of where image resides', active:true,items:''},
@@ -359,12 +359,9 @@ class RegistryViewer extends React.Component {
                     error.push(item)
                 }
             })
+            //alert(nextProps.formApps.submitSucceeded+":"+JSON.stringify(error))
             if(nextProps.formApps.submitSucceeded && error.length == 0){
                 let method = serviceMC.getEP().CREATE_APP;
-                if(nextProps.editMode){
-                    method = serviceMC.getEP().UPDATE_APP;
-                    nextProps.submitValues.app['fields'] = this.updateFields(nextProps.editData,nextProps.submitValues.app)
-                }
                 this.setState({toggleSubmit:true,validateError:error});
                 this.props.handleLoadingSpinner(true);
                 let serviceBody = {
@@ -375,6 +372,21 @@ class RegistryViewer extends React.Component {
                 serviceMC.sendRequest(_self, serviceBody, this.receiveResult)
             } else {
                 this.setState({validateError:error,toggleSubmit:true})
+            }
+            //update app mode
+            if(nextProps.formApps.submitSucceeded && nextProps.editMode){
+                let method = serviceMC.getEP().UPDATE_APP;
+                nextProps.submitValues.app['fields'] = this.updateFields(nextProps.editData, nextProps.submitValues.app)
+                nextProps.submitValues.region = nextProps.editData.Region;
+                // TODO 20200207 @Smith: we need formating to app properly body to send to update url 
+                this.setState({toggleSubmit:true,validateError:error});
+                this.props.handleLoadingSpinner(true);
+                let serviceBody = {
+                    method : method,
+                    token:store ? store.userToken : 'null',
+                    data: nextProps.submitValues
+                }
+                serviceMC.sendRequest(_self, serviceBody, this.receiveResult)
             }
 
         }
@@ -500,6 +512,8 @@ const mapStateToProps = (state) => {
             }
         }
     }
+
+    
 
     if(state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
         if(state.form && state.form.createAppFormDefault){
