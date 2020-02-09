@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Bungee|Candal|Righteous&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Acme|Bungee|Barlow+Semi+Condensed|Candal|Encode+Sans+Condensed|Righteous&display=swap');
 
-.popup1{
+.popup1 {
     background-color: black;
     opacity: 0.7;
 }
@@ -12,6 +12,7 @@
     /*      left top right bottom*/
     /*margin: 0 auto;*/
 }
+
 /*.leaflet-map-pane {
     height: 400px;
     background-color: #0a0a0c;
@@ -21,30 +22,31 @@
     background-color: #262626
 }
 
-.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom {
+.leaflet-container {
     -ms-touch-action: none;
     touch-action: none;
     background-color: #262626
 }
 
-.bottomGridArea{
-    zIndex:999999
+.bottomGridArea {
+    zIndex: 999999
 }
 
 
-.leaflet-control-container{
+.leaflet-control-container {
     background-color: #3b3f47;
 }
+
 .leaflet-control-zoom-out {
     background-color: #3b3f47;
 }
 
-.leaflet-control-attribution{
+.leaflet-control-attribution {
     display: none;
 }
 
 .leaflet-popup-content-wrapper {
-    background-color: rgba(71,82,102,0.65);
+    background-color: rgba(71, 82, 102, 0.65);
     font-weight: bold;
     color: white;
     font-size: 20px;
@@ -62,8 +64,8 @@
 
 
 .leafMapDiv {
-    width:100%;
-    height:100%;
+    width: 100%;
+    height: 100%;
     z-index: 1;
 }
 
@@ -111,9 +113,6 @@
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 100000;
 }
-
-
-
 
 
 /*######################################################################*/
