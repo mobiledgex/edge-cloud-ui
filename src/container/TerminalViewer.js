@@ -72,7 +72,7 @@ class MexTerminal extends Component {
                     }
                 },
                 container_id: this.state.containerId,
-                command: this.state.cmd,
+                cmd: {command:this.state.cmd},
                 offer: JSON.stringify(this.localConnection.localDescription)
             }
         }

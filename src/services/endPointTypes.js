@@ -19,6 +19,7 @@ import * as FormatComputeCloudletPoolMemberDelete from './formatter/formatComput
 import * as FormatComputeOrgCloudlet from './formatter/formatComputeOrgCloudlet';
 import * as FormatComputeLinkPoolOrgDelete from './formatter/formatComputeLinkPoolOrgDelete';
 import * as FormatAutoProvPolicy from './formatter/formatAutoProvPolicy';
+import * as FormatPrivacyPolicy from './formatter/formatPrivacyPolicy';
 
 
 export const SHOW_ORG = "showOrg";
@@ -83,6 +84,10 @@ export const CREATE_AUTO_PROV_POLICY = "CreateAutoProvPolicy";
 export const DELETE_AUTO_PROV_POLICY= "DeleteAutoProvPolicy";
 export const ADD_AUTO_PROV_POLICY_CLOUDLET = "AddAutoProvPolicyCloudlet";
 export const REMOVE_AUTO_PROV_POLICY_CLOUDLET = "RemoveAutoProvPolicyCloudlet";
+export const SHOW_PRIVACY_POLICY = "ShowPrivacyPolicy";
+export const UPDATE_PRIVACY_POLICY = "UpdatePrivacyPolicy";
+export const CREATE_PRIVACY_POLICY = "CreatePrivacyPolicy";
+export const DELETE_PRIVACY_POLICY = "DeletePrivacyPolicy";
 
 export function getPath(request) {
     switch (request.method) {
@@ -147,6 +152,10 @@ export function getPath(request) {
         case DELETE_AUTO_PROV_POLICY:
         case ADD_AUTO_PROV_POLICY_CLOUDLET:
         case REMOVE_AUTO_PROV_POLICY_CLOUDLET:
+        case SHOW_PRIVACY_POLICY:
+        case UPDATE_PRIVACY_POLICY:
+        case CREATE_PRIVACY_POLICY:
+        case DELETE_PRIVACY_POLICY:
         case RUN_COMMAND:
             return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:
@@ -226,6 +235,9 @@ export function formatData(request, response) {
             break;
         case SHOW_AUTO_PROV_POLICY:
             data = FormatAutoProvPolicy.formatData(response, request.data)
+            break;
+        case SHOW_PRIVACY_POLICY:
+            data = FormatPrivacyPolicy.formatData(response, request.data)
             break;
         default:
             data = undefined;

@@ -96,6 +96,15 @@ class SiteFourPageClusterInstReg extends React.Component {
         }
     }
 
+    receivePrivacyResponse(mcRequest){
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                _self.props.handleInjectPrivacy(response.data)
+            }
+        }
+    }
+
     gotoUrl() {
         _self.props.history.push({
             pathname: '/site4',
@@ -107,7 +116,8 @@ class SiteFourPageClusterInstReg extends React.Component {
 
     getDataDeveloper(token, region) {
 
-        serviceMC.sendRequest(_self, {token:token, method:serviceMC.getEP().SHOW_FLAVOR, data:{region:(region === 'All') ? 'US' : region}}, _self.receiveResult)
+        //serviceMC.sendRequest(_self, {token:token, method:serviceMC.getEP().SHOW_FLAVOR, data:{region:(region === 'All') ? 'US' : region}}, _self.receiveResult)
+        //serviceMC.sendRequest(_self, {token:token, method:serviceMC.getEP().SHOW_PRIVACY_POLICY, data:{region:(region === 'All') ? 'US' : region}}, _self.receivePrivacyResponse)
     }
 
     /*

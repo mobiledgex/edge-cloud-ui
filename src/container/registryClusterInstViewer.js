@@ -22,8 +22,6 @@ let _self = null;
 
 const panes = [
     { menuItem: 'Cluster Instance Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateInstForm data={props} pId={0} getUserRole={props.userrole} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')} /></Tab.Pane> },
-    // { menuItem: 'Docker deployment', render: () => <Tab.Pane  attached={false} pId={1}>None</Tab.Pane> },
-    // { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> }
 ]
 const ipaccessArr = ['Dedicated', 'Shared'];
 class RegistryClusterInstViewer extends React.Component {
@@ -35,7 +33,7 @@ class RegistryClusterInstViewer extends React.Component {
         this.wsRequestResponse = [];
         this.state = {
             layout,
-            dialogMessage:[],
+            dialogMessage: [],
             open: false,
             openAdd: false,
             openDetail: false,
@@ -84,6 +82,7 @@ class RegistryClusterInstViewer extends React.Component {
                     'DeploymentType': '',
                     'IpAccess': '',
                     'Flavor': '',
+                    'PrivacyPolicy': '',
                     'NumberOfMaster': '1',
                     'NumberOfNode': '1',
                 }
@@ -163,16 +162,16 @@ class RegistryClusterInstViewer extends React.Component {
                     messageArray.push(method + ':' + data.data.message)
                     if (data.code !== 200) {
                         valid = false;
-                    }   
+                    }
                 })
                 if (valid) {
                     this.props.gotoUrl();
                     this.setState({ errorClose: true })
                 }
                 else {
-                   this.setState({
-                    dialogMessage : messageArray
-                   })
+                    this.setState({
+                        dialogMessage: messageArray
+                    })
                 }
             }
         }
@@ -235,9 +234,9 @@ class RegistryClusterInstViewer extends React.Component {
         }
     }
 
-    closeDialog = ()=>{
+    closeDialog = () => {
         this.setState({
-            dialogMessage:[],
+            dialogMessage: [],
             errorClose: true
         })
         this.props.handleLoadingSpinner(false);
@@ -263,7 +262,7 @@ class RegistryClusterInstViewer extends React.Component {
                 <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
                 <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
                 <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>
-                <MexMessageDialog close={this.closeDialog} message={this.state.dialogMessage}/>
+                <MexMessageDialog close={this.closeDialog} message={this.state.dialogMessage} />
             </div>
         );
     }
@@ -310,6 +309,7 @@ const createFormat = (data) => (
             "deployment": data['DeploymentType'],
             "flavor": { "name": data['Flavor'] },
             "ip_access": parseInt(getInteger(data['IpAccess'])),
+            "privacy_policy": parseInt(getInteger(data['IpAccess'])) === 1 ? data['PrivacyPolicy'] : undefined,
             "num_masters": parseInt(data['NumberOfMaster']),
             "num_nodes": parseInt(data['NumberOfNode'])
         }
@@ -322,7 +322,7 @@ const mapStateToProps = (state) => {
     let dimmInfo = dimm ? dimm : null;
     let submitVal = null;
     let validateValue = null;
-    let region = state.changeRegion ? {value: state.changeRegion.region}: {};
+    let region = state.changeRegion ? { value: state.changeRegion.region } : {};
     let regionInfo = (state.regionInfo) ? state.regionInfo : null;
     let formClusterInst = {};
 

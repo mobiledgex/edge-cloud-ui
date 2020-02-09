@@ -30,6 +30,7 @@ class AutoProvPolicyReg extends React.Component {
             forms: [],
             info: { region: 'US' }
         }
+        this.formData = {};
         this.regions = props.regionInfo.region
         this.OrganizationList = []
         this.cloudletList = []
@@ -115,7 +116,7 @@ class AutoProvPolicyReg extends React.Component {
     }
 
 
-    selectCloudlet = async (region, organization) => {
+    selectCloudlet = async (region, organization, autoPolicyName) => {
         this.cloudletList = await ServerData.getCloudletInfo(this, {Region:region})
         
         let action = 'Add'
@@ -126,14 +127,16 @@ class AutoProvPolicyReg extends React.Component {
             action = 'Delete'
             this.removeUnSelectedCloudlets();
         }
-
+        this.formData.Region = region
+        this.formData.Organization = organization
+        this.formData.AutoPolicyName = autoPolicyName
         let step2 = [
             { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { disabled: true }, options: this.getRegionData(), value: region },
             { field: 'Organization', label: 'Organization', type: 'Select', placeholder: 'Select Organization', rules: { disabled: true }, options: this.getOrganizationData(this.OrganizationList), value: organization },
-            { field: 'Cloudlets', label: 'Clouldets', type: 'DualList', rules: { required: true }, options: this.getCloudletData(this.cloudletList) },
+            { field: 'AutoPolicyName', label: 'Auto Policy Name', type: 'Input', placeholder: 'Enter Auto Prov Name', rules: { disabled: true }, value: autoPolicyName  },
+                { field: 'Cloudlets', label: 'Clouldets', type: 'DualList', rules: { required: true }, options: this.getCloudletData(this.cloudletList) },
             { label: `${action} Cloudlets`, type: 'Button', onClick: this.onAddCloudlets },
-            { label: 'Cancel', type: 'Button', onClick: this.onAddCancel },
-            { label: 'Reset', type: 'Button', onClick:this.onReset }
+            { label: 'Cancel', type: 'Button', onClick: this.onAddCancel }
         ]
 
         this.setState({
@@ -144,7 +147,25 @@ class AutoProvPolicyReg extends React.Component {
 
     addCloudletResponse = (mcRequestList)=>
     {
-        console.log('Rahul1234',mcRequestList)
+        let valid = true;
+        if(mcRequestList && mcRequestList.length>0)
+        {
+            for(let i=0;i<mcRequestList.length;i++)
+            {
+                let mcRequest = mcRequestList[i];
+                if(mcRequest.response.status !== 200)
+                {
+                    valid = false;
+                }
+            }
+        }
+
+        if(valid)
+        {
+            let msg = this.props.action === 'Delete' ? 'Removed' : 'Added'
+            this.props.handleAlertInfo('success', `Cloudlets ${msg} Successfully`)
+            setTimeout(()=>{this.gotoUrl('site4', 'pg=8')},2000)
+        }
     }
 
     onCreateAutoProvPolicyResponse = (mcRequest)=>
@@ -157,7 +178,8 @@ class AutoProvPolicyReg extends React.Component {
                 let data = mcRequest.request.data;
                 let region = data.Region
                 let organization = data.AutoProvPolicy.key.developer;
-                this.selectCloudlet(region, organization)
+                let autoPolicyName = data.AutoProvPolicy.key.name;
+                this.selectCloudlet(region, organization, autoPolicyName)
             }
         }
     }
@@ -188,11 +210,11 @@ class AutoProvPolicyReg extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let token = store.userToken;
 
-        let method = serviceMC.getEP().REMOVE_AUTO_PROV_POLICY_CLOUDLET;
+        let method = serviceMC.getEP().ADD_AUTO_PROV_POLICY_CLOUDLET;
 
         if(this.props.action === 'Delete')
         {
-            method = serviceMC.getEP().DELETE_AUTO_PROV_POLICY;
+            method = serviceMC.getEP().REMOVE_AUTO_PROV_POLICY_CLOUDLET;
         }
 
         let requestDataList = []
@@ -211,11 +233,6 @@ class AutoProvPolicyReg extends React.Component {
             }
         }
         serviceMC.sendMultiRequest(this, requestDataList, this.addCloudletResponse)
-    }
-
-    onReset = ()=>
-    {
-        
     }
 
     render() {
@@ -239,7 +256,7 @@ class AutoProvPolicyReg extends React.Component {
                                         ))
                                     }
                                 </Step.Group></div>}
-                        <MexForms forms={this.state.forms} />
+                        <MexForms formData = {this.formData} forms={this.state.forms} />
                     </Item>
                 </div>
             </div>
@@ -268,7 +285,7 @@ class AutoProvPolicyReg extends React.Component {
         if(data)
         {
             this.OrganizationList = [{Organization:data.OrganizationName}]
-            this.selectCloudlet(data.Region, data.OrganizationName)
+            this.selectCloudlet(data.Region, data.OrganizationName, data.AutoPolicyName)
         }
         else {
             this.OrganizationList = await ServerData.getOrganizationInfo(this)

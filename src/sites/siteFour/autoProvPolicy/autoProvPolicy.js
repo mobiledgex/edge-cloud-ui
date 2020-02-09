@@ -20,15 +20,15 @@ class SiteFourPageFlavor extends React.Component {
         this.state = {
             devData: [],
             regionToggle: false,
-            mounted: false,
-            edit:false,
+            edit: false,
         };
+        this.initLoad = false;
         this.action = '';
         this.requestCount = 0;
         this.multiRequestData = [];
         this.headerH = 70;
         this.hgap = 0;
-        this.data={}
+        this.data = {}
 
         this.headerInfo = [
             { field: 'Region', label: 'Region', sortable: true, visible: true },
@@ -91,28 +91,22 @@ class SiteFourPageFlavor extends React.Component {
 
     }
 
-    componentWillMount() {
-    }
+
     componentDidMount() {
-        this.setState({
-            mounted: true
-        })
+        let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
+        if (!this.state.regions) this.setState({ regions: savedRegion })
+        this.getDataDeveloper(this.props.changeRegion, this.state.regions || savedRegion);
     }
+
 
     componentWillReceiveProps(nextProps) {
-
         if (nextProps.computeRefresh.compute) {
             this.getDataDeveloper(nextProps.changeRegion);
             this.props.handleComputeRefresh(false);
         }
-        if (this.props.changeRegion !== nextProps.changeRegion) {
+        else if (this.props.changeRegion !== nextProps.changeRegion) {
             this.getDataDeveloper(nextProps.changeRegion);
         }
-        if (nextProps.regionInfo.region.length && !this.state.regionToggle) {
-            _self.setState({ regionToggle: true })
-            this.getDataDeveloper(nextProps.changeRegion, nextProps.regionInfo.region);
-        }
-
     }
 
     receiveResult = (mcRequest) => {
@@ -178,8 +172,6 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
-        handleInjectData: (data) => { dispatch(actions.injectData(data)) },
-        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data)) },
         handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data)) },
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }

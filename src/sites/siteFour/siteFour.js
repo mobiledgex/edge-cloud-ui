@@ -52,7 +52,9 @@ import PageMonitoringMain from './monitoring/PageMonitoringMain'
 import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
 import RefreshOutlinedIcon from '@material-ui/icons/RefreshOutlined';
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
-import SiteFourAutoProvPolicy from './autoProvPolicy/siteFour_page_autoProvPolicy';
+import AutoProvPolicy from './autoProvPolicy/autoProvPolicy';
+import AutoPrivacyPolicy from './autoProvPolicy/autoPrivacyPolicy';
+import AutoPrivacyPolicyReg from './autoProvPolicy/autoPrivacyPolicyReg';
 import SiteFourAutoProvPolicyReg from './autoProvPolicy/autoProvPolicyReg';
 
 
@@ -72,6 +74,11 @@ let defaultMotion = { left: window.innerWidth / 2, top: window.innerHeight / 2, 
 const orgaSteps = organizationTutor();
 const cloudletSteps = CloudletTutor();
 let _self = null;
+
+const autoPolicy = [
+    {key: 'Prov Policy', text: 'Prov Policy', value: 'Prov Policy'},
+    {key: 'Privacy Policy', text: 'Privacy Policy', value: 'Privacy Policy'}
+]
 class SiteFour extends React.Component {
     constructor(props) {
         super(props);
@@ -114,7 +121,7 @@ class SiteFour extends React.Component {
             stepsEnabled: false,
             initialStep: 0,
             steps: [],
-
+            autoPolicy: localStorage.getItem('autoPolicy') ? localStorage.getItem('autoPolicy') : 'Prov Policy',
             openLegend: false,
 
             enable: false,
@@ -141,7 +148,7 @@ class SiteFour extends React.Component {
             { label: 'Apps', icon: 'apps', pg: 5 },
             { label: 'App Instances', icon: 'storage', pg: 6 },
             { label: 'Monitoring', icon: 'tv', pg: 'Monitoring' },
-            { label: 'Policy', icon: 'policy', pg: 8 },
+            { label: 'Auto Policy', icon: 'policy', pg: 8 },
             { label: 'Audit Log', icon: 'check', pg: 'audits' }
         ]
         this.menuItems = [ //developer menu
@@ -237,7 +244,6 @@ class SiteFour extends React.Component {
         _self.props.history.location.search = "pg=" + pg;
         _self.props.handleChangeStep(pg)
         _self.setState({ page: 'pg=' + pg, activeItem: label, headerTitle: label, intoCity: false })
-
     }
 
 
@@ -267,9 +273,10 @@ class SiteFour extends React.Component {
         } else if (localStorage.selectMenu === 'Cloudlet Pools') {
             this.setState({ page: 'pg=createCloudletPool' })
             this.gotoUrl('/site4', 'pg=createCloudletPool')
-        }else if (localStorage.selectMenu === 'Policy') {
-            this.setState({ page: 'pg=createPolicy' })
-            this.gotoUrl('/site4', 'pg=createPolicy')
+        }else if (localStorage.selectMenu === 'Auto Policy') {
+            let pg = this.state.autoPolicy === 'Prov Policy' ? 'createPolicy' : 'createPrivacyPolicy';
+            this.setState({ page: `pg=${pg}` })
+            this.gotoUrl('/site4', `pg=${pg}`)
         } else {
             this.props.handleInjectDeveloper('newRegist');
         }
@@ -755,6 +762,8 @@ class SiteFour extends React.Component {
         this.setState({ openLegend: false })
     }
 
+    
+
 
     /**
      * audit
@@ -818,11 +827,17 @@ class SiteFour extends React.Component {
         serviceMC.sendRequest(_self, { token: store.userToken, method: serviceMC.getEP().SHOW_SELF, data: '{}', showMessage: false }, _self.receiveResult)
     }
 
+    onPolicyChange = (value)=>
+    {
+        localStorage.setItem('autoPolicy', value)
+        this.setState({autoPolicy:value})
+    }
+
     /** audit ********/
 
     showChildPage = (currentPage)=>
     {
-        this.setState({
+         this.setState({
             currentPage : currentPage
         })
     }
@@ -895,13 +910,6 @@ class SiteFour extends React.Component {
                             className='gnb_logout'
                         />
                         <HeaderGlobalMini email={this.state.email} data={this.props.userInfo.info} dimmer={false} />
-                        {/* <Popup
-                            trigger={<div style={{ cursor: 'pointer',marginTop:10  }}> <CallEndOutlinedIcon fontSize='large'/> </div>}
-                            content={this.menuSupport()}
-                            on='click'
-                            position='bottom center'
-                            className='gnb_logout'
-                        /> */}
                     </Grid.Column>
                 </Grid.Row>
                 <Container className='view_left_container' style={{ width: this.menuW }}>
@@ -979,12 +987,12 @@ class SiteFour extends React.Component {
                                                 this.menuItemView(item, i, localStorage.selectMenu)
                                             ))
                                             :
-                                            (localStorage.selectRole == 'DeveloperManager' || localStorage.selectRole == 'DeveloperContributor' || localStorage.selectRole == 'DeveloperViewer') ?
+                                            (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer') ?
                                                 this.menuItems.map((item, i) => (
                                                     this.menuItemView(item, i, localStorage.selectMenu)
                                                 ))
                                                 :
-                                                (localStorage.selectRole == 'OperatorManager' || localStorage.selectRole == 'OperatorContributor' || localStorage.selectRole == 'OperatorViewer') ?
+                                                (localStorage.selectRole === 'OperatorManager' || localStorage.selectRole === 'OperatorContributor' || localStorage.selectRole === 'OperatorViewer') ?
                                                     this.auth_three.map((item, i) => (
                                                         this.menuItemView(item, i, localStorage.selectMenu)
                                                     ))
@@ -1022,7 +1030,16 @@ class SiteFour extends React.Component {
                                                     : null
                                             }
                                             {
-                                                (!this.state.currentPage && this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView' && this.props.location.search.indexOf('audits') === -1) ?
+                                                (this.state.page.indexOf('pg=8') >= 0 && !this.state.currentPage) ?
+                                                    <Dropdown className='selection'
+                                                        style={{ position: 'relative', marginRight: 20, height: 20 }}
+                                                        options={autoPolicy}
+                                                        defaultValue={this.state.autoPolicy}
+                                                        onChange={(e,{value})=>{this.onPolicyChange(value)}}
+                                                    /> : null
+                                            }
+                                            {
+                                                (!this.state.currentPage && this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView' && this.props.location.search.indexOf('audits') === -1 ) ?
                                                     <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>New</Button>
                                                     : null
                                             }
@@ -1061,13 +1078,14 @@ class SiteFour extends React.Component {
                                                                         (this.state.page === 'pg=5') ? <SiteFourPageApps></SiteFourPageApps> :
                                                                             (this.state.page === 'pg=6') ? <SiteFourPageAppInst></SiteFourPageAppInst> :
                                                                                 (this.state.page === 'pg=7') ? <SiteFourPageCloudletPool></SiteFourPageCloudletPool> :
-                                                                                    (this.state.page === 'pg=8') ? <SiteFourAutoProvPolicy childPage={this.showChildPage}></SiteFourAutoProvPolicy> :
+                                                                                    (this.state.page === 'pg=8') ? this.state.autoPolicy === 'Prov Policy' ? <AutoProvPolicy childPage={this.showChildPage}></AutoProvPolicy> : <AutoPrivacyPolicy childPage={this.showChildPage}></AutoPrivacyPolicy> :
                                                                                     (this.state.page === 'pg=newOrg') ? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
                                                                                         (this.state.page === 'pg=createApp') ? <SiteFourPageAppReg editable={false}></SiteFourPageAppReg> :
                                                                                             (this.state.page === 'pg=editApp') ? <SiteFourPageAppReg editable={true}></SiteFourPageAppReg> :
                                                                                                 (this.state.page === 'pg=createAppInst') ? <SiteFourPageAppInstReg editable={false}></SiteFourPageAppInstReg> :
                                                                                                     (this.state.page === 'pg=createCloudletPool') ? <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
-                                                                                                    (this.state.page === 'pg=createAutoProvPolicy') ? <SiteFourAutoProvPolicyReg></SiteFourAutoProvPolicyReg>  :
+                                                                                                    (this.state.page === 'pg=createPolicy') ? <SiteFourAutoProvPolicyReg></SiteFourAutoProvPolicyReg>  :
+                                                                                                    (this.state.page === 'pg=createPrivacyPolicy') ? <AutoPrivacyPolicyReg></AutoPrivacyPolicyReg>  :
                                                                                                         (this.state.page === 'pg=updateCloudletPool') ? <SiteFourPageCloudletPoolUpdate></SiteFourPageCloudletPoolUpdate> :
                                                                                                             (this.state.page === 'pg=linkOrganize') ? <SiteFourPageLinkOrganizeReg></SiteFourPageLinkOrganizeReg> :
                                                                                                                 (this.state.page === 'pg=createCloudletPool') ? <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
