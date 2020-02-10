@@ -78,15 +78,6 @@ const FormForgotPass = (props) => (
                 <Button onClick={() => props.self.onSendEmail('back')}>Return to Log In</Button>
             </Grid.Column>
         </Grid.Row>
-        {/*<Grid.Row columns={2}>*/}
-        {/*    <Grid.Column>*/}
-        {/*        <Button style={{width:'50%'}} onClick={() => props.self.onSendEmail('back')}>Return to Log In</Button>*/}
-        {/*    </Grid.Column>*/}
-        {/*    <Grid.Column>*/}
-        {/*        <Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSendEmail()}>Send Password reset email</Button>*/}
-        {/*    </Grid.Column>*/}
-        {/*</Grid.Row>*/}
-
     </Grid>
 )
 const ForgotMessage = (props) => (
@@ -211,12 +202,6 @@ const validate = values => {
     if(ema.length < 4 && ema !== ''){
         error.email= 'too short';
     }
-    // if(!ema.includes('@') && ema !== ''){
-    //     error.email= '@ not included';
-    // }
-    if(nm.length > 4){
-        //error.name= 'max 8 characters';
-    }
 
     return error;
 }
@@ -262,30 +247,14 @@ class Login extends Component {
         this.clientSysInfo = {};
     }
     componentDidMount() {
-        //로컬 스토리지의 저장공간에서 로그인 유지 상태 확인
 
-        //브라우져 주소창에 주소를 입력할 경우
-
-        /***
-         * TEST success created new account
-         ***/
-        //this.setState({successCreate:true, loginMode:'signuped', successMsg:'test created'})
-        //this.onProgress();
-
-        //this.setState({email:'myemail@test.com', username:'my name'})
-        //setTimeout(() =>self.resultCreateUser({data:{message:'good created'}}, {}, self), 2000);
-        //inkikim1234
-
-
-        //remove new user info data from localStorage
-            let getUserInfo = localStorage.getItem('userInfo')
+        let getUserInfo = localStorage.getItem('userInfo')
         let oldUserInfo = getUserInfo ? JSON.parse(getUserInfo) : null;
-        if(oldUserInfo) {
-            if(oldUserInfo.date && moment().diff(oldUserInfo.date,'minute') >= 60) {
+        if (oldUserInfo) {
+            if (oldUserInfo.date && moment().diff(oldUserInfo.date, 'minute') >= 60) {
                 localStorage.setItem('userInfo', null)
             }
         }
-
 
         /**********************
          * Get info of client system : OS, browser
@@ -312,21 +281,25 @@ class Login extends Component {
                 //in case user press the button as a submit no matter send params
                 localStorage.setItem('userInfo', JSON.stringify({email:nextProps.values.email, username:nextProps.values.username, date:new Date()}))
                 if(nextProps.loginMode === 'resetPass'){
-                    serviceMC.sendRequest(self, {token: store ? store.resetToken : 'null', method:serviceMC.getEP().RESET_PASSWORD, data : {password:nextProps.values.password}}, self.resultNewPass)
+                    serviceMC.sendRequest(self, {method:serviceMC.getEP().RESET_PASSWORD, data : {token: store ? store.resetToken : 'null', password:nextProps.values.password}}, self.resultNewPass)
                 } else {
                     let requestBody ={
                         method:serviceMC.getEP().CREATE_USER, 
                         data : {
-                            name:nextProps.values.username, 
-                            passhash:nextProps.values.password, 
-                            email:nextProps.values.email, 
-                            clientSysInfo:self.clientSysInfo, 
-                            callbackurl : 'https://'+host+'/verify'
+                            name: nextProps.values.username,
+                            passhash: nextProps.values.password,
+                            email: nextProps.values.email,
+                            verify: {
+                                email: nextProps.values.email,
+                                operatingsystem: self.clientSysInfo.os.name,
+                                browser: self.clientSysInfo.browser.name,
+                                callbackurl: 'https://' + host + '/verify',
+                                clientip: self.clientSysInfo.clientIP,
+                            }
                         }
                     }
-                    serviceMC.sendRequest(self, requestBody, self.resultCreateUser)
+                    serviceMC.sendRequest(this, requestBody, self.resultCreateUser)
                 }
-                this.onProgress(true);
             }
 
         }
@@ -384,7 +357,6 @@ class Login extends Component {
         } else {
             self.clientSysInfo['clientIP'] = '127.0.0.1';
         }
-
     }
 
     resultCreateUser(mcRequest) {
@@ -476,7 +448,7 @@ class Login extends Component {
     }
 
     receiveForgoten(mcRequest) {
-        self.props.handleAlertInfo('success', 'Success')
+        self.props.handleAlertInfo('success', 'We have e-mailed your password reset link!')
         self.setState({loginMode:'forgotMessage', forgotMessage: true})
     }
     receiveResendVerify(mcRequest) {
@@ -496,22 +468,26 @@ class Login extends Component {
    
     onSendEmail(mode) {
         if (mode === 'verify') {
-            let requestBody = {method:serviceMC.getEP().RESEND_VERIFY, data:{email: self.state.email, callbackurl: `https://${host}/verify`}}
+            let requestBody = {
+                method: serviceMC.getEP().RESEND_VERIFY,
+                data: {
+                    email: self.state.email, callbackurl: `https://${host}/verify`
+                }
+            }
             serviceMC.sendRequest(self, requestBody, self.receiveResendVerify)
-        } else if (mode === 'resetPass') 
-        {
-            let pass = '';
-            let strArr = self.props.params.subPath.split('=')
-            let token = strArr[1];
-            serviceMC.sendRequest(self, { token: token, method: serviceMC.getEP().RESET_PASSWORD, data: { password: pass } }, this.receiveData, this)
-
         } else if (mode === 'back') {
 
             self.setState({ loginMode: 'login' })
         }
-        else 
-        {
-            serviceMC.sendRequest(self, {method: serviceMC.getEP().RESET_PASSWORD, data: { email: self.state.email } }, this.receiveForgoten, this)
+        else {
+            let data = {
+                email: self.state.email,
+                operatingsystem: self.clientSysInfo.os.name,
+                browser: self.clientSysInfo.browser.name,
+                callbackurl: 'https://' + host + '/passwordreset',
+                clientip: self.clientSysInfo.clientIP
+            }
+            serviceMC.sendRequest(self, { method: serviceMC.getEP().RESET_PASSWORD_REQUEST, data: data }, this.receiveForgoten, this)
         }
     }
 
@@ -533,61 +509,9 @@ class Login extends Component {
             self.setState({loginDanger:''});
             self.requestToken(self)
         };
-
-        // create account
-        // MyAPI.signinWithPassword(params)
-        //     .then((data) => {
-        //
-        //         return new Promise((resolve, reject) => {
-        //
-        //             if (data.status !== 'success'){
-        //                 let error_text = 'Error';
-        //                 if (data.detail){
-        //                     error_text = data.detail
-        //                 }
-        //                 reject(error_text)
-        //
-        //             } else {
-        //                 // success
-        //                 const params = {
-        //                     user: data.user,
-        //                     login_token: data.login_token
-        //                 }
-        //
-        //                 global.userInfo = {
-        //                     username: username,
-        //                     password: password
-        //                 }
-        //
-        //                 self.params = params;
-        //
-        //                 localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(params))
-        //                 self.props.mapDispatchToLoginWithPassword(params)
-        //
-        //                 self.requestToken(self);
-        //                 resolve()
-        //             }
-        //         })
-        //     })
-        //     .then(() => {
-        //         // redirect
-        //         //this.props.history.push("/dashboard")
-        //     })
-        //     .catch((err) => {
-        //         console.log("err:", err)
-        //
-        //         Alert.error(err, {
-        //             position: 'top-right',
-        //             effect: 'slide',
-        //             timeout: 5000
-        //         });
-        //     })
     }
-    /* http://docs.nativebase.io/docs/examples/ReduxFormExample.html */
-    //
 
     render() {
-        const { reset, data, loginState } = this.props;
         return (
 
                 (this.state.session !== 'open') ?

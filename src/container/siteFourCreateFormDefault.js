@@ -407,6 +407,7 @@ class SiteFourCreateFormDefault extends React.Component {
 
         if(key === 'Region'){
             this.props.onChangeState(key,value)
+            this.handleRegionChange(key, value);
         } else if(key === 'OrganizationName') {
             this.props.onChangeState(key,value)
         } else if(key === 'DeploymentType') {
@@ -425,10 +426,9 @@ class SiteFourCreateFormDefault extends React.Component {
         }
     }
 
-    handleRegionChange = (e) => {
-        alert(e)
-        this.props.getOptionData(e)
-        //this.props.dispatch(reset('createAppFormDefault'));
+    handleRegionChange = (key, value) => {
+        
+        this.setState({selected: []})
     }
 
     AddPorts = (e) => {

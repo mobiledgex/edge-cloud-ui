@@ -56,6 +56,7 @@ export const CURRENT_USER = "current";
 export const VERIFY_EMAIL = "verifyemail";
 export const RESEND_VERIFY = "resendverify";
 export const RESET_PASSWORD = "passwordreset";
+export const RESET_PASSWORD_REQUEST = "passwordresetrequest";
 export const CREATE_USER = "usercreate";
 export const ADD_USER_ROLE = "addUserRole";
 export const STREAM_CLUSTER_INST = "StreamClusterInst";
@@ -142,6 +143,7 @@ export function getPath(request) {
         case RESEND_VERIFY:
         case VERIFY_EMAIL:
         case RESET_PASSWORD:
+        case RESET_PASSWORD_REQUEST:
         case CREATE_USER:
             return `/api/v1/${request.method}`;
         case CLOUDLET_METRICS_APP:

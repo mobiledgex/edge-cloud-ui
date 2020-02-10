@@ -124,20 +124,29 @@ class RegistryInstViewer extends React.Component {
                 }
             })
 
-            for (let i = 0; i < cloudletList.length; i++) {
-                let cloudlet = cloudletList[i]
-                for (let j = 0; j < cloudletInfoList.length; j++) {
-                    let cloudletInfo = cloudletInfoList[j]
-                    if (cloudlet.CloudletName === cloudletInfo.CloudletName) {
-                        cloudlet.CloudletInfoState = cloudletInfo.State
-                        break;
+            if (cloudletList && cloudletList.length > 0) {
+                if (localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
+                    for (let i = 0; i < cloudletList.length; i++) {
+                        let cloudlet = cloudletList[i]
+                        for (let j = 0; j < cloudletInfoList.length; j++) {
+                            let cloudletInfo = cloudletInfoList[j]
+                            if (cloudlet.CloudletName === cloudletInfo.CloudletName) {
+                                cloudlet.CloudletInfoState = cloudletInfo.State
+                                break;
+                            }
+                        }
                     }
                 }
-            }
+                else {
+                    for (let i = 0; i < cloudletList.length; i++) {
+                        let cloudlet = cloudletList[i]
+                        cloudlet.CloudletInfoState = 2
+                    }
+                }
 
-            if (cloudletList) {
+
+
                 let operatorGroup = reducer.groupBy(cloudletList, 'Operator')
-                //let cloudletGroup = reducer.groupBy(result, 'CloudletName')
                 let keys = Object.keys(operatorGroup);
                 let assObj = Object.assign([], this.state.keysData);
                 if (cloudletList[0].Operator) {
@@ -154,6 +163,7 @@ class RegistryInstViewer extends React.Component {
                     this.setState({ dummyData: this.state.fakeData, resultData: (!this.state.resultData) ? this.props.devData : this.state.resultData })
                 }
                 this.props.handleLoadingSpinner(false);
+
             }
 
         }
@@ -223,8 +233,7 @@ class RegistryInstViewer extends React.Component {
         _self.props.history.location.search = pg;
         if (state !== 'error' && _self.props.submitData.createAppFormDefault && _self.props.submitData.createAppFormDefault.values) {
             let values = _self.props.submitData.createAppFormDefault.values;
-            if (values && values.AutoClusterInst) {
-
+            if (values && values.AutoClusterInst && values.AppName && values.Cloudlet && values.Cloudlet.length>0 && values.Operator) {
                 _self.props.history.location.pgname = 'appinst';
                 _self.props.history.location.pgnameData = {
                     AppName: values.AppName,
@@ -466,14 +475,14 @@ class RegistryInstViewer extends React.Component {
         if (Object.keys(nextProps.submitData).length > 0) {
             if (nextProps.submitData.createAppFormDefault) {
                 let values = nextProps.submitData.createAppFormDefault.values;
-                if (values) {
+                if (values && values.Cloudlet && values.Cloudlet.length > 0) {
                     let keys = Object.keys(this.state.clustinst);
                     let arr = []
                     let assObj = Object.assign([], this.state.keysData);
                     keys.map((item, i) => {
                         this.state.clustinst[item].map((items, j) => {
                             values.Cloudlet.map((cItem) => {
-                                if (cItem == items.Cloudlet && values.DeveloperName == items.OrganizationName) {
+                                if (cItem === items.Cloudlet && items.OrganizationName === values.DeveloperName) {
                                     arr.push(item);
                                 }
                             })
@@ -639,7 +648,7 @@ const mapStateToProps = (state) => {
         selectedVersion: selectedVersion,
         selectedCloudlet: selectedCloudlet,
         selectedOperator: selectedOperator,
-        //selectOrg: state.selectOrg.org ? state.selectOrg.org : null, //fixme : comment by kyungjoongo. [두개의 selectOrg 가 존재]
+        selectOrg: state.selectOrg.org ? state.selectOrg.org : null,
         submitData: state.form ? state.form : null,
         userRole: state.showUserRole ? state.showUserRole.role : null,
         appLaunch: state.appLaunch ? state.appLaunch.data : null,
