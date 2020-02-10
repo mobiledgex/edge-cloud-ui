@@ -749,27 +749,27 @@ export const makeNetworkLineChartData = (filteredNetworkUsageList, pHardwareType
 
 }
 
-function makeAppInstOnCloudletList () {
-   /* let cloutletKeyList = Object.keys(appInstanceListGroupByCloudlet)
+function makeAppInstOnCloudletList() {
+    /* let cloutletKeyList = Object.keys(appInstanceListGroupByCloudlet)
 
-    let newCloudletList = []
-    cloutletKeyList.map((key, index) => {
+     let newCloudletList = []
+     cloutletKeyList.map((key, index) => {
 
-        console.log('index===>', index);
+         console.log('index===>', index);
 
-        let count = appInstanceListGroupByCloudlet[key].length
-        let cloudletList = appInstanceListGroupByCloudlet[key];
+         let count = appInstanceListGroupByCloudlet[key].length
+         let cloudletList = appInstanceListGroupByCloudlet[key];
 
-        console.log('count===>', count);
+         console.log('count===>', count);
 
-        newCloudletList.push({
-            count: count,
-            instanceOne: allCloudletList[index],
-            cloudletList:cloudletList,
-        })
-    })
+         newCloudletList.push({
+             count: count,
+             instanceOne: allCloudletList[index],
+             cloudletList:cloudletList,
+         })
+     })
 
-    console.log('newCloudletList===>', newCloudletList);*/
+     console.log('newCloudletList===>', newCloudletList);*/
 }
 
 
@@ -870,11 +870,21 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
 
     function renderGrid(pListItem) {
         return (
-            <div style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
+            <div style={{
+                flex: 1,
+                flexWrap: 'wrap',
+                flexDirecton: 'row',
+                display: 'flex',
+            }}>
                 {pListItem.map((item, index) =>
-                    <div className='page_monitoring_grid_box_layout2' style={{display: 'flex', flexWrap: 'row'}}
+                    <div
+                        className='page_monitoring_grid_box_layout'
+                        style={{
+                            flexBasis: '33%',
+                            height:'50%',
+                        }}
                     >
-                        <div className='page_monitoring_grid_box' style={{width: 120, height: 120}}>
+                        <div className='page_monitoring_grid_box'>
                             <div className='page_monitoring_grid_box_name'>
                                 {item.name}
                             </div>
