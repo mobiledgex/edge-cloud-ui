@@ -7,6 +7,7 @@ import Options from '../hoc/terminal/options/terminalOptions'
 import * as actions from "../actions";
 import {withRouter} from "react-router-dom";
 import {connect} from "react-redux";
+import { Button, Icon } from 'semantic-ui-react';
 
 
 const CMD_CLEAR = 'clear';
@@ -17,8 +18,8 @@ class MexTerminal extends Component {
     constructor(props) {
         super(props)
         this.containerIds = [];
-        if (props.data.data.Runtime.container_ids) {
-            this.containerIds = props.data.data.Runtime.container_ids;
+        if (props.data.Runtime.container_ids) {
+            this.containerIds = props.data.Runtime.container_ids;
         }
         this.state = ({
             success: false,
@@ -51,7 +52,7 @@ class MexTerminal extends Component {
     }
 
     sendRequest = () => {
-        const { Region, OrganizationName, AppName, Version, ClusterInst, Cloudlet, Operator } = this.props.data.data;
+        const { Region, OrganizationName, AppName, Version, ClusterInst, Cloudlet, Operator } = this.props.data;
         let data = {
             Region: Region,
             ExecRequest:
@@ -179,6 +180,15 @@ class MexTerminal extends Component {
     }
 
 
+    onTerminalClose = ()=>
+    {
+        this.close()
+        if(this.props.onClose)
+        {
+            this.props.onClose()
+        }
+    }
+
     close = () => {
         this.success = false;
         if (this.sendChannel) {
@@ -254,6 +264,9 @@ class MexTerminal extends Component {
         return (
             this.containerIds.length > 0 ?
                 <div style={{ backgroundColor: 'black', height: '100%' }}>
+                    <div onClick={()=>{this.onTerminalClose()}} align="right" style={{padding:10, cursor:'pointer'}}>
+                        <Icon color="red" size='small' name="circle" />
+                    </div>
                     {this.state.optionView ?
                         <Options
                             connect={this.connect}
@@ -264,7 +277,7 @@ class MexTerminal extends Component {
                             cmd={this.state.cmd} />
                         :
                         <div style={{ paddingLeft: 20, paddingTop: 30, height: '100%' }}>
-                            <Terminal open={this.state.open} close={this.close} path={this.state.path} onEnter={this.onEnter} history={this.state.history} />
+                            <Terminal open={this.state.open} close={this.close} dialog={this.props.dialog} path={this.state.path} onEnter={this.onEnter} history={this.state.history} />
                         </div>
                     }
                 </div> : 'Container not found')
