@@ -17,7 +17,6 @@ class MexTerminal extends Component {
 
     constructor(props) {
         super(props)
-        console.log('Rahul1234', props.data)
         this.containerIds = [];
         if (props.data.Runtime.container_ids) {
             this.containerIds = props.data.Runtime.container_ids;
@@ -189,7 +188,7 @@ class MexTerminal extends Component {
             this.props.onClose()
         }
     }
-    
+
     close = () => {
         this.success = false;
         if (this.sendChannel) {
