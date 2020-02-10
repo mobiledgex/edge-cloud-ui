@@ -941,8 +941,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </div>
                     </div>
                     <div className='page_monitoring_dual_container'>
-                        <div style={{display: 'flex', flexDirection: 'row'}}>
-                            <div className='page_monitoring_title_select' style={{marginTop: 7}}>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title_select'>
                                 Connections
                             </div>
                             {!this.state.loading &&
@@ -970,7 +970,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                 }}
                                 value={connectionsType}
-                                style={StylesForMonitoring.dropDown}
+                                //style={StylesForMonitoring.dropDown}
                             />
                             }
                         </div>
