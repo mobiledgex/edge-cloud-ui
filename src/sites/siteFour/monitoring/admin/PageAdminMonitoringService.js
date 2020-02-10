@@ -817,14 +817,14 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
         let chunkedCloudletListOfColSize = toChunkArray(cloudletList, 6);
 
         return (
-            <Tabs selectedIndex={_this.state.currentSixGridIndex} style={{width:'100%'}}>
+            <Tabs selectedIndex={_this.state.currentSixGridIndex} className='page_monitoring_tab'>
 
                 {/*todo:###############################..*/}
                 {/*todo:그리드를 페이지(tab)당 6개씩 그리는 부분..*/}
                 {/*todo:###############################..*/}
                 {chunkedCloudletListOfColSize.map((listItem, index) => {
                     return (
-                        <TabPanel>
+                        <TabPanel className='page_monitoring_tab_with_pager'>
                             {renderGrid(listItem)}
                         </TabPanel>
                     )
@@ -834,11 +834,11 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
                 {/*todo:#####################..*/}
                 {/*todo:하단의 dot paging ..*/}
                 {/*todo:#####################..*/}
-                <div style={{flexDirection: 'row', display: 'flex', justifyContent:'center', width:'100%', }}>
+                <div className='page_monitoring_pager_row'>
                     {chunkedCloudletListOfColSize.map((item, index) => {
                         return (
                             <div
-                                style={{width: 50, display: 'flex',}}
+                                style={{display: 'flex', margin:'0 5px'}}
                                 onClick={() => {
                                     _this.setState({
                                         currentSixGridIndex: index,
@@ -848,7 +848,7 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
                                 {/*todo:#####################..*/}
                                 {/*todo:선택된 index는 그린Color */}
                                 {/*todo:#####################..*/}
-                                <Icon name='circle' style={{color: _this.state.currentSixGridIndex === index ? 'green' : ''}}/>
+                                <div className='page_monitoring_pager_btn' style={{backgroundColor: _this.state.currentSixGridIndex === index ? 'rgba(136,221,0,.9)' : 'rgba(255,255,255,.5)'}}/>
                             </div>
                         )
                     })}
@@ -870,22 +870,10 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
 
     function renderGrid(pListItem) {
         return (
-            <div style={{
-                flex: 1,
-                flexWrap: 'wrap',
-                flexDirecton: 'row',
-                display: 'flex',
-                height: 250,
-            }}>
+            <div className='page_monitoring_grid_wrap'>
                 {pListItem.map((item, index) =>
-                    <div
-                        className='page_monitoring_grid_box_layout'
-                        style={{
-                            flexBasis: '33%',
-                            height: '50%',
-                        }}
-                    >
-                        <div className='page_monitoring_grid_box'>
+                    <div className='page_monitoring_grid_box_layout'>
+                        <div className='page_monitoring_grid_box' >
                             <div className='page_monitoring_grid_box_name'>
                                 {item.name}
                             </div>
