@@ -834,7 +834,7 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
                 {/*todo:#####################..*/}
                 {/*todo:하단의 dot paging ..*/}
                 {/*todo:#####################..*/}
-                <div style={{flexDirection: 'row', display: 'flex', justifyContent:'center', width:'100%', backgroundColor:'red'}}>
+                <div style={{flexDirection: 'row', display: 'flex', justifyContent:'center', width:'100%', }}>
                     {chunkedCloudletListOfColSize.map((item, index) => {
                         return (
                             <div
