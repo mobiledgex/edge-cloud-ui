@@ -398,6 +398,11 @@ class SiteFourCreateFormAppDefault extends React.Component {
         return (this.props.validError.indexOf(key) !== -1 && !this.state.editDsb) ? 'Required' : '';
     }
 
+    getFieldValue = (obj) => {
+        console.log('202002-7 get field value--', obj.key, ":", this.state.editData)
+        return (!this.state.editDsb) ? obj.value : this.state.editData[obj.key]
+    }
+
     render() {
         const { handleSubmit, reset, dimmer, selected, open, close, option, value, change, org, type, pId, getUserRole } = this.props;
         const { data, regKeys, fieldKeys, title } = this.state;
@@ -429,7 +434,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                         <Field
                                                                             component={renderTextArea}
                                                                             placeholder={this.getPlaceholder({placeholder:data[key], key: key, pId: pId})}
-                                                                            value={data[key]}
+                                                                            value={this.getPlaceholder({placeholder:data[key], key: key, pId: pId})}
                                                                             name={key}
                                                                             row={(fieldKeys[pId][key]['label'] === 'Deployment Manifest') ? this.state.tah : 4}
                                                                         />
@@ -449,7 +454,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                         <Field
                                                                             component={renderSelect}
                                                                             placeholder={this.getPlaceholder({placeholder:'Select ' + fieldKeys[pId][key]['label'], key: key, pId: pId})}
-                                                                            value={data[key]}
+                                                                            value={this.getPlaceholder({placeholder:data[key], key: key, pId: pId})}
                                                                             options={fieldKeys[pId][key]['items']}
                                                                             name={key}
                                                                             onChange={(e) => this.onHandleChange(key, e)}
@@ -461,7 +466,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                             <Field
                                                                                 component={renderSelectNumber}
                                                                                 placeholder={this.getPlaceholder({placeholder:'Select IpAccess', key: key, pId: pId})}
-                                                                                value={data[key]}
+                                                                                value={this.getPlaceholder({placeholder:data[key], key: key, pId: pId})}
                                                                                 options={fieldKeys[pId][key]['items']}
                                                                                 name={key}
                                                                             />
@@ -470,7 +475,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                 <Field
                                                                                     component={renderSelect}
                                                                                     placeholder={this.getPlaceholder({placeholder:'Select Flavor', key: key, pId: pId})}
-                                                                                    value={data[key]}
+                                                                                    value={this.getPlaceholder({placeholder:data[key], key: key, pId: pId})}
                                                                                     options={this.props.flavorData}
                                                                                     name={key}
                                                                                     error={this.getError(key)} />
@@ -479,7 +484,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                     <Field
                                                                                         component={renderSelect}
                                                                                         placeholder={this.getPlaceholder({placeholder:'Select Region', key: key, pId: pId})}
-                                                                                        value={data[key]}
+                                                                                        value={this.getPlaceholder({placeholder:data[key], key: key, pId: pId})}
                                                                                         options={fieldKeys[pId][key]['items']}
                                                                                         name={key}
                                                                                         disabled={(this.state.editDsb) ? fieldKeys[pId][key].editDisabled : false}
@@ -492,7 +497,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                             placeholder={this.getPlaceholder({placeholder:fieldKeys[pId][key].items, key: key, pId: pId})}
                                                                                             type="input"
                                                                                             name={key}
-                                                                                            value={fieldKeys[pId][key].items}
+                                                                                            value={this.getPlaceholder({placeholder:fieldKeys[pId][key].items, key: key, pId: pId})}
                                                                                             error={this.getError(key)}
                                                                                         />
                                                                                         :
@@ -502,7 +507,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                                 placeholder={this.getPlaceholder({placeholder:fieldKeys[pId][key].items, key: key, pId: pId})}
                                                                                                 type="input"
                                                                                                 name={key}
-                                                                                                value={(fieldKeys[pId][key].items) ? fieldKeys[pId][key].items : data[key]}
+                                                                                                value={this.getPlaceholder({placeholder:fieldKeys[pId][key].items, key: key, pId: pId})}
                                                                                                 error={this.getError(key)}
                                                                                             />
                                                                                             :
@@ -587,7 +592,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                                                                 <Field
                                                                                                                                     component={renderSelect}
                                                                                                                                     placeholder={this.getPlaceholder({placeholder:'Select port', key: key, pId: pId})}
-                                                                                                                                    value={data[key]}
+                                                                                                                                    value={this.getPlaceholder({placeholder:data[key], key: key, pId: pId})}
                                                                                                                                     options={['TCP', 'UDP']}
                                                                                                                                     name={key + 'select_' + item.num}
                                                                                                                                     error={(this.props.validError.indexOf(key + 'select_' + i) !== -1) ? 'Required' : ''}
@@ -615,7 +620,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                                                 component={renderInputApp}
                                                                                                                 type="input"
                                                                                                                 name={key}
-                                                                                                                value={data[key]}
+                                                                                                                value={this.getPlaceholder({placeholder:data[key], key: key, pId: pId})}
                                                                                                                 placeholder={this.getPlaceholder({placeholder:'Please use numbers and English letters only', key: key, pId: pId})}
                                                                                                                 disabled={(this.state.editDsb) ? fieldKeys[pId][key].editDisabled : false}
                                                                                                                 error={this.getError(key)} />
@@ -625,7 +630,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                                                 component={renderInputApp}
                                                                                                                 type="input"
                                                                                                                 name={key}
-                                                                                                                value={data[key]}
+                                                                                                                value={this.getPlaceholder({placeholder:data[key], key: key, pId: pId})}
                                                                                                                 placeholder={this.getPlaceholder({placeholder:'Please use numbers and English letters only', key: key, pId: pId})}
                                                                                                                 disabled={(this.state.editDsb) ? fieldKeys[pId][key].editDisabled : false}
                                                                                                                 error={this.getError(key)} />
@@ -634,7 +639,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                                                 component={renderInput}
                                                                                                                 type="input"
                                                                                                                 name={key}
-                                                                                                                value={data[key]}
+                                                                                                                value={this.getPlaceholder({placeholder:data[key], key: key, pId: pId})}
                                                                                                                 disabled={(this.state.editDsb) ? fieldKeys[pId][key].editDisabled : false}
                                                                                                                 error={this.getError(key)}
                                                                                                             />

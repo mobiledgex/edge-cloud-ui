@@ -74,7 +74,7 @@ class RegistryViewer extends React.Component {
                     'Region':{label:'Region', type:'RegionSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:[], editDisabled:true},
                     'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:'Organization or Company Name that a Developer is part of', active:true, editDisabled:true},
                     'AppName':{label:'App Name', type:'RenderInputApp', necessary:true, tip:'App name', active:true, editDisabled:true},
-                    'Version':{label:'App Version', type:'RenderInputVersion', necessary:true, tip:'App version', active:true, editDisabled:false},
+                    'Version':{label:'App Version', type:'RenderInputVersion', necessary:true, tip:'App version', active:true, editDisabled:true},
                     'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'Deployment type (Kubernetes, Docker, or VM)', active:true, items:['Docker', 'Kubernetes', 'VM'], editDisabled:true},
                     'ImageType':{label:'Image Type', type:'RenderDT', necessary:true, tip:'ImageType specifies image type of an App',items:''},
                     'ImagePath':{label:'Image Path', type:'RenderPath', necessary:true, tip:'URI of where image resides', active:true,items:''},
@@ -380,6 +380,15 @@ class RegistryViewer extends React.Component {
                 nextProps.submitValues.region = nextProps.editData.Region;
                 // TODO 20200207 @Smith: we need formating to app properly body to send to update url 
                 this.setState({toggleSubmit:true,validateError:error});
+                let editKeys = Object.keys(nextProps.editData);
+                editKeys.map((value, i) => {
+                    switch(value) {
+                        case 'cluster' : 
+                        case 'default_flavor':
+                        nextProps.submitValues.app[value]['name'] = nextProps.editData[value]; break;
+                        default : nextProps.submitValues.app[value] = nextProps.editData[value];
+                    }
+                })
                 this.props.handleLoadingSpinner(true);
                 let serviceBody = {
                     method : method,
