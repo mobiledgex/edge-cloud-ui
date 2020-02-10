@@ -32,6 +32,18 @@ const makeOption =(options)=> {
 
 };
 
+
+
+const renderCheckbox = field => (
+    <Form.Checkbox toggle
+        style={{height:'33px', paddingTop:'8px'}}
+        checked={!!field.input.value}
+        name={field.input.name}
+        label={field.label}
+        onChange={(e, { checked }) => field.input.onChange(checked)}
+    />
+);
+
 const renderSelect = field => (
     <div>
         <Form.Select
@@ -219,6 +231,10 @@ class SiteFourCreateFormDefault extends React.Component {
             invisibleValue:[],
             submitButton:'Create',
         };
+
+    }
+
+    onHandleToggleChange = (e)=>{
 
     }
 
@@ -595,6 +611,14 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                         {renderLinkedDiagram(this, data[key])}
                                                                     </Grid.Row>
                                                                 </Grid>
+                                                            :
+                                                            (fieldKeys[pId][key]['type'] === 'renderCheckbox') ?
+                                                            <Field
+                                                                component={renderCheckbox}
+                                                                value={data[key]}
+                                                                name={key}
+                                                                onChange={(e)=>this.onHandleToggleChange(e)}
+                                                                />
                                                             :
                                                             (fieldKeys[pId][key]['type'] === 'RenderTextArea') ?
                                                             <Field
