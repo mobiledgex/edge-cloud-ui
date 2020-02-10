@@ -817,7 +817,7 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
         let chunkedCloudletListOfColSize = toChunkArray(cloudletList, 6);
 
         return (
-            <Tabs selectedIndex={_this.state.currentSixGridIndex}>
+            <Tabs selectedIndex={_this.state.currentSixGridIndex} style={{width:'100%'}}>
 
                 {/*todo:###############################..*/}
                 {/*todo:그리드를 페이지(tab)당 6개씩 그리는 부분..*/}
@@ -834,7 +834,7 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
                 {/*todo:#####################..*/}
                 {/*todo:하단의 dot paging ..*/}
                 {/*todo:#####################..*/}
-                <div style={{flexDirection: 'row', display: 'flex', justifyContent:'center'}}>
+                <div style={{flexDirection: 'row', display: 'flex', justifyContent:'center', width:'100%', backgroundColor:'red'}}>
                     {chunkedCloudletListOfColSize.map((item, index) => {
                         return (
                             <div
