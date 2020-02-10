@@ -515,6 +515,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         async filterByClassification(pRegion: string = '', pCloudLet: string = '', pCluster: string = '', pAppInstance: string = '', isDateFiltering: boolean = false,) {
             try {
+
+                await this.setState({
+                    currentSixGridIndex: 0,
+                })
+
+
                 let appInstanceList = []
                 let allCpuUsageList = []
                 let allMemUsageList = []
