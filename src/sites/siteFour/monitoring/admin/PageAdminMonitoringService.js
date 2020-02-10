@@ -834,7 +834,7 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
                 {/*todo:#####################..*/}
                 {/*todo:하단의 dot paging ..*/}
                 {/*todo:#####################..*/}
-                <div style={{flexDirection: 'row', display: 'flex',}}>
+                <div style={{flexDirection: 'row', display: 'flex', justifyContent:'center'}}>
                     {chunkedCloudletListOfColSize.map((item, index) => {
                         return (
                             <div
@@ -896,27 +896,6 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
                         </div>
                     </div>
                 )}
-
-                {/*todo:##################################################....*/}
-                {/*todo:Logic to fill 2nd row with blank if only first row exists           */}
-                {/*todo:##################################################....*/}
-                {pListItem.length === 1 &&
-                <div className='page_monitoring_grid'>
-                    {[1, 2, 3].map((item, index) =>
-                        <div
-                            className='page_monitoring_grid_box_layout'
-                            style={{
-                                flexBasis: '33%',
-                                height: '50%',
-                            }}
-                        >
-
-                        </div>
-                    )}
-                </div>
-
-                }
-
             </div>
         )
     }
