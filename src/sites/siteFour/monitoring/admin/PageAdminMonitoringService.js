@@ -875,13 +875,14 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
                 flexWrap: 'wrap',
                 flexDirecton: 'row',
                 display: 'flex',
+                height: 250,
             }}>
                 {pListItem.map((item, index) =>
                     <div
                         className='page_monitoring_grid_box_layout'
                         style={{
                             flexBasis: '33%',
-                            height:'50%',
+                            height: '50%',
                         }}
                     >
                         <div className='page_monitoring_grid_box'>
@@ -902,7 +903,13 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
                 {pListItem.length === 1 &&
                 <div className='page_monitoring_grid'>
                     {[1, 2, 3].map((item, index) =>
-                        <div className='page_monitoring_grid_box_layout'>
+                        <div
+                            className='page_monitoring_grid_box_layout'
+                            style={{
+                                flexBasis: '33%',
+                                height: '50%',
+                            }}
+                        >
 
                         </div>
                     )}
