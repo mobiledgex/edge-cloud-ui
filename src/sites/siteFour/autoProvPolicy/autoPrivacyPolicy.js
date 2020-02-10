@@ -40,7 +40,7 @@ class SiteFourPageFlavor extends React.Component {
 
         this.actionMenu = [
             { label: 'Update', onClick: this.onAddPolicy },
-            { label: 'Delete' }
+            { label: 'Delete', onClick: this.onDelete }
         ]
     }
 
@@ -55,18 +55,20 @@ class SiteFourPageFlavor extends React.Component {
         this.props.childPage(<PrivacyPolicyReg data={this.data} action={this.action} childPage={this.props.childPage}></PrivacyPolicyReg>)
     }
 
+   
     onDelete = async (data) => {
-        let AutoProvPolicy = {
-            key: { developer: data.OrganizationName, name: data.AutoPolicyName }
+        let privacypolicy = {
+            key: { developer: data.OrganizationName, name: data.PrivacyPolicyName },
+            outbound_security_rules : data.OutboundSecurityRules
         }
 
         let requestData = {
             Region: data.Region,
-            AutoProvPolicy: AutoProvPolicy
+            privacypolicy: privacypolicy
         }
-        let mcRequest = await serviceMC.sendSyncRequest(this, { token: this.getToken(), method: serviceMC.getEP().DELETE_AUTO_PROV_POLICY, data: requestData })
+        let mcRequest = await serviceMC.sendSyncRequest(this, { token: this.getToken(), method: serviceMC.getEP().DELETE_PRIVACY_POLICY, data: requestData })
         if (mcRequest.response && mcRequest.response.status === 200) {
-            this.props.handleAlertInfo('success', `${data.AutoPolicyName} Deleted Successfully`)
+            this.props.handleAlertInfo('success', `${data.PrivacyPolicyName} Deleted Successfully`)
         }
         this.props.handleComputeRefresh(true);
     }

@@ -242,7 +242,7 @@ class AutoProvPolicyReg extends React.Component {
                     <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
                     {this.props.action ? null :
                             <div>
-                                <div className='content_title' style={{ padding: '0px 0px 10px 0' }}>Create New Cloudlet Policy</div>
+                                <div className='content_title' style={{ padding: '0px 0px 10px 0' }}>Create Auto Prov Policy</div>
 
                                 <Step.Group stackable='tablet' style={{ width: '100%' }}>
                                     {
