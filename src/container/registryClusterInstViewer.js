@@ -67,6 +67,8 @@ class RegistryClusterInstViewer extends React.Component {
                     'Flavor': { label: 'Flavor', type: 'RenderSelect', necessary: true, tip: 'What flavor is needed to run your application?', active: true, items: ['', ''] },
                     'NumberOfMaster': { label: 'Number of Masters', type: 'RenderInputDisabled', necessary: false, tip: 'This represents Kubernetes Master where it is responsible for maintaining the desired state for your cluster.', value: null },
                     'NumberOfNode': { label: 'Number of Nodes', type: 'RenderInputNum', necessary: false, tip: 'What is the number of nodes you want in this cluster? The nodes in a cluster are the machines that run your applications.', value: null },
+                    'Reservable': { label: 'Reservable', type: 'renderCheckbox', necessary: false, tip: 'Reserve cluster', value: false },
+                    'ReservedBy': { label: 'Reserved By', type: 'RenderInputCluster', necessary: false, tip: 'MobiledgeX ClusterInsts, the current developer tenant', value: false }
                 },
                 {
 
@@ -81,10 +83,12 @@ class RegistryClusterInstViewer extends React.Component {
                     'Cloudlet': '',
                     'DeploymentType': '',
                     'IpAccess': '',
-                    'Flavor': '',
                     'PrivacyPolicy': '',
+                    'Flavor': '',
                     'NumberOfMaster': '1',
                     'NumberOfNode': '1',
+                    'Reservable':false,
+                    'ReservedBy':''
                 }
             ]
 
@@ -310,6 +314,8 @@ const createFormat = (data) => (
             "flavor": { "name": data['Flavor'] },
             "ip_access": parseInt(getInteger(data['IpAccess'])),
             "privacy_policy": parseInt(getInteger(data['IpAccess'])) === 1 ? data['PrivacyPolicy'] : undefined,
+            "reservable":data['Reservable'],
+            "reserved_by":data['ReservedBy'],
             "num_masters": parseInt(data['NumberOfMaster']),
             "num_nodes": parseInt(data['NumberOfNode'])
         }

@@ -14,7 +14,6 @@ import {withRouter} from "react-router-dom";
 
 const panes = [
     { menuItem: 'Select Region', render: (props) => <Tab.Pane>{cloudletMap(props, 'cloudlets')}</Tab.Pane> }
-
 ]
 
 const clusterNode = (props) => (
@@ -284,7 +283,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
         }else if(state === 'IpAccess') {
             if(value === 'Dedicated')
             {
-                this.props.data.keys[0].PrivacyPolicy = { label: 'Privacy Policy', type: 'RenderSelect', necessary: true, tip: 'What policy is needed to run your application?', active: true, items: ['', ''] };
+                this.props.data.keys[0].PrivacyPolicy = { label: 'Privacy Policy', type: 'RenderSelect', necessary: false, tip: 'What policy is needed to run your application?', active: true, items: ['', ''] };
                 //Privacy Policy
                 this.updatePrivacyPolicyDropDown(privacyKeys)
             }

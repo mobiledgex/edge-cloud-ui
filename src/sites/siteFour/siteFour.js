@@ -142,13 +142,13 @@ class SiteFour extends React.Component {
         ]
         this.menuItemsAll = [ //admin menu
             { label: 'Cloudlets', icon: 'cloud_queue', pg: 2 },
-            { label: 'Cloudlet Pools', icon: 'pool', pg: 7 },
+            { label: 'Cloudlet Pools', icon: 'cloud_circle', pg: 7 },
             { label: 'Flavors', icon: 'free_breakfast', pg: 3 },
             { label: 'Cluster Instances', icon: 'storage', pg: 4 },
             { label: 'Apps', icon: 'apps', pg: 5 },
             { label: 'App Instances', icon: 'storage', pg: 6 },
             { label: 'Monitoring', icon: 'tv', pg: 'Monitoring' },
-            { label: 'Auto Policy', icon: 'policy', pg: 8 },
+            { label: 'Policy', icon: 'playlist_play', pg: 8 },
             { label: 'Audit Log', icon: 'check', pg: 'audits' }
         ]
         this.menuItems = [ //developer menu
@@ -273,7 +273,7 @@ class SiteFour extends React.Component {
         } else if (localStorage.selectMenu === 'Cloudlet Pools') {
             this.setState({ page: 'pg=createCloudletPool' })
             this.gotoUrl('/site4', 'pg=createCloudletPool')
-        }else if (localStorage.selectMenu === 'Auto Policy') {
+        }else if (localStorage.selectMenu === 'Policy') {
             let pg = this.state.autoPolicy === 'Prov Policy' ? 'createPolicy' : 'createPrivacyPolicy';
             this.setState({ page: `pg=${pg}` })
             this.gotoUrl('/site4', `pg=${pg}`)
