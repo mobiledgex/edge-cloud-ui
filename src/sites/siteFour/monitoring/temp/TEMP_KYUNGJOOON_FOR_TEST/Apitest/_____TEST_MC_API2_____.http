@@ -286,7 +286,7 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODExMjMxN
     "operator_key": {
       "name": "TDG"
     },
-    "name":"hamburg-stage"
+    "name": "hamburg-stage"
   },
   "last": 100,
   "selector": "*"
@@ -357,25 +357,42 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODA5NDM5NDQsImlhdCI6MTU4MDg1NzU0NCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.VhuKLhZ7_u9b3UfvNdI8wP51lQrGFMc5LRfWKPcnXJujRFyQqInqzbGb10FmhC0srQrAtKEEgwbGMeyqlo_DmA
 
 {
-    "region": "EU",
-    "cloudlet": {
-        "key": {
-            "operator_key": {
-                "name": "TDG"
-            }
-        }
-    }
-
+  "region": "EU",
+  "cloudlet": {
+    "key": {
+      "operator_key": {
+        "name": "TDG"
+      }
+    },
+    "name": "*"
+  }
 }
 
 ###  /api/v1/auth/orgcloudlet/show
 POST https://console-stage.mobiledgex.net:443/api/v1/auth/orgcloudlet/show
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODA5NDM5NDQsImlhdCI6MTU4MDg1NzU0NCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.VhuKLhZ7_u9b3UfvNdI8wP51lQrGFMc5LRfWKPcnXJujRFyQqInqzbGb10FmhC0srQrAtKEEgwbGMeyqlo_DmA
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODE0MjQ3NzUsImlhdCI6MTU4MTMzODM3NSwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.RC-xurMVdK36UJaEbuE189YoBIfuBn6wov1oXXHyjbj4yxhBrK-7APvyY6WgmlFrnr9j7ABbAmJ8k61iUf8peA
 
 {
-    "region": "EU",
+  "region": "EU"
+}
 
+###cloudletcloudletcloudletcloudletcloudletcloudletcloudletcloudletcloudlet
+
+POST https://console-stage.mobiledgex.net:443/api/v1/auth/metrics/cloudlet
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODE0MjQ3NzUsImlhdCI6MTU4MTMzODM3NSwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.RC-xurMVdK36UJaEbuE189YoBIfuBn6wov1oXXHyjbj4yxhBrK-7APvyY6WgmlFrnr9j7ABbAmJ8k61iUf8peA
+
+{
+  "region": "EU",
+  "cloudlet": {
+    "operator_key": {
+      "name": "TDG"
+    }
+  },
+  "starttime": "2019-06-11T21:26:04Z",
+  "endtime": "2019-06-11T21:26:10Z",
+  "last": 2
 }
 
 ###
