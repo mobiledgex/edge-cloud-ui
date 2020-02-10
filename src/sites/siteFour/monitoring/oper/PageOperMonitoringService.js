@@ -359,7 +359,7 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
             "event",
             "status"
         */
-        if (response.data.data["0"].Series["0"].values !== undefined) {
+        if (response.data.data["0"].Series["0"] !== null) {
             let values = response.data.data["0"].Series["0"].values
             return values;
         } else {
@@ -367,7 +367,7 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
         }
 
     }).catch(e => {
-        showToast(e.toString())
+       // showToast(e.toString())
     })
     return result;
 }

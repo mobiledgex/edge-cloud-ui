@@ -655,40 +655,43 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         handleSelectCloudletForMapkerClicked = async (cloudletSelectedOne, isDropdownAction = false) => {
-
-            let selectedCloudlet = cloudletSelectedOne.toString().split("|")[0];
-            let selectedRegion = cloudletSelectedOne.toString().split("|")[1];
-            alert(selectedCloudlet + "," + selectedRegion);
-            this.setState({
-                cloudletSelectLoading: true,
-                currentCloudLet: cloudletSelectedOne,
-            })
-
-            let cloudletEventLogs = []
-            try {
-                cloudletEventLogs = await getCloudletEventLog(selectedCloudlet, selectedRegion);
-            } catch (e) {
-                //showToast(e.toString())
-            }
-
-            console.log('cloudletEventLogs===>', cloudletEventLogs)
-
-
-            let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, selectedCloudlet.toString().trim(), CLASSIFICATION.cloudlet)
-            this.setState({
-                // filteredCloudletList: filteredCloudletList,
-                cloudletSelectLoading: false,
-                filteredCloudletUsageList: filteredCloudletUsageList,
-                cloudletEventLogs: cloudletEventLogs === undefined ? [] : cloudletEventLogs,
-
-            })
-
-            if (isDropdownAction) {
-                let filteredCloudletList = filterListBykeyForCloudlet('CloudletName', selectedCloudlet, this.state.cloudletList)
+            try{
+                let selectedCloudlet = cloudletSelectedOne.toString().split("|")[0];
+                let selectedRegion = cloudletSelectedOne.toString().split("|")[1];
                 this.setState({
-                    filteredCloudletList: filteredCloudletList,
+                    cloudletSelectLoading: true,
+                    currentCloudLet: cloudletSelectedOne,
                 })
+
+                let cloudletEventLogs = []
+                try {
+                    cloudletEventLogs = await getCloudletEventLog(selectedCloudlet, selectedRegion);
+                } catch (e) {
+                    //showToast(e.toString())
+                }
+
+                console.log('cloudletEventLogs===>', cloudletEventLogs)
+
+
+                let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, selectedCloudlet.toString().trim(), CLASSIFICATION.cloudlet)
+                this.setState({
+                    // filteredCloudletList: filteredCloudletList,
+                    cloudletSelectLoading: false,
+                    filteredCloudletUsageList: filteredCloudletUsageList,
+                    cloudletEventLogs: cloudletEventLogs === undefined ? [] : cloudletEventLogs,
+
+                })
+
+                if (isDropdownAction) {
+                    let filteredCloudletList = filterListBykeyForCloudlet('CloudletName', selectedCloudlet, this.state.cloudletList)
+                    this.setState({
+                        filteredCloudletList: filteredCloudletList,
+                    })
+                }
+            }catch (e) {
+                
             }
+           
         }
 
         /*
