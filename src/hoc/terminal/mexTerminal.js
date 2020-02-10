@@ -24,7 +24,7 @@ const MexTerminal = (props) => {
     }
 
     return (
-        <div onClick={onTerminal} className={classes.terminalBody}>
+        <div onClick={onTerminal} className={props.dialog ? classes.terminalBodyDialog : classes.terminalBody}>
             {
                 props.history ?
                     props.history.map((info, i) => {
