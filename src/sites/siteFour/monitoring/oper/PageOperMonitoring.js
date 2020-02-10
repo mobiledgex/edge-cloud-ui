@@ -3,13 +3,13 @@ import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import OutsideClickHandler from 'react-outside-click-handler';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Button, Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
+import {Button, Dropdown, Grid, Modal, Tab, Table} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
-import {DatePicker,} from 'antd';
+import {DatePicker, Progress,} from 'antd';
 import {filterListBykey, filterListBykeyForCloudlet, getCloudletList, renderBubbleChartForCloudlet,} from "../admin/PageAdminMonitoringService";
 import {
     CLASSIFICATION,
@@ -21,17 +21,25 @@ import {
     RECENT_DATA_LIMIT_COUNT,
     REGIONS_OPTIONS
 } from "../../../../shared/Constants";
-import type {TypeGridInstanceList} from "../../../../shared/Types";
+import type {TypeCloudletUsageList, TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {renderLottieLoader, renderPlaceHolderLottie, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
+import {numberWithCommas, renderLottieLoader, renderPlaceHolderLottie, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
-import {getClouletLevelUsageList, makeBarChartDataForCloudlet, makeLineChartForCloudlet, renderBottomGridAreaForCloudlet} from "./PageOperMonitoringService";
+import {
+    getCloudletEventLog,
+    getClouletLevelUsageList,
+    handleBubbleChartDropDownForCloudlet,
+    makeBarChartDataForCloudlet,
+    makeLineChartForCloudlet,
+    renderBottomGridAreaForCloudlet
+} from "./PageOperMonitoringService";
 import LeafletMap from "./LeafletMapWrapper";
 import {filterUsageByClassification, makeSelectBoxListWithKey} from "../dev/PageDevMonitoringService";
+import Lottie from "react-lottie";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -142,6 +150,8 @@ type State = {
     allCloudletUsageList: Array,
     filteredCloudletUsageList: Array,
     filteredCloudletList: Array,
+    cloudletEventLogs: Array,
+    cloudletSelectLoading: boolean,
 }
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
@@ -225,6 +235,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             allCloudletUsageList: [],
             filteredCloudletUsageList: [],
             filteredCloudletList: [],
+            cloudletEventLogs: [],
+            cloudletSelectLoading: false,
         };
 
         interval = null;
@@ -268,7 +280,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 /*{text: 'FLAVOR', value: 'flavor'},*/
                 cloudletListForDropdown.push({
                     text: item.CloudletName,
-                    value: item.CloudletName,
+                    value: item.CloudletName + "|" + item.Region,
                 })
             })
 
@@ -642,38 +654,65 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        handleSelectCloudletForMapkerClicked = async (cloudletSelectedOne) => {
+        handleSelectCloudletForMapkerClicked = async (cloudletSelectedOne, isDropdownAction) => {
 
+            let selectedCloudlet = cloudletSelectedOne.toString().split("|")[0];
+            let selectedRegion = cloudletSelectedOne.toString().split("|")[1];
+            //alert(selectedCloudlet + "," + selectedRegion);
             this.setState({
+                cloudletSelectLoading: true,
                 currentCloudLet: cloudletSelectedOne,
             })
 
-            let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, cloudletSelectedOne, CLASSIFICATION.cloudlet)
+            let cloudletEventLogs = []
+            try {
+                cloudletEventLogs = await getCloudletEventLog(selectedCloudlet, selectedRegion);
+            } catch (e) {
+                showToast(e.toString())
+            }
 
-            //let filteredCloudletList = filterUsageByClassification(this.state.cloudletList, selectedRegion, CLASSIFICATION.REGION)
+            console.log('cloudletEventLogs===>', cloudletEventLogs)
+            let filteredCloudletList = this.state.cloudletList;
+            if (isDropdownAction) {
+                filteredCloudletList = filterListBykeyForCloudlet('CloudletName', selectedCloudlet, this.state.cloudletList)
+            }
 
+            let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, selectedCloudlet.toString().trim(), CLASSIFICATION.cloudlet)
             this.setState({
-                filteredCloudletUsageList: filteredCloudletUsageList,
-            })
-        }
-
-
-        handleSelectCloudlet = async (cloudletSelectedOne) => {
-
-            this.setState({
-                currentCloudLet: cloudletSelectedOne,
-            })
-
-            console.log('cloudletList===>', this.state.cloudletList);
-            let filteredCloudletList = filterListBykeyForCloudlet('CloudletName', cloudletSelectedOne, this.state.cloudletList)
-            console.log('filteredCloudletList===>', filteredCloudletList);
-            let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, cloudletSelectedOne, CLASSIFICATION.cloudlet)
-            this.setState({
-                filteredCloudletUsageList: filteredCloudletUsageList,
                 filteredCloudletList: filteredCloudletList,
-            })
+                cloudletSelectLoading: false,
+                filteredCloudletUsageList: filteredCloudletUsageList,
+                cloudletEventLogs: cloudletEventLogs === undefined ? [] : cloudletEventLogs,
 
+            })
         }
+
+        /*
+                handleSelectCloudlet = async (selectData) => {
+                    let selectedCloudlet = selectData.toString().split("|")[0].trim;
+                    let selectedRegion = selectData.toString().split("|")[1];
+                    await this.setState({
+                        currentCloudLet: selectedCloudlet,
+                    })
+
+                    console.log('cloudletList===>', this.state.cloudletList);
+                    let filteredCloudletList = filterListBykeyForCloudlet('CloudletName', selectedCloudlet, this.state.cloudletList)
+                    console.log('filteredCloudletList===>', filteredCloudletList);
+                    let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, selectedCloudlet, CLASSIFICATION.cloudlet)
+
+                  /!*  let cloudletEventLogs = []
+                    try {
+                        cloudletEventLogs = await getCloudletEventLog(selectedCloudlet, selectedRegion);
+                    } catch (e) {
+                        showToast('2343243243243243432234')
+                    }*!/
+                    this.setState({
+                        filteredCloudletUsageList: filteredCloudletUsageList,
+                        filteredCloudletList: filteredCloudletList,
+                        //cloudletEventLogs: cloudletEventLogs === undefined ? [] : cloudletEventLogs,
+                    })
+
+                }*/
 
 
         renderDropdownAreaOper() {
@@ -735,7 +774,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         currentCloudLet: value,
                                     }, () => {
 
-                                        this.handleSelectCloudlet(value)
+                                        this.handleSelectCloudletForMapkerClicked(value, true)
                                     })
                                     /*   await this.filterByEachTypes(this.state.currentRegion, value)
                                        setTimeout(() => {
@@ -792,94 +831,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        async handleBubbleChartDropDownForCloudlet(hwType) {
-            await this.setState({
-                currentHardwareType: hwType,
-            });
-
-            let allUsageList = this.state.allUsageList;
-            let bubbleChartData = [];
-
-            console.log('sldkflskdflksdlfklsdkfk====>', allUsageList);
-
-            if (hwType === 'vCPU') {
-                allUsageList.map((item, index) => {
-                    bubbleChartData.push({
-                        index: index,
-                        label: item.cloudlet.toString().substring(0, 10) + "...",
-                        value: (item.avgVCpuUsed * 1).toFixed(0),
-                        favor: (item.avgVCpuUsed * 1).toFixed(0),
-                        fullLabel: item.cloudlet,
-                    })
-                })
-            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.MEM) {
-                allUsageList.map((item, index) => {
-                    bubbleChartData.push({
-                        index: index,
-                        label: item.cloudlet.toString().substring(0, 10) + "...",
-                        value: item.avgMemUsed,
-                        favor: item.avgMemUsed,
-                        fullLabel: item.cloudlet,
-                    })
-                })
-            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.DISK) {
-                allUsageList.map((item, index) => {
-                    bubbleChartData.push({
-                        index: index,
-                        label: item.cloudlet.toString().substring(0, 10) + "...",
-                        value: item.avgDiskUsed,
-                        favor: item.avgDiskUsed,
-                        fullLabel: item.cloudlet,
-                    })
-                })
-            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.RECV_BYTES) {
-                allUsageList.map((item, index) => {
-                    bubbleChartData.push({
-                        index: index,
-                        label: item.cloudlet.toString().substring(0, 10) + "...",
-                        value: item.avgNetRecv,
-                        favor: item.avgNetRecv,
-                        fullLabel: item.cloudlet,
-                    })
-                })
-            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.SEND_BYTES) {
-                allUsageList.map((item, index) => {
-                    bubbleChartData.push({
-                        index: index,
-                        label: item.cloudlet.toString().substring(0, 10) + "...",
-                        value: item.avgNetSend,
-                        favor: item.avgNetSend,
-                        fullLabel: item.cloudlet,
-                    })
-                })
-            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.FLOATING_IPS) {
-                allUsageList.map((item, index) => {
-                    bubbleChartData.push({
-                        index: index,
-                        label: item.cloudlet.toString().substring(0, 10) + "...",
-                        value: item.avgFloatingIpsUsed,
-                        favor: item.avgFloatingIpsUsed,
-                        fullLabel: item.cloudlet,
-                    })
-                })
-            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.IPV4) {
-                allUsageList.map((item, index) => {
-                    bubbleChartData.push({
-                        index: index,
-                        label: item.cloudlet.toString().substring(0, 10) + "...",
-                        value: item.avgIpv4Used,
-                        favor: item.avgIpv4Used,
-                        fullLabel: item.cloudlet,
-                    })
-                })
-            }
-
-            console.log('1111bubbleChartData====>', bubbleChartData);
-
-            this.setState({
-                bubbleChartData: bubbleChartData,
-            });
-        }
 
         //@todo:-----------------------
         //@todo:    CPU,MEM,DISK TAB
@@ -927,6 +878,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     return (
                         <Pane>
                             {this.renderIPV4TabArea()}
+                        </Pane>
+                    )
+                }
+            },
+            {
+                menuItem: 'NETWORK', render: () => {
+                    return (
+                        <Pane>
+                            <Tabs selectedIndex={this.state.networkTabIndex}
+                                  className='page_monitoring_tab'>
+                                <TabPanel>
+                                    {this.renderNetworkForCloudlet(HARDWARE_TYPE.RECVBYTES)}
+                                </TabPanel>
+                                <TabPanel>
+                                    {this.renderNetworkForCloudlet(HARDWARE_TYPE.SENDBYTES)}
+                                </TabPanel>
+                            </Tabs>
                         </Pane>
                     )
                 }
@@ -1071,7 +1039,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             defaultValue={HARDWARE_OPTIONS_FOR_CLOUDLET[0].value}
                                                             onChange={async (e, {value}) => {
 
-                                                                this.handleBubbleChartDropDownForCloudlet(value);
+                                                                await handleBubbleChartDropDownForCloudlet(value, this);
 
                                                             }}
                                                             value={this.state.currentHardwareType}
@@ -1088,18 +1056,72 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* row2___col___2*/}
                                                 {/* row2___col___2*/}
                                                 <div className='page_monitoring_column'>
-                                                    {/*todo:---------------------------------*/}
-                                                    {/*todo: NETWORK TAB PANEL AREA           */}
-                                                    {/*todo:---------------------------------*/}
-                                                    <Tabs selectedIndex={this.state.networkTabIndex}
-                                                          className='page_monitoring_tab'>
-                                                        <TabPanel>
-                                                            {this.renderNetworkForCloudlet(HARDWARE_TYPE.RECVBYTES)}
-                                                        </TabPanel>
-                                                        <TabPanel>
-                                                            {this.renderNetworkForCloudlet(HARDWARE_TYPE.SENDBYTES)}
-                                                        </TabPanel>
-                                                    </Tabs>
+                                                    <div className='page_monitoring_title_area'>
+                                                        <div className='page_monitoring_title_select'>
+                                                            Cloudlet Event Log
+                                                        </div>
+                                                        <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
+                                                            <Table.Header className="viewListTableHeader">
+                                                                <Table.Row>
+                                                                    <Table.HeaderCell>
+                                                                        Time
+                                                                    </Table.HeaderCell>
+                                                                    <Table.HeaderCell>
+                                                                        Cloudlet
+                                                                    </Table.HeaderCell>
+                                                                    <Table.HeaderCell>
+                                                                        Event
+                                                                    </Table.HeaderCell>
+                                                                    <Table.HeaderCell>
+                                                                        Status
+                                                                    </Table.HeaderCell>
+                                                                </Table.Row>
+                                                            </Table.Header>
+                                                            <Table.Body className="">
+                                                                {/*
+                                                                "time",0
+                                                                "cloudlet",1
+                                                                "operator",2
+                                                                "event",3
+                                                                "status"4
+                                                                */}
+
+                                                                {/*todo: 데이터가 없는경우*/}
+                                                                {/*todo: 데이터가 없는경우*/}
+                                                                {/*todo: 데이터가 없는경우*/}
+                                                                {!this.state.cloudletSelectLoading && this.state.cloudletEventLogs.length===0 &&
+                                                                    <Table.Row className='page_monitoring_popup_table_row'>
+                                                                        <div styl={{display:'flex', justifyContent:'center', alignItems:'center', width:'100%', backgroundColor:'red'}}>
+                                                                            NO DATA
+                                                                        </div>
+                                                                    </Table.Row>
+                                                                }
+                                                                {this.state.cloudletSelectLoading && renderPlaceHolderLottie(100, 100)}
+                                                                {!this.state.cloudletSelectLoading && this.state.cloudletEventLogs.map(item => {
+                                                                    return (
+                                                                        <Table.Row className='page_monitoring_popup_table_row'>
+
+                                                                            <Table.Cell>
+                                                                                {item[0]}
+                                                                            </Table.Cell>
+                                                                            <Table.Cell>
+                                                                                {item[1]}
+                                                                            </Table.Cell>
+                                                                            <Table.Cell>
+                                                                                {item[3]}
+                                                                            </Table.Cell>
+                                                                            <Table.Cell>
+                                                                                {item[4]}
+                                                                            </Table.Cell>
+
+                                                                        </Table.Row>
+                                                                    )
+                                                                })}
+                                                            </Table.Body>
+                                                        </Table>
+                                                    </div>
+
+
                                                 </div>
 
 

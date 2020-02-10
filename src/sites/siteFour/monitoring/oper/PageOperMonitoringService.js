@@ -6,7 +6,7 @@ import {
     makeFormForCloudletLevelMatric, numberWithCommas,
     renderBarChartCore,
     renderLineChartCore,
-    renderUsageByType2,
+    renderUsageByType2, showToast,
     sortUsageListByType,
     StylesForMonitoring
 } from "../PageMonitoringCommonService";
@@ -15,6 +15,7 @@ import {Table} from "semantic-ui-react";
 import Lottie from "react-lottie";
 import type {TypeCloudletUsageList} from "../../../../shared/Types";
 import {Progress} from "antd";
+import axios from "axios";
 
 export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
     console.log('renderBarGraph2===>', usageList);
@@ -44,6 +45,96 @@ export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
 
         return renderBarChartCore(chartDataList, hardwareType)
     }
+}
+
+
+export const handleBubbleChartDropDownForCloudlet = async (hwType, _this: PageOperMonitoring) => {
+    await _this.setState({
+        currentHardwareType: hwType,
+    });
+
+    let allUsageList = _this.state.allUsageList;
+    let bubbleChartData = [];
+
+    console.log('sldkflskdflksdlfklsdkfk====>', allUsageList);
+
+    if (hwType === 'vCPU') {
+        allUsageList.map((item, index) => {
+            bubbleChartData.push({
+                index: index,
+                label: item.cloudlet.toString().substring(0, 10) + "...",
+                value: (item.avgVCpuUsed * 1).toFixed(0),
+                favor: (item.avgVCpuUsed * 1).toFixed(0),
+                fullLabel: item.cloudlet,
+            })
+        })
+    } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.MEM) {
+        allUsageList.map((item, index) => {
+            bubbleChartData.push({
+                index: index,
+                label: item.cloudlet.toString().substring(0, 10) + "...",
+                value: item.avgMemUsed,
+                favor: item.avgMemUsed,
+                fullLabel: item.cloudlet,
+            })
+        })
+    } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.DISK) {
+        allUsageList.map((item, index) => {
+            bubbleChartData.push({
+                index: index,
+                label: item.cloudlet.toString().substring(0, 10) + "...",
+                value: item.avgDiskUsed,
+                favor: item.avgDiskUsed,
+                fullLabel: item.cloudlet,
+            })
+        })
+    } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.RECV_BYTES) {
+        allUsageList.map((item, index) => {
+            bubbleChartData.push({
+                index: index,
+                label: item.cloudlet.toString().substring(0, 10) + "...",
+                value: item.avgNetRecv,
+                favor: item.avgNetRecv,
+                fullLabel: item.cloudlet,
+            })
+        })
+    } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.SEND_BYTES) {
+        allUsageList.map((item, index) => {
+            bubbleChartData.push({
+                index: index,
+                label: item.cloudlet.toString().substring(0, 10) + "...",
+                value: item.avgNetSend,
+                favor: item.avgNetSend,
+                fullLabel: item.cloudlet,
+            })
+        })
+    } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.FLOATING_IPS) {
+        allUsageList.map((item, index) => {
+            bubbleChartData.push({
+                index: index,
+                label: item.cloudlet.toString().substring(0, 10) + "...",
+                value: item.avgFloatingIpsUsed,
+                favor: item.avgFloatingIpsUsed,
+                fullLabel: item.cloudlet,
+            })
+        })
+    } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.IPV4) {
+        allUsageList.map((item, index) => {
+            bubbleChartData.push({
+                index: index,
+                label: item.cloudlet.toString().substring(0, 10) + "...",
+                value: item.avgIpv4Used,
+                favor: item.avgIpv4Used,
+                fullLabel: item.cloudlet,
+            })
+        })
+    }
+
+    console.log('1111bubbleChartData====>', bubbleChartData);
+
+    _this.setState({
+        bubbleChartData: bubbleChartData,
+    });
 }
 
 
@@ -231,8 +322,58 @@ export const makeLineChartForCloudlet = (_this: PageOperMonitoring, pUsageList: 
     }
 }
 
-export const getClouletLevelUsageList = async (cloudletList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
 
+export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
+    let store = JSON.parse(localStorage.PROJECT_INIT);
+    let token = store ? store.userToken : 'null';
+    let selectOrg = localStorage.getItem('selectOrg')
+
+    let result = await axios({
+        url: '/api/v1/auth/events/cloudlet',
+        method: 'post',
+        data: {
+            "region": pRegion,
+            "cloudlet": {
+                "operator_key": {
+                    "name": selectOrg
+                },
+                "name": cloudletSelectedOne
+            },
+            "last": 10
+        },
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + token
+        },
+        timeout: 15 * 1000
+    }).then(async response => {
+
+        console.log('response333===>', response.data.data["0"].Series["0"]);
+
+        let columns = response.data.data["0"].Series["0"].columns
+
+        /*
+            "time",
+            "cloudlet",
+            "operator",
+            "event",
+            "status"
+        */
+        if (response.data.data["0"].Series["0"].values !== undefined) {
+            let values = response.data.data["0"].Series["0"].values
+            return values;
+        } else {
+            return [];
+        }
+
+    }).catch(e => {
+        showToast(e.toString())
+    })
+    return result;
+}
+
+
+export const getClouletLevelUsageList = async (cloudletList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
 
     let instanceBodyList = []
     let store = JSON.parse(localStorage.PROJECT_INIT);
