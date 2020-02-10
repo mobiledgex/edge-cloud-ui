@@ -845,7 +845,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {this.state.currentClassification === CLASSIFICATION.APPINST &&
                         <div>
                             <MButton
-                                style={{backgroundColor: this.state.isStream ? 'green' : 'grey', color: 'white', height: 36}}
+                                style={{backgroundColor: this.state.isStream ? 'green' : '#6c6c6c', color: 'white', height: 37}}
                                 onClick={async () => {
                                     this.setState({
                                         isStream: !this.state.isStream,
@@ -860,10 +860,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             >STREAM {this.state.isStream ? 'on' : 'off'}</MButton>
                         </div>
                         }
-                        {true ?
+                        {this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?
                             <div style={{}}>
                                 <MButton
-                                    style={{backgroundColor: 'grey', color: 'white', height: 36}}
+                                    style={{backgroundColor: '#6c6c6c', color: 'white', height: 37}}
                                     onClick={() => this.setState({openTerminal: true})}>Terminal</MButton>
                             </div>
                             : null
