@@ -1,5 +1,5 @@
 import 'react-hot-loader'
-import {SemanticToastContainer, toast} from 'react-semantic-toasts';
+import {toast} from 'react-semantic-toasts';
 import OutsideClickHandler from 'react-outside-click-handler';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
@@ -8,6 +8,7 @@ import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
+import {Button as MButton, CircularProgress} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
 import {DatePicker, Progress,} from 'antd';
 import {
@@ -41,12 +42,22 @@ import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import '../PageMonitoring.css'
-import {getOneYearStartEndDatetime, makeBubbleChartDataForCluster, numberWithCommas, renderBarChartCore, renderLineChartCore, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
-import {getAppInstList, getAppLevelUsageList, getCloudletList, StylesForMonitoring} from "../admin/PageAdminMonitoringService";
-import MapboxComponent from "./MapboxComponent";
+import {
+    getOneYearStartEndDatetime,
+    makeBubbleChartDataForCluster,
+    numberWithCommas,
+    renderBarChartCore,
+    renderLineChartCore, renderLottieLoader,
+    renderPlaceHolderLottie,
+    showToast,
+    StylesForMonitoring
+} from "../PageMonitoringCommonService";
+import {getAppInstList, getAppLevelUsageList, getCloudletList} from "../admin/PageAdminMonitoringService";
 import * as reducer from "../../../../utils";
-import {CircularProgress} from "@material-ui/core";
 import {TabPanel, Tabs} from "react-tabs";
+import Icon from "@material-ui/core/Icon";
+import LeafletMapWrapperForDev from "./LeafletMapWrapperForDev";
+import TerminalViewer from "../../../../container/TerminalViewer";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -143,12 +154,11 @@ type State = {
     placeHolderEndTime: string,
     allConnectionsUsageList: Array,
     filteredConnectionsUsageList: Array,
-    terminalData:Array,
-    openTerminal:Boolean,
+    terminalData: Array,
+    openTerminal: Boolean,
     connectionsTabIndex: number,
     tcpTabIndex: number,
     udpTabIndex: number,
-
     cloudletList: Array,
     maxCpu: number,
     maxMem: number,
@@ -832,9 +842,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }}
                         >Reset</Button>
 
-
-                        {/*{this.state.currentClassification.toString()}*/}
-                        {/*{this.state.currentAppInst}*/}
                         {this.state.currentClassification === CLASSIFICATION.APPINST &&
                         <div>
                             <MButton
@@ -852,19 +859,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                             >STREAM {this.state.isStream ? 'on' : 'off'}</MButton>
                         </div>
-                        {this.state.terminalData ?
-                        <div style={{ marginLeft: '10px' }}>
-                            <Button onClick={()=>this.setState({ openTerminal: true })}><Icon name="terminal" /></Button>
-                        </div> : null}
-
                         }
-                        {/*<div style={{marginLeft: 50, color: 'green', fontWeight: 'bold', fontFamily: 'Righteous'}}>
-                            {this.state.userType}
-                            [ This is Developer View ]
-                        </div>
-                        <div style={{marginLeft: 50, color: '#6de1ff', fontWeight: 'bold', fontFamily: 'Encode Sans Condensed'}}>
-                            {this.state.selectOrg}
-                        </div>*/}
+                        {true ?
+                            <div style={{}}>
+                                <MButton
+                                    style={{backgroundColor: 'grey', color: 'white', height: 36}}
+                                    onClick={() => this.setState({openTerminal: true})}>Terminal</MButton>
+                            </div>
+                            : null
+                        }
                         {this.state.intervalLoading &&
                         <div>
                             <div style={{marginLeft: 15}}>
@@ -983,15 +986,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        validateTerminal = (appInst)=>
-        {
-            if(appInst && appInst.length > 0)
-            {
+        validateTerminal = (appInst) => {
+            if (appInst && appInst.length > 0) {
                 let runtime = appInst[0].Runtime
-                if(runtime)
-                {
+                if (runtime) {
                     this.setState({
-                        terminalData : appInst[0]
+                        terminalData: appInst[0]
                     })
                 }
             }
@@ -1033,7 +1033,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             //Terminal
             this.setState({
-                terminalData:null
+                terminalData: null
             })
             this.validateTerminal(filteredAppList)
 
@@ -1351,7 +1351,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:Content Header                   */}
                         {/*todo:---------------------------------*/}
                         {this.renderHeader()}
-                        <Grid.Row className='site_content_body' style={{marginTop:22}}>
+                        <Grid.Row className='site_content_body' style={{marginTop: 22}}>
                             <Grid.Column>
                                 <div className="table-no-resized">
 
@@ -1553,7 +1553,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                     </Grid.Column>
                     <Modal open={this.state.openTerminal} dimmer={'inverted'}>
-                        <TerminalViewer data={this.state.terminalData} dialog={true} onClose={() => { this.setState({ openTerminal: false }) }} />
+                        <TerminalViewer data={this.state.terminalData} dialog={true} onClose={() => {
+                            this.setState({openTerminal: false})
+                        }}/>
                     </Modal>
                 </Grid.Row>
 
