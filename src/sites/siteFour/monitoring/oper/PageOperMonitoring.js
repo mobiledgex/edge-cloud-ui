@@ -654,11 +654,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        handleSelectCloudletForMapkerClicked = async (cloudletSelectedOne, isDropdownAction) => {
+        handleSelectCloudletForMapkerClicked = async (cloudletSelectedOne, isDropdownAction = false) => {
 
             let selectedCloudlet = cloudletSelectedOne.toString().split("|")[0];
             let selectedRegion = cloudletSelectedOne.toString().split("|")[1];
-            //alert(selectedCloudlet + "," + selectedRegion);
+            alert(selectedCloudlet + "," + selectedRegion);
             this.setState({
                 cloudletSelectLoading: true,
                 currentCloudLet: cloudletSelectedOne,
@@ -668,23 +668,27 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             try {
                 cloudletEventLogs = await getCloudletEventLog(selectedCloudlet, selectedRegion);
             } catch (e) {
-                showToast(e.toString())
+                //showToast(e.toString())
             }
 
             console.log('cloudletEventLogs===>', cloudletEventLogs)
-            let filteredCloudletList = this.state.cloudletList;
-            if (isDropdownAction) {
-                filteredCloudletList = filterListBykeyForCloudlet('CloudletName', selectedCloudlet, this.state.cloudletList)
-            }
+
 
             let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, selectedCloudlet.toString().trim(), CLASSIFICATION.cloudlet)
             this.setState({
-                filteredCloudletList: filteredCloudletList,
+                // filteredCloudletList: filteredCloudletList,
                 cloudletSelectLoading: false,
                 filteredCloudletUsageList: filteredCloudletUsageList,
                 cloudletEventLogs: cloudletEventLogs === undefined ? [] : cloudletEventLogs,
 
             })
+
+            if (isDropdownAction) {
+                let filteredCloudletList = filterListBykeyForCloudlet('CloudletName', selectedCloudlet, this.state.cloudletList)
+                this.setState({
+                    filteredCloudletList: filteredCloudletList,
+                })
+            }
         }
 
         /*
@@ -1089,12 +1093,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                 {/*todo: 데이터가 없는경우*/}
                                                                 {/*todo: 데이터가 없는경우*/}
                                                                 {/*todo: 데이터가 없는경우*/}
-                                                                {!this.state.cloudletSelectLoading && this.state.cloudletEventLogs.length===0 &&
-                                                                    <Table.Row className='page_monitoring_popup_table_row'>
-                                                                        <div styl={{display:'flex', justifyContent:'center', alignItems:'center', width:'100%', backgroundColor:'red'}}>
-                                                                            NO DATA
-                                                                        </div>
-                                                                    </Table.Row>
+                                                                {!this.state.cloudletSelectLoading && this.state.cloudletEventLogs.length === 0 &&
+                                                                <Table.Row className='page_monitoring_popup_table_row'>
+                                                                    <div styl={{display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', backgroundColor: 'red'}}>
+                                                                        NO DATA
+                                                                    </div>
+                                                                </Table.Row>
                                                                 }
                                                                 {this.state.cloudletSelectLoading && renderPlaceHolderLottie(100, 100)}
                                                                 {!this.state.cloudletSelectLoading && this.state.cloudletEventLogs.map(item => {
@@ -1120,8 +1124,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             </Table.Body>
                                                         </Table>
                                                     </div>
-
-
                                                 </div>
 
 
