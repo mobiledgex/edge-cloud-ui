@@ -2,15 +2,17 @@ import React from 'react'
 import MexSelect from './MexSelect';
 import MexInput from './MexInput';
 import MexDualList from './MexDualList';
+import MexCheckbox  from './MexCheckbox';
 import { Form, Grid, Divider } from 'semantic-ui-react';
 import { IconButton } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 
-const HEADER = 'Header'
-const SELECT = 'Select'
-const DUAL_LIST = 'DualList'
-const Input = 'Input'
+export const HEADER = 'Header'
+export const SELECT = 'Select'
+export const DUALLIST = 'DualList'
+export const INPUT = 'Input'
+export const CHECKBOX = 'Checkbox'
 
 let data = {}
 const onValueSelect = (form, value, parentForm) => {
@@ -25,6 +27,10 @@ const onValueSelect = (form, value, parentForm) => {
     {
         data[form.field] = value;
     }
+        alert('111')
+    if(form.onValueChange)
+        form.onValueChange(form, value, parentForm)
+    
 }
 const onRemoveMultiForm = (index, form)=>
 {
@@ -68,7 +74,7 @@ const loadHorizontalForms = (props, parentId, forms)=>
                 <Grid.Column width={3} key={i}>
                     {form.label}{required ? ' *' : ''}
                     {
-                        form.type === Input ?
+                        form.type === INPUT ?
                             <MexInput parentForm={props.forms[parentId]} form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
                             null
                     }
@@ -98,10 +104,12 @@ const loadForms = (index, form)=>
                     {
                         form.type === SELECT ?
                             <MexSelect form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
-                            form.type === DUAL_LIST ?
+                            form.type === DUALLIST ?
                                 <MexDualList form={form} onChange={onValueSelect} /> :
-                                form.type === Input ?
+                                form.type === INPUT ?
                                     <MexInput form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                                form.type === CHECKBOX ?
+                                    <MexCheckbox form={form} onChange={onValueSelect}/>:
                                     null
                     }
                 </Grid.Column>

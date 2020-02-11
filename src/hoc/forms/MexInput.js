@@ -1,6 +1,6 @@
 import React from 'react'
 import { Form } from 'semantic-ui-react';
-const MexSelect = (props) => {
+const MexInput = (props) => {
 
     const [value, setValue] = React.useState(props.form.value ? props.form.value : null)
 
@@ -23,4 +23,4 @@ const MexSelect = (props) => {
         /> : null
     )
 }
-export default MexSelect
+export default MexInput

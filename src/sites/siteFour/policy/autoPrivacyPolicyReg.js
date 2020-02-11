@@ -9,12 +9,6 @@ import * as actions from '../../../actions';
 import * as serviceMC from '../../../services/serviceMC';
 import * as ServerData from '../../../services/ServerData';
 
-const rules = [
-    { field: 'Protocol', label: 'Protocol', type: 'Input' },
-    { field: 'PortRangeMin', label: 'Port Range Min', type: 'Input',rules:{ type: 'number'} },
-    { field: 'PortRangeMax', label: 'Port Range Max', type: 'Input',rules:{ type: 'number'} },
-    { field: 'RemoteCIDR', label: 'Remote CIDR', type: 'Input' }
-]
 class AutoProvPolicyReg extends React.Component {
     constructor(props) {
         super(props);
@@ -29,6 +23,22 @@ class AutoProvPolicyReg extends React.Component {
         this.OrganizationList = []
         this.cloudletList = []
     }
+
+    step1 = [
+        { label: 'Create Privacy Policy', type: 'Header' },
+        { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true},
+        { field: 'OrganizationName', label: 'Organization', type: 'Select', placeholder: 'Select Organization', rules: { required: true }, visible: true },
+        { field: 'PrivacyPolicyName', label: 'Privacy Policy Name', type: 'Input', placeholder: 'Enter Privacy Policy Name', rules: { required: true }, visible: true },
+        { field: 'FullIsolation', label: 'Full Isolation', type: 'Checkbox' },
+        { label: 'Outbound Security Rules', type: 'Header', forms: { type: 'Button', icon: 'Add', onClick: this.addRulesForm, visible: true } },
+    ]
+
+    outboundRules = [
+        { field: 'Protocol', label: 'Protocol', type: 'Input' },
+        { field: 'PortRangeMin', label: 'Port Range Min', type: 'Input',rules:{ type: 'number'} },
+        { field: 'PortRangeMax', label: 'Port Range Max', type: 'Input',rules:{ type: 'number'} },
+        { field: 'RemoteCIDR', label: 'Remote CIDR', type: 'Input' },
+    ]
 
     getRegionData = () => {
         if (this.regions && this.regions.length > 0)
@@ -171,7 +181,7 @@ class AutoProvPolicyReg extends React.Component {
             privacypolicy : {
                 key:{
                     name:data.PrivacyPolicyName,
-                    developer:data.Organization
+                    developer:data.OrganizationName
                 },
                 outbound_security_rules:outbound_security_rules
             }
@@ -208,7 +218,7 @@ class AutoProvPolicyReg extends React.Component {
 
     addRulesForm=()=>
     {
-        this.setState(prevState=>({forms:[...prevState.forms, {uuid:serviceMC.generateUniqueId(), field:'OutboundSecurityRules', type:'MultiForm', onClick:this.removeRulesForm, forms:rules}]}))
+        this.setState(prevState=>({forms:[...prevState.forms, {uuid:serviceMC.generateUniqueId(), field:'OutboundSecurityRules', type:'MultiForm', onClick:this.removeRulesForm, forms:this.outboundRules}]}))
     }
 
     removeRulesForm = (index) => {
@@ -219,58 +229,74 @@ class AutoProvPolicyReg extends React.Component {
         })
     }
 
-    
+    loadData(forms, data)
+    {
+        for(let i=0;i<forms.length;i++)
+            {
+                let form = forms[i];
+                if(form.field)
+                {
+                    if(form.type === 'Select')
+                    {
+                        switch (form.field) {
+                            case 'OrganizationName':
+                                form.options = this.getOrganizationData(this.OrganizationList)
+                                break;
+                            case 'Region':
+                                form.options = this.getRegionData();
+                                break;
+                            default : 
+                                form.options = undefined;
+                        }
+                    }
+                    if(data)
+                    {
+                        form.value = data[form.field]
+                        let rules = form.rules ? form.rules : {}
+                        rules.disabled = true
+                    }
+                }
+            }
+        
+    }
 
     getFormData = async(data)=>
     {
-        let step1 = [];
-
         if(data)
         {
             this.OrganizationList = [{Organization:data.OrganizationName}]
             this.formData.Region = data.Region;
             this.formData.Organization = data.OrganizationName;
             this.formData.PrivacyPolicyName = data.PrivacyPolicyName;
-            step1 = [
-                { label: 'Create Privacy Policy', type: 'Header' },
-                { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { disabled: true }, options: this.getRegionData(), value:data.Region },
-                { field: 'Organization', label: 'Organization', type: 'Select', placeholder: 'Select Organization', rules: { disabled: true }, options: this.getOrganizationData(this.OrganizationList), value:data.OrganizationName },
-                { field: 'PrivacyPolicyName', label: 'Privacy Policy Name', type: 'Input', placeholder: 'Enter Privacy Policy Name', rules: { disabled: true }, value:data.PrivacyPolicyName },
-                { label: 'Outbound Security Rules', type: 'Header', forms:{type:'Button', icon:'Add', onClick:this.addRulesForm}},
-            ]
-
+            
+            this.loadData(this.step1, data)
+            
             if (data.OutboundSecurityRules && data.OutboundSecurityRules.length > 0) {
                 for (let i = 0; i < data.OutboundSecurityRules.length; i++) {
                     let OutboundSecurityRule = data.OutboundSecurityRules[i]
-                    let rules = [
-                        { field: 'Protocol', label: 'Protocol', type: 'Input', value: OutboundSecurityRule.Protocol },
-                        { field: 'PortRangeMin', label: 'Port Range Min', type: 'Input',rules:{ type: 'number'}, value: OutboundSecurityRule.PortRangeMin },
-                        { field: 'PortRangeMax', label: 'Port Range Max', type: 'Input',rules:{ type: 'number'}, value: OutboundSecurityRule.PortRangeMax },
-                        { field: 'RemoteCIDR', label: 'Remote CIDR', type: 'Input', value: OutboundSecurityRule.RemoteCIDR }
-                    ]
+                    for(let j=0;j<this.outboundRules.length>0;j++)
+                    {
+                        let outboundRule = this.outboundRules[j];
+                        outboundRule.value = OutboundSecurityRule[outboundRule.field]
+                    }
                     let uuid = serviceMC.generateUniqueId();
                     this.formData[uuid] = {Protocol:OutboundSecurityRule.Protocol,PortRangeMin:OutboundSecurityRule.PortRangeMin,PortRangeMax:OutboundSecurityRule.PortRangeMax,RemoteCIDR:OutboundSecurityRule.RemoteCIDR}
-                    step1.push({ uuid: uuid, field: 'OutboundSecurityRules', type: 'MultiForm', onClick: this.removeRulesForm, forms: rules })
+                    this.step1.push({ uuid: uuid, field: 'OutboundSecurityRules', type: 'MultiForm', onClick: this.removeRulesForm, forms: this.outboundRules })
                 }
             }
         }
         else {
-            this.OrganizationList = await ServerData.getOrganizationInfo(this) 
-            step1 = [
-                { label: 'Create Privacy Policy', type: 'Header' },
-                { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { required: true }, options: this.getRegionData() },
-                { field: 'Organization', label: 'Organization', type: 'Select', placeholder: 'Select Organization', rules: { required: true }, options: this.getOrganizationData(this.OrganizationList) },
-                { field: 'PrivacyPolicyName', label: 'Privacy Policy Name', type: 'Input', placeholder: 'Enter Privacy Policy Name', rules: { required: true } },
-                { label: 'Outbound Security Rules', type: 'Header', forms:{type:'Button', icon:'Add', onClick:this.addRulesForm}},
-            ]
+            this.OrganizationList = await ServerData.getOrganizationInfo(this)
+            this.loadData(this.step1)
         }
 
         
-        step1.push(
+        this.step1.push(
             { label: `${this.props.action ? this.props.action : 'Create'} Policy`, type: 'Button', onClick: this.onCreate },
             { label: 'Cancel', type: 'Button', onClick: this.onAddCancel })
-        this.setState({
-            forms: step1
+        
+            this.setState({
+            forms: this.step1
         })
 
     }

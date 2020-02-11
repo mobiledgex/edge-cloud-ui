@@ -52,10 +52,10 @@ import PageMonitoringMain from './monitoring/PageMonitoringMain'
 import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
 import RefreshOutlinedIcon from '@material-ui/icons/RefreshOutlined';
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
-import AutoProvPolicy from './autoProvPolicy/autoProvPolicy';
-import AutoPrivacyPolicy from './autoProvPolicy/autoPrivacyPolicy';
-import AutoPrivacyPolicyReg from './autoProvPolicy/autoPrivacyPolicyReg';
-import SiteFourAutoProvPolicyReg from './autoProvPolicy/autoProvPolicyReg';
+import AutoProvPolicy from './policy/autoProvPolicy';
+import AutoPrivacyPolicy from './policy/autoPrivacyPolicy';
+import AutoPrivacyPolicyReg from './policy/autoPrivacyPolicyReg';
+import SiteFourAutoProvPolicyReg from './policy/autoProvPolicyReg';
 
 
 import PopLegendViewer from '../../container/popLegendViewer';
