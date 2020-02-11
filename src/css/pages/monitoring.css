@@ -102,11 +102,12 @@
     flex-direction: row;
     margin-bottom: 20px;
     flex-grow: 1;
-    height: calc(50% - 40px);
+    /*height: calc(50% - 40px);*/
+    height:0;
 }
-.page_monitoring_row:last-child {
+.page_monitoring_row:nth-child(3) {
     margin-bottom: 0px;
-    height: 40px;
+    max-height: 40px;
 }
 .page_monitoring_column {
     display: flex;
@@ -166,13 +167,32 @@
 
 
 .page_monitoring_tab {
-    height:100%
+    height:100%;
+    width: 100%;
 }
 
-.page_monitoring_tab .react-tabs__tab-panel.react-tabs__tab-panel--selected {
+.page_monitoring_tab .react-tabs__tab-panel--selected {
     height:100%;
 }
 
+.page_monitoring_tab .page_monitoring_tab_with_pager.react-tabs__tab-panel--selected {
+    height:calc(100% - 17px);
+    width:100%;
+}
+
+.page_monitoring_pager_row {
+    flex-direction: row;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px 0 0 0;
+}
+
+.page_monitoring_pager_btn {
+    width:12px;
+    height:12px;
+    border-radius: 50%;
+}
 
 .page_monitoring_tab .ui.secondary.pointing.menu {
     border-bottom: 2px solid rgba(255,255,3255,.2);
@@ -292,6 +312,7 @@
     position: relative;
 }
 
+
 .page_monitoring_container_row {
     display: flex;
     flex-direction: row;
@@ -336,11 +357,13 @@
     align-items: center;
     cursor: pointer;
     padding: 5px 0px;
+    z-index: 999999;
 }
 .page_monitoring_popup_header_row>div {
     display: flex;
     flex-direction: row;
     flex: 1 1 0;
+    z-index: 999999;
 }
 
 .page_monitoring_popup_header_title {
@@ -349,6 +372,7 @@
     line-height: 1.2;
     font-size: 18px;
     color: #c5c6c8;
+    z-index: 999999;
 }
 
 .page_monitoring_popup_header_button{
@@ -398,19 +422,33 @@
     margin-bottom: 0;
 }
 
+.page_monitoring_grid_wrap {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height:100%;
+    flex-wrap: wrap;
+}
 
 .page_monitoring_grid_box_layout {
     display: flex;
     flex-direction: column;
     /*flex-grow: 1;*/
     width: 33.3333%;
-    height: 100%;
-    padding:0 5px;
+    height: 50%;
+    padding:5px;
 }
+
+/*.page_monitoring_grid_box_layout2 {*/
+/*    !*flex-grow: 1;*!*/
+/*    width: 250%;*/
+/*    height: 250px;*/
+/*}*/
+
+
 .page_monitoring_grid_box{
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
     width: 100%;
     height: 100%;
     background: #1e2124;
@@ -418,6 +456,12 @@
     align-items: center;
     padding: 10px;
 }
+
+/*.page_monitoring_grid_box00002{*/
+/*    flex: .3;*/
+/*}*/
+
+
 
 .page_monitoring_grid_box_name {
     color: #c5c6c8;

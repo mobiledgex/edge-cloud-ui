@@ -18,7 +18,7 @@ export const renderLottieLoader = (width, height) => {
             options={{
                 loop: true,
                 autoplay: true,
-                animationData: require('../../../lotties/13255-loader22'),
+                animationData: require('../../../lotties/10910-loade_dots.json'),
                 rendererSettings: {
                     preserveAspectRatio: 'xMidYMid slice'
                 }
@@ -27,11 +27,12 @@ export const renderLottieLoader = (width, height) => {
             width={width}
             isStopped={false}
             isPaused={false}
+            speed={3.0}
         />
     )
 }
 
-export const renderGridLoader = () =>{
+export const renderGridLoader = () => {
     return (
         <GridLoader
             sizeUnit={"px"}
@@ -43,13 +44,95 @@ export const renderGridLoader = () =>{
 }
 
 
-export const renderPlaceHolder = (type: string = '') => {
+export const renderPlaceHolderLottie = (type: string = '') => {
     return (
         <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
-           <CircularProgress style={{ color: '#77BD25', zIndex: 9999999, fontSize: 45 }}/>
+            {/*<Lottie
+                options={{
+                    loop: true,
+                    autoplay: true,
+                    animationData: require('../../../lotties/14112-heartrate_777'),
+                    rendererSettings: {
+                        preserveAspectRatio: 'xMidYMid slice'
+                    }
+                }}
+                speed={2.5}
+                height={150}
+                width={150}
+                isStopped={false}
+                isPaused={false}
+            />*/}
+            <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}
+            />
         </div>
     )
 }
+
+
+export const renderPlaceHolderLottiePinJump = (type: string = '') => {
+    return (
+        <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%', zIndex: 999999999999}}>
+            <Lottie
+                options={{
+                    loop: true,
+                    autoplay: true,
+                    animationData: require('../../../lotties/pinjump'),
+                    rendererSettings: {
+                        preserveAspectRatio: 'xMidYMid slice'
+                    }
+                }}
+                speed={2.1}
+                height={150}
+                width={150}
+                isStopped={false}
+                isPaused={false}
+            />
+        </div>
+    )
+}
+
+export const renderPlaceHolderLottiePinJump2 = (type: string = '') => {
+    return (
+        <div className='page_monitoring_blank_box' style={{zIndex: 999999999999, position: 'absolute', top: '1%', left: '1%'}}>
+            <Lottie
+                options={{
+                    loop: true,
+                    autoplay: true,
+                    animationData: require('../../../lotties/6698-location-pin22222'),
+                    rendererSettings: {
+                        preserveAspectRatio: 'xMidYMid slice'
+                    }
+                }}
+                speed={2.9}
+                height={350}
+                width={350}
+                isStopped={false}
+                isPaused={false}
+            />
+        </div>
+    )
+}
+/*
+export const renderPlaceHolderLottie = (type: string = '') => {
+    return (
+        <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
+            <Lottie
+                options={{
+                    loop: true,
+                    autoplay: true,
+                    animationData: require('../../../lotties/11052-green-loader-ring_555'),
+                    rendererSettings: {
+                        preserveAspectRatio: 'xMidYMid slice'
+                    }
+                }}
+                height={150}
+                width={150}
+                isStopped={false}
+                isPaused={false}
+            />
+        </div>
+    )
+}*/
 
 export const renderPlaceHolder3 = (type: string = '') => {
     // let boxWidth = window.innerWidth / 3 - 50;
@@ -124,17 +207,8 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
 
     let height = 500 + 100;
     let options = {
-        plugins: {
-            zoom: {
-                pan: {
-                    enabled: true,
-                    mode: 'y'
-                },
-                zoom: {
-                    enabled: true,
-                    mode: 'xy'
-                }
-            }
+        animation: {
+            duration: 0
         },
         maintainAspectRatio: false,//@todo
         responsive: true,//@todo
@@ -345,7 +419,7 @@ export const renderUsageByType = (usageOne, hardwareType, role = '',) => {
 export const renderBarChartCore = (chartDataList, hardwareType) => {
     return (
         <Chart
-            width="100%"
+            width={"100%"}
             //height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
             height={'100%'}
             chartType="BarChart"
@@ -521,8 +595,20 @@ export const getOneYearStartEndDatetime = () => {
     return arrDateTime;
 }
 
+export const getOneYearStartEndDatetime2 = () => {
 
-export const showToast = (title: string, time=2) => {
+    let arrDateTime = []
+    let startTime = makeCompleteDateTime(moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm:ss'));
+    let endTime = makeCompleteDateTime(moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm:ss'));
+
+    arrDateTime.push(startTime)
+    arrDateTime.push(endTime)
+
+    return arrDateTime;
+}
+
+
+export const showToast = (title: string, time = 2) => {
     toast({
         type: 'success',
         //icon: 'smile',
@@ -532,7 +618,7 @@ export const showToast = (title: string, time=2) => {
         color: 'black',
     });
 }
-export const showToast2 = (title: string, time=2) => {
+export const showToast2 = (title: string, time = 2) => {
     toast({
         type: 'success',
         icon: 'star',
@@ -647,7 +733,6 @@ export const getClusterLevelMatric = async (serviceBody: any, pToken: string) =>
 }
 
 
-
 export const StylesForMonitoring = {
     selectBoxRow: {
         alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,
@@ -679,7 +764,8 @@ export const StylesForMonitoring = {
         //minWidth: 150,
         minWidth: '350px',
         //fontSize: '12px',
-        minHeight: '40px'
+        minHeight: '40px',
+        zIndex: 9999999,
         //height: '50px',
     },
     cell000: {
@@ -711,6 +797,14 @@ export const StylesForMonitoring = {
         color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center', backgroundColor: 'transparent'
         , justifyContent: 'center', alignItems: 'center', width: '100%', height: 35
     },
+    center: {
+        display: 'flex',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        //backgroundColor:'red'
+    }
 
 }
 

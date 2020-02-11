@@ -6,10 +6,11 @@ import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "
 import Lottie from "react-lottie";
 import BubbleChart from "../../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../../shared/Types";
-import PageMonitoring from "./PageAdminMonitoring";
+import PageAdminMonitoring from "./PageAdminMonitoring";
 import {numberWithCommas, renderBarChartCore, renderLineChartCore, renderUsageByType2, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
-import {SHOW_ORG_CLOUDLET} from "../../../../services/endPointTypes";
-import {sendSyncRequest} from "../../../../services/serviceMC";
+import {SHOW_CLOUDLET, SHOW_ORG_CLOUDLET} from "../../../../services/endPointTypes";
+import {sendSyncRequest,} from "../../../../services/serviceMC";
+import {TabPanel, Tabs} from "react-tabs";
 
 export const cutArrayList = async (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];
@@ -80,7 +81,6 @@ export const makeFormForAppInstance = (dataOne, valid = "*", token, fetchingData
 }
 
 
-
 export const filterInstanceCountOnCloutLetOne = (appInstanceListGroupByCloudlet, pCloudLet) => {
     try {
         let filterInstanceCountOnCloutLetOne = [];
@@ -100,13 +100,22 @@ export const filterInstanceCountOnCloutLetOne = (appInstanceListGroupByCloudlet,
 /**
  *
  * @param usageList
- * @param pTypeKey
+ * @param pFilterKey
  * @param pTypeValue
  * @returns {*}
  */
-export const filterUsageByType = (pTypeKey, pTypeValue, usageList,) => {
+export const filterListBykey = (pFilterKey, pTypeValue, usageList,) => {
     let filteredUsageList = usageList.filter((item) => {
-        if (item.instance[pTypeKey] === pTypeValue) {
+        if (item.instance[pFilterKey] === pTypeValue) {
+            return item;
+        }
+    });
+    return filteredUsageList
+}
+
+export const filterListBykeyForCloudlet = (pFilterKey, selectedCloudletOne, usageList,) => {
+    let filteredUsageList = usageList.filter((item) => {
+        if (item[pFilterKey] === selectedCloudletOne) {
             return item;
         }
     });
@@ -230,11 +239,11 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
     }
 
     if (hardwareType === HARDWARE_TYPE.VCPU) {
-        return numberWithCommas(usageOne.sumVCpuUsage) + " %"
+        return numberWithCommas(usageOne.sumVCpuUsage) + ""
     }
 
     if (hardwareType === HARDWARE_TYPE.MEM) {
-        return numberWithCommas((usageOne.sumMemUsage / 1000000).toFixed(2)) + " MByte"
+        return numberWithCommas((usageOne.sumMemUsage / 1000000).toFixed(2)) + " %"
     }
 
     if (hardwareType === HARDWARE_TYPE.DISK) {
@@ -278,7 +287,7 @@ export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
         chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
         for (let index = 0; index < usageList.length; index++) {
             if (index < 5) {
-                let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...",
+                let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10),
                     renderUsageByType2(usageList[index], hardwareType),
                     CHART_COLOR_LIST[index],
                     renderUsageLabelByType(usageList[index], hardwareType)]
@@ -335,7 +344,7 @@ export const renderPlaceHolder2 = () => {
                     options={{
                         loop: true,
                         autoplay: true,
-                        animationData: require('../../../../lotties/11052-green-loader-ring_555'),
+                        animationData: require('../../../../lotties/13255-loader22'),
                         rendererSettings: {
                             preserveAspectRatio: 'xMidYMid slice'
                         }
@@ -396,7 +405,7 @@ export const filterAppInstOnCloudlet = (CloudLetOneList, pCluster) => {
  * todo: render a bubble chart with https://github.com/weknowinc/react-bubble-chart-d3
  * @returns {*}
  */
-export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, pBubbleChartData: any) => {
+export const renderBubbleChart = (_this: PageAdminMonitoring, hardwareType: string, pBubbleChartData: any) => {
 
     if (pBubbleChartData.length === 0) {
         return (
@@ -485,7 +494,7 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
     }
 }
 
-export const renderBubbleChartForCloudlet = (_this: PageMonitoring, hardwareType: string, pBubbleChartData: any) => {
+export const renderBubbleChartForCloudlet = (_this: PageAdminMonitoring, hardwareType: string, pBubbleChartData: any) => {
     if (pBubbleChartData.length === 0 && _this.loading === false) {
         return (
             <div style={StylesForMonitoring.noData}>
@@ -519,7 +528,7 @@ export const renderBubbleChartForCloudlet = (_this: PageMonitoring, hardwareType
 
 
         return (
-            <div style={{display: 'flex', flexDirection: 'row'}}>
+            <div style={{display: 'flex', flexDirection: 'row', zIndex: 1}}>
                 <div style={{
                     //backgroundColor: 'blue',
                     backgroundColor: '#1e2124',
@@ -576,7 +585,7 @@ export const renderBubbleChartForCloudlet = (_this: PageMonitoring, hardwareType
 }
 
 
-export const makeLineChartDataForAppInst = (_this: PageMonitoring, hardwareUsageList: Array, hardwareType: string) => {
+export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardwareUsageList: Array, hardwareType: string) => {
     if (hardwareUsageList.length === 0) {
         return (
             <div style={StylesForMonitoring.noData}>
@@ -739,6 +748,30 @@ export const makeNetworkLineChartData = (filteredNetworkUsageList, pHardwareType
 
 }
 
+function makeAppInstOnCloudletList() {
+    /* let cloutletKeyList = Object.keys(appInstanceListGroupByCloudlet)
+
+     let newCloudletList = []
+     cloutletKeyList.map((key, index) => {
+
+         console.log('index===>', index);
+
+         let count = appInstanceListGroupByCloudlet[key].length
+         let cloudletList = appInstanceListGroupByCloudlet[key];
+
+         console.log('count===>', count);
+
+         newCloudletList.push({
+             count: count,
+             instanceOne: allCloudletList[index],
+             cloudletList:cloudletList,
+         })
+     })
+
+     console.log('newCloudletList===>', newCloudletList);*/
+}
+
+
 function isEmptyObject(obj) {
     //Loop through and check if a property
     //exists
@@ -759,7 +792,8 @@ function isEmptyObject(obj) {
  * @param appInstanceListSortByCloudlet
  * @returns {*}
  */
-export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudlet, _this) => {
+export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet, _this: PageAdminMonitoring) => {
+
 
     if (isEmptyObject(appInstanceListSortByCloudlet)) {
         //do something
@@ -771,65 +805,87 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
 
     } else {
 
-        let cloudletCountList = []
+        let cloudletList = []
         for (let i in appInstanceListSortByCloudlet) {
-            cloudletCountList.push({
+            cloudletList.push({
                 name: appInstanceListSortByCloudlet[i][0].Cloudlet,
                 length: appInstanceListSortByCloudlet[i].length,
             })
         }
 
-        function toChunkArray(myArray, chunkSize) {
-            let results = [];
-            while (myArray.length) {
-                results.push(myArray.splice(0, chunkSize));
-            }
-            return results;
-        }
+        let chunkedCloudletListOfColSize = toChunkArray(cloudletList, 6);
 
-        let chunkedArraysOfColSize = toChunkArray(cloudletCountList, 3);
         return (
-            <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
-                {chunkedArraysOfColSize.map((colSizeArray, index) =>
-                    <div className='page_monitoring_grid' key={index.toString()}>
-                        {colSizeArray.map((item, index) =>
+            <Tabs selectedIndex={_this.state.currentSixGridIndex} className='page_monitoring_tab'>
 
-                            <div className='page_monitoring_grid_box_layout'
+                {/*todo:###############################..*/}
+                {/*todo:그리드를 페이지(tab)당 6개씩 그리는 부분..*/}
+                {/*todo:###############################..*/}
+                {chunkedCloudletListOfColSize.map((listItem, index) => {
+                    return (
+                        <TabPanel className='page_monitoring_tab_with_pager'>
+                            {renderGrid(listItem)}
+                        </TabPanel>
+                    )
+                })}
+
+
+                {/*todo:#####################..*/}
+                {/*todo:하단의 dot paging ..*/}
+                {/*todo:#####################..*/}
+                <div className='page_monitoring_pager_row'>
+                    {chunkedCloudletListOfColSize.map((item, index) => {
+                        return (
+                            <div
+                                style={{display: 'flex', margin: '0 5px'}}
+                                onClick={() => {
+                                    _this.setState({
+                                        currentSixGridIndex: index,
+                                    })
+                                }}
                             >
-                                <div className='page_monitoring_grid_box'>
-                                    <div className='page_monitoring_grid_box_name'>
-                                        {item.name}
-                                        {/*{item.name.toString().substring(0, 19) + "..."}*/}
-                                    </div>
-                                    <div className='page_monitoring_grid_box_num'>
-                                        {item.length}
-                                    </div>
-
-                                </div>
+                                {/*todo:#####################..*/}
+                                {/*todo:선택된 index는 그린Color */}
+                                {/*todo:#####################..*/}
+                                <div className='page_monitoring_pager_btn' style={{backgroundColor: _this.state.currentSixGridIndex === index ? 'rgba(136,221,0,.9)' : 'rgba(255,255,255,.5)'}}/>
                             </div>
-                        )}
-                    </div>
-                )}
-
-                {/*@todo:------------------------------------------------------------------*/}
-                {/*@todo:Logic to fill 2nd row with blank if only first row exists           */}
-                {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직                     */}
-                {/*@todo:------------------------------------------------------------------*/}
-                {chunkedArraysOfColSize.length === 1 &&
-                <div className='page_monitoring_grid'>
-                    {[1, 2, 3].map((item, index) =>
-                        <div className='page_monitoring_grid_box_layout'>
-
-                        </div>
-                    )}
+                        )
+                    })}
                 </div>
+            </Tabs>
+        )
 
-                }
-
-            </div>
-        );
     }
 
+
+    function toChunkArray(myArray, chunkSize) {
+        let results = [];
+        while (myArray.length) {
+            results.push(myArray.splice(0, chunkSize));
+        }
+        return results;
+    }
+
+
+    function renderGrid(pListItem) {
+        return (
+            <div className='page_monitoring_grid_wrap'>
+                {pListItem.map((item, index) =>
+                    <div className='page_monitoring_grid_box_layout'>
+                        <div className='page_monitoring_grid_box'>
+                            <div className='page_monitoring_grid_box_name'>
+                                {item.name}
+                            </div>
+                            <div className='page_monitoring_grid_box_num'>
+                                {item.length}
+                            </div>
+
+                        </div>
+                    </div>
+                )}
+            </div>
+        )
+    }
 
 }
 
@@ -878,8 +934,8 @@ export const getCloudletList = async () => {
         let token = store ? store.userToken : 'null';
         //data: { region: region, org: _self.props.selectOrg || localStorage.selectOrg }
 
-        let requestData = {token: token, method: SHOW_ORG_CLOUDLET, data: {region: REGION.EU, org: localStorage.selectOrg}};
-        let requestData2 = {token: token, method: SHOW_ORG_CLOUDLET, data: {region: REGION.US, org: localStorage.selectOrg}};
+        let requestData = {showSpinner: false, token: token, method: SHOW_ORG_CLOUDLET, data: {region: REGION.EU, org: localStorage.selectOrg}};
+        let requestData2 = {showSpinner: false, token: token, method: SHOW_ORG_CLOUDLET, data: {region: REGION.US, org: localStorage.selectOrg}};
         let promiseList = []
 
         promiseList.push(sendSyncRequest(this, requestData))
@@ -912,6 +968,44 @@ export const getCloudletList = async () => {
         console.log('mergedOrgCloudletList===>', mergedOrgCloudletList);
 
         return mergedOrgCloudletList;
+    } catch (e) {
+
+    }
+}
+
+export const getCloudletListAll = async () => {
+    try {
+
+        let store = JSON.parse(localStorage.PROJECT_INIT);
+        let token = store ? store.userToken : 'null';
+        //data: { region: region, org: _self.props.selectOrg || localStorage.selectOrg }
+
+        let requestData = {showSpinner: false, token: token, method: SHOW_CLOUDLET, data: {region: REGION.EU}};
+        let requestData2 = {showSpinner: false, token: token, method: SHOW_CLOUDLET, data: {region: REGION.US}};
+        let promiseList = []
+
+        promiseList.push(sendSyncRequest(this, requestData))
+        promiseList.push(sendSyncRequest(this, requestData2))
+        let orgCloudletList = await Promise.all(promiseList);
+        console.log('results===EU>', orgCloudletList[0].response.data);
+        console.log('results===US>', orgCloudletList[1].response.data);
+
+        let cloudletEU = orgCloudletList[0].response.data;
+        let cloudletUS = orgCloudletList[1].response.data;
+
+        let mergedCloudletList = [];
+        orgCloudletList.map(item => {
+            //@todo : null check
+            if (item.response.data["0"].Region !== '') {
+                let cloudletList = item.response.data;
+                cloudletList.map(item => {
+                    mergedCloudletList.push(item);
+                })
+            }
+        })
+
+
+        return mergedCloudletList;
     } catch (e) {
 
     }
