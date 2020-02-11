@@ -27,8 +27,7 @@ class AutoProvPolicyReg extends React.Component {
         super(props);
         this.state = {
             step: 0,
-            forms: [],
-            info: { region: 'US' }
+            forms: []
         }
         this.formData = {};
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
@@ -62,14 +61,6 @@ class AutoProvPolicyReg extends React.Component {
                 let clouldlet = data.CloudletName;
                 return { value: JSON.stringify(data), label: clouldlet}
             })
-    }
-
-    onChange = (data) => {
-        this.setState(prevState => {
-            let info = Object.assign({}, prevState.info);
-            info.region = data;
-            return { info };
-        })
     }
 
     removeSelectedCloudlets=()=>

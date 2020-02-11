@@ -14,8 +14,7 @@ class AutoProvPolicyReg extends React.Component {
         super(props);
         this.state = {
             step: 0,
-            forms: [],
-            info: { region: 'US' }
+            forms: []
         }
         this.formData = {};
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
@@ -80,74 +79,19 @@ class AutoProvPolicyReg extends React.Component {
             })
     }
 
-    getCloudletData = (dataList) => {
-        if (dataList && dataList.length > 0)
-            return dataList.map(data => {
-                let clouldlet = data.CloudletName;
-                return { value: JSON.stringify(data), label: clouldlet }
-            })
-    }
-
-    onChange = (data) => {
-        this.setState(prevState => {
-            let info = Object.assign({}, prevState.info);
-            info.region = data;
-            return { info };
-        })
-    }
-
-    removeSelectedCloudlets = () => {
-        if (this.props.data) {
-            let selectedCloudlets = this.props.data.Cloudlets
-            if (selectedCloudlets && selectedCloudlets.length > 0) {
-                for (let i = 0; i < this.cloudletList.length > 0; i++) {
-                    let cloudlet = this.cloudletList[i];
-                    for (let j = 0; j < selectedCloudlets.length > 0; j++) {
-                        let selectedCloudlet = selectedCloudlets[j]
-                        if (selectedCloudlet.key.name === cloudlet.CloudletName) {
-                            this.cloudletList.splice(i, 1)
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    removeUnSelectedCloudlets = () => {
-        let newCloudletList = []
-        if (this.props.data) {
-            let selectedCloudlets = this.props.data.Cloudlets
-            if (selectedCloudlets && selectedCloudlets.length > 0) {
-                for (let i = 0; i < this.cloudletList.length > 0; i++) {
-                    let cloudlet = this.cloudletList[i];
-                    for (let j = 0; j < selectedCloudlets.length > 0; j++) {
-                        let selectedCloudlet = selectedCloudlets[j]
-                        if (selectedCloudlet.key.name === cloudlet.CloudletName) {
-                            newCloudletList.push(cloudlet)
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        this.cloudletList = newCloudletList;
-    }
-
     privacyPolicyResponse = (mcRequest) => {
         if (mcRequest.response) {
             if (mcRequest.response.status === 200) {
                 let msg = 'Created'
                 switch (this.props.action) {
-                    case 'Delete':
-                        msg = 'Deleted'
-                        break;
                     case 'Update':
                         msg = 'Updated'
+                        break;
                     default:
                         msg = 'Created'
                 }
-                this.props.handleAlertInfo('success', `Cloudlets ${msg} Successfully`)
+                let policyName =  mcRequest.request.data.privacypolicy.key.name;
+                this.props.handleAlertInfo('success', `Privacy Policy ${policyName} ${msg} Successfully`)
                 setTimeout(() => { this.gotoUrl('site4', 'pg=8') }, 2000)
             }
         }
@@ -162,9 +106,6 @@ class AutoProvPolicyReg extends React.Component {
 
         if (this.props.action === 'Update') {
             method = serviceMC.getEP().UPDATE_PRIVACY_POLICY;
-        }
-        else if (this.props.action === 'Delete') {
-            method = serviceMC.getEP().DELETE_PRIVACY_POLICY;
         }
         
         let outbound_security_rules = [];
@@ -232,7 +173,7 @@ class AutoProvPolicyReg extends React.Component {
         })
     }
 
-    diableFields = (form) => {
+    disableFields = (form) => {
         let rules = form.rules ? form.rules : {}
         let field = form.field
         if (field === 'OrganizationName' || field === 'Region' || field === 'PrivacyPolicyName') {
@@ -258,7 +199,7 @@ class AutoProvPolicyReg extends React.Component {
                 }
                 if (data) {
                     form.value = data[form.field]
-                    this.diableFields(form)
+                    this.disableFields(form)
                 }
             }
         }
@@ -269,7 +210,7 @@ class AutoProvPolicyReg extends React.Component {
         if (data) {
             this.OrganizationList = [{ Organization: data.OrganizationName }]
             this.formData.Region = data.Region;
-            this.formData.Organization = data.OrganizationName;
+            this.formData.OrganizationName = data.OrganizationName;
             this.formData.PrivacyPolicyName = data.PrivacyPolicyName;
 
             this.loadData(this.step1, data)
