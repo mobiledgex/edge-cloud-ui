@@ -7,7 +7,7 @@ import PageMonitoring from "./PageDevMonitoring";
 import PageMonitoringForDeveloper from "./PageDevMonitoring";
 import {getClusterLevelMatric, makeFormForClusterLevelMatric, numberWithCommas, renderUsageByType, StylesForMonitoring} from "../PageMonitoringCommonService";
 import {SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
-import {sendSyncRequest} from "../../../../services/serviceMC";
+import {sendSyncRequest, sendSyncRequestWithoutShowSpinner} from "../../../../services/serviceMC";
 import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
 
 export const getClusterLevelUsageList = async (clusterList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
@@ -156,10 +156,9 @@ export const getClusterList = async () => {
     let requestData = {token: token, method: SHOW_CLUSTER_INST, data: {region: REGION.EU}};
     let requestData2 = {token: token, method: SHOW_CLUSTER_INST, data: {region: REGION.US}};
     let promiseList = []
-    promiseList.push(sendSyncRequest(this, requestData))
-    promiseList.push(sendSyncRequest(this, requestData2))
+    promiseList.push(sendSyncRequestWithoutShowSpinner(this, requestData))
+    promiseList.push(sendSyncRequestWithoutShowSpinner(this, requestData2))
     let showClusterList = await Promise.all(promiseList);
-
 
     console.log('showClusterList====>', showClusterList);
 

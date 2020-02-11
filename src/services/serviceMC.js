@@ -159,6 +159,20 @@ export const sendSyncRequest = async (self, request) => {
     }
 }
 
+export const sendSyncRequestWithoutShowSpinner = async (self, request) => {
+    try {
+        let response = await axios.post(EP.getPath(request), request.data,
+            {
+                headers: getHeader(request)
+            });
+        return EP.formatData(request, response);
+    } catch (error) {
+        if (error.response) {
+            responseError(self, request, error.response)
+        }
+    }
+}
+
 export function sendRequest(self, request, callback) {
     showSpinner(self, true)
     axios.post(EP.getPath(request), request.data,

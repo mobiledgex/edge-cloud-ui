@@ -9,7 +9,7 @@ import {TypeAppInstance} from "../../../../shared/Types";
 import PageAdminMonitoring from "./PageAdminMonitoring";
 import {numberWithCommas, renderBarChartCore, renderLineChartCore, renderUsageByType2, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
 import {SHOW_CLOUDLET, SHOW_ORG_CLOUDLET} from "../../../../services/endPointTypes";
-import {sendSyncRequest} from "../../../../services/serviceMC";
+import {sendSyncRequest, sendSyncRequestWithoutShowSpinner} from "../../../../services/serviceMC";
 import {Tab, TabList, TabPanel, Tabs} from "react-tabs";
 import {Icon} from "semantic-ui-react";
 
@@ -939,8 +939,8 @@ export const getCloudletList = async () => {
         let requestData2 = {token: token, method: SHOW_ORG_CLOUDLET, data: {region: REGION.US, org: localStorage.selectOrg}};
         let promiseList = []
 
-        promiseList.push(sendSyncRequest(this, requestData))
-        promiseList.push(sendSyncRequest(this, requestData2))
+        promiseList.push(sendSyncRequestWithoutShowSpinner(this, requestData))
+        promiseList.push(sendSyncRequestWithoutShowSpinner(this, requestData2))
         let orgCloudletList = await Promise.all(promiseList);
         console.log('results===EU>', orgCloudletList[0].response.data);
         console.log('results===US>', orgCloudletList[1].response.data);
