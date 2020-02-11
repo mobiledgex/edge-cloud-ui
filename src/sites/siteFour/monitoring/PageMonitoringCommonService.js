@@ -71,7 +71,29 @@ export const renderPlaceHolderLottie = (type: string = '') => {
 
 export const renderPlaceHolderLottiePinJump = (type: string = '') => {
     return (
-        <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
+        <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%', zIndex: 999999999999}}>
+            <Lottie
+                options={{
+                    loop: true,
+                    autoplay: true,
+                    animationData: require('../../../lotties/pinjump'),
+                    rendererSettings: {
+                        preserveAspectRatio: 'xMidYMid slice'
+                    }
+                }}
+                speed={2.1}
+                height={150}
+                width={150}
+                isStopped={false}
+                isPaused={false}
+            />
+        </div>
+    )
+}
+
+export const renderPlaceHolderLottiePinJump2 = (type: string = '') => {
+    return (
+        <div className='page_monitoring_blank_box' style={{zIndex: 999999999999, position: 'absolute', top: '1%', left: '1%'}}>
             <Lottie
                 options={{
                     loop: true,
@@ -784,12 +806,12 @@ export const StylesForMonitoring = {
         color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center', backgroundColor: 'transparent'
         , justifyContent: 'center', alignItems: 'center', width: '100%', height: 35
     },
-    center : {
-        display:'flex',
-        alignSelf:'center',
-        justifyContent:'center',
-        alignItems:'center',
-        width:'100%',
+    center: {
+        display: 'flex',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
         //backgroundColor:'red'
     }
 

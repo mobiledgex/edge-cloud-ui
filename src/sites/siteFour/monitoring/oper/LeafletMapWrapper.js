@@ -6,7 +6,7 @@ import "../PageMonitoring.css";
 import {hot} from "react-hot-loader/root";
 import 'react-leaflet-fullscreen-control'
 import {Button, Icon} from "semantic-ui-react";
-import {renderPlaceHolderLottiePinJump} from "../PageMonitoringCommonService";
+import {renderPlaceHolderLottiePinJump, renderPlaceHolderLottiePinJump2} from "../PageMonitoringCommonService";
 
 
 const DEFAULT_VIEWPORT = {
@@ -126,29 +126,28 @@ export default hot(
 
             return (
                 <div style={{height: '100%', width: '100%'}}>
-                    {!this.props.loading ?
-                        <Map center={[45.4, 51.7]}
-                             duration={0.9}
-                             zoom={1.0}
-                             style={{width: '100%', height: '100%'}}
-                             easeLinearity={1}
-                             useFlyTo={true}
-                             dragging={true}
-                             boundsOptions={{padding: [50, 50]}}
-                        >
-                            <TileLayer
-                                url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
-                                //url={'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'}
-                                minZoom={2}
-                                //maxZoom={15}
-                            />
-                            {this.props.cloudletList.map(item => {
+                    <Map center={[45.4, 51.7]}
+                         duration={0.9}
+                         zoom={1.0}
+                         style={{width: '100%', height: '100%'}}
+                         easeLinearity={1}
+                         useFlyTo={true}
+                         dragging={true}
+                         boundsOptions={{padding: [50, 50]}}
+                    >
+                        <TileLayer
+                            url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
+                            //url={'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'}
+                            minZoom={2}
+                            //maxZoom={15}
+                        />
+                        {this.props.cloudletList.map(item => {
 
-                                return this.renderMarkerOne(item)
-                            })}
-                        </Map> :
-                        renderPlaceHolderLottiePinJump()
-                    }
+                            return this.renderMarkerOne(item)
+                        })}
+                        {this.props.loading && renderPlaceHolderLottiePinJump2()}
+                    </Map>
+
                 </div>
             );
         }

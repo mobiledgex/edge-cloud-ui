@@ -660,6 +660,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 let selectedRegion = cloudletSelectedOne.toString().split("|")[1];
                 this.setState({
                     cloudletSelectLoading: true,
+                    loading: true,
                     currentCloudLet: cloudletSelectedOne,
                 })
 
@@ -675,7 +676,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
                 let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, selectedCloudlet.toString().trim(), CLASSIFICATION.cloudlet)
-                this.setState({
+                await this.setState({
                     // filteredCloudletList: filteredCloudletList,
                     cloudletSelectLoading: false,
                     filteredCloudletUsageList: filteredCloudletUsageList,
@@ -686,10 +687,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 if (isDropdownAction) {
                     let filteredCloudletList = filterListBykeyForCloudlet('CloudletName', selectedCloudlet, this.state.cloudletList)
-                    this.setState({
+                    await this.setState({
                         filteredCloudletList: filteredCloudletList,
                     })
                 }
+                await this.setState({
+                    loading: false,
+                })
             } catch (e) {
 
             }
@@ -932,7 +936,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }
                                 {this.state.cloudletSelectLoading &&
                                 <div style={StylesForMonitoring.center}>
-                                    <CircularProgress style={{color:'#1cecff', marginTop:50}}/>
+                                    <CircularProgress style={{color: '#1cecff', marginTop: 50}}/>
                                 </div>
                                 }
                                 {!this.state.cloudletSelectLoading && this.state.cloudletEventLogs.map(item => {
