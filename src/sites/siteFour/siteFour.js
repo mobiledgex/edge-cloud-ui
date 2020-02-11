@@ -1013,16 +1013,14 @@ class SiteFour extends React.Component {
                     {(this.state.page === 'pg=Monitoring') ? <PageMonitoringMain /> :
                         <Grid.Row className='view_contents'>
                             <Grid.Column className='contents_body'>
-                                <div>
-                                    <Grid>
-                                        <Grid.Column floated='left' width={10}>
-                                            <label style={{fontSize:25, marginRight:20}}>{this.state.headerTitle}</label>
+                                <Grid.Row className='content_title'>
+                                   <div className='content_title_wrap'>
+                                            <div className='content_title_label'>{this.state.headerTitle}</div>
                                             {
                                                 (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'User Roles' && this.state.headerTitle !== 'Accounts' && this.state.headerTitle !== 'Audit Log' && viewMode !== 'detailView' && this.state.page.indexOf('create') === -1 && this.state.page.indexOf('edit') == -1 && !this.state.currentPage) ?
                                                     (this.state.intoCity) ? 
                                                         <Button onClick={this.onClickBackBtn}>Back</Button> :
                                                         <Dropdown className='selection'
-                                                            style={{position: 'relative', marginRight:20, height:20 }}
                                                             options={this.state.regions}
                                                             defaultValue={this.state.regions[0].value}
                                                             onChange={this.onChangeRegion}
@@ -1045,7 +1043,7 @@ class SiteFour extends React.Component {
                                             }
                                             {
                                                 (viewMode === 'detailView') ?
-                                                    <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.props.handleDetail({
+                                                    <Button disabled={this.props.viewBtn.onlyView} onClick={() => this.props.handleDetail({
                                                         data: null,
                                                         viewMode: 'listView'
                                                     })}>Close Details</Button>
@@ -1053,20 +1051,20 @@ class SiteFour extends React.Component {
                                             }
                                             {
                                                 (this.state.headerTitle == 'User Roles') ?
-                                                    <div className='' style={{display:'inline'}}>
+                                                    <div>
                                                         <Input icon='search' placeholder={'Search ' + this.state.searchChangeValue} style={{ marginRight: '20px' }} onChange={this.searchClick} />
                                                         <Dropdown defaultValue={this.searchOptions[0].value} search selection options={this.searchOptions} onChange={this.searchChange} />
                                                     </div>
                                                     : null
                                             }
+
                                         </Grid.Column>
                                     </Grid>
                                 </div>
 
                                 <Grid.Row className='site_content_body'>
                                     <Grid.Column>
-                                        <div className="table-no-resized"
-                                            style={{ height: '100%', display: 'flex', overflow: 'hidden' }}>
+                                        <div className="table-no-resized">
                                             {
                                                 this.state.currentPage ? this.state.currentPage : 
                                                 (this.state.page === 'pg=0') ? <SiteFourPageOrganization></SiteFourPageOrganization> :
