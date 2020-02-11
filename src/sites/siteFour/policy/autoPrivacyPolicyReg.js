@@ -19,26 +19,51 @@ class AutoProvPolicyReg extends React.Component {
         }
         this.formData = {};
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
-        this.regions = props.regionInfo.region.length>0 ? props.regionInfo.region : savedRegion
+        this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
         this.OrganizationList = []
         this.cloudletList = []
     }
 
+    onValueChange = (currentForm, data) => {
+
+        if (currentForm.field === 'FullIsolation') {
+            let forms = this.state.forms;
+            for (let i = 0; i < forms.length; i++) {
+                let form = forms[i];
+                if (form.label === 'Outbound Security Rules' || form.field === 'OutboundSecurityRules') {
+                    form.visible = !data.FullIsolation;
+                }
+            }
+            this.setState({
+                forms: forms
+            })
+        }
+
+        this.formData = data;
+    }
+
+    addRulesForm = () => {
+        let outboundRules = JSON.parse(JSON.stringify(this.outboundRules));
+        this.setState(prevState => ({ forms: [...prevState.forms, { uuid: serviceMC.generateUniqueId(), field: 'OutboundSecurityRules', type: 'MultiForm', onClick: this.removeRulesForm, forms: outboundRules, visible: true }] }))
+    }
+
     step1 = [
         { label: 'Create Privacy Policy', type: 'Header' },
-        { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true},
+        { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
         { field: 'OrganizationName', label: 'Organization', type: 'Select', placeholder: 'Select Organization', rules: { required: true }, visible: true },
         { field: 'PrivacyPolicyName', label: 'Privacy Policy Name', type: 'Input', placeholder: 'Enter Privacy Policy Name', rules: { required: true }, visible: true },
-        { field: 'FullIsolation', label: 'Full Isolation', type: 'Checkbox' },
-        { label: 'Outbound Security Rules', type: 'Header', forms: { type: 'Button', icon: 'Add', onClick: this.addRulesForm, visible: true } },
+        { field: 'FullIsolation', label: 'Full Isolation', type: 'Checkbox', visible: true },
+        { label: 'Outbound Security Rules', type: 'Header', forms: { type: 'Button', icon: 'Add', onClick: this.addRulesForm }, visible: true },
     ]
 
     outboundRules = [
-        { field: 'Protocol', label: 'Protocol', type: 'Input' },
-        { field: 'PortRangeMin', label: 'Port Range Min', type: 'Input',rules:{ type: 'number'} },
-        { field: 'PortRangeMax', label: 'Port Range Max', type: 'Input',rules:{ type: 'number'} },
-        { field: 'RemoteCIDR', label: 'Remote CIDR', type: 'Input' },
+        { field: 'Protocol', label: 'Protocol', type: 'Input', visible: true },
+        { field: 'PortRangeMin', label: 'Port Range Min', type: 'Input', rules: { type: 'number' }, visible: true },
+        { field: 'PortRangeMax', label: 'Port Range Max', type: 'Input', rules: { type: 'number' }, visible: true },
+        { field: 'RemoteCIDR', label: 'Remote CIDR', type: 'Input', visible: true },
     ]
+
+
 
     getRegionData = () => {
         if (this.regions && this.regions.length > 0)
@@ -55,11 +80,11 @@ class AutoProvPolicyReg extends React.Component {
             })
     }
 
-    getCloudletData = (dataList) =>{
+    getCloudletData = (dataList) => {
         if (dataList && dataList.length > 0)
             return dataList.map(data => {
                 let clouldlet = data.CloudletName;
-                return { value: JSON.stringify(data), label: clouldlet}
+                return { value: JSON.stringify(data), label: clouldlet }
             })
     }
 
@@ -71,20 +96,15 @@ class AutoProvPolicyReg extends React.Component {
         })
     }
 
-    removeSelectedCloudlets=()=>
-    {
-        if(this.props.data)
-        {
-            let  selectedCloudlets = this.props.data.Cloudlets
-            if(selectedCloudlets && selectedCloudlets.length>0)
-            {
-                for(let i=0;i<this.cloudletList.length>0;i++)
-                {
+    removeSelectedCloudlets = () => {
+        if (this.props.data) {
+            let selectedCloudlets = this.props.data.Cloudlets
+            if (selectedCloudlets && selectedCloudlets.length > 0) {
+                for (let i = 0; i < this.cloudletList.length > 0; i++) {
                     let cloudlet = this.cloudletList[i];
                     for (let j = 0; j < selectedCloudlets.length > 0; j++) {
                         let selectedCloudlet = selectedCloudlets[j]
-                        if(selectedCloudlet.key.name === cloudlet.CloudletName)
-                        {
+                        if (selectedCloudlet.key.name === cloudlet.CloudletName) {
                             this.cloudletList.splice(i, 1)
                             break;
                         }
@@ -94,21 +114,16 @@ class AutoProvPolicyReg extends React.Component {
         }
     }
 
-    removeUnSelectedCloudlets=()=>
-    {
+    removeUnSelectedCloudlets = () => {
         let newCloudletList = []
-        if(this.props.data)
-        {
-            let  selectedCloudlets = this.props.data.Cloudlets
-            if(selectedCloudlets && selectedCloudlets.length>0)
-            {
-                for(let i=0;i<this.cloudletList.length>0;i++)
-                {
+        if (this.props.data) {
+            let selectedCloudlets = this.props.data.Cloudlets
+            if (selectedCloudlets && selectedCloudlets.length > 0) {
+                for (let i = 0; i < this.cloudletList.length > 0; i++) {
                     let cloudlet = this.cloudletList[i];
                     for (let j = 0; j < selectedCloudlets.length > 0; j++) {
                         let selectedCloudlet = selectedCloudlets[j]
-                        if(selectedCloudlet.key.name === cloudlet.CloudletName)
-                        {
+                        if (selectedCloudlet.key.name === cloudlet.CloudletName) {
                             newCloudletList.push(cloudlet)
                             break;
                         }
@@ -119,15 +134,11 @@ class AutoProvPolicyReg extends React.Component {
         this.cloudletList = newCloudletList;
     }
 
-    privacyPolicyResponse = (mcRequest)=>
-    {
-        if(mcRequest.response)
-        {
-            if(mcRequest.response.status === 200)
-            {
+    privacyPolicyResponse = (mcRequest) => {
+        if (mcRequest.response) {
+            if (mcRequest.response.status === 200) {
                 let msg = 'Created'
-                switch(this.props.action)
-                {
+                switch (this.props.action) {
                     case 'Delete':
                         msg = 'Deleted'
                         break;
@@ -149,22 +160,19 @@ class AutoProvPolicyReg extends React.Component {
 
         let method = serviceMC.getEP().CREATE_PRIVACY_POLICY;
 
-        if(this.props.action === 'Update')
-        {
+        if (this.props.action === 'Update') {
             method = serviceMC.getEP().UPDATE_PRIVACY_POLICY;
         }
-        else if(this.props.action === 'Delete')
-        {
+        else if (this.props.action === 'Delete') {
             method = serviceMC.getEP().DELETE_PRIVACY_POLICY;
         }
-
+        
         let outbound_security_rules = [];
-        for(let i=0;i<this.state.forms.length;i++)
-        {
-            let form = this.state.forms[i];
-            if(form.uuid)
-            {
-                let uuid = form.uuid;
+        if (!data.FullIsolation) {
+            for (let i = 0; i < this.state.forms.length; i++) {
+                let form = this.state.forms[i];
+                if (form.uuid) {
+                    let uuid = form.uuid;
                     let OutboundSecurityRule = data[uuid]
                     outbound_security_rules.push({
                         protocol: OutboundSecurityRule.Protocol,
@@ -172,18 +180,19 @@ class AutoProvPolicyReg extends React.Component {
                         port_range_max: parseInt(OutboundSecurityRule.PortRangeMax),
                         remote_cidr: OutboundSecurityRule.RemoteCIDR
                     })
-                
+
+                }
             }
         }
-    
+
         let requestData = {
-            region : data.Region,
-            privacypolicy : {
-                key:{
-                    name:data.PrivacyPolicyName,
-                    developer:data.OrganizationName
+            region: data.Region,
+            privacypolicy: {
+                key: {
+                    name: data.PrivacyPolicyName,
+                    developer: data.OrganizationName
                 },
-                outbound_security_rules:outbound_security_rules
+                outbound_security_rules: outbound_security_rules
             }
         }
         serviceMC.sendRequest(this, { token: token, method: method, data: requestData }, this.privacyPolicyResponse)
@@ -194,7 +203,7 @@ class AutoProvPolicyReg extends React.Component {
             <div className="round_panel">
                 <div className="grid_table" style={{ overflow: 'auto' }}>
                     <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
-                        <MexForms formData = {this.formData} forms={this.state.forms} />
+                        <MexForms formData={this.formData} forms={this.state.forms} onValueChange={this.onValueChange} />
                     </Item>
                 </div>
             </div>
@@ -211,14 +220,8 @@ class AutoProvPolicyReg extends React.Component {
         this.setState({ page: subPath })
     }
 
-    onAddCancel = ()=>
-    {
+    onAddCancel = () => {
         this.gotoUrl('site4', 'pg=8')
-    }
-
-    addRulesForm=()=>
-    {
-        this.setState(prevState=>({forms:[...prevState.forms, {uuid:serviceMC.generateUniqueId(), field:'OutboundSecurityRules', type:'MultiForm', onClick:this.removeRulesForm, forms:this.outboundRules}]}))
     }
 
     removeRulesForm = (index) => {
@@ -229,59 +232,59 @@ class AutoProvPolicyReg extends React.Component {
         })
     }
 
-    loadData(forms, data)
-    {
-        for(let i=0;i<forms.length;i++)
-            {
-                let form = forms[i];
-                if(form.field)
-                {
-                    if(form.type === 'Select')
-                    {
-                        switch (form.field) {
-                            case 'OrganizationName':
-                                form.options = this.getOrganizationData(this.OrganizationList)
-                                break;
-                            case 'Region':
-                                form.options = this.getRegionData();
-                                break;
-                            default : 
-                                form.options = undefined;
-                        }
-                    }
-                    if(data)
-                    {
-                        form.value = data[form.field]
-                        let rules = form.rules ? form.rules : {}
-                        rules.disabled = true
-                    }
-                }
-            }
-        
+    diableFields = (form) => {
+        let rules = form.rules ? form.rules : {}
+        let field = form.field
+        if (field === 'OrganizationName' || field === 'Region' || field === 'PrivacyPolicyName') {
+            rules.disabled = true;
+        }
     }
 
-    getFormData = async(data)=>
-    {
-        if(data)
-        {
-            this.OrganizationList = [{Organization:data.OrganizationName}]
+    loadData(forms, data) {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i];
+            if (form.field) {
+                if (form.type === 'Select') {
+                    switch (form.field) {
+                        case 'OrganizationName':
+                            form.options = this.getOrganizationData(this.OrganizationList)
+                            break;
+                        case 'Region':
+                            form.options = this.getRegionData();
+                            break;
+                        default:
+                            form.options = undefined;
+                    }
+                }
+                if (data) {
+                    form.value = data[form.field]
+                    this.diableFields(form)
+                }
+            }
+        }
+
+    }
+
+    getFormData = async (data) => {
+        if (data) {
+            this.OrganizationList = [{ Organization: data.OrganizationName }]
             this.formData.Region = data.Region;
             this.formData.Organization = data.OrganizationName;
             this.formData.PrivacyPolicyName = data.PrivacyPolicyName;
-            
+
             this.loadData(this.step1, data)
-            
+
             if (data.OutboundSecurityRules && data.OutboundSecurityRules.length > 0) {
                 for (let i = 0; i < data.OutboundSecurityRules.length; i++) {
                     let OutboundSecurityRule = data.OutboundSecurityRules[i]
-                    for(let j=0;j<this.outboundRules.length>0;j++)
-                    {
-                        let outboundRule = this.outboundRules[j];
+                    let outboundRules = JSON.parse(JSON.stringify(this.outboundRules));
+                    for (let j = 0; j < outboundRules.length > 0; j++) {
+                        let outboundRule = outboundRules[j];
                         outboundRule.value = OutboundSecurityRule[outboundRule.field]
                     }
                     let uuid = serviceMC.generateUniqueId();
-                    this.formData[uuid] = {Protocol:OutboundSecurityRule.Protocol,PortRangeMin:OutboundSecurityRule.PortRangeMin,PortRangeMax:OutboundSecurityRule.PortRangeMax,RemoteCIDR:OutboundSecurityRule.RemoteCIDR}
-                    this.step1.push({ uuid: uuid, field: 'OutboundSecurityRules', type: 'MultiForm', onClick: this.removeRulesForm, forms: this.outboundRules })
+                    this.formData[uuid] = { Protocol: OutboundSecurityRule.Protocol, PortRangeMin: OutboundSecurityRule.PortRangeMin, PortRangeMax: OutboundSecurityRule.PortRangeMax, RemoteCIDR: OutboundSecurityRule.RemoteCIDR }
+                    this.step1.push({ uuid: uuid, field: 'OutboundSecurityRules', type: 'MultiForm', onClick: this.removeRulesForm, forms: outboundRules, visible:true })
                 }
             }
         }
@@ -290,12 +293,12 @@ class AutoProvPolicyReg extends React.Component {
             this.loadData(this.step1)
         }
 
-        
+
         this.step1.push(
             { label: `${this.props.action ? this.props.action : 'Create'} Policy`, type: 'Button', onClick: this.onCreate },
             { label: 'Cancel', type: 'Button', onClick: this.onAddCancel })
-        
-            this.setState({
+
+        this.setState({
             forms: this.step1
         })
 
@@ -305,10 +308,8 @@ class AutoProvPolicyReg extends React.Component {
         this.getFormData(this.props.data)
     }
 
-    componentWillUnmount()
-    {
-        if(this.props.childPage)
-        {
+    componentWillUnmount() {
+        if (this.props.childPage) {
             this.props.childPage(null)
         }
     }

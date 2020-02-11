@@ -2,8 +2,8 @@ import React from 'react'
 import { Form } from 'semantic-ui-react';
 const MexInput = (props) => {
 
-    const [value, setValue] = React.useState(props.form.value ? props.form.value : null)
-
+    const [value, setValue] = React.useState(props.form.value ? props.form.value : '')
+    
     const onValueChange = (form, value) =>
     {
         setValue(value)
