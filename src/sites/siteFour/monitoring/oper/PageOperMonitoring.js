@@ -678,7 +678,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     // filteredCloudletList: filteredCloudletList,
                     cloudletSelectLoading: false,
                     filteredCloudletUsageList: filteredCloudletUsageList,
-                    cloudletEventLogs: cloudletEventLogs === undefined ? [] : cloudletEventLogs,
+                    cloudletEventLogs: cloudletEventLogs,
 
                 })
 
@@ -689,37 +689,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     })
                 }
             }catch (e) {
-                
+
             }
-           
+
         }
-
-        /*
-                handleSelectCloudlet = async (selectData) => {
-                    let selectedCloudlet = selectData.toString().split("|")[0].trim;
-                    let selectedRegion = selectData.toString().split("|")[1];
-                    await this.setState({
-                        currentCloudLet: selectedCloudlet,
-                    })
-
-                    console.log('cloudletList===>', this.state.cloudletList);
-                    let filteredCloudletList = filterListBykeyForCloudlet('CloudletName', selectedCloudlet, this.state.cloudletList)
-                    console.log('filteredCloudletList===>', filteredCloudletList);
-                    let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, selectedCloudlet, CLASSIFICATION.cloudlet)
-
-                  /!*  let cloudletEventLogs = []
-                    try {
-                        cloudletEventLogs = await getCloudletEventLog(selectedCloudlet, selectedRegion);
-                    } catch (e) {
-                        showToast('2343243243243243432234')
-                    }*!/
-                    this.setState({
-                        filteredCloudletUsageList: filteredCloudletUsageList,
-                        filteredCloudletList: filteredCloudletList,
-                        //cloudletEventLogs: cloudletEventLogs === undefined ? [] : cloudletEventLogs,
-                    })
-
-                }*/
 
 
         renderDropdownAreaOper() {
