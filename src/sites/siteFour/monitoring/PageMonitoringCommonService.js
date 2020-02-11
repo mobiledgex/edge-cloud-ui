@@ -62,7 +62,7 @@ export const renderPlaceHolderLottie = (type: string = '') => {
                 isStopped={false}
                 isPaused={false}
             />*/}
-            <CircularProgress style={{color: '#70b2bc', zIndex: 9999999, fontSize: 100}}
+            <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}
             />
         </div>
     )

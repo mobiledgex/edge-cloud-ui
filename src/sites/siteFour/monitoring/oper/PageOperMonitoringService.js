@@ -5,7 +5,7 @@ import {
     getCloudletLevelMatric,
     makeFormForCloudletLevelMatric, numberWithCommas,
     renderBarChartCore,
-    renderLineChartCore,
+    renderLineChartCore, renderPlaceHolderLottie,
     renderUsageByType2, showToast,
     sortUsageListByType,
     StylesForMonitoring
@@ -146,9 +146,6 @@ export const renderBottomGridAreaForCloudlet = (_this: PageOperMonitoring) => {
             <Table.Header className="viewListTableHeader">
                 <Table.Row>
                     <Table.HeaderCell>
-                        index
-                    </Table.HeaderCell>
-                    <Table.HeaderCell>
                         CLOUDLET
                     </Table.HeaderCell>
                     <Table.HeaderCell>
@@ -175,38 +172,20 @@ export const renderBottomGridAreaForCloudlet = (_this: PageOperMonitoring) => {
 
                 </Table.Row>
             </Table.Header>
-            <Table.Body className="tbBodyList">
-
-
+            <Table.Body className="tbBodyList" style={{zIndex:99999999999999}} >
                 {/*-----------------------*/}
                 {/*todo:ROW HEADER        */}
                 {/*-----------------------*/}
-                {!_this.state.isReady &&
+                {_this.state.loading &&
                 <Table.Row className='page_monitoring_popup_table_empty'>
                     <Table.Cell>
-                        <Lottie
-                            options={{
-                                loop: true,
-                                autoplay: true,
-                                animationData: require('../../../../lotties/loader001'),
-                                rendererSettings: {
-                                    preserveAspectRatio: 'xMidYMid slice'
-                                }
-                            }}
-                            height={240}
-                            width={240}
-                            isStopped={false}
-                            isPaused={false}
-                        />
+                        {renderPlaceHolderLottie()}
                     </Table.Cell>
                 </Table.Row>}
-                {_this.state.isReady && _this.state.filteredCloudletUsageList.map((item, index) => {
+                {!_this.state.loading && _this.state.filteredCloudletUsageList.map((item, index) => {
                     return (
-                        <Table.Row className='page_monitoring_popup_table_row'>
+                        <Table.Row className='page_monitoring_popup_table_row' style={{zIndex:99999999999999}}>
 
-                            <Table.Cell>
-                                {index}
-                            </Table.Cell>
                             <Table.Cell>
                                 {item.cloudlet}
                             </Table.Cell>

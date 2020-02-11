@@ -529,7 +529,7 @@ export const renderBubbleChartForCloudlet = (_this: PageAdminMonitoring, hardwar
 
 
         return (
-            <div style={{display: 'flex', flexDirection: 'row'}}>
+            <div style={{display: 'flex', flexDirection: 'row', zIndex:1}}>
                 <div style={{
                     //backgroundColor: 'blue',
                     backgroundColor: '#1e2124',

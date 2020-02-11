@@ -575,12 +575,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        async handleResetData() {
+        async handleResetForCloudlet() {
             showToast('reset')
             await this.setState({
                 currentRegion: 'ALL',
                 currentCloudLet: '',
-                filteredCloudletUsageList: this.state.filteredCloudletUsageList,
+                filteredCloudletUsageList: this.state.allCloudletUsageList,
                 filteredCloudletList: this.state.cloudletList,
             })
         }
@@ -612,7 +612,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </Button>
                         <Button
                             onClick={async () => {
-                                this.handleResetData()
+                                this.handleResetForCloudlet()
                                 //await this.filterByEachTypes('ALL', '', '', '')
                             }}
                         >RESET</Button>
