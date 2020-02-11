@@ -76,7 +76,7 @@ const cloudletSteps = CloudletTutor();
 let _self = null;
 
 const autoPolicy = [
-    {key: 'Prov Policy', text: 'Prov Policy', value: 'Prov Policy'},
+    {key: 'Auto Provision Policy', text: 'Auto Provision Policy', value: 'Auto Provision Policy'},
     {key: 'Privacy Policy', text: 'Privacy Policy', value: 'Privacy Policy'}
 ]
 class SiteFour extends React.Component {
@@ -121,7 +121,7 @@ class SiteFour extends React.Component {
             stepsEnabled: false,
             initialStep: 0,
             steps: [],
-            autoPolicy: localStorage.getItem('autoPolicy') ? localStorage.getItem('autoPolicy') : 'Prov Policy',
+            autoPolicy: localStorage.getItem('autoPolicy') ? localStorage.getItem('autoPolicy') : 'Auto Provision Policy',
             openLegend: false,
 
             enable: false,
@@ -274,7 +274,7 @@ class SiteFour extends React.Component {
             this.setState({ page: 'pg=createCloudletPool' })
             this.gotoUrl('/site4', 'pg=createCloudletPool')
         }else if (localStorage.selectMenu === 'Policy') {
-            let pg = this.state.autoPolicy === 'Prov Policy' ? 'createPolicy' : 'createPrivacyPolicy';
+            let pg = this.state.autoPolicy === 'Auto Provision Policy' ? 'createPolicy' : 'createPrivacyPolicy';
             this.setState({ page: `pg=${pg}` })
             this.gotoUrl('/site4', `pg=${pg}`)
         } else {
@@ -1078,7 +1078,7 @@ class SiteFour extends React.Component {
                                                                         (this.state.page === 'pg=5') ? <SiteFourPageApps></SiteFourPageApps> :
                                                                             (this.state.page === 'pg=6') ? <SiteFourPageAppInst></SiteFourPageAppInst> :
                                                                                 (this.state.page === 'pg=7') ? <SiteFourPageCloudletPool></SiteFourPageCloudletPool> :
-                                                                                    (this.state.page === 'pg=8') ? this.state.autoPolicy === 'Prov Policy' ? <AutoProvPolicy childPage={this.showChildPage}></AutoProvPolicy> : <AutoPrivacyPolicy childPage={this.showChildPage}></AutoPrivacyPolicy> :
+                                                                                    (this.state.page === 'pg=8') ? this.state.autoPolicy === 'Auto Provision Policy' ? <AutoProvPolicy childPage={this.showChildPage}></AutoProvPolicy> : <AutoPrivacyPolicy childPage={this.showChildPage}></AutoPrivacyPolicy> :
                                                                                     (this.state.page === 'pg=newOrg') ? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
                                                                                         (this.state.page === 'pg=createApp') ? <SiteFourPageAppReg editable={false}></SiteFourPageAppReg> :
                                                                                             (this.state.page === 'pg=editApp') ? <SiteFourPageAppReg editable={true}></SiteFourPageAppReg> :

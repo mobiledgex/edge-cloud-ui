@@ -129,7 +129,7 @@ class AutoProvPolicyReg extends React.Component {
         let step2 = [
             { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible:true, options: this.getRegionData(), value: region },
             { field: 'Organization', label: 'Organization', type: 'Select', placeholder: 'Select Organization', rules: { disabled: true }, visible:true, options: this.getOrganizationData(this.OrganizationList), value: organization },
-            { field: 'AutoPolicyName', label: 'Auto Policy Name', type: 'Input', placeholder: 'Enter Auto Prov Name', rules: { disabled: true }, visible:true, value: autoPolicyName  },
+            { field: 'AutoPolicyName', label: 'Auto Policy Name', type: 'Input', placeholder: 'Enter Auto Provision Policy Name', rules: { disabled: true }, visible:true, value: autoPolicyName  },
             { field: 'Cloudlets', label: 'Clouldets', type: 'DualList', rules: { required: true }, visible:true, options: this.getCloudletData(this.cloudletList) },
             { label: `${action} Cloudlets`, type: 'Button', onClick: this.onAddCloudlets },
             { label: 'Cancel', type: 'Button', onClick: this.onAddCancel }
@@ -238,7 +238,7 @@ class AutoProvPolicyReg extends React.Component {
                     <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
                     {this.props.action ? null :
                             <div>
-                                <div className='content_title' style={{ padding: '0px 0px 10px 0' }}>Create Auto Prov Policy</div>
+                                <div className='content_title' style={{ padding: '0px 0px 10px 0' }}>Create Auto Provision Policy</div>
 
                                 <Step.Group stackable='tablet' style={{ width: '100%' }}>
                                     {
@@ -288,7 +288,7 @@ class AutoProvPolicyReg extends React.Component {
             let step1 = [
                 { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { required: true }, visible:true, options: this.getRegionData() },
                 { field: 'Organization', label: 'Organization', type: 'Select', placeholder: 'Select Organization', rules: { required: true }, visible:true, options: this.getOrganizationData(this.OrganizationList) },
-                { field: 'AutoPolicyName', label: 'Auto Policy Name', type: 'Input', placeholder: 'Enter Auto Prov Name', rules: { required: true }, visible:true },
+                { field: 'AutoPolicyName', label: 'Auto Policy Name', type: 'Input', placeholder: 'Enter Auto Provision Policy Name', rules: { required: true }, visible:true },
                 { field: 'DeployClientCount', label: 'Deploy Client Count', type: 'Input', rules: { type: 'number' }, visible:true },
                 { field: 'DeployIntervalCount', label: 'Deploy Interval Count (s)', type: 'Input', rules: { type: 'number' }, visible:true },
                 { label: 'Create Policy', type: 'Button', onClick: this.onCreateAutoProvPolicy },
