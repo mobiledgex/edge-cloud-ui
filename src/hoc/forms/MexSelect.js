@@ -13,7 +13,7 @@ const MexSelect = (props) => {
 
     const onSelected = (value) => {
         setSelected(value)
-        props.onChange(form, value)
+        props.onChange(form, value, props.parentForm)
     }
 
     const getForm = () => (

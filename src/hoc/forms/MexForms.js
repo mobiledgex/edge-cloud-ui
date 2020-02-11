@@ -87,7 +87,9 @@ const MexForms = (props) => {
                         {form.label}{required ? ' *' : ''}
                         {
                             form.type === INPUT ?
-                                <MexInput parentForm={parentForm} form={form} data={data} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                                <MexInput parentForm={parentForm} form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                            form.type === SELECT ?
+                                <MexSelect parentForm={parentForm} form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
                                 null
                         }
                     </Grid.Column> : null

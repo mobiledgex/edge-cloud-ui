@@ -26,13 +26,27 @@ class AutoProvPolicyReg extends React.Component {
     {
         if (value.length > 0) {
             if (!/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/([0-9]|1[0-9]|2[0-9]|3[0-2]?)$/.test(value)) {
-                form.error = 'Remote CIDR format is invalid'
+                form.error = 'Remote CIDR format is invalid (must be between 0.0.0.0/0 to 255.255.255.255/32)'
                 return false;
             }
         }
         form.error = undefined;
         return true;
         
+    }
+
+    validatePortRange=(form, value)=>
+    {
+        if (value.length > 0) {
+            value = parseInt(value)
+            if(value < 1 || value > 65535)
+            {
+                form.error = 'Invalid Port Range (must be between 1-65535)' 
+                return false; 
+            }
+        }
+        form.error = undefined;
+        return true;
     }
 
     isDataValid = (data) =>
@@ -61,12 +75,16 @@ class AutoProvPolicyReg extends React.Component {
                 if (outboundSecurityRules) {
                     for (let j = 0; j < form.forms.length; j++) {
                         let childForm = form.forms[j]
-                        if (childForm.field === 'RemoteCIDR') {
-                            valid = this.validateRemoteCIDR(childForm, outboundSecurityRules.RemoteCIDR)
-                            if(!valid)
-                            {
-                                break;
+                        if (outboundSecurityRules[childForm.field] != undefined) {
+                            if (childForm.field === 'RemoteCIDR') {
+                                valid = this.validateRemoteCIDR(childForm, outboundSecurityRules[childForm.field])
                             }
+                            else if (childForm.field === 'PortRangeMin' || childForm.field === 'PortRangeMax') {
+                                valid = this.validatePortRange(childForm, outboundSecurityRules[childForm.field])
+                            }
+                        }
+                        if (!valid) {
+                            break;
                         }
                     }
                 }
@@ -106,28 +124,11 @@ class AutoProvPolicyReg extends React.Component {
         this.setState(prevState => ({ forms: [...prevState.forms, { uuid: serviceMC.generateUniqueId(), field: 'OutboundSecurityRules', type: 'MultiForm', onClick: this.removeRulesForm, forms: outboundRules, visible: true }] }))
     }
 
-    step1 = [
-        { label: 'Create Privacy Policy', type: 'Header' },
-        { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
-        { field: 'OrganizationName', label: 'Organization', type: 'Select', placeholder: 'Select Organization', rules: { required: true }, visible: true },
-        { field: 'PrivacyPolicyName', label: 'Privacy Policy Name', type: 'Input', placeholder: 'Enter Privacy Policy Name', rules: { required: true }, visible: true },
-        { field: 'FullIsolation', label: 'Full Isolation', type: 'Checkbox', visible: true },
-        { label: 'Outbound Security Rules', type: 'Header', forms: { type: 'Button', icon: 'Add', onClick: this.addRulesForm }, visible: true },
-    ]
-
-    outboundRules = [
-        { field: 'Protocol', label: 'Protocol', type: 'Input', visible: true },
-        { field: 'PortRangeMin', label: 'Port Range Min', type: 'Input', rules: { type: 'number' }, visible: true },
-        { field: 'PortRangeMax', label: 'Port Range Max', type: 'Input', rules: { type: 'number' }, visible: true },
-        { field: 'RemoteCIDR', label: 'Remote CIDR', type: 'Input', visible: true },
-    ]
-
-
-
+    
     getRegionData = () => {
         if (this.regions && this.regions.length > 0)
             return this.regions.map(region => {
-                return { key: region, value: region, text: region }
+                return { key: region, value: region, text: region } 
             })
     }
 
@@ -138,6 +139,32 @@ class AutoProvPolicyReg extends React.Component {
                 return { key: organization, value: organization, text: organization }
             })
     }
+
+    getProtocolData = ()=>
+    {
+        let protocol = ['tcp','udp','icmp']
+        return protocol.map(data => {
+            return { key: data, value: data, text: data.toUpperCase() }
+        })
+    }
+
+    step1 = [
+        { label: 'Create Privacy Policy', type: 'Header' },
+        { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
+        { field: 'OrganizationName', label: 'Organization', type: 'Select', placeholder: 'Select Organization', rules: { required: true }, visible: true },
+        { field: 'PrivacyPolicyName', label: 'Privacy Policy Name', type: 'Input', placeholder: 'Enter Privacy Policy Name', rules: { required: true }, visible: true },
+        { field: 'FullIsolation', label: 'Full Isolation', type: 'Checkbox', visible: true },
+        { label: 'Outbound Security Rules', type: 'Header', forms: { type: 'Button', icon: 'Add', onClick: this.addRulesForm }, visible: true },
+    ]
+
+    outboundRules = [
+        { field: 'Protocol', label: 'Protocol', type: 'Select', visible: true, options:this.getProtocolData() },
+        { field: 'PortRangeMin', label: 'Port Range Min', type: 'Input', rules: { type: 'number' }, visible: true },
+        { field: 'PortRangeMax', label: 'Port Range Max', type: 'Input', rules: { type: 'number' }, visible: true },
+        { field: 'RemoteCIDR', label: 'Remote CIDR', type: 'Input', visible: true },
+    ]
+
+    
 
     privacyPolicyResponse = (mcRequest) => {
         if (mcRequest.response) {
