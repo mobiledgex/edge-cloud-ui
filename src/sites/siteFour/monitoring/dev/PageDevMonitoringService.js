@@ -166,7 +166,7 @@ export const getClusterList = async () => {
     let mergedClusterList = [];
     showClusterList.map(item => {
         //@todo : null check
-        if (item.response.data.length !== 0) {
+        if (item && item.response && item.response.data && item.response.data.length !== 0) {
             let clusterList = item.response.data;
             clusterList.map(item => {
                 mergedClusterList.push(item);
