@@ -1037,12 +1037,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        validateTerminal = (appInst) => {
-            if (appInst && appInst.length > 0) {
+        validateTerminal = (appInst)=>
+        {
+            if(appInst && appInst.length > 0)
+            {
                 let runtime = appInst[0].Runtime
-                if (runtime) {
+                if(runtime && runtime.container_ids && runtime.container_ids.length > 0)
+                {
                     this.setState({
-                        terminalData: appInst[0]
+                        terminalData : appInst[0]
                     })
                 }
             }
