@@ -2,7 +2,6 @@ import axios from 'axios';
 import uuid from 'uuid';
 import * as EP from './endPointTypes'
 import Alert from 'react-s-alert';
-import {showToast} from "../sites/siteFour/monitoring/PageMonitoringCommonService";
 
 
 let sockets = [];
@@ -47,18 +46,13 @@ const showError = (request, message) => {
 }
 
 const checkExpiry = (self, message) => {
-    try {
-        let isExpired = message.indexOf('expired') > -1
-        if (isExpired && self.gotoUrl) {
-            localStorage.setItem('userInfo', null)
-            localStorage.setItem('sessionData', null)
-            setTimeout(() => self.gotoUrl('/logout'), 2000);
-        }
-        return !isExpired;
-    } catch (e) {
-        showToast(e.toString())
+    let isExpired = message.indexOf('expired') > -1
+    if (isExpired && self.gotoUrl) {
+        localStorage.setItem('userInfo', null)
+        localStorage.setItem('sessionData', null)
+        setTimeout(() => self.gotoUrl('/logout'), 2000);
     }
-
+    return !isExpired;
 }
 
 function responseError(self, request, response, callback) {
@@ -119,7 +113,8 @@ export function sendWSRequest(request, callback) {
 
 
 export function sendMultiRequest(self, requestDataList, callback) {
-    showSpinner(self, true)
+    let isSpinner = requestDataList[0].showSpinner === undefined ? true : requestDataList[0].showSpinner;
+    showSpinner(self, isSpinner)
     let promise = [];
     let resResults = [];
     requestDataList.map((request) => {
@@ -145,26 +140,12 @@ export function sendMultiRequest(self, requestDataList, callback) {
 
 export const sendSyncRequest = async (self, request) => {
     try {
-        showSpinner(self, true)
+        request.showSpinner === undefined && showSpinner(self, true)
         let response = await axios.post(EP.getPath(request), request.data,
             {
                 headers: getHeader(request)
             });
-        showSpinner(self, false)
-        return EP.formatData(request, response);
-    } catch (error) {
-        if (error.response) {
-            responseError(self, request, error.response)
-        }
-    }
-}
-
-export const sendSyncRequestWithoutShowSpinner = async (self, request) => {
-    try {
-        let response = await axios.post(EP.getPath(request), request.data,
-            {
-                headers: getHeader(request)
-            });
+        request.showSpinner === undefined && showSpinner(self, false)
         return EP.formatData(request, response);
     } catch (error) {
         if (error.response) {
@@ -174,7 +155,8 @@ export const sendSyncRequestWithoutShowSpinner = async (self, request) => {
 }
 
 export function sendRequest(self, request, callback) {
-    showSpinner(self, true)
+    let isSpinner = request.showSpinner === undefined ? true : request.showSpinner;
+    showSpinner(self, isSpinner)
     axios.post(EP.getPath(request), request.data,
         {
             headers: getHeader(request)

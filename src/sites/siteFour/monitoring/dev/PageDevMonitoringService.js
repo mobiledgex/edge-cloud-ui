@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from "axios";
 import '../PageMonitoring.css';
 import {APP_INST_USAGE_TYPE_INDEX, CHART_COLOR_LIST, CLASSIFICATION, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION, USAGE_INDEX_FOR_CLUSTER} from "../../../../shared/Constants";
 import BubbleChart from "../../../../components/BubbleChart";
@@ -7,7 +6,7 @@ import PageMonitoring from "./PageDevMonitoring";
 import PageMonitoringForDeveloper from "./PageDevMonitoring";
 import {getClusterLevelMatric, makeFormForClusterLevelMatric, numberWithCommas, renderUsageByType, StylesForMonitoring} from "../PageMonitoringCommonService";
 import {SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
-import {sendSyncRequest, sendSyncRequestWithoutShowSpinner} from "../../../../services/serviceMC";
+import {sendSyncRequest} from "../../../../services/serviceMC";
 import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
 
 export const getClusterLevelUsageList = async (clusterList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
@@ -153,11 +152,11 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
 export const getClusterList = async () => {
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
-    let requestData = {token: token, method: SHOW_CLUSTER_INST, data: {region: REGION.EU}};
-    let requestData2 = {token: token, method: SHOW_CLUSTER_INST, data: {region: REGION.US}};
+    let requestData = {showSpinner: false, token: token, method: SHOW_CLUSTER_INST, data: {region: REGION.EU}};
+    let requestData2 = {showSpinner: false,token: token, method: SHOW_CLUSTER_INST, data: {region: REGION.US}};
     let promiseList = []
-    promiseList.push(sendSyncRequestWithoutShowSpinner(this, requestData))
-    promiseList.push(sendSyncRequestWithoutShowSpinner(this, requestData2))
+    promiseList.push(sendSyncRequest(this, requestData))
+    promiseList.push(sendSyncRequest(this, requestData2))
     let showClusterList = await Promise.all(promiseList);
 
     console.log('showClusterList====>', showClusterList);
