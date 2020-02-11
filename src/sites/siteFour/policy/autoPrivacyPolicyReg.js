@@ -1,5 +1,4 @@
 import React from 'react';
-import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
 import { Item } from 'semantic-ui-react';
 import MexForms from '../../../hoc/forms/MexForms';
@@ -23,7 +22,69 @@ class AutoProvPolicyReg extends React.Component {
         this.cloudletList = []
     }
 
-    onValueChange = (currentForm, data) => {
+    validateRemoteCIDR=(form, value)=>
+    {
+        if (value.length > 0) {
+            if (!/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/([0-9]|1[0-9]|2[0-9]|3[0-2]?)$/.test(value)) {
+                form.error = 'Remote CIDR format is invalid'
+                return false;
+            }
+        }
+        form.error = undefined;
+        return true;
+        
+    }
+
+    isDataValid = (data) =>
+    {
+        let valid = true;
+        let forms = this.state.forms;
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            let rules = form.rules;
+            if(rules)
+            {
+                if(rules.required)
+                {
+                    if(data[form.field] === undefined || data[form.field].length ===0)
+                    {
+                        form.error = `${form.label} is mandatory`
+                        valid = false;
+                    }
+                    else{
+                        form.error = undefined 
+                    }
+                }
+            }
+            else if (!data.FullIsolation && form.field === 'OutboundSecurityRules') {
+                let outboundSecurityRules = data[form.uuid];
+                if (outboundSecurityRules) {
+                    for (let j = 0; j < form.forms.length; j++) {
+                        let childForm = form.forms[j]
+                        if (childForm.field === 'RemoteCIDR') {
+                            valid = this.validateRemoteCIDR(childForm, outboundSecurityRules.RemoteCIDR)
+                            if(!valid)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(!valid)
+            {
+                break;
+            }
+        }
+
+        this.setState({
+            forms:forms
+        })
+        return valid;
+    }
+
+    onValueChange = (currentForm, data, parentForm) => {
 
         if (currentForm.field === 'FullIsolation') {
             let forms = this.state.forms;
@@ -37,7 +98,6 @@ class AutoProvPolicyReg extends React.Component {
                 forms: forms
             })
         }
-
         this.formData = data;
     }
 
@@ -99,44 +159,48 @@ class AutoProvPolicyReg extends React.Component {
 
 
     onCreate = (data) => {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let token = store.userToken;
+        if (data && this.isDataValid(data)) {
+            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+            let token = store.userToken;
 
-        let method = serviceMC.getEP().CREATE_PRIVACY_POLICY;
+            let method = serviceMC.getEP().CREATE_PRIVACY_POLICY;
 
-        if (this.props.action === 'Update') {
-            method = serviceMC.getEP().UPDATE_PRIVACY_POLICY;
-        }
-        
-        let outbound_security_rules = [];
-        if (!data.FullIsolation) {
-            for (let i = 0; i < this.state.forms.length; i++) {
-                let form = this.state.forms[i];
-                if (form.uuid) {
-                    let uuid = form.uuid;
-                    let OutboundSecurityRule = data[uuid]
-                    outbound_security_rules.push({
-                        protocol: OutboundSecurityRule.Protocol,
-                        port_range_min: parseInt(OutboundSecurityRule.PortRangeMin),
-                        port_range_max: parseInt(OutboundSecurityRule.PortRangeMax),
-                        remote_cidr: OutboundSecurityRule.RemoteCIDR
-                    })
+            if (this.props.action === 'Update') {
+                method = serviceMC.getEP().UPDATE_PRIVACY_POLICY;
+            }
 
+            let outbound_security_rules = [];
+            if (!data.FullIsolation) {
+                for (let i = 0; i < this.state.forms.length; i++) {
+                    let form = this.state.forms[i];
+                    if (form.uuid) {
+                        let uuid = form.uuid;
+                        let OutboundSecurityRule = data[uuid]
+                        if (OutboundSecurityRule) {
+                            outbound_security_rules.push({
+                                protocol: OutboundSecurityRule.Protocol,
+                                port_range_min: parseInt(OutboundSecurityRule.PortRangeMin),
+                                port_range_max: parseInt(OutboundSecurityRule.PortRangeMax),
+                                remote_cidr: OutboundSecurityRule.RemoteCIDR
+                            })
+                        }
+
+                    }
                 }
             }
-        }
 
-        let requestData = {
-            region: data.Region,
-            privacypolicy: {
-                key: {
-                    name: data.PrivacyPolicyName,
-                    developer: data.OrganizationName
-                },
-                outbound_security_rules: outbound_security_rules
+            let requestData = {
+                region: data.Region,
+                privacypolicy: {
+                    key: {
+                        name: data.PrivacyPolicyName,
+                        developer: data.OrganizationName
+                    },
+                    outbound_security_rules: outbound_security_rules
+                }
             }
+            serviceMC.sendRequest(this, { token: token, method: method, data: requestData }, this.privacyPolicyResponse)
         }
-        serviceMC.sendRequest(this, { token: token, method: method, data: requestData }, this.privacyPolicyResponse)
     }
 
     render() {
@@ -283,4 +347,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(AutoProvPolicyReg)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(AutoProvPolicyReg));
