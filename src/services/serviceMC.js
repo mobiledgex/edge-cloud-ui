@@ -4,12 +4,13 @@ import * as EP from './endPointTypes'
 import Alert from 'react-s-alert';
 
 
+
 let sockets = [];
 
-export function getEP() {
+export function getEP()
+{
     return EP;
 }
-
 export function generateUniqueId() {
     return uuid();
 }
@@ -31,7 +32,8 @@ const showSpinner = (self, value) => {
     }
 }
 
-const showError = (request, message) => {
+const showError = (request, message) =>
+{
     let showMessage = request.showMessage === undefined ? true : request.showMessage;
     if (showMessage) {
         Alert.error(message, {
@@ -46,7 +48,7 @@ const showError = (request, message) => {
 }
 
 const checkExpiry = (self, message) => {
-    let isExpired = message.indexOf('expired') > -1
+    let isExpired  = message.indexOf('expired') > -1
     if (isExpired && self.gotoUrl) {
         localStorage.setItem('userInfo', null)
         localStorage.setItem('sessionData', null)
@@ -65,7 +67,7 @@ function responseError(self, request, response, callback) {
                 showSpinner(self, false)
                 showError(request, message);
                 if (callback) {
-                    callback({request: request, error: {code: code, message: message}})
+                    callback({ request: request, error: { code: code, message: message } })
                 }
             }
         }
@@ -73,12 +75,13 @@ function responseError(self, request, response, callback) {
 }
 
 
+
 export function sendWSRequest(request, callback) {
     let url = process.env.REACT_APP_API_ENDPOINT;
-    url = url.replace('http', 'ws');
+    url = url.replace('http','ws');
     const ws = new WebSocket(`${url}/ws${EP.getPath(request)}`)
     ws.onopen = () => {
-        sockets.push({uuid: request.uuid, socket: ws, isClosed: false});
+        sockets.push({ uuid: request.uuid, socket: ws, isClosed:false });
         ws.send(`{"token": "${request.token}"}`);
         ws.send(JSON.stringify(request.data));
     }
@@ -96,16 +99,18 @@ export function sendWSRequest(request, callback) {
             case getEP().DELETE_APP_INST:
                 clearSockets(request.uuid);
         }
-        callback({request: request, response: response});
+        callback({ request: request, response: response });
     }
 
     ws.onclose = evt => {
         sockets.map((item, i) => {
-            if (item.uuid === request.uuid) {
-                if (item.isClosed === false && evt.code === 1000) {
-                    callback({request: request})
+            if(item.uuid === request.uuid)
+            {
+                if(item.isClosed === false && evt.code===1000)
+                {
+                    callback({ request: request })
                 }
-                sockets.splice(i, 1)
+                sockets.splice(i,1)
             }
         })
     }
@@ -166,7 +171,8 @@ export function sendRequest(self, request, callback) {
             callback(EP.formatData(request, response));
         })
         .catch(function (error) {
-            if (error.response) {
+            if(error.response)
+            {
                 responseError(self, request, error.response, callback)
             }
         })
