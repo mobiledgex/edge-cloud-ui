@@ -231,12 +231,17 @@ export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, userTyp
     }
 
     if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
-        return numberWithCommas((usageOne.sumTcpConns).toFixed(2)) + " Byte"
+        return numberWithCommas((usageOne.sumTcpConns).toFixed(2)) + " "
     }
 
     if (hardwareType === HARDWARE_TYPE.UDPSENT) {
-        return numberWithCommas((usageOne.sumUdpSent).toFixed(2)) + " Byte"
+        return numberWithCommas((usageOne.sumUdpSent).toFixed(2)) + " "
     }
+
+    if (hardwareType === HARDWARE_TYPE.UDPRECV) {
+        return numberWithCommas((usageOne.sumUdpRecv).toFixed(2)) + " "
+    }
+
     //@fixme
     if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
         return numberWithCommas((usageOne.sumSendBytes / 1000000).toFixed(0)) + " MByte"
