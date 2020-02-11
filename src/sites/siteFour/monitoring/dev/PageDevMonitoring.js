@@ -469,19 +469,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 || hwType === HARDWARE_TYPE.UDPSENT
 
             ) {
-                if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                    return this.renderGraphAreaMultiForCluster(subCategoryType, barChartDataSet, lineChartDataSet)
-                } else {
-                    return this.renderGraphAreaMultiForAppInst(subCategoryType, barChartDataSet, lineChartDataSet)
-                }
-
+                return this.renderGraphAreaMulti(subCategoryType, barChartDataSet, lineChartDataSet)
             } else {
 
-                if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                    return this.renderGraphAreaForCluster(hwType, barChartDataSet, lineChartDataSet)
-                } else {
-                    return this.renderGraphAreaForAppInst(hwType, barChartDataSet, lineChartDataSet)
-                }
+                return this.renderGraphArea(hwType, barChartDataSet, lineChartDataSet)
             }
         }
 
@@ -514,7 +505,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        renderGraphAreaMultiForCluster(pHardwareType, barChartDataSet, lineChartDataSet) {
+        renderGraphAreaMulti(pHardwareType, barChartDataSet, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column'>
                     {/*@todo:LInechart*/}
@@ -575,7 +566,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        renderGraphAreaForCluster(pHardwareType, barChartDataSet, lineChartDataSet) {
+        renderGraphArea(pHardwareType, barChartDataSet, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
                     {/*@todo:LInechart*/}
@@ -607,7 +598,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
+                            {this.state.loading ? renderPlaceHolderLottie() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType, this)}
                         </div>
                     </div>
                 </div>

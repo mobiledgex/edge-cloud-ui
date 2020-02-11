@@ -930,13 +930,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </Table.Header>
                             <Table.Body className="">
                                 {/*todo: 데이터가 없는경우*/}
-                                {/*todo: 데이터가 없는경우*/}
-                                {/*todo: 데이터가 없는경우*/}
                                 {!this.state.cloudletSelectLoading && this.state.cloudletEventLogs.length === 0 &&
-                                <Table.Row className='page_monitoring_popup_table_row'>
-                                    <div styl={{display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', backgroundColor: 'red'}}>
-                                        NO DATA
-                                    </div>
+                                <Table.Row className=''>
+                                    <Table.Cell style={{width:'100%', display: 'flex', justifyContent: 'center', alignItems: 'center',  backgroundColor: 'transparent'}} >
+                                        <div style={{}}>
+                                            NO DATA
+                                        </div>
+                                    </Table.Cell>
+
                                 </Table.Row>
                                 }
                                 {this.state.cloudletSelectLoading &&
@@ -949,7 +950,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         <Table.Row className='page_monitoring_popup_table_row'>
 
                                             <Table.Cell>
-                                                {item[0]}
+                                                {item[0].split("T")[0]}{`  `}
+                                                {item[0].split("T")[1].toString().substring(0,8)}
                                             </Table.Cell>
                                             <Table.Cell>
                                                 {item[1]}
@@ -1115,9 +1117,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {this.state.loading ? renderPlaceHolderLottie() : renderBubbleChartForCloudlet(this, this.state.currentHardwareType, this.state.bubbleChartData)}
                                                     </div>
                                                 </div>
-                                                {/* row2___col___2*/}
-                                                {/* row2___col___2*/}
-                                                {/* row2___col___2*/}
+                                                {/*todo: renderCloudletEventLog*/}
+                                                {/*todo: renderCloudletEventLog*/}
+                                                {/*todo: renderCloudletEventLog*/}
                                                 {this.renderCloudletEventLog()}
 
 
