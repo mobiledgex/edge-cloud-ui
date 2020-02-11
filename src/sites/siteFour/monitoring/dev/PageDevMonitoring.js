@@ -462,10 +462,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 || hwType === HARDWARE_TYPE.UDPSENT
 
             ) {
-                return this.renderGraphAreaMulti(subCategoryType, barChartDataSet, lineChartDataSet)
+                if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                    return this.renderGraphAreaMultiForCluster(subCategoryType, barChartDataSet, lineChartDataSet)
+                } else {
+                    return this.renderGraphAreaMultiForAppInst(subCategoryType, barChartDataSet, lineChartDataSet)
+                }
 
             } else {
-                return this.renderGraphArea(hwType, barChartDataSet, lineChartDataSet)
+
+                if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                    return this.renderGraphAreaForCluster(hwType, barChartDataSet, lineChartDataSet)
+                } else {
+                    return this.renderGraphAreaForAppInst(hwType, barChartDataSet, lineChartDataSet)
+                }
             }
         }
 
@@ -478,13 +487,29 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
         }
 
-        renderGraphAreaMulti(pHardwareType, barChartDataSet, lineChartDataSet) {
+        renderGraphAreaMultiForAppInst(pHardwareType, barChartDataSet, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column'>
+                    {/*@todo:LInechart*/}
+                    <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title_select'>
+                                {convertHwTypePhrases(pHardwareType)} Usage of {this.convertToClassification(this.state.currentClassification)}
+                            </div>
+                            {!this.state.loading && this.renderDropDownForMultiTab(pHardwareType)}
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {this.state.loading ? renderPlaceHolderLottie() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
+                        </div>
+                    </div>
+                </div>
+            )
+        }
 
 
-                    {/*@todo:LInechart*/}
-                    {/*@todo:LInechart*/}
+        renderGraphAreaMultiForCluster(pHardwareType, barChartDataSet, lineChartDataSet) {
+            return (
+                <div className='page_monitoring_dual_column'>
                     {/*@todo:LInechart*/}
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
@@ -516,11 +541,36 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        renderGraphArea(pHardwareType, barChartDataSet, lineChartDataSet) {
+        renderGraphAreaForAppInst(pHardwareType, barChartDataSet, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column'>
+                    {/*@todo:LInechart*/}
+                    {/*@todo:LInechart*/}
+                    {/*@todo:LInechart*/}
+                    <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                {convertHwTypePhrases(pHardwareType)} Usage of {this.state.loading ?
+                                <CircularProgress size={9} style={{
+                                    fontSize: 9,
+                                    color: '#77BD25',
+                                    marginLeft: 5,
+                                    marginBottom: 1,
+                                }}/> : this.convertToClassification(this.state.currentClassification)}
+                            </div>
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {this.state.loading ? renderPlaceHolderLottie() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
+                        </div>
+                    </div>
+                </div>
+            )
+        }
 
 
+        renderGraphAreaForCluster(pHardwareType, barChartDataSet, lineChartDataSet) {
+            return (
+                <div className='page_monitoring_dual_column'>
                     {/*@todo:LInechart*/}
                     {/*@todo:LInechart*/}
                     {/*@todo:LInechart*/}
