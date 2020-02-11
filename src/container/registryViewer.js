@@ -374,64 +374,168 @@ class RegistryViewer extends React.Component {
                 this.setState({validateError:error,toggleSubmit:true})
             }
             //update app mode
+            /*
+/////////////////////// EditData
+AppName:"BICINKIAPP"
+AuthPublicKey:""
+Command:"docker run my-image-docker2"
+DefaultFlavor:"x1.medium"
+DefaultFQDN:""
+DeploymentMF:""
+DeploymentType:"Docker"
+Edit:Array(16) ["Region", "DeveloperName", "AppName", …]
+ImagePath:"docker.mobiledgex.net/mobiledgex/images/facedetection"
+ImageType:1
+OrganizationName:"MobiledgeX"
+PackageName:""
+Ports:""
+Region:"EU"
+Revision:11
+ScaleWithCluster:false
+Version:"1.1"
+///////////////////////// submitValue
+access_ports:"TCP:8080,TCP:3000-8000"
+android_package_name:""
+auth_public_key:""
+cluster:Object {name: ""}
+command:""
+default_flavor:Object {name: ""}
+deployment:""
+deployment_manifest:""
+fields:Array(4) ["4", "7", "9.1", …]
+image_path:""
+image_type:""
+key:Object {developer_key: Object, name: "", version: ""}
+official_fqdn:""
+scale_with_cluster:false
+////////////////////////// API
+{
+"default_shared_volume_size": "string",
+"access_ports": "string",
+"default_flavor": {
+"name": "string"
+},
+"official_fqdn": "string",
+"scale_with_cluster": true,
+"image_path": "string",
+"deployment_manifest": "string",
+"image_type": "IMAGE_TYPE_UNKNOWN",
+"access_type": "ACCESS_TYPE_DEFAULT_FOR_DEPLOYMENT",
+"auto_prov_policy": "string",
+"default_privacy_policy": "string",
+"command": "string",
+"deployment": "string",
+"key": {
+"developer_key": {
+"name": "string"
+},
+"name": "string",
+"version": "string"
+}
+}
+/////////////////////////// example
+{"region":"EU",
+    "app":{
+        "key":
+        {
+            "developer_key":{"name":"MobiledgeX"},
+            "name":"BICINKIAPP",
+            "version":"1.1"
+        },
+        "scale_with_cluster":false,
+        "deployment":"docker",
+        "image_type":"ImageTypeDocker",
+        "image_path":"docker.mobiledgex.net/mobiledgex/images/facedetection",
+        "access_ports":"",
+        "default_flavor":{"name":"x1.medium"},
+        "cluster":{"name":""},
+        "auth_public_key":"",
+        "official_fqdn":"",
+        "android_package_name":"",
+        "command":"docker run my-image-docker2",
+        "deployment_manifest":"",
+        "fields":["9.1","13"]}}
+
+            */
+           if(nextProps.formApps.values && nextProps.formApps.values.DeploymentType) {
+                let assObj = Object.assign([], this.state.keysData);
+                let selectType = '';
+                let defaultPath = '';
+                if(nextProps.formApps.values.DeploymentType == "Kubernetes" || nextProps.formApps.values.DeploymentType == "Docker") {
+                    selectType = 'Docker';
+                    defaultPath = 'docker.mobiledgex.net/OrganizationName/images/AppName:AppVersion';
+                } else if(nextProps.formApps.values.DeploymentType == "VM") {
+                    selectType = 'Qcow';
+                    defaultPath = 'https://artifactory.mobiledgex.net/artifactory/repo-OrganizationName';
+                }
+                console.log('nextProps.formApps.values.ImagePath',nextProps.formApps.values.ImagePath,"::::",this.props.formApps.values.ImagePath)
+                let ImagePath = (nextProps.formApps.values.ImagePath)? nextProps.formApps.values.ImagePath : (nextProps.formApps.values.ImagePath != this.props.formApps.values.ImagePath)? '': defaultPath;
+
+                assObj[0].ImageType.items = selectType;
+                itData = (selectType == 'Docker') ? 'ImageTypeDocker' :
+                    (selectType == 'Qcow') ? 'ImageTypeQcow' :
+                        selectType;
+                if(nextProps.formApps.values.OrganizationName){
+                    ImagePath = ImagePath.replace('OrganizationName',(nextProps.formApps.values.DeploymentType == "VM")?nextProps.formApps.values.OrganizationName:nextProps.formApps.values.OrganizationName.toLowerCase())
+                }
+                if(nextProps.formApps.values.AppName) {
+                    ImagePath = ImagePath.replace('AppName', nextProps.formApps.values.AppName.toLowerCase().replace(/(\s*)/g, ""))
+                }
+                if(nextProps.formApps.values.Version) {
+                    ImagePath = ImagePath.replace('AppVersion',nextProps.formApps.values.Version.toLowerCase())
+                }
+                //if(ImagePath == '') ImagePath = ''
+                assObj[0].ImagePath.items = ImagePath;
+                submitImgPath = ImagePath;
+
+            }
+
+            // make body
             if(nextProps.formApps.submitSucceeded && nextProps.editMode){
                 let method = serviceMC.getEP().UPDATE_APP;
                 nextProps.submitValues.app['fields'] = this.updateFields(nextProps.editData, nextProps.submitValues.app)
                 nextProps.submitValues.region = nextProps.editData.Region;
                 // TODO 20200207 @Smith: we need formating to app properly body to send to update url 
                 this.setState({toggleSubmit:true,validateError:error});
-                let editKeys = Object.keys(nextProps.editData);
-                editKeys.map((value, i) => {
-                    switch(value) {
-                        case 'cluster' : 
-                        case 'default_flavor':
-                        nextProps.submitValues.app[value]['name'] = nextProps.editData[value]; break;
-                        default : nextProps.submitValues.app[value] = nextProps.editData[value];
+                // reset submitValues as use the editData and the submitValues
+                let newBodyData = createFormat(nextProps.editData);
+                let key = {
+                    "developer_key":{"name":nextProps.editData['OrganizationName']},
+                    "name":nextProps.editData['AppName'],
+                    "version":nextProps.editData['Version']
+                }
+                newBodyData.app['key'] = key;
+                newBodyData.app['fields'] = nextProps.submitValues.app['fields'];
+                nextProps.submitValues.app['key'] = key;
+
+                // concat submitValues with newBodyData
+                let sValue = nextProps.submitValues.app;
+                let keys = Object.keys(sValue);
+                keys.map((key) => {
+                    if(sValue[key] !== "" && typeof sValue[key] === 'string') {
+                        newBodyData.app[key] = sValue[key];
                     }
-                })
+                    if(sValue[key] !== "" && typeof sValue[key] === 'object') {
+                        if(key === 'default_flavor') {
+                            newBodyData.app[key]['name'] = sValue[key]['name']
+                        }
+                    }
+
+                }) 
+                
+                console.log('new body =', newBodyData)
                 this.props.handleLoadingSpinner(true);
                 let serviceBody = {
                     method : method,
                     token:store ? store.userToken : 'null',
-                    data: nextProps.submitValues
+                    data: newBodyData
                 }
                 serviceMC.sendRequest(_self, serviceBody, this.receiveResult)
             }
 
         }
 
-        if(nextProps.formApps.values && nextProps.formApps.values.DeploymentType) {
-            let assObj = Object.assign([], this.state.keysData);
-            let selectType = '';
-            let defaultPath = '';
-            if(nextProps.formApps.values.DeploymentType == "Kubernetes" || nextProps.formApps.values.DeploymentType == "Docker") {
-                selectType = 'Docker';
-                defaultPath = 'docker.mobiledgex.net/OrganizationName/images/AppName:AppVersion';
-            } else if(nextProps.formApps.values.DeploymentType == "VM") {
-                selectType = 'Qcow';
-                defaultPath = 'https://artifactory.mobiledgex.net/artifactory/repo-OrganizationName';
-            }
-            console.log('nextProps.formApps.values.ImagePath',nextProps.formApps.values.ImagePath,"::::",this.props.formApps.values.ImagePath)
-            let ImagePath = (nextProps.formApps.values.ImagePath)? nextProps.formApps.values.ImagePath : (nextProps.formApps.values.ImagePath != this.props.formApps.values.ImagePath)? '': defaultPath;
-
-            assObj[0].ImageType.items = selectType;
-            itData = (selectType == 'Docker') ? 'ImageTypeDocker' :
-                (selectType == 'Qcow') ? 'ImageTypeQcow' :
-                    selectType;
-            if(nextProps.formApps.values.OrganizationName){
-                ImagePath = ImagePath.replace('OrganizationName',(nextProps.formApps.values.DeploymentType == "VM")?nextProps.formApps.values.OrganizationName:nextProps.formApps.values.OrganizationName.toLowerCase())
-            }
-            if(nextProps.formApps.values.AppName) {
-                ImagePath = ImagePath.replace('AppName', nextProps.formApps.values.AppName.toLowerCase().replace(/(\s*)/g, ""))
-            }
-            if(nextProps.formApps.values.Version) {
-                ImagePath = ImagePath.replace('AppVersion',nextProps.formApps.values.Version.toLowerCase())
-            }
-            //if(ImagePath == '') ImagePath = ''
-            assObj[0].ImagePath.items = ImagePath;
-            submitImgPath = ImagePath;
-
-        }
+        
 
         if(nextProps.editMode) this.setState({editMode:nextProps.editMode})
     }
@@ -465,6 +569,33 @@ class RegistryViewer extends React.Component {
         width: 1600
     };
 }
+/*
+// swagger in MEX
+{
+  "default_shared_volume_size": "string",
+  "access_ports": "string",
+  "default_flavor": {
+    "name": "string"
+  },
+  "official_fqdn": "string",
+  "scale_with_cluster": true,
+  "image_path": "string",
+  "deployment_manifest": "string",
+  "image_type": "IMAGE_TYPE_UNKNOWN",
+  "access_type": "ACCESS_TYPE_DEFAULT_FOR_DEPLOYMENT",
+  "auto_prov_policy": "string",
+  "default_privacy_policy": "string",
+  "command": "string",
+  "deployment": "string",
+  "key": {
+    "developer_key": {
+      "name": "string"
+    },
+    "name": "string",
+    "version": "string"
+  }
+}
+*/
 const createFormat = (data) => (
     {
         "region":data['Region'],

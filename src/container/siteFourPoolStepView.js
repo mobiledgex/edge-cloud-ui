@@ -322,7 +322,7 @@ class SiteFourPoolStepView extends React.Component {
             }
         }      
         _self.props.handleLoadingSpinner(false);
-        this.pauseRender = true;
+        
 
     }
     receiveResultCreateMember = (mcRequest) => {

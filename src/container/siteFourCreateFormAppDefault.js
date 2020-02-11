@@ -35,12 +35,32 @@ const makeOptionNumber = (options) => (
     ))
 )
 
-const renderSelect = ({ input, label, options, placeholder, error, disabled }) => (
+const renderSelect = ({ input, label, options, placeholder, error, disabled, fid }) => (
     <div>
         <Form.Select
             label={label}
             name={input.name}
-            onChange={(e, { value }) => input.onChange(value)}
+            onChange={(e, { value }) => {
+                input.onChange(value)
+                if(fid === 'singlePort') _self.setState({portAble: false})
+            }}
+            options={makeOption(options)}
+            placeholder={placeholder}
+            value={input.value}
+            disabled={disabled}
+        />
+        {error && <span className="text-danger">{error}</span>}
+    </div>
+);
+const renderSelectMlt = ({ input, label, options, placeholder, error, disabled }) => (
+    <div>
+        <Form.Select
+            label={label}
+            name={input.name}
+            onChange={(e, { value }) => {
+                input.onChange(value)
+                _self.setState({multiPortAble: false})
+            }}
             options={makeOption(options)}
             placeholder={placeholder}
             value={input.value}
@@ -66,7 +86,7 @@ const renderTextArea = field => (
         {...field.input}
         label={field.label}
         rows={field.row}
-    // placeholder={field.placeholder}
+        placeholder={field.placeholder}
     />
 );
 
@@ -76,7 +96,7 @@ const renderInput = ({ input, placeholder, label, type, error, disabled }) => (
             {...input}
             type={type}
             label={label}
-            // placeholder={placeholder}
+            placeholder={placeholder}
             disabled={disabled}
         />
         {error && <span className="text-danger">{error}</span>}
@@ -107,6 +127,7 @@ const renderInputNum = ({ input, placeholder, label, type, error, disabled }) =>
     </div>
 
 );
+
 const renderInputDisabled = field => (
     <Form.Input
         {...field.input}
@@ -191,7 +212,9 @@ class SiteFourCreateFormAppDefault extends React.Component {
             editDsb: false,
             editData: null,
             tah: 4,
-            submitButton: 'Create'
+            submitButton: 'Create',
+            portAble: true,
+            multiPortAble: true
         };
 
     }
@@ -548,6 +571,8 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                                                                     type="input"
                                                                                                                                     name={'multiF_' + item.num}
                                                                                                                                     value={data[key]}
+                                                                                                                                    disabled={this.state.multiPortAble}
+                                                                                                                                    placeholder={this.getPlaceholder({placeholder:data[key], key: key, pId: pId})}
                                                                                                                                     error={(this.props.validError.indexOf(key + '_' + i) !== -1) ? 'Required' : ''}
                                                                                                                                 />
                                                                                                                             </Grid.Column>
@@ -560,12 +585,15 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                                                                     type="input"
                                                                                                                                     name={'multiS_' + item.num}
                                                                                                                                     value={data[key]}
+                                                                                                                                    disabled={this.state.multiPortAble}
+                                                                                                                                    placeholder={this.getPlaceholder({placeholder:data[key], key: key, pId: pId})}
                                                                                                                                     error={(this.props.validError.indexOf(key + '_' + i) !== -1) ? 'Required' : ''}
                                                                                                                                 />
                                                                                                                             </Grid.Column>
                                                                                                                             <Grid.Column width={4} style={{ padding: 0 }}>
                                                                                                                                 <Field
-                                                                                                                                    component={renderSelect}
+                                                                                                                                    fid = {'multiPort'}
+                                                                                                                                    component={renderSelectMlt}
                                                                                                                                     placeholder={'Select port'}
                                                                                                                                     value={data[key]}
                                                                                                                                     options={['TCP', 'UDP']}
@@ -582,14 +610,17 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                                                             <Grid.Column width={11}>
                                                                                                                                 <Field
                                                                                                                                     component={renderInputNum}
+                                                                                                                                    placeholder={this.getPlaceholder({placeholder:'Select port', key: key, pId: pId})}
                                                                                                                                     type="input"
                                                                                                                                     name={key + '_' + item.num}
-                                                                                                                                    value={data[key]}
+                                                                                                                                    value={this.getPlaceholder({placeholder:data[key], key: key, pId: pId})}
+                                                                                                                                    disabled={this.state.portAble}
                                                                                                                                     error={(this.props.validError.indexOf(key + '_' + i) !== -1) ? 'Required' : ''}
                                                                                                                                 />
                                                                                                                             </Grid.Column>
                                                                                                                             <Grid.Column width={4} style={{ padding: 0 }}>
                                                                                                                                 <Field
+                                                                                                                                    fid = {'singlePort'}
                                                                                                                                     component={renderSelect}
                                                                                                                                     placeholder={this.getPlaceholder({placeholder:'Select port', key: key, pId: pId})}
                                                                                                                                     value={this.getPlaceholder({placeholder:data[key], key: key, pId: pId})}
@@ -640,6 +671,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                                                 type="input"
                                                                                                                 name={key}
                                                                                                                 value={this.getPlaceholder({placeholder:data[key], key: key, pId: pId})}
+                                                                                                                placeholder={this.getPlaceholder({placeholder:data[key], key: key, pId: pId})}
                                                                                                                 disabled={(this.state.editDsb) ? fieldKeys[pId][key].editDisabled : false}
                                                                                                                 error={this.getError(key)}
                                                                                                             />
