@@ -244,7 +244,7 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
     }
 
     if (hardwareType === HARDWARE_TYPE.MEM) {
-        return numberWithCommas((usageOne.sumMemUsage / 1000000).toFixed(2)) + " MByte"
+        return numberWithCommas((usageOne.sumMemUsage / 1000000).toFixed(2)) + " %"
     }
 
     if (hardwareType === HARDWARE_TYPE.DISK) {

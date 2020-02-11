@@ -223,11 +223,11 @@ export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, userTyp
     }
 
     if (hardwareType === HARDWARE_TYPE.MEM) {
-        return numberWithCommas((usageOne.sumMemUsage).toFixed(2)) + " Byte"
+        return numberWithCommas((usageOne.sumMemUsage).toFixed(2)) + " %"
     }
 
     if (hardwareType === HARDWARE_TYPE.DISK) {
-        return numberWithCommas((usageOne.sumDiskUsage).toFixed(2)) + " Byte"
+        return numberWithCommas((usageOne.sumDiskUsage).toFixed(2)) + " %"
     }
 
     if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
