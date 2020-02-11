@@ -229,6 +229,7 @@ class RegistryClusterInstViewer extends React.Component {
                 nextProps.validateValue.Cloudlet.map((item) => {
                     let data = nextProps.submitValues;
                     data.clusterinst.key.cloudlet_key.name = item;
+
                     serviceMC.sendWSRequest({ uuid: serviceMC.generateUniqueId(), token: store ? store.userToken : 'null', data: JSON.parse(JSON.stringify(data)), method: serviceMC.getEP().CREATE_CLUSTER_INST }, this.receiveSubmit)
                 })
 
@@ -308,7 +309,7 @@ const createFormat = (data) => (
                     "operator_key": { "name": data['Operator'] },
                     "name": data['Cloudlet']
                 },
-                "developer": data['OrganizationName']
+                "developer": data['Reservable'] ? data['OrganizationName'] === 'mobiledgex' ? 'MobiledgeX' : data['OrganizationName'] : data['OrganizationName']
             },
             "deployment": data['DeploymentType'],
             "flavor": { "name": data['Flavor'] },
