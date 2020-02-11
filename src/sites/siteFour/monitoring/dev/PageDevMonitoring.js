@@ -402,7 +402,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 dropdownRequestLoading: false,
                 currentCluster: '',
                 currentAppInst: '',
+                currentTabIndex: 1,
             })
+
+            setTimeout(() => {
+                this.setState({
+                    currentTabIndex: 0,
+                })
+            }, 2500)
         }
 
         async refreshAllData() {
