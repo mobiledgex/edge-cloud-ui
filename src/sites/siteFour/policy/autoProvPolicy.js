@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import React from 'react';
-import sizeMe from 'react-sizeme';
 import MexListView from '../../../container/MexListView';
 import { withRouter } from 'react-router-dom';
 //redux
@@ -114,7 +113,7 @@ class SiteFourPageFlavor extends React.Component {
         if (mcRequest) {
             if (mcRequest.response) {
                 let response = mcRequest.response;
-                if (response.data.length > 0) {
+                if (response.data && response.data.length > 0) {
                     _self.multiRequestData = [..._self.multiRequestData, ...response.data]
                 }
             }
@@ -178,4 +177,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageFlavor)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(SiteFourPageFlavor));

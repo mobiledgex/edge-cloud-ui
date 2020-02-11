@@ -108,7 +108,7 @@ class SiteFourPageFlavor extends React.Component {
         if (mcRequest) {
             if (mcRequest.response) {
                 let response = mcRequest.response;
-                if (response.data.length > 0) {
+                if (response.data && response.data.length > 0) {
                     _self.multiRequestData = [..._self.multiRequestData, ...response.data]
                 }
             }
