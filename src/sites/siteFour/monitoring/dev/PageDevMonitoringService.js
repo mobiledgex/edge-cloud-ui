@@ -11,139 +11,142 @@ import {sendSyncRequest} from "../../../../services/serviceMC";
 import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
 
 export const getClusterLevelUsageList = async (clusterList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
-    let instanceBodyList = []
-    let store = JSON.parse(localStorage.PROJECT_INIT);
-    let token = store ? store.userToken : 'null';
+    try {
+        let instanceBodyList = []
+        let store = JSON.parse(localStorage.PROJECT_INIT);
+        let token = store ? store.userToken : 'null';
 
-    for (let index = 0; index < clusterList.length; index++) {
-        let instanceInfoOneForm = makeFormForClusterLevelMatric(clusterList[index], pHardwareType, token, recentDataLimitCount, pStartTime, pEndTime)
-        instanceBodyList.push(instanceInfoOneForm);
-    }
-
-    let promiseList = []
-    for (let index = 0; index < instanceBodyList.length; index++) {
-        promiseList.push(getClusterLevelMatric(instanceBodyList[index], token))
-    }
-    let clusterLevelUsageList = await Promise.all(promiseList);
-    let newClusterLevelUsageList = []
-    clusterLevelUsageList.map((item, index) => {
-
-        let sumSendBytes = 0;
-        let sumRecvBytes = 0;
-        let sumUdpSent = 0;
-        let sumUdpRecv = 0;
-        let sumUdpRecvErr = 0;
-        let sumTcpConns = 0;
-        let sumTcpRetrans = 0;
-        let sumMemUsage = 0;
-        let sumDiskUsage = 0;
-        let sumCpuUsage = 0;
-        let columns = []
-        let cluster = ''
-        let dev = '';
-        let cloudlet = '';
-        let operator = '';
-
-        if (item.data["0"].Series !== null) {
-
-            columns = item.data["0"].Series["0"].columns
-            let udpSeriesList = item.data["0"].Series["0"].values
-            let tcpSeriesList = item.data["0"].Series["1"].values
-            let networkSeriesList = item.data["0"].Series["2"].values
-            let memSeriesList = item.data["0"].Series["3"].values
-            let diskSeriesList = item.data["0"].Series["4"].values
-            let cpuSeriesList = item.data["0"].Series["5"].values
-            udpSeriesList.map(item => {
-                sumUdpSent += item[12];
-                sumUdpRecv += item[13];
-                sumUdpRecvErr += item[14];
-            })
-
-            tcpSeriesList.map(item => {
-                sumTcpConns += item[10]
-                sumTcpRetrans += item[11]
-            })
-
-            networkSeriesList.map(item => {
-                sumSendBytes += item[8]
-                sumRecvBytes += item[9]
-            })
-
-            memSeriesList.map(item => {
-                sumMemUsage += item[6]
-            })
-
-            diskSeriesList.map(item => {
-                sumDiskUsage += item[7]
-            })
-
-            cpuSeriesList.map(item => {
-                sumCpuUsage += item[5]
-            })
-
-
-            newClusterLevelUsageList.push({
-                cluster: clusterList[index].ClusterName,
-                cloudletLocation: clusterList[index].CloudletLocation,
-                dev: clusterList[index].Region,
-                cloudlet: clusterList[index].Cloudlet,
-                operator: clusterList[index].Operator,
-                sumUdpSent: sumUdpSent / 10,
-                sumUdpRecv: sumUdpRecv / 10,
-                sumUdpRecvErr: sumUdpRecvErr / 10,
-                sumTcpConns: sumTcpConns / 10,
-                sumTcpRetrans: sumTcpRetrans / 10,
-                sumSendBytes: sumSendBytes / 10,
-                sumRecvBytes: sumRecvBytes / 10,
-                sumMemUsage: sumMemUsage / 10,
-                sumDiskUsage: sumDiskUsage / 10,
-                sumCpuUsage: sumCpuUsage / 10,
-                columns: columns,
-                udpSeriesList,
-                tcpSeriesList,
-                networkSeriesList,
-                memSeriesList,
-                diskSeriesList,
-                cpuSeriesList,
-
-
-            })
-
-        } else {//Seires is null
-            newClusterLevelUsageList.push({
-                cluster: clusterList[index].ClusterName,
-                cloudletLocation: clusterList[index].CloudletLocation,
-                dev: clusterList[index].Region,
-                cloudlet: clusterList[index].Cloudlet,
-                operator: clusterList[index].Operator,
-                sumUdpSent: 0,
-                sumUdpRecv: 0,
-                sumUdpRecvErr: 0,
-                sumTcpConns: 0,
-                sumTcpRetrans: 0,
-                sumSendBytes: 0,
-                sumRecvBytes: 0,
-                sumMemUsage: 0,
-                sumDiskUsage: 0,
-                sumCpuUsage: 0,
-                columns: 0,
-                udpSeriesList: [],
-                tcpSeriesList: [],
-                networkSeriesList: [],
-                memSeriesList: [],
-                diskSeriesList: [],
-                cpuSeriesList: [],
-
-
-            })
+        for (let index = 0; index < clusterList.length; index++) {
+            let instanceInfoOneForm = makeFormForClusterLevelMatric(clusterList[index], pHardwareType, token, recentDataLimitCount, pStartTime, pEndTime)
+            instanceBodyList.push(instanceInfoOneForm);
         }
 
-    })
+        let promiseList = []
+        for (let index = 0; index < instanceBodyList.length; index++) {
+            promiseList.push(getClusterLevelMatric(instanceBodyList[index], token))
+        }
+        let clusterLevelUsageList = await Promise.all(promiseList);
+        let newClusterLevelUsageList = []
+        clusterLevelUsageList.map((item, index) => {
 
-    console.log('newClusterLevelUsageList===>', newClusterLevelUsageList)
+            let sumSendBytes = 0;
+            let sumRecvBytes = 0;
+            let sumUdpSent = 0;
+            let sumUdpRecv = 0;
+            let sumUdpRecvErr = 0;
+            let sumTcpConns = 0;
+            let sumTcpRetrans = 0;
+            let sumMemUsage = 0;
+            let sumDiskUsage = 0;
+            let sumCpuUsage = 0;
+            let columns = []
+            let cluster = ''
+            let dev = '';
+            let cloudlet = '';
+            let operator = '';
+
+            if (item.data["0"].Series !== null) {
+
+                columns = item.data["0"].Series["0"].columns
+                let udpSeriesList = item.data["0"].Series["0"].values
+                let tcpSeriesList = item.data["0"].Series["1"].values
+                let networkSeriesList = item.data["0"].Series["2"].values
+                let memSeriesList = item.data["0"].Series["3"].values
+                let diskSeriesList = item.data["0"].Series["4"].values
+                let cpuSeriesList = item.data["0"].Series["5"].values
+                udpSeriesList.map(item => {
+                    sumUdpSent += item[12];
+                    sumUdpRecv += item[13];
+                    sumUdpRecvErr += item[14];
+                })
+
+                tcpSeriesList.map(item => {
+                    sumTcpConns += item[10]
+                    sumTcpRetrans += item[11]
+                })
+
+                networkSeriesList.map(item => {
+                    sumSendBytes += item[8]
+                    sumRecvBytes += item[9]
+                })
+
+                memSeriesList.map(item => {
+                    sumMemUsage += item[6]
+                })
+
+                diskSeriesList.map(item => {
+                    sumDiskUsage += item[7]
+                })
+
+                cpuSeriesList.map(item => {
+                    sumCpuUsage += item[5]
+                })
 
 
-    return newClusterLevelUsageList;
+                newClusterLevelUsageList.push({
+                    cluster: clusterList[index].ClusterName,
+                    cloudletLocation: clusterList[index].CloudletLocation,
+                    dev: clusterList[index].Region,
+                    cloudlet: clusterList[index].Cloudlet,
+                    operator: clusterList[index].Operator,
+                    sumUdpSent: sumUdpSent / 10,
+                    sumUdpRecv: sumUdpRecv / 10,
+                    sumUdpRecvErr: sumUdpRecvErr / 10,
+                    sumTcpConns: sumTcpConns / 10,
+                    sumTcpRetrans: sumTcpRetrans / 10,
+                    sumSendBytes: sumSendBytes / 10,
+                    sumRecvBytes: sumRecvBytes / 10,
+                    sumMemUsage: sumMemUsage / 10,
+                    sumDiskUsage: sumDiskUsage / 10,
+                    sumCpuUsage: sumCpuUsage / 10,
+                    columns: columns,
+                    udpSeriesList,
+                    tcpSeriesList,
+                    networkSeriesList,
+                    memSeriesList,
+                    diskSeriesList,
+                    cpuSeriesList,
+
+
+                })
+
+            } else {//Seires is null
+                newClusterLevelUsageList.push({
+                    cluster: clusterList[index].ClusterName,
+                    cloudletLocation: clusterList[index].CloudletLocation,
+                    dev: clusterList[index].Region,
+                    cloudlet: clusterList[index].Cloudlet,
+                    operator: clusterList[index].Operator,
+                    sumUdpSent: 0,
+                    sumUdpRecv: 0,
+                    sumUdpRecvErr: 0,
+                    sumTcpConns: 0,
+                    sumTcpRetrans: 0,
+                    sumSendBytes: 0,
+                    sumRecvBytes: 0,
+                    sumMemUsage: 0,
+                    sumDiskUsage: 0,
+                    sumCpuUsage: 0,
+                    columns: 0,
+                    udpSeriesList: [],
+                    tcpSeriesList: [],
+                    networkSeriesList: [],
+                    memSeriesList: [],
+                    diskSeriesList: [],
+                    cpuSeriesList: [],
+
+
+                })
+            }
+
+        })
+
+        console.log('newClusterLevelUsageList===>', newClusterLevelUsageList)
+
+        return newClusterLevelUsageList;
+    } catch (e) {
+        return [];
+    }
 }
 
 

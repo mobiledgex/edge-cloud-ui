@@ -340,8 +340,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 })
             }
+            let allClusterUsageList = []
+            try {
+                allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
+            } catch (e) {
 
-            let allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
+            }
 
 
             //fixme: fakeData
