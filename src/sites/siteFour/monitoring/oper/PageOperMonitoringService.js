@@ -53,18 +53,20 @@ export const handleBubbleChartDropDownForCloudlet = async (hwType, _this: PageOp
         currentHardwareType: hwType,
     });
 
-    let allUsageList = _this.state.allUsageList;
+    let allUsageList = _this.state.filteredCloudletUsageList;
     let bubbleChartData = [];
 
-    console.log('sldkflskdflksdlfklsdkfk====>', allUsageList);
+
+    console.log('allUsageList===>', allUsageList);
+
 
     if (hwType === 'vCPU') {
         allUsageList.map((item, index) => {
             bubbleChartData.push({
                 index: index,
                 label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: (item.avgVCpuUsed * 1).toFixed(0),
-                favor: (item.avgVCpuUsed * 1).toFixed(0),
+                value: (item.sumVCpuUsage * 1).toFixed(0),
+                favor: (item.sumVCpuUsage * 1).toFixed(0),
                 fullLabel: item.cloudlet,
             })
         })
@@ -73,8 +75,8 @@ export const handleBubbleChartDropDownForCloudlet = async (hwType, _this: PageOp
             bubbleChartData.push({
                 index: index,
                 label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: item.avgMemUsed,
-                favor: item.avgMemUsed,
+                value: item.sumMemUsage,
+                favor: item.sumMemUsage,
                 fullLabel: item.cloudlet,
             })
         })
@@ -83,8 +85,8 @@ export const handleBubbleChartDropDownForCloudlet = async (hwType, _this: PageOp
             bubbleChartData.push({
                 index: index,
                 label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: item.avgDiskUsed,
-                favor: item.avgDiskUsed,
+                value: item.sumDiskUsage,
+                favor: item.sumDiskUsage,
                 fullLabel: item.cloudlet,
             })
         })
@@ -93,8 +95,8 @@ export const handleBubbleChartDropDownForCloudlet = async (hwType, _this: PageOp
             bubbleChartData.push({
                 index: index,
                 label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: item.avgNetRecv,
-                favor: item.avgNetRecv,
+                value: item.sumRecvBytes,
+                favor: item.sumRecvBytes,
                 fullLabel: item.cloudlet,
             })
         })
@@ -103,8 +105,8 @@ export const handleBubbleChartDropDownForCloudlet = async (hwType, _this: PageOp
             bubbleChartData.push({
                 index: index,
                 label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: item.avgNetSend,
-                favor: item.avgNetSend,
+                value: item.sumSendBytes,
+                favor: item.sumSendBytes,
                 fullLabel: item.cloudlet,
             })
         })
@@ -113,8 +115,8 @@ export const handleBubbleChartDropDownForCloudlet = async (hwType, _this: PageOp
             bubbleChartData.push({
                 index: index,
                 label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: item.avgFloatingIpsUsed,
-                favor: item.avgFloatingIpsUsed,
+                value: item.sumFloatingIpsUsage,
+                favor: item.sumFloatingIpsUsage,
                 fullLabel: item.cloudlet,
             })
         })
@@ -123,8 +125,8 @@ export const handleBubbleChartDropDownForCloudlet = async (hwType, _this: PageOp
             bubbleChartData.push({
                 index: index,
                 label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: item.avgIpv4Used,
-                favor: item.avgIpv4Used,
+                value: item.sumIpv4Usage,
+                favor: item.sumIpv4Usage,
                 fullLabel: item.cloudlet,
             })
         })
@@ -363,7 +365,7 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
         }
 
     }).catch(e => {
-       // showToast(e.toString())
+        // showToast(e.toString())
     })
     return result;
 }
