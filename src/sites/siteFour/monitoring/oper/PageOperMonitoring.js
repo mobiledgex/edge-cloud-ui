@@ -696,6 +696,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             } catch (e) {
 
+            }finally {
+                await this.setState({
+                    loading: false,
+                    isReady: true,
+                })
             }
 
         }
