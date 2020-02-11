@@ -528,7 +528,7 @@ export const renderBubbleChartForCloudlet = (_this: PageAdminMonitoring, hardwar
 
 
         return (
-            <div style={{display: 'flex', flexDirection: 'row', zIndex:1}}>
+            <div style={{display: 'flex', flexDirection: 'row', zIndex: 1}}>
                 <div style={{
                     //backgroundColor: 'blue',
                     backgroundColor: '#1e2124',
@@ -837,7 +837,7 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
                     {chunkedCloudletListOfColSize.map((item, index) => {
                         return (
                             <div
-                                style={{display: 'flex', margin:'0 5px'}}
+                                style={{display: 'flex', margin: '0 5px'}}
                                 onClick={() => {
                                     _this.setState({
                                         currentSixGridIndex: index,
@@ -872,7 +872,7 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
             <div className='page_monitoring_grid_wrap'>
                 {pListItem.map((item, index) =>
                     <div className='page_monitoring_grid_box_layout'>
-                        <div className='page_monitoring_grid_box' >
+                        <div className='page_monitoring_grid_box'>
                             <div className='page_monitoring_grid_box_name'>
                                 {item.name}
                             </div>
@@ -934,8 +934,8 @@ export const getCloudletList = async () => {
         let token = store ? store.userToken : 'null';
         //data: { region: region, org: _self.props.selectOrg || localStorage.selectOrg }
 
-        let requestData = {token: token, method: SHOW_ORG_CLOUDLET, data: {region: REGION.EU, org: localStorage.selectOrg}};
-        let requestData2 = {token: token, method: SHOW_ORG_CLOUDLET, data: {region: REGION.US, org: localStorage.selectOrg}};
+        let requestData = {showSpinner: false, token: token, method: SHOW_ORG_CLOUDLET, data: {region: REGION.EU, org: localStorage.selectOrg}};
+        let requestData2 = {showSpinner: false, token: token, method: SHOW_ORG_CLOUDLET, data: {region: REGION.US, org: localStorage.selectOrg}};
         let promiseList = []
 
         promiseList.push(sendSyncRequest(this, requestData))
@@ -980,8 +980,8 @@ export const getCloudletListAll = async () => {
         let token = store ? store.userToken : 'null';
         //data: { region: region, org: _self.props.selectOrg || localStorage.selectOrg }
 
-        let requestData = {token: token, method: SHOW_CLOUDLET, data: {region: REGION.EU}};
-        let requestData2 = {token: token, method: SHOW_CLOUDLET, data: {region: REGION.US}};
+        let requestData = {showSpinner: false, token: token, method: SHOW_CLOUDLET, data: {region: REGION.EU}};
+        let requestData2 = {showSpinner: false, token: token, method: SHOW_CLOUDLET, data: {region: REGION.US}};
         let promiseList = []
 
         promiseList.push(sendSyncRequest(this, requestData))
