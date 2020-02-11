@@ -894,6 +894,69 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+        renderCloudletEventLog(){
+            return (
+                <div className='page_monitoring_column'>
+                    <div className='page_monitoring_title_area'>
+                        <div className='page_monitoring_title_select'>
+                            Cloudlet Event Log
+                        </div>
+                        <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
+                            <Table.Header className="viewListTableHeader">
+                                <Table.Row>
+                                    <Table.HeaderCell>
+                                        Time
+                                    </Table.HeaderCell>
+                                    <Table.HeaderCell>
+                                        Cloudlet
+                                    </Table.HeaderCell>
+                                    <Table.HeaderCell>
+                                        Event
+                                    </Table.HeaderCell>
+                                    <Table.HeaderCell>
+                                        Status
+                                    </Table.HeaderCell>
+                                </Table.Row>
+                            </Table.Header>
+                            <Table.Body className="">
+                                {/*todo: 데이터가 없는경우*/}
+                                {/*todo: 데이터가 없는경우*/}
+                                {/*todo: 데이터가 없는경우*/}
+                                {!this.state.cloudletSelectLoading && this.state.cloudletEventLogs.length === 0 &&
+                                <Table.Row className='page_monitoring_popup_table_row'>
+                                    <div styl={{display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', backgroundColor: 'red'}}>
+                                        NO DATA
+                                    </div>
+                                </Table.Row>
+                                }
+                                {this.state.cloudletSelectLoading && renderPlaceHolderLottie(100, 100)}
+                                {!this.state.cloudletSelectLoading && this.state.cloudletEventLogs.map(item => {
+                                    return (
+                                        <Table.Row className='page_monitoring_popup_table_row'>
+
+                                            <Table.Cell>
+                                                {item[0]}
+                                            </Table.Cell>
+                                            <Table.Cell>
+                                                {item[1]}
+                                            </Table.Cell>
+                                            <Table.Cell>
+                                                {item[3]}
+                                            </Table.Cell>
+                                            <Table.Cell>
+                                                {item[4]}
+                                            </Table.Cell>
+
+                                        </Table.Row>
+                                    )
+                                })}
+                            </Table.Body>
+                        </Table>
+                    </div>
+                </div>
+            )
+        }
+
 
         render() {
             // todo: Components showing when the loading of graph data is not completed.
@@ -1041,72 +1104,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* row2___col___2*/}
                                                 {/* row2___col___2*/}
                                                 {/* row2___col___2*/}
-                                                <div className='page_monitoring_column'>
-                                                    <div className='page_monitoring_title_area'>
-                                                        <div className='page_monitoring_title_select'>
-                                                            Cloudlet Event Log
-                                                        </div>
-                                                        <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
-                                                            <Table.Header className="viewListTableHeader">
-                                                                <Table.Row>
-                                                                    <Table.HeaderCell>
-                                                                        Time
-                                                                    </Table.HeaderCell>
-                                                                    <Table.HeaderCell>
-                                                                        Cloudlet
-                                                                    </Table.HeaderCell>
-                                                                    <Table.HeaderCell>
-                                                                        Event
-                                                                    </Table.HeaderCell>
-                                                                    <Table.HeaderCell>
-                                                                        Status
-                                                                    </Table.HeaderCell>
-                                                                </Table.Row>
-                                                            </Table.Header>
-                                                            <Table.Body className="">
-                                                                {/*
-                                                                "time",0
-                                                                "cloudlet",1
-                                                                "operator",2
-                                                                "event",3
-                                                                "status"4
-                                                                */}
-
-                                                                {/*todo: 데이터가 없는경우*/}
-                                                                {/*todo: 데이터가 없는경우*/}
-                                                                {/*todo: 데이터가 없는경우*/}
-                                                                {!this.state.cloudletSelectLoading && this.state.cloudletEventLogs.length === 0 &&
-                                                                <Table.Row className='page_monitoring_popup_table_row'>
-                                                                    <div styl={{display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', backgroundColor: 'red'}}>
-                                                                        NO DATA
-                                                                    </div>
-                                                                </Table.Row>
-                                                                }
-                                                                {this.state.cloudletSelectLoading && renderPlaceHolderLottie(100, 100)}
-                                                                {!this.state.cloudletSelectLoading && this.state.cloudletEventLogs.map(item => {
-                                                                    return (
-                                                                        <Table.Row className='page_monitoring_popup_table_row'>
-
-                                                                            <Table.Cell>
-                                                                                {item[0]}
-                                                                            </Table.Cell>
-                                                                            <Table.Cell>
-                                                                                {item[1]}
-                                                                            </Table.Cell>
-                                                                            <Table.Cell>
-                                                                                {item[3]}
-                                                                            </Table.Cell>
-                                                                            <Table.Cell>
-                                                                                {item[4]}
-                                                                            </Table.Cell>
-
-                                                                        </Table.Row>
-                                                                    )
-                                                                })}
-                                                            </Table.Body>
-                                                        </Table>
-                                                    </div>
-                                                </div>
+                                                {this.renderCloudletEventLog()}
 
 
                                             </div>
