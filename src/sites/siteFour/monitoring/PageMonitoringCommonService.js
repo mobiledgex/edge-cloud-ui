@@ -784,6 +784,14 @@ export const StylesForMonitoring = {
         color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center', backgroundColor: 'transparent'
         , justifyContent: 'center', alignItems: 'center', width: '100%', height: 35
     },
+    center : {
+        display:'flex',
+        alignSelf:'center',
+        justifyContent:'center',
+        alignItems:'center',
+        width:'100%',
+        //backgroundColor:'red'
+    }
 
 }
 

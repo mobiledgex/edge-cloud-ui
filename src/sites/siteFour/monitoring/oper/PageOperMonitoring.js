@@ -655,7 +655,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         handleSelectCloudlet = async (cloudletSelectedOne, isDropdownAction = false) => {
-            try{
+            try {
                 let selectedCloudlet = cloudletSelectedOne.toString().split("|")[0];
                 let selectedRegion = cloudletSelectedOne.toString().split("|")[1];
                 this.setState({
@@ -679,7 +679,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     // filteredCloudletList: filteredCloudletList,
                     cloudletSelectLoading: false,
                     filteredCloudletUsageList: filteredCloudletUsageList,
-                    cloudletEventLogs: cloudletEventLogs,
+                    cloudletEventLogs: cloudletEventLogs === undefined ? [] : cloudletEventLogs,
+                    isReady: true,
 
                 })
 
@@ -689,7 +690,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         filteredCloudletList: filteredCloudletList,
                     })
                 }
-            }catch (e) {
+            } catch (e) {
 
             }
 
@@ -754,10 +755,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     this.setState({
                                         currentCloudLet: value,
                                     }, () => {
-                                        try{
+                                        try {
                                             this.handleSelectCloudlet(value, true)
 
-                                        }catch (e) {
+                                        } catch (e) {
                                             showToast(e.toString())
                                         }
 
@@ -894,7 +895,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderCloudletEventLog(){
+        renderCloudletEventLog() {
             return (
                 <div className='page_monitoring_column'>
                     <div className='page_monitoring_title_area'>
@@ -929,7 +930,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     </div>
                                 </Table.Row>
                                 }
-                                {this.state.cloudletSelectLoading && renderPlaceHolderLottie(100, 100)}
+                                {this.state.cloudletSelectLoading &&
+                                <div style={StylesForMonitoring.center}>
+                                    <CircularProgress style={{color:'#1cecff', marginTop:50}}/>
+                                </div>
+                                }
                                 {!this.state.cloudletSelectLoading && this.state.cloudletEventLogs.map(item => {
                                     return (
                                         <Table.Row className='page_monitoring_popup_table_row'>

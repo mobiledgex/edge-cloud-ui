@@ -200,7 +200,7 @@ export const renderBottomGridAreaForCloudlet = (_this: PageOperMonitoring) => {
                         />
                     </Table.Cell>
                 </Table.Row>}
-                {_this.state.isReady && _this.state.allUsageList.map((item: TypeCloudletUsageList, index) => {
+                {_this.state.isReady && _this.state.filteredCloudletUsageList.map((item, index) => {
                     return (
                         <Table.Row className='page_monitoring_popup_table_row'>
 
@@ -210,14 +210,24 @@ export const renderBottomGridAreaForCloudlet = (_this: PageOperMonitoring) => {
                             <Table.Cell>
                                 {item.cloudlet}
                             </Table.Cell>
+
+                            {/*return numberWithCommas(usageOne.sumVCpuUsage) + ""
+                            return numberWithCommas((usageOne.sumMemUsage / 1000000).toFixed(2)) + " MByte"
+                            return numberWithCommas(usageOne.sumDiskUsage) + " Byte"
+                            return numberWithCommas(usageOne.sumRecvBytes) + " Byte";
+                            return numberWithCommas(usageOne.sumSendBytes) + " Byte";
+                            return usageOne.sumActiveConnection
+                            return usageOne.sumHandledConnection
+                            return usageOne.sumAcceptsConnection*/}
+
                             <Table.Cell>
                                 <div>
                                     <div>
-                                        {item.avgVCpuUsed.toFixed(2) + '%'}
+                                        {item.sumVCpuUsage.toFixed(0) }
                                     </div>
                                     <div>
                                         <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
-                                                  percent={(item.avgVCpuUsed / this.state.maxCpu * 100)}
+                                                  percent={(item.sumVCpuUsage / _this.state.maxCpu * 100)}
                                             //percent={(item.sumCpuUsage / this.state.gridInstanceListCpuMax) * 100}
                                                   strokeColor={'#29a1ff'} status={'normal'}/>
                                     </div>
@@ -226,30 +236,30 @@ export const renderBottomGridAreaForCloudlet = (_this: PageOperMonitoring) => {
                             <Table.Cell>
                                 <div>
                                     <div>
-                                        {numberWithCommas(item.avgMemUsed) + ' Byte'}
+                                        {numberWithCommas(item.sumMemUsage) + ' Byte'}
                                     </div>
                                     <div>
                                         <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
-                                                  percent={(item.avgMemUsed / this.state.maxMem * 100)}
+                                                  percent={(item.sumMemUsage / _this.state.maxMem * 100)}
                                                   strokeColor={'#29a1ff'} status={'normal'}/>
                                     </div>
 
                                 </div>
                             </Table.Cell>
                             <Table.Cell>
-                                {numberWithCommas(item.avgDiskUsed) + ' Byte'}
+                                {numberWithCommas(item.sumDiskUsage) + ' Byte'}
                             </Table.Cell>
                             <Table.Cell>
-                                {numberWithCommas(item.avgNetRecv) + ' Byte'}
+                                {numberWithCommas(item.sumRecvBytes) + ' Byte'}
                             </Table.Cell>
                             <Table.Cell>
-                                {numberWithCommas(item.avgNetSend) + ' Byte'}
+                                {numberWithCommas(item.sumSendBytes) + ' Byte'}
                             </Table.Cell>
                             <Table.Cell>
-                                {item.avgFloatingIpsUsed}
+                                {item.sumFloatingIpsUsage}
                             </Table.Cell>
                             <Table.Cell>
-                                {item.avgIpv4Used}
+                                {item.sumIpv4Usage}
                             </Table.Cell>
                         </Table.Row>
 
