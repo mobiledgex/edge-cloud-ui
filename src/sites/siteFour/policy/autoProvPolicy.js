@@ -74,7 +74,7 @@ class SiteFourPageFlavor extends React.Component {
         }
         let mcRequest = await serviceMC.sendSyncRequest(this, { token: this.getToken(), method: serviceMC.getEP().DELETE_AUTO_PROV_POLICY, data: requestData })
         if (mcRequest.response && mcRequest.response.status === 200) {
-            this.props.handleAlertInfo('success', `Prov Policy ${data.AutoPolicyName} Deleted Successfully`)
+            this.props.handleAlertInfo('success', `Auto Provision Policy ${data.AutoPolicyName} Deleted Successfully`)
         }
         this.props.handleComputeRefresh(true);
     }

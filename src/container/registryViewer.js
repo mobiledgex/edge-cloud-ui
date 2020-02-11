@@ -84,7 +84,7 @@ class RegistryViewer extends React.Component {
                     'DefaultFlavor':{label:'Default Flavor', type:'FlavorSelect', necessary:true, tip:'FlavorKey uniquely identifies a Flavor.', active:true},
                     'DefaultPrivacyPolicy':{label:'Default Privacy Policy', type:'PrivacyPolicySelect', necessary:false, tip:'Privacy policy when creating auto cluster', active:true},
                     'Ports':{label:'Ports', type:'CustomPorts', necessary:false, tip:'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443', active:true, items:['tcp', 'udp']},
-                    'AutoProvPolicy':{label:'Auto Prov Policy', type:'ProvPolicySelect', necessary:false, tip:'Select Prov Policy', active:true},
+                    'AutoProvPolicy':{label:'Auto Provision Policy', type:'ProvPolicySelect', necessary:false, tip:'Select Auto Provision Policy', active:true},
                     'DefaultFQDN':{label:'Official FQDN', type:'RenderInput', necessary:false, tip:'Official FQDN', active:true},
                     'PackageName':{label:'Package Name', type:'RenderInput', necessary:false, tip:'Package Name', active:true},
                     // 'IpAccess':{label:'IP Access', type:'IPSelect', necessary:false, tip:'aaa', active:true, items:['IpAccessShared', 'IpAcessDedicaterd']},
