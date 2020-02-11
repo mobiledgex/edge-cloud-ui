@@ -413,7 +413,13 @@ class SiteFourCreateFormAppDefault extends React.Component {
 
     getPlaceholder = (obj) => {
         console.log('202002-7 get place holder--', obj.key, ":", this.state.editData)
-        return (!this.state.editDsb) ? obj.placeholder : this.state.editData[obj.key]
+        let setData = null;
+        if(obj.fid === 'singlePort') {
+            let sIndex = this.state.editData[obj.key].indexOf(':');
+            setData = this.state.editData[obj.key].substring(0, sIndex);
+        }
+        
+        return (!this.state.editDsb) ? obj.placeholder :  setData ? setData : this.state.editData[obj.key]
     }
 
     getError = (key) => {
@@ -422,8 +428,13 @@ class SiteFourCreateFormAppDefault extends React.Component {
     }
 
     getFieldValue = (obj) => {
-        console.log('202002-7 get field value--', obj.key, ":", this.state.editData)
-        return (!this.state.editDsb) ? obj.value : this.state.editData[obj.key]
+        console.log('202002-7 get field value--', obj.id, ":", this.state.editData)
+        let setData = null;
+        if(obj.id === 'port') {
+            let sIndex = this.state.editData[obj.key].indexOf(':');
+            setData = this.state.editData[obj.key].substring(0, sIndex);
+        }
+        return (!this.state.editDsb) ? setData : this.state.editData[obj.key]
     }
 
     render() {
@@ -613,7 +624,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                                                                     fid = {'multiPort'}
                                                                                                                                     component={renderSelectMlt}
                                                                                                                                     placeholder={'Select port'}
-                                                                                                                                    value={data[key]}
+                                                                                                                                    value={this.getFieldValue({value:data[key], key:key, id:'port'})}
                                                                                                                                     options={['TCP', 'UDP']}
                                                                                                                                     name={key + 'select_' + item.num}
                                                                                                                                     error={(this.props.validError.indexOf(key + 'select_' + i) !== -1) ? 'Required' : ''}
@@ -640,8 +651,8 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                                                                 <Field
                                                                                                                                     fid = {'singlePort'}
                                                                                                                                     component={renderSelect}
-                                                                                                                                    placeholder={this.getPlaceholder({placeholder:'Select port', key: key, pId: pId})}
-                                                                                                                                    value={this.getPlaceholder({placeholder:data[key], key: key, pId: pId})}
+                                                                                                                                    placeholder={this.getPlaceholder({placeholder:'Select port', key: key, pId: pId, fid:'singlePort'})}
+                                                                                                                                    value={this.getFieldValue({value:data[key], key:key, id:'port'})}
                                                                                                                                     options={['TCP', 'UDP']}
                                                                                                                                     name={key + 'select_' + item.num}
                                                                                                                                     error={(this.props.validError.indexOf(key + 'select_' + i) !== -1) ? 'Required' : ''}
