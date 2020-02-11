@@ -3,7 +3,7 @@ import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import OutsideClickHandler from 'react-outside-click-handler';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Button, Dropdown, Grid, Modal, Tab, Table} from 'semantic-ui-react'
+import {Button, Dropdown, Grid, Modal, Tab, Table, Icon} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
@@ -56,7 +56,7 @@ import MapboxComponent from "./MapboxComponent";
 import * as reducer from "../../../../utils";
 import {CircularProgress} from "@material-ui/core";
 import {TabPanel, Tabs} from "react-tabs";
-
+import TerminalViewer from '../../../../container/TerminalViewer';
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
 const {Column, Row} = Grid;
@@ -152,7 +152,8 @@ type State = {
     placeHolderEndTime: string,
     allConnectionsUsageList: Array,
     filteredConnectionsUsageList: Array,
-
+    terminalData:Array,
+    openTerminal:Boolean,
     connectionsTabIndex: number,
     tcpTabIndex: number,
     udpTabIndex: number,
@@ -806,7 +807,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         ]
 
-
         renderHeader = () => {
 
             return (
@@ -846,6 +846,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                             >RESET</Button>
                         </div>
+                        {this.state.terminalData ? 
+                        <div style={{ marginLeft: '10px' }}>
+                            <Button onClick={()=>this.setState({ openTerminal: true })}><Icon name="terminal" /></Button>   
+                        </div> : null}
+                        
                         {/*<div style={{marginLeft: 50, color: 'green', fontWeight: 'bold', fontFamily: 'Righteous'}}>
                             {this.state.userType}
                             [ This is Developer View ]
@@ -972,6 +977,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+        validateTerminal = (appInst)=>
+        {
+            if(appInst && appInst.length > 0)
+            {
+                let runtime = appInst[0].Runtime
+                if(runtime && runtime.container_ids && runtime.container_ids.length > 0)
+                {
+                    this.setState({
+                        terminalData : appInst[0]
+                    })
+                }
+            }
+        }
+
 
         handleAppInstDropdown = async (pCurrentAppInst) => {
             clearInterval(this.interval)
@@ -1005,6 +1024,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             filteredAppList = filterUsageByClassification(filteredAppList, AppName, 'AppName');
 
             console.log('Instance_DropdownAppName', filteredAppList);
+
+            //Terminal
+            this.setState({
+                terminalData:null
+            })
+            this.validateTerminal(filteredAppList)
 
             let appInstDropdown = makeSelectBoxListWithThreeValuePipe(filteredAppList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
             await this.setState({
@@ -1510,8 +1535,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </Grid.Column>
                         </Grid.Row>
 
-                    </Grid.Column>
-
+                    </Grid.Column>  
+                    <Modal open={this.state.openTerminal} dimmer={'inverted'}>
+                        <TerminalViewer data={this.state.terminalData} dialog={true} onClose={() => { this.setState({ openTerminal: false }) }} />
+                    </Modal> 
                 </Grid.Row>
 
 

@@ -14,7 +14,6 @@ import {withRouter} from "react-router-dom";
 
 const panes = [
     { menuItem: 'Select Region', render: (props) => <Tab.Pane>{cloudletMap(props, 'cloudlets')}</Tab.Pane> }
-
 ]
 
 const clusterNode = (props) => (
@@ -77,6 +76,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
             organizeData:[],
             cloudletData:[],
             flavorData:[],
+            privacyPolicyData:[],
             clusterShow:true,
             regionInfo:{},
             locationLong:null,
@@ -132,10 +132,16 @@ class SiteFourCreateInstForm extends React.PureComponent {
         }
     }
 
-    generateCloudletItem(result) {
-        let keys = this.state.keys;
-        let cloudlet = aggregate.groupBy(result, 'CloudletName')
+    privacyPolicyResponse(mcRequest){
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                _self.groupJoin(response.data, 'privacyPolicy')
+            }
+        }
     }
+
+    
     groupJoin(result,cmpt){
 
         this.props.data.handleLoadingSpinner(false);
@@ -153,9 +159,12 @@ class SiteFourCreateInstForm extends React.PureComponent {
         else if(cmpt === 'flavor') {
             this.setState({flavorData : this.state.flavorData.concat(result)});
         }
+        else if(cmpt === 'privacyPolicy') {
+            this.setState({privacyPolicyData : this.state.privacyPolicyData.concat(result)});
+        }
 
 
-        if(this.state.organizeData.length === this.regionCount && this.state.cloudletData.length  === this.regionCount && this.state.flavorData.length  === this.regionCount) {
+        if(this.state.organizeData.length === this.regionCount && this.state.cloudletData.length  === this.regionCount && this.state.flavorData.length  === this.regionCount && this.state.privacyPolicyData.length  === this.regionCount) {
             let clusterInst = this.state.organizeData;
             let cloudlet = this.state.cloudletData;
             let arr =[]
@@ -167,8 +176,6 @@ class SiteFourCreateInstForm extends React.PureComponent {
                 })
                 arr.push(itemCinst)
             })
-            //TODO: 20190516 set devData
-
         }
     }
     resetDevData(keys,field) {
@@ -186,8 +193,23 @@ class SiteFourCreateInstForm extends React.PureComponent {
 
     }
 
+    updatePrivacyPolicyDropDown =(privacyKeys)=>
+    {
+        //Privacy Policy
+        setTimeout(() => {
+            let privacyPolicy = aggregate.groupBy(_self.state.privacyPolicyData, 'Region');
+            if (privacyPolicy) {
+                if (privacyPolicy[_self.props.selectedRegion]) privacyPolicy[_self.props.selectedRegion].map((ff) => privacyKeys.push(ff.PrivacyPolicyName));
+                _self.resetDevData(privacyKeys, 'PrivacyPolicy');
+            } else {
+                _self.resetDevData(privacyKeys, 'PrivacyPolicy');
+            }
+        }, 500)
+    }
+
     onChangeFormState = (state,value) => {
         let organizKeys = [];
+        let privacyKeys = [];
         let flavorKeys = [];
         let regions = aggregate.groupBy(_self.state.cloudletData, 'Region')
         if(state === 'Region') {
@@ -196,7 +218,9 @@ class SiteFourCreateInstForm extends React.PureComponent {
                 (aa) => organizKeys.push(aa.Organization)
             )
             _self.resetDevData(organizKeys, 'OrganizationName');
-            //
+            
+            this.updatePrivacyPolicyDropDown(privacyKeys)
+        
             let operatorKeys = [];
             setTimeout(() => {
                 let flavor = aggregate.groupBy(_self.state.flavorData, 'Region');
@@ -256,6 +280,18 @@ class SiteFourCreateInstForm extends React.PureComponent {
                 //change TAB
                 if(this.state.clusterShow) _self.setState({activeIndex:1})
             }, 500)
+        }else if(state === 'IpAccess') {
+            if(value === 'Dedicated')
+            {
+                this.props.data.keys[0].PrivacyPolicy = { label: 'Privacy Policy', type: 'RenderSelect', necessary: false, tip: 'What policy is needed to run your application?', active: true, items: ['', ''] };
+                //Privacy Policy
+                this.updatePrivacyPolicyDropDown(privacyKeys)
+            }
+            else
+            {
+                this.props.data.keys[0].PrivacyPolicy = undefined; 
+            }
+
         } else if(state === 'NumberOfNode') {
             setTimeout(() => {
                 //create node as inserted number
@@ -334,15 +370,15 @@ class SiteFourCreateInstForm extends React.PureComponent {
         }
 
         rgn.map((item) => {
-            //serviceMC.sendRequest(_self, {token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_CLOUDLET, data : {region:item}}, _self.receiveResultCloudlet)
             if(localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
                 serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResultCloudlet)
             } else {
                 serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: item, org:localStorage.selectOrg } }, _self.receiveResultCloudlet)
             }
+            serviceMC.sendRequest(_self, {token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_PRIVACY_POLICY, data: { region: item }}, _self.privacyPolicyResponse)
             serviceMC.sendRequest(_self, {token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_FLAVOR, data : {region:item}}, _self.receiveResultFlavor)
         })
-        serviceMC.sendRequest(_self, {token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_ORG}, _self.receiveResultOrg, _self)
+        serviceMC.sendRequest(_self, {token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_ORG}, _self.receiveResultOrg)
     }
     handleTabChange = (e, { activeIndex }) => {
         this.setState({ activeIndex })

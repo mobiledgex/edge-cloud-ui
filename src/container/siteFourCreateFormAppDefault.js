@@ -503,6 +503,24 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                     name={key}
                                                                                     error={this.getError(key)} />
                                                                                 :
+                                                                                (fieldKeys[pId][key]['type'] === 'PrivacyPolicySelect') ?
+                                                                                <Field
+                                                                                    component={renderSelect}
+                                                                                    placeholder={'Select Privacy Policy'}
+                                                                                    value={data[key]}
+                                                                                    options={this.props.privacyPolicyData}
+                                                                                    name={key}
+                                                                                    error={(this.props.validError.indexOf(key) !== -1) ? 'Required' : ''} />
+                                                                                :
+                                                                                (fieldKeys[pId][key]['type'] === 'ProvPolicySelect') ?
+                                                                                <Field
+                                                                                    component={renderSelect}
+                                                                                    placeholder={'Select Prov Policy'}
+                                                                                    value={data[key]}
+                                                                                    options={this.props.provPolicyData}
+                                                                                    name={key}
+                                                                                    error={(this.props.validError.indexOf(key) !== -1) ? 'Required' : ''} />
+                                                                                :
                                                                                 (fieldKeys[pId][key]['type'] === 'RegionSelect') ?
                                                                                     <Field
                                                                                         component={renderSelect}
