@@ -23,8 +23,6 @@ import './css/pages/audit.css';
 import './css/pages/cloudletPool.css';
 import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
-import LeafletTest001 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/LeafletTest001";
-import Test003 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/Test003";
 // API
 
 let self = null;
@@ -332,8 +330,7 @@ class App extends Component {
                     <Route exact path='/createAccount' component={DashboardContainer.bind(this, {mainPath:'/createAccount'})} />
                     <Route exact path='/passwordreset' component={DashboardContainer.bind(this, {mainPath:'/passwordreset'})} />
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
-                    <Route exact path='/LeafletTest001' component={LeafletTest001} />
-                    <Route exact path='/Test003' component={Test003} />
+
                 </div>
             </Router>
         );
