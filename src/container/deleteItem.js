@@ -59,6 +59,9 @@ class DeleteItem extends React.Component {
                     case 'App':
                         msg = 'Your application ' + data.app.key.name + ' deleted successfully'
                         break;
+                    case 'Cloudlet Pools':
+                        msg = 'Deleted successfully'
+                        break;
                 }
 
                 this.props.handleAlertInfo('success', msg)
