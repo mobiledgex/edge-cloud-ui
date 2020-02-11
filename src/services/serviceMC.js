@@ -118,7 +118,8 @@ export function sendWSRequest(request, callback) {
 
 
 export function sendMultiRequest(self, requestDataList, callback) {
-    showSpinner(self, true)
+    let isSpinner = requestDataList[0].showSpinner === undefined ? true : requestDataList[0].showSpinner;
+    showSpinner(self, isSpinner)
     let promise = [];
     let resResults = [];
     requestDataList.map((request) => {
@@ -144,7 +145,8 @@ export function sendMultiRequest(self, requestDataList, callback) {
 
 export const sendSyncRequest = async (self, request) => {
     try {
-        showSpinner(self, true)
+        let isSpinner = request.showSpinner === undefined ? true : request.showSpinner;
+        showSpinner(self, isSpinner)
         let response = await axios.post(EP.getPath(request), request.data,
             {
                 headers: getHeader(request)
@@ -160,7 +162,8 @@ export const sendSyncRequest = async (self, request) => {
 }
 
 export function sendRequest(self, request, callback) {
-    showSpinner(self, true)
+    let isSpinner = request.showSpinner === undefined ? true : request.showSpinner;
+    showSpinner(self, isSpinner)
     axios.post(EP.getPath(request), request.data,
         {
             headers: getHeader(request)
