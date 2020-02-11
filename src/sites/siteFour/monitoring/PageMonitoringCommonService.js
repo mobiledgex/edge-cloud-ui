@@ -207,17 +207,8 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
 
     let height = 500 + 100;
     let options = {
-        plugins: {
-            zoom: {
-                pan: {
-                    enabled: true,
-                    mode: 'y'
-                },
-                zoom: {
-                    enabled: true,
-                    mode: 'xy'
-                }
-            }
+        animation: {
+            duration: 0
         },
         maintainAspectRatio: false,//@todo
         responsive: true,//@todo

@@ -577,11 +577,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderGraphAreaForCluster(pHardwareType, barChartDataSet, lineChartDataSet) {
             return (
-                <div className='page_monitoring_dual_column'>
+                <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
                     {/*@todo:LInechart*/}
                     {/*@todo:LInechart*/}
                     {/*@todo:LInechart*/}
-                    <div className='page_monitoring_dual_container'>
+                    <div className='page_monitoring_dual_container' style={{flex: .5}}>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
                                 {convertHwTypePhrases(pHardwareType)} Usage of {this.state.loading ?
@@ -600,7 +600,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*@todo:BarChart*/}
                     {/*@todo:BarChart*/}
                     {/*@todo:BarChart*/}
-                    <div className='page_monitoring_dual_container'>
+                    <div className='page_monitoring_dual_container' style={{flex: .5}}>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
                                 Top 5 {convertHwTypePhrases(pHardwareType)} usage of {this.convertToClassification(this.state.currentClassification)}
