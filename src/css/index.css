@@ -252,6 +252,10 @@ body, button, input, textarea, optgroup, select, textarea,
     background-position: center;
     background-size: cover;
 }
+.intro_globe .ui.grid .row .signup_btn,
+.intro_globe .ui.grid .row .login_btn {
+    width: unset !important;
+}
 
 
 
