@@ -42,6 +42,12 @@ body, button, input, textarea, optgroup, select, textarea,
     background: transparent;
 }
 
+.table-no-resized {
+    height: 100%;
+    display: flex;
+    overflow: hidden;
+}
+
 .table-no-resized .react-grid-item > .react-resizable-handle {
     display: none;
     /*background: transparent;*/
@@ -732,8 +738,8 @@ body, button, input, textarea, optgroup, select, textarea,
     overflow: hidden;
 }
 .site_content_body {
-    height: calc(100% - 49px);
-    padding: 10px 0 0 0;
+    height: calc(100% - 56px);
+    padding: 0;
 }
 .site_content_body > .column {
     height: 100%;
@@ -1169,38 +1175,49 @@ body, button, input, textarea, optgroup, select, textarea,
 
 /* 4P contents style */
 .content_title {
-    color: rgba(255,255,255,.5);
-    font-size: 2em;
-    font-weight: 300;
-    padding: 10px 10px 0 10px;
-    height: 46px;
+    /*color: rgba(255,255,255,.5);*/
+    /*font-size: 2em;*/
+    /*font-weight: 300;*/
+    margin: 10px 0px 10px 0px;
+    height: 36px;
 }
 
-
-.content_title2 {
-    color: rgba(255,255,255,.5);
-    font-size: 2em;
-    font-weight: 300;
-    padding: 10px 10px 0 10px;
-}
-.content_title div {
-    display: inline-block !important;
-    vertical-align: middle;
-}
-.content_title .eight.wide.column {
-    width: 50%;
+.content_title_wrap {
+    display:flex;
+    width: 100%;
+    height:100%;
+    flex-direction: row;
+    align-items: center;
 }
 
-/* */
-.content_title .eight.wide.column.title_align {
-    width: auto;
+.content_title_label{
+    display:flex;
+    align-items: center;
+    font-size:25px;
 }
-.content_title .eight.wide.column.title_align:first-child {
-     margin-right: 10px;
+
+.content_title_wrap>div, .content_title_wrap>button, .content_title_wrap>button.ui.button {
+    margin-right:20px !important;
 }
-.content_title .button {
-    float: left;
-}
+
+/*.content_title div {*/
+/*    display: inline-block !important;*/
+/*    vertical-align: middle;*/
+/*}*/
+/*.content_title .eight.wide.column {*/
+/*    width: 50%;*/
+/*}*/
+
+/*!* *!*/
+/*.content_title .eight.wide.column.title_align {*/
+/*    width: auto;*/
+/*}*/
+/*.content_title .eight.wide.column.title_align:first-child {*/
+/*     margin-right: 10px;*/
+/*}*/
+/*.content_title .button {*/
+/*    float: left;*/
+/*}*/
 
 
 /* .user_search .input */

@@ -10,8 +10,9 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker, Progress,} from 'antd';
-import {getCloudletList, renderBubbleChartForCloudlet,} from "../admin/PageAdminMonitoringService";
+import {filterListBykey, filterListBykeyForCloudlet, getCloudletList, renderBubbleChartForCloudlet,} from "../admin/PageAdminMonitoringService";
 import {
+    CLASSIFICATION,
     HARDWARE_OPTIONS_FOR_CLOUDLET,
     HARDWARE_TYPE,
     HARDWARE_TYPE_FOR_CLOUDLET,
@@ -20,17 +21,25 @@ import {
     RECENT_DATA_LIMIT_COUNT,
     REGIONS_OPTIONS
 } from "../../../../shared/Constants";
-import Lottie from "react-lottie";
 import type {TypeCloudletUsageList, TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {numberWithCommas, renderGridLoader, renderLottieLoader, renderPlaceHolder, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
-import MiniMap from "./MiniMap";
+import {numberWithCommas, renderLottieLoader, renderPlaceHolderLottie, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
-import {getClouletLevelUsageList, renderBarGraphForCloudlet, renderLineChartForCloudlet} from "./PageOperMonitoringService";
+import {
+    getCloudletEventLog,
+    getClouletLevelUsageList,
+    handleBubbleChartDropDownForCloudlet,
+    makeBarChartDataForCloudlet,
+    makeLineChartForCloudlet,
+    renderBottomGridAreaForCloudlet
+} from "./PageOperMonitoringService";
+import LeafletMap from "./LeafletMapWrapper";
+import {filterUsageByClassification, makeSelectBoxListWithKey} from "../dev/PageDevMonitoringService";
+import Lottie from "react-lottie";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -139,6 +148,10 @@ type State = {
     intervalLoading: boolean,
     isRequesting: false,
     allCloudletUsageList: Array,
+    filteredCloudletUsageList: Array,
+    filteredCloudletList: Array,
+    cloudletEventLogs: Array,
+    cloudletSelectLoading: boolean,
 }
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
@@ -220,6 +233,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             intervalLoading: false,
             isRequesting: false,
             allCloudletUsageList: [],
+            filteredCloudletUsageList: [],
+            filteredCloudletList: [],
+            cloudletEventLogs: [],
+            cloudletSelectLoading: false,
         };
 
         interval = null;
@@ -253,6 +270,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let cloudletList = []
             cloudletList = await getCloudletList();
 
+            //fixme : fakedata
+            //cloudletList = require('./cloudletList')
+
             console.log('cloudletList222===>', cloudletList)
 
             let cloudletListForDropdown = [];
@@ -260,7 +280,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 /*{text: 'FLAVOR', value: 'flavor'},*/
                 cloudletListForDropdown.push({
                     text: item.CloudletName,
-                    value: item.CloudletName,
+                    value: item.CloudletName + "|" + item.Region,
                 })
             })
 
@@ -289,6 +309,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 allCloudletUsageList: allCloudletUsageList,
                 cloudletList: cloudletList,
+                filteredCloudletUsageList: allCloudletUsageList,
+                filteredCloudletList: cloudletList,
                 maxCpu: maxCpu,
                 maxMem: maxMem,
                 isRequesting: false,
@@ -347,129 +369,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        renderBottomGridAreaForCloudlet() {
-            return (
-                <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
-                    <Table.Header className="viewListTableHeader">
-                        <Table.Row>
-                            <Table.HeaderCell>
-                                index
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                CLOUDLET
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                vCPU(%)
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                MEM
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                DISK
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                RECV BYTES
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                SEND BYTES
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                FLOATING IPS
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                IPV4
-                            </Table.HeaderCell>
-
-                        </Table.Row>
-                    </Table.Header>
-                    <Table.Body className="tbBodyList"
-                                ref={(div) => {
-                                    this.messageList = div;
-                                }}
-                    >
-                        {/*-----------------------*/}
-                        {/*todo:ROW HEADER        */}
-                        {/*-----------------------*/}
-                        {!this.state.isReady &&
-                        <Table.Row className='page_monitoring_popup_table_empty'>
-                            <Table.Cell>
-                                <Lottie
-                                    options={{
-                                        loop: true,
-                                        autoplay: true,
-                                        animationData: require('../../../../lotties/loader001'),
-                                        rendererSettings: {
-                                            preserveAspectRatio: 'xMidYMid slice'
-                                        }
-                                    }}
-                                    height={240}
-                                    width={240}
-                                    isStopped={false}
-                                    isPaused={false}
-                                />
-                            </Table.Cell>
-                        </Table.Row>}
-                        {this.state.isReady && this.state.allUsageList.map((item: TypeCloudletUsageList, index) => {
-
-                            return (
-                                <Table.Row className='page_monitoring_popup_table_row'>
-
-                                    <Table.Cell>
-                                        {index}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {item.cloudlet}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <div>
-                                            <div>
-                                                {item.avgVCpuUsed.toFixed(2) + '%'}
-                                            </div>
-                                            <div>
-                                                <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
-                                                          percent={(item.avgVCpuUsed / this.state.maxCpu * 100)}
-                                                    //percent={(item.sumCpuUsage / this.state.gridInstanceListCpuMax) * 100}
-                                                          strokeColor={'#29a1ff'} status={'normal'}/>
-                                            </div>
-                                        </div>
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <div>
-                                            <div>
-                                                {numberWithCommas(item.avgMemUsed) + ' Byte'}
-                                            </div>
-                                            <div>
-                                                <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
-                                                          percent={(item.avgMemUsed / this.state.maxMem * 100)}
-                                                          strokeColor={'#29a1ff'} status={'normal'}/>
-                                            </div>
-
-                                        </div>
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {numberWithCommas(item.avgDiskUsed) + ' Byte'}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {numberWithCommas(item.avgNetRecv) + ' Byte'}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {numberWithCommas(item.avgNetSend) + ' Byte'}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {item.avgFloatingIpsUsed}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {item.avgIpv4Used}
-                                    </Table.Cell>
-                                </Table.Row>
-
-                            )
-                        })}
-                    </Table.Body>
-                </Table>
-            )
-        }
-
         renderCpuTabArea() {
             return (
                 <div className='page_monitoring_dual_column'>
@@ -480,11 +379,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                TOP5 of CPU Usage
+                                TOP5 of CPU Count
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCloudlet(this.state.allCloudletUsageList, HARDWARE_TYPE.VCPU)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.VCPU)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -497,7 +396,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCloudlet(this, this.state.allCloudletUsageList, HARDWARE_TYPE.VCPU)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.VCPU)}
                         </div>
                     </div>
                 </div>
@@ -517,7 +416,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCloudlet(this.state.allCloudletUsageList, HARDWARE_TYPE.MEM)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.MEM)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -530,7 +429,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCloudlet(this, this.state.allCloudletUsageList, HARDWARE_TYPE.MEM)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.MEM)}
                         </div>
                     </div>
 
@@ -549,7 +448,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCloudlet(this.state.allCloudletUsageList, HARDWARE_TYPE.DISK)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.DISK)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -560,7 +459,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCloudlet(this, this.state.allCloudletUsageList, HARDWARE_TYPE.DISK)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.DISK)}
                         </div>
                     </div>
                 </div>
@@ -578,7 +477,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCloudlet(this.state.allCloudletUsageList, HARDWARE_TYPE.FLOATING_IPS)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.FLOATING_IPS)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -589,7 +488,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCloudlet(this, this.state.allCloudletUsageList, HARDWARE_TYPE.FLOATING_IPS)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.FLOATING_IPS)}
                         </div>
                     </div>
                 </div>
@@ -607,7 +506,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCloudlet(this.state.allCloudletUsageList, HARDWARE_TYPE.IPV4)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.IPV4)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -618,7 +517,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCloudlet(this, this.state.allCloudletUsageList, HARDWARE_TYPE.IPV4)}
+                            {this.state.loading ? renderPlaceHolderLottie() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.IPV4)}
                         </div>
                     </div>
                 </div>
@@ -636,7 +535,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder('network') : renderBarGraphForCloudlet(this.state.allCloudletUsageList, networkType, this)}
+                            {this.state.loading ? renderPlaceHolderLottie('network') : makeBarChartDataForCloudlet(this.state.allCloudletUsageList, networkType, this)}
                         </div>
                     </div>
                     <div className='page_monitoring_dual_container'>
@@ -669,11 +568,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder('network') : renderLineChartForCloudlet(this, this.state.allCloudletUsageList, networkType)}
+                            {this.state.loading ? renderPlaceHolderLottie('network') : makeLineChartForCloudlet(this, this.state.allCloudletUsageList, networkType)}
                         </div>
                     </div>
                 </div>
             )
+        }
+
+        async handleResetForCloudlet() {
+            showToast('reset')
+            await this.setState({
+                currentRegion: 'ALL',
+                currentCloudLet: '',
+                filteredCloudletUsageList: this.state.allCloudletUsageList,
+                filteredCloudletList: this.state.cloudletList,
+            })
         }
 
 
@@ -681,61 +590,123 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             return (
 
-                <div>
-                    <Grid.Row className='content_title'
-                              style={{width: 'fit-content', display: 'inline-block'}}>
-                        <Grid.Column className='title_align2' style={{lineHeight: '36px'}}>Monitoring</Grid.Column>
-                        <div style={{marginLeft: '10px'}}>
-                            <button className="ui circular icon button"><i aria-hidden="true"
-                                                                           className="info icon"></i></button>
-                        </div>
+                <Grid.Row className='content_title'>
+                    <div className='content_title_wrap'>
+                        <div className='content_title_label'>Monitoring</div>
                         {/*todo:---------------------------*/}
                         {/*todo:REFRESH, RESET BUTTON DIV  */}
                         {/*todo:---------------------------*/}
-                        <div style={{marginLeft: '10px'}}>
-                            <Button
-                                onClick={async () => {
-                                    if (!this.state.loading) {
-                                        this.refreshAllData();
-                                    } else {
-                                        showToast('Currently loading, you can\'t request again.')
-                                    }
+                        <Button
+                            onClick={async () => {
+                                if (!this.state.loading) {
+                                    this.refreshAllData();
+                                } else {
+                                    showToast('Currently loading, you can\'t request again.')
+                                }
 
-                                }}
-                                className="ui circular icon button"
-                            >
-                                <i aria-hidden="true"
-                                   className="sync alternate icon"></i>
-                            </Button>
-                        </div>
-                        <div style={{marginLeft: '10px'}}>
-                            <Button
-                                onClick={async () => {
-                                    await this.setState({
-                                        currentGridIndex: -1,
-                                        currentTabIndex: 0,
-                                    })
-                                    //await this.filterByEachTypes('ALL', '', '', '')
-                                }}
-                            >RESET</Button>
-                        </div>
-                        <div style={{marginLeft: 50}}>
+                            }}
+                            className="ui circular icon button"
+                        >
+                            <i aria-hidden="true"
+                               className="sync alternate icon"></i>
+                        </Button>
+                        <Button
+                            onClick={async () => {
+                                this.handleResetForCloudlet()
+                                //await this.filterByEachTypes('ALL', '', '', '')
+                            }}
+                        >RESET</Button>
+                        <div>
                             {this.state.userType}
                         </div>
                         {/*<div style={{color: 'yellow'}}>
                             [OPER_VIEW]
                         </div>*/}
                         {this.state.intervalLoading &&
-                        <div style={{marginLeft: 50}}>
+                        <div>
                             <CircularProgress size={9} style={{fontSize: 9}}/>
                         </div>
                         }
-                    </Grid.Row>
-                </div>
+                    </div>
+                </Grid.Row>
             )
         }
 
-        renderSelectBoxRow() {
+        handleSelectRegion = (selectedRegion) => {
+            //showToast(selectedRegion)
+
+            this.setState({
+                currentRegion: selectedRegion,
+            }, async () => {
+                let filteredCloudletList = filterUsageByClassification(this.state.cloudletList, selectedRegion, CLASSIFICATION.REGION)
+                let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, selectedRegion, CLASSIFICATION.REGION)
+                let dropdownCloudletList = makeSelectBoxListWithKey(filteredCloudletList, "CloudletName")
+                console.log('dropdownCloudletList===>', dropdownCloudletList);
+                await this.setState({
+                    cloudLetSelectBoxPlaceholder: 'Select cloudlet',
+                    filteredCloudletList: filteredCloudletList,
+                    filteredCloudletUsageList: filteredCloudletUsageList,
+                    dropdownCloudletList: dropdownCloudletList
+                })
+
+            })
+
+        }
+
+
+        handleSelectCloudlet = async (cloudletSelectedOne, isDropdownAction = false) => {
+            try {
+                let selectedCloudlet = cloudletSelectedOne.toString().split("|")[0];
+                let selectedRegion = cloudletSelectedOne.toString().split("|")[1];
+                this.setState({
+                    cloudletSelectLoading: true,
+                    loading: true,
+                    currentCloudLet: cloudletSelectedOne,
+                })
+
+                let cloudletEventLogs = []
+                try {
+                    cloudletEventLogs = await getCloudletEventLog(selectedCloudlet, selectedRegion);
+                } catch (e) {
+                    showToast(e.toString())
+                }
+
+                console.log('cloudletEventLogs===>', cloudletEventLogs)
+                console.log('cloudletEventLogs===length>', cloudletEventLogs.length)
+
+
+                let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, selectedCloudlet.toString().trim(), CLASSIFICATION.cloudlet)
+                await this.setState({
+                    // filteredCloudletList: filteredCloudletList,
+                    cloudletSelectLoading: false,
+                    filteredCloudletUsageList: filteredCloudletUsageList,
+                    cloudletEventLogs: cloudletEventLogs === undefined ? [] : cloudletEventLogs,
+                    isReady: true,
+
+                })
+
+                if (isDropdownAction) {
+                    let filteredCloudletList = filterListBykeyForCloudlet('CloudletName', selectedCloudlet, this.state.cloudletList)
+                    await this.setState({
+                        filteredCloudletList: filteredCloudletList,
+                    })
+                }
+                await this.setState({
+                    loading: false,
+                })
+            } catch (e) {
+
+            }finally {
+                await this.setState({
+                    loading: false,
+                    isReady: true,
+                })
+            }
+
+        }
+
+
+        renderDropdownAreaOper() {
 
             return (
                 <div className='page_monitoring_select_row'>
@@ -758,16 +729,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 defaultValue={REGIONS_OPTIONS[0].value}
                                 onChange={async (e, {value}) => {
 
-                                    this.setState({
+                                    await this.setState({
                                         currentRegion: value,
                                     })
 
-                                    /* await this.filterByEachTypes(value)
-                                     setTimeout(() => {
-                                         this.setState({
-                                             cloudLetSelectBoxPlaceholder: 'Select CloudLet'
-                                         })
-                                     }, 1000)*/
+
+                                    await this.handleSelectRegion(value)
+
+
                                 }}
                                 value={this.state.currentRegion}
                                 // style={Styles.dropDown}
@@ -794,6 +763,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 onChange={async (e, {value}) => {
                                     this.setState({
                                         currentCloudLet: value,
+                                    }, () => {
+                                        try {
+                                            this.handleSelectCloudlet(value, true)
+
+                                        } catch (e) {
+                                            showToast(e.toString())
+                                        }
+
                                     })
                                     /*   await this.filterByEachTypes(this.state.currentRegion, value)
                                        setTimeout(() => {
@@ -850,94 +827,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        async handleBubbleChartDropDownForCloudlet(hwType) {
-            await this.setState({
-                currentHardwareType: hwType,
-            });
-
-            let allUsageList = this.state.allUsageList;
-            let bubbleChartData = [];
-
-            console.log('sldkflskdflksdlfklsdkfk====>', allUsageList);
-
-            if (hwType === 'vCPU') {
-                allUsageList.map((item, index) => {
-                    bubbleChartData.push({
-                        index: index,
-                        label: item.cloudlet.toString().substring(0, 10) + "...",
-                        value: (item.avgVCpuUsed * 1).toFixed(0),
-                        favor: (item.avgVCpuUsed * 1).toFixed(0),
-                        fullLabel: item.cloudlet,
-                    })
-                })
-            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.MEM) {
-                allUsageList.map((item, index) => {
-                    bubbleChartData.push({
-                        index: index,
-                        label: item.cloudlet.toString().substring(0, 10) + "...",
-                        value: item.avgMemUsed,
-                        favor: item.avgMemUsed,
-                        fullLabel: item.cloudlet,
-                    })
-                })
-            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.DISK) {
-                allUsageList.map((item, index) => {
-                    bubbleChartData.push({
-                        index: index,
-                        label: item.cloudlet.toString().substring(0, 10) + "...",
-                        value: item.avgDiskUsed,
-                        favor: item.avgDiskUsed,
-                        fullLabel: item.cloudlet,
-                    })
-                })
-            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.RECV_BYTES) {
-                allUsageList.map((item, index) => {
-                    bubbleChartData.push({
-                        index: index,
-                        label: item.cloudlet.toString().substring(0, 10) + "...",
-                        value: item.avgNetRecv,
-                        favor: item.avgNetRecv,
-                        fullLabel: item.cloudlet,
-                    })
-                })
-            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.SEND_BYTES) {
-                allUsageList.map((item, index) => {
-                    bubbleChartData.push({
-                        index: index,
-                        label: item.cloudlet.toString().substring(0, 10) + "...",
-                        value: item.avgNetSend,
-                        favor: item.avgNetSend,
-                        fullLabel: item.cloudlet,
-                    })
-                })
-            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.FLOATING_IPS) {
-                allUsageList.map((item, index) => {
-                    bubbleChartData.push({
-                        index: index,
-                        label: item.cloudlet.toString().substring(0, 10) + "...",
-                        value: item.avgFloatingIpsUsed,
-                        favor: item.avgFloatingIpsUsed,
-                        fullLabel: item.cloudlet,
-                    })
-                })
-            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.IPV4) {
-                allUsageList.map((item, index) => {
-                    bubbleChartData.push({
-                        index: index,
-                        label: item.cloudlet.toString().substring(0, 10) + "...",
-                        value: item.avgIpv4Used,
-                        favor: item.avgIpv4Used,
-                        fullLabel: item.cloudlet,
-                    })
-                })
-            }
-
-            console.log('1111bubbleChartData====>', bubbleChartData);
-
-            this.setState({
-                bubbleChartData: bubbleChartData,
-            });
-        }
 
         //@todo:-----------------------
         //@todo:    CPU,MEM,DISK TAB
@@ -989,8 +878,101 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     )
                 }
             },
+            {
+                menuItem: 'NETWORK', render: () => {
+                    return (
+                        <Pane>
+                            <Tabs selectedIndex={this.state.networkTabIndex}
+                                  className='page_monitoring_tab'>
+                                <TabPanel>
+                                    {this.renderNetworkForCloudlet(HARDWARE_TYPE.RECVBYTES)}
+                                </TabPanel>
+                                <TabPanel>
+                                    {this.renderNetworkForCloudlet(HARDWARE_TYPE.SENDBYTES)}
+                                </TabPanel>
+                            </Tabs>
+                        </Pane>
+                    )
+                }
+            },
 
         ]
+
+        renderLeafletMap() {
+            return (
+                <LeafletMap cloudletList={this.state.filteredCloudletList} loading={this.state.loading} handleSelectCloudlet={this.handleSelectCloudlet}/>
+            )
+        }
+
+        renderCloudletEventLog() {
+            return (
+                <div className='page_monitoring_column'>
+                    <div className='page_monitoring_title_area'>
+                        <div className='page_monitoring_title_select'>
+                            Cloudlet Event Log
+                        </div>
+                        <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
+                            <Table.Header className="viewListTableHeader">
+                                <Table.Row>
+                                    <Table.HeaderCell>
+                                        Time
+                                    </Table.HeaderCell>
+                                    <Table.HeaderCell>
+                                        Cloudlet
+                                    </Table.HeaderCell>
+                                    <Table.HeaderCell>
+                                        Event
+                                    </Table.HeaderCell>
+                                    <Table.HeaderCell>
+                                        Status
+                                    </Table.HeaderCell>
+                                </Table.Row>
+                            </Table.Header>
+                            <Table.Body className="">
+                                {/*todo: 데이터가 없는경우*/}
+                                {!this.state.cloudletSelectLoading && this.state.cloudletEventLogs.length === 0 &&
+                                <Table.Row className=''>
+                                    <Table.Cell style={{width:'100%', display: 'flex', justifyContent: 'center', alignItems: 'center',  backgroundColor: 'transparent'}} >
+                                        <div style={{}}>
+                                            NO DATA
+                                        </div>
+                                    </Table.Cell>
+
+                                </Table.Row>
+                                }
+                                {this.state.cloudletSelectLoading &&
+                                <div style={StylesForMonitoring.center}>
+                                    <CircularProgress style={{color: '#1cecff', marginTop: 50}}/>
+                                </div>
+                                }
+                                {!this.state.cloudletSelectLoading && this.state.cloudletEventLogs.map(item => {
+                                    return (
+                                        <Table.Row className='page_monitoring_popup_table_row'>
+
+                                            <Table.Cell>
+                                                {item[0].split("T")[0]}{`  `}
+                                                {item[0].split("T")[1].toString().substring(0,8)}
+                                            </Table.Cell>
+                                            <Table.Cell>
+                                                {item[1]}
+                                            </Table.Cell>
+                                            <Table.Cell>
+                                                {item[3]}
+                                            </Table.Cell>
+                                            <Table.Cell>
+                                                {item[4]}
+                                            </Table.Cell>
+
+                                        </Table.Row>
+                                    )
+                                })}
+                            </Table.Body>
+                        </Table>
+                    </div>
+                </div>
+            )
+        }
+
 
         render() {
             // todo: Components showing when the loading of graph data is not completed.
@@ -1001,7 +983,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.renderHeader()}
                             <div style={{position: 'absolute', top: '37%', left: '48%'}}>
                                 <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                    {renderGridLoader()}
+                                    {renderLottieLoader(150, 150)}
                                 </div>
                             </div>
                         </Grid.Column>
@@ -1029,25 +1011,24 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     >
                         <Modal.Header>Status of App Instance</Modal.Header>
                         <Modal.Content>
-                            {this.renderBottomGridAreaForCloudlet()}
+                            {renderBottomGridAreaForCloudlet(this)}
                         </Modal.Content>
                     </Modal>
-                    <SemanticToastContainer/>
+                    <SemanticToastContainer position={"top-left"}/>
                     <Grid.Column className='contents_body'>
                         {/*todo:---------------------------------*/}
                         {/*todo:Content Header                   */}
                         {/*todo:---------------------------------*/}
                         {this.renderHeader()}
-                        <Grid.Row className='site_content_body' style={{marginTop:22}}>
+                        <Grid.Row className='site_content_body'>
                             <Grid.Column>
-                                <div className="table-no-resized"
-                                     style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
+                                <div className="table-no-resized">
 
                                     <div className="page_monitoring">
                                         {/*todo:---------------------------------*/}
                                         {/*todo:SELECTBOX_ROW        */}
                                         {/*todo:---------------------------------*/}
-                                        {this.renderSelectBoxRow()}
+                                        {this.renderDropdownAreaOper()}
 
                                         <div className='page_monitoring_dashboard'>
                                             {/*_____row____1*/}
@@ -1063,8 +1044,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             Status of Launched Cloudlet
                                                         </div>
                                                     </div>
-                                                    <div className='page_monitoring_container'>
-                                                        <MiniMap loading={this.state.loading} cloudletList={this.state.cloudletList}/>
+                                                    {/*todo:---------------------------------*/}
+                                                    {/*todo:MAP*/}
+                                                    {/*todo:MAP*/}
+                                                    {/*todo:MAP*/}
+                                                    {/*todo:MAP*/}
+                                                    {/*todo:MAP*/}
+                                                    {/*todo:---------------------------------*/}
+                                                    <div className='leafMapDiv'>
+                                                        {/* <MiniMap loading={this.state.loading} cloudletList={this.state.cloudletList}/>*/}
+                                                        {this.renderLeafletMap()}
                                                     </div>
                                                 </div>
 
@@ -1115,7 +1104,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             defaultValue={HARDWARE_OPTIONS_FOR_CLOUDLET[0].value}
                                                             onChange={async (e, {value}) => {
 
-                                                                this.handleBubbleChartDropDownForCloudlet(value);
+                                                                await handleBubbleChartDropDownForCloudlet(value, this);
 
                                                             }}
                                                             value={this.state.currentHardwareType}
@@ -1125,26 +1114,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*todo: RENDER BUBBLE_CHART          */}
                                                     {/*todo:---------------------------------*/}
                                                     <div className='page_monitoring_container'>
-                                                        {this.state.loading ? renderPlaceHolder() : renderBubbleChartForCloudlet(this, this.state.currentHardwareType, this.state.bubbleChartData)}
+                                                        {this.state.loading ? renderPlaceHolderLottie() : renderBubbleChartForCloudlet(this, this.state.currentHardwareType, this.state.bubbleChartData)}
                                                     </div>
                                                 </div>
-                                                {/* row2___col___2*/}
-                                                {/* row2___col___2*/}
-                                                {/* row2___col___2*/}
-                                                <div className='page_monitoring_column'>
-                                                    {/*todo:---------------------------------*/}
-                                                    {/*todo: NETWORK TAB PANEL AREA           */}
-                                                    {/*todo:---------------------------------*/}
-                                                    <Tabs selectedIndex={this.state.networkTabIndex}
-                                                          className='page_monitoring_tab'>
-                                                        <TabPanel>
-                                                            {this.renderNetworkForCloudlet(HARDWARE_TYPE.RECVBYTES)}
-                                                        </TabPanel>
-                                                        <TabPanel>
-                                                            {this.renderNetworkForCloudlet(HARDWARE_TYPE.SENDBYTES)}
-                                                        </TabPanel>
-                                                    </Tabs>
-                                                </div>
+                                                {/*todo: renderCloudletEventLog*/}
+                                                {/*todo: renderCloudletEventLog*/}
+                                                {/*todo: renderCloudletEventLog*/}
+                                                {this.renderCloudletEventLog()}
 
 
                                             </div>
@@ -1186,8 +1162,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                           })*/
                                                     }}
                                                 >
-                                                    <div className='page_monitoring_popup_column'>
-                                                        <div className='page_monitoring_popup_header_row'
+                                                    <div className='page_monitoring_popup_column' style={{zIndex: 999999}}>
+                                                        <div className='page_monitoring_popup_header_row' style={{zIndex: 999999}}
                                                              onClick={() => {
                                                                  this.setState({
                                                                      isShowBottomGrid: !this.state.isShowBottomGrid,
@@ -1195,10 +1171,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                                              }}
                                                         >
-                                                            <div className='page_monitoring_popup_header_title'>
+                                                            <div className='page_monitoring_popup_header_title' style={{zIndex: 999999}}>
                                                                 Status of App
                                                             </div>
-                                                            <div className='page_monitoring_popup_header_button'>
+                                                            <div className='page_monitoring_popup_header_button' style={{zIndex: 999999}}>
                                                                 <div>
                                                                     HIDE CLOUDLET LIST
                                                                 </div>
@@ -1211,12 +1187,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*todo:---------------------------------*/}
                                                         {/*todo: BOTTOM APP INSTACE LIST         */}
                                                         {/*todo:---------------------------------*/}
-                                                        <div className='page_monitoring_popup_table'>
+                                                        <div className='page_monitoring_popup_table' style={{zIndex: 999999}}>
                                                             {this.state.cloudletList.length && this.state.isReady === 0 ?
                                                                 <div style={StylesForMonitoring.noData}>
                                                                     NO DATA
                                                                 </div>
-                                                                : this.renderBottomGridAreaForCloudlet()}
+                                                                : renderBottomGridAreaForCloudlet(this)}
                                                         </div>
                                                     </div>
                                                 </OutsideClickHandler>
