@@ -110,7 +110,7 @@ export default hot(
 
                         let itemCloudlet_Region = item.CloudletName + "|" + item.Region
 
-                        this.props.handleSelectCloudletForMapkerClicked(itemCloudlet_Region)
+                        this.props.handleSelectCloudlet(itemCloudlet_Region)
                     }}
                 >
                     <Tooltip direction='right' offset={[0, 0]} opacity={0.5} permanent>

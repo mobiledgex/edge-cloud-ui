@@ -350,6 +350,9 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
         timeout: 15 * 1000
     }).then(async response => {
 
+
+        console.log('response===>Series', response.data.data["0"].Series);
+
         /*
             "time",
             "cloudlet",

@@ -654,7 +654,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        handleSelectCloudletForMapkerClicked = async (cloudletSelectedOne, isDropdownAction = false) => {
+        handleSelectCloudlet = async (cloudletSelectedOne, isDropdownAction = false) => {
             try{
                 let selectedCloudlet = cloudletSelectedOne.toString().split("|")[0];
                 let selectedRegion = cloudletSelectedOne.toString().split("|")[1];
@@ -667,10 +667,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 try {
                     cloudletEventLogs = await getCloudletEventLog(selectedCloudlet, selectedRegion);
                 } catch (e) {
-                    //showToast(e.toString())
+                    showToast(e.toString())
                 }
 
                 console.log('cloudletEventLogs===>', cloudletEventLogs)
+                console.log('cloudletEventLogs===length>', cloudletEventLogs.length)
 
 
                 let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, selectedCloudlet.toString().trim(), CLASSIFICATION.cloudlet)
@@ -753,8 +754,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     this.setState({
                                         currentCloudLet: value,
                                     }, () => {
+                                        try{
+                                            this.handleSelectCloudlet(value, true)
 
-                                        this.handleSelectCloudletForMapkerClicked(value, true)
+                                        }catch (e) {
+                                            showToast(e.toString())
+                                        }
+
                                     })
                                     /*   await this.filterByEachTypes(this.state.currentRegion, value)
                                        setTimeout(() => {
@@ -884,7 +890,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderLeafletMap() {
             return (
-                <LeafletMap cloudletList={this.state.filteredCloudletList} loading={this.state.loading} handleSelectCloudletForMapkerClicked={this.handleSelectCloudletForMapkerClicked}/>
+                <LeafletMap cloudletList={this.state.filteredCloudletList} loading={this.state.loading} handleSelectCloudlet={this.handleSelectCloudlet}/>
             )
         }
 
