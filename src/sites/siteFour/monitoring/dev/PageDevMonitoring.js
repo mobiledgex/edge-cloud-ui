@@ -409,7 +409,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 this.setState({
                     currentTabIndex: 0,
                 })
-            }, 2500)
+            }, 3500)
         }
 
         async refreshAllData() {
@@ -610,8 +610,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.state.loading ? renderPlaceHolderLottie() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
                         </div>
                     </div>
-
-
                 </div>
             )
         }
