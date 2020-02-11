@@ -98,14 +98,14 @@ export const renderPlaceHolderLottiePinJump2 = (type: string = '') => {
                 options={{
                     loop: true,
                     autoplay: true,
-                    animationData: require('../../../lotties/pinjump'),
+                    animationData: require('../../../lotties/6698-location-pin22222'),
                     rendererSettings: {
                         preserveAspectRatio: 'xMidYMid slice'
                     }
                 }}
-                speed={2.1}
-                height={150}
-                width={150}
+                speed={2.9}
+                height={350}
+                width={350}
                 isStopped={false}
                 isPaused={false}
             />
