@@ -1188,6 +1188,7 @@ body, button, input, textarea, optgroup, select, textarea,
     height:100%;
     flex-direction: row;
     align-items: center;
+    padding-left:20px;
 }
 
 .content_title_label{
