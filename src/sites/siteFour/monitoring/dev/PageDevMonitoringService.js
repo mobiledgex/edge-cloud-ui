@@ -350,7 +350,7 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
                 let barDataOne = [
                     typedUsageList[index].instance.AppName.toString().substring(0, 10) + "..." + "\n[" + typedUsageList[index].instance.Cloudlet + "]",
                     renderUsageByType(typedUsageList[index], hardwareType),
-                    typedUsageList.length === 1 ? getColorOne() : CHART_COLOR_LIST[index],
+                    CHART_COLOR_LIST[index],
                     renderUsageLabelByType(typedUsageList[index], hardwareType)
                 ]
                 chartDataList.push(barDataOne);
