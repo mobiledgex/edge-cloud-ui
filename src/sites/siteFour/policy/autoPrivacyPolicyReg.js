@@ -230,13 +230,13 @@ class AutoProvPolicyReg extends React.Component {
                 let msg = 'Created'
                 switch (this.props.action) {
                     case 'Update':
-                        msg = 'Updated'
+                        msg = 'updated'
                         break;
                     default:
-                        msg = 'Created'
+                        msg = 'created'
                 }
                 let policyName =  mcRequest.request.data.privacypolicy.key.name;
-                this.props.handleAlertInfo('success', `Privacy Policy ${policyName} ${msg} Successfully`)
+                this.props.handleAlertInfo('success', `Privacy Policy ${policyName} ${msg} successfully`)
                 setTimeout(() => { this.gotoUrl('site4', 'pg=8') }, 2000)
             }
         }

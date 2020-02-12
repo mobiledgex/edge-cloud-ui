@@ -9,19 +9,9 @@ import * as actions from '../actions';
 import './styles.css';
 import _ from "lodash";
 
-
-
-
-let _self = null;
-const organizationEdit = [
-    { key: 'Audit', text: 'Audit', icon: null },
-    { key: 'AddUser', text: 'Add User', icon: null },
-    { key: 'Delete', text: 'Delete', icon: 'trash alternate' },
-]
-class DeveloperListView extends React.Component {
+class MexListView extends React.Component {
     constructor(props) {
         super(props);
-        _self = this;
         this.state = {
             dummyData: [],
             anchorEl : null
@@ -52,7 +42,7 @@ class DeveloperListView extends React.Component {
     handleSort = clickedColumn => (a) => {
 
         this.sorting = true;
-        const { column, dummyData, direction } = _self.state
+        const { column, dummyData, direction } = this.state
         if ((column !== clickedColumn) && dummyData) {
             let sorted = _.sortBy(dummyData, [clm => typeof clm[clickedColumn] === 'string' ? String(clm[clickedColumn]).toLowerCase() : clm[clickedColumn]])
             this.setState({
@@ -240,6 +230,6 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(DeveloperListView));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(MexListView));
 
 

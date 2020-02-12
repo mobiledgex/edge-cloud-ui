@@ -153,8 +153,8 @@ class AutoProvPolicyReg extends React.Component {
 
         if(valid)
         {
-            let msg = this.props.action === 'Delete' ? 'Removed' : 'Added'
-            this.props.handleAlertInfo('success', `Cloudlets ${msg} Successfully`)
+            let msg = this.props.action === 'Delete' ? 'removed' : 'added'
+            this.props.handleAlertInfo('success', `Cloudlets ${msg} successfully`)
             setTimeout(()=>{this.gotoUrl('site4', 'pg=8')},2000)
         }
     }
