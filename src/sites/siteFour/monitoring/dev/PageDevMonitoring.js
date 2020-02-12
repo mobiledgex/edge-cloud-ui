@@ -1348,15 +1348,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/*_____row____2*/}
                                                 {/*_____row____2*/}
                                                 <div className='page_monitoring_row'>
-                                                    {/* ___col___1*/}
-                                                    {/* ___col___1*/}
-                                                    {/* ___col___1*/}
+
+                                                    {/*todo:---------------------------------*/}
+                                                    {/*todo:renderBubbleChartArea            */}
+                                                    {/*todo:---------------------------------*/}
                                                     <div className='page_monitoring_column'>
                                                         {this.renderBubbleChartArea()}
                                                     </div>
-                                                    {/* row2___col___2*/}
-                                                    {/* row2___col___2*/}
-                                                    {/* row2___col___2*/}
                                                     <div className='page_monitoring_column'>
                                                         {/*todo:---------------------------------*/}
                                                         {/*todo: NETWORK TAB PANEL AREA           */}

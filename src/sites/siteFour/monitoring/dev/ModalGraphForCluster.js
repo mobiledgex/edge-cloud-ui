@@ -121,14 +121,14 @@ export default class ModalGraphForCluster extends React.Component<Props, State> 
                     footer={null}
                 >
                     <div style={{display: 'flex', backgroundColor: 'transparent', width: '100%', height: 59}}>
-                        <div style={{flex: .85, display: 'flex', color: '#FFF',fontFamily: 'Barlow Semi', fontSize: 28, fontWeight: 'bold', marginLeft: 3,}}>
+                        <div style={{flex: .85, display: 'flex', color: '#FFF',fontFamily: 'Kanit', fontSize: 28, fontWeight: 'bold', marginLeft: 3,}}>
                             {this.state.cluster_cloudlet}
                         </div>
                         <div
                             style={{
                                 flex: .15,
                                 color: 'white',
-                                fontFamily: 'Barlow Semi',
+                                fontFamily: 'Kanit',
                                 fontSize: 30,
                                 fontWeight: 'bold',
                                 textAlign: 'right',

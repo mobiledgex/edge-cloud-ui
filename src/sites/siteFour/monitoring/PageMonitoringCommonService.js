@@ -89,10 +89,6 @@ export const StylesForMonitoring = {
 }
 
 
-
-
-
-
 export const renderGridLoader2 = (width, height) => {
     return (
         <Lottie
@@ -772,12 +768,14 @@ export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType) => 
         let usageValue: number = item[hardwareTypeToUsageKey(pHardwareType)]
         usageValue = usageValue.toFixed(2)
 
+        let cluster_cloudlet_fullLabel = item.cluster.toString() + ' [' + item.cloudlet.toString().trim() + "]";
+
         bubbleChartData.push({
             index: index,
-            label: item.cluster.toString().substring(0, 10) + "...",
+            label: cluster_cloudlet_fullLabel.toString().substring(0, 17) + "...",
             value: usageValue,
             favor: usageValue,
-            fullLabel: item.cluster.toString(),
+            fullLabel: item.cluster.toString() + ' [' + item.cloudlet.toString().trim() + "]",
             cluster_cloudlet: item.cluster.toString() + ' | ' + item.cloudlet.toString(),
         })
     })

@@ -619,14 +619,20 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
                         }}
                         bubbleClickFun={async (cluster_cloudlet, index) => {
                             try {
-                                await _this.handleClusterDropdown(cluster_cloudlet)
+                                let lineChartDataSet = makeLineChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this)
+                                cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
+                                handleLegendClickedEvent(_this, cluster_cloudlet, lineChartDataSet)
                             } catch (e) {
 
                             }
+
+
                         }}
                         legendClickFun={async (cluster_cloudlet, index) => {
                             try {
-                                await _this.handleClusterDropdown(cluster_cloudlet)
+                                let lineChartDataSet = makeLineChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this)
+                                cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
+                                handleLegendClickedEvent(_this, cluster_cloudlet, lineChartDataSet)
                             } catch (e) {
 
                             }
@@ -907,6 +913,46 @@ export const getColorOne = () => {
     return 'rgb(111,253,255)';
 }
 
+
+/**
+ *
+ * @param _this
+ * @param clickedItem
+ * @param lineChartDataSet
+ */
+export const handleLegendClickedEvent = (_this: PageDevMonitoring, clickedItem, lineChartDataSet) => {
+
+    ///////////////////////////////////////////////////////////////
+    let selectOne = clickedItem;
+    let lineChartOne = []
+    let selectedIndex = 0;
+    lineChartDataSet.levelTypeNameList.map((item, jIndex) => {
+        let newItem = item.toString().replace('\n', "|").replace("[", '').replace("]", '')
+        if (selectOne === newItem) {
+            lineChartOne.push({
+                cluster_cloudlet: selectOne,
+                index: jIndex,
+            })
+            selectedIndex = jIndex;
+        }
+    })
+    let selected_lineChartDataSetOne = {
+        levelTypeNameList: lineChartDataSet.levelTypeNameList[selectedIndex],
+        usageSetList: lineChartDataSet.usageSetList[selectedIndex],
+        newDateTimeList: lineChartDataSet.newDateTimeList,
+        hardwareType: lineChartDataSet.hardwareType,
+    }
+
+    _this.showModalClusterLineChart(selected_lineChartDataSetOne, selectedIndex)
+}
+
+
+/**
+ * @todo: renderLineChartCoreForDev_Cluster
+ * @param _this
+ * @param lineChartDataSet
+ * @returns {*|string|undefined}
+ */
 export const renderLineChartCoreForDev_Cluster = (_this: PageDevMonitoring, lineChartDataSet) => {
     let levelTypeNameList = lineChartDataSet.levelTypeNameList;
     let usageSetList = lineChartDataSet.usageSetList;
@@ -958,43 +1004,6 @@ export const renderLineChartCoreForDev_Cluster = (_this: PageDevMonitoring, line
         }
     }
 
-    function handleLegendClickedEvent(clickedItem) {
-
-        console.log('onClick222===1>', clickedItem)
-        console.log('onClick222===2>', lineChartDataSet);
-
-        let selectOne = clickedItem.text.toString().replace('\n', "|");
-
-        console.log('onClick222===>', selectOne);
-
-        let lineChartOne = []
-        let selectedIndex = 0;
-        levelTypeNameList.map((item, index) => {
-            if (selectOne === item.toString().replace('\n', "|")) {
-                console.log('onClick3===>', item.toString().replace('\n', "|"));
-                lineChartOne.push({
-                    cluster_cloudlet: selectOne,
-                    index: index,
-                })
-                selectedIndex = index;
-            }
-        })
-
-        console.log('onClick4===>', lineChartDataSet)
-
-        let selected_lineChartDataSetOne = {
-            levelTypeNameList: lineChartDataSet.levelTypeNameList[selectedIndex],
-            usageSetList: lineChartDataSet.usageSetList[selectedIndex],
-            newDateTimeList: lineChartDataSet.newDateTimeList,
-            hardwareType: lineChartDataSet.hardwareType,
-        }
-
-        console.log('onClick4===>', selected_lineChartDataSetOne);
-
-        _this.showModalClusterLineChart(selected_lineChartDataSetOne, selectedIndex)
-    }
-
-
     let height = 500 + 100;
     let options = {
         animation: {
@@ -1019,7 +1028,7 @@ export const renderLineChartCoreForDev_Cluster = (_this: PageDevMonitoring, line
                 fontColor: 'white'
             },//@todo:리전드 클릭 이벤트.
             onClick: (e, clickedItem) => {
-                handleLegendClickedEvent(clickedItem)
+                handleLegendClickedEvent(_this, clickedItem, lineChartDataSet)
             },
             onHover: (e, item) => {
                 //alert(`Item with text ${item.text} and index ${item.index} hovered`)
@@ -1072,9 +1081,20 @@ export const renderLineChartCoreForDev_Cluster = (_this: PageDevMonitoring, line
             backgroundColor: {
                 fill: "#1e2124"
             },
-        }
+        },//scales
+        onClick: function (c, i) {
+            /*let e = i[0];
+            console.log(e._index)
+            var x_value = this.data.labels[e._index];
+            var y_value = this.data.datasets[0].data[e._index];
+            console.log(x_value);
+            console.log(y_value);*/
+            if (i.length > 0) {
+                console.log('onClick===>', i);
+            }
 
-    }
+        }
+    }//options
 
 
     //todo :#######################
@@ -1087,15 +1107,14 @@ export const renderLineChartCoreForDev_Cluster = (_this: PageDevMonitoring, line
             height: '96%'
         }}>
             <ReactChartJsLine
-                /* getDatasetAtEvent={(e)=>{
-
-                     alert(e)
-                 }}*/
                 //width={'100%'}
                 //height={hardwareType === "recv_bytes" || hardwareType === "send_bytes" ? chartHeight + 20 : chartHeight}
                 //height={'100%'}
                 data={lineChartData}
                 options={options}
+                /* getDatasetAtEvent={dataset => {
+                     alert(dataset)
+                 }}*/
 
             />
         </div>
