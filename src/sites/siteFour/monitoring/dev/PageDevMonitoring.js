@@ -286,12 +286,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             this.setState({
                 loading: true,
+                bubbleChartLoader: true,
                 selectOrg: localStorage.selectOrg.toString(),
             })
             await this.loadInitDataForCluster();
 
             this.setState({
                 loading: false,
+                bubbleChartLoader: false,
             })
         }
 
@@ -1050,6 +1052,24 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
+        setAppInstInterval(filteredAppList) {
+            this.intervalForAppInst = setInterval(async () => {
+                this.setState({
+                    intervalLoading: true,
+                })
+                let arrDateTime2 = getOneYearStartEndDatetime();
+
+                console.log('allAppInstUsageList77===>startDate', arrDateTime2[0]);
+                console.log('allAppInstUsageList77===>EndDate', arrDateTime2[1]);
+                let allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT);
+                console.log('allAppInstUsageList77===>', allAppInstUsageList);
+                this.setState({
+                    intervalLoading: false,
+                    filteredAppInstUsageList: allAppInstUsageList,
+                })
+            }, 1000 * 7.0)
+        }
+
         handleAppInstDropdown = async (pCurrentAppInst) => {
             clearInterval(this.intervalForAppInst)
             await this.setState({
@@ -1063,13 +1083,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
             console.log('Instance_Dropdown===>', pCurrentAppInst);
-
             console.log('Instance_Dropdown=1==>', AppName);
             console.log('Instance_Dropdown=2==>', Cloudlet);
             console.log('Instance_Dropdown=ClusterInst==>', ClusterInst);
             console.log('Instance_Dropdown=3==>', this.state.appInstanceList);
-
-
             console.log('Instance_Dropdown==AppName==>', filteredAppList);
 
             let filteredAppList = filterUsageByClassification(this.state.appInstanceList, Cloudlet, 'Cloudlet');
@@ -1132,25 +1149,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 clearInterval(this.intervalForAppInst)
             }
 
-        }
-
-
-        setAppInstInterval(filteredAppList) {
-            this.intervalForAppInst = setInterval(async () => {
-                this.setState({
-                    intervalLoading: true,
-                })
-                let arrDateTime2 = getOneYearStartEndDatetime();
-
-                console.log('allAppInstUsageList77===>startDate', arrDateTime2[0]);
-                console.log('allAppInstUsageList77===>EndDate', arrDateTime2[1]);
-                let allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT);
-                console.log('allAppInstUsageList77===>', allAppInstUsageList);
-                this.setState({
-                    intervalLoading: false,
-                    filteredAppInstUsageList: allAppInstUsageList,
-                })
-            }, 1000 * 7.0)
         }
 
         async handleClusterDropdown(value) {
@@ -1378,11 +1376,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </MButton>
                         </div>
                         <Dropdown
-                            disabled={this.state.loading}
+                            disabled={this.state.bubbleChartLoader}
                             clearable={this.state.regionSelectBoxClearable}
                             placeholder='SELECT HARDWARE'
                             selection
-                            loading={this.state.loading}
+                            loading={this.state.bubbleChartLoader}
                             options={HARDWARE_OPTIONS_FOR_CLUSTER}
                             defaultValue={HARDWARE_OPTIONS_FOR_CLUSTER[0].value}
                             onChange={async (e, {value}) => {
@@ -1409,7 +1407,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*todo: RENDER BUBBLE_CHART          */}
                     {/*todo:---------------------------------*/}
                     <div className='page_monitoring_container'>
-                        {this.state.loading ? renderPlaceHolderCircular() : renderBubbleChartCoreForDev_Cluster(this, this.state.currentHardwareType, this.state.bubbleChartData)}
+                        {this.state.bubbleChartLoader ? renderPlaceHolderCircular() : renderBubbleChartCoreForDev_Cluster(this, this.state.currentHardwareType, this.state.bubbleChartData)}
                     </div>
                 </div>
             )
@@ -1485,9 +1483,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     {/*todo:---------------------------------*/}
-                                                    {/*@todo: MapboxComponent*/}
-                                                    {/*@todo: MapboxComponent*/}
-                                                    {/*@todo: MapboxComponent*/}
+                                                    {/*@todo: LeafletMapWrapperForDev*/}
                                                     {/*todo:---------------------------------*/}
                                                     <div className='page_monitoring_container'>
                                                         {/*<MapboxComponent handleAppInstDropdown={this.handleAppInstDropdown} markerList={this.state.appInstanceListGroupByCloudlet}/>*/}
@@ -1530,7 +1526,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
                                                 <div className='page_monitoring_column'>
-                                                    {this.state.bubbleChartLoader ? renderPlaceHolderCircular() : this.renderBubbleChartArea()}
+                                                    {this.renderBubbleChartArea()}
                                                 </div>
                                                 {/* row2___col___2*/}
                                                 {/* row2___col___2*/}

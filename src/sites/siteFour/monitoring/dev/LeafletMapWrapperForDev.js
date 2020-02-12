@@ -269,7 +269,7 @@ export default hot(
                                             return (
 
                                                 <div style={{
-                                                    fontSize: 14, fontFamily: 'Righteous', cursor: 'crosshair',
+                                                    fontSize: 14, fontFamily: 'Roboto', cursor: 'crosshair',
                                                     flexDirection: 'column',
                                                     marginTop: 5, marginBottom: 5
                                                 }}
@@ -289,7 +289,7 @@ export default hot(
                                                         }}
                                                     >
                                                         {AppName}
-                                                        <div style={{color: '#77BD25', fontFamily: 'Acme', fontSize: 12}}>
+                                                        <div style={{color: '#77BD25', fontFamily: 'Roboto', fontSize: 12}}>
                                                             &nbsp;&nbsp;{` [${ClusterInst.trim()}]`}
                                                         </div>
                                                     </Ripples>
