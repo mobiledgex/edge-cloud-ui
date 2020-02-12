@@ -137,7 +137,7 @@ class SiteFour extends React.Component {
         this.hgap = 0;
         this.OrgMenu = [
             { label: 'Organizations', icon: 'people', pg: 0 },
-            { label: 'User Roles', icon: 'dvr', pg: 1 },
+            { label: 'Users & Roles', icon: 'dvr', pg: 1 },
             { label: 'Accounts', icon: 'dvr', pg: 101 }
         ]
         this.menuItemsAll = [ //admin menu
