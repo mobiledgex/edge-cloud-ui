@@ -51,7 +51,7 @@
 }
 
 .page_monitoring_select_area .page_monitoring_dropdown_box:first-child .ui.selection.dropdown {
-    /*min-width: 196px;*/
+    min-width: 120px;
 }
 
 .page_monitoring_select_area .select_icon {
@@ -292,17 +292,19 @@
     font-size: 18px;
     color: #c5c6c8;
 }
+
 .page_monitoring_title_select {
     display: inline-block;
     margin-right: 20px;
     flex-grow: 1;
-    min-width: 150px;
+    /*min-width: 150px;*/
     width: calc(100% - 160px);
     line-height: 1.2;
     font-size: 18px;
     color: #c5c6c8;
     vertical-align: middle;
 }
+
 .page_monitoring_container {
     display: flex;
     flex-grow: 1;
@@ -624,3 +626,25 @@
 /*.chartjs-render-monitor{*/
 /*    width: 100% !important;*/
 /*}*/
+
+
+/* iPad 버전 */
+
+.page_monitoring.page_isIOS .page_monitoring_title, .page_monitoring.page_isIOS .page_monitoring_title_select {
+    font-size: 14px;
+    /*white-space: nowrap;*/
+    /*overflow: hidden;*/
+    /*text-overflow: ellipsis;*/
+}
+
+.page_monitoring.page_isIOS .page_monitoring_tab .ui.secondary.pointing.menu {
+    min-height:30px;
+}
+
+.page_monitoring.page_isIOS .page_monitoring_tab .ui.secondary.pointing.menu .item {
+    font-size: 14px;
+}
+
+.page_monitoring.page_isIOS .page_monitoring_tab .ui.segment.active.tab {
+    height: calc(100% - 32px);
+}
