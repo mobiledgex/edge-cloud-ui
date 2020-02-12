@@ -6,6 +6,8 @@ import PageDevMonitoring from "./PageDevMonitoring";
 import type {TypeLineChartData2} from "../../../../shared/Types";
 import {convertByteToMegaByte} from "../PageMonitoringCommonService";
 import {makeGradientColor, makeGradientColorOne} from "./PageDevMonitoringService";
+import {Dropdown} from "semantic-ui-react";
+import {CONNECTIONS_OPTIONS, HARDWARE_OPTIONS, HARDWARE_TYPE} from "../../../../shared/Constants";
 
 type Props = {
     modalIsOpen: boolean,
@@ -185,8 +187,8 @@ export default class ModalForGraph extends React.Component<Props, State> {
                     height={'85%'}
                     footer={null}
                 >
-                    <div style={{display: 'flex', height: 55, backgroundColor: 'transparent', width: '100%'}}>
-                        <div style={{flex: .85, display: 'flex'}}>
+                    <div style={{display: 'flex', backgroundColor: 'transparent', width: '100%', height: 50}}>
+                        <div style={{flex: .45, display: 'flex'}}>
                             <div style={{color: '#fff', fontFamily: 'Karla', fontSize: 20, fontWeight: 'bold', marginLeft: 15,}}>
                                 {this.props.currentGraphAppInst + ""}
                             </div>
@@ -194,9 +196,25 @@ export default class ModalForGraph extends React.Component<Props, State> {
                                 {"[" + this.props.cluster + "]"}
                             </div>
                         </div>
-                        <div style={{color: 'white', fontFamily: 'Encode Sans Condensed', fontSize: 20, fontWeight: 'bold', flex: .15}}>
+                        <div style={{flex: .3, display: 'flex', backgroundColor: 'transparent'}}>
+                            <Dropdown
+                                placeholder='SELECT CONN TYPE'
+                                selection
+                                //loading={this.state.loading}
+                                options={HARDWARE_OPTIONS}
+                                defaultValue={HARDWARE_OPTIONS[0].value}
+                                onChange={async (e, {value}) => {
+
+                                }}
+                                //value={subCategoryType}
+                                style={{height: 35}}
+                            />
+                        </div>
+                        <div
+                            style={{color: 'white', fontSize: 20, fontWeight: 'bold', flex: .35, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom:12}}>
                             {this.state.hardwareType}
                         </div>
+
                     </div>
 
                     <Line

@@ -163,6 +163,15 @@ export const HARDWARE_OPTIONS = [
     {text: 'SEND_BYTES', value: 'SEND_BYTES'},
 ]
 
+export const HARDWARE_OPTIONS_FOR_APPINST = [
+    {text: 'CPU', value: 'CPU'},
+    {text: 'MEM', value: 'MEM'},
+    {text: 'DISK', value: 'DISK'},
+    {text: 'CONNECTION', value: 'CONNECTION'},
+    {text: 'RECV_BYTES', value: 'RECV_BYTES'},
+    {text: 'SEND_BYTES', value: 'SEND_BYTES'},
+]
+
 
 export const HARDWARE_OPTIONS_FOR_CLOUDLET = [
     {text: 'vCPU', value: 'vCPU'},
