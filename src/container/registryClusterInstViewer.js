@@ -2,10 +2,6 @@ import React from 'react';
 import { Tab } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-
-import PopDetailViewer from './popDetailViewer';
-import PopUserViewer from './popUserViewer';
-import PopAddUserViewer from './popAddUserViewer';
 import './styles.css';
 import _ from "lodash";
 import * as reducer from '../utils'
@@ -35,22 +31,10 @@ class RegistryClusterInstViewer extends React.Component {
             layout,
             dialogMessage: [],
             open: false,
-            openAdd: false,
-            openDetail: false,
             dimmer: false,
-            activeItem: '',
             dummyData: [],
-            detailViewData: null,
             selected: {},
-            openUser: false,
-            orgData: {},
-            selectUse: null,
             resultData: null,
-            cloudlets: [],
-            operators: [],
-            clustinst: [],
-            apps: [],
-            clusterInstCreate: true,
             toggleSubmit: false,
             validateError: [],
             regSuccess: true,
@@ -66,12 +50,7 @@ class RegistryClusterInstViewer extends React.Component {
                     'IpAccess': { label: 'IP Access', type: 'RenderSelect', necessary: false, tip: 'Shared IP Access represents that you would be sharing a Root Load Balancer with other developers. Dedicated IP Access represents that you would have a dedicated Root Load Balancer.', items: ipaccessArr },
                     'Flavor': { label: 'Flavor', type: 'RenderSelect', necessary: true, tip: 'What flavor is needed to run your application?', active: true, items: ['', ''] },
                     'NumberOfMaster': { label: 'Number of Masters', type: 'RenderInputDisabled', necessary: false, tip: 'This represents Kubernetes Master where it is responsible for maintaining the desired state for your cluster.', value: null },
-                    'NumberOfNode': { label: 'Number of Nodes', type: 'RenderInputNum', necessary: false, tip: 'What is the number of nodes you want in this cluster? The nodes in a cluster are the machines that run your applications.', value: null },
-                    'Reservable': { label: 'Reservable', type: 'renderCheckbox', necessary: false, tip: 'Reserve cluster', value: false },
-                    'ReservedBy': { label: 'Reserved By', type: 'RenderInputCluster', necessary: false, tip: 'MobiledgeX ClusterInsts, the current developer tenant', value: false }
-                },
-                {
-
+                    'NumberOfNode': { label: 'Number of Nodes', type: 'RenderInputNum', necessary: false, tip: 'What is the number of nodes you want in this cluster? The nodes in a cluster are the machines that run your applications.', value: null }
                 }
             ],
             fakeData: [
@@ -86,9 +65,7 @@ class RegistryClusterInstViewer extends React.Component {
                     'PrivacyPolicy': '',
                     'Flavor': '',
                     'NumberOfMaster': '1',
-                    'NumberOfNode': '1',
-                    'Reservable':false,
-                    'ReservedBy':''
+                    'NumberOfNode': '1'
                 }
             ]
 
@@ -97,20 +74,29 @@ class RegistryClusterInstViewer extends React.Component {
 
     }
 
+    addReservableForAdmin = () => {
+        if (localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
+            
+            let fakeData = this.state.fakeData;
+            let keysData = this.state.keysData;
+            
+            fakeData[0].Reservable = false;
+            fakeData[0].ReservedBy = '';
 
-    show = (dim) => this.setState({ dimmer: dim, openDetail: true })
+            keysData[0].Reservable = { label: 'Reservable', type: 'renderCheckbox', necessary: false, tip: 'Reserve cluster', value: false }
+            keysData[0].ReservedBy = { label: 'Reserved By', type: 'RenderInputCluster', necessary: false, tip: 'MobiledgeX ClusterInsts, the current developer tenant', value: false }
+            
+            this.setState({
+                keysData: keysData,
+                fakeData: fakeData
+            })
+        }
+    }
+
+
     close = () => {
         this.setState({ open: false })
         this.props.handleInjectDeveloper(null)
-    }
-    closeDetail = () => {
-        this.setState({ openDetail: false })
-    }
-    closeUser = () => {
-        this.setState({ openUser: false })
-    }
-    closeAddUser = () => {
-        this.setState({ openAdd: false })
     }
 
     generateDOM(open, dimmer, data, keysData, hideHeader, region) {
@@ -139,9 +125,7 @@ class RegistryClusterInstViewer extends React.Component {
         return layout
     }
 
-    onLayoutChange(layout) {
-        //this.props.onLayoutChange(layout);
-    }
+    
 
     setFildData() {
         //
@@ -183,11 +167,8 @@ class RegistryClusterInstViewer extends React.Component {
 
     componentDidMount() {
 
+        this.addReservableForAdmin()
         this.setFildData();
-
-        /************
-         * set Organization Name
-         * **********/
         let assObj = Object.assign([], this.state.fakeData);
         assObj[0].OrganizationName = localStorage.selectOrg;
         this.setState({ fakeData: assObj });
@@ -253,20 +234,15 @@ class RegistryClusterInstViewer extends React.Component {
         const { hiddenKeys } = this.props;
         return (
             <div className="regis_container">
-                {/*<RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close}/>*/}
                 <div
                     draggableHandle
                     layout={this.state.layout}
-                    onLayoutChange={this.onLayoutChange}
                     {...this.props}
                     style={{ overflowY: 'visible' }}
                     useCSSTransforms={false}
                 >
                     {this.generateDOM(open, dimmer, dummyData, this.state.keysData, hiddenKeys, this.props.region)}
                 </div>
-                <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
-                <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
-                <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>
                 <MexMessageDialog close={this.closeDialog} message={this.state.dialogMessage} />
             </div>
         );
@@ -280,19 +256,7 @@ class RegistryClusterInstViewer extends React.Component {
         width: 1600
     };
 }
-/*
-{
-  "Region": "US",
-  "ClusterName": "myClusterInst0513",
-  "OrganizationName": "TDG",
-  "Operator": "RCI",
-  "Cloudlet": "toronto-cloudlet",
-  "Flavor": "m4.large",
-  "IpAccess": "IpAccessDedicated",
-  "NumberOfMaster": "1",
-  "NumberOfNode": "2"
-}
- */
+
 const getInteger = (str) => (
     (str === 'Dedicated') ? 1 :
         (str === 'Shared') ? 3 : false
