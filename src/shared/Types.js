@@ -21,6 +21,14 @@ export type TypeGridInstanceList = {
     "sumSendBytes": number,
 }
 
+export type TypeLineChartData2 = {
+    levelTypeNameList: Array,
+    usageSetList: Array,
+    newDateTimeList: Array,
+    hardwareType: string,
+
+}
+
 export type TypeCloudletUsageList = {
     avgVCpuUsed: number,
     avgVCpuMax: number,

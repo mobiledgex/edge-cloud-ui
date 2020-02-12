@@ -1,4 +1,5 @@
 import 'react-hot-loader'
+import {Icon as AIcon} from 'antd';
 import React from "react";
 import * as L from 'leaflet';
 import "../PageMonitoring.css";
@@ -9,6 +10,12 @@ import Ripples from "react-ripples";
 
 import {Tooltip, Map, Marker, Popup, TileLayer, Polyline} from "../../../../components/react-leaflet_kj/src/index";
 import $ from 'jquery';
+import {getOneYearStartEndDatetime, showToast, showToast2, StylesForMonitoring} from "../PageMonitoringCommonService";
+import PageDevMonitoring from "./PageDevMonitoring";
+import {filterUsageByClassification, makeBarChartDataForCluster, makeLineChartDataForAppInst, makeLineChartDataForCluster} from "./PageDevMonitoringService";
+import {getAppLevelUsageList} from "../admin/PageAdminMonitoringService";
+import {RECENT_DATA_LIMIT_COUNT} from "../../../../shared/Constants";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 
 const DEFAULT_VIEWPORT = {
@@ -51,10 +58,23 @@ let ClickableTooltip = L.Tooltip.extend({
     }
 });
 
-export default hot(
-    class LeafletMapWrapperForDev extends React.Component {
+type Props = {
+    parent: PageDevMonitoring,
+    handleAppInstDropdown: Function,
+    markerList: Array,
 
-        constructor(props) {
+
+};
+type State = {
+    popUploading: boolean,
+
+};
+
+
+export default hot(
+    class LeafletMapWrapperForDev extends React.Component<Props, State> {
+
+        constructor(props: Props) {
             super(props);
             this.state = {
                 zoom: 0.9,//mapZoom
@@ -72,7 +92,7 @@ export default hot(
                     {key: 'marker2', position: [51.51, -0.1], content: 'My second popup'},
                     {key: 'marker3', position: [51.49, -0.05], content: 'My third popup'},
                 ],
-
+                popupLoading: false,
 
             };
 
@@ -169,40 +189,34 @@ export default hot(
 
         }
 
-        renderPopup() {
-            return (
-                <Popup
-                    //position={[100.110924, 8.682127]}
-                    offset={[0, 0]}
-                    opacity={0.7}
-                    className="tooltip1"
-                >
-                    <div style={{display: 'flex', flexDirection: 'column'}}>
-                        <div style={{fontSize: 20, fontFamily: 'Acme'}}>
-                            [KR , SEONGNAM]
-                        </div>
-                        <button style={{backgroundColor: 'green', color: "white"}} onClick={() => {
-                            alert('eundew')
-                        }}>eundew
-                        </button>
-                        <div style={{height: 5}}/>
-                        <button onClick={() => {
-                            alert('GO')
-                        }}>GO
-                        </button>
-                        <div style={{height: 5}}/>
-                        <button onClick={() => {
-                            alert('Rahul')
-                        }}>Rahul
-                        </button>
-                        <div style={{height: 5}}/>
-                        <button onClick={() => {
-                            alert('redstar')
-                        }}>redstar
-                        </button>
-                    </div>
-                </Popup>
-            )
+        async showGraphForAppInst(AppName_ClusterInst, ClusterInst, AppName, item) {
+            let arrayTemp = AppName_ClusterInst.split(" | ");
+            let Cluster = arrayTemp[1].trim();
+            let AppInst = arrayTemp[0].trim()
+            let dataSet = AppInst + " | " + item.Cloudlet.trim() + " | " + Cluster
+            showToast2(AppName)
+
+
+            let filteredAppList = filterUsageByClassification(this.props.parent.state.appInstanceList, item.Cloudlet.trim(), 'Cloudlet');
+            filteredAppList = filterUsageByClassification(filteredAppList, ClusterInst, 'ClusterInst');
+            filteredAppList = filterUsageByClassification(filteredAppList, AppName, 'AppName');
+            let arrDateTime = getOneYearStartEndDatetime();
+            let filteredAppInstUsageList = [];
+            try{
+                filteredAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime[0], arrDateTime[1]);
+                console.log('allAppInstUsageList===>', filteredAppInstUsageList);
+                //let clickedClusterLineChartData = makeLineChartDataForCluster(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
+                let lineChartDataSet = makeLineChartDataForAppInst(filteredAppInstUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
+
+                this.props.parent.setState({
+                    modalIsOpen: true,
+                    currentGraphCluster: Cluster,
+                    currentGraphAppInst: AppInst,
+                    currentAppInstLineChartData: lineChartDataSet,
+                })
+            }catch (e) {
+
+            }
         }
 
 
@@ -260,6 +274,7 @@ export default hot(
                                             style={{color: 'black'}}>{item.Cloudlet}</span>
                                     </Tooltip>
                                     <Popup className='popup1'>
+
                                         {listAppName.map(AppName_ClusterInst => {
 
                                             let AppName = AppName_ClusterInst.trim().split(" | ")[0].trim()
@@ -267,15 +282,32 @@ export default hot(
 
 
                                             return (
-
                                                 <div style={{
                                                     fontSize: 14, fontFamily: 'Roboto', cursor: 'crosshair',
                                                     flexDirection: 'column',
                                                     marginTop: 5, marginBottom: 5
                                                 }}
                                                 >
+
+
                                                     <Ripples
-                                                        style={{}}
+                                                        style={{marginRight: 15, width: 10, color: 'white'}}
+                                                        color='yellow' during={777}
+                                                        onClick={async () => {
+                                                            await this.props.parent.setState({
+                                                                mapPopUploading: true,
+                                                            })
+                                                            await this.showGraphForAppInst(AppName_ClusterInst, ClusterInst, AppName, item);
+
+                                                            await this.props.parent.setState({
+                                                                mapPopUploading: false,
+                                                            })
+                                                        }}
+                                                    >
+                                                        <AIcon type="stock" style={{marginRight: 15, color: 'green'}}/>
+                                                    </Ripples>
+                                                    <Ripples
+                                                        style={{marginLeft: 5}}
                                                         color='#1cecff' during={500}
                                                         onClick={() => {
 
@@ -285,10 +317,21 @@ export default hot(
                                                             let AppInst = arrayTemp[0].trim()
                                                             let dataSet = AppInst + " | " + item.Cloudlet.trim() + " | " + Cluster
                                                             //showToast(dataSet)
+
                                                             this.props.handleAppInstDropdown(dataSet)
                                                         }}
                                                     >
                                                         {AppName}
+                                                    </Ripples>
+                                                    <Ripples
+                                                        color='#FF6347' during={500}
+                                                        onClick={async () => {
+
+                                                            this.setState({
+                                                                popUploading: !this.state.popUploading
+                                                            })
+                                                        }}
+                                                    >
                                                         <div style={{color: '#77BD25', fontFamily: 'Roboto', fontSize: 12}}>
                                                             &nbsp;&nbsp;{` [${ClusterInst.trim()}]`}
                                                         </div>

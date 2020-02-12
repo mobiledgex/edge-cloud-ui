@@ -1,6 +1,44 @@
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Bungee|Candal|Righteous&display=swap');
-@import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Acme|Bungee|Barlow+Semi+Condensed|Candal|Encode+Sans+Condensed|Righteous&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Acme|Roboto|Bungee|Barlow+Semi+Condensed|Candal|Encode+Sans+Condensed|Righteous|Karla|Roboto+Condensed&display=swap');
 @import url('~react-leaflet-markercluster/dist/styles.min.css');
+
+/*todo:드레거블 팝업 관련 css*/
+
+
+/*flexible-modal {
+    position: absolute;
+    z-index: 1;
+    border: 1px solid #ccc;
+    background: white;
+}
+.flexible-modal-mask {
+    position: fixed;
+    height: 100%;
+    background: rgba(55, 55, 55, 0.6);
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+}
+.flexible-modal-resizer {
+    position:absolute;
+    right:0;
+    bottom:0;
+    cursor:se-resize;
+    margin:5px;
+    border-bottom: solid 2px #333;
+    border-right: solid 2px #333;
+}
+.flexible-modal-drag-area{
+    background: rgba(22, 22, 333, 0.2);
+    height: 50px;
+    position:absolute;
+    right:0;
+    top:0;
+    cursor:move;
+}*/
+
+
 .tooltipclass {
     z-index: 100;
 }
@@ -22618,13 +22656,6 @@ textarea.ant-mentions {
     word-wrap: break-word;
 }
 
-.ant-modal-footer {
-    padding: 10px 16px;
-    text-align: right;
-    background: transparent;
-    border-top: 1px solid #e8e8e8;
-    border-radius: 0 0 4px 4px;
-}
 
 .ant-modal-footer button + button {
     margin-bottom: 0;
@@ -28833,3 +28864,48 @@ span .ant-calendar-picker {
 
 
 /*# sourceMappingURL=antd.css.map*/
+
+
+.ant-modal-header {
+    padding: 16px 24px;
+    color: #292C33;
+    background: #292C33;
+    border-bottom: 4px solid #292C33;
+    border-radius: 4px 4px 0 0;
+}
+
+.ant-modal-title {
+    background-color: #292C33;
+    color: white;
+}
+
+.ant-modal-body {
+    padding: 24px;
+    font-size: 14px;
+    /*line-height: 5;*/
+    /*word-wrap: break-word;*/
+    color: white;
+    background-color: #292C33;
+}
+
+.ant-modal-footer {
+    padding: 10px 16px;
+    text-align: right;
+    background: #292C33;;
+    border-top: 4px solid #292C33;
+    border-radius: 0 0 4px 4px;
+}
+
+.ant-modal-content {
+    position: absolute;
+    background-clip: padding-box;
+    background-color: #292C33;
+    border: 0;
+    bottom: 0;
+    width: 350;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px black;;
+    pointer-events: auto;
+}
+
+

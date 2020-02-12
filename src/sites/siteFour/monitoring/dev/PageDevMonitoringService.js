@@ -3,10 +3,20 @@ import '../PageMonitoring.css';
 import {APP_INST_USAGE_TYPE_INDEX, CHART_COLOR_LIST, CLASSIFICATION, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION, USAGE_INDEX_FOR_CLUSTER} from "../../../../shared/Constants";
 import BubbleChart from "../../../../components/BubbleChart";
 import PageDevMonitoring from "./PageDevMonitoring";
-import {getClusterLevelMatric, makeFormForClusterLevelMatric, numberWithCommas, renderUsageByType, showToast, showToast2, StylesForMonitoring} from "../PageMonitoringCommonService";
+import {
+    convertByteToMegaByte,
+    getClusterLevelMatric,
+    makeFormForClusterLevelMatric,
+    numberWithCommas,
+    renderUsageByType,
+    showToast,
+    showToast2,
+    StylesForMonitoring
+} from "../PageMonitoringCommonService";
 import {SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../../services/serviceMC";
 import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
+import {Line as ReactChartJsLine} from "react-chartjs-2";
 
 export const getClusterLevelUsageList = async (clusterList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
     try {
@@ -357,6 +367,34 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
     }
 
 }
+
+
+export const handleHardwareTabChanges = async (_this: PageDevMonitoring, selectedValueOne) => {
+    if (_this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+        if (selectedValueOne === HARDWARE_TYPE.CPU) {
+            await _this.setState({
+                currentTabIndex: 0
+            })
+        } else if (selectedValueOne === HARDWARE_TYPE.MEM) {
+            await _this.setState({
+                currentTabIndex: 1
+            })
+        } else if (selectedValueOne === HARDWARE_TYPE.DISK) {
+            await _this.setState({
+                currentTabIndex: 2
+            })
+        } else if (selectedValueOne === HARDWARE_TYPE.TCPRETRANS || selectedValueOne === HARDWARE_TYPE.TCPCONNS) {
+            await _this.setState({
+                currentTabIndex: 3
+            })
+        } else if (selectedValueOne === HARDWARE_TYPE.UDPSENT || selectedValueOne === HARDWARE_TYPE.UDPRECV) {
+            await _this.setState({
+                currentTabIndex: 4
+            })
+        }
+    }
+}
+
 
 export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, hardwareType: string, pBubbleChartData: any) => {
 
@@ -710,6 +748,155 @@ export const makeGradientColor = (canvas, height) => {
     gradientList.push(gradient5)
 
     return gradientList;
+}
+
+
+export const makeGradientColorOne = (canvas, height) => {
+    const ctx = canvas.getContext("2d");
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, height);
+    gradient.addColorStop(0, 'rgb(111,253,255)');
+    gradient.addColorStop(1.0, 'rgb(0,32,243)');
+
+
+
+    return gradient;
+}
+
+export const renderLineChartCoreForDev_Cluster = (paramLevelTypeNameList, usageSetList, newDateTimeList, hardwareType) => {
+
+    const lineChartData = (canvas) => {
+
+        let gradientList = makeGradientColor(canvas, height);
+
+        let finalSeriesDataSets = [];
+        for (let index in usageSetList) {
+            //@todo: top5 만을 추린다
+            if (index < 5) {
+                let datasetsOne = {
+                    label: paramLevelTypeNameList[index],
+                    backgroundColor: gradientList[index],//todo: 리전드box area fill True/false
+                    fill:  false,//todo: 라인차트 area fill True/false
+                    //backgroundColor: '',
+                    borderColor: gradientList[index],
+                    borderWidth: 3.5, //lineBorder
+                    lineTension: 0.5,
+                    pointColor: "#fff",
+                    pointStrokeColor: 'white',
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: 'white',
+                    data: usageSetList[index],
+                    radius: 0,
+                    pointRadius: 1,
+                }
+
+                finalSeriesDataSets.push(datasetsOne)
+            }
+
+        }
+
+
+        console.log('finalSeriesDataSets====>', finalSeriesDataSets);
+
+        return {
+            labels: newDateTimeList,
+            datasets: finalSeriesDataSets,
+        }
+    }
+
+
+    let height = 500 + 100;
+    let options = {
+        animation: {
+            duration: 500
+        },
+        maintainAspectRatio: false,//@todo
+        responsive: true,//@todo
+        datasetStrokeWidth: 3,
+        pointDotStrokeWidth: 4,
+        layout: {
+            padding: {
+                left: 0,
+                right: 10,
+                top: 0,
+                bottom: 0
+            }
+        },
+        legend: {
+            position: 'top',
+            labels: {
+                boxWidth: 10,
+                fontColor: 'white'
+            }
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                    fontColor: 'white',
+                    callback(value, index, label) {
+                        return convertByteToMegaByte(value, hardwareType)
+
+                    },
+                },
+                gridLines: {
+                    color: "#505050",
+                },
+                stacked: true
+
+            }],
+            xAxes: [{
+                /*ticks: {
+                    fontColor: 'white'
+                },*/
+                gridLines: {
+                    color: "#505050",
+                },
+                ticks: {
+                    fontSize: 14,
+                    fontColor: 'white',
+                    //maxRotation: 0.05,
+                    //autoSkip: true,
+                    maxRotation: 45,
+                    minRotation: 45,
+                    padding: 10,
+                    labelOffset: 0,
+                    callback(value, index, label) {
+                        return value;
+
+                    },
+                },
+                beginAtZero: false,
+                /* gridLines: {
+                     drawTicks: true,
+                 },*/
+            }],
+            backgroundColor: {
+                fill: "#1e2124"
+            },
+        }
+
+    }
+
+    //todo :#######################
+    //todo : chart rendering part
+    //todo :#######################
+    return (
+        <div style={{
+            position: 'relative',
+            width: '99%',
+            height: '96%'
+        }}>
+            <ReactChartJsLine
+                //width={'100%'}
+                //height={hardwareType === "recv_bytes" || hardwareType === "send_bytes" ? chartHeight + 20 : chartHeight}
+                //height={'100%'}
+                data={lineChartData}
+                options={options}
+
+            />
+        </div>
+    );
 }
 
 

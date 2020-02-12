@@ -64,7 +64,7 @@ export const APP_INST_USAGE_TYPE_INDEX = {
 }
 
 
-export const RECENT_DATA_LIMIT_COUNT = 20
+export const RECENT_DATA_LIMIT_COUNT = 10
 
 export const APP_PERFORMANCE_VALUES = {
     M4_MEDIUM: {
@@ -179,12 +179,12 @@ export const HARDWARE_OPTIONS_FOR_CLUSTER = [
     {text: 'CPU', value: 'CPU'},
     {text: 'MEM', value: 'MEM'},
     {text: 'DISK', value: 'DISK'},
-    {text: 'RECV BYTES', value: 'RECV_BYTES'},
-    {text: 'SEND BYTES', value: 'SEND_BYTES'},
     {text: 'TCP CONNS', value: 'TCPCONNS'},
     {text: 'TCP RETRANS', value: 'TCPRETRANS'},
-    {text: 'UDP RECV', value: 'UDPRECVERR'},
+    {text: 'UDP RECV', value: 'UDPRECV'},
     {text: 'UDP SENT', value: 'UDPSENT'},
+    {text: 'RECV BYTES', value: 'RECV_BYTES'},
+    {text: 'SEND BYTES', value: 'SEND_BYTES'},
 ]
 
 
