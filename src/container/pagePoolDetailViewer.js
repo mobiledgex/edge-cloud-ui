@@ -320,7 +320,7 @@ class PagePoolDetailViewer extends React.Component {
         if(result) {
             console.log(JSON.stringify(result))
             if(result.response && result.response.data) {
-                _self.props.handleAlertInfo('success', result.response.data.message ? result.response.data.message : 'Deleted successfully')
+                _self.props.handleAlertInfo('success', result.response.data.message ? result.response.data.message : 'deleted successfully')
             }
             /** remove item from list */
             this.removeSelectedItems(_self.selectedItems);

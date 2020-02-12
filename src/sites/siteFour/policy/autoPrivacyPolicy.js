@@ -71,7 +71,7 @@ class SiteFourPageFlavor extends React.Component {
         }
         let mcRequest = await serviceMC.sendSyncRequest(this, { token: this.getToken(), method: serviceMC.getEP().DELETE_PRIVACY_POLICY, data: requestData })
         if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-            this.props.handleAlertInfo('success', `Privacy Policy ${data.PrivacyPolicyName} Deleted Successfully`)
+            this.props.handleAlertInfo('success', `Privacy Policy ${data.PrivacyPolicyName} deleted successfully`)
         }
         this.props.handleComputeRefresh(true);
     }
