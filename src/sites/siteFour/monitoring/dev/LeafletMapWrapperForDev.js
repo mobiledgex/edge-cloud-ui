@@ -194,15 +194,13 @@ export default hot(
             let Cluster = arrayTemp[1].trim();
             let AppInst = arrayTemp[0].trim()
             let dataSet = AppInst + " | " + item.Cloudlet.trim() + " | " + Cluster
-            showToast2(AppName)
-
-
+            //showToast2(AppName)
             let filteredAppList = filterUsageByClassification(this.props.parent.state.appInstanceList, item.Cloudlet.trim(), 'Cloudlet');
             filteredAppList = filterUsageByClassification(filteredAppList, ClusterInst, 'ClusterInst');
             filteredAppList = filterUsageByClassification(filteredAppList, AppName, 'AppName');
             let arrDateTime = getOneYearStartEndDatetime();
             let filteredAppInstUsageList = [];
-            try{
+            try {
                 filteredAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime[0], arrDateTime[1]);
                 console.log('allAppInstUsageList===>', filteredAppInstUsageList);
                 //let clickedClusterLineChartData = makeLineChartDataForCluster(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
@@ -214,7 +212,7 @@ export default hot(
                     currentGraphAppInst: AppInst,
                     currentAppInstLineChartData: lineChartDataSet,
                 })
-            }catch (e) {
+            } catch (e) {
 
             }
         }
@@ -291,7 +289,7 @@ export default hot(
 
 
                                                     <Ripples
-                                                        style={{marginRight: 15, width: 10, color: 'white'}}
+                                                        style={{marginRight: 12, marginLeft: 12, width: 10, color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center'}}
                                                         color='yellow' during={777}
                                                         onClick={async () => {
                                                             await this.props.parent.setState({
@@ -304,7 +302,7 @@ export default hot(
                                                             })
                                                         }}
                                                     >
-                                                        <AIcon type="stock" style={{marginRight: 15, color: 'green'}}/>
+                                                        <AIcon type="stock" style={{color: 'green', marginRight: 12, marginLeft: 12,}}/>
                                                     </Ripples>
                                                     <Ripples
                                                         style={{marginLeft: 5}}
@@ -322,8 +320,11 @@ export default hot(
                                                         }}
                                                     >
                                                         {AppName}
+                                                        <div style={{color: '#77BD25', fontFamily: 'Roboto', fontSize: 12}}>
+                                                            &nbsp;&nbsp;{` [${ClusterInst.trim()}]`}
+                                                        </div>
                                                     </Ripples>
-                                                    <Ripples
+                                                    {/* <Ripples
                                                         color='#FF6347' during={500}
                                                         onClick={async () => {
 
@@ -332,10 +333,7 @@ export default hot(
                                                             })
                                                         }}
                                                     >
-                                                        <div style={{color: '#77BD25', fontFamily: 'Roboto', fontSize: 12}}>
-                                                            &nbsp;&nbsp;{` [${ClusterInst.trim()}]`}
-                                                        </div>
-                                                    </Ripples>
+                                                    </Ripples>*/}
                                                 </div>
 
 
