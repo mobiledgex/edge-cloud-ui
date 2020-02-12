@@ -473,7 +473,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                 (fieldKeys[pId][key]['type'] === 'ProvPolicySelect') ?
                                                                                 <Field
                                                                                     component={renderSelect}
-                                                                                    placeholder={'Select Auto Provision Policy'}
+                                                                                    placeholder={'Select Auto Provisioning Policy'}
                                                                                     value={data[key]}
                                                                                     options={this.props.provPolicyData}
                                                                                     name={key}
