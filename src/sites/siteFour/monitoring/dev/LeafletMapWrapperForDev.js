@@ -286,9 +286,7 @@ export default hot(
                                                     marginTop: 5, marginBottom: 5
                                                 }}
                                                 >
-
-
-                                                    <Ripples
+                                                   {/* <Ripples
                                                         style={{marginRight: 12, marginLeft: 12, width: 10, color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center'}}
                                                         color='yellow' during={777}
                                                         onClick={async () => {
@@ -296,14 +294,13 @@ export default hot(
                                                                 mapPopUploading: true,
                                                             })
                                                             await this.showGraphForAppInst(AppName_ClusterInst, ClusterInst, AppName, item);
-
                                                             await this.props.parent.setState({
                                                                 mapPopUploading: false,
                                                             })
                                                         }}
                                                     >
                                                         <AIcon type="stock" style={{color: 'green', marginRight: 12, marginLeft: 12,}}/>
-                                                    </Ripples>
+                                                    </Ripples>*/}
                                                     <Ripples
                                                         style={{marginLeft: 5}}
                                                         color='#1cecff' during={500}

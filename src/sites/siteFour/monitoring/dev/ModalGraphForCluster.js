@@ -7,23 +7,25 @@ import type {TypeLineChartData2} from "../../../../shared/Types";
 import {convertByteToMegaByte} from "../PageMonitoringCommonService";
 import {makeGradientColor, makeGradientColorOne} from "./PageDevMonitoringService";
 import {Dropdown} from "semantic-ui-react";
-import {CONNECTIONS_OPTIONS, HARDWARE_OPTIONS, HARDWARE_OPTIONS_FOR_APPINST, HARDWARE_TYPE} from "../../../../shared/Constants";
+import {CHART_COLOR_LIST, CONNECTIONS_OPTIONS, HARDWARE_OPTIONS, HARDWARE_OPTIONS_FOR_APPINST, HARDWARE_TYPE} from "../../../../shared/Constants";
 
 type Props = {
     modalIsOpen: boolean,
     parent: PageDevMonitoring,
-    currentAppInstLineChartData: Array,
+    selectedClusterUsageOne: Array,
     appInst: string,
+    selectedClusterUsageOneIndex: number
 };
 type State = {
     lineChartData: Array,
     options: any,
     hardwareType: any,
+    cluster_cloudlet: string,
 
 };
 
 
-export default class ModalForGraph extends React.Component<Props, State> {
+export default class ModalGraphForCluster extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
@@ -31,6 +33,7 @@ export default class ModalForGraph extends React.Component<Props, State> {
             lineChartData: [],
             options: {},
             hardwareType: '',
+            cluster_cloudlet: '',
         }
     }
 
@@ -40,60 +43,52 @@ export default class ModalForGraph extends React.Component<Props, State> {
 
 
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
-        if (this.props.currentAppInstLineChartData !== nextProps.currentAppInstLineChartData) {
+        if (this.props.selectedClusterUsageOne !== nextProps.selectedClusterUsageOne) {
+            let clusterUsageOne: TypeLineChartData2 = nextProps.selectedClusterUsageOne
 
-            let paramedlineChartData: TypeLineChartData2 = nextProps.currentAppInstLineChartData
-            let hardwareType = paramedlineChartData.hardwareType
-            let paramLevelTypeNameList = paramedlineChartData.levelTypeNameList
-            let usageSetList = paramedlineChartData.usageSetList
-            let newDateTimeList = paramedlineChartData.newDateTimeList
+            let hardwareType = clusterUsageOne.hardwareType
+            let currentClusterName = clusterUsageOne.levelTypeNameList
+            this.setState({
+                cluster_cloudlet: currentClusterName
+            })
 
-            const lineChartData = (canvas) => {
-                let finalSeriesDataSets = [];
+            let usageSetList = clusterUsageOne.usageSetList
+            let newDateTimeList = clusterUsageOne.newDateTimeList
 
-                for (let index in usageSetList) {
-                    let datasetsOne = {
-                        label: paramLevelTypeNameList[index],
-                        backgroundColor: makeGradientColorOne(canvas, height),//todo: 리전드box area fill True/false
-                        fill: true,//todo: 라인차트 area fill True/false
-                        //backgroundColor: '',
-                        borderColor: makeGradientColorOne(canvas, height),
-                        borderWidth: 3.5, //lineBorder
-                        lineTension: 0.5,
-                        pointColor: "#fff",
-                        pointStrokeColor: 'white',
-                        pointHighlightFill: "#fff",
-                        pointHighlightStroke: 'white',
-                        data: usageSetList[index],
-                        radius: 0,
-                        pointRadius: 1,
-                    }
-                    finalSeriesDataSets.push(datasetsOne)
-                }
+            let index = nextProps.selectedClusterUsageOneIndex
 
-                return {
-                    labels: newDateTimeList,
-                    datasets: finalSeriesDataSets,
-                }
+            let arrayDatasetsList = []
+            let datasetsOne = {
+                label: currentClusterName,
+                backgroundColor: CHART_COLOR_LIST[index],
+                borderColor: CHART_COLOR_LIST[index],
+                borderCapStyle: 'butt',
+                fill: false,//todo: 라인차트 area fill True/false
+                //backgroundColor: '',
+                borderWidth: 3.5, //lineBorder
+                lineTension: 0.5,
+                pointColor: "#fff",
+                pointStrokeColor: 'white',
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: 'white',
+                data: usageSetList,
+                radius: 0,
+                pointRadius: 1,
             }
 
-            let height = 500 + 100;
+            arrayDatasetsList.push(datasetsOne)
+
+            let lineChartData = {
+                labels: newDateTimeList,
+                datasets: arrayDatasetsList,
+            }
+
             let options = {
                 animation: {
                     duration: 1000
                 },
-                maintainAspectRatio: false,//@todo
-                responsive: true,//@todo
                 datasetStrokeWidth: 3,
                 pointDotStrokeWidth: 4,
-                layout: {
-                    padding: {
-                        left: 0,
-                        right: 10,
-                        top: 0,
-                        bottom: 0
-                    }
-                },
                 legend: {
                     position: 'top',
                     labels: {
@@ -103,12 +98,12 @@ export default class ModalForGraph extends React.Component<Props, State> {
                 },
                 scales: {
                     yAxes: [{
+
                         ticks: {
-                            beginAtZero: true,
+                            beginAtZero:true,
+                            min: 0,
+                            max: 100,
                             fontColor: 'white',
-                            callback(value, index, label) {
-                                return convertByteToMegaByte(value, hardwareType)
-                            },
                         },
                         gridLines: {
                             color: "#505050",
@@ -149,14 +144,15 @@ export default class ModalForGraph extends React.Component<Props, State> {
 
             }
 
+            console.log('lineChartData===>', lineChartData);
+
 
             this.setState({
                 lineChartData: lineChartData,
                 options: options,
                 hardwareType: hardwareType,
             }, () => {
-
-                console.log('lineChartData===>', lineChartData);
+                console.log('lineChartData333333===>', this.state.lineChartData)
             })
         }
     }
@@ -164,13 +160,11 @@ export default class ModalForGraph extends React.Component<Props, State> {
 
     render() {
 
-
         return (
             <div style={{flex: 1, display: 'flex'}}>
                 <AModal
-
                     mask={false}
-                    style={{position: 'absolute', bottom: 47, left: 265, color: 'green'}} //container style
+                    style={{position: 'absolute', bottom: 150, left: 265, color: 'green'}} //container style
                     //title={this.props.currentGraphAppInst + " [" + this.props.cluster + "]" + "  " + this.state.hardwareType}
                     visible={this.props.modalIsOpen}
                     onOk={() => {
@@ -190,41 +184,30 @@ export default class ModalForGraph extends React.Component<Props, State> {
                     height={'85%'}
                     footer={null}
                 >
-                    <div style={{display: 'flex', backgroundColor: 'transparent', width: '100%', height: 50}}>
-                        <div style={{flex: .45, display: 'flex'}}>
-                            <div style={{color: '#fff', fontFamily: 'Karla', fontSize: 20, fontWeight: 'bold', marginLeft: 15,}}>
-                                {this.props.currentGraphAppInst + ""}
-                            </div>
-                            <div style={{color: '#77BD25', fontFamily: 'Karla', fontSize: 20, fontWeight: 'bold', marginLeft: 3,}}>
-                                {"[" + this.props.cluster + "]"}
-                            </div>
-                        </div>
-                        <div style={{flex: .3, display: 'flex', backgroundColor: 'transparent'}}>
-                            <Dropdown
-                                placeholder='SELECT CONN TYPE'
-                                selection
-                                //loading={this.state.loading}
-                                options={HARDWARE_OPTIONS_FOR_APPINST}
-                                defaultValue={HARDWARE_OPTIONS_FOR_APPINST[0].value}
-                                onChange={async (e, {value}) => {
-
-                                }}
-                                //value={subCategoryType}
-                                style={{height: 35}}
-                            />
+                    <div style={{display: 'flex', backgroundColor: 'transparent', width: '100%', height: 59}}>
+                        <div style={{flex: .85, display: 'flex', color: '#FFF',fontFamily: 'Barlow Semi', fontSize: 28, fontWeight: 'bold', marginLeft: 3,}}>
+                            {this.state.cluster_cloudlet}
                         </div>
                         <div
-                            style={{color: 'white', fontSize: 20, fontWeight: 'bold', flex: .35, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom:12}}>
+                            style={{
+                                flex: .15,
+                                color: 'white',
+                                fontFamily: 'Barlow Semi',
+                                fontSize: 30,
+                                fontWeight: 'bold',
+                                textAlign: 'right',
+                                display: 'flex',
+                            }}>
                             {this.state.hardwareType}
                         </div>
-
                     </div>
-
                     <Line
                         width={window.innerWidth / 3.5}
                         ref="chart"
                         height={window.innerHeight / 3.5}
                         data={this.state.lineChartData}
+                        options={this.state.options}
+                        //data={data222}
                     />
 
                 </AModal>

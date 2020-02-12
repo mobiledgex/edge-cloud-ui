@@ -61,6 +61,7 @@ import Icon from "@material-ui/core/Icon";
 import LeafletMapWrapperForDev from "./LeafletMapWrapperForDev";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalForGraph from "./ModalForGraph";
+import ModalGraphForCluster from "./ModalGraphForCluster";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -183,8 +184,10 @@ type State = {
     modalIsOpen: boolean,
     currentGraphCluster: string,
     currentAppInstLineChartData: Array,
-    currentGraphAppInst:string,
-    mapPopUploading:boolean,
+    currentGraphAppInst: string,
+    mapPopUploading: boolean,
+    selectedClusterUsageOne: Array,
+    selectedClusterUsageOneIndex:number,
 
 }
 
@@ -285,7 +288,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             currentGraphCluster: '',
             currentAppInstLineChartData: [],
             currentGraphAppInst: '',
-            mapPopUploading:false,
+            mapPopUploading: false,
+            selectedClusterUsageOne: [],
+            selectedClusterUsageOneIndex:0,
         };
 
         intervalForAppInst = null;
@@ -314,21 +319,32 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             clearInterval(this.intervalForAppInst)
         }
 
+        showModalClusterLineChart(lineChartDataOne, index) {
+            //alert(JSON.stringify(lineChartDataOne))
+
+
+            /*currentAppInstLineChartData={this.state.currentAppInstLineChartData} parent={this} modalIsOpen={this.state.modalIsOpen}*/
+
+            this.setState({
+                selectedClusterUsageOne: lineChartDataOne,
+                modalIsOpen: true,
+                selectedClusterUsageOneIndex: index,
+            })
+        }
 
         async loadInitDataForCluster(isInterval: boolean = false) {
             clearInterval(this.intervalForAppInst)
             this.setState({dropdownRequestLoading: true})
-         /*   let clusterList = await getClusterList();
+            /*let clusterList = await getClusterList();
             let cloudletList = await getCloudletList()
             let appInstanceList: Array<TypeAppInstance> = await getAppInstList();*/
 
 
             //fixme: fakeData
             //fixme: fakeData
-            let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
-            let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
-
+              let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+              let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
+              let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
             console.log('appInstanceList====>', appInstanceList);
 
             console.log('clusterList===>', clusterList);
@@ -516,7 +532,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {!this.state.loading && this.renderDropDownForMultiTab(pHardwareType)}
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : renderLineChartCoreForDev_Cluster(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
+                            {this.state.loading ? renderPlaceHolderCircular() : renderLineChartCoreForDev_Cluster(this, lineChartDataSet)}
                         </div>
                     </div>
                     {/*@todo:BarChart*/}
@@ -557,7 +573,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : renderLineChartCoreForDev_Cluster(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
+                            {this.state.loading ? renderPlaceHolderCircular() : renderLineChartCoreForDev_Cluster(this, lineChartDataSet)}
                         </div>
                     </div>
                     {/*@todo:BarChart*/}
@@ -1396,7 +1412,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
 
                 <div style={{width: '100%', height: '100%'}}>
-                    <ModalForGraph currentAppInstLineChartData={this.state.currentAppInstLineChartData} parent={this} modalIsOpen={this.state.modalIsOpen} currentGraphAppInst={this.state.currentGraphAppInst} cluster={this.state.currentGraphCluster} contents={'sdlfksdlkfsldkflksdlk'}/>
+                    {/*<ModalForGraph currentAppInstLineChartData={this.state.currentAppInstLineChartData} parent={this} modalIsOpen={this.state.modalIsOpen}
+                                   currentGraphAppInst={this.state.currentGraphAppInst} cluster={this.state.currentGraphCluster} contents={''}/>*/}
+
+                    <ModalGraphForCluster selectedClusterUsageOne={this.state.selectedClusterUsageOne} selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex} parent={this} modalIsOpen={this.state.modalIsOpen}
+                                          cluster={''} contents={''}/>
+
                     <Grid.Row className='view_contents'>
 
                         {/*todo:---------------------------------*/}
@@ -1425,14 +1446,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 <div className='page_monitoring_row'>
 
                                                     <div className='page_monitoring_column' style={{}}>
-                                                        <div className='page_monitoring_title_area' style={{display:'flex'}}>
-                                                            <div className='page_monitoring_title' style={{backgroundColor:'transparent', flex:.35}}>
+                                                        <div className='page_monitoring_title_area' style={{display: 'flex'}}>
+                                                            <div className='page_monitoring_title' style={{backgroundColor: 'transparent', flex: .35}}>
                                                                 Launch status of the {this.state.currentClassification}
                                                             </div>
-                                                            <div className='page_monitoring_title' style={{backgroundColor:'transparent', flex:.65}}>
+                                                            <div className='page_monitoring_title' style={{backgroundColor: 'transparent', flex: .65}}>
                                                                 {this.state.mapPopUploading &&
-                                                                <div style={{zIndex:99999999999}}>
-                                                                    <CircularProgress style={{color: '#1cecff', marginRight: 0, marginBottom: -2, fontWeight: 'bold',}} size={14} />
+                                                                <div style={{zIndex: 99999999999}}>
+                                                                    <CircularProgress style={{color: '#1cecff', marginRight: 0, marginBottom: -2, fontWeight: 'bold',}} size={14}/>
                                                                 </div>
                                                                 }
                                                             </div>

@@ -296,7 +296,7 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this) => {
                 let barDataOne = [
                     usageList[index].cluster.toString() + "\n[" + usageList[index].cloudlet + "]",//clusterName
                     renderUsageByType(usageList[index], hardwareType),
-                    usageList.length === 1 ? getColorOne() : CHART_COLOR_LIST[index],
+                    CHART_COLOR_LIST[index],
                     renderUsageLabelByTypeForCluster(usageList[index], hardwareType)
                 ]
                 chartDataList.push(barDataOne);
@@ -725,7 +725,7 @@ export const makeGradientColor = (canvas, height) => {
 
     const gradient2 = ctx.createLinearGradient(0, 0, 0, height);
     gradient2.addColorStop(0, 'rgb(255,150,0)');
-    gradient2.addColorStop(1, 'rgba(55,150,0,0)');
+    gradient2.addColorStop(1, 'rgba(255,150,0,0)');
 
     const gradient3 = ctx.createLinearGradient(0, 0, 0, height);
     gradient3.addColorStop(0, 'rgb(255,246,0)');
@@ -757,52 +757,96 @@ export const makeGradientColorOne = (canvas, height) => {
     return gradient;
 }
 
+
 export const getColorOne = () => {
     return 'rgb(111,253,255)';
 }
 
-export const renderLineChartCoreForDev_Cluster = (paramLevelTypeNameList, usageSetList, newDateTimeList, hardwareType) => {
+export const renderLineChartCoreForDev_Cluster = (_this: PageDevMonitoring, lineChartDataSet) => {
+    let levelTypeNameList = lineChartDataSet.levelTypeNameList;
+    let usageSetList = lineChartDataSet.usageSetList;
+    let newDateTimeList = lineChartDataSet.newDateTimeList;
+    let hardwareType = lineChartDataSet.hardwareType;
+
 
     const lineChartData = (canvas) => {
 
         let gradientList = makeGradientColor(canvas, height);
-
-
-        //makeGradientColorOne()
-
-
         let finalSeriesDataSets = [];
         for (let index in usageSetList) {
             //@todo: top5 만을 추린다
             if (index < 5) {
                 let datasetsOne = {
-                    label: paramLevelTypeNameList[index],
-                    backgroundColor: paramLevelTypeNameList.length === 1 ? makeGradientColorOne(canvas, height) : gradientList[index],
-                    fill: paramLevelTypeNameList.length === 1 ? true : false,
-                    borderColor: paramLevelTypeNameList.length === 1 ? makeGradientColorOne(canvas, height) : gradientList[index],
-                    borderWidth: 3.5, //lineBorder
-                    lineTension: 0.5,
-                    pointColor: "#fff",
-                    pointStrokeColor: 'white',
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: 'white',
-                    data: usageSetList[index],
+                    label: levelTypeNameList[index],
                     radius: 0,
+                    borderWidth: 3.5,//todo:라인 두께
+                    fill: false,
+                    lineTension: 0.5,
+                    /*backgroundColor:  gradientList[index],
+                    borderColor: gradientList[index],*/
+                    backgroundColor: CHART_COLOR_LIST[index],
+                    borderColor: CHART_COLOR_LIST[index],
+                    data: usageSetList[index],
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: 'rgba(75,192,192,1)',
+                    pointBackgroundColor: '#fff',
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+                    pointHoverBorderColor: 'rgba(220,220,220,1)',
+                    pointHoverBorderWidth: 2,
                     pointRadius: 1,
+                    pointHitRadius: 10,
+
                 }
 
                 finalSeriesDataSets.push(datasetsOne)
             }
 
         }
-
-
-        console.log('finalSeriesDataSets====>', finalSeriesDataSets);
-
         return {
             labels: newDateTimeList,
             datasets: finalSeriesDataSets,
         }
+    }
+
+    function handleLegendClickedEvent(clickedItem){
+
+        console.log('onClick222===1>', clickedItem)
+        console.log('onClick222===2>', lineChartDataSet);
+
+        let selectOne = clickedItem.text.toString().replace('\n', "|");
+
+        console.log('onClick222===>', selectOne);
+
+        let lineChartOne = []
+        let selectedIndex = 0;
+        levelTypeNameList.map((item, index) => {
+            if (selectOne === item.toString().replace('\n', "|")) {
+                console.log('onClick3===>', item.toString().replace('\n', "|"));
+                lineChartOne.push({
+                    cluster_cloudlet: selectOne,
+                    index: index,
+                })
+                selectedIndex = index;
+            }
+        })
+
+        console.log('onClick4===>', lineChartDataSet)
+
+        let selected_lineChartDataSetOne={
+            levelTypeNameList: lineChartDataSet.levelTypeNameList[selectedIndex],
+            usageSetList: lineChartDataSet.usageSetList[selectedIndex],
+            newDateTimeList: lineChartDataSet.newDateTimeList,
+            hardwareType: lineChartDataSet.hardwareType,
+        }
+
+        console.log('onClick4===>', selected_lineChartDataSetOne);
+
+        _this.showModalClusterLineChart(selected_lineChartDataSetOne, selectedIndex)
     }
 
 
@@ -828,12 +872,20 @@ export const renderLineChartCoreForDev_Cluster = (paramLevelTypeNameList, usageS
             labels: {
                 boxWidth: 10,
                 fontColor: 'white'
-            }
+            },//@todo:리전드 클릭 이벤트.
+            onClick: (e, clickedItem) => {
+                    handleLegendClickedEvent(clickedItem)
+            },
+            onHover: (e, item) => {
+                //alert(`Item with text ${item.text} and index ${item.index} hovered`)
+            },
         },
         scales: {
             yAxes: [{
                 ticks: {
-                    beginAtZero: true,
+                    beginAtZero:true,
+                    min: 0,
+                    max: 100,
                     fontColor: 'white',
                     callback(value, index, label) {
                         return convertByteToMegaByte(value, hardwareType)
@@ -843,7 +895,7 @@ export const renderLineChartCoreForDev_Cluster = (paramLevelTypeNameList, usageS
                 gridLines: {
                     color: "#505050",
                 },
-                stacked: true
+                //stacked: true
 
             }],
             xAxes: [{
@@ -879,6 +931,8 @@ export const renderLineChartCoreForDev_Cluster = (paramLevelTypeNameList, usageS
 
     }
 
+
+
     //todo :#######################
     //todo : chart rendering part
     //todo :#######################
@@ -889,6 +943,10 @@ export const renderLineChartCoreForDev_Cluster = (paramLevelTypeNameList, usageS
             height: '96%'
         }}>
             <ReactChartJsLine
+               /* getDatasetAtEvent={(e)=>{
+
+                    alert(e)
+                }}*/
                 //width={'100%'}
                 //height={hardwareType === "recv_bytes" || hardwareType === "send_bytes" ? chartHeight + 20 : chartHeight}
                 //height={'100%'}
