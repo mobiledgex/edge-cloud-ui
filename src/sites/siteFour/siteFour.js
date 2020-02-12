@@ -915,13 +915,13 @@ class SiteFour extends React.Component {
                         <HeaderGlobalMini email={this.state.email} data={this.props.userInfo.info} dimmer={false} />
                     </Grid.Column>
                 </Grid.Row>
-                <Container className='view_left_container' style={{position: 'relative', width: this.state.menuW, transition:'all 0.2s' }}>
+                <Container className={['view_left_container', this.state.hideLeftMenu && 'left_menu_hide']} style={{position: 'relative', width: this.state.menuW, transition:'all 0.2s' }}>
                     <Grid.Row className='view_contents'>
                         <Grid.Column className='view_left'>
                             <Menu secondary vertical className='view_left_menu org_menu'>
                                 {/* show name of organization */}
                                 <Grid.Column className="left_org">
-                                    <div className="left_org_title">Organization</div>
+                                    <div className="left_org_title">{this.state.hideLeftMenu? 'Org' : 'Organization'}</div>
                                     <div className="left_org_selected">{localStorage.selectOrg ? localStorage.selectOrg : 'No organization selected'}</div>
                                 </Grid.Column>
                                 {/* show role of user */}
@@ -1004,7 +1004,7 @@ class SiteFour extends React.Component {
                                     }
                                 </div>
                             </Menu>
-                            <div style={{ zIndex: '100', color: 'rgba(255,255,255,.2)', padding: '10px' }}>
+                            <div className='versionView' style={{display:this.state.hideLeftMenu ? 'none' : 'block'}}>
                                 {
                                     (localStorage.selectRole == 'AdminManager') ? this.state.currentVersion : null
                                 }
@@ -1012,18 +1012,6 @@ class SiteFour extends React.Component {
                         </Grid.Column>
                     </Grid.Row>
                     <div className='left_menu_hide_button'
-                         style={{
-                             background: '#545961',
-                             position:'absolute',
-                             width:'36px',
-                             height:'36px',
-                             top:'15px',
-                             right:'-18px',
-                             borderRadius: '50%',
-                             display:'flex',
-                             justifyContent:'center',
-                             alignItems: 'center',
-                             cursor: 'pointer',}}
                          onClick={()=>{
 
                              requestAnimationFrame(() => {
@@ -1036,16 +1024,18 @@ class SiteFour extends React.Component {
                              if (this.state.animate) {
                                  requestAnimationFrame(() => {
                                      this.setState({menuW:50});
+                                     this.setState({hideLeftMenu: true});
                                  });
                              } else {
                                  requestAnimationFrame(() => {
                                      this.setState({menuW:240});
+                                     this.setState({hideLeftMenu: false});
                                  });
                              }
                          }}
                     >
 
-                        <i className="material-icons" style={{color:'rgba(255,255,255,.6)', fontSize:24}}>menu_open</i>
+                        <i className="material-icons" style={{color:'rgba(255,255,255,.6)', fontSize:20}}>menu_open</i>
                     </div>
                 </Container>
                 <Container className='contents_body_container' style={{ top: this.headerH, left: this.state.menuW, width:window.innerWidth - this.state.menuW}}>

@@ -892,6 +892,9 @@ body, button, input, textarea, optgroup, select, textarea,
     font-size: 14px;
     /* font-weight: bold; */
     color: #e2e4e7;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .ui.secondary.menu.view_left_menu.org_menu .left_authority {
     background: #202329;
@@ -1795,23 +1798,69 @@ body ::-webkit-scrollbar-track {
     min-width: 2000px;
 } */
 
+.versionView {
+    zIndex: 100;
+    color: rgba(255,255,255,.2);
+    padding: 0 10px;
+    background: none;
+    position: absolute;
+    bottom:70px;
 
-/* css for Tablet */
+}
+
+/** css for Tablet **/
 .left_menu_hide_button {
     background: #545961;
     position:absolute;
-    width:36px;
-    height:36px;
+    width:30px;
+    height:30px;
     top:15px;
-    right:-18px;
+    right:-15px;
     border-radius: 50%;
     display:flex;
     justify-content:center;
     align-items: center;
     cursor: pointer;
-
+    z-index: 9999;
 }
 
 .left_menu_hide_button:hover {
     background-color: #757a85
+}
+
+.left_menu_hide_button i.material-icons {
+    color: rgba(255,255,255,.6);
+    font-size:20px;
+}
+
+.view_left_container.left_menu_hide .ui.secondary.menu.view_left_menu.org_menu .left_org {
+    padding:20px .92857143em 0 .92857143em;
+
+}
+.view_left_container.left_menu_hide .ui.secondary.menu.view_left_menu.org_menu .left_authority {
+    padding:10px .92857143em 20px .92857143em;
+
+}
+.view_left_container.left_menu_hide .ui.secondary.menu.view_left_menu.org_menu .left_authority .ui.segment {
+    border: none;
+    background: none;
+    padding: 0;
+}
+
+.view_left_container.left_menu_hide .ui.secondary.menu.view_left_menu.org_menu .left_authority .row > .column > div:last-child {
+    display: none;
+}
+
+.view_left_container.left_menu_hide .ui.secondary.menu a.item .left_menu_item .label {
+    display: none;
+}
+
+.view_left_container.left_menu_hide a.item .left_menu_item i.material-icons {
+    padding-right: 0;
+}
+
+
+.view_left_container.left_menu_hide .ui.secondary.menu.view_left_menu.main_menu {
+    height: calc(100% - 234px);
+    overflow-y: auto;
 }
