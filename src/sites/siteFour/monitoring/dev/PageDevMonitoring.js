@@ -318,16 +318,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         async loadInitDataForCluster(isInterval: boolean = false) {
             clearInterval(this.intervalForAppInst)
             this.setState({dropdownRequestLoading: true})
-            /*  let clusterList = await getClusterList();
-              let cloudletList = await getCloudletList()
-              let appInstanceList: Array<TypeAppInstance> = await getAppInstList();*/
+            let clusterList = await getClusterList();
+            let cloudletList = await getCloudletList()
+            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
 
 
             //fixme: fakeData
             //fixme: fakeData
-            let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+            /*let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
             let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
+            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')*/
 
             console.log('appInstanceList====>', appInstanceList);
 
@@ -358,16 +358,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             }
             let allClusterUsageList = []
-            /*  try {
-                  allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
-              } catch (e) {
+            try {
+                allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
+            } catch (e) {
 
-              }*/
+            }
 
 
             //fixme: fakeData
             //fixme: fakeData
-            allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+            //allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
 
             console.log('filteredAppInstanceList===>', appInstanceList)
 
