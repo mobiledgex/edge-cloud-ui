@@ -915,7 +915,7 @@ class SiteFour extends React.Component {
                         <HeaderGlobalMini email={this.state.email} data={this.props.userInfo.info} dimmer={false} />
                     </Grid.Column>
                 </Grid.Row>
-                <Container className={['view_left_container', this.state.hideLeftMenu && 'left_menu_hide']} style={{position: 'relative', width: this.state.menuW, transition:'all 0.2s' }}>
+                <Container className={['view_left_container', this.state.hideLeftMenu && 'left_menu_hide']} style={{position: 'relative', width: this.state.menuW }}>
                     <Grid.Row className='view_contents'>
                         <Grid.Column className='view_left'>
                             <Menu secondary vertical className='view_left_menu org_menu'>
@@ -1014,24 +1014,15 @@ class SiteFour extends React.Component {
                     <div className='left_menu_hide_button'
                          onClick={()=>{
 
-                             requestAnimationFrame(() => {
-                                 // Firefox will sometimes merge changes that happened here
-                                 requestAnimationFrame(() => {
-                                     this.setState({ animate: !this.state.animate });
-                                 });
+                             this.setState({ hideLeftMenu: !this.state.hideLeftMenu }, () => {
+
+                                 if (this.state.hideLeftMenu) {
+                                     this.setState({menuW:50});
+                                 } else {
+                                     this.setState({menuW:240});
+                                 }
                              });
 
-                             if (this.state.animate) {
-                                 requestAnimationFrame(() => {
-                                     this.setState({menuW:50});
-                                     this.setState({hideLeftMenu: true});
-                                 });
-                             } else {
-                                 requestAnimationFrame(() => {
-                                     this.setState({menuW:240});
-                                     this.setState({hideLeftMenu: false});
-                                 });
-                             }
                          }}
                     >
 
