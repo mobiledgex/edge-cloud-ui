@@ -23,7 +23,7 @@ import {
     makeLineChartDataForAppInst,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
-    makeSelectBoxListWithThreeValuePipe,
+    makeSelectBoxListWithThreeValuePipe, renderBottomGridAreaForCluster,
     renderBubbleChartCoreForDev_Cluster, renderLineChartCoreForDev_Cluster,
     sortUsageListByTypeForCluster,
 } from "./PageDevMonitoringService";
@@ -187,7 +187,7 @@ type State = {
     currentGraphAppInst: string,
     mapPopUploading: boolean,
     selectedClusterUsageOne: Array,
-    selectedClusterUsageOneIndex:number,
+    selectedClusterUsageOneIndex: number,
 
 }
 
@@ -290,7 +290,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             currentGraphAppInst: '',
             mapPopUploading: false,
             selectedClusterUsageOne: [],
-            selectedClusterUsageOneIndex:0,
+            selectedClusterUsageOneIndex: 0,
         };
 
         intervalForAppInst = null;
@@ -342,9 +342,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             //fixme: fakeData
             //fixme: fakeData
-              let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
-              let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-              let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
+            let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+            let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
+            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
             console.log('appInstanceList====>', appInstanceList);
 
             console.log('clusterList===>', clusterList);
@@ -374,11 +374,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             }
             let allClusterUsageList = []
-           /* try {
-                allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
-            } catch (e) {
+            /* try {
+                 allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
+             } catch (e) {
 
-            }*/
+             }*/
 
 
             //fixme: fakeData
@@ -1060,20 +1060,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let AppName = pCurrentAppInst.split('|')[0].trim()
             let Cloudlet = pCurrentAppInst.split('|')[1].trim()
             let ClusterInst = pCurrentAppInst.split('|')[2].trim()
-
-
-            console.log('Instance_Dropdown===>', pCurrentAppInst);
-            console.log('Instance_Dropdown=1==>', AppName);
-            console.log('Instance_Dropdown=2==>', Cloudlet);
-            console.log('Instance_Dropdown=ClusterInst==>', ClusterInst);
-            console.log('Instance_Dropdown=3==>', this.state.appInstanceList);
-            console.log('Instance_Dropdown==AppName==>', filteredAppList);
-
             let filteredAppList = filterUsageByClassification(this.state.appInstanceList, Cloudlet, 'Cloudlet');
             filteredAppList = filterUsageByClassification(filteredAppList, ClusterInst, 'ClusterInst');
             filteredAppList = filterUsageByClassification(filteredAppList, AppName, 'AppName');
 
-            //Terminal
+            //todo:Terminal
             this.setState({
                 terminalData: null
             })
@@ -1186,148 +1177,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
         }
 
-        renderBottomGridAreaForCluster(pClusterList) {
-
-            //pClusterList
-            pClusterList = sortUsageListByTypeForCluster(pClusterList, HARDWARE_TYPE.CPU)
-
-            return (
-                <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing styles={{zIndex: 999999999999}}>
-                    <Table.Header className="viewListTableHeader" styles={{zIndex: 99999999999}}>
-                        <Table.Row>
-                            <Table.HeaderCell>
-                                index
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                Cluster
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                CPU(%)
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                MEM
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                DISK
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                NETWORK RECV
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                NETWORK SENT
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                TCP CONN
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                TCP RETRANS
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                UDP REV
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                UDP SENT
-                            </Table.HeaderCell>
-
-                        </Table.Row>
-                    </Table.Header>
-                    <Table.Body className="tbBodyList"
-                                ref={(div) => {
-                                    this.messageList = div;
-                                }}
-                    >
-                        {/*-----------------------*/}
-                        {/*todo:ROW HEADER        */}
-                        {/*-----------------------*/}
-                        {!this.state.isReady &&
-                        <Table.Row className='page_monitoring_popup_table_empty'>
-                            <Table.Cell>
-                                <Lottie
-                                    options={{
-                                        loop: true,
-                                        autoplay: true,
-                                        animationData: require('../../../../lotties/loader001'),
-                                        rendererSettings: {
-                                            preserveAspectRatio: 'xMidYMid slice'
-                                        }
-                                    }}
-                                    height={240}
-                                    width={240}
-                                    isStopped={false}
-                                    isPaused={false}
-                                />
-                            </Table.Cell>
-                        </Table.Row>}
-                        {!this.state.isRequesting && pClusterList.map((item: TypeClusterUsageList, index) => {
-
-                            console.log('pClusterList==item==>', item);
-
-                            return (
-                                <Table.Row className='page_monitoring_popup_table_row'>
-
-                                    <Table.Cell>
-                                        {index}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {item.cluster}<br/>[{item.cloudlet}]
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <div>
-                                            <div>
-                                                {item.sumCpuUsage.toFixed(2) + '%'}
-                                            </div>
-                                            <div>
-                                                <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
-                                                          percent={(item.sumCpuUsage / this.state.maxCpu * 100)}
-                                                    //percent={(item.sumCpuUsage / this.state.gridInstanceListCpuMax) * 100}
-                                                          strokeColor={'#29a1ff'} status={'normal'}/>
-                                            </div>
-                                        </div>
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <div>
-                                            <div>
-                                                {numberWithCommas(item.sumMemUsage.toFixed(2)) + ' %'}
-                                            </div>
-                                            <div>
-                                                <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
-                                                          percent={(item.sumMemUsage / this.state.maxMem * 100)}
-                                                          strokeColor={'#29a1ff'} status={'normal'}/>
-                                            </div>
-
-                                        </div>
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {numberWithCommas(item.sumDiskUsage.toFixed(2)) + ' %'}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {numberWithCommas(item.sumRecvBytes.toFixed(2)) + ' '}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {numberWithCommas(item.sumSendBytes.toFixed(2)) + ' '}
-                                    </Table.Cell>
-
-                                    <Table.Cell>
-                                        {numberWithCommas(item.sumTcpConns.toFixed(2)) + ' '}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {numberWithCommas(item.sumTcpRetrans.toFixed(2)) + ' '}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {numberWithCommas(item.sumUdpRecv.toFixed(2)) + ' '}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {numberWithCommas(item.sumUdpSent.toFixed(2)) + ' '}
-                                    </Table.Cell>
-
-                                </Table.Row>
-
-                            )
-                        })}
-                    </Table.Body>
-                </Table>
-            )
-        }
 
         renderBubbleChartArea() {
             return (
@@ -1416,7 +1265,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*<ModalForGraph currentAppInstLineChartData={this.state.currentAppInstLineChartData} parent={this} modalIsOpen={this.state.modalIsOpen}
                                    currentGraphAppInst={this.state.currentGraphAppInst} cluster={this.state.currentGraphCluster} contents={''}/>*/}
 
-                    <ModalGraphForCluster selectedClusterUsageOne={this.state.selectedClusterUsageOne} selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex} parent={this} modalIsOpen={this.state.modalIsOpen}
+                    <ModalGraphForCluster selectedClusterUsageOne={this.state.selectedClusterUsageOne} selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex} parent={this}
+                                          modalIsOpen={this.state.modalIsOpen}
                                           cluster={''} contents={''}/>
 
                     <Grid.Row className='view_contents'>
@@ -1584,7 +1434,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             {/*fixme: BOTTOM APP INSTACE LIST         */}
                                                             {/*fixme:---------------------------------*/}
                                                             <div className='page_monitoring_popup_table'>
-                                                                {this.renderBottomGridAreaForCluster(this.state.filteredClusterUsageList)}
+                                                                {renderBottomGridAreaForCluster(this, this.state.filteredClusterUsageList)}
                                                             </div>
                                                         </div>
                                                     </OutsideClickHandler>

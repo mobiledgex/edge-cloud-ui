@@ -100,7 +100,7 @@ export default class ModalGraphForCluster extends React.Component<Props, State> 
             <div style={{flex: 1, display: 'flex'}}>
                 <AModal
                     mask={false}
-                    style={{position: 'absolute', bottom: 150, left: 265, color: 'green'}} //container style
+                    style={{ top: 245, left: 260, color: 'green'}} //@fixme :modal popup container location( absoulte)
                     //title={this.props.currentGraphAppInst + " [" + this.props.cluster + "]" + "  " + this.state.hardwareType}
                     visible={this.props.modalIsOpen}
                     onOk={() => {
@@ -116,7 +116,7 @@ export default class ModalGraphForCluster extends React.Component<Props, State> 
                         })
 
                     }}
-                    width={350}
+                    width={'100%'}
                     height={'85%'}
                     footer={null}
                 >

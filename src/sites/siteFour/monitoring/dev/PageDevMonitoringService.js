@@ -17,6 +17,10 @@ import {SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../../services/serviceMC";
 import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
+import {Table} from "semantic-ui-react";
+import Lottie from "react-lottie";
+import type {TypeClusterUsageList} from "../../../../shared/Types";
+import {Progress} from "antd";
 
 export const getClusterLevelUsageList = async (clusterList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
     try {
@@ -311,6 +315,147 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this) => {
     }
 }
 
+export const renderBottomGridAreaForCluster = (_this: PageDevMonitoring, pClusterList) => {
+
+    //pClusterList
+    pClusterList = sortUsageListByTypeForCluster(pClusterList, HARDWARE_TYPE.CPU)
+
+    return (
+        <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing styles={{zIndex: 999999999999}}>
+            <Table.Header className="viewListTableHeader" styles={{zIndex: 99999999999}}>
+                <Table.Row>
+                    <Table.HeaderCell>
+                        index
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        Cluster
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        CPU(%)
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        MEM
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        DISK
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        NETWORK RECV
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        NETWORK SENT
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        TCP CONN
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        TCP RETRANS
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        UDP REV
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        UDP SENT
+                    </Table.HeaderCell>
+
+                </Table.Row>
+            </Table.Header>
+            <Table.Body className="tbBodyList"
+                        ref={(div) => {
+                            _this.messageList = div;
+                        }}
+            >
+                {/*-----------------------*/}
+                {/*todo:ROW HEADER        */}
+                {/*-----------------------*/}
+                {!_this.state.isReady &&
+                <Table.Row className='page_monitoring_popup_table_empty'>
+                    <Table.Cell>
+                        <Lottie
+                            options={{
+                                loop: true,
+                                autoplay: true,
+                                animationData: require('../../../../lotties/loader001'),
+                                rendererSettings: {
+                                    preserveAspectRatio: 'xMidYMid slice'
+                                }
+                            }}
+                            height={240}
+                            width={240}
+                            isStopped={false}
+                            isPaused={false}
+                        />
+                    </Table.Cell>
+                </Table.Row>}
+                {!_this.state.isRequesting && pClusterList.map((item: TypeClusterUsageList, index) => {
+
+                    console.log('pClusterList==item==>', item);
+
+                    return (
+                        <Table.Row className='page_monitoring_popup_table_row'>
+
+                            <Table.Cell>
+                                {index}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {item.cluster}<br/>[{item.cloudlet}]
+                            </Table.Cell>
+                            <Table.Cell>
+                                <div>
+                                    <div>
+                                        {item.sumCpuUsage.toFixed(2) + '%'}
+                                    </div>
+                                    <div>
+                                        <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                                  percent={(item.sumCpuUsage / _this.state.maxCpu * 100)}
+                                            //percent={(item.sumCpuUsage / _this.state.gridInstanceListCpuMax) * 100}
+                                                  strokeColor={'#29a1ff'} status={'normal'}/>
+                                    </div>
+                                </div>
+                            </Table.Cell>
+                            <Table.Cell>
+                                <div>
+                                    <div>
+                                        {numberWithCommas(item.sumMemUsage.toFixed(2)) + ' %'}
+                                    </div>
+                                    <div>
+                                        <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                                  percent={(item.sumMemUsage / _this.state.maxMem * 100)}
+                                                  strokeColor={'#29a1ff'} status={'normal'}/>
+                                    </div>
+                                </div>
+                            </Table.Cell>
+                            <Table.Cell>
+                                {numberWithCommas(item.sumDiskUsage.toFixed(2)) + ' %'}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {numberWithCommas(item.sumRecvBytes.toFixed(2)) + ' '}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {numberWithCommas(item.sumSendBytes.toFixed(2)) + ' '}
+                            </Table.Cell>
+
+                            <Table.Cell>
+                                {numberWithCommas(item.sumTcpConns.toFixed(2)) + ' '}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {numberWithCommas(item.sumTcpRetrans.toFixed(2)) + ' '}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {numberWithCommas(item.sumUdpRecv.toFixed(2)) + ' '}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {numberWithCommas(item.sumUdpSent.toFixed(2)) + ' '}
+                            </Table.Cell>
+
+                        </Table.Row>
+
+                    )
+                })}
+            </Table.Body>
+        </Table>
+    )
+}
 
 /**
  *
@@ -813,7 +958,7 @@ export const renderLineChartCoreForDev_Cluster = (_this: PageDevMonitoring, line
         }
     }
 
-    function handleLegendClickedEvent(clickedItem){
+    function handleLegendClickedEvent(clickedItem) {
 
         console.log('onClick222===1>', clickedItem)
         console.log('onClick222===2>', lineChartDataSet);
@@ -837,7 +982,7 @@ export const renderLineChartCoreForDev_Cluster = (_this: PageDevMonitoring, line
 
         console.log('onClick4===>', lineChartDataSet)
 
-        let selected_lineChartDataSetOne={
+        let selected_lineChartDataSetOne = {
             levelTypeNameList: lineChartDataSet.levelTypeNameList[selectedIndex],
             usageSetList: lineChartDataSet.usageSetList[selectedIndex],
             newDateTimeList: lineChartDataSet.newDateTimeList,
@@ -874,7 +1019,7 @@ export const renderLineChartCoreForDev_Cluster = (_this: PageDevMonitoring, line
                 fontColor: 'white'
             },//@todo:리전드 클릭 이벤트.
             onClick: (e, clickedItem) => {
-                    handleLegendClickedEvent(clickedItem)
+                handleLegendClickedEvent(clickedItem)
             },
             onHover: (e, item) => {
                 //alert(`Item with text ${item.text} and index ${item.index} hovered`)
@@ -883,7 +1028,7 @@ export const renderLineChartCoreForDev_Cluster = (_this: PageDevMonitoring, line
         scales: {
             yAxes: [{
                 ticks: {
-                    beginAtZero:true,
+                    beginAtZero: true,
                     min: 0,
                     max: 100,
                     fontColor: 'white',
@@ -932,7 +1077,6 @@ export const renderLineChartCoreForDev_Cluster = (_this: PageDevMonitoring, line
     }
 
 
-
     //todo :#######################
     //todo : chart rendering part
     //todo :#######################
@@ -943,10 +1087,10 @@ export const renderLineChartCoreForDev_Cluster = (_this: PageDevMonitoring, line
             height: '96%'
         }}>
             <ReactChartJsLine
-               /* getDatasetAtEvent={(e)=>{
+                /* getDatasetAtEvent={(e)=>{
 
-                    alert(e)
-                }}*/
+                     alert(e)
+                 }}*/
                 //width={'100%'}
                 //height={hardwareType === "recv_bytes" || hardwareType === "send_bytes" ? chartHeight + 20 : chartHeight}
                 //height={'100%'}
