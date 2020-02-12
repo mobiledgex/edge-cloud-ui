@@ -1776,3 +1776,24 @@ body ::-webkit-scrollbar-track {
 .round_panel .appinst > table {
     min-width: 2000px;
 } */
+
+
+/* css for Tablet */
+.left_menu_hide_button {
+    background: #545961;
+    position:absolute;
+    width:36px;
+    height:36px;
+    top:15px;
+    right:-18px;
+    border-radius: 50%;
+    display:flex;
+    justify-content:center;
+    align-items: center;
+    cursor: pointer;
+
+}
+
+.left_menu_hide_button:hover {
+    background-color: #757a85
+}

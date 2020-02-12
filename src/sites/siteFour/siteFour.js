@@ -147,10 +147,14 @@ class SiteFour extends React.Component {
             hideNext: true,
             camBtnStat: 'leave',
             regionToggle: false,
-            intoCity: false
+            intoCity: false,
+
+            menuW:240,
+            hideLeftMenu:false,
+            animate: false,
         };
         this.headerH = 70;
-        this.menuW = 240;
+        //this.menuW = 240;
         this.hgap = 0;
         this.OrgMenu = [
             { label: 'Organizations', icon: 'people', pg: 0 },
@@ -497,13 +501,14 @@ class SiteFour extends React.Component {
         if (this.props.params.subPath !== 'pg=audits') {
             this.getDataAudit();
         }
+
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
         try {
             this.setState({ bodyHeight: (window.innerHeight - this.headerH) })
             this.setState({ contHeight: (nextProps.size.height - this.headerH) / 2 - this.hgap })
-            this.setState({ contWidth: (window.innerWidth - this.menuW) })
+            this.setState({ contWidth: (window.innerWidth - this.state.menuW) })
             this.setState({ userToken: nextProps.userToken })
             this.setState({ userName: (nextProps.userInfo && nextProps.userInfo.info) ? nextProps.userInfo.info.Name : null })
         } catch (e) {
@@ -838,8 +843,6 @@ class SiteFour extends React.Component {
 
     /** audit ********/
 
-
-
     render() {
         const { shouldShowBox, shouldShowCircle, viewMode } = this.state;
         const { stepsEnabled, initialStep, hintsEnabled, hints, steps } = this.state;
@@ -915,7 +918,7 @@ class SiteFour extends React.Component {
                         /> */}
                     </Grid.Column>
                 </Grid.Row>
-                <Container className='view_left_container' style={{ width: this.menuW }}>
+                <Container className='view_left_container' style={{position: 'relative', width: this.state.menuW, transition:'all 0.2s' }}>
                     <Grid.Row className='view_contents'>
                         <Grid.Column className='view_left'>
                             <Menu secondary vertical className='view_left_menu org_menu'>
@@ -1011,8 +1014,44 @@ class SiteFour extends React.Component {
                             </div>
                         </Grid.Column>
                     </Grid.Row>
+                    <div className='left_menu_hide_button'
+                         style={{
+                             background: '#545961',
+                             position:'absolute',
+                             width:'36px',
+                             height:'36px',
+                             top:'15px',
+                             right:'-18px',
+                             borderRadius: '50%',
+                             display:'flex',
+                             justifyContent:'center',
+                             alignItems: 'center',
+                             cursor: 'pointer',}}
+                         onClick={()=>{
+
+                             requestAnimationFrame(() => {
+                                 // Firefox will sometimes merge changes that happened here
+                                 requestAnimationFrame(() => {
+                                     this.setState({ animate: !this.state.animate });
+                                 });
+                             });
+
+                             if (this.state.animate) {
+                                 requestAnimationFrame(() => {
+                                     this.setState({menuW:50});
+                                 });
+                             } else {
+                                 requestAnimationFrame(() => {
+                                     this.setState({menuW:240});
+                                 });
+                             }
+                         }}
+                    >
+
+                        <i className="material-icons" style={{color:'rgba(255,255,255,.6)', fontSize:24}}>menu_open</i>
+                    </div>
                 </Container>
-                <Container className='contents_body_container' style={{ top: this.headerH, left: this.menuW }}>
+                <Container className='contents_body_container' style={{ top: this.headerH, left: this.state.menuW, width:window.innerWidth - this.state.menuW}}>
                     {(this.state.page === 'pg=Monitoring') ? <PageMonitoringMain /> :
                         <Grid.Row className='view_contents'>
                             <Grid.Column className='contents_body'>
