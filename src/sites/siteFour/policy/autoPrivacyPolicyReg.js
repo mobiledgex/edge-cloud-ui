@@ -70,7 +70,7 @@ class AutoProvPolicyReg extends React.Component {
                     }
                 }
             }
-            else if (!data.FullIsolation && form.field === 'OutboundSecurityRules') {
+            if (!data.FullIsolation && form.field === 'OutboundSecurityRules') {
                 let outboundSecurityRules = data[form.uuid];
                 if (outboundSecurityRules) {
                     for (let j = 0; j < form.forms.length; j++) {

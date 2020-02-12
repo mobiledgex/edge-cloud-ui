@@ -76,7 +76,7 @@ const cloudletSteps = CloudletTutor();
 let _self = null;
 
 const autoPolicy = [
-    {key: 'Auto Provision Policy', text: 'Auto Provision Policy', value: 'Auto Provision Policy'},
+    {key: 'Auto Provisioning Policy', text: 'Auto Provisioning Policy', value: 'Auto Provisioning Policy'},
     {key: 'Privacy Policy', text: 'Privacy Policy', value: 'Privacy Policy'}
 ]
 class SiteFour extends React.Component {
@@ -121,7 +121,7 @@ class SiteFour extends React.Component {
             stepsEnabled: false,
             initialStep: 0,
             steps: [],
-            autoPolicy: localStorage.getItem('autoPolicy') ? localStorage.getItem('autoPolicy') : 'Auto Provision Policy',
+            autoPolicy: localStorage.getItem('autoPolicy') ? localStorage.getItem('autoPolicy') : 'Auto Provisioning Policy',
             openLegend: false,
 
             enable: false,
@@ -140,7 +140,7 @@ class SiteFour extends React.Component {
         this.hgap = 0;
         this.OrgMenu = [
             { label: 'Organizations', icon: 'people', pg: 0 },
-            { label: 'User Roles', icon: 'dvr', pg: 1 },
+            { label: 'Users & Roles', icon: 'dvr', pg: 1 },
             { label: 'Accounts', icon: 'dvr', pg: 101 }
         ]
         this.menuItemsAll = [ //admin menu
@@ -151,8 +151,8 @@ class SiteFour extends React.Component {
             { label: 'Apps', icon: 'apps', pg: 5 },
             { label: 'App Instances', icon: 'storage', pg: 6 },
             { label: 'Monitoring', icon: 'tv', pg: 'Monitoring' },
-            { label: 'Policy', icon: 'playlist_play', pg: 8 },
-            { label: 'Audit Log', icon: 'check', pg: 'audits' }
+            { label: 'Policies', icon: 'playlist_play', pg: 8 },
+            { label: 'Audit Logs', icon: 'check', pg: 'audits' }
         ]
         this.menuItems = [ //developer menu
             reducer.getFindIndex(this.menuItemsAll, 'label', 'Cloudlets'),
@@ -276,8 +276,8 @@ class SiteFour extends React.Component {
         } else if (localStorage.selectMenu === 'Cloudlet Pools') {
             this.setState({ page: 'pg=createCloudletPool' })
             this.gotoUrl('/site4', 'pg=createCloudletPool')
-        }else if (localStorage.selectMenu === 'Policy') {
-            let pg = this.state.autoPolicy === 'Auto Provision Policy' ? 'createPolicy' : 'createPrivacyPolicy';
+        }else if (localStorage.selectMenu === 'Policies') {
+            let pg = this.state.autoPolicy === 'Auto Provisioning Policy' ? 'createPolicy' : 'createPrivacyPolicy';
             this.setState({ page: `pg=${pg}` })
             this.gotoUrl('/site4', `pg=${pg}`)
         } else {
@@ -1095,7 +1095,7 @@ class SiteFour extends React.Component {
                                                                         (this.state.page === 'pg=5') ? <SiteFourPageApps></SiteFourPageApps> :
                                                                             (this.state.page === 'pg=6') ? <SiteFourPageAppInst></SiteFourPageAppInst> :
                                                                                 (this.state.page === 'pg=7') ? <SiteFourPageCloudletPool></SiteFourPageCloudletPool> :
-                                                                                    (this.state.page === 'pg=8') ? this.state.autoPolicy === 'Auto Provision Policy' ? <AutoProvPolicy childPage={this.showChildPage}></AutoProvPolicy> : <AutoPrivacyPolicy childPage={this.showChildPage}></AutoPrivacyPolicy> :
+                                                                                    (this.state.page === 'pg=8') ? this.state.autoPolicy === 'Auto Provisioning Policy' ? <AutoProvPolicy childPage={this.showChildPage}></AutoProvPolicy> : <AutoPrivacyPolicy childPage={this.showChildPage}></AutoPrivacyPolicy> :
                                                                                     (this.state.page === 'pg=newOrg') ? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
                                                                                         (this.state.page === 'pg=createApp') ? <SiteFourPageAppReg editable={false}></SiteFourPageAppReg> :
                                                                                             (this.state.page === 'pg=editApp') ? <SiteFourPageAppReg editable={true}></SiteFourPageAppReg> :
