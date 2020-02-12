@@ -100,7 +100,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             currentTaskTime: '',
             closeMap:false,
             storageTimeList: [],
-            statusList: []
+            statusList: [],
+            timelineSelectedIndex: 0
         };
         jsonViewProps = {
             name: null,
@@ -222,7 +223,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                             })
                         }
                     })
-                    if(!check || localStorage.getItem('selectedTime').length > 200){
+                    if(!check || storageTimeList.length > 200){
                         localStorage.removeItem('selectedTime')
                     }
 
@@ -289,14 +290,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             let selectedIndex = value.value;
             let timelineDataOne = this.state.rawAllData[selectedIndex]
             // localStorage.removeItem('selectedTime')
-            localStorage.setItem("selectedTime", JSON.stringify(this.setStorageData(timelineDataOne.starttime)))
+            this.setStorageData(timelineDataOne.starttime)
             setTimeout(() => {
                 this.setRequestView(timelineDataOne)
                 this.setResponseView(timelineDataOne)
                 this.setState({
                     rawViewData: timelineDataOne,
                     isLoading2: false,
-                    timeLineIndex : selectedIndex
+                    timelineSelectedIndex : selectedIndex
                 })
             }, 251)
         }
@@ -313,18 +314,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             if (storageTimeList) {
                 timeList = storageTimeList
                 storageTimeList.map( (storage, index) => {
-                    if(newDate === storage){
+                    if(newDate.getTime() === new Date(storage).getTime()){
                         a = 1
                     }
                 })
                 if(a === 0){
                     timeList.push(newDate)
+                    localStorage.setItem("selectedTime", JSON.stringify(timeList))
                 }
             } else {
                 timeList[0] = newDate
+                localStorage.setItem("selectedTime", JSON.stringify(timeList))
             }
-
-            return timeList
         }
 
 
@@ -515,7 +516,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                             <Icon name={(this.state.closeMap)?'angle down':'angle up'}/>
                         </div>
                         <div>
-                            {(this.state.timesList.length > 0) ?<CalendarTimeline timesList={this.state.timesList} tasksList={this.state.tasksList} callback={this.onItemSelect} statusList={this.state.statusList} timeLineIndex={this.state.timeLineIndex}/>:null}
+                            {(this.state.timesList.length > 0) ?<CalendarTimeline timesList={this.state.timesList} tasksList={this.state.tasksList} callback={this.onItemSelect} statusList={this.state.statusList} timelineSelectedIndex={this.state.timelineSelectedIndex}/>:null}
                         </div>
                     </div>
 

@@ -179,7 +179,7 @@ export default class CalendarTimeline extends Component {
                 defaultTimeStart={defaultTimeStart}
                 defaultTimeEnd={defaultTimeEnd}
                 itemRenderer={this.itemRenderer}
-                selected={[(this.props.timeLineIndex).toString()]}
+                selected={[(this.props.timelineSelectedIndex).toString()]}
                 onItemSelect={this.handleItemSelect}
             >
                 <TimelineHeaders className="sticky">
