@@ -89,7 +89,6 @@ class MapWithListView extends React.Component {
             { margin: '0 0 10px 0', padding: '5px 15px 15px', alignItems: 'center', display: 'flex', flexDirection: 'column' },
             { margin: '0 0 10px 0', padding: '5px 15px 15px', alignItems: 'center', display: 'flex', flexDirection: 'column', height: '28px' }
         ]
-        this.headerLabels = [];
         this.streamInterval = null;
         this.oldTemp = {};
         this.live = true;
@@ -431,7 +430,6 @@ class MapWithListView extends React.Component {
 
     makeHeader() {
         const { column, direction } = this.state
-        if (this.headerLabels.length === 0) {
             return this.props.headerInfo.map((header, i) => {
                 if (header.visible) {
                     return (
@@ -440,8 +438,6 @@ class MapWithListView extends React.Component {
                         </Table.HeaderCell>)
                 }
             })
-
-        }
     }
 
     showProgress = (item) => {

@@ -22,8 +22,6 @@ let _self = null;
 
 const panes = [
     { menuItem: 'Cluster Instance Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateInstForm data={props} pId={0} getUserRole={props.userrole} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')} /></Tab.Pane> },
-    // { menuItem: 'Docker deployment', render: () => <Tab.Pane  attached={false} pId={1}>None</Tab.Pane> },
-    // { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> }
 ]
 const ipaccessArr = ['Dedicated', 'Shared'];
 class RegistryClusterInstViewer extends React.Component {
@@ -35,7 +33,7 @@ class RegistryClusterInstViewer extends React.Component {
         this.wsRequestResponse = [];
         this.state = {
             layout,
-            dialogMessage:[],
+            dialogMessage: [],
             open: false,
             openAdd: false,
             openDetail: false,
@@ -69,6 +67,8 @@ class RegistryClusterInstViewer extends React.Component {
                     'Flavor': { label: 'Flavor', type: 'RenderSelect', necessary: true, tip: 'What flavor is needed to run your application?', active: true, items: ['', ''] },
                     'NumberOfMaster': { label: 'Number of Masters', type: 'RenderInputDisabled', necessary: false, tip: 'This represents Kubernetes Master where it is responsible for maintaining the desired state for your cluster.', value: null },
                     'NumberOfNode': { label: 'Number of Nodes', type: 'RenderInputNum', necessary: false, tip: 'What is the number of nodes you want in this cluster? The nodes in a cluster are the machines that run your applications.', value: null },
+                    'Reservable': { label: 'Reservable', type: 'renderCheckbox', necessary: false, tip: 'Reserve cluster', value: false },
+                    'ReservedBy': { label: 'Reserved By', type: 'RenderInputCluster', necessary: false, tip: 'MobiledgeX ClusterInsts, the current developer tenant', value: false }
                 },
                 {
 
@@ -83,9 +83,12 @@ class RegistryClusterInstViewer extends React.Component {
                     'Cloudlet': '',
                     'DeploymentType': '',
                     'IpAccess': '',
+                    'PrivacyPolicy': '',
                     'Flavor': '',
                     'NumberOfMaster': '1',
                     'NumberOfNode': '1',
+                    'Reservable':false,
+                    'ReservedBy':''
                 }
             ]
 
@@ -163,16 +166,16 @@ class RegistryClusterInstViewer extends React.Component {
                     messageArray.push(method + ':' + data.data.message)
                     if (data.code !== 200) {
                         valid = false;
-                    }   
+                    }
                 })
                 if (valid) {
                     this.props.gotoUrl();
                     this.setState({ errorClose: true })
                 }
                 else {
-                   this.setState({
-                    dialogMessage : messageArray
-                   })
+                    this.setState({
+                        dialogMessage: messageArray
+                    })
                 }
             }
         }
@@ -226,6 +229,7 @@ class RegistryClusterInstViewer extends React.Component {
                 nextProps.validateValue.Cloudlet.map((item) => {
                     let data = nextProps.submitValues;
                     data.clusterinst.key.cloudlet_key.name = item;
+
                     serviceMC.sendWSRequest({ uuid: serviceMC.generateUniqueId(), token: store ? store.userToken : 'null', data: JSON.parse(JSON.stringify(data)), method: serviceMC.getEP().CREATE_CLUSTER_INST }, this.receiveSubmit)
                 })
 
@@ -235,9 +239,9 @@ class RegistryClusterInstViewer extends React.Component {
         }
     }
 
-    closeDialog = ()=>{
+    closeDialog = () => {
         this.setState({
-            dialogMessage:[],
+            dialogMessage: [],
             errorClose: true
         })
         this.props.handleLoadingSpinner(false);
@@ -263,7 +267,7 @@ class RegistryClusterInstViewer extends React.Component {
                 <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
                 <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
                 <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>
-                <MexMessageDialog close={this.closeDialog} message={this.state.dialogMessage}/>
+                <MexMessageDialog close={this.closeDialog} message={this.state.dialogMessage} />
             </div>
         );
     }
@@ -305,11 +309,14 @@ const createFormat = (data) => (
                     "operator_key": { "name": data['Operator'] },
                     "name": data['Cloudlet']
                 },
-                "developer": data['OrganizationName']
+                "developer": data['Reservable'] ? data['OrganizationName'] === 'mobiledgex' ? 'MobiledgeX' : data['OrganizationName'] : data['OrganizationName']
             },
             "deployment": data['DeploymentType'],
             "flavor": { "name": data['Flavor'] },
             "ip_access": parseInt(getInteger(data['IpAccess'])),
+            "privacy_policy": parseInt(getInteger(data['IpAccess'])) === 1 ? data['PrivacyPolicy'] : undefined,
+            "reservable":data['Reservable'],
+            "reserved_by":data['ReservedBy'],
             "num_masters": parseInt(data['NumberOfMaster']),
             "num_nodes": parseInt(data['NumberOfNode'])
         }
@@ -322,7 +329,7 @@ const mapStateToProps = (state) => {
     let dimmInfo = dimm ? dimm : null;
     let submitVal = null;
     let validateValue = null;
-    let region = state.changeRegion ? {value: state.changeRegion.region}: {};
+    let region = state.changeRegion ? { value: state.changeRegion.region } : {};
     let regionInfo = (state.regionInfo) ? state.regionInfo : null;
     let formClusterInst = {};
 

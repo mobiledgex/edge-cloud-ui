@@ -33,11 +33,14 @@ export const USAGE_TYPE = {
 
 export const CLASSIFICATION = {
     CLOUDLET: 'Cloudlet',
+    CloudletName: 'CloudletName',
+    cloudlet: 'cloudlet',
     APP_NAME: 'AppName',
     APPNAME: 'AppName',
     APPINST: 'AppInst',
     CLUSTER_INST: 'ClusterInst',
     CLUSTER: 'Cluster',
+    REGION: 'Region',
 }
 
 export const APP_INST_USAGE_TYPE_INDEX = {
@@ -61,7 +64,7 @@ export const APP_INST_USAGE_TYPE_INDEX = {
 }
 
 
-export const RECENT_DATA_LIMIT_COUNT = 10
+export const RECENT_DATA_LIMIT_COUNT = 20
 
 export const APP_PERFORMANCE_VALUES = {
     M4_MEDIUM: {

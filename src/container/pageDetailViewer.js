@@ -14,7 +14,7 @@ const pane = [
 
 const panesCommand = [
     { menuItem: 'Details', render: (props) => <Tab.Pane>{detailViewer(props, 'detailViewer')}</Tab.Pane> },
-    { menuItem: 'Terminal', render: (props) => <Tab.Pane><TerminalViewer data={props} /></Tab.Pane> }
+    { menuItem: 'Terminal', render: (props) => <Tab.Pane><TerminalViewer data={props.data} /></Tab.Pane> }
 ]
 const detailViewer = (props, type) => (
     <Fragment>

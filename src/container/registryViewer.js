@@ -43,7 +43,7 @@ const colors = [
 ]
 
 const panes = [
-    { menuItem: 'App Deployment', render: (props) => <Tab.Pane style={{overflow:'auto'}} attached={false}><SiteFourCreateFormAppDefault data={props} pId={0} getOptionData={props.regionf} flavorData={props.devoptionsf} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'App Deployment', render: (props) => <Tab.Pane style={{overflow:'auto'}} attached={false}><SiteFourCreateFormAppDefault data={props} pId={0} getOptionData={props.regionf} provPolicyData={props.provPolicyList} privacyPolicyData={props.privacyPolicyList} flavorData={props.devoptionsf} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
     // { menuItem: 'Docker Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormAppDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
     // { menuItem: 'VM Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormAppDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
 ]
@@ -67,6 +67,8 @@ class RegistryViewer extends React.Component {
             selectUse:null,
             resultData:null,
             devoptionsf:[],
+            provPolicyList:[],
+            privacyPolicyList:[],
             toggleSubmit:false,
             validateError:[],
             keysData:[
@@ -80,7 +82,9 @@ class RegistryViewer extends React.Component {
                     'ImagePath':{label:'Image Path', type:'RenderPath', necessary:true, tip:'URI of where image resides', active:true,items:''},
                     'AuthPublicKey':{label:'Auth Public Key', type:'RenderTextArea', necessary:false, tip:'auth_public_key', active:true},
                     'DefaultFlavor':{label:'Default Flavor', type:'FlavorSelect', necessary:true, tip:'FlavorKey uniquely identifies a Flavor.', active:true},
+                    'DefaultPrivacyPolicy':{label:'Default Privacy Policy', type:'PrivacyPolicySelect', necessary:false, tip:'Privacy policy when creating auto cluster', active:true},
                     'Ports':{label:'Ports', type:'CustomPorts', necessary:false, tip:'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443', active:true, items:['tcp', 'udp']},
+                    'AutoProvPolicy':{label:'Auto Provision Policy', type:'ProvPolicySelect', necessary:false, tip:'Select Auto Provision Policy', active:true},
                     'DefaultFQDN':{label:'Official FQDN', type:'RenderInput', necessary:false, tip:'Official FQDN', active:true},
                     'PackageName':{label:'Package Name', type:'RenderInput', necessary:false, tip:'Package Name', active:true},
                     // 'IpAccess':{label:'IP Access', type:'IPSelect', necessary:false, tip:'aaa', active:true, items:['IpAccessShared', 'IpAcessDedicaterd']},
@@ -103,7 +107,9 @@ class RegistryViewer extends React.Component {
                     'ImagePath':'',
                     'AuthPublicKey':'',
                     'DefaultFlavor':'',
+                    'DefaultPrivacyPolicy':'',
                     'Ports':'',
+                    'AutoProvPolicy':'',
                     'DefaultFQDN':'',
                     'PackageName':'',
                     // 'IpAccess':'',
@@ -176,7 +182,7 @@ class RegistryViewer extends React.Component {
 
     generateDOM(open, dimmer, data, keysData, hideHeader) {
 
-        let panelParams = {data:data, keys:keysData, regionf:this.getOptionData, devoptionsf:this.state.devoptionsf, userrole:localStorage.selectRole, editMode:this.state.editMode, editData:this.props.editData}
+        let panelParams = {data:data, keys:keysData, regionf:this.getOptionData,privacyPolicyList:this.state.privacyPolicyList,provPolicyList:this.state.provPolicyList, devoptionsf:this.state.devoptionsf, userrole:localStorage.selectRole, editMode:this.state.editMode, editData:this.props.editData}
 
         return layout.map((item, i) => (
 
@@ -266,6 +272,8 @@ class RegistryViewer extends React.Component {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             // clusterFlavor
             serviceMC.sendRequest(_self, { token: store.userToken, method: serviceMC.getEP().SHOW_FLAVOR, data: { region: region } }, _self.receiveF)
+            serviceMC.sendRequest(_self, { token: store.userToken, method: serviceMC.getEP().SHOW_AUTO_PROV_POLICY, data: { region: region } }, _self.autoProvPolicyResponse)
+            serviceMC.sendRequest(_self, { token: store.userToken, method: serviceMC.getEP().SHOW_PRIVACY_POLICY, data: { region: region } }, _self.privacyPolicyResponse)
         }
     }
 
@@ -281,6 +289,34 @@ class RegistryViewer extends React.Component {
             }
         }
     }
+
+    autoProvPolicyResponse(mcRequest) {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                let arr = []
+                response.data.map((item, i) => {
+                    arr.push(item.AutoPolicyName)
+                })
+                _self.setState({ provPolicyList: arr });
+            }
+        }
+    }
+
+    privacyPolicyResponse(mcRequest) {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                let arr = []
+                response.data.map((item, i) => {
+                    arr.push(item.PrivacyPolicyName)
+                })
+                _self.setState({ privacyPolicyList: arr });
+            }
+        }
+    }
+
+    
 
     updateFields(initData,updateData){
         let fieldArr = [];
@@ -455,7 +491,9 @@ const createFormat = (data) => (
                 "image_type":itData,
                 "image_path":data['ImagePath'],
                 "access_ports":accessport(data),
+                "auto_prov_policy":data['AutoProvPolicy'],
                 "default_flavor":{"name":data['DefaultFlavor']},
+                "default_privacy_policy":data['DefaultPrivacyPolicy'],
                 "cluster":{"name":""},
                 "auth_public_key":data['AuthPublicKey'],
                 "official_fqdn":data['DefaultFQDN'],
