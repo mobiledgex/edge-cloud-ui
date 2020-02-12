@@ -148,7 +148,7 @@ class SiteFour extends React.Component {
             { label: 'Apps', icon: 'apps', pg: 5 },
             { label: 'App Instances', icon: 'storage', pg: 6 },
             { label: 'Monitoring', icon: 'tv', pg: 'Monitoring' },
-            { label: 'Policy', icon: 'playlist_play', pg: 8 },
+            { label: 'Policies', icon: 'playlist_play', pg: 8 },
             { label: 'Audit Logs', icon: 'check', pg: 'audits' }
         ]
         this.menuItems = [ //developer menu
@@ -273,7 +273,7 @@ class SiteFour extends React.Component {
         } else if (localStorage.selectMenu === 'Cloudlet Pools') {
             this.setState({ page: 'pg=createCloudletPool' })
             this.gotoUrl('/site4', 'pg=createCloudletPool')
-        }else if (localStorage.selectMenu === 'Policy') {
+        }else if (localStorage.selectMenu === 'Policies') {
             let pg = this.state.autoPolicy === 'Auto Provision Policy' ? 'createPolicy' : 'createPrivacyPolicy';
             this.setState({ page: `pg=${pg}` })
             this.gotoUrl('/site4', `pg=${pg}`)
