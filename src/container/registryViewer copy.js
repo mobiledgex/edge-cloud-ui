@@ -436,7 +436,7 @@ class RegistryViewer extends React.Component {
             if(nextProps.formApps.values.OrganizationName){
                 ImagePath = ImagePath.replace('OrganizationName',(nextProps.formApps.values.DeploymentType == "VM")?nextProps.formApps.values.OrganizationName:nextProps.formApps.values.OrganizationName.toLowerCase())
 
-                /* make body code by @Smith */
+            /* make body code by @Smith */
             if(nextProps.formApps.submitSucceeded && nextProps.editMode){
                 let method = serviceMC.getEP().UPDATE_APP;
                 nextProps.submitValues.app['fields'] = this.updateFields(nextProps.editData, nextProps.submitValues.app)
@@ -477,7 +477,7 @@ class RegistryViewer extends React.Component {
                     data: newBodyData
                 }
                 serviceMC.sendRequest(_self, serviceBody, this.receiveResult)
-                
+
             }
             if(nextProps.formApps.values.AppName) {
                 ImagePath = ImagePath.replace('AppName', nextProps.formApps.values.AppName.toLowerCase().replace(/(\s*)/g, ""))
