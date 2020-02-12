@@ -443,8 +443,10 @@ class SiteFourCreateFormDefault extends React.Component {
     }
 
     handleRegionChange = (key, value) => {
-        
+        /** refresh selected item on dualListBox*/
         this.setState({selected: []})
+        /** refresh stacked item on hidden box */
+        this.setState({invisibleValue:[]})
     }
 
     AddPorts = (e) => {
