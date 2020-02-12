@@ -15,7 +15,6 @@ class AutoProvPolicyReg extends React.Component {
             step: 0,
             forms: []
         }
-        this.formData = {};
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
         this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
         this.OrganizationList = []
@@ -29,7 +28,7 @@ class AutoProvPolicyReg extends React.Component {
             let rules = form.rules;
             if (rules) {
                 if (rules.required) {
-                    if (form.value === undefined || form.value === 0) {
+                    if (form.value === undefined || form.value.length === 0) {
                         form.error = `${form.label} is mandatory`
                         valid = false;
                     }
@@ -145,14 +144,14 @@ class AutoProvPolicyReg extends React.Component {
             })
     }
 
-    onValueChange = (currentForm, data, parentForm) => {
+    onValueChange = (currentForm, parentForm) => {
 
         if (currentForm.field === 'FullIsolation') {
             let forms = this.state.forms;
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i];
                 if (form.label === 'Outbound Security Rules' || form.field === 'OutboundSecurityRules') {
-                    form.visible = !data.FullIsolation;
+                    form.visible = !currentForm.value;
                 }
             }
             this.setState({
@@ -164,15 +163,21 @@ class AutoProvPolicyReg extends React.Component {
         {
             this.protocolValueChange(currentForm, parentForm)
         }
-        this.formData = data;
     }
 
     addRulesForm = () => {
         let outboundRules = JSON.parse(JSON.stringify(this.outboundRules));
-        this.setState(prevState => ({ forms: [...prevState.forms, { uuid: serviceMC.generateUniqueId(), field: 'OutboundSecurityRules', type: 'MultiForm', onClick: this.removeRulesForm, forms: outboundRules, visible: true }] }))
+        this.setState(prevState => ({ forms: [...prevState.forms, { uuid: serviceMC.generateUniqueId(), field: 'OutboundSecurityRules', type: 'MultiForm', onClick: this.removeRulesForm, forms: outboundRules, visible: true, serverField: 'outbound_security_rules', showDelete:true }] }))
     }
 
-    
+    removeRulesForm = (index) => {
+        let forms = this.state.forms;
+        forms.splice(index, 1);
+        this.setState({
+            forms: forms
+        })
+    }
+
     getRegionData = () => {
         if (this.regions && this.regions.length > 0)
             return this.regions.map(region => {
@@ -198,19 +203,24 @@ class AutoProvPolicyReg extends React.Component {
 
     step1 = [
         { label: 'Create Privacy Policy', type: 'Header' },
-        { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
-        { field: 'OrganizationName', label: 'Organization', type: 'Select', placeholder: 'Select Organization', rules: { required: true }, visible: true },
-        { field: 'PrivacyPolicyName', label: 'Privacy Policy Name', type: 'Input', placeholder: 'Enter Privacy Policy Name', rules: { required: true }, visible: true },
+        { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true, serverField:'region' },
+        { field: 'OrganizationName', label: 'Organization', type: 'Select', placeholder: 'Select Organization', rules: { required: true }, visible: true, serverField: 'privacypolicy#OS#key#OS#developer' },
+        { field: 'PrivacyPolicyName', label: 'Privacy Policy Name', type: 'Input', placeholder: 'Enter Privacy Policy Name', rules: { required: true }, visible: true, serverField: 'privacypolicy#OS#key#OS#name' },
         { field: 'FullIsolation', label: 'Full Isolation', type: 'Checkbox', visible: true },
-        { label: 'Outbound Security Rules', type: 'Header', forms: { type: 'Button', icon: 'Add', onClick: this.addRulesForm }, visible: true },
+        { label: 'Outbound Security Rules', type: 'Header', forms: { type: 'Button', icon: 'Add', onClick: this.addRulesForm }, visible: true},
     ]
 
     outboundRules = [
-        { field: 'Protocol', label: 'Protocol', type: 'Select', rules: { required: true, type: 'number' },visible: true, options:this.getProtocolData() },
-        { field: 'PortRangeMin', label: 'Port Range Min', type: 'Input', rules: { required: true, type: 'number' }, visible: true },
-        { field: 'PortRangeMax', label: 'Port Range Max', type: 'Input', rules: { required: true, type: 'number' }, visible: true },
-        { field: 'RemoteCIDR', label: 'Remote CIDR', type: 'Input', rules: { required: true },visible: true },
+        { field: 'Protocol', label: 'Protocol', type: 'Select', rules: { required: true, type: 'number' },visible: true, options:this.getProtocolData(),serverField:'protocol'},
+        { field: 'PortRangeMin', label: 'Port Range Min', type: 'Input', rules: { required: true, type: 'number' }, visible: true,serverField:'port_range_min' },
+        { field: 'PortRangeMax', label: 'Port Range Max', type: 'Input', rules: { required: true, type: 'number' }, visible: true,serverField:'port_range_max' },
+        { field: 'RemoteCIDR', label: 'Remote CIDR', type: 'Input', rules: { required: true },visible: true,serverField:'remote_cidr' },
     ]
+
+    getNewJsonObject = (data)=>
+    {
+        return JSON.parse(JSON.stringify(data))
+    }
 
     
 
@@ -231,9 +241,67 @@ class AutoProvPolicyReg extends React.Component {
             }
         }
     }
+    
+    // convertServerFieldtoJson=(form, data)=>
+    // {
+    //     if (form.serverField && form.value) {
+    //         let serverField = this.getNewJsonObject(form.serverField);
+    //         if (serverField.includes('#OS#')) {
+    //             let objects = serverField.split('#OS#');
+    //             let currentObject = data;
+    //             for (let j = 0; j < objects.length; j++) {
+    //                 let object = objects[j];
+    //                 if (j < objects.length - 1) {
+    //                     if (currentObject[object] === undefined) {
+    //                         currentObject[object] = {};
+    //                     }
+    //                     currentObject = currentObject[object];
+    //                 }
+    //                 else {
+    //                     currentObject[object] = form.value;
+    //                 }
+    //             }
+    //         }
+    //         else {
+    //             data[form.serverField] = form.value;
+    //         }
+    //     }
+    // }
 
 
-    onCreate = (data) => {
+    /***
+     * Map values from form to field
+     * ***/
+    formattedData = ()=>
+    {
+        let data = {};
+        let forms = this.state.forms;
+        for(let i=0;i<forms.length;i++)
+        {
+            let form = forms[i];
+            if(form.field)
+            {
+                if(form.forms)
+                {
+                    data[form.uuid] = {};
+                    let subForms = form.forms
+                    for (let j = 0; j < subForms.length; j++) {
+                        let subForm = subForms[j];
+                        data[form.uuid][subForm.field] = subForm.value;
+                    }
+
+                }
+                else
+                {
+                    data[form.field] = form.value;
+                }
+            }
+        }
+        return data
+    }
+
+    onCreate = () => {
+        let data = this.formattedData()
         if (data && this.isDataValid(data)) {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             let token = store.userToken;
@@ -254,8 +322,8 @@ class AutoProvPolicyReg extends React.Component {
                         if (OutboundSecurityRule) {
                             outbound_security_rules.push({
                                 protocol: OutboundSecurityRule.Protocol,
-                                port_range_min: parseInt(OutboundSecurityRule.PortRangeMin),
-                                port_range_max: parseInt(OutboundSecurityRule.PortRangeMax),
+                                port_range_min: OutboundSecurityRule.Protocol!=='icmp' ? parseInt(OutboundSecurityRule.PortRangeMin) : undefined,
+                                port_range_max: OutboundSecurityRule.Protocol!=='icmp' ? parseInt(OutboundSecurityRule.PortRangeMax) : undefined,
                                 remote_cidr: OutboundSecurityRule.RemoteCIDR
                             })
                         }
@@ -283,7 +351,7 @@ class AutoProvPolicyReg extends React.Component {
             <div className="round_panel">
                 <div className="grid_table" style={{ overflow: 'auto' }}>
                     <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
-                        <MexForms formData={this.formData} forms={this.state.forms} onValueChange={this.onValueChange} />
+                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} />
                     </Item>
                 </div>
             </div>
@@ -304,13 +372,7 @@ class AutoProvPolicyReg extends React.Component {
         this.gotoUrl('site4', 'pg=8')
     }
 
-    removeRulesForm = (index) => {
-        let updateForm = this.state.forms;
-        updateForm.splice(index, 1);
-        this.setState({
-            forms: updateForm
-        })
-    }
+   
 
     disableFields = (form) => {
         let rules = form.rules ? form.rules : {}
@@ -337,8 +399,24 @@ class AutoProvPolicyReg extends React.Component {
                     }
                 }
                 if (data) {
-                    form.value = data[form.field]
+
+                    if(form.field === 'FullIsolation')
+                    {
+                        form.value = data.OutboundSecurityRules && data.OutboundSecurityRules.length > 0 ? false : true
+                    }
+                    else
+                    {
+                        form.value = data[form.field]
+                    }
                     this.disableFields(form)
+                }
+            }
+            else if(form.label)
+            {
+                if (data) {
+                    if (form.label === 'Outbound Security Rules') {
+                        form.visible = data.OutboundSecurityRules && data.OutboundSecurityRules.length > 0 ? true : false
+                    }
                 }
             }
         }
@@ -346,38 +424,53 @@ class AutoProvPolicyReg extends React.Component {
     }
 
     getFormData = async (data) => {
-        if (data) {
-            this.OrganizationList = [{ Organization: data.OrganizationName }]
-            this.formData.Region = data.Region;
-            this.formData.OrganizationName = data.OrganizationName;
-            this.formData.PrivacyPolicyName = data.PrivacyPolicyName;
-
-            this.loadData(this.step1, data)
-
-            if (data.OutboundSecurityRules && data.OutboundSecurityRules.length > 0) {
-                for (let i = 0; i < data.OutboundSecurityRules.length; i++) {
-                    let OutboundSecurityRule = data.OutboundSecurityRules[i]
-                    let outboundRules = JSON.parse(JSON.stringify(this.outboundRules));
-                    for (let j = 0; j < outboundRules.length > 0; j++) {
-                        let outboundRule = outboundRules[j];
-                        outboundRule.value = OutboundSecurityRule[outboundRule.field]
-                    }
-                    let uuid = serviceMC.generateUniqueId();
-                    this.formData[uuid] = { Protocol: OutboundSecurityRule.Protocol, PortRangeMin: OutboundSecurityRule.PortRangeMin, PortRangeMax: OutboundSecurityRule.PortRangeMax, RemoteCIDR: OutboundSecurityRule.RemoteCIDR }
-                    this.step1.push({ uuid: uuid, field: 'OutboundSecurityRules', type: 'MultiForm', onClick: this.removeRulesForm, forms: outboundRules, visible:true })
-                }
-            }
-        }
-        else {
-            this.OrganizationList = await ServerData.getOrganizationInfo(this)
-            this.loadData(this.step1)
-        }
-
-
         this.step1.push(
             { label: `${this.props.action ? this.props.action : 'Create'} Policy`, type: 'Button', onClick: this.onCreate },
             { label: 'Cancel', type: 'Button', onClick: this.onAddCancel })
 
+        let OutboundSecurityRulesForm = []
+        if (data) {
+            this.OrganizationList = [{ Organization: data.OrganizationName }]
+
+            this.loadData(this.step1, data)
+            if (data.OutboundSecurityRules && data.OutboundSecurityRules.length > 0) {
+                for (let i = 0; i < data.OutboundSecurityRules.length; i++) {
+                    let OutboundSecurityRule = data.OutboundSecurityRules[i]
+                    let outboundRules = JSON.parse(JSON.stringify(this.outboundRules));
+                    let isICMP = false;
+                    for (let j = 0; j < outboundRules.length > 0; j++) {
+                        let outboundRule = outboundRules[j];
+                        outboundRule.value = OutboundSecurityRule[outboundRule.field]
+                        if(outboundRule.field === 'Protocol')
+                        {
+                            isICMP = outboundRule.value === 'icmp' ? true : false;
+                        }
+                        if ((outboundRule.field === 'PortRangeMin' || outboundRule.field === 'PortRangeMax') && isICMP) {
+                            outboundRule.visible = false;
+                        }
+                    }
+                    let uuid = serviceMC.generateUniqueId();
+                    OutboundSecurityRulesForm.push({ uuid: uuid, field: 'OutboundSecurityRules', type: 'MultiForm', onClick: this.removeRulesForm, forms: outboundRules, visible:true, serverField: 'outbound_security_rules'})
+                }
+            }
+        }
+        else {
+            let outboundRules = JSON.parse(JSON.stringify(this.outboundRules));
+            this.OrganizationList = await ServerData.getOrganizationInfo(this)
+            this.loadData(this.step1)
+            OutboundSecurityRulesForm.push({ uuid: serviceMC.generateUniqueId(), field: 'OutboundSecurityRules', type: 'MultiForm', onClick: this.removeRulesForm, forms: outboundRules, visible: true, serverField: 'outbound_security_rules' })
+        }
+
+        if(OutboundSecurityRulesForm.length > 0)
+        {
+            //Show delete for last rule and exculde delete if only one rule
+            let length = OutboundSecurityRulesForm.length;
+            if(length > 1)
+            {
+                OutboundSecurityRulesForm[length-1].showDelete = true; 
+            }
+            this.step1 = [...this.step1, ...OutboundSecurityRulesForm]
+        }
         this.setState({
             forms: this.step1
         })

@@ -6,7 +6,7 @@ import MexCheckbox  from './MexCheckbox';
 import { Form, Grid, Divider } from 'semantic-ui-react';
 import { IconButton } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 
 export const HEADER = 'Header'
 export const SELECT = 'Select'
@@ -14,33 +14,18 @@ export const DUALLIST = 'DualList'
 export const INPUT = 'Input'
 export const CHECKBOX = 'Checkbox'
 
-let data = {}
-
-
 const MexForms = (props) => {
 
     const onValueSelect = (form, value, parentForm) => {
-    
         form.value = value;
-        if(parentForm)
-        {
-            let parentData = data[parentForm.uuid] ? data[parentForm.uuid] : {}
-            parentData[form.field] = value;
-            data[parentForm.uuid] = parentData;
-        }
-        else
-        {
-            data[form.field] = value;
-        }
         if(props.onValueChange)
         {
-            props.onValueChange(form, data, parentForm)
+            props.onValueChange(form, parentForm)
         }
         
     }
     const onRemoveMultiForm = (index, form)=>
     {
-        data[form.uuid] = undefined;
         form.onClick(index)
     }
     
@@ -59,7 +44,6 @@ const MexForms = (props) => {
                         null
                     }
                 </h2>
-    
                 <Divider />
             </div>
         )
@@ -68,13 +52,8 @@ const MexForms = (props) => {
     const loadHorizontalForms = (parentId, forms)=>
     {
         let parentForm = props.forms[parentId];
-        let parentData = {};
-        if (data && data[parentForm.uuid]) {
-            parentData = data[parentForm.uuid];
-        }
         return forms.map((form, i) => {
             
-            form.value = parentData[form.field] ? parentData[form.field] : form.value
             let required = false;
             let disabled = false;
             if (form.rules) {
@@ -96,8 +75,6 @@ const MexForms = (props) => {
                     </Grid.Column> : null
             )
         })
-        
-        
     }
     
     const loadForms = (index, form)=>
@@ -137,13 +114,20 @@ const MexForms = (props) => {
         return (
             <Grid.Row columns={2} key={index}>
                 {loadHorizontalForms(index, form.forms) }
-                {/* <IconButton style={{color:'white'}} onClick={()=>{onRemoveMultiForm(index, form)}} ><RemoveIcon/></IconButton> */}
+                {
+                    index === props.forms.length-1 && form.showDelete? 
+                        <div>
+                            <p></p>
+                            <IconButton style={{color:'white'}} onClick={()=>{onRemoveMultiForm(index, form)}} ><DeleteOutlinedIcon/></IconButton>
+                        </div> : 
+                        null
+                }
+                
             </Grid.Row>
         )
     }
 
     let forms = props.forms
-    data = props.formData ? props.formData : data
     return (
         forms ?
             <Form>
@@ -170,7 +154,7 @@ const MexForms = (props) => {
                                     key={i}
                                     positive
                                     content={form.label}
-                                    onClick={(e) => { form.onClick(data) }}
+                                    onClick={(e) => { form.onClick() }}
                                 /> : null)
                         })}
 
