@@ -92,7 +92,6 @@ class SiteFourPageCloudletPool extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("20200106 ..page cloudlet pool -", nextProps.viewMode)
         if(this.doing) return;
         if (nextProps.viewMode !== this.props.viewMode) {
             if (nextProps.viewMode === 'listView') {
@@ -105,7 +104,6 @@ class SiteFourPageCloudletPool extends React.Component {
         }
         /** selected item from the Region-Select-Box there positioned top header on page */
         if (this.props.changeRegion !== nextProps.changeRegion) {
-            console.log("20191119 ..cloudlet 22 nextProps.changeRegion = ", nextProps.changeRegion, "-- : --", this.props.changeRegion)
             this.setState({ changeRegion: nextProps.changeRegion })
             this.getDataDeveloper(nextProps.changeRegion, this.state.regions);
 
@@ -113,7 +111,6 @@ class SiteFourPageCloudletPool extends React.Component {
 
         }
         if (nextProps.computeRefresh.compute) {
-            console.log('20191119 computeRefresh..')
             this._cloudletDummy = [];
             this.getDataDeveloper(nextProps.changeRegion);
             this.props.handleComputeRefresh(false);
@@ -145,7 +142,6 @@ class SiteFourPageCloudletPool extends React.Component {
             _self.props.handleLoadingSpinner(false);
             return;
         }
-        console.log('20200108 result show pool - ', result, ": rgn= ", rgn)
         let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region') : {};
         if (Object.keys(regionGroup)[0]) {
             _self._cloudletDummy = _self._cloudletDummy.concat(result)
@@ -166,7 +162,6 @@ class SiteFourPageCloudletPool extends React.Component {
             _self.props.handleComputeRefresh(false);
             return;
         }
-        console.log('20200108 result show - ', result)
         if (result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
             setTimeout(() => _self.gotoUrl('/logout'), 4000);
@@ -178,7 +173,6 @@ class SiteFourPageCloudletPool extends React.Component {
         if (Object.keys(poolGroup)[0]) {
             _self._memberDummy = _self._memberDummy.concat(poolGroup)
         }
-        console.log('20200108 result show member - ', _self._memberDummy)
         this.loadCountM++;
         if (rgn.length === this.loadCountM) {
             _self.countJoin();
@@ -193,14 +187,11 @@ class SiteFourPageCloudletPool extends React.Component {
             return;
         }
         if (this.loadCountLink > 0) return;
-        console.log('20200108 result show link org - ', result, ": this.loadCountLink =", this.loadCountLink)
 
         let poolGroup = (result) ? reducer.groupBy(result, 'CloudletPool') : {};
-        console.log('20200108 result show link org - - - ', poolGroup)
         if (Object.keys(poolGroup)[0]) {
             _self._linkDummy = poolGroup;
         }
-        console.log('20200108 result show link org - ', _self._linkDummy)
         this.loadCountLink++;
 
         _self.countJoin();
@@ -210,7 +201,6 @@ class SiteFourPageCloudletPool extends React.Component {
 
 
     countJoin() {
-        console.log('20200108 ==== countJoin... ', this.loadCount, ":", this.loadCountM, ":", this.loadCountLink)
         if (this.loadCount == rgn.length && this.loadCountM == rgn.length && this.loadCountLink == 1) {
             this.countAllJoin();
         }
@@ -225,17 +215,14 @@ class SiteFourPageCloudletPool extends React.Component {
         /** cloudlet pool join member data */
         let cloneData = Object.assign([], this._cloudletDummy);
         let orgData = Object.assign([], this._linkDummy)
-        console.log('20200103 ..cloudlet member count---', cloneData, ":", cloudlet)
 
         cloneData.map((data, i) => {
-            console.log('20200103 data - ', data['PoolName'])
             data['cloudletGroup'] = [];
             data['OrganizGroup'] = [];
             cloudlet.map(member => {
                 if (member[data['PoolName']]) {
                     member[data['PoolName']].map((pn) => {
                         if (pn['Region'] === data['Region']) {
-                            console.log("20200103 member", pn, ":", pn['Region'], ":", data['Region'])
                             data['Cloudlets'] += 1
                             data['cloudletGroup'].push(pn)
                         }
@@ -252,7 +239,7 @@ class SiteFourPageCloudletPool extends React.Component {
             }
         })
 
-        console.log('20200103 ..cloudlet member count join---', cloneData)
+
         this.setState({ devData: cloneData })
         this.forceUpdate();
         this._memberDummy = [];
@@ -310,7 +297,7 @@ class SiteFourPageCloudletPool extends React.Component {
 
         return (
             (viewMode === 'listView') ?
-                <InsideListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet Pool'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></InsideListView>
+                <InsideListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet Pools'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></InsideListView>
                 :
                 <PagePoolDetailViewer data={this.state.detailData} page='cloudletPool' refreshData={this.getDataDeveloper} />
         );
@@ -323,7 +310,6 @@ SiteFourPageCloudletPool.defaultProps = {
 
 
 const mapStateToProps = (state) => {
-    console.log("20200106 state.changeViewMode.mode.viewMode--", state.changeViewMode)
     let viewMode = null;
     let detailData = null;
 

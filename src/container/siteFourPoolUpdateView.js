@@ -33,7 +33,7 @@ class SiteFourPoolUpdateView extends React.Component {
     }
 
     receiveResult = (result) => {
-        console.log('20191231 show cloudlet result -- ', result)
+        //console.log('20191231 show cloudlet result -- ', result)
 
         if(result.response){
             if(result.response.data && result.response.data.length) {
@@ -128,7 +128,7 @@ class SiteFourPoolUpdateView extends React.Component {
             }]
         }
 
-        console.log('20200104 props appLaunch .. poolList =-- ', fieldValue)
+        //console.log('20200104 props appLaunch .. poolList =-- ', fieldValue)
         //
         let panelParams = {data:fieldValue, keys:this.props.keys, region:this.state.selectedData['region']}
         _self.setState({devData:panelParams})

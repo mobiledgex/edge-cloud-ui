@@ -1,71 +1,138 @@
 import React from 'react';
 import './PageMonitoring.css';
 import {toast} from "react-semantic-toasts";
-import {HARDWARE_TYPE, HARDWARE_TYPE_FOR_CLOUDLET, USAGE_TYPE,} from "../../../shared/Constants";
+import {HARDWARE_TYPE, USAGE_TYPE,} from "../../../shared/Constants";
 import Lottie from "react-lottie";
-import {makeGradientColor, removeDuplication} from "./dev/PageDevMonitoringService";
+import {makeGradientColor} from "./dev/PageDevMonitoringService";
 import {Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import PageMonitoringForDeveloper from "./dev/PageDevMonitoring";
 import {makeCompleteDateTime} from "./admin/PageAdminMonitoringService";
 import moment from "moment";
 import {Line as ReactChartJs} from "react-chartjs-2";
+import axios from "axios";
+import {GridLoader} from "react-spinners";
 
-export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
-
+export const renderLottieLoader = (width, height) => {
     return (
-        {
-            "token": token,
-            "params": {
-                "region": dataOne.Region,
-                "cloudlet": {
-                    "operator_key": {
-                        "name": dataOne.Operator
-                    },
-                    "name": dataOne.CloudletName,
-                },
-                "last": fetchingDataNo,
-                "selector": "*"
-            }
-        }
+        <Lottie
+            options={{
+                loop: true,
+                autoplay: true,
+                animationData: require('../../../lotties/10910-loade_dots.json'),
+                rendererSettings: {
+                    preserveAspectRatio: 'xMidYMid slice'
+                }
+            }}
+            height={height}
+            width={width}
+            isStopped={false}
+            isPaused={false}
+            speed={3.0}
+        />
     )
 }
 
-export const cutArrayList = (length: number = 5, paramArrayList: any) => {
-    let newArrayList = [];
-    for (let index in paramArrayList) {
-        if (index < 5) {
-            newArrayList.push(paramArrayList[index])
-        }
-    }
-    return newArrayList;
+export const renderGridLoader = () => {
+    return (
+        <GridLoader
+            sizeUnit={"px"}
+            size={20}
+            color={'#70b2bc'}
+            loading={true}
+        />
+    )
 }
 
-/**
- * @todo: 로딩이 완료 되기전에 placeholder를 보여준다..
- * @returns {*}
- */
-export const renderPlaceHolder = (type: string = '') => {
-    // let boxWidth = window.innerWidth / 3 - 50;
+
+export const renderPlaceHolderLottie = (type: string = '') => {
     return (
         <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
-            <Lottie
+            {/*<Lottie
                 options={{
                     loop: true,
                     autoplay: true,
-                    animationData: require('../../../lotties/loader001'),
+                    animationData: require('../../../lotties/14112-heartrate_777'),
                     rendererSettings: {
                         preserveAspectRatio: 'xMidYMid slice'
                     }
                 }}
-                height={120}
-                width={120}
+                speed={2.5}
+                height={150}
+                width={150}
+                isStopped={false}
+                isPaused={false}
+            />*/}
+            <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}
+            />
+        </div>
+    )
+}
+
+
+export const renderPlaceHolderLottiePinJump = (type: string = '') => {
+    return (
+        <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%', zIndex: 999999999999}}>
+            <Lottie
+                options={{
+                    loop: true,
+                    autoplay: true,
+                    animationData: require('../../../lotties/pinjump'),
+                    rendererSettings: {
+                        preserveAspectRatio: 'xMidYMid slice'
+                    }
+                }}
+                speed={2.1}
+                height={150}
+                width={150}
                 isStopped={false}
                 isPaused={false}
             />
         </div>
     )
 }
+
+export const renderPlaceHolderLottiePinJump2 = (type: string = '') => {
+    return (
+        <div className='page_monitoring_blank_box' style={{zIndex: 999999999999, position: 'absolute', top: '1%', left: '1%'}}>
+            <Lottie
+                options={{
+                    loop: true,
+                    autoplay: true,
+                    animationData: require('../../../lotties/6698-location-pin22222'),
+                    rendererSettings: {
+                        preserveAspectRatio: 'xMidYMid slice'
+                    }
+                }}
+                speed={2.9}
+                height={350}
+                width={350}
+                isStopped={false}
+                isPaused={false}
+            />
+        </div>
+    )
+}
+/*
+export const renderPlaceHolderLottie = (type: string = '') => {
+    return (
+        <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
+            <Lottie
+                options={{
+                    loop: true,
+                    autoplay: true,
+                    animationData: require('../../../lotties/11052-green-loader-ring_555'),
+                    rendererSettings: {
+                        preserveAspectRatio: 'xMidYMid slice'
+                    }
+                }}
+                height={150}
+                width={150}
+                isStopped={false}
+                isPaused={false}
+            />
+        </div>
+    )
+}*/
 
 export const renderPlaceHolder3 = (type: string = '') => {
     // let boxWidth = window.innerWidth / 3 - 50;
@@ -75,6 +142,23 @@ export const renderPlaceHolder3 = (type: string = '') => {
 
         </div>
     )
+}
+
+export const convertByteToMegaByte = (value, hardwareType) => {
+    if (value > 1000000) {
+        return numberWithCommas(value / 1000000) + ' MByte'
+    } else {
+        return numberWithCommas(value)
+    }
+}
+
+
+export const convertByteToMegaByte2 = (value, hardwareType) => {
+    if (value > 1000000) {
+        return value / 1000000
+    } else {
+        return value;
+    }
 }
 
 
@@ -120,19 +204,11 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
         }
     }
 
+
     let height = 500 + 100;
     let options = {
-        plugins: {
-            zoom: {
-                pan: {
-                    enabled: true,
-                    mode: 'y'
-                },
-                zoom: {
-                    enabled: true,
-                    mode: 'xy'
-                }
-            }
+        animation: {
+            duration: 0
         },
         maintainAspectRatio: false,//@todo
         responsive: true,//@todo
@@ -159,7 +235,7 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
                     beginAtZero: true,
                     fontColor: 'white',
                     callback(value, index, label) {
-                        return numberWithCommas(value);
+                        return convertByteToMegaByte(value, hardwareType)
 
                     },
                 },
@@ -202,10 +278,6 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
 
     }
 
-
-    let chartWidth = ((window.innerWidth - 300) * 2 / 3 - 50) / 2
-    let chartHeight = window.innerWidth > 1700 ? ((window.innerHeight - 320) / 2 - 80) - 10 : ((window.innerHeight - 370) / 2 - 80) - 10 //(height 사이즈)-(여유공백)
-    // let chartNetHeight = window.innerWidth > 1782 ? (window.innerHeight-320)/2-50 : (window.innerHeight-370)/2-50
     //todo :#######################
     //todo : chart rendering part
     //todo :#######################
@@ -228,184 +300,66 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
 }
 
 
-export const renderLineChartCore00002 = (paramLevelTypeNameList, usageSetList, newDateTimeList, hardwareType) => {
+export const renderUsageByType2 = (usageOne, hardwareType) => {
 
-    console.log('usageSetList===>', usageSetList);
+    if (hardwareType === HARDWARE_TYPE.VCPU) {
+        return usageOne.sumVCpuUsage;
+    }
+    if (hardwareType === HARDWARE_TYPE.FLOATING_IPS) {
+        return usageOne.sumFloatingIpsUsage;
+    }
+    if (hardwareType === HARDWARE_TYPE.IPV4) {
+        return usageOne.sumIpv4Usage;
+    }
 
-    let hwType = 'CPU';
+    if (hardwareType === HARDWARE_TYPE.CPU) {
+        return usageOne.sumCpuUsage
+    }
+    if (hardwareType === HARDWARE_TYPE.MEM) {
+        return usageOne.sumMemUsage
+    }
+    if (hardwareType === HARDWARE_TYPE.DISK) {
+        return usageOne.sumDiskUsage
+    }
+    if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+        return usageOne.sumRecvBytes
+    }
 
-    let nameList = [
-        "autoclusterbicapp\n[hamburg-stage]",
-        "autoclusterbicapp\n[Rah123]",
-        "autoclusterbicapp\n[frankfurt-eu]",
-        "Rah-Clust-8\n[frankfurt-eu]"
-    ]
+    if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+        return usageOne.sumSendBytes
+    }
 
-    let datetimeList2 = [
-        "08:53:00",
-        "08:52:52",
-        "08:52:44",
-        "08:52:36",
-        "08:52:28",
-        "08:52:20",
-        "08:52:12",
-        "08:52:04",
-        "08:51:56",
-        "08:51:48"
-    ]
+    if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+        return usageOne.sumActiveConnection
+    }
 
-    let usageSetList2 = [
-        [
-            0,
-            0,
-            0,
-            0,
-            29.999999994179234,
-            0,
-            25.423728815210573,
-            0,
-            1.639344262353743,
-            0
-        ],
-        [
-            0,
-            39.99999999997726,
-            0,
-            0,
-            0,
-            0,
-            3.278688524584054,
-            0,
-            0,
-            0
-        ],
-        [
-            8.47457626148795,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            29.508196703947725,
-            0,
-            0
-        ],
-        [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-        ]
-    ]
+    if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+        return usageOne.sumHandledConnection
+    }
 
-    let chartDataList = []
-
-    let titleArray = [];
-
-    titleArray.push("time")
-
-    titleArray.concat(nameList)
-    datetimeList2.map((item, index) => {
-
-
-    })
-
-    const data = [
-        ["Year", "Sales", "Expenses"],
-        ["2004", 1000, 400],
-        ["2005", 1170, 460],
-        ["2006", 660, 1120],
-        ["2007", 1030, 540],
-        ["2008", 1035, 545],
-        ["2009", 1037, 518],
-        ["2010", 1040, 550],
-        ["2011", 1050, 570],
-    ];
-    const options = {
-        //title: "Company Performance",
-        curveType: "function",
-        backgroundColor: {
-            fill: '#1e2124'
-        },
-        chartArea: {left: 60, top: 40, width: '90%', height: '75%'},
-        annotations: {
-            style: 'line',
-            textStyle: {
-                //fontName: 'Righteous',
-                fontSize: 12,
-                //bold: true,
-                //italic: true,
-                // The color of the text.
-                color: '#fff',
-                // The color of the text outline.
-                //auraColor: 'black',
-                // The transparency of the text.
-                opacity: 1.0
-            },
-            boxStyle: {
-                // Color of the box outline.
-                stroke: '#ffffff',
-                // Thickness of the box outline.
-                strokeWidth: 1,
-                // x-radius of the corner curvature.
-                rx: 10,
-                // y-radius of the corner curvature.
-                ry: 10,
-            }
-        },
-        animation: {
-            startup: true,
-            duration: 850,
-            /*'linear' - Constant speed.
-            'in' - Ease in - Start slow and speed up.
-            'out' - Ease out - Start fast and slow down.
-            'inAndOut' - Ease in and out - Start slow, speed up, then slow down.*/
-            easing: 'inAndOut',
-        },
-        explorer: {
-            actions: ['dragToPan', 'rightClickToReset'],
-        },
-        tooltip: {textStyle: {color: '#FF0000'}, showColorCode: true},
-        legend: {position: 'top', textStyle: {color: 'white', fontSize: 16}},
-        vAxis: {//y축
-            gridlines: {color: '#333', minSpacing: 20},
-            textStyle: {
-                color: 'green',
-                fontSize: 15,
-                bold: true,
-            },
-            viewWindowMode: 'maximized'
-        },
-        titlePosition: 'none',
-        hAxis: {//x축
-            //gridlines: {color: '#333', minSpacing: 20},
-            textStyle: {
-                color: 'white',
-                fontSize: 12,
-                bold: true,
-            }
-        }
-    };
-
-    return (
-        <div className="App">
-            <Chart
-                chartType="LineChart"
-                width={700}
-                height={'100%'}
-                data={data}
-                options={options}
-            />
-        </div>
-    )
+    if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+        return usageOne.sumAcceptsConnection
+    }
 }
+
+export const sortUsageListByType = (usageList, hardwareType) => {
+    if (hardwareType === HARDWARE_TYPE.VCPU) {
+        usageList.sort((a, b) => b.sumVCpuUsage - a.sumVCpuUsage);
+    } else if (hardwareType === HARDWARE_TYPE.MEM) {
+        usageList.sort((a, b) => b.sumMemUsage - a.sumMemUsage);
+    } else if (hardwareType === HARDWARE_TYPE.DISK) {
+        usageList.sort((a, b) => b.sumDiskUsage - a.sumDiskUsage);
+    } else if (hardwareType === HARDWARE_TYPE.FLOATING_IPS) {
+        usageList.sort((a, b) => b.sumFloatingIpsUsage - a.sumFloatingIpsUsage);
+    } else if (hardwareType === HARDWARE_TYPE.IPV4) {
+        usageList.sort((a, b) => b.sumIpv4Usage - a.sumIpv4Usage);
+    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+        usageList.sort((a, b) => b.sumRecvBytes - a.sumRecvBytes);
+        usageList.sort((a, b) => b.sumSendBytes - a.sumSendBytes);
+    }
+    return usageList;
+}
+
 
 export const renderUsageByType = (usageOne, hardwareType, role = '',) => {
 
@@ -465,7 +419,7 @@ export const renderUsageByType = (usageOne, hardwareType, role = '',) => {
 export const renderBarChartCore = (chartDataList, hardwareType) => {
     return (
         <Chart
-            width="100%"
+            width={"100%"}
             //height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
             height={'100%'}
             chartType="BarChart"
@@ -580,19 +534,8 @@ export const numberWithCommas = (x) => {
     }
 }
 
-export const covertToComparableDate = (paramDate) => {
-    let arrayDate = paramDate.toString().split("-");
-    let compareableFullDate = arrayDate[0] + arrayDate[1] + arrayDate[2]
-    return compareableFullDate
-
-}
-
 
 export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
-
-
-    console.log('dataOne====>', dataOne);
-
     return (
         {
             "token": token,
@@ -619,46 +562,26 @@ export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, fetch
     )
 }
 
-export const isEmpty = (value) => {
-    if (value == "" || value == null || value == undefined || (value != null && typeof value == "object" && !Object.keys(value).length)) {
-        return true
-    } else {
-        return false
-    }
-};
+export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
 
-
-/**
- * @param appInstanceListGroupByCloudlet
- * @param pCloudLet
- * @returns {[]}
- */
-export const filterInstanceCountOnCloutLetOne = (appInstanceListGroupByCloudlet, pCloudLet) => {
-    let filterInstanceCountOnCloutLetOne = [];
-    for (let [key, value] of Object.entries(appInstanceListGroupByCloudlet)) {
-        if (key === pCloudLet) {
-            filterInstanceCountOnCloutLetOne.push(value)
-            break;
+    return (
+        {
+            "token": token,
+            "params": {
+                "region": dataOne.Region,
+                "cloudlet": {
+                    "operator_key": {
+                        "name": dataOne.Operator
+                    },
+                    "name": dataOne.CloudletName,
+                },
+                "last": fetchingDataNo,
+                "selector": "*"
+            }
         }
-    }
-    return filterInstanceCountOnCloutLetOne;
+    )
 }
 
-/**
- *
- * @param usageList
- * @param pTypeKey
- * @param pTypeValue
- * @returns {*}
- */
-export const filterUsageByType = (pTypeKey, pTypeValue, usageList,) => {
-    let filteredUsageList = usageList.filter((item) => {
-        if (item.instance[pTypeKey] === pTypeValue) {
-            return item;
-        }
-    });
-    return filteredUsageList
-}
 
 export const getOneYearStartEndDatetime = () => {
 
@@ -672,47 +595,36 @@ export const getOneYearStartEndDatetime = () => {
     return arrDateTime;
 }
 
-/**
- * todo: Fliter app instace list by cloudlet Value
- * @param appInstanceList
- * @param pCloudLet
- * @returns {[]}
- */
-export const filterAppInstanceListByCloudLet = (appInstanceList, pCloudLet = '') => {
-    let instanceListFilteredByCloudlet = []
-    appInstanceList.map(item => {
-        if (item.Cloudlet === pCloudLet) {
-            instanceListFilteredByCloudlet.push(item);
-        }
-    })
-    return instanceListFilteredByCloudlet;
+export const getOneYearStartEndDatetime2 = () => {
+
+    let arrDateTime = []
+    let startTime = makeCompleteDateTime(moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm:ss'));
+    let endTime = makeCompleteDateTime(moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm:ss'));
+
+    arrDateTime.push(startTime)
+    arrDateTime.push(endTime)
+
+    return arrDateTime;
 }
 
 
-/**
- * todo: Filter Instance List by clusterInst value
- * @param appInstanceList
- * @param pCluster
- * @returns {[]}
- */
-export const filterAppInstanceListByClusterInst = (appInstanceList, pCluster = '') => {
-    let instanceListFilteredByClusterInst = []
-    appInstanceList.map(item => {
-        if (item.ClusterInst === pCluster) {
-            instanceListFilteredByClusterInst.push(item);
-        }
-    })
-
-    return instanceListFilteredByClusterInst;
-}
-
-export const showToast = (title: string) => {
+export const showToast = (title: string, time = 2) => {
     toast({
         type: 'success',
         //icon: 'smile',
         title: title,
         //animation: 'swing left',
-        time: 3 * 1000,
+        time: time * 1000,
+        color: 'black',
+    });
+}
+export const showToast2 = (title: string, time = 2) => {
+    toast({
+        type: 'success',
+        icon: 'star',
+        title: title,
+        //animation: 'swing left',
+        time: time * 1000,
         color: 'black',
     });
 }
@@ -726,177 +638,6 @@ function removeDups(names) {
         }
     });
     return Object.keys(unique);
-}
-
-
-/**
- * @todo 클러스트 리스트 셀렉트 박스 형태의 리스트를 만들어준다..
- * @param appInstanceList
- * @param pCloudLet
- * @returns {[]}
- */
-export const makeClusterListSelectBox = (appInstanceList, pCloudLet) => {
-
-    let instanceListFilteredByCloudLet = []
-    appInstanceList.map(item => {
-        if (item.Cloudlet === pCloudLet) {
-            instanceListFilteredByCloudLet.push(item);
-        }
-    })
-
-    let filteredClusterList = []
-    instanceListFilteredByCloudLet.map(item => {
-        filteredClusterList.push(item.ClusterInst)
-    })
-
-
-    let uniqueClusterList = removeDups(filteredClusterList);
-    let clusterSelectBoxData = []
-    uniqueClusterList.map(item => {
-        let selectOne = {
-            value: item,
-            text: item,
-        }
-        clusterSelectBoxData.push(selectOne);
-    })
-
-    return clusterSelectBoxData;
-}
-
-/**
- * @todo : Process clusterlet list into select box
- * @param appInstanceList
- * @returns {[]}
- */
-export const makeCloudletListSelectBox = (appInstanceList) => {
-    let cloudletList = []
-    appInstanceList.map(item => {
-        cloudletList.push(item.Cloudlet)
-    })
-    //@todo Deduplication
-    let uniquedCloudletList = cloudletList.filter(function (item, pos) {
-        return cloudletList.indexOf(item) == pos;
-    })
-
-    let cloudletListForSelectbox = []
-    uniquedCloudletList.map(item => {
-        let selectOne = {
-            value: item,
-            text: item,
-        }
-        cloudletListForSelectbox.push(selectOne);
-    })
-
-    return cloudletListForSelectbox;
-}
-
-
-export const renderUsageLabelByTypeForAppInst = (usageOne, hardwareType, userType = '') => {
-    if (hardwareType === HARDWARE_TYPE.CPU) {
-
-        let cpuUsageOne = '';
-        try {
-            cpuUsageOne = (usageOne.sumCpuUsage * 1).toFixed(2) + " %";
-        } catch (e) {
-            cpuUsageOne = 0;
-        } finally {
-            //cpuUsageOne = 0;
-        }
-        return cpuUsageOne;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.VCPU) {
-        return numberWithCommas(usageOne.avgVCpuUsed) + " %"
-    }
-
-    if (hardwareType === HARDWARE_TYPE.MEM_USED) {
-        return numberWithCommas(usageOne.avgMemUsed) + " Byte"
-    }
-
-    if (hardwareType === HARDWARE_TYPE.DISK_USED) {
-        return numberWithCommas(usageOne.avgDiskUsed) + " Byte"
-    }
-
-    if (hardwareType === HARDWARE_TYPE.FLOATING_IPS_USED) {
-        return usageOne.avgFloatingIpsUsed;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.IPV4_USED) {
-        return usageOne.avgIpv4Used;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.NET_SEND) {
-        return usageOne.avgNetSend;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.NET_RECV) {
-        return usageOne.avgNetRecv;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.CPU) {
-        return numberWithCommas(usageOne.sumCpuUsage) + " Byte"
-    }
-
-    if (hardwareType === HARDWARE_TYPE.MEM) {
-        return numberWithCommas(usageOne.sumMemUsage) + " Byte"
-    }
-
-    if (hardwareType === HARDWARE_TYPE.DISK) {
-        return numberWithCommas(usageOne.sumDiskUsage) + " Byte"
-    }
-
-    if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
-        return numberWithCommas(usageOne.sumRecvBytes) + " Byte";
-    }
-
-    if (hardwareType === HARDWARE_TYPE.SEND_BYTES) {
-        return numberWithCommas(usageOne.sumSendBytes) + " Byte";
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-        return usageOne.sumActiveConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
-        return usageOne.sumHandledConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-        return usageOne.sumAcceptsConnection
-    }
-}
-
-
-export const renderUsageByTypeForAppInst = (usageOne, hardwareType, role = '',) => {
-
-    if (hardwareType === HARDWARE_TYPE.CPU) {
-        return usageOne.sumCpuUsage
-    }
-    if (hardwareType === HARDWARE_TYPE.MEM) {
-        return usageOne.sumMemUsage
-    }
-    if (hardwareType === HARDWARE_TYPE.DISK) {
-        return usageOne.sumDiskUsage
-    }
-    if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
-        return usageOne.sumRecvBytes
-    }
-
-    if (hardwareType === HARDWARE_TYPE.SEND_BYTES) {
-        return usageOne.sumSendBytes
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-        return usageOne.sumActiveConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
-        return usageOne.sumHandledConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-        return usageOne.sumAcceptsConnection
-    }
 }
 
 export const hardwareTypeToUsageKey = (hwType: string) => {
@@ -930,13 +671,6 @@ export const hardwareTypeToUsageKey = (hwType: string) => {
 
 
 }
-export const NumberToFixed = (value: number, fixedLength: number) => {
-    try {
-        Number(value).toFixed(fixedLength)
-    } catch (e) {
-        return 0;
-    }
-}
 
 export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType) => {
 
@@ -959,133 +693,120 @@ export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType) => 
     return bubbleChartData;
 }
 
-export const makeUniqCloudletList = (instanceList) => {
-    let list = []
 
-    console.log('instanceList===>', instanceList);
-    instanceList.map(item => {
-        console.log('item===>', item.Cloudlet);
-        list.push({
-            name: item.Cloudlet,
-            long: item.CloudletLocation.longitude,
-            lat: item.CloudletLocation.latitude,
-        })
+export const getCloudletLevelMatric = async (serviceBody: any, pToken: string) => {
+    console.log('token2===>', pToken);
+    let result = await axios({
+        url: '/api/v1/auth/metrics/cloudlet',
+        method: 'post',
+        data: serviceBody['params'],
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + pToken
+        },
+        timeout: 15 * 1000
+    }).then(async response => {
+        return response.data;
+    }).catch(e => {
+        //showToast(e.toString())
     })
-
-    return removeDuplication(list, 'name')
+    return result;
 }
 
-export const handleBubbleChartDropDownForCluster = async (hwType, _this: PageMonitoringForDeveloper) => {
-    await _this.setState({
-        currentHardwareType: hwType,
-    });
+export const getClusterLevelMatric = async (serviceBody: any, pToken: string) => {
+    console.log('token2===>', pToken);
+    let result = await axios({
+        url: '/api/v1/auth/metrics/cluster',
+        method: 'post',
+        data: serviceBody['params'],
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + pToken
+        },
+        timeout: 15 * 1000
+    }).then(async response => {
+        return response.data;
+    }).catch(e => {
+        //showToast(e.toString())
+    })
+    return result;
+}
 
-    let allUsageList = _this.state.allUsageList;
-    let bubbleChartData = [];
 
-    console.log('allUsageList===>', allUsageList);
-
-
-    if (hwType === HARDWARE_TYPE.CPU.toUpperCase()) {
-        allUsageList.map((item, index) => {
-            bubbleChartData.push({
-                index: index,
-                label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: (item.sumCpuUsage * 1).toFixed(0),
-                favor: (item.sumCpuUsage * 1).toFixed(0),
-                fullLabel: item.cluster,
-            })
-        })
-    } else if (hwType === HARDWARE_TYPE.MEM.toUpperCase()) {
-        allUsageList.map((item, index) => {
-            bubbleChartData.push({
-                index: index,
-                label: item.cluster.toString().substring(0, 10) + "...",
-                value: item.sumMemUsage.toFixed(0),
-                favor: item.sumMemUsage.toFixed(0),
-                fullLabel: item.cluster,
-            })
-        })
-    } else if (hwType === HARDWARE_TYPE.DISK.toUpperCase()) {
-        allUsageList.map((item, index) => {
-            bubbleChartData.push({
-                index: index,
-                label: item.cluster.toString().substring(0, 10) + "...",
-                value: item.sumDiskUsage.toFixed(0),
-                favor: item.sumDiskUsage.toFixed(0),
-                fullLabel: item.cluster,
-            })
-        })
-    } else if (hwType === HARDWARE_TYPE.RECVBYTES.toUpperCase()) {
-        allUsageList.map((item, index) => {
-            bubbleChartData.push({
-                index: index,
-                label: item.cluster.toString().substring(0, 10) + "...",
-                value: item.sumRecvBytes,
-                favor: item.sumRecvBytes,
-                fullLabel: item.cluster,
-            })
-        })
-    } else if (hwType === HARDWARE_TYPE.SENDBYTES.toUpperCase()) {
-        allUsageList.map((item, index) => {
-            bubbleChartData.push({
-                index: index,
-                label: item.cluster.toString().substring(0, 10) + "...",
-                value: item.sumNetSend,
-                favor: item.sumNetSend,
-                fullLabel: item.cluster,
-            })
-        })
-    } else if (hwType === HARDWARE_TYPE.TCPCONNS.toUpperCase()) {
-        allUsageList.map((item, index) => {
-            bubbleChartData.push({
-                index: index,
-                label: item.cluster.toString().substring(0, 10) + "...",
-                value: item.sumTcpConns.toFixed(0),
-                favor: item.sumTcpConns.toFixed(0),
-                fullLabel: item.cluster,
-            })
-        })
-    } else if (hwType === HARDWARE_TYPE.UDPSENT.toUpperCase()) {
-        allUsageList.map((item, index) => {
-            bubbleChartData.push({
-                index: index,
-                label: item.cluster.toString().substring(0, 10) + "...",
-                value: item.sumUdpSent,
-                favor: item.sumUdpSent,
-                fullLabel: item.cluster,
-            })
-        })
-    } else if (hwType === HARDWARE_TYPE.SENDBYTES.toUpperCase()) {
-        allUsageList.map((item, index) => {
-            bubbleChartData.push({
-                index: index,
-                label: item.cluster.toString().substring(0, 10) + "...",
-                value: item.sumSendBytes,
-                favor: item.sumSendBytes,
-                fullLabel: item.cluster,
-            })
-        })
-    } else if (hwType === HARDWARE_TYPE.RECVBYTES.toUpperCase()) {
-        allUsageList.map((item, index) => {
-            bubbleChartData.push({
-                index: index,
-                label: item.cluster.toString().substring(0, 10) + "...",
-                value: item.sumRecvBytes,
-                favor: item.sumRecvBytes,
-                fullLabel: item.cluster,
-            })
-        })
+export const StylesForMonitoring = {
+    selectBoxRow: {
+        alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,
+    },
+    tabPaneDiv: {
+        display: 'flex', flexDirection: 'row', height: 380,
+    },
+    selectHeader: {
+        color: 'white',
+        backgroundColor: '#565656',
+        height: 35,
+        alignItems: 'center',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        marginTop: -10,
+        width: 100,
+        display: 'flex'
+    },
+    header00001: {
+        fontSize: 21,
+        marginLeft: 5,
+        color: 'white',
+    },
+    div001: {
+        fontSize: 25,
+        color: 'white',
+    },
+    dropDown: {
+        //minWidth: 150,
+        minWidth: '350px',
+        //fontSize: '12px',
+        minHeight: '40px',
+        zIndex: 9999999,
+        //height: '50px',
+    },
+    cell000: {
+        marginLeft: 0,
+        backgroundColor: '#a3a3a3',
+        flex: .4,
+        alignItems: 'center',
+        fontSize: 13,
+    },
+    noData: {
+        fontSize: 30,
+        display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', alignSelf: 'center', width: '100%'
+    },
+    cell001: {
+        marginLeft: 0,
+        backgroundColor: 'transparent',
+        flex: .6,
+        alignItems: 'center',
+        fontSize: 13
+    },
+    cpuDiskCol001: {
+        marginTop: 0, height: 33, width: '100%'
+    },
+    cell003: {
+        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center'
+        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 35, marginTop: -9,
+    },
+    cell004: {
+        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center', backgroundColor: 'transparent'
+        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 35
+    },
+    center: {
+        display: 'flex',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        //backgroundColor:'red'
     }
 
-
-    await _this.setState({
-        bubbleChartData: bubbleChartData,
-    });
 }
-
-
-
 
 
 

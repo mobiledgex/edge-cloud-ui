@@ -91,7 +91,6 @@ class SiteFourPageCloudlet extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("20191119 ..cloudlet 11 region info in page cloudlet", nextProps.changeRegion, "-- : --", this.state.changeRegion, ": props region ==>", nextProps.regionInfo.region, ": state region==>", this.state.regions)
 
         this.setState({ bodyHeight: (window.innerHeight - this.headerH) })
         this.setState({ contHeight: (nextProps.size.height - this.headerH) / 2 - this.hgap })
@@ -108,7 +107,6 @@ class SiteFourPageCloudlet extends React.Component {
 
         }
         if (this.state.changeRegion !== nextProps.changeRegion) {
-            console.log("20191119 ..cloudlet 22 nextProps.changeRegion = ", nextProps.changeRegion, "-- : --", this.props.changeRegion)
             this.setState({ changeRegion: nextProps.changeRegion })
             this.getDataDeveloper(nextProps.changeRegion, this.state.regions);
         } else {
@@ -236,7 +234,7 @@ SiteFourPageCloudlet.defaultProps = {
 
 
 const mapStateToProps = (state) => {
-    console.log("20191119 regionssInfo", state.regionInfo, ":", state.changeRegion)
+
     let viewMode = null;
     let detailData = null;
 

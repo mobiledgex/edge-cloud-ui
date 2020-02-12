@@ -80,7 +80,6 @@ class SiteFourPageApps extends React.Component {
 
 
     componentWillReceiveProps(nextProps) {
-        console.log("nextPropsnextProps", nextProps.regionInfo)
         this.setState({ bodyHeight: (window.innerHeight - this.headerH) })
         this.setState({ contHeight: (nextProps.size.height - this.headerH) / 2 - this.hgap })
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -150,7 +149,7 @@ class SiteFourPageApps extends React.Component {
 
         if (rgn && rgn.length > 0) {
             this.requestCount = rgn.length;
-            if (localStorage.selectRole == 'AdminManager') {
+            if (localStorage.selectRole === 'AdminManager') {
                 rgn.map((item) => {
                     serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_APP, data: { region: item } }, _self.receiveResult)
                 })

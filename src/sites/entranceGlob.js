@@ -17,7 +17,7 @@ import Alert from 'react-s-alert';
 
 
 // const pointMarkers = getMockData(0x97bcd8, 'point');
-let src1 = 'assets/images/backgroundGlob.png'
+let src1 = 'assets/images/globe_1.png'
 let self = null;
 class EntranceGlobe extends Component {
 
@@ -188,10 +188,10 @@ class EntranceGlobe extends Component {
                         {/*/>*/}
 
                         {(this.state.modalOpen && !this.state.logined)?
-                        <Grid style={{backgroundColor:'transparent', width:230, height:100, position:'absolute', top:20, right:(this.state.modalOpen)?50:185, alignSelf:'center'}}>
+                        <Grid style={{backgroundColor:'transparent', height:100, position:'absolute', top:20, right:(this.state.modalOpen)?50:185, alignSelf:'center'}}>
                             <Grid.Row columns={2}>
-                                <Grid.Column><Button onClick={() => this.handleClickLogin('login')}><span>Login</span></Button></Grid.Column>
-                                <Grid.Column><Button onClick={() => this.handleClickLogin('signup')}><span>SignUp</span></Button></Grid.Column>
+                                <Grid.Column className="login_btn"><Button onClick={() => this.handleClickLogin('login')}><span>Login</span></Button></Grid.Column>
+                                <Grid.Column className="signup_btn"><Button onClick={() => this.handleClickLogin('signup')}><span>Create an account</span></Button></Grid.Column>
                             </Grid.Row>
                         </Grid>
                         :<div></div>}

@@ -18,7 +18,7 @@ export const getKey = (data) => {
 
 export const formatData = (datas, body) => {
     let values = [];
-    if (datas.data && datas.data.length > 0) {
+    if (datas.data) {
         let toArray = null;
         let toJson = [];
         if (datas.data) {
@@ -49,6 +49,7 @@ export const formatData = (datas, body) => {
                         State: '',
                         Progress: '',
                         Status: '',
+                        Reservable:'',
                         Edit: null
                     })
                 } else {
@@ -66,10 +67,11 @@ export const formatData = (datas, body) => {
                     let State = dataResult.data.state || '';
                     let CloudletLocation = '-';
                     let Status = dataResult.data.status;
+                    let Reservable = dataResult.data.reservable ? 'YES' : 'NO';
                     let Deployment = dataResult.data.deployment;
 
 
-                    values.push({ uuid: generateUniqueId(), Region: Region, ClusterName: ClusterName, OrganizationName: DeveloperName, Operator: Operator, Cloudlet: Cloudlet, Flavor: Flavor, IpAccess: IpAccess, CloudletLocation: CloudletLocation, State: State, Progress: '', Status: Status, Deployment: Deployment, Edit: newRegistKey })
+                    values.push({ uuid: generateUniqueId(), Region: Region, ClusterName: ClusterName, OrganizationName: DeveloperName, Operator: Operator, Cloudlet: Cloudlet, Flavor: Flavor, IpAccess: IpAccess, CloudletLocation: CloudletLocation, State: State, Progress: '', Status: Status, Reservable:Reservable,Deployment: Deployment, Edit: newRegistKey })
 
                 }
             })

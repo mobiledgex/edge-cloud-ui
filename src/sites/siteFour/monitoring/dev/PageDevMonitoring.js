@@ -1,5 +1,5 @@
 import 'react-hot-loader'
-import {SemanticToastContainer, toast} from 'react-semantic-toasts';
+import {toast} from 'react-semantic-toasts';
 import OutsideClickHandler from 'react-outside-click-handler';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
@@ -8,6 +8,7 @@ import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
+import {Button as MButton, CircularProgress} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
 import {DatePicker, Progress,} from 'antd';
 import {
@@ -46,15 +47,17 @@ import {
     makeBubbleChartDataForCluster,
     numberWithCommas,
     renderBarChartCore,
-    renderLineChartCore,
-    renderPlaceHolder,
-    showToast
+    renderLineChartCore, renderLottieLoader,
+    renderPlaceHolderLottie,
+    showToast,
+    StylesForMonitoring
 } from "../PageMonitoringCommonService";
-import {getAppInstList, getAppLevelUsageList, getCloudletList, StylesForMonitoring} from "../admin/PageAdminMonitoringService";
-import MapboxComponent from "./MapboxComponent";
+import {getAppInstList, getAppLevelUsageList, getCloudletList} from "../admin/PageAdminMonitoringService";
 import * as reducer from "../../../../utils";
-import {CircularProgress} from "@material-ui/core";
 import {TabPanel, Tabs} from "react-tabs";
+import Icon from "@material-ui/core/Icon";
+import LeafletMapWrapperForDev from "./LeafletMapWrapperForDev";
+import TerminalViewer from "../../../../container/TerminalViewer";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -151,11 +154,11 @@ type State = {
     placeHolderEndTime: string,
     allConnectionsUsageList: Array,
     filteredConnectionsUsageList: Array,
-
+    terminalData: Array,
+    openTerminal: Boolean,
     connectionsTabIndex: number,
     tcpTabIndex: number,
     udpTabIndex: number,
-
     cloudletList: Array,
     maxCpu: number,
     maxMem: number,
@@ -267,9 +270,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             allAppInstUsageList: [],
             clusterListLoading: true,
             allClusterUsageList003: [],
+            isStream: false,
         };
 
-        interval = null;
+        intervalForAppInst = null;
 
 
         constructor(props) {
@@ -290,11 +294,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         componentWillUnmount(): void {
-            clearInterval(this.interval)
+            clearInterval(this.intervalForAppInst)
         }
 
 
         async loadInitDataForCluster(isInterval: boolean = false) {
+            clearInterval(this.intervalForAppInst)
             this.setState({dropdownRequestLoading: true})
             let clusterList = await getClusterList();
             let cloudletList = await getCloudletList()
@@ -321,7 +326,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 isReady: true,
                 clusterDropdownList: clusterDropdownList,
-                cloudletList: cloudletList,
+                dropDownCloudletList: cloudletList,
                 clusterList: clusterList,
                 isAppInstaceDataReady: true,
                 appInstanceList: appInstanceList,
@@ -335,8 +340,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 })
             }
+            let allClusterUsageList = []
+            try {
+                allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
+            } catch (e) {
 
-            let allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
+            }
 
 
             //fixme: fakeData
@@ -365,22 +374,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             await this.setState({
                 clusterListLoading: false,
+                allCloudletUsageList: allClusterUsageList,
                 allClusterUsageList: allClusterUsageList,
-                allClusterUsageList003: allClusterUsageList,
                 filteredClusterUsageList: allClusterUsageList,
                 maxCpu: maxCpu,
                 maxMem: maxMem,
                 isRequesting: false,
                 currentCluster: '',
-
             })
 
         }
 
         async resetAllData() {
+            clearInterval(this.intervalForAppInst)
             await this.setState({
                 currentGridIndex: -1,
                 currentTabIndex: 0,
+                intervalLoading: false,
                 currentClassification: CLASSIFICATION.CLUSTER,
             })
 
@@ -388,25 +398,26 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredClusterUsageList: this.state.allClusterUsageList,
                 filteredAppInstanceList: this.state.appInstanceList,
                 appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
-            }, () => {
-
-            })
-
+            });
             //todo: reset bubble chart data
             let bubbleChartData = await makeBubbleChartDataForCluster(this.state.allClusterUsageList, HARDWARE_TYPE.CPU);
             await this.setState({
                 bubbleChartData: bubbleChartData,
-            })
-            await this.setState({
                 dropdownRequestLoading: false,
                 currentCluster: '',
                 currentAppInst: '',
+                currentTabIndex: 1,
             })
+
+            setTimeout(() => {
+                this.setState({
+                    currentTabIndex: 0,
+                })
+            }, 3500)
         }
 
-
         async refreshAllData() {
-
+            clearInterval(this.intervalForAppInst)
             toast({
                 type: 'success',
                 //icon: 'smile',
@@ -437,19 +448,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentCluster: '',
                 currentAppInst: '',
             })
+
         }
 
         makeChartDataAndRenderTabBody(hwType, subCategoryType = '') {
             let barChartDataSet: TypeBarChartData = [];
             let lineChartDataSet: TypeLineChartData = [];
-            if (this.state.currentClassification === CLASSIFICATION.APPINST) {
-                barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
-                lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
-            }
-            //@todo:클러스터인 경우
-            else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+            if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                 barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
                 lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
+            } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
+                barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
+                lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
             }
 
             console.log(`barChartDataSet===${hwType}>`, barChartDataSet);
@@ -464,8 +474,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             ) {
                 return this.renderGraphAreaMulti(subCategoryType, barChartDataSet, lineChartDataSet)
-
             } else {
+
                 return this.renderGraphArea(hwType, barChartDataSet, lineChartDataSet)
             }
         }
@@ -479,11 +489,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
         }
 
-        renderGraphAreaMulti(pHardwareType, barChartDataSet, lineChartDataSet) {
+        renderGraphAreaMultiForAppInst(pHardwareType, barChartDataSet, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column'>
-                    {/*@todo:LInechart*/}
-                    {/*@todo:LInechart*/}
                     {/*@todo:LInechart*/}
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
@@ -493,7 +501,27 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {!this.state.loading && this.renderDropDownForMultiTab(pHardwareType)}
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
+                            {this.state.loading ? renderPlaceHolderLottie() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+
+
+        renderGraphAreaMulti(pHardwareType, barChartDataSet, lineChartDataSet) {
+            return (
+                <div className='page_monitoring_dual_column'>
+                    {/*@todo:LInechart*/}
+                    <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title_select'>
+                                {convertHwTypePhrases(pHardwareType)} Usage of {this.convertToClassification(this.state.currentClassification)}
+                            </div>
+                            {!this.state.loading && this.renderDropDownForMultiTab(pHardwareType)}
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {this.state.loading ? renderPlaceHolderLottie() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
                         </div>
                     </div>
                     {/*@todo:BarChart*/}
@@ -506,7 +534,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
+                            {this.state.loading ? renderPlaceHolderLottie() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
                         </div>
                     </div>
 
@@ -515,7 +543,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        renderGraphArea(pHardwareType, barChartDataSet, lineChartDataSet) {
+        renderGraphAreaForAppInst(pHardwareType, barChartDataSet, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column'>
                     {/*@todo:LInechart*/}
@@ -534,24 +562,49 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
+                            {this.state.loading ? renderPlaceHolderLottie() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+
+
+        renderGraphArea(pHardwareType, barChartDataSet, lineChartDataSet) {
+            return (
+                <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
+                    {/*@todo:LInechart*/}
+                    {/*@todo:LInechart*/}
+                    {/*@todo:LInechart*/}
+                    <div className='page_monitoring_dual_container' style={{flex: .5}}>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                {convertHwTypePhrases(pHardwareType)} Usage of {this.state.loading ?
+                                <CircularProgress size={9} style={{
+                                    fontSize: 9,
+                                    color: '#77BD25',
+                                    marginLeft: 5,
+                                    marginBottom: 1,
+                                }}/> : this.convertToClassification(this.state.currentClassification)}
+                            </div>
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {this.state.loading ? renderPlaceHolderLottie() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
                         </div>
                     </div>
                     {/*@todo:BarChart*/}
                     {/*@todo:BarChart*/}
                     {/*@todo:BarChart*/}
-                    <div className='page_monitoring_dual_container'>
+                    <div className='page_monitoring_dual_container' style={{flex: .5}}>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
                                 Top 5 {convertHwTypePhrases(pHardwareType)} usage of {this.convertToClassification(this.state.currentClassification)}
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
+                            {this.state.loading ? renderPlaceHolderLottie() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType, this)}
                         </div>
                     </div>
-
-
                 </div>
             )
         }
@@ -814,59 +867,67 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             return (
 
-                <div>
-                    <SemanticToastContainer position="center-left"/>
-                    <Grid.Row className='content_title'
-                              style={{width: 'fit-content', display: 'inline-block'}}>
-                        <Grid.Column className='title_align'
-                                     style={{lineHeight: '36px'}}>Monitoring</Grid.Column>
-                        <div style={{marginLeft: '10px'}}>
-                            <button className="ui circular icon button"><i aria-hidden="true"
-                                                                           className="info icon"></i></button>
-                        </div>
+                <Grid.Row className='content_title'>
+                    <div className='content_title_wrap'>
+                        <div className='content_title_label'>Monitoring</div>
                         {/*todo:---------------------------*/}
                         {/*todo:REFRESH, RESET BUTTON DIV  */}
                         {/*todo:---------------------------*/}
-                        <div style={{marginLeft: '10px'}}>
-                            <Button
-                                onClick={async () => {
-                                    if (!this.state.loading) {
-                                        this.refreshAllData();
-                                    } else {
-                                        showToast('Currently loading, you can\'t request again.')
-                                    }
+                        <Button
+                            onClick={async () => {
+                                if (!this.state.loading) {
+                                    this.refreshAllData();
+                                } else {
+                                    showToast('Currently loading, you can\'t request again.')
+                                }
 
-                                }}
-                                className="ui circular icon button"
-                            >
-                                <i aria-hidden="true"
-                                   className="sync alternate icon"></i>
-                            </Button>
-                        </div>
-                        <div style={{marginLeft: '10px'}}>
-                            <Button
-                                onClick={async () => {
-                                    this.resetAllData();
-                                }}
-                            >RESET</Button>
-                        </div>
-                        {/*<div style={{marginLeft: 50, color: 'green', fontWeight: 'bold', fontFamily: 'Righteous'}}>
-                            {this.state.userType}
-                            [ This is Developer View ]
-                        </div>
-                        <div style={{marginLeft: 50, color: '#6de1ff', fontWeight: 'bold', fontFamily: 'Encode Sans Condensed'}}>
-                            {this.state.selectOrg}
-                        </div>*/}
-                      {/*  {this.state.intervalLoading &&
+                            }}
+                            className="ui circular icon button"
+                        >
+                            <i aria-hidden="true"
+                               className="sync alternate icon"></i>
+                        </Button>
+                        <Button
+                            onClick={async () => {
+                                this.resetAllData();
+                            }}
+                        >Reset</Button>
 
-                        <div style={{marginLeft: 15}}>
+                        {this.state.currentClassification === CLASSIFICATION.APPINST &&
+                        <div>
+                            <MButton
+                                style={{backgroundColor: this.state.isStream ? 'green' : '#6c6c6c', color: 'white', height: 37}}
+                                onClick={async () => {
+                                    this.setState({
+                                        isStream: !this.state.isStream,
+                                    }, () => {
+                                        if (!this.state.isStream) {
+                                            clearInterval(this.intervalForAppInst)
+                                        } else {
+                                            this.handleAppInstDropdown(this.state.currentAppInst)
+                                        }
+                                    })
+                                }}
+                            >STREAM {this.state.isStream ? 'on' : 'off'}</MButton>
+                        </div>
+                        }
+                        {this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?
+                            <div style={{}}>
+                                <MButton
+                                    style={{backgroundColor: '#6c6c6c', color: 'white', height: 37}}
+                                    onClick={() => this.setState({openTerminal: true})}>Terminal</MButton>
+                            </div>
+                            : null
+                        }
+                        {this.state.intervalLoading &&
+                        <div>
                             <div style={{marginLeft: 15}}>
-                                <CircularProgress style={{color: 'grey', zIndex: 9999999, fontSize: 10}}
+                                <CircularProgress style={{color: this.state.currentClassification === CLASSIFICATION.APPINST ? 'grey' : 'green', zIndex: 9999999, fontSize: 10}}
                                                   size={20}/>
                             </div>
                         </div>
                         }
-                        */}
+
                         {/*   {this.state.dropdownRequestLoading &&
 
                         <div style={{marginLeft: 15}}>
@@ -874,8 +935,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                               size={20}/>
                         </div>
                         }*/}
-                    </Grid.Row>
-                </div>
+                    </div>
+                </Grid.Row>
             )
         }
 
@@ -976,9 +1037,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+        validateTerminal = (appInst)=>
+        {
+            if(appInst && appInst.length > 0)
+            {
+                let runtime = appInst[0].Runtime
+                if(runtime && runtime.container_ids && runtime.container_ids.length > 0)
+                {
+                    this.setState({
+                        terminalData : appInst[0]
+                    })
+                }
+            }
+        }
+
 
         handleAppInstDropdown = async (pCurrentAppInst) => {
-            clearInterval(this.interval)
+            clearInterval(this.intervalForAppInst)
             await this.setState({
                 currentAppInst: pCurrentAppInst,
                 loading: true,
@@ -1010,6 +1085,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             console.log('Instance_DropdownAppName', filteredAppList);
 
+            //Terminal
+            this.setState({
+                terminalData: null
+            })
+            this.validateTerminal(filteredAppList)
+
             let appInstDropdown = makeSelectBoxListWithThreeValuePipe(filteredAppList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
             await this.setState({
                 appInstDropdown,
@@ -1027,6 +1108,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             } finally {
                 this.setState({dropdownRequestLoading: false})
             }
+
+            console.log('allAppInstUsageList===>', allAppInstUsageList)
             // Cluster | AppInst
             let currentCluster = pCurrentAppInst.split("|")[2].trim() + " | " + pCurrentAppInst.split('|')[1].trim()
             pCurrentAppInst = pCurrentAppInst.trim();
@@ -1045,29 +1128,35 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentTabIndex: 0,
             })
 
-            //@fixme: interval on appInstance view
-            //@fixme: interval on appInstance view
-            //@fixme: interval on appInstance view
-            this.interval = setInterval(async () => {
-                   this.setState({
-                       intervalLoading: true,
-                   })
-                   let arrDateTime2 = getOneYearStartEndDatetime();
-                   allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime2[0], arrDateTime2[1]);
-
-                   console.log('allAppInstUsageList77===>', allAppInstUsageList);
-
-                   this.setState({
-                       intervalLoading: false,
-                       filteredAppInstUsageList: allAppInstUsageList,
-                   })
-
-               }, 1000 * 7)
+            if (this.state.isStream) {
+                this.setAppInstInterval(filteredAppList)
+            } else {
+                clearInterval(this.intervalForAppInst)
+            }
 
         }
 
+
+        setAppInstInterval(filteredAppList) {
+            this.intervalForAppInst = setInterval(async () => {
+                this.setState({
+                    intervalLoading: true,
+                })
+                let arrDateTime2 = getOneYearStartEndDatetime();
+
+                console.log('allAppInstUsageList77===>startDate', arrDateTime2[0]);
+                console.log('allAppInstUsageList77===>EndDate', arrDateTime2[1]);
+                let allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT);
+                console.log('allAppInstUsageList77===>', allAppInstUsageList);
+                this.setState({
+                    intervalLoading: false,
+                    filteredAppInstUsageList: allAppInstUsageList,
+                })
+            }, 1000 * 7.0)
+        }
+
         async handleClusterDropdown(value) {
-            clearInterval(this.interval)
+            clearInterval(this.intervalForAppInst)
 
             let selectData = value.split("|")
             let selectedCluster = selectData[0].trim();
@@ -1086,7 +1175,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             });
 
             let allUsageList = allClusterUsageList;
-            console.log('allUsageList===>', allUsageList)
+            console.log('allClusterUsageList===>', allClusterUsageList)
             let filteredClusterUsageList = []
             allUsageList.map(item => {
                 if (item.cluster === selectedCluster && item.cloudlet === selectedCloudlet) {
@@ -1133,8 +1222,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             pClusterList = sortUsageListByTypeForCluster(pClusterList, HARDWARE_TYPE.CPU)
 
             return (
-                <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
-                    <Table.Header className="viewListTableHeader">
+                <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing styles={{zIndex: 999999999999}}>
+                    <Table.Header className="viewListTableHeader" styles={{zIndex: 99999999999}}>
                         <Table.Row>
                             <Table.HeaderCell>
                                 index
@@ -1280,20 +1369,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.renderHeader()}
                             <div style={{position: 'absolute', top: '37%', left: '48%'}}>
                                 <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                    <Lottie
-                                        options={{
-                                            loop: true,
-                                            autoplay: true,
-                                            animationData: require('../../../../lotties/loader001'),
-                                            rendererSettings: {
-                                                preserveAspectRatio: 'xMidYMid slice'
-                                            }
-                                        }}
-                                        height={240}
-                                        width={240}
-                                        isStopped={false}
-                                        isPaused={false}
-                                    />
+                                    {renderLottieLoader(150, 150)}
                                 </div>
                             </div>
                         </Grid.Column>
@@ -1329,10 +1405,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:Content Header                   */}
                         {/*todo:---------------------------------*/}
                         {this.renderHeader()}
-                        <Grid.Row className='site_content_body'>
+                        <Grid.Row className='site_content_body' style={{marginTop: 22}}>
                             <Grid.Column>
-                                <div className="table-no-resized"
-                                     style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
+                                <div className="table-no-resized">
 
                                     <div className="page_monitoring">
                                         {/*todo:---------------------------------*/}
@@ -1358,7 +1433,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*@todo: MapboxComponent*/}
                                                     {/*todo:---------------------------------*/}
                                                     <div className='page_monitoring_container'>
-                                                        <MapboxComponent handleAppInstDropdown={this.handleAppInstDropdown} markerList={this.state.appInstanceListGroupByCloudlet}/>
+                                                        {/*<MapboxComponent handleAppInstDropdown={this.handleAppInstDropdown} markerList={this.state.appInstanceListGroupByCloudlet}/>*/}
+
+                                                        <LeafletMapWrapperForDev handleAppInstDropdown={this.handleAppInstDropdown} markerList={this.state.appInstanceListGroupByCloudlet}/>
                                                     </div>
                                                 </div>
 
@@ -1370,7 +1447,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*fixme:---------------------------------*/}
                                                     {/*fixme: RENDER TAB_AREA                 */}
                                                     {/*fixme:---------------------------------*/}
-                                                    {this.state.loading ? renderPlaceHolder()
+                                                    {this.state.loading ? renderPlaceHolderLottie()
                                                         :
                                                         <Tab
                                                             className='page_monitoring_tab'
@@ -1431,7 +1508,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*todo: RENDER BUBBLE_CHART          */}
                                                     {/*todo:---------------------------------*/}
                                                     <div className='page_monitoring_container'>
-                                                        {this.state.loading ? renderPlaceHolder() : renderBubbleChartForCloudlet(this, this.state.currentHardwareType, this.state.bubbleChartData)}
+                                                        {this.state.loading ? renderPlaceHolderLottie() : renderBubbleChartForCloudlet(this, this.state.currentHardwareType, this.state.bubbleChartData)}
                                                     </div>
                                                 </div>
                                                 {/* row2___col___2*/}
@@ -1488,8 +1565,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     onOutsideClick={() => {
                                                     }}
                                                 >
-                                                    <div className='page_monitoring_popup_column'>
-                                                        <div className='page_monitoring_popup_header_row'
+                                                    <div className='page_monitoring_popup_column' style={{zIndex: 999999}}>
+                                                        <div className='page_monitoring_popup_header_row' style={{zIndex: 999999}}
                                                              onClick={() => {
                                                                  this.setState({
                                                                      isShowBottomGrid: !this.state.isShowBottomGrid,
@@ -1497,10 +1574,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                                              }}
                                                         >
-                                                            <div className='page_monitoring_popup_header_title'>
+                                                            <div className='page_monitoring_popup_header_title' style={{zIndex: 999999}}>
                                                                 Status of Cluster
                                                             </div>
-                                                            <div className='page_monitoring_popup_header_button'>
+                                                            <div className='page_monitoring_popup_header_button' style={{zIndex: 999999}}>
                                                                 <div>
                                                                     HIDE CLUSTER LIST
                                                                 </div>
@@ -1529,7 +1606,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </Grid.Row>
 
                     </Grid.Column>
-
+                    <Modal open={this.state.openTerminal} dimmer={'inverted'}>
+                        <TerminalViewer data={this.state.terminalData} dialog={true} onClose={() => {
+                            this.setState({openTerminal: false})
+                        }}/>
+                    </Modal>
                 </Grid.Row>
 
 

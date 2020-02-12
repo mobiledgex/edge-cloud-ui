@@ -251,9 +251,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("editmode333", nextProps.data)
         if (nextProps.data.editMode && nextProps.data.editData && !this.state.editToggle) {
-            console.log("nextPropsnextPropsds", nextProps.data.editData)
             this.setState({ editToggle: true, editDsb: true });
             this.handleInitialize(nextProps.data.editData, nextProps.data.editMode);
         }
@@ -460,6 +458,24 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                     placeholder={'Select Flavor'}
                                                                                     value={data[key]}
                                                                                     options={this.props.flavorData}
+                                                                                    name={key}
+                                                                                    error={(this.props.validError.indexOf(key) !== -1) ? 'Required' : ''} />
+                                                                                :
+                                                                                (fieldKeys[pId][key]['type'] === 'PrivacyPolicySelect') ?
+                                                                                <Field
+                                                                                    component={renderSelect}
+                                                                                    placeholder={'Select Privacy Policy'}
+                                                                                    value={data[key]}
+                                                                                    options={this.props.privacyPolicyData}
+                                                                                    name={key}
+                                                                                    error={(this.props.validError.indexOf(key) !== -1) ? 'Required' : ''} />
+                                                                                :
+                                                                                (fieldKeys[pId][key]['type'] === 'ProvPolicySelect') ?
+                                                                                <Field
+                                                                                    component={renderSelect}
+                                                                                    placeholder={'Select Auto Provision Policy'}
+                                                                                    value={data[key]}
+                                                                                    options={this.props.provPolicyData}
                                                                                     name={key}
                                                                                     error={(this.props.validError.indexOf(key) !== -1) ? 'Required' : ''} />
                                                                                 :

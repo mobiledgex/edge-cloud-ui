@@ -18,6 +18,8 @@ import * as FormatComputeCloudletPoolMember from './formatter/formatComputeCloud
 import * as FormatComputeCloudletPoolMemberDelete from './formatter/formatComputeCloudletPoolMemberDelete';
 import * as FormatComputeOrgCloudlet from './formatter/formatComputeOrgCloudlet';
 import * as FormatComputeLinkPoolOrgDelete from './formatter/formatComputeLinkPoolOrgDelete';
+import * as FormatAutoProvPolicy from './formatter/formatAutoProvPolicy';
+import * as FormatPrivacyPolicy from './formatter/formatPrivacyPolicy';
 
 
 export const SHOW_ORG = "showOrg";
@@ -56,6 +58,7 @@ export const CURRENT_USER = "current";
 export const VERIFY_EMAIL = "verifyemail";
 export const RESEND_VERIFY = "resendverify";
 export const RESET_PASSWORD = "passwordreset";
+export const RESET_PASSWORD_REQUEST = "passwordresetrequest";
 export const CREATE_USER = "usercreate";
 export const ADD_USER_ROLE = "addUserRole";
 export const STREAM_CLUSTER_INST = "StreamClusterInst";
@@ -76,6 +79,15 @@ export const DELETE_CLOUDLET_POOL_MEMBER = "DeleteCloudletPoolMember";
 export const SHOW_ORG_CLOUDLET = "orgcloudlet";
 export const DELETE_LINK_POOL_ORG = "DeleteLinkPoolOrg";
 export const RUN_COMMAND = "RunCommand";
+export const SHOW_AUTO_PROV_POLICY = "ShowAutoProvPolicy";
+export const CREATE_AUTO_PROV_POLICY = "CreateAutoProvPolicy";
+export const DELETE_AUTO_PROV_POLICY= "DeleteAutoProvPolicy";
+export const ADD_AUTO_PROV_POLICY_CLOUDLET = "AddAutoProvPolicyCloudlet";
+export const REMOVE_AUTO_PROV_POLICY_CLOUDLET = "RemoveAutoProvPolicyCloudlet";
+export const SHOW_PRIVACY_POLICY = "ShowPrivacyPolicy";
+export const UPDATE_PRIVACY_POLICY = "UpdatePrivacyPolicy";
+export const CREATE_PRIVACY_POLICY = "CreatePrivacyPolicy";
+export const DELETE_PRIVACY_POLICY = "DeletePrivacyPolicy";
 
 export function getPath(request) {
     switch (request.method) {
@@ -135,12 +147,22 @@ export function getPath(request) {
         case CREATE_CLOUDLET_POOL:
         case CREATE_CLOUDLET_POOL_MEMBER:
         case DELETE_CLOUDLET_POOL_MEMBER:
+        case SHOW_AUTO_PROV_POLICY:
+        case CREATE_AUTO_PROV_POLICY:
+        case DELETE_AUTO_PROV_POLICY:
+        case ADD_AUTO_PROV_POLICY_CLOUDLET:
+        case REMOVE_AUTO_PROV_POLICY_CLOUDLET:
+        case SHOW_PRIVACY_POLICY:
+        case UPDATE_PRIVACY_POLICY:
+        case CREATE_PRIVACY_POLICY:
+        case DELETE_PRIVACY_POLICY:
         case RUN_COMMAND:
             return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:
         case RESEND_VERIFY:
         case VERIFY_EMAIL:
         case RESET_PASSWORD:
+        case RESET_PASSWORD_REQUEST:
         case CREATE_USER:
             return `/api/v1/${request.method}`;
         case CLOUDLET_METRICS_APP:
@@ -177,7 +199,7 @@ export function formatData(request, response) {
             break;
         case SHOW_CLOUDLET_INFO:
             data = FormatComputeCloudletInfo.formatData(response, request.data)
-            break;    
+            break;
         case SHOW_CLUSTER_INST:
             data = FormatComputeClstInst.formatData(response, request.data)
             break;
@@ -211,6 +233,12 @@ export function formatData(request, response) {
         case SHOW_ORG_CLOUDLET:
             data = FormatComputeOrgCloudlet.formatData(response, request.data)
             break;
+        case SHOW_AUTO_PROV_POLICY:
+            data = FormatAutoProvPolicy.formatData(response, request.data)
+            break;
+        case SHOW_PRIVACY_POLICY:
+            data = FormatPrivacyPolicy.formatData(response, request.data)
+            break;
         default:
             data = undefined;
     }
@@ -238,7 +266,7 @@ export function getKey(keyId, data) {
             return FormatComputeUsers.getKey(data)
         case 'Account':
             return FormatComputeAccounts.getKey(data)
-        case 'Cloudlet Pool':
+        case 'Cloudlet Pools':
             return FormatComputeCloudletPoolDelete.getKey(data)
         case 'delete member':
             return FormatComputeCloudletPoolMemberDelete.getKey(data)
@@ -267,7 +295,7 @@ export function getDeleteMethod(keyId) {
             return DELETE_USER;
         case 'Account':
             return DELETE_ACCOUNT;
-        case 'Cloudlet Pool':
+        case 'Cloudlet Pools':
             return DELETE_CLOUDLET_POOL;
         case 'delete member':
             return DELETE_CLOUDLET_POOL_MEMBER;
@@ -287,4 +315,4 @@ export function getStreamMethod(keyId) {
         case 'appinst':
             return STREAM_APP_INST;
     }
-}   
+}
