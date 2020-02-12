@@ -79,7 +79,7 @@ class RegistryViewer extends React.Component {
                     'Version':{label:'App Version', type:'RenderInput', necessary:true, tip:'App version', active:true, editDisabled:true},
                     'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'Deployment type (Kubernetes, Docker, or VM)', active:true, items:['Docker', 'Kubernetes', 'VM'], editDisabled:true},
                     'ImageType':{label:'Image Type', type:'RenderDT', necessary:true, tip:'ImageType specifies image type of an App',items:''},
-                    'ImagePath':{label:'Image Path', type:'RenderInput', necessary:true, tip:'URI of where image resides', active:true,items:''},
+                    'ImagePath':{label:'Image Path', type:'RenderPath', necessary:true, tip:'URI of where image resides', active:true,items:''},
                     'AuthPublicKey':{label:'Auth Public Key', type:'RenderTextArea', necessary:false, tip:'auth_public_key', active:true},
                     'DefaultFlavor':{label:'Default Flavor', type:'FlavorSelect', necessary:true, tip:'FlavorKey uniquely identifies a Flavor.', active:true},
                     'DefaultPrivacyPolicy':{label:'Default Privacy Policy', type:'PrivacyPolicySelect', necessary:false, tip:'Privacy policy when creating auto cluster', active:true},
@@ -435,49 +435,6 @@ class RegistryViewer extends React.Component {
                     selectType;
             if(nextProps.formApps.values.OrganizationName){
                 ImagePath = ImagePath.replace('OrganizationName',(nextProps.formApps.values.DeploymentType == "VM")?nextProps.formApps.values.OrganizationName:nextProps.formApps.values.OrganizationName.toLowerCase())
-
-            /* make body code by @Smith */
-            if(nextProps.formApps.submitSucceeded && nextProps.editMode){
-                let method = serviceMC.getEP().UPDATE_APP;
-                nextProps.submitValues.app['fields'] = this.updateFields(nextProps.editData, nextProps.submitValues.app)
-                nextProps.submitValues.region = nextProps.editData.Region;
-                // TODO 20200207 @Smith: we need formating to app properly body to send to update url 
-                this.setState({toggleSubmit:true,validateError:error});
-                // reset submitValues as use the editData and the submitValues
-                let newBodyData = createFormat(nextProps.editData);
-                let key = {
-                    "developer_key":{"name":nextProps.editData['OrganizationName']},
-                    "name":nextProps.editData['AppName'],
-                    "version":nextProps.editData['Version']
-                }
-                newBodyData.app['key'] = key;
-                //newBodyData.app['fields'] = nextProps.submitValues.app['fields'];
-                nextProps.submitValues.app['key'] = key;
-
-                // concat submitValues with newBodyData
-                let sValue = nextProps.submitValues.app;
-                let keys = Object.keys(sValue);
-                keys.map((key) => {
-                    if(sValue[key] !== "" && typeof sValue[key] === 'string') {
-                        newBodyData.app[key] = sValue[key];
-                    }
-                    if(sValue[key] !== "" && typeof sValue[key] === 'object') {
-                        if(key === 'default_flavor') {
-                            newBodyData.app[key]['name'] = sValue[key]['name']
-                        }
-                    }
-
-                }) 
-                
-                console.log('new body =', newBodyData)
-                this.props.handleLoadingSpinner(true);
-                let serviceBody = {
-                    method : method,
-                    token:store ? store.userToken : 'null',
-                    data: newBodyData
-                }
-                serviceMC.sendRequest(_self, serviceBody, this.receiveResult)
-
             }
             if(nextProps.formApps.values.AppName) {
                 ImagePath = ImagePath.replace('AppName', nextProps.formApps.values.AppName.toLowerCase().replace(/(\s*)/g, ""))

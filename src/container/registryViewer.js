@@ -395,18 +395,47 @@ class RegistryViewer extends React.Component {
                     error.push(item)
                 }
             })
-            if(nextProps.formApps.submitSucceeded && error.length == 0){
-                let method = serviceMC.getEP().CREATE_APP;
-                if(nextProps.editMode){
-                    method = serviceMC.getEP().UPDATE_APP;
-                    nextProps.submitValues.app['fields'] = this.updateFields(nextProps.editData,nextProps.submitValues.app)
-                }
+            /* make body code by @Smith */
+            if(nextProps.formApps.submitSucceeded && nextProps.editMode){
+                let method = serviceMC.getEP().UPDATE_APP;
+                nextProps.submitValues.app['fields'] = this.updateFields(nextProps.editData, nextProps.submitValues.app)
+                nextProps.submitValues.region = nextProps.editData.Region;
+                // TODO 20200207 @Smith: we need formating to app properly body to send to update url 
                 this.setState({toggleSubmit:true,validateError:error});
+                // reset submitValues as use the editData and the submitValues
+                let newBodyData = createFormat(nextProps.editData);
+                let key = {
+                    "developer_key":{"name":nextProps.editData['OrganizationName']},
+                    "name":nextProps.editData['AppName'],
+                    "version":nextProps.editData['Version']
+                }
+                newBodyData.app['key'] = key;
+                newBodyData.app['image_type'] = nextProps.editData['ImageType'];
+                newBodyData.app['official_fqdn'] = nextProps.editData['DefaultFQDN'];
+                //newBodyData.app['fields'] = nextProps.submitValues.app['fields'];
+                nextProps.submitValues.app['key'] = key;
+
+                // concat submitValues with newBodyData
+                let sValue = nextProps.submitValues.app;
+                let keys = Object.keys(sValue);
+                keys.map((key) => {
+                    if(sValue[key] !== "" && typeof sValue[key] === 'string') {
+                        newBodyData.app[key] = sValue[key];
+                    }
+                    if(sValue[key] !== "" && typeof sValue[key] === 'object') {
+                        if(key === 'default_flavor') {
+                            newBodyData.app[key]['name'] = sValue[key]['name']
+                        }
+                    }
+
+                }) 
+                
+                console.log('new body =', newBodyData)
                 this.props.handleLoadingSpinner(true);
                 let serviceBody = {
                     method : method,
                     token:store ? store.userToken : 'null',
-                    data: nextProps.submitValues
+                    data: newBodyData
                 }
                 serviceMC.sendRequest(_self, serviceBody, this.receiveResult)
             } else {
@@ -435,49 +464,6 @@ class RegistryViewer extends React.Component {
                     selectType;
             if(nextProps.formApps.values.OrganizationName){
                 ImagePath = ImagePath.replace('OrganizationName',(nextProps.formApps.values.DeploymentType == "VM")?nextProps.formApps.values.OrganizationName:nextProps.formApps.values.OrganizationName.toLowerCase())
-
-                /* make body code by @Smith */
-            if(nextProps.formApps.submitSucceeded && nextProps.editMode){
-                let method = serviceMC.getEP().UPDATE_APP;
-                nextProps.submitValues.app['fields'] = this.updateFields(nextProps.editData, nextProps.submitValues.app)
-                nextProps.submitValues.region = nextProps.editData.Region;
-                // TODO 20200207 @Smith: we need formating to app properly body to send to update url 
-                this.setState({toggleSubmit:true,validateError:error});
-                // reset submitValues as use the editData and the submitValues
-                let newBodyData = createFormat(nextProps.editData);
-                let key = {
-                    "developer_key":{"name":nextProps.editData['OrganizationName']},
-                    "name":nextProps.editData['AppName'],
-                    "version":nextProps.editData['Version']
-                }
-                newBodyData.app['key'] = key;
-                //newBodyData.app['fields'] = nextProps.submitValues.app['fields'];
-                nextProps.submitValues.app['key'] = key;
-
-                // concat submitValues with newBodyData
-                let sValue = nextProps.submitValues.app;
-                let keys = Object.keys(sValue);
-                keys.map((key) => {
-                    if(sValue[key] !== "" && typeof sValue[key] === 'string') {
-                        newBodyData.app[key] = sValue[key];
-                    }
-                    if(sValue[key] !== "" && typeof sValue[key] === 'object') {
-                        if(key === 'default_flavor') {
-                            newBodyData.app[key]['name'] = sValue[key]['name']
-                        }
-                    }
-
-                }) 
-                
-                console.log('new body =', newBodyData)
-                this.props.handleLoadingSpinner(true);
-                let serviceBody = {
-                    method : method,
-                    token:store ? store.userToken : 'null',
-                    data: newBodyData
-                }
-                serviceMC.sendRequest(_self, serviceBody, this.receiveResult)
-                
             }
             if(nextProps.formApps.values.AppName) {
                 ImagePath = ImagePath.replace('AppName', nextProps.formApps.values.AppName.toLowerCase().replace(/(\s*)/g, ""))
@@ -490,6 +476,7 @@ class RegistryViewer extends React.Component {
             submitImgPath = ImagePath;
 
         }
+        
 
         if(nextProps.editMode) this.setState({editMode:nextProps.editMode})
     }
