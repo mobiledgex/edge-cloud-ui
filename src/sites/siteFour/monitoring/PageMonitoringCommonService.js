@@ -8,11 +8,11 @@ import {Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {makeCompleteDateTime} from "./admin/PageAdminMonitoringService";
 import moment from "moment";
-import {Line as ReactChartJs} from "react-chartjs-2";
+import {Line as ReactChartJsLine} from "react-chartjs-2";
 import axios from "axios";
 import {GridLoader} from "react-spinners";
 
-export const renderLottieLoader = (width, height) => {
+export const renderGridLoader2 = (width, height) => {
     return (
         <Lottie
             options={{
@@ -29,6 +29,7 @@ export const renderLottieLoader = (width, height) => {
             isPaused={false}
             speed={3.0}
         />
+
     )
 }
 
@@ -44,7 +45,7 @@ export const renderGridLoader = () => {
 }
 
 
-export const renderPlaceHolderLottie = (type: string = '') => {
+export const renderPlaceHolderCircular = (type: string = '') => {
     return (
         <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
             {/*<Lottie
@@ -179,7 +180,8 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
                     fill: false,//todo: 라인차트 area fill True/false
                     //backgroundColor: '',
                     borderColor: gradientList[i],
-                    borderWidth: 2,
+                    borderWidth: 3.7, //lineBorder
+                    lineTension: 0.5,
                     pointColor: "#fff",
                     pointStrokeColor: 'white',
                     pointHighlightFill: "#fff",
@@ -208,7 +210,7 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
     let height = 500 + 100;
     let options = {
         animation: {
-            duration: 0
+            duration: 500
         },
         maintainAspectRatio: false,//@todo
         responsive: true,//@todo
@@ -287,7 +289,7 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
             width: '99%',
             height: '96%'
         }}>
-            <ReactChartJs
+            <ReactChartJsLine
                 //width={'100%'}
                 //height={hardwareType === "recv_bytes" || hardwareType === "send_bytes" ? chartHeight + 20 : chartHeight}
                 //height={'100%'}
@@ -501,7 +503,7 @@ export const renderBarChartCore = (chartDataList, hardwareType) => {
                         color: "white",
                         fontSize: 12,
                     },
-
+                    stacked: true,
                 },
                 //colors: ['#FB7A21'],
                 fontColor: 'white',
@@ -669,6 +671,14 @@ export const hardwareTypeToUsageKey = (hwType: string) => {
         return USAGE_TYPE.SUM_UDP_SENT
     }
 
+    if (hwType === HARDWARE_TYPE.RECVBYTES.toUpperCase()) {
+        return USAGE_TYPE.SUM_RECV_BYTES
+    }
+
+    if (hwType === HARDWARE_TYPE.SENDBYTES.toUpperCase()) {
+        return USAGE_TYPE.SUM_SEND_BYTES
+    }
+
 
 }
 
@@ -687,6 +697,7 @@ export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType) => 
             value: usageValue,
             favor: usageValue,
             fullLabel: item.cluster.toString(),
+            cluster_cloudlet: item.cluster.toString() + ' | ' + item.cloudlet.toString(),
         })
     })
 

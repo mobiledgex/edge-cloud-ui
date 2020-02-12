@@ -5,7 +5,7 @@ import {
     getCloudletLevelMatric,
     makeFormForCloudletLevelMatric, numberWithCommas,
     renderBarChartCore,
-    renderLineChartCore, renderPlaceHolderLottie,
+    renderLineChartCore, renderPlaceHolderCircular,
     renderUsageByType2, showToast,
     sortUsageListByType,
     StylesForMonitoring
@@ -179,7 +179,7 @@ export const renderBottomGridAreaForCloudlet = (_this: PageOperMonitoring) => {
                 {_this.state.loading &&
                 <Table.Row className='page_monitoring_popup_table_empty'>
                     <Table.Cell>
-                        {renderPlaceHolderLottie()}
+                        {renderPlaceHolderCircular()}
                     </Table.Cell>
                 </Table.Row>}
                 {!_this.state.loading && _this.state.filteredCloudletUsageList.map((item, index) => {

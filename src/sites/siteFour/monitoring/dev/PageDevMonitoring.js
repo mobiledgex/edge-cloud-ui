@@ -1,5 +1,5 @@
 import 'react-hot-loader'
-import {toast} from 'react-semantic-toasts';
+import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import OutsideClickHandler from 'react-outside-click-handler';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
@@ -22,7 +22,7 @@ import {
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
     makeSelectBoxListWithThreeValuePipe,
-    renderBubbleChartForCloudlet,
+    renderBubbleChartCoreForDev_Cluster,
     sortUsageListByTypeForCluster,
 } from "./PageDevMonitoringService";
 import {
@@ -47,8 +47,8 @@ import {
     makeBubbleChartDataForCluster,
     numberWithCommas,
     renderBarChartCore,
-    renderLineChartCore, renderLottieLoader,
-    renderPlaceHolderLottie,
+    renderLineChartCore, renderGridLoader2,
+    renderPlaceHolderCircular,
     showToast,
     StylesForMonitoring
 } from "../PageMonitoringCommonService";
@@ -176,6 +176,7 @@ type State = {
     filteredAppInstUsageList: Array,
     allAppInstUsageList: Array,
     clusterListLoading: boolean,
+    bubbleChartLoader: boolean,
 
 }
 
@@ -271,6 +272,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             clusterListLoading: true,
             allClusterUsageList003: [],
             isStream: false,
+            bubbleChartLoader: false,
         };
 
         intervalForAppInst = null;
@@ -385,7 +387,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-        async resetAllData() {
+        async resetAllDataForDev() {
             clearInterval(this.intervalForAppInst)
             await this.setState({
                 currentGridIndex: -1,
@@ -406,14 +408,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 dropdownRequestLoading: false,
                 currentCluster: '',
                 currentAppInst: '',
-                currentTabIndex: 1,
+                //currentTabIndex: 1,
             })
 
-            setTimeout(() => {
-                this.setState({
-                    currentTabIndex: 0,
-                })
-            }, 3500)
+            /* setTimeout(() => {
+                 this.setState({
+                     currentTabIndex: 0,
+                 })
+             }, 3500)*/
         }
 
         async refreshAllData() {
@@ -501,7 +503,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {!this.state.loading && this.renderDropDownForMultiTab(pHardwareType)}
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
+                            {this.state.loading ? renderPlaceHolderCircular() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
                         </div>
                     </div>
                 </div>
@@ -521,7 +523,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {!this.state.loading && this.renderDropDownForMultiTab(pHardwareType)}
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
+                            {this.state.loading ? renderPlaceHolderCircular() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
                         </div>
                     </div>
                     {/*@todo:BarChart*/}
@@ -534,7 +536,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
+                            {this.state.loading ? renderPlaceHolderCircular() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
                         </div>
                     </div>
 
@@ -562,7 +564,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
+                            {this.state.loading ? renderPlaceHolderCircular() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
                         </div>
                     </div>
                 </div>
@@ -589,7 +591,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
+                            {this.state.loading ? renderPlaceHolderCircular() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
                         </div>
                     </div>
                     {/*@todo:BarChart*/}
@@ -602,7 +604,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType, this)}
+                            {this.state.loading ? renderPlaceHolderCircular() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType, this)}
                         </div>
                     </div>
                 </div>
@@ -861,8 +863,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             },
 
         ]
-
-
         renderHeader = () => {
 
             return (
@@ -889,7 +889,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </Button>
                         <Button
                             onClick={async () => {
-                                this.resetAllData();
+                                this.resetAllDataForDev();
                             }}
                         >Reset</Button>
 
@@ -910,6 +910,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                             >STREAM {this.state.isStream ? 'on' : 'off'}</MButton>
                         </div>
+
                         }
                         {this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?
                             <div style={{}}>
@@ -1037,15 +1038,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        validateTerminal = (appInst)=>
-        {
-            if(appInst && appInst.length > 0)
-            {
+        validateTerminal = (appInst) => {
+            if (appInst && appInst.length > 0) {
                 let runtime = appInst[0].Runtime
-                if(runtime && runtime.container_ids && runtime.container_ids.length > 0)
-                {
+                if (runtime && runtime.container_ids && runtime.container_ids.length > 0) {
                     this.setState({
-                        terminalData : appInst[0]
+                        terminalData: appInst[0]
                     })
                 }
             }
@@ -1359,6 +1357,64 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+        renderBubbleChartArea() {
+            return (
+                <div style={{height: '100%'}}>
+                    <div className='page_monitoring_title_area' style={{display: 'flex', flexDirection: 'row'}}>
+                        <div className='page_monitoring_title_select'>
+                            Performance status of Cluster hardware
+                        </div>
+                        {/*todo:---------------------------------*/}
+                        {/*todo: bubbleChart DropDown            */}
+                        {/*todo:---------------------------------*/}
+                        <div style={{marginRight: 10, marginTop: 1, backgroundColor: 'transparent', display: 'flex', alignSelf: 'center'}}>
+                            <MButton
+                                style={{backgroundColor: '#6c6c6c', color: 'white', height: 25}}
+                                onClick={async () => {
+
+                                    await this.resetAllDataForDev()
+
+                                }}>reset
+                            </MButton>
+                        </div>
+                        <Dropdown
+                            disabled={this.state.loading}
+                            clearable={this.state.regionSelectBoxClearable}
+                            placeholder='SELECT HARDWARE'
+                            selection
+                            loading={this.state.loading}
+                            options={HARDWARE_OPTIONS_FOR_CLUSTER}
+                            defaultValue={HARDWARE_OPTIONS_FOR_CLUSTER[0].value}
+                            onChange={async (e, {value}) => {
+                                try {
+                                    let bubbleChartData = makeBubbleChartDataForCluster(this.state.filteredClusterUsageList, value);
+                                    this.setState({
+                                        bubbleChartData: bubbleChartData,
+                                        currentHardwareType: value,
+                                    })
+
+                                } catch (e) {
+                                    showToast(e.toString())
+                                    this.setState({
+                                        bubbleChartLoader: false,
+                                    })
+                                }
+
+
+                            }}
+                            value={this.state.currentHardwareType}
+                        />
+                    </div>
+                    {/*todo:---------------------------------*/}
+                    {/*todo: RENDER BUBBLE_CHART          */}
+                    {/*todo:---------------------------------*/}
+                    <div className='page_monitoring_container'>
+                        {this.state.loading ? renderPlaceHolderCircular() : renderBubbleChartCoreForDev_Cluster(this, this.state.currentHardwareType, this.state.bubbleChartData)}
+                    </div>
+                </div>
+            )
+        }
+
 
         render() {
             // todo: Components showing when the loading of graph data is not completed.
@@ -1369,7 +1425,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.renderHeader()}
                             <div style={{position: 'absolute', top: '37%', left: '48%'}}>
                                 <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                    {renderLottieLoader(150, 150)}
+                                    {renderGridLoader2(150, 150)}
                                 </div>
                             </div>
                         </Grid.Column>
@@ -1404,6 +1460,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:---------------------------------*/}
                         {/*todo:Content Header                   */}
                         {/*todo:---------------------------------*/}
+                        <SemanticToastContainer position={"top-left"}/>
                         {this.renderHeader()}
                         <Grid.Row className='site_content_body' style={{marginTop: 22}}>
                             <Grid.Column>
@@ -1447,7 +1504,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*fixme:---------------------------------*/}
                                                     {/*fixme: RENDER TAB_AREA                 */}
                                                     {/*fixme:---------------------------------*/}
-                                                    {this.state.loading ? renderPlaceHolderLottie()
+                                                    {this.state.loading ? renderPlaceHolderCircular()
                                                         :
                                                         <Tab
                                                             className='page_monitoring_tab'
@@ -1473,43 +1530,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
                                                 <div className='page_monitoring_column'>
-                                                    <div className='page_monitoring_title_area'>
-                                                        <div className='page_monitoring_title_select'>
-                                                            Performance status of Cluster hardware
-                                                        </div>
-                                                        {/*todo:---------------------------------*/}
-                                                        {/*todo: bubbleChart DropDown            */}
-                                                        {/*todo:---------------------------------*/}
-                                                        <Dropdown
-                                                            disabled={this.state.loading}
-                                                            clearable={this.state.regionSelectBoxClearable}
-                                                            placeholder='SELECT HARDWARE'
-                                                            selection
-                                                            loading={this.state.loading}
-                                                            options={HARDWARE_OPTIONS_FOR_CLUSTER}
-                                                            defaultValue={HARDWARE_OPTIONS_FOR_CLUSTER[0].value}
-                                                            onChange={async (e, {value}) => {
-                                                                try {
-                                                                    let bubbleChartData = makeBubbleChartDataForCluster(this.state.filteredClusterUsageList, value);
-                                                                    this.setState({
-                                                                        bubbleChartData: bubbleChartData,
-                                                                        currentHardwareType: value,
-                                                                    })
-                                                                } catch (e) {
-
-                                                                }
-
-
-                                                            }}
-                                                            value={this.state.currentHardwareType}
-                                                        />
-                                                    </div>
-                                                    {/*todo:---------------------------------*/}
-                                                    {/*todo: RENDER BUBBLE_CHART          */}
-                                                    {/*todo:---------------------------------*/}
-                                                    <div className='page_monitoring_container'>
-                                                        {this.state.loading ? renderPlaceHolderLottie() : renderBubbleChartForCloudlet(this, this.state.currentHardwareType, this.state.bubbleChartData)}
-                                                    </div>
+                                                    {this.state.bubbleChartLoader ? renderPlaceHolderCircular() : this.renderBubbleChartArea()}
                                                 </div>
                                                 {/* row2___col___2*/}
                                                 {/* row2___col___2*/}

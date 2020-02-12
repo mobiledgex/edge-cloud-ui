@@ -1,12 +1,14 @@
 import 'react-hot-loader'
 import React from "react";
-import {Map, Marker, Popup, TileLayer, Tooltip, Polyline} from "react-leaflet";
 import * as L from 'leaflet';
 import "../PageMonitoring.css";
 import {hot} from "react-hot-loader/root";
 import 'react-leaflet-fullscreen-control'
 import type {TypeAppInstance} from "../../../../shared/Types";
 import Ripples from "react-ripples";
+
+import {Tooltip, Map, Marker, Popup, TileLayer, Polyline} from "../../../../components/react-leaflet_kj/src/index";
+import $ from 'jquery';
 
 
 const DEFAULT_VIEWPORT = {
@@ -35,6 +37,19 @@ let greenIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
+let ClickableTooltip = L.Tooltip.extend({
+    onAdd: function (map) {
+        L.Tooltip.prototype.onAdd.call(this, map);
+
+        var el = this.getElement(),
+            self = this;
+
+        el.addEventListener('click', function () {
+            self.fire("click");
+        });
+        el.style.pointerEvents = 'auto';
+    }
+});
 
 export default hot(
     class LeafletMapWrapperForDev extends React.Component {
@@ -60,12 +75,23 @@ export default hot(
 
 
             };
+
+
         }
 
         componentDidMount = async () => {
+            $(document).ready(function () {
+                $('.toolTip').click(function () {
+                    //Some code
+                    alert('sdlfksdlkflsdkflksdlfksdlkflsdkflskdflk')
+                });
+            });
+
+
             console.log('markerList2222===>', this.props.markerList);
             let appInstanceListGroupByCloudlet = this.props.markerList
             this.setCloudletLocation(appInstanceListGroupByCloudlet)
+
 
         };
 
@@ -179,27 +205,6 @@ export default hot(
             )
         }
 
-        renderMarkerOne(item) {
-
-            return (
-                <Marker
-                    ref={c => this.marker1 = c}
-                    icon={greenIcon}
-                    className='marker1'
-                    position={
-                        [item.CloudletLocation.latitude, item.CloudletLocation.longitude,]
-                    }
-                    onClick={() => {
-                        this.props.handleSelectCloudletForMapkerClicked(item.CloudletName)
-                    }}
-                >
-                    <Tooltip direction='right' offset={[0, 0]} opacity={0.5} permanent>
-                        <span>{item.CloudletName}</span>
-                    </Tooltip>
-                </Marker>
-            )
-        }
-
 
         render() {
 
@@ -222,7 +227,6 @@ export default hot(
                             style={{zIndex: 1}}
                             //maxZoom={15}
                         />
-
                         {this.state.newCloudLetLocationList.map((item, outerIndex) => {
 
                             let listAppName = item.AppNames.split(",")
@@ -239,13 +243,21 @@ export default hot(
                                         //this.props.handleSelectCloudletForMapkerClicked(item.CloudletName)
                                     }}
                                 >
-                                    <Tooltip direction='right' offset={[0, 0]} opacity={0.8} permanent
+                                    <Tooltip
+                                        direction='right'
+                                        offset={[0, 0]}
+                                        opacity={0.8}
+                                        permanent
+                                        ref={c => {
+                                            this.toolTip = c;
+                                        }}
+                                        style={{cursor: 'pointer', pointerEvents: 'auto'}}
 
-                                             onClick={() => {
-                                                 alert('lklsdkflksd====>>>')
-                                             }}
                                     >
-                                        <span style={{color: 'black'}}>{item.Cloudlet}</span>
+
+                                        <span
+                                            className='toolTip'
+                                            style={{color: 'black'}}>{item.Cloudlet}</span>
                                     </Tooltip>
                                     <Popup className='popup1'>
                                         {listAppName.map(AppName_ClusterInst => {

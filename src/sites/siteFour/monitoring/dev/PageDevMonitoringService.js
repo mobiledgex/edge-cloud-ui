@@ -2,9 +2,8 @@ import React from 'react';
 import '../PageMonitoring.css';
 import {APP_INST_USAGE_TYPE_INDEX, CHART_COLOR_LIST, CLASSIFICATION, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION, USAGE_INDEX_FOR_CLUSTER} from "../../../../shared/Constants";
 import BubbleChart from "../../../../components/BubbleChart";
-import PageMonitoring from "./PageDevMonitoring";
-import PageMonitoringForDeveloper from "./PageDevMonitoring";
-import {getClusterLevelMatric, makeFormForClusterLevelMatric, numberWithCommas, renderUsageByType, StylesForMonitoring} from "../PageMonitoringCommonService";
+import PageDevMonitoring from "./PageDevMonitoring";
+import {getClusterLevelMatric, makeFormForClusterLevelMatric, numberWithCommas, renderUsageByType, showToast, showToast2, StylesForMonitoring} from "../PageMonitoringCommonService";
 import {SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../../services/serviceMC";
 import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
@@ -153,7 +152,7 @@ export const getClusterList = async () => {
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
     let requestData = {showSpinner: false, token: token, method: SHOW_CLUSTER_INST, data: {region: REGION.EU}};
-    let requestData2 = {showSpinner: false,token: token, method: SHOW_CLUSTER_INST, data: {region: REGION.US}};
+    let requestData2 = {showSpinner: false, token: token, method: SHOW_CLUSTER_INST, data: {region: REGION.US}};
     let promiseList = []
     promiseList.push(sendSyncRequest(this, requestData))
     promiseList.push(sendSyncRequest(this, requestData2))
@@ -310,7 +309,7 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this) => {
  * @param _this
  * @returns {string|{chartDataList: [], hardwareType: *}}
  */
-export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: PageMonitoringForDeveloper) => {
+export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: PageDevMonitoring) => {
 
     console.log('allHWUsageList===>', allHWUsageList);
 
@@ -359,7 +358,10 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
 
 }
 
-export const renderBubbleChartForCloudlet = (_this: PageMonitoring, hardwareType: string, pBubbleChartData: any) => {
+export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, hardwareType: string, pBubbleChartData: any) => {
+
+    console.log('pBubbleChartData===>', pBubbleChartData);
+
 
     if (pBubbleChartData.length === 0 && _this.loading === false) {
         return (
@@ -434,12 +436,19 @@ export const renderBubbleChartForCloudlet = (_this: PageMonitoring, hardwareType
                             color: 'black',
                             weight: 'bold',
                         }}
-                        bubbleClickFun={async (label, index) => {
+                        bubbleClickFun={async (cluster_cloudlet, index) => {
+                            try {
+                                await _this.handleClusterDropdown(cluster_cloudlet)
+                            } catch (e) {
 
-
+                            }
                         }}
-                        legendClickFun={async (label, index) => {
+                        legendClickFun={async (cluster_cloudlet, index) => {
+                            try {
+                                await _this.handleClusterDropdown(cluster_cloudlet)
+                            } catch (e) {
 
+                            }
                         }}
                         data={pBubbleChartData}
                     />
@@ -460,7 +469,7 @@ export const renderBubbleChartForCloudlet = (_this: PageMonitoring, hardwareType
  * @param hardwareType
  * @returns {*}
  */
-export const makeLineChartDataForAppInst = (allHWUsageList: Array, hardwareType: string, _this: PageMonitoringForDeveloper) => {
+export const makeLineChartDataForAppInst = (allHWUsageList: Array, hardwareType: string, _this: PageDevMonitoring) => {
     let oneTypedUsageList = [];
     if (hardwareType === HARDWARE_TYPE.CPU) {
         oneTypedUsageList = allHWUsageList[0]

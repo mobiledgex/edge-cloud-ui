@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Bungee|Candal|Righteous&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Acme|Bungee|Barlow+Semi+Condensed|Candal|Encode+Sans+Condensed|Righteous&display=swap');
+@import url('~react-leaflet-markercluster/dist/styles.min.css');
+.tooltipclass {
+    z-index: 100;
+}
 
 .popup1 {
     background-color: black;
