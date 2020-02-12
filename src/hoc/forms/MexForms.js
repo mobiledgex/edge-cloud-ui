@@ -21,6 +21,7 @@ const MexForms = (props) => {
 
     const onValueSelect = (form, value, parentForm) => {
     
+        form.value = value;
         if(parentForm)
         {
             let parentData = data[parentForm.uuid] ? data[parentForm.uuid] : {}
@@ -82,7 +83,7 @@ const MexForms = (props) => {
                 disabled = rules.disabled ? rules.disabled : false;
             }
             return (
-                form.field ?
+                form.field && form.visible ?
                     <Grid.Column width={3} key={i}>
                         {form.label}{required ? ' *' : ''}
                         {

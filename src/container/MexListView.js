@@ -98,11 +98,6 @@ class DeveloperListView extends React.Component {
 
     getCellClick = (field, item) => {
         this.selectedRow = item
-        // return (
-        //         field === 'Actions' ?
-        //             null :
-        //             this.detailView(item)
-        // )
     }
 
     onActionClose = (action) => {
@@ -130,8 +125,7 @@ class DeveloperListView extends React.Component {
                     {
                         field === 'Actions' ? this.getAction(item)
                         :
-                        <div ref={ref => this.tooltipref = ref}
-                            data-tip='tooltip' data-for='happyFace'>
+                        <div>
                             {String(item[field])}
                         </div>
                     }</Table.Cell>
@@ -182,7 +176,7 @@ class DeveloperListView extends React.Component {
                             {({ TransitionProps, placement }) => (
                                 <Grow
                                     {...TransitionProps}
-                                    style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+                                    style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center right' }}
                                 >
                                     <Paper style={{ backgroundColor: '#212121', color: 'white' }}>
                                         <ClickAwayListener onClickAway={this.onActionClose}>

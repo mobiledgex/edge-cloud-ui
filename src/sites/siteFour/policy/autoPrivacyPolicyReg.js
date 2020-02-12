@@ -22,6 +22,26 @@ class AutoProvPolicyReg extends React.Component {
         this.cloudletList = []
     }
 
+    validateRules = (form)=>
+    {
+        let valid = true;
+        if (form.visible) {
+            let rules = form.rules;
+            if (rules) {
+                if (rules.required) {
+                    if (form.value === undefined || form.value === 0) {
+                        form.error = `${form.label} is mandatory`
+                        valid = false;
+                    }
+                    else {
+                        form.error = undefined
+                    }
+                }
+            }
+        }
+        return valid
+    }
+
     validateRemoteCIDR=(form, value)=>
     {
         if (value.length > 0) {
@@ -49,46 +69,42 @@ class AutoProvPolicyReg extends React.Component {
         return true;
     }
 
+    validateOutboundRules = (form, data)=>
+    {
+        let valid = true;
+        if (!data.FullIsolation && form.field === 'OutboundSecurityRules') {
+            let outboundSecurityRules = data[form.uuid];
+            for (let j = 0; j < form.forms.length; j++) {
+                let childForm = form.forms[j]
+                valid = this.validateRules(childForm)
+                if (valid && outboundSecurityRules) {
+                    if (outboundSecurityRules[childForm.field] != undefined) {
+                        if (childForm.field === 'RemoteCIDR') {
+                            valid = this.validateRemoteCIDR(childForm, outboundSecurityRules[childForm.field])
+                        }
+                        else if (childForm.field === 'PortRangeMin' || childForm.field === 'PortRangeMax') {
+                            valid = this.validatePortRange(childForm, outboundSecurityRules[childForm.field])
+                        }
+                    }
+                }
+                if (!valid) {
+                    break;
+                }
+            }
+        }
+        return valid;
+    } 
+
+    
+
     isDataValid = (data) =>
     {
         let valid = true;
         let forms = this.state.forms;
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            let rules = form.rules;
-            if(rules)
-            {
-                if(rules.required)
-                {
-                    if(data[form.field] === undefined || data[form.field].length ===0)
-                    {
-                        form.error = `${form.label} is mandatory`
-                        valid = false;
-                    }
-                    else{
-                        form.error = undefined 
-                    }
-                }
-            }
-            if (!data.FullIsolation && form.field === 'OutboundSecurityRules') {
-                let outboundSecurityRules = data[form.uuid];
-                if (outboundSecurityRules) {
-                    for (let j = 0; j < form.forms.length; j++) {
-                        let childForm = form.forms[j]
-                        if (outboundSecurityRules[childForm.field] != undefined) {
-                            if (childForm.field === 'RemoteCIDR') {
-                                valid = this.validateRemoteCIDR(childForm, outboundSecurityRules[childForm.field])
-                            }
-                            else if (childForm.field === 'PortRangeMin' || childForm.field === 'PortRangeMax') {
-                                valid = this.validatePortRange(childForm, outboundSecurityRules[childForm.field])
-                            }
-                        }
-                        if (!valid) {
-                            break;
-                        }
-                    }
-                }
-            }
+            valid = this.validateRules(form)
+            valid = valid ? this.validateOutboundRules(form, data) : valid
 
             if(!valid)
             {
@@ -100,6 +116,33 @@ class AutoProvPolicyReg extends React.Component {
             forms:forms
         })
         return valid;
+    }
+
+    protocolValueChange(currentForm, parentForm)
+    {
+            let forms = this.state.forms
+            for (let i = 0; i < forms.length; i++) {
+                let form = forms[i];
+                if(form.uuid === parentForm.uuid)
+                {
+                    for (let j = 0; j < form.forms.length; j++) {
+                        let outBoundRulesForm = form.forms[j]
+                        if(currentForm.value === 'icmp' && (outBoundRulesForm.field === 'PortRangeMin' || outBoundRulesForm.field === 'PortRangeMax'))
+                        {
+                            outBoundRulesForm.visible = false;
+                        }
+                        else
+                        {
+                            outBoundRulesForm.visible = true; 
+                        }
+                    }
+                    break;
+                }
+            }
+
+            this.setState({
+                forms: forms
+            })
     }
 
     onValueChange = (currentForm, data, parentForm) => {
@@ -115,6 +158,11 @@ class AutoProvPolicyReg extends React.Component {
             this.setState({
                 forms: forms
             })
+        }
+
+        if(currentForm.field === 'Protocol')
+        {
+            this.protocolValueChange(currentForm, parentForm)
         }
         this.formData = data;
     }
@@ -158,10 +206,10 @@ class AutoProvPolicyReg extends React.Component {
     ]
 
     outboundRules = [
-        { field: 'Protocol', label: 'Protocol', type: 'Select', visible: true, options:this.getProtocolData() },
-        { field: 'PortRangeMin', label: 'Port Range Min', type: 'Input', rules: { type: 'number' }, visible: true },
-        { field: 'PortRangeMax', label: 'Port Range Max', type: 'Input', rules: { type: 'number' }, visible: true },
-        { field: 'RemoteCIDR', label: 'Remote CIDR', type: 'Input', visible: true },
+        { field: 'Protocol', label: 'Protocol', type: 'Select', rules: { required: true, type: 'number' },visible: true, options:this.getProtocolData() },
+        { field: 'PortRangeMin', label: 'Port Range Min', type: 'Input', rules: { required: true, type: 'number' }, visible: true },
+        { field: 'PortRangeMax', label: 'Port Range Max', type: 'Input', rules: { required: true, type: 'number' }, visible: true },
+        { field: 'RemoteCIDR', label: 'Remote CIDR', type: 'Input', rules: { required: true },visible: true },
     ]
 
     
