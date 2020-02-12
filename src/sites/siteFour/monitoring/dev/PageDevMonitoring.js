@@ -863,43 +863,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }}
                         >Reset
                         </Button>
-
-
-                        <Button
-                            onClick={async () => {
-
-
-                                this.setState({
-                                    modalIsOpen: !this.state.modalIsOpen
-                                })
-                            }}
-                        >Modal
-                        </Button>
-
-                        {/* <Modal
-                            open={this.state.isModalOpened}
-                            closeIcon={true}
-                            closeOnDimmerClick={true}
-                            onClose={() => {
-                                this.setState({
-                                    isModalOpened: false,
-                                })
-                            }}
-                            style={{width: '80%', opacity: 1.1}}
-                        >
-                            <Modal.Header>Select a Photo</Modal.Header>
-                            <Modal.Content image>
-                                <Modal.Description>
-                                    <Header>Default Profile Image</Header>
-                                    <p>
-                                        We've found the following gravatar image associated with your e-mail
-                                        address.
-                                    </p>
-                                    <p>Is it okay to use this photo?</p>
-                                </Modal.Description>
-                            </Modal.Content>
-                        </Modal>*/}
-
                         {this.state.currentClassification === CLASSIFICATION.APPINST &&
                         <div>
                             <MButton
