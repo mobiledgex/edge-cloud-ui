@@ -11,11 +11,10 @@ import PopUserViewer from './popUserViewer';
 import PopAddUserViewer from './popAddUserViewer';
 import DeleteItem from './deleteItem';
 import './styles.css';
-import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
 import * as reducer from '../utils'
-import MaterialIcon from "material-icons-react";
-const ReactGridLayout = WidthProvider(RGL);
+import { IconButton } from '@material-ui/core';
+import ListIcon from '@material-ui/icons/List';
 
 const appssEdit = [
     {key: 'launch', text:'Launch', icon:null},
@@ -407,17 +406,17 @@ class InsideListView extends React.Component {
     makeEditButtonGroup = (item, value, j, i, OrgCount) => (
         <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
             <div ref={acell => this['actionCell_'+i] = acell} style={{backgroundColor:'transparent', width:0, height:0, position:'relative'}}></div>
-            <Button className="table_actions_button"
-                    onClick={(self) => {
+            
+            <IconButton 
+                aria-label="Action" 
+                onClick={(self) => {
                         _self.onClickDropMenu(item, value, i, self)
                         OrgCount !== 0 ? this.setState({deleteDisabled : true}) : this.setState({deleteDisabled : false})
                     }}
                     onMouseOver={()=> _self.onOverDropMenu(item, value, i)}
                     onMouseOut={() => _self.onOutDropMenu(item, value, i)}>
-                <Button.Content visible>
-                    <Icon name='bars' />
-                </Button.Content>
-            </Button>
+                <ListIcon style={{ color: '#76ff03' }} />
+            </IconButton>
         </div>
     )
     makeEditMenu = (item, value, i, j) => (
