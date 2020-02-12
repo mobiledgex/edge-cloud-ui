@@ -26,7 +26,7 @@ type Props = {
     handleLoadingSpinner: Function,
     cloudletKey: any,//hashmap
     markerList: Array,
-    handleAppInstDropdown: Function,
+    //handleAppInstDropdown: Function,
 }
 
 type State = {

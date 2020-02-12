@@ -7,7 +7,7 @@ import type {TypeLineChartData2} from "../../../../shared/Types";
 import {convertByteToMegaByte} from "../PageMonitoringCommonService";
 import {makeGradientColor, makeGradientColorOne} from "./PageDevMonitoringService";
 import {Dropdown} from "semantic-ui-react";
-import {CHART_COLOR_LIST, CONNECTIONS_OPTIONS, HARDWARE_OPTIONS, HARDWARE_OPTIONS_FOR_APPINST, HARDWARE_TYPE} from "../../../../shared/Constants";
+import {CHART_COLOR_LIST, CONNECTIONS_OPTIONS, HARDWARE_OPTIONS, HARDWARE_OPTIONS_FOR_APPINST, HARDWARE_TYPE, lineGraphOptions} from "../../../../shared/Constants";
 
 type Props = {
     modalIsOpen: boolean,
@@ -83,73 +83,9 @@ export default class ModalGraphForCluster extends React.Component<Props, State> 
                 datasets: arrayDatasetsList,
             }
 
-            let options = {
-                animation: {
-                    duration: 1000
-                },
-                datasetStrokeWidth: 3,
-                pointDotStrokeWidth: 4,
-                legend: {
-                    position: 'top',
-                    labels: {
-                        boxWidth: 10,
-                        fontColor: 'white'
-                    }
-                },
-                scales: {
-                    yAxes: [{
-
-                        ticks: {
-                            beginAtZero:true,
-                            min: 0,
-                            max: 100,
-                            fontColor: 'white',
-                        },
-                        gridLines: {
-                            color: "#505050",
-                        },
-                        stacked: true
-
-                    }],
-                    xAxes: [{
-                        /*ticks: {
-                            fontColor: 'white'
-                        },*/
-                        gridLines: {
-                            color: "#505050",
-                        },
-                        ticks: {
-                            fontSize: 14,
-                            fontColor: 'white',
-                            //maxRotation: 0.05,
-                            //autoSkip: true,
-                            maxRotation: 45,
-                            minRotation: 45,
-                            padding: 10,
-                            labelOffset: 0,
-                            callback(value, index, label) {
-                                return value;
-
-                            },
-                        },
-                        beginAtZero: false,
-                        /* gridLines: {
-                             drawTicks: true,
-                         },*/
-                    }],
-                    backgroundColor: {
-                        fill: "#1e2124"
-                    },
-                }
-
-            }
-
-            console.log('lineChartData===>', lineChartData);
-
-
             this.setState({
                 lineChartData: lineChartData,
-                options: options,
+                options: lineGraphOptions,
                 hardwareType: hardwareType,
             }, () => {
                 console.log('lineChartData333333===>', this.state.lineChartData)

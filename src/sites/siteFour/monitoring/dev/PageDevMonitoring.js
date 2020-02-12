@@ -60,7 +60,7 @@ import {TabPanel, Tabs} from "react-tabs";
 import Icon from "@material-ui/core/Icon";
 import LeafletMapWrapperForDev from "./LeafletMapWrapperForDev";
 import TerminalViewer from "../../../../container/TerminalViewer";
-import ModalForGraph from "./ModalForGraph";
+import ModalGraphForAppInst from "./ModalGraphForAppInst";
 import ModalGraphForCluster from "./ModalGraphForCluster";
 
 const FA = require('react-fontawesome')
@@ -1110,6 +1110,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 loading: false,
                 currentAppInst: pCurrentAppInst,
                 currentCluster: currentCluster,
+                //clusterSelectBoxPlaceholder: 'Select Cluster'
             })
 
             await this.setState({

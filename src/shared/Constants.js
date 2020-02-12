@@ -18,6 +18,67 @@ export const REGION = {
     EU: 'EU',
 }
 
+export const lineGraphOptions = {
+    animation: {
+        duration: 1000
+    },
+    datasetStrokeWidth: 3,
+    pointDotStrokeWidth: 4,
+    legend: {
+        position: 'top',
+        labels: {
+            boxWidth: 10,
+            fontColor: 'white'
+        }
+    },
+    scales: {
+        yAxes: [{
+
+            ticks: {
+                beginAtZero: true,
+                min: 0,
+                max: 100,
+                fontColor: 'white',
+            },
+            gridLines: {
+                color: "#505050",
+            },
+            stacked: true
+
+        }],
+        xAxes: [{
+            /*ticks: {
+                fontColor: 'white'
+            },*/
+            gridLines: {
+                color: "#505050",
+            },
+            ticks: {
+                fontSize: 14,
+                fontColor: 'white',
+                //maxRotation: 0.05,
+                //autoSkip: true,
+                maxRotation: 45,
+                minRotation: 45,
+                padding: 10,
+                labelOffset: 0,
+                callback(value, index, label) {
+                    return value;
+
+                },
+            },
+            beginAtZero: false,
+            /* gridLines: {
+                 drawTicks: true,
+             },*/
+        }],
+        backgroundColor: {
+            fill: "#1e2124"
+        },
+    }
+
+}
+
 export const USAGE_TYPE = {
     SUM_CPU_USAGE: 'sumCpuUsage',
     SUM_MEM_USAGE: 'sumMemUsage',

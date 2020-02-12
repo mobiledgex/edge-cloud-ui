@@ -22,19 +22,6 @@ const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
     zoom: 13,
 }
-
-const multiPolygon = [
-    [
-        [51.51, -0.12],
-        [51.51, -0.13],
-        [51.53, -0.13],
-    ],
-    [
-        [51.51, -0.05],
-        [51.51, -0.07],
-        [51.53, -0.07],
-    ],
-]
 let greenIcon = new L.Icon({
     iconUrl: require('../leaflet_markers/marker-icon-2x-green.png'),
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -44,32 +31,16 @@ let greenIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
-let ClickableTooltip = L.Tooltip.extend({
-    onAdd: function (map) {
-        L.Tooltip.prototype.onAdd.call(this, map);
-
-        var el = this.getElement(),
-            self = this;
-
-        el.addEventListener('click', function () {
-            self.fire("click");
-        });
-        el.style.pointerEvents = 'auto';
-    }
-});
-
 type Props = {
     parent: PageDevMonitoring,
-    handleAppInstDropdown: Function,
     markerList: Array,
-
 
 };
 type State = {
     popUploading: boolean,
+    newCloudLetLocationList: Array,
 
 };
-
 
 export default hot(
     class LeafletMapWrapperForDev extends React.Component<Props, State> {
@@ -100,14 +71,6 @@ export default hot(
         }
 
         componentDidMount = async () => {
-            $(document).ready(function () {
-                $('.toolTip').click(function () {
-                    //Some code
-                    alert('sdlfksdlkflsdkflksdlfksdlkflsdkflskdflk')
-                });
-            });
-
-
             console.log('markerList2222===>', this.props.markerList);
             let appInstanceListGroupByCloudlet = this.props.markerList
             this.setCloudletLocation(appInstanceListGroupByCloudlet)
@@ -189,7 +152,7 @@ export default hot(
 
         }
 
-        async showGraphForAppInst(AppName_ClusterInst, ClusterInst, AppName, item) {
+        /*async showGraphForAppInst(AppName_ClusterInst, ClusterInst, AppName, item) {
             let arrayTemp = AppName_ClusterInst.split(" | ");
             let Cluster = arrayTemp[1].trim();
             let AppInst = arrayTemp[0].trim()
@@ -215,7 +178,7 @@ export default hot(
             } catch (e) {
 
             }
-        }
+        }*/
 
 
         render() {
@@ -240,7 +203,6 @@ export default hot(
                             //maxZoom={15}
                         />
                         {this.state.newCloudLetLocationList.map((item, outerIndex) => {
-
                             let listAppName = item.AppNames.split(",")
 
                             return (
@@ -286,21 +248,6 @@ export default hot(
                                                     marginTop: 5, marginBottom: 5
                                                 }}
                                                 >
-                                                   {/* <Ripples
-                                                        style={{marginRight: 12, marginLeft: 12, width: 10, color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center'}}
-                                                        color='yellow' during={777}
-                                                        onClick={async () => {
-                                                            await this.props.parent.setState({
-                                                                mapPopUploading: true,
-                                                            })
-                                                            await this.showGraphForAppInst(AppName_ClusterInst, ClusterInst, AppName, item);
-                                                            await this.props.parent.setState({
-                                                                mapPopUploading: false,
-                                                            })
-                                                        }}
-                                                    >
-                                                        <AIcon type="stock" style={{color: 'green', marginRight: 12, marginLeft: 12,}}/>
-                                                    </Ripples>*/}
                                                     <Ripples
                                                         style={{marginLeft: 5}}
                                                         color='#1cecff' during={500}
@@ -321,19 +268,7 @@ export default hot(
                                                             &nbsp;&nbsp;{` [${ClusterInst.trim()}]`}
                                                         </div>
                                                     </Ripples>
-                                                    {/* <Ripples
-                                                        color='#FF6347' during={500}
-                                                        onClick={async () => {
-
-                                                            this.setState({
-                                                                popUploading: !this.state.popUploading
-                                                            })
-                                                        }}
-                                                    >
-                                                    </Ripples>*/}
                                                 </div>
-
-
                                             )
                                         })}
                                     </Popup>
