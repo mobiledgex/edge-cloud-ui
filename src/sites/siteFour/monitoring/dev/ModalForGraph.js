@@ -7,7 +7,7 @@ import type {TypeLineChartData2} from "../../../../shared/Types";
 import {convertByteToMegaByte} from "../PageMonitoringCommonService";
 import {makeGradientColor, makeGradientColorOne} from "./PageDevMonitoringService";
 import {Dropdown} from "semantic-ui-react";
-import {CONNECTIONS_OPTIONS, HARDWARE_OPTIONS, HARDWARE_TYPE} from "../../../../shared/Constants";
+import {CONNECTIONS_OPTIONS, HARDWARE_OPTIONS, HARDWARE_OPTIONS_FOR_APPINST, HARDWARE_TYPE} from "../../../../shared/Constants";
 
 type Props = {
     modalIsOpen: boolean,
@@ -201,8 +201,8 @@ export default class ModalForGraph extends React.Component<Props, State> {
                                 placeholder='SELECT CONN TYPE'
                                 selection
                                 //loading={this.state.loading}
-                                options={HARDWARE_OPTIONS}
-                                defaultValue={HARDWARE_OPTIONS[0].value}
+                                options={HARDWARE_OPTIONS_FOR_APPINST}
+                                defaultValue={HARDWARE_OPTIONS_FOR_APPINST[0].value}
                                 onChange={async (e, {value}) => {
 
                                 }}

@@ -506,7 +506,7 @@ export const renderBarChartCore = (chartDataList, hardwareType) => {
             //height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
             height={'100%'}
             chartType="BarChart"
-            loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
+            loader={<div><CircularProgress style={{color: '#1cecff', zIndex: 999999}}/></div>}
             data={chartDataList}
             options={{
                 annotations: {

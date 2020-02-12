@@ -322,7 +322,6 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this) => {
 export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: PageDevMonitoring) => {
 
     console.log('allHWUsageList===>', allHWUsageList);
-
     let typedUsageList = [];
     if (hardwareType === HARDWARE_TYPE.CPU) {
         typedUsageList = allHWUsageList[0]
@@ -339,7 +338,6 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
     } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
         typedUsageList = allHWUsageList[4]
     }
-
     console.log('typedUsageList===>', typedUsageList);
 
     if (typedUsageList.length === 0) {
@@ -352,7 +350,7 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
                 let barDataOne = [
                     typedUsageList[index].instance.AppName.toString().substring(0, 10) + "..." + "\n[" + typedUsageList[index].instance.Cloudlet + "]",
                     renderUsageByType(typedUsageList[index], hardwareType),
-                    CHART_COLOR_LIST[index],
+                    typedUsageList.length === 1 ? 'rgb(111,253,255)' : CHART_COLOR_LIST[index],
                     renderUsageLabelByType(typedUsageList[index], hardwareType)
                 ]
                 chartDataList.push(barDataOne);
@@ -756,7 +754,7 @@ export const makeGradientColorOne = (canvas, height) => {
 
     const gradient = ctx.createLinearGradient(0, 0, 0, height);
     gradient.addColorStop(0, 'rgb(111,253,255)');
-    gradient.addColorStop(1.0, 'rgb(0,32,243)');
+    gradient.addColorStop(1.0, 'rgb(62,113,243)');
 
 
 
@@ -769,16 +767,19 @@ export const renderLineChartCoreForDev_Cluster = (paramLevelTypeNameList, usageS
 
         let gradientList = makeGradientColor(canvas, height);
 
+
+        //makeGradientColorOne()
+
+
         let finalSeriesDataSets = [];
         for (let index in usageSetList) {
             //@todo: top5 만을 추린다
             if (index < 5) {
                 let datasetsOne = {
                     label: paramLevelTypeNameList[index],
-                    backgroundColor: gradientList[index],//todo: 리전드box area fill True/false
-                    fill:  false,//todo: 라인차트 area fill True/false
-                    //backgroundColor: '',
-                    borderColor: gradientList[index],
+                    backgroundColor: paramLevelTypeNameList.length === 1 ? makeGradientColorOne(canvas, height) : gradientList[index],
+                    fill: paramLevelTypeNameList.length === 1 ? true : false,
+                    borderColor: paramLevelTypeNameList.length === 1 ? makeGradientColorOne(canvas, height) : gradientList[index],
                     borderWidth: 3.5, //lineBorder
                     lineTension: 0.5,
                     pointColor: "#fff",
