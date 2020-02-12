@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Radium from 'radium';
+import * as moment from 'moment';
 
 /**
  * The static/non-static styles Information for a single event dot on the timeline
@@ -31,26 +32,26 @@ const dots = {
      * future: The style information for the future dot (wrt selected).
      * @param {object} styles User passed styles ( foreground, background etc info
      */
-    future: (styles) => ({
+    future: (styles, status) => ({
         backgroundColor: styles.background,
         // border: `2px solid ${styles.background}`,
-        border: `2px solid ${styles.outline}`,
+        border: `2px solid ${(status === 200)? styles.outline2 : styles.outline3}`,
     }),
     /**
      * past: The styles information for the past dot (wrt selected)
      * @param {object} styles User passed styles ( foreground, background etc info
      */
-    past: (styles) => ({
+    past: (styles, status) => ({
         backgroundColor: styles.background,
-        border: `2px solid ${styles.foreground}`,
+        border: `2px solid ${(status === 200)? styles.foreground : styles.errorground}`,
     }),
     /**
      * present: The styles information for the preset dot
      * @param {object} styles User passed styles ( foreground, background etc info
      */
-    present: (styles) => ({
-        backgroundColor: styles.foreground,
-        border: `2px solid ${styles.foreground}`,
+    present: (styles, status) => ({
+        backgroundColor: (status === 200)? styles.foreground : styles.errorground,
+        border: `2px solid ${(status === 200)? styles.foreground : styles.errorground}`,
     }),
 };
 
@@ -63,7 +64,7 @@ const dots = {
  */
 class TimelineDot extends React.Component {
 
-    __getDotStyles__ = (dotType, key) => {
+    __getDotStyles__ = (dotType, key, status) => {
         const hoverStyle = {
             backgroundColor: this.props.styles.foreground,
             border: `2px solid ${this.props.styles.foreground}`,
@@ -72,7 +73,7 @@ class TimelineDot extends React.Component {
         return [
             dots.base,
             {left: this.props.labelWidth / 2 - dots.base.width / 2},
-            dots[dotType](this.props.styles),
+            dots[dotType](this.props.styles, status),
             Radium.getState(this.state, key, ':hover') || Radium.getState(this.state, 'dot-dot', 'dot-dot')
                 ? hoverStyle
                 : undefined,
@@ -81,12 +82,20 @@ class TimelineDot extends React.Component {
 
     render() {
         let dotType = 'future';
-        let selectedTime = localStorage.getItem("selectedTime")
-        console.log("20200130_1 " + selectedTime)
-        if (this.props.index < this.props.selected) {
-            dotType = 'past';
-        } else if (this.props.index === this.props.selected) {
+        let selectedTime = JSON.parse(localStorage.getItem("selectedTime"))
+        let check = false
+        if (this.props.index === JSON.parse(this.props.selected)) {
             dotType = 'present';
+        } else if(this.props.index < JSON.parse(this.props.selected)){
+            dotType = 'past';
+        }
+
+        if(selectedTime){
+            selectedTime.map((time, index) => {
+                if(new Date(time).getTime() === this.props.date.getTime()){
+                    check = true
+                }
+            })
         }
 
         return (
@@ -108,9 +117,9 @@ class TimelineDot extends React.Component {
                 {this.props.label}
                 <span
                     key='dot-dot'
-                    style={this.__getDotStyles__(dotType, this.props.date)}
+                    style={this.__getDotStyles__(dotType, this.props.date, this.props.status)}
                 >
-                    {/*<div style={{color:'black'}}>{console.log("20200130 " + this.props.date + " ///////////////// " + new Date(selectedTime[0])) }</div>*/}
+                    {(check)? <div style={{color:"black"}}>V</div>: null}
                 </span>
             </li>
         );

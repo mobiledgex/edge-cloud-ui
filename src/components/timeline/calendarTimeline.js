@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import moment from "moment";
 
 import Timeline,{TimelineHeaders, SidebarHeader, DateHeader, CustomHeader} from "react-calendar-timeline";
@@ -37,8 +37,7 @@ export default class CalendarTimeline extends Component {
             groups: groups,
             items,
             defaultTimeStart,
-            defaultTimeEnd,
-            selectedData:''
+            defaultTimeEnd
         };
     }
 
@@ -85,6 +84,7 @@ export default class CalendarTimeline extends Component {
     }
 
     generateItemsData = (groups) => {
+        let status = this.props.statusList
         let items = []
         this.props.tasksList.map( (tValue, tIndex) => {
             for(let i=0; i < (this.props.tasksList.length) ; i++){
@@ -93,18 +93,19 @@ export default class CalendarTimeline extends Component {
                         this.props.timesList.map( (item, index) =>{
                             const startDate = Date.parse(item)
                             const startValue = Math.floor(moment(startDate).valueOf() / 10000000) * 10000000
-                            const endValue = moment(startDate + 1 * 60 * 1000).valueOf()
+                            const endValue = moment(startDate + 130 * 60 * 1000).valueOf()
                             if(tIndex === index){
                                 items.push({
                                     id: index + '',
                                     group: groups[i].id + '',
                                     title: item,
                                     start: startDate,
-                                    selected:true,
                                     end: endValue,
                                     canMove: startValue > new Date().getTime(),
                                     canResize: startValue > new Date().getTime() ? (endValue > new Date().getTime() ? 'both' : 'left') : (endValue > new Date().getTime() ? 'right' : false),
                                     className: (moment(startDate).day() === 6 || moment(startDate).day() === 0) ? 'item-weekend' : '',
+                                    bgColor: (status[index] === 200) ? "#79BF1466" : "#bf000066",
+                                    selectedBgColor: (status[index] === 200) ? "#79BF14DD" : "#bf0000DD"
                                 })
                             }
                         })
@@ -117,6 +118,45 @@ export default class CalendarTimeline extends Component {
 
         return items
     }
+
+    itemRenderer = ({ item, timelineContext, itemContext, getItemProps, getResizeProps }) => {
+        const { left: leftResizeProps, right: rightResizeProps } = getResizeProps();
+        const backgroundColor = itemContext.selected ? (itemContext.dragging ? "red" : item.selectedBgColor) : item.bgColor;
+        const borderColor = itemContext.resizing ? "red" : item.color;
+        return (
+            <div
+                {...getItemProps({
+                    style: {
+                        backgroundColor,
+                        color: item.color,
+                        borderColor,
+                        borderStyle: "solid",
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        borderLeftWidth: itemContext.selected ? 3 : 1,
+                        borderRightWidth: itemContext.selected ? 3 : 1
+                    }
+                })}
+            >
+                {itemContext.useResizeHandle ? <div {...leftResizeProps} /> : null}
+
+                <div
+                    style={{
+                        height: itemContext.dimensions.height,
+                        overflow: "hidden",
+                        paddingLeft: 3,
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap"
+                    }}
+                >
+                    {itemContext.title}
+                </div>
+
+                {itemContext.useResizeHandle ? <div {...rightResizeProps} /> : null}
+            </div>
+        );
+    };
+
 
     render() {
         const { groups, items, defaultTimeStart, defaultTimeEnd } = this.state;
@@ -138,6 +178,8 @@ export default class CalendarTimeline extends Component {
                 minResizeWidth={550}
                 defaultTimeStart={defaultTimeStart}
                 defaultTimeEnd={defaultTimeEnd}
+                itemRenderer={this.itemRenderer}
+                selected={[(this.props.timeLineIndex).toString()]}
                 onItemSelect={this.handleItemSelect}
             >
                 <TimelineHeaders className="sticky">

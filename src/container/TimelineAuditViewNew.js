@@ -99,6 +99,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             currentTask: '',
             currentTaskTime: '',
             closeMap:false,
+            storageTimeList: [],
+            statusList: []
         };
         jsonViewProps = {
             name: null,
@@ -202,9 +204,32 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                             newTimesList.push(timesList[i].toString().replace('timeline-dot-', ''))
                         }
                     }
+
+                    let statusList = []
+                    for (let i in auditList) {
+                        let status = auditList[i].status;
+                        statusList.push(status);
+                    }
+
+                    let storageTimeList = JSON.parse(localStorage.getItem("selectedTime"))
+                    let check = false
+                    newTimesList.map((time) => {
+                        if(storageTimeList){
+                            storageTimeList.map((storage) => {
+                                if(new Date(storage).getTime() === new Date(time).getTime()){
+                                    check = true
+                                }
+                            })
+                        }
+                    })
+                    if(!check || localStorage.getItem('selectedTime').length > 200){
+                        localStorage.removeItem('selectedTime')
+                    }
+
                     await this.setState({
                         timesList: newTimesList,//@:todo: TimesList to display above the timeline Dot
                         tasksList: tasksList,//@:todo: 타임라인 Dot 위쪽에 표시해줄 tasksList
+                        statusList: statusList,//@:todo: 타임라인 Dot 위쪽에 색상을 표시해줄 statusList
                         currentTask: tasksList[0],
                         currentTaskTime: timesList[0],
                         isLoading: false,
@@ -264,39 +289,42 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             let selectedIndex = value.value;
             let timelineDataOne = this.state.rawAllData[selectedIndex]
             // localStorage.removeItem('selectedTime')
-            localStorage.setItem("selectedTime", this.setStorageData(timelineDataOne.starttime))
+            localStorage.setItem("selectedTime", JSON.stringify(this.setStorageData(timelineDataOne.starttime)))
             setTimeout(() => {
                 this.setRequestView(timelineDataOne)
                 this.setResponseView(timelineDataOne)
                 this.setState({
                     rawViewData: timelineDataOne,
                     isLoading2: false,
+                    timeLineIndex : selectedIndex
                 })
             }, 251)
         }
 
 
         setStorageData(data) {
-            let storageDatas = []
-            storageDatas.push(JSON.parse(localStorage.getItem("selectedTime")))
+            let timeList = [];
+            let storageTimeList = JSON.parse(localStorage.getItem("selectedTime"))
+            let a=0
+            let makeDate = this.makeUTC(data)
+            let makeTime = this.makeNotUTC(data)
+            let newDate =  new Date(makeDate + " " + makeTime)
 
-            if(storageDatas){
-                let a=0
-                storageDatas.map( (storage, index) => {
-                    if(data === storage){
+            if (storageTimeList) {
+                timeList = storageTimeList
+                storageTimeList.map( (storage, index) => {
+                    if(newDate === storage){
                         a = 1
                     }
                 })
-                if(a !== 1){
-                    storageDatas.push(data)
+                if(a === 0){
+                    timeList.push(newDate)
                 }
             } else {
-                storageDatas.push(data)
-                console.log("20200130_123" + storageDatas)
+                timeList[0] = newDate
             }
 
-
-            return JSON.stringify(storageDatas)
+            return timeList
         }
 
 
@@ -454,11 +482,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                         }}
                                         values={this.state.timesList}
                                         tasks={this.state.tasksList}
+                                        status={this.state.statusList}
+                                        // status={this.state.}
                                         styles={{
                                             outline: '#dfdfdf',
                                             outline2: '#79BF14',
+                                            outline3: '#bf0000',
                                             background: '#f8f8f8',
-                                            foreground: '#79BF14'
+                                            foreground: '#79BF14',
+                                            errorground: '#bf0000'
                                         }}
                                         linePadding={150}
                                         /* slidingMotion={{
@@ -483,7 +515,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                             <Icon name={(this.state.closeMap)?'angle down':'angle up'}/>
                         </div>
                         <div>
-                            {(this.state.timesList.length > 0) ?<CalendarTimeline timesList={this.state.timesList} tasksList={this.state.tasksList} callback={this.onItemSelect} timelineDataOne={(this.state.rawViewData) ? this.state.rawViewData : null}/>:null}
+                            {(this.state.timesList.length > 0) ?<CalendarTimeline timesList={this.state.timesList} tasksList={this.state.tasksList} callback={this.onItemSelect} statusList={this.state.statusList} timeLineIndex={this.state.timeLineIndex}/>:null}
                         </div>
                     </div>
 
@@ -523,9 +555,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                             </div>
                         </div>
                     </div>
-                    {/*<Button onClick={this.onPopupEmail}>*/}
-                    {/*    Email*/}
-                    {/*</Button>*/}
+                    <Button onClick={this.onPopupEmail}>
+                        Email
+                    </Button>
                     <SendEmailView dimmer={true} open={this.state.openSendEmail} close={this.close}
                                    callback={this.submitSendEmail} rawViewData={this.state.rawViewData}> </SendEmailView>
                 </div>
