@@ -296,7 +296,7 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this) => {
                 let barDataOne = [
                     usageList[index].cluster.toString() + "\n[" + usageList[index].cloudlet + "]",//clusterName
                     renderUsageByType(usageList[index], hardwareType),
-                    CHART_COLOR_LIST[index],
+                    usageList.length === 1 ? 'rgb(111,253,255)' : CHART_COLOR_LIST[index],
                     renderUsageLabelByTypeForCluster(usageList[index], hardwareType)
                 ]
                 chartDataList.push(barDataOne);
