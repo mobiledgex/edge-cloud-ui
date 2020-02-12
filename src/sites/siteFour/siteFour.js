@@ -149,7 +149,7 @@ class SiteFour extends React.Component {
             { label: 'App Instances', icon: 'storage', pg: 6 },
             { label: 'Monitoring', icon: 'tv', pg: 'Monitoring' },
             { label: 'Policy', icon: 'playlist_play', pg: 8 },
-            { label: 'Audit Log', icon: 'check', pg: 'audits' }
+            { label: 'Audit Logs', icon: 'check', pg: 'audits' }
         ]
         this.menuItems = [ //developer menu
             reducer.getFindIndex(this.menuItemsAll, 'label', 'Cloudlets'),
