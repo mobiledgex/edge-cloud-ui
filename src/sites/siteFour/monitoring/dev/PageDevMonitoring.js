@@ -475,7 +475,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
                 lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
             }
-
             console.log(`barChartDataSet===${hwType}>`, barChartDataSet);
             if (hwType === HARDWARE_TYPE.RECVBYTES
                 || hwType === HARDWARE_TYPE.SENDBYTES

@@ -296,7 +296,7 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this) => {
                 let barDataOne = [
                     usageList[index].cluster.toString() + "\n[" + usageList[index].cloudlet + "]",//clusterName
                     renderUsageByType(usageList[index], hardwareType),
-                    usageList.length === 1 ? 'rgb(111,253,255)' : CHART_COLOR_LIST[index],
+                    usageList.length === 1 ? getColorOne() : CHART_COLOR_LIST[index],
                     renderUsageLabelByTypeForCluster(usageList[index], hardwareType)
                 ]
                 chartDataList.push(barDataOne);
@@ -350,7 +350,7 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
                 let barDataOne = [
                     typedUsageList[index].instance.AppName.toString().substring(0, 10) + "..." + "\n[" + typedUsageList[index].instance.Cloudlet + "]",
                     renderUsageByType(typedUsageList[index], hardwareType),
-                    typedUsageList.length === 1 ? 'rgb(111,253,255)' : CHART_COLOR_LIST[index],
+                    typedUsageList.length === 1 ? getColorOne() : CHART_COLOR_LIST[index],
                     renderUsageLabelByType(typedUsageList[index], hardwareType)
                 ]
                 chartDataList.push(barDataOne);
@@ -751,14 +751,14 @@ export const makeGradientColor = (canvas, height) => {
 
 export const makeGradientColorOne = (canvas, height) => {
     const ctx = canvas.getContext("2d");
-
     const gradient = ctx.createLinearGradient(0, 0, 0, height);
     gradient.addColorStop(0, 'rgb(111,253,255)');
     gradient.addColorStop(1.0, 'rgb(62,113,243)');
-
-
-
     return gradient;
+}
+
+export const getColorOne = () => {
+    return 'rgb(111,253,255)';
 }
 
 export const renderLineChartCoreForDev_Cluster = (paramLevelTypeNameList, usageSetList, newDateTimeList, hardwareType) => {
