@@ -24,7 +24,7 @@ import {
     getAllCloudletEventLogs,
     getCloudletEventLog,
     getClouletLevelUsageList,
-    handleBubbleChartDropDownForCloudlet,
+    handleBubbleChartDropDownForCloudlet, handleBubbleChartDropDownForCloudlet,
     makeBarChartDataForCloudlet,
     makeLineChartForCloudlet,
     renderBottomGridAreaForCloudlet
@@ -591,7 +591,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             } catch (e) {
 
-            }finally {
+            } finally {
                 toast({
                     type: 'success',
                     //icon: 'smile',
@@ -1146,8 +1146,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             options={HARDWARE_OPTIONS_FOR_CLOUDLET}
                                                             defaultValue={HARDWARE_OPTIONS_FOR_CLOUDLET[0].value}
                                                             onChange={async (e, {value}) => {
-
                                                                 await handleBubbleChartDropDownForCloudlet(value, this);
+                                                                this.setState({
+                                                                    currentHardwareType: value
+                                                                })
 
                                                             }}
                                                             value={this.state.currentHardwareType}

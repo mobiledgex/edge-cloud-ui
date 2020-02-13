@@ -49,98 +49,43 @@ export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
     }
 }
 
-
 export const handleBubbleChartDropDownForCloudlet = async (hwType, _this: PageOperMonitoring) => {
-    await _this.setState({
-        currentHardwareType: hwType,
-    });
 
-    let allUsageList = _this.state.filteredCloudletUsageList;
-    let bubbleChartData = [];
-
-
-    console.log('allUsageList===>', allUsageList);
-
-
+    let hwTypeKey = '';
     if (hwType === 'vCPU') {
-        allUsageList.map((item, index) => {
-            bubbleChartData.push({
-                index: index,
-                label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: (item.sumVCpuUsage * 1).toFixed(0),
-                favor: (item.sumVCpuUsage * 1).toFixed(0),
-                fullLabel: item.cloudlet,
-            })
-        })
-    } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.MEM) {
-        allUsageList.map((item, index) => {
-            bubbleChartData.push({
-                index: index,
-                label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: item.sumMemUsage,
-                favor: item.sumMemUsage,
-                fullLabel: item.cloudlet,
-            })
-        })
-    } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.DISK) {
-        allUsageList.map((item, index) => {
-            bubbleChartData.push({
-                index: index,
-                label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: item.sumDiskUsage,
-                favor: item.sumDiskUsage,
-                fullLabel: item.cloudlet,
-            })
-        })
-    } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.RECV_BYTES) {
-        allUsageList.map((item, index) => {
-            bubbleChartData.push({
-                index: index,
-                label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: item.sumRecvBytes,
-                favor: item.sumRecvBytes,
-                fullLabel: item.cloudlet,
-            })
-        })
-    } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.SEND_BYTES) {
-        allUsageList.map((item, index) => {
-            bubbleChartData.push({
-                index: index,
-                label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: item.sumSendBytes,
-                favor: item.sumSendBytes,
-                fullLabel: item.cloudlet,
-            })
-        })
-    } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.FLOATING_IPS) {
-        allUsageList.map((item, index) => {
-            bubbleChartData.push({
-                index: index,
-                label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: item.sumFloatingIpsUsage,
-                favor: item.sumFloatingIpsUsage,
-                fullLabel: item.cloudlet,
-            })
-        })
-    } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.IPV4) {
-        allUsageList.map((item, index) => {
-            bubbleChartData.push({
-                index: index,
-                label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: item.sumIpv4Usage,
-                favor: item.sumIpv4Usage,
-                fullLabel: item.cloudlet,
-            })
-        })
+        hwTypeKey = 'sumVCpuUsage'
+    } else if (hwType === HARDWARE_TYPE.MEM) {
+        hwTypeKey = 'sumMemUsage'
+    } else if (hwType === HARDWARE_TYPE.DISK) {
+        hwTypeKey = 'sumDiskUsage'
+    } else if (hwType === HARDWARE_TYPE.RECVBYTES) {
+        hwTypeKey = 'sumRecvBytes'
+    } else if (hwType === HARDWARE_TYPE.SENDBYTES) {
+        hwTypeKey = 'sumSendBytes'
+    } else if (hwType === HARDWARE_TYPE.FLOATING_IPS) {
+        hwTypeKey = 'sumFloatingIpsUsage'
+    } else if (hwType === HARDWARE_TYPE.IPV4) {
+        hwTypeKey = 'sumIpv4Usage'
     }
 
-    console.log('1111bubbleChartData====>', bubbleChartData);
+    let bubbleChartData = [];
+    let allUsageList = _this.state.filteredCloudletUsageList;
+    allUsageList.map((item, index) => {
+        bubbleChartData.push({
+            index: index,
+            label: item.cloudlet.toString().substring(0, 10) + "...",
+            value: item[hwTypeKey],
+            favor: item[hwTypeKey],
+            fullLabel: item.cloudlet,
+        })
+    })
+
+    console.log('allUsageList===>', allUsageList);
 
     _this.setState({
         bubbleChartData: bubbleChartData,
     });
 }
-
 
 export const renderBottomGridAreaForCloudlet = (_this: PageOperMonitoring) => {
     return (
@@ -253,8 +198,6 @@ export const renderBottomGridAreaForCloudlet = (_this: PageOperMonitoring) => {
 
 
 export const makeLineChartForCloudlet = (_this: PageOperMonitoring, pUsageList: Array, hardwareType: string) => {
-
-    console.log('usageList22222====>', pUsageList);
 
     if (pUsageList.length === 0) {
         return (
