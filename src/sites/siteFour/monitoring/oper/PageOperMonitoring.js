@@ -145,7 +145,7 @@ type State = {
     cloudletSelectLoading: boolean,
     filteredCloudletEventLogs: Array,
     allCloudletEventLogs: Array,
-    column: string,
+    eventLogColumn: string,
     direction: string,
 }
 
@@ -233,7 +233,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             cloudletSelectLoading: false,
             filteredCloudletEventLogs: [],
             allCloudletEventLogs: [],
-            column: null,
+            eventLogColumn: null,
             direction: null,
         };
 
@@ -564,36 +564,43 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredCloudletUsageList: this.state.allCloudletUsageList,
                 filteredCloudletList: this.state.cloudletList,
                 filteredCloudletEventLogs: this.state.allCloudletEventLogs,
+                eventLogColumn: null,
             })
         }
 
+        async handleReload_Oper() {
+            try {
 
-        async handleRefreshAllDataForOper() {
-            toast({
-                type: 'success',
-                //icon: 'smile',
-                title: 'REFRESH ALL DATA',
-                animation: 'bounce',
-                time: 3 * 1000,
-                color: 'black',
-            });
-            await this.setState({
-                placeHolderStateTime: moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'),
-                placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
-                cloudLetSelectBoxClearable: true,
-                loading: true,
-                cloudletSelectLoading: true,
-            })
-            await this.loadInitDataForCloudlet();
-            await this.setState({
-                loading: false,
-                currentRegion: 'ALL',
-                currentCloudLet: '',
-                currentCluster: '',
-                currentAppInst: '',
-                cloudletSelectLoading: false,
-            })
+                await this.setState({
+                    placeHolderStateTime: moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'),
+                    placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
+                    cloudLetSelectBoxClearable: true,
+                    loading: true,
+                    cloudletSelectLoading: true,
+                })
+                await this.loadInitDataForCloudlet();
+                await this.setState({
+                    loading: false,
+                    currentRegion: 'ALL',
+                    currentCloudLet: '',
+                    currentCluster: '',
+                    currentAppInst: '',
+                    cloudletSelectLoading: false,
+                    eventLogColumn: null,
+                })
 
+            } catch (e) {
+
+            }finally {
+                toast({
+                    type: 'success',
+                    //icon: 'smile',
+                    title: 'REFRESH ALL DATA',
+                    animation: 'bounce',
+                    time: 1 * 1000,
+                    color: 'black',
+                });
+            }
         }
 
 
@@ -610,11 +617,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <Button
                             onClick={async () => {
                                 if (!this.state.loading) {
-                                    this.handleRefreshAllDataForOper();
+                                    this.handleReload_Oper();
                                 } else {
                                     showToast('Currently loading, you can\'t request again.')
                                 }
-
                             }}
                             className="ui circular icon button"
                         >
@@ -914,15 +920,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         handleSortForEventLogTable = (clickedColumn) => () => {
 
-
-            if (this.state.column !== clickedColumn) {
+            if (this.state.eventLogColumn !== clickedColumn) {
                 let filteredCloudletEventLogs = sortByKey(this.state.filteredCloudletEventLogs)
                 this.setState({
-                    column: clickedColumn,
+                    eventLogColumn: clickedColumn,
                     filteredCloudletEventLogs: filteredCloudletEventLogs,
                     direction: 'ascending',
                 })
-            }else{
+            } else {
                 this.setState({
                     filteredCloudletEventLogs: this.state.filteredCloudletEventLogs.reverse(),
                     direction: this.state.direction === 'ascending' ? 'descending' : 'ascending',
@@ -941,25 +946,25 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <Table.Header className="viewListTableHeader">
                                 <Table.Row>
                                     <Table.HeaderCell
-                                        sorted={this.state.column === 'Time' ? this.state.direction : null}
+                                        sorted={this.state.eventLogColumn === 'Time' ? this.state.direction : null}
                                         onClick={this.handleSortForEventLogTable('Time')}
                                     >
                                         Time
                                     </Table.HeaderCell>
                                     <Table.HeaderCell
-                                        sorted={this.state.column === 'Cloudlet' ? this.state.direction : null}
+                                        sorted={this.state.eventLogColumn === 'Cloudlet' ? this.state.direction : null}
                                         onClick={this.handleSortForEventLogTable('Cloudlet')}
                                     >
                                         Cloudlet
                                     </Table.HeaderCell>
                                     <Table.HeaderCell
-                                        sorted={this.state.column === 'Event' ? this.state.direction : null}
+                                        sorted={this.state.eventLogColumn === 'Event' ? this.state.direction : null}
                                         onClick={this.handleSortForEventLogTable('Event')}
                                     >
                                         Event
                                     </Table.HeaderCell>
                                     <Table.HeaderCell
-                                        sorted={this.state.column === 'Status' ? this.state.direction : null}
+                                        sorted={this.state.eventLogColumn === 'Status' ? this.state.direction : null}
                                         onClick={this.handleSortForEventLogTable('Status')}
                                     >
                                         Status
@@ -1052,7 +1057,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {renderBottomGridAreaForCloudlet(this)}
                         </Modal.Content>
                     </Modal>
-                    <SemanticToastContainer position={"top-left"}/>
+                    <SemanticToastContainer position={"top-right"}/>
                     <Grid.Column className='contents_body'>
                         {/*todo:---------------------------------*/}
                         {/*todo:Content Header                   */}

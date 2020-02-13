@@ -1278,7 +1278,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {/*todo:---------------------------------*/}
                             {/*todo:Content Header                   */}
                             {/*todo:---------------------------------*/}
-                            <SemanticToastContainer position={"top-left"}/>
+                            <SemanticToastContainer position={"top-right"}/>
                             {this.renderHeader()}
                             <Grid.Row className='site_content_body' style={{marginTop: 22}}>
                                 <Grid.Column>
