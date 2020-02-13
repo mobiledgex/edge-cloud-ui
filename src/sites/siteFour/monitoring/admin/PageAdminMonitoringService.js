@@ -611,7 +611,9 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
 
                 for (let j in seriesValues) {
 
-                    /*  0: "time"
+                    /*
+                      @todo: 하드웨어 매트릭 인덱스에 대한 상수처
+                      0: "time"
                       1: "app"
                       2: "cluster"
                       3: "dev"
