@@ -586,68 +586,94 @@ export const renderBubbleChartForCloudlet = (_this: PageAdminMonitoring, hardwar
 
 
 export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardwareUsageList: Array, hardwareType: string) => {
-    if (hardwareUsageList.length === 0) {
-        return (
-            <div style={StylesForMonitoring.noData}>
-                NO DATA
-            </div>
-        )
-    } else {
-        let instanceAppName = ''
-        let instanceNameList = [];
-        let usageSetList = []
-        let dateTimeList = []
-        for (let i in hardwareUsageList) {
-            let seriesValues = hardwareUsageList[i].values
+    try {
+        if (hardwareUsageList.length === 0) {
+            return (
+                <div style={StylesForMonitoring.noData}>
+                    NO DATA
+                </div>
+            )
+        } else {
 
-            instanceAppName = hardwareUsageList[i].instance.AppName
-            let usageList = [];
+            console.log('hardwareUsageList===>', hardwareUsageList);
+            console.log('hardwareUsageList===hardwareType>', hardwareType);
 
-            for (let j in seriesValues) {
 
-                let usageOne = 0;
-                if (hardwareType === HARDWARE_TYPE.CPU) {
-                    usageOne = seriesValues[j]["6"];
-                } else if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
-                    usageOne = seriesValues[j]["13"];//receivceBytes
-                } else if (hardwareType === HARDWARE_TYPE.SEND_BYTES) {
-                    usageOne = seriesValues[j]["12"]; //sendBytes
-                } else if (hardwareType === HARDWARE_TYPE.MEM) {
-                    usageOne = seriesValues[j]["10"]; //mem usage
-                } else if (hardwareType === HARDWARE_TYPE.DISK) {
-                    usageOne = seriesValues[j]["8"];
-                } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-                    usageOne = seriesValues[j]["12"];
-                } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
-                    usageOne = seriesValues[j]["13"];
-                } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-                    usageOne = seriesValues[j]["14"];
+            let instanceAppName = ''
+            let instanceNameList = [];
+            let usageSetList = []
+            let dateTimeList = []
+            for (let i in hardwareUsageList) {
+                let seriesValues = hardwareUsageList[i].values
+
+                instanceAppName = hardwareUsageList[i].instance.AppName
+                let usageList = [];
+
+                for (let j in seriesValues) {
+
+                    /*  0: "time"
+                      1: "app"
+                      2: "cluster"
+                      3: "dev"
+                      4: "cloudlet"
+                      5: "operator"
+                      6: "cpu"
+                      7: "mem"
+                      8: "disk"
+                      9: "sendBytes"
+                      10: "recvBytes"
+                      11: "port"
+                      12: "active"
+                      13: "handled"
+                      14: "accepts"
+                      15: "bytesSent"
+                      16: "bytesRecvd"*/
+                    let usageOne = 0;
+                    if (hardwareType === HARDWARE_TYPE.CPU) {
+                        usageOne = seriesValues[j]["6"];
+                    } else if (hardwareType === HARDWARE_TYPE.MEM) {
+                        usageOne = seriesValues[j]["7"]; //mem usage
+                    } else if (hardwareType === HARDWARE_TYPE.DISK) {
+                        usageOne = seriesValues[j]["8"];
+                    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+                        usageOne = seriesValues[j]["9"];//receivceBytes
+                    } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+                        usageOne = seriesValues[j]["10"]; //sendBytes
+                    } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+                        usageOne = seriesValues[j]["12"];
+                    } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+                        usageOne = seriesValues[j]["13"];
+                    } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+                        usageOne = seriesValues[j]["14"];
+                    }
+
+                    usageList.push(usageOne);
+                    let dateOne = seriesValues[j]["0"];
+                    dateOne = dateOne.toString().split("T")
+
+                    dateTimeList.push(dateOne[1]);
                 }
 
-                usageList.push(usageOne);
-                let dateOne = seriesValues[j]["0"];
-                dateOne = dateOne.toString().split("T")
-
-                dateTimeList.push(dateOne[1]);
+                instanceNameList.push(instanceAppName)
+                usageSetList.push(usageList);
             }
 
-            instanceNameList.push(instanceAppName)
-            usageSetList.push(usageList);
-        }
+            //@todo: CUT LIST INTO RECENT_DATA_LIMIT_COUNT
+            let newDateTimeList = []
+            for (let i in dateTimeList) {
+                if (i < RECENT_DATA_LIMIT_COUNT) {
+                    let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
+                    let timeOne = splitDateTimeArrayList[0].replace("T", "T");
+                    newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
+                }
 
-        //@todo: CUT LIST INTO RECENT_DATA_LIMIT_COUNT
-        let newDateTimeList = []
-        for (let i in dateTimeList) {
-            if (i < RECENT_DATA_LIMIT_COUNT) {
-                let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
-                let timeOne = splitDateTimeArrayList[0].replace("T", "T");
-                newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
             }
-
+            return renderLineChartCore(instanceNameList, usageSetList, newDateTimeList, hardwareType)
         }
-        return renderLineChartCore(instanceNameList, usageSetList, newDateTimeList, hardwareType)
+
+    } catch (e) {
+
     }
-
 
 }
 
@@ -1108,167 +1134,242 @@ export const makeCompleteDateTime = (date: string) => {
 
 
 export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
-
-    let instanceBodyList = []
-    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
-    for (let index = 0; index < appInstanceList.length; index++) {
-        //todo: Create a data FORM format for requests
-        let instanceInfoOneForm = makeFormForAppInstance(appInstanceList[index], pHardwareType, store.userToken, recentDataLimitCount, pStartTime, pEndTime)
-        instanceBodyList.push(instanceInfoOneForm);
-    }
-
-    let promiseList = []
-    for (let index = 0; index < instanceBodyList.length; index++) {
-        promiseList.push(getAppLevelMetrics(instanceBodyList[index]))
-    }
-    //todo: Bring health check list(cpu,mem,network,disk..) to the number of apps instance, by parallel request
-
-    let appInstanceHealthCheckList = []
     try {
-        appInstanceHealthCheckList = await Promise.all(promiseList);
-    } catch (e) {
-        throw new Error(e)
-    }
+        let instanceBodyList = []
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
+        for (let index = 0; index < appInstanceList.length; index++) {
+            //todo: Create a data FORM format for requests
+            let instanceInfoOneForm = makeFormForAppInstance(appInstanceList[index], pHardwareType, store.userToken, recentDataLimitCount, pStartTime, pEndTime)
+            instanceBodyList.push(instanceInfoOneForm);
+        }
 
-    let usageListForAllInstance = []
-    appInstanceList.map((item, index) => {
-        usageListForAllInstance.push({
-            instanceData: appInstanceList[index],
-            appInstanceHealth: appInstanceHealthCheckList[index],
-        });
-    })
+        let promiseList = []
+        for (let index = 0; index < instanceBodyList.length; index++) {
+            promiseList.push(getAppLevelMetrics(instanceBodyList[index]))
+        }
+        //todo: Bring health check list(cpu,mem,network,disk..) to the number of apps instance, by parallel request
+
+        let appInstanceHealthCheckList = []
+        try {
+            appInstanceHealthCheckList = await Promise.all(promiseList);
+        } catch (e) {
+            throw new Error(e)
+        }
+
+        let usageListForAllInstance = []
+        appInstanceList.map((item, index) => {
+            usageListForAllInstance.push({
+                instanceData: appInstanceList[index],
+                appInstanceHealth: appInstanceHealthCheckList[index],
+            });
+        })
 
 
-    let cpuUsageList = []
-    let memUsageList = [];
-    let diskUsageList = [];
-    let networkUsageList = [];
-    let connectionsUsageList = [];
-    let matrixedUsageList = []
-    usageListForAllInstance.map((item, index) => {
-        let appName = item.instanceData.AppName;
-        let sumMemUsage = 0;
-        let sumDiskUsage = 0;
-        let sumRecvBytes = 0;
-        let sumSendBytes = 0;
-        let sumCpuUsage = 0;
+        /*
 
-        let sumActiveConnection = 0;
-        let sumHandledConnection = 0
-        let sumAcceptsConnection = 0
+         0: "time"
+         1: "app"
+         2: "cluster"
+         3: "dev"
+         4: "cloudlet"
+         5: "operator"
+         6: "cpu"
+         7: "mem"
+         8: "disk"
+         9: "sendBytes"
+         10: "recvBytes"
+         11: "port"
+         12: "active"
+         13: "handled"
+         14: "accepts"
+         15: "bytesSent"
+         16: "bytesRecvd"
+         */
 
-        if (item.appInstanceHealth !== undefined) {
+        let cpuUsageList = []
+        let memUsageList = [];
+        let diskUsageList = [];
+        let networkUsageList = [];
+        let connectionsUsageList = [];
+        let matrixedUsageList = []
+        usageListForAllInstance.map((item, index) => {
+            let appName = item.instanceData.AppName;
+            let sumMemUsage = 0;
+            let sumDiskUsage = 0;
+            let sumRecvBytes = 0;
+            let sumSendBytes = 0;
+            let sumCpuUsage = 0;
 
-            let series = item.appInstanceHealth.data["0"].Series;
-            if (series !== null) {
-                //@todo###########################
-                //@todo makeCpuSeriesList
-                //@todo###########################
-                if (series["3"] !== undefined) {
-                    let cpuSeries = series["3"]
-                    cpuSeries.values.map(item => {
-                        let cpuUsage = item[6];//cpuUsage..index
-                        sumCpuUsage += cpuUsage;
-                    })
+            let sumActiveConnection = 0;
+            let sumHandledConnection = 0
+            let sumAcceptsConnection = 0
 
+            if (item.appInstanceHealth !== undefined) {
+
+                let series = item.appInstanceHealth.data["0"].Series;
+
+                /*
+
+                */
+
+                if (series !== null) {
+                    //@todo###########################
+                    //@todo makeCpuSeriesList
+                    //@todo###########################
+                    if (series["3"] !== undefined) {
+                        let cpuSeries = series["3"]
+                        cpuSeries.values.map(item => {
+                            let cpuUsage = item[6];//cpuUsage..index
+                            sumCpuUsage += cpuUsage;
+                        })
+
+                        cpuUsageList.push({
+                            instance: item.instanceData,
+                            columns: cpuSeries.columns,
+                            sumCpuUsage: sumCpuUsage / RECENT_DATA_LIMIT_COUNT,
+                            values: cpuSeries.values,
+                            appName: appName,
+
+                        })
+                    }
+
+
+                    //@todo###########################
+                    //@todo MemSeriesList
+                    //@todo###########################
+                    if (series["1"] !== undefined) {
+                        let memSeries = series["1"]
+                        memSeries.values.map(item => {
+                            let usageOne = item[7];//memUsage..index
+                            sumMemUsage += usageOne;
+                        })
+
+                        memUsageList.push({
+                            instance: item.instanceData,
+                            columns: memSeries.columns,
+                            sumMemUsage: Math.ceil(sumMemUsage / RECENT_DATA_LIMIT_COUNT),
+                            values: memSeries.values,
+                            appName: appName,
+                        })
+                    }
+
+
+                    //@todo###########################
+                    //@todo DiskSeriesList
+                    //@todo###########################
+                    if (series["2"] !== undefined) {
+                        let diskSeries = series["2"]
+                        diskSeries.values.map(item => {
+                            let usageOne = item[8];//diskUsage..index
+                            sumDiskUsage += usageOne;
+                        })
+
+                        diskUsageList.push({
+                            instance: item.instanceData,
+                            columns: diskSeries.columns,
+                            sumDiskUsage: Math.ceil(sumDiskUsage / RECENT_DATA_LIMIT_COUNT),
+                            values: diskSeries.values,
+                            appName: appName,
+                        })
+
+                    }
+                    //@todo###############################
+                    //@todo NetworkUSageList
+                    //@todo##############################
+                    if (series["0"] !== undefined) {
+                        let networkSeries = series["0"]
+                        networkSeries.values.map(item => {
+                            let sendBytesOne = item[9];//sendBytesOne
+                            sumSendBytes += sendBytesOne;
+                            let recvBytesOne = item[10];//recvBytesOne
+                            sumRecvBytes += recvBytesOne;
+                        })
+
+                        networkUsageList.push({
+                            instance: item.instanceData,
+                            columns: networkSeries.columns,
+                            sumRecvBytes: Math.ceil(sumRecvBytes / RECENT_DATA_LIMIT_COUNT),
+                            sumSendBytes: Math.ceil(sumSendBytes / RECENT_DATA_LIMIT_COUNT),
+                            values: networkSeries.values,
+                            appName: appName,
+                        })
+                    }
+
+
+                    //@todo###############################
+                    //@todo connectionsUsageList [4]
+                    //@todo##############################
+                    if (series["4"] !== undefined) {
+                        /*12: "active"
+                        13: "handled"
+                        14: "accepts"*/
+                        let connectionsSeries = series["4"]
+                        connectionsSeries.values.map(item => {
+                            let connection1One = item[12];//1
+                            sumActiveConnection += connection1One;
+                            let connection2One = item[13];//2
+                            sumHandledConnection += connection2One;
+                            let connection3One = item[14];//3
+                            sumAcceptsConnection += connection3One;
+                        })
+
+                        connectionsUsageList.push({
+                            instance: item.instanceData,
+                            columns: connectionsSeries.columns,
+                            sumActiveConnection: Math.ceil(sumActiveConnection / RECENT_DATA_LIMIT_COUNT),
+                            sumHandledConnection: Math.ceil(sumHandledConnection / RECENT_DATA_LIMIT_COUNT),
+                            sumAcceptsConnection: Math.ceil(sumAcceptsConnection / RECENT_DATA_LIMIT_COUNT),
+                            values: connectionsSeries.values,
+                            appName: appName,
+                        })
+                    } else {
+                        connectionsUsageList.push({
+                            instance: item.instanceData,
+                            columns: "",
+                            sumActiveConnection: 0,
+                            sumHandledConnection: 0,
+                            sumAcceptsConnection: 0,
+                            values: [],
+                            appName: appName,
+                        })
+                    }
+
+                } else {//@todo: If series data is null
                     cpuUsageList.push({
                         instance: item.instanceData,
-                        columns: cpuSeries.columns,
-                        sumCpuUsage: sumCpuUsage / RECENT_DATA_LIMIT_COUNT,
-                        values: cpuSeries.values,
+                        columns: "",
+                        sumCpuUsage: 0,
+                        values: [],
                         appName: appName,
 
-                    })
-                }
-
-
-                //@todo###########################
-                //@todo MemSeriesList
-                //@todo###########################
-                if (series["1"] !== undefined) {
-                    let memSeries = series["1"]
-                    memSeries.values.map(item => {
-                        let usageOne = item[7];//memUsage..index
-                        sumMemUsage += usageOne;
                     })
 
                     memUsageList.push({
                         instance: item.instanceData,
-                        columns: memSeries.columns,
-                        sumMemUsage: Math.ceil(sumMemUsage / RECENT_DATA_LIMIT_COUNT),
-                        values: memSeries.values,
+                        columns: "",
+                        sumMemUsage: 0,
+                        values: [],
                         appName: appName,
-                    })
-                }
 
-
-                //@todo###########################
-                //@todo DiskSeriesList
-                //@todo###########################
-                if (series["2"] !== undefined) {
-                    let diskSeries = series["2"]
-                    diskSeries.values.map(item => {
-                        let usageOne = item[8];//diskUsage..index
-                        sumDiskUsage += usageOne;
                     })
 
                     diskUsageList.push({
                         instance: item.instanceData,
-                        columns: diskSeries.columns,
-                        sumDiskUsage: Math.ceil(sumDiskUsage / RECENT_DATA_LIMIT_COUNT),
-                        values: diskSeries.values,
+                        columns: "",
+                        sumDiskUsage: 0,
+                        values: [],
                         appName: appName,
-                    })
-
-                }
-                //@todo###############################
-                //@todo NetworkUSageList
-                //@todo##############################
-                if (series["0"] !== undefined) {
-                    let networkSeries = series["0"]
-                    networkSeries.values.map(item => {
-                        let sendBytesOne = item[9];//sendBytesOne
-                        sumSendBytes += sendBytesOne;
-                        let recvBytesOne = item[10];//recvBytesOne
-                        sumRecvBytes += recvBytesOne;
-
                     })
 
                     networkUsageList.push({
                         instance: item.instanceData,
-                        columns: networkSeries.columns,
-                        sumRecvBytes: Math.ceil(sumRecvBytes / RECENT_DATA_LIMIT_COUNT),
-                        sumSendBytes: Math.ceil(sumSendBytes / RECENT_DATA_LIMIT_COUNT),
-                        values: networkSeries.values,
+                        columns: "",
+                        sumRecvBytes: 0,
+                        sumSendBytes: 0,
+                        values: [],
                         appName: appName,
                     })
-                }
 
-
-                //@todo###############################
-                //@todo connectionsUsageList [4]
-                //@todo##############################
-                if (series["4"] !== undefined) {
-                    let connectionsSeries = series["4"]
-                    connectionsSeries.values.map(item => {
-                        let connection1One = item[12];//1
-                        sumActiveConnection += connection1One;
-                        let connection2One = item[13];//2
-                        sumHandledConnection += connection2One;
-                        let connection3One = item[14];//3
-                        sumAcceptsConnection += connection3One;
-                    })
-
-                    connectionsUsageList.push({
-                        instance: item.instanceData,
-                        columns: connectionsSeries.columns,
-                        sumActiveConnection: Math.ceil(sumActiveConnection / RECENT_DATA_LIMIT_COUNT),
-                        sumHandledConnection: Math.ceil(sumHandledConnection / RECENT_DATA_LIMIT_COUNT),
-                        sumAcceptsConnection: Math.ceil(sumAcceptsConnection / RECENT_DATA_LIMIT_COUNT),
-                        values: connectionsSeries.values,
-                        appName: appName,
-                    })
-                } else {
                     connectionsUsageList.push({
                         instance: item.instanceData,
                         columns: "",
@@ -1279,70 +1380,27 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                         appName: appName,
                     })
                 }
-
-            } else {//@todo: If series data is null
-                cpuUsageList.push({
-                    instance: item.instanceData,
-                    columns: "",
-                    sumCpuUsage: 0,
-                    values: [],
-                    appName: appName,
-
-                })
-
-                memUsageList.push({
-                    instance: item.instanceData,
-                    columns: "",
-                    sumMemUsage: 0,
-                    values: [],
-                    appName: appName,
-
-                })
-
-                diskUsageList.push({
-                    instance: item.instanceData,
-                    columns: "",
-                    sumDiskUsage: 0,
-                    values: [],
-                    appName: appName,
-                })
-
-                networkUsageList.push({
-                    instance: item.instanceData,
-                    columns: "",
-                    sumRecvBytes: 0,
-                    sumSendBytes: 0,
-                    values: [],
-                    appName: appName,
-                })
-
-                connectionsUsageList.push({
-                    instance: item.instanceData,
-                    columns: "",
-                    sumActiveConnection: 0,
-                    sumHandledConnection: 0,
-                    sumAcceptsConnection: 0,
-                    values: [],
-                    appName: appName,
-                })
             }
-        }
 
-    })
+        })
 
-    //@todo :##################################
-    //@todo : Sort usage in reverse order.
-    //@todo :##################################
-    cpuUsageList.sort((a, b) => b.sumCpuUsage - a.sumCpuUsage);
-    memUsageList.sort((a, b) => b.sumMemUsage - a.sumMemUsage);
-    networkUsageList.sort((a, b) => b.sumRecvBytes - a.sumRecvBytes)
-    diskUsageList.sort((a, b) => b.sumDiskUsage - a.sumDiskUsage);
-    connectionsUsageList.sort((a, b) => b.sumHandledConnection - a.sumHandledConnection);
-    matrixedUsageList.push(cpuUsageList)
-    matrixedUsageList.push(memUsageList)
-    matrixedUsageList.push(networkUsageList)
-    matrixedUsageList.push(diskUsageList)
-    matrixedUsageList.push(connectionsUsageList)
-    return matrixedUsageList;
+        //@todo :##################################
+        //@todo : Sort usage in reverse order.
+        //@todo :##################################
+        cpuUsageList.sort((a, b) => b.sumCpuUsage - a.sumCpuUsage);
+        memUsageList.sort((a, b) => b.sumMemUsage - a.sumMemUsage);
+        networkUsageList.sort((a, b) => b.sumRecvBytes - a.sumRecvBytes)
+        diskUsageList.sort((a, b) => b.sumDiskUsage - a.sumDiskUsage);
+        connectionsUsageList.sort((a, b) => b.sumHandledConnection - a.sumHandledConnection);
+        matrixedUsageList.push(cpuUsageList)
+        matrixedUsageList.push(memUsageList)
+        matrixedUsageList.push(networkUsageList)
+        matrixedUsageList.push(diskUsageList)
+        matrixedUsageList.push(connectionsUsageList)
+        return matrixedUsageList;
+    } catch (e) {
+        throw new Error(e.toString())
+    }
+
 }
 
