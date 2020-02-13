@@ -171,6 +171,26 @@ export const NETWORK_OPTIONS2 = [
     {text: 'NET_RECV', value: 'NET_RECV'},
 ]
 
+export const APP_INST_MATRIX_HW_USAGE_INDEX = {
+    TIME: 0,
+    APP: 1,
+    CLUSTER: 2,
+    DEV: 3,
+    CLOUDLET: 4,
+    OPERATOR: 5,
+    CPU: 6,
+    MEM: 7,
+    DISK: 8,
+    SENDBYTES: 9,
+    RECVBYTES: 10,
+    PORT: 11,
+    ACTIVE: 12,
+    HANDLED: 13,
+    ACCEPTS: 14,
+    BYTESSENT: 15,
+    BYTESRECVD: 16,
+}
+
 
 export const USAGE_INDEX = {
     TIME: 0,

@@ -2,7 +2,7 @@ import React from 'react';
 import axios from "axios";
 import {formatData} from "../../../../services/formatter/formatComputeInstance";
 import '../PageMonitoring.css';
-import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../../shared/Constants";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
 import BubbleChart from "../../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../../shared/Types";
@@ -610,7 +610,6 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
                 let usageList = [];
 
                 for (let j in seriesValues) {
-
                     /*
                       @todo: 하드웨어 매트릭 인덱스에 대한 상수처
                       0: "time"
@@ -632,21 +631,21 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
                       16: "bytesRecvd"*/
                     let usageOne = 0;
                     if (hardwareType === HARDWARE_TYPE.CPU) {
-                        usageOne = seriesValues[j]["6"];
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.CPU];
                     } else if (hardwareType === HARDWARE_TYPE.MEM) {
-                        usageOne = seriesValues[j]["7"]; //mem usage
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.MEM]; //mem usage
                     } else if (hardwareType === HARDWARE_TYPE.DISK) {
-                        usageOne = seriesValues[j]["8"];
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.DISK];
                     } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-                        usageOne = seriesValues[j]["9"];//receivceBytes
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.SENDBYTES];//receivceBytes
                     } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-                        usageOne = seriesValues[j]["10"]; //sendBytes
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.RECVBYTES]; //sendBytes
                     } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-                        usageOne = seriesValues[j]["12"];
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE];
                     } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
-                        usageOne = seriesValues[j]["13"];
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.HANDLED];
                     } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-                        usageOne = seriesValues[j]["14"];
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACCEPTS];
                     }
 
                     usageList.push(usageOne);
@@ -1168,7 +1167,6 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
 
         /*
-
          0: "time"
          1: "app"
          2: "cluster"
