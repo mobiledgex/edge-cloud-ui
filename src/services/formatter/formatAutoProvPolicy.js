@@ -3,7 +3,7 @@ import { generateUniqueId } from '../serviceMC';
 export const formatData = (datas, body) => {
 
   let values = [];
-  if (datas.data && datas.data.length > 0) {
+  if (datas.data) {
     let toArray = null;
     let toJson = null;
     if (typeof datas.data === 'object') {

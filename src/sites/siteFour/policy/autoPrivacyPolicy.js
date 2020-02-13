@@ -2,25 +2,27 @@ import _ from 'lodash'
 import React from 'react';
 import sizeMe from 'react-sizeme';
 import MexListView from '../../../container/MexListView';
+import MexDetailViewer from '../../../hoc/dataViewer/DetailViewer';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 
 import * as serviceMC from '../../../services/serviceMC';
+import {layouts} from '../../../services/formatter/formatPrivacyPolicy';
 import PrivacyPolicyReg from './autoPrivacyPolicyReg'
 
-
-let _self = null;
-let rgn = [];
+const LIST_VIEW = 'ListView'
+const DETAIL_VIEW = 'DetailView'
 class SiteFourPageFlavor extends React.Component {
     constructor(props) {
         super(props);
-        _self = this;
         this.state = {
             devData: [],
             regionToggle: false,
             edit:false,
+            viewMode:LIST_VIEW,
+            detailData:{}
         };
         this.initLoad = false;
         this.action = '';
@@ -39,6 +41,7 @@ class SiteFourPageFlavor extends React.Component {
         ]
 
         this.actionMenu = [
+            { label: 'View', onClick: this.onView },
             { label: 'Update', onClick: this.onAddPolicy },
             { label: 'Delete', onClick: this.onDelete }
         ]
@@ -67,20 +70,20 @@ class SiteFourPageFlavor extends React.Component {
             privacypolicy: privacypolicy
         }
         let mcRequest = await serviceMC.sendSyncRequest(this, { token: this.getToken(), method: serviceMC.getEP().DELETE_PRIVACY_POLICY, data: requestData })
-        if (mcRequest.response && mcRequest.response.status === 200) {
-            this.props.handleAlertInfo('success', `${data.PrivacyPolicyName} Deleted Successfully`)
+        if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
+            this.props.handleAlertInfo('success', `Privacy Policy ${data.PrivacyPolicyName} deleted successfully`)
         }
         this.props.handleComputeRefresh(true);
     }
 
     gotoUrl(site, subPath) {
         let mainPath = site;
-        _self.props.history.push({
+        this.props.history.push({
             pathname: site,
             search: subPath
         });
-        _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
+        this.props.history.location.search = subPath;
+        this.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
 
     }
 
@@ -93,8 +96,21 @@ class SiteFourPageFlavor extends React.Component {
         this.getDataDeveloper(this.props.changeRegion, this.state.regions || savedRegion);
     }
 
+    
+
     componentWillReceiveProps(nextProps) {
-        if (nextProps.computeRefresh.compute) {
+        if(nextProps.viewMode !== this.props.viewMode)
+        {
+            if(this.props.viewMode === LIST_VIEW)
+            {
+                this.setState({
+                    viewMode:LIST_VIEW,
+                    detailData:{}
+                })
+                this.props.handleComputeRefresh(true)
+            }
+        }
+        else if (nextProps.computeRefresh && nextProps.computeRefresh.compute) {
             this.getDataDeveloper(nextProps.changeRegion);
             this.props.handleComputeRefresh(false);
         }
@@ -104,36 +120,50 @@ class SiteFourPageFlavor extends React.Component {
     }
 
     receiveResult = (mcRequest) => {
-        _self.requestCount -= 1;
+        this.requestCount -= 1;
         if (mcRequest) {
             if (mcRequest.response) {
                 let response = mcRequest.response;
-                if (response.data.length > 0) {
-                    _self.multiRequestData = [..._self.multiRequestData, ...response.data]
+                if (response.data && response.data.length > 0) {
+                    this.multiRequestData = [...this.multiRequestData, ...response.data]
                 }
             }
         }
 
-        if (_self.requestCount === 0) {
-            if (_self.multiRequestData.length > 0) {
-                let sortedData = _.orderBy(_self.multiRequestData, ['Region', 'PrivacyPolicyName'])
-                _self.setState({
+        if (this.requestCount === 0) {
+            if (this.multiRequestData.length > 0) {
+                let sortedData = _.orderBy(this.multiRequestData, ['Region', 'PrivacyPolicyName'])
+                this.setState({
                     devData: sortedData
                 })
-                _self.multiRequestData = [];
+                this.multiRequestData = [];
             } else {
-                _self.props.handleComputeRefresh(false);
-                _self.props.handleAlertInfo('error', 'Requested data is empty')
+                this.props.handleComputeRefresh(false);
+                this.props.handleAlertInfo('error', 'Requested data is empty')
             }
         }
     }
 
+    onDetailViewClose = ()=>
+    {
+
+    }
+
+    onView = (data)=>
+    {
+        this.props.handleDetail({ data: null, viewMode: 'MexDetailView' })
+        this.setState({
+            viewMode : DETAIL_VIEW,
+            detailData:data
+        })
+    }
+
     getDataDeveloper = (region, regionArr) => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        let rgn = [];
         this.setState({ devData: [] })
         this.multiRequestData = [];
         this.requestCount = 0;
-
         if (region !== 'All') {
             rgn = [region]
         } else {
@@ -144,27 +174,36 @@ class SiteFourPageFlavor extends React.Component {
             this.requestCount = rgn.length;
             rgn.map((item) => {
                 let requestData = { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_PRIVACY_POLICY, data: { region: item } };
-                serviceMC.sendRequest(_self, requestData, _self.receiveResult)
+                serviceMC.sendRequest(this, requestData, this.receiveResult)
             })
         }
     }
     render() {
         return (
-            <MexListView devData={this.state.devData} headerInfo={this.headerInfo} actionMenu={this.actionMenu} siteId={'Flavors'} dataRefresh={this.getDataDeveloper}></MexListView>
-        );
+            this.state.viewMode === LIST_VIEW ?
+                <MexListView devData={this.state.devData} headerInfo={this.headerInfo} actionMenu={this.actionMenu} siteId={'Flavors'} dataRefresh={this.getDataDeveloper}/> :
+                <MexDetailViewer detailData={this.state.detailData} layouts={layouts}/>
+        )
     }
 };
 
 const mapStateToProps = (state) => {
+    let viewMode = null;
     let regionInfo = (state.regionInfo) ? state.regionInfo : null;
+    if (state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
+        viewMode = state.changeViewMode.mode.viewMode;
+    }
+
     return {
         computeRefresh: (state.computeRefresh) ? state.computeRefresh : null,
         changeRegion: state.changeRegion.region ? state.changeRegion.region : null,
-        regionInfo: regionInfo
+        regionInfo: regionInfo,
+        viewMode : viewMode==='listView' ? DETAIL_VIEW : LIST_VIEW
     }
 };
 const mapDispatchProps = (dispatch) => {
     return {
+        handleDetail: (data) => { dispatch(actions.changeDetail(data)) },
         handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
         handleInjectData: (data) => { dispatch(actions.injectData(data)) },
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data)) },

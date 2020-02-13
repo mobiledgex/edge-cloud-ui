@@ -2,60 +2,83 @@ import React from 'react'
 import MexSelect from './MexSelect';
 import MexInput from './MexInput';
 import MexDualList from './MexDualList';
+import MexCheckbox  from './MexCheckbox';
 import { Form, Grid, Divider } from 'semantic-ui-react';
 import { IconButton } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 
-const HEADER = 'Header'
-const SELECT = 'Select'
-const DUAL_LIST = 'DualList'
-const Input = 'Input'
+export const HEADER = 'Header'
+export const SELECT = 'Select'
+export const DUALLIST = 'DualList'
+export const INPUT = 'Input'
+export const CHECKBOX = 'Checkbox'
 
-let data = {}
-const onValueSelect = (form, value, parentForm) => {
+const MexForms = (props) => {
+
+    const onValueSelect = (form, value, parentForm) => {
+        form.value = value;
+        if(props.onValueChange)
+        {
+            props.onValueChange(form, parentForm)
+        }
+        
+    }
+    const onRemoveMultiForm = (index, form)=>
+    {
+        form.onClick(index)
+    }
     
-    if(parentForm)
+    const loadHeader = (index, form)=>
     {
-        let parentData = data[parentForm.uuid] ? data[parentForm.uuid] : {}
-        parentData[form.field] = value;
-        data[parentForm.uuid] = parentData;
+        let subForm = form.forms
+        return (
+            <div key={index} style={{ width: '100%' }}>
+                <h2 style={{ color: "white", display: 'inline' }}>{form.label}
+                    {
+                        subForm ? subForm.type === 'Button' ? 
+                            <IconButton style={{ color: "white", display: 'inline' }} onClick={subForm.onClick}>
+                                <AddIcon />
+                            </IconButton> : 
+                            null : 
+                        null
+                    }
+                </h2>
+                <Divider />
+            </div>
+        )
     }
-    else
+    
+    const loadHorizontalForms = (parentId, forms)=>
     {
-        data[form.field] = value;
+        let parentForm = props.forms[parentId];
+        return forms.map((form, i) => {
+            
+            let required = false;
+            let disabled = false;
+            if (form.rules) {
+                let rules = form.rules;
+                required = rules.required ? rules.required : false;
+                disabled = rules.disabled ? rules.disabled : false;
+            }
+            return (
+                form.field && form.visible ?
+                    <Grid.Column width={3} key={i}>
+                        {form.label}{required ? ' *' : ''}
+                        {
+                            form.type === INPUT ?
+                                <MexInput parentForm={parentForm} form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                            form.type === SELECT ?
+                                <MexSelect parentForm={parentForm} form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                                null
+                        }
+                    </Grid.Column> : null
+            )
+        })
     }
-}
-const onRemoveMultiForm = (index, form)=>
-{
-    data[form.uuid] = undefined;
-    form.onClick(index)
-}
-
-const loadHeader = (index, form)=>
-{
-    let subForm = form.forms
-    return (
-        <div key={index} style={{ width: '100%' }}>
-            <h2 style={{ color: "white", display: 'inline' }}>{form.label}
-                {
-                    subForm ? subForm.type === 'Button' ? 
-                        <IconButton style={{ color: "white", display: 'inline' }} onClick={subForm.onClick}>
-                            <AddIcon />
-                        </IconButton> : 
-                        null : 
-                    null
-                }
-            </h2>
-
-            <Divider />
-        </div>
-    )
-}
-
-const loadHorizontalForms = (props, parentId, forms)=>
-{
-    return forms.map((form, i) => {
+    
+    const loadForms = (index, form)=>
+    {
         let required = false;
         let disabled = false;
         if (form.rules) {
@@ -65,63 +88,46 @@ const loadHorizontalForms = (props, parentId, forms)=>
         }
         return (
             form.field ?
-                <Grid.Column width={3} key={i}>
-                    {form.label}{required ? ' *' : ''}
-                    {
-                        form.type === Input ?
-                            <MexInput parentForm={props.forms[parentId]} form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
-                            null
-                    }
-                </Grid.Column> : null
+                <Grid.Row columns={3} key={index}>
+                    <Grid.Column width={4} className='detail_item'>
+                        <div>{form.label}{required ? ' *' : ''}</div>
+                    </Grid.Column>
+                    <Grid.Column width={11}>
+                        {
+                            form.type === SELECT ?
+                                <MexSelect form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                                form.type === DUALLIST ?
+                                    <MexDualList form={form} onChange={onValueSelect} /> :
+                                    form.type === INPUT ?
+                                        <MexInput form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                                    form.type === CHECKBOX ?
+                                        <MexCheckbox form={form} onChange={onValueSelect}/>:
+                                        null
+                        }
+                    </Grid.Column>
+                </Grid.Row> : null
         )
-    })
-    
-    
-}
-
-const loadForms = (index, form)=>
-{
-    let required = false;
-    let disabled = false;
-    if (form.rules) {
-        let rules = form.rules;
-        required = rules.required ? rules.required : false;
-        disabled = rules.disabled ? rules.disabled : false;
     }
-    return (
-        form.field ?
-            <Grid.Row columns={3} key={index}>
-                <Grid.Column width={4} className='detail_item'>
-                    <div>{form.label}{required ? ' *' : ''}</div>
-                </Grid.Column>
-                <Grid.Column width={11}>
-                    {
-                        form.type === SELECT ?
-                            <MexSelect form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
-                            form.type === DUAL_LIST ?
-                                <MexDualList form={form} onChange={onValueSelect} /> :
-                                form.type === Input ?
-                                    <MexInput form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
-                                    null
-                    }
-                </Grid.Column>
-            </Grid.Row> : null
-    )
-}
+    
+    const loadMultiForm=(index, form)=>
+    {
+        return (
+            <Grid.Row columns={2} key={index}>
+                {loadHorizontalForms(index, form.forms) }
+                {
+                    index === props.forms.length-1 && form.showDelete? 
+                        <div>
+                            <p></p>
+                            <IconButton style={{color:'white'}} onClick={()=>{onRemoveMultiForm(index, form)}} ><DeleteOutlinedIcon/></IconButton>
+                        </div> : 
+                        null
+                }
+                
+            </Grid.Row>
+        )
+    }
 
-const loadMultiForm=(props, index, form)=>
-{
-    return (
-        <Grid.Row columns={2} key={index}>
-            {loadHorizontalForms(props, index, form.forms) }
-            {/* <IconButton style={{color:'white'}} onClick={()=>{onRemoveMultiForm(index, form)}} ><RemoveIcon/></IconButton> */}
-        </Grid.Row>
-    )
-}
-
-const MexForms = (props) => {
     let forms = props.forms
-    data = props.formData ? props.formData : data
     return (
         forms ?
             <Form>
@@ -129,11 +135,13 @@ const MexForms = (props) => {
                     <Grid columns={2}>
                         {forms.map((form, i) => {
                             return (
-                                form.type === HEADER ?
-                                    loadHeader(i, form) :
-                                form.type === 'MultiForm' ? 
-                                    form.forms ? loadMultiForm(props, i, form): null :
-                                    loadForms(i, form)
+                                form.visible ?
+                                    form.type === HEADER ?
+                                        loadHeader(i, form) :
+                                    form.type === 'MultiForm' ? 
+                                        form.forms ? loadMultiForm(i, form): null :
+                                        loadForms(i, form) :
+                                    null
                             )
                         })}
                     </Grid>
@@ -146,7 +154,7 @@ const MexForms = (props) => {
                                     key={i}
                                     positive
                                     content={form.label}
-                                    onClick={(e) => { form.onClick(data) }}
+                                    onClick={(e) => { form.onClick() }}
                                 /> : null)
                         })}
 

@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import React from 'react';
-import sizeMe from 'react-sizeme';
 import MexListView from '../../../container/MexListView';
 import { withRouter } from 'react-router-dom';
 //redux
@@ -75,7 +74,7 @@ class SiteFourPageFlavor extends React.Component {
         }
         let mcRequest = await serviceMC.sendSyncRequest(this, { token: this.getToken(), method: serviceMC.getEP().DELETE_AUTO_PROV_POLICY, data: requestData })
         if (mcRequest.response && mcRequest.response.status === 200) {
-            this.props.handleAlertInfo('success', `${data.AutoPolicyName} Deleted Successfully`)
+            this.props.handleAlertInfo('success', `Auto Provisioning Policy ${data.AutoPolicyName} deleted successfully`)
         }
         this.props.handleComputeRefresh(true);
     }
@@ -114,7 +113,7 @@ class SiteFourPageFlavor extends React.Component {
         if (mcRequest) {
             if (mcRequest.response) {
                 let response = mcRequest.response;
-                if (response.data.length > 0) {
+                if (response.data && response.data.length > 0) {
                     _self.multiRequestData = [..._self.multiRequestData, ...response.data]
                 }
             }
@@ -178,4 +177,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageFlavor)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(SiteFourPageFlavor));
