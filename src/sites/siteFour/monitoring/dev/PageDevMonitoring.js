@@ -40,7 +40,7 @@ import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData} from "..
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
-import '../PageMonitoring_new.css'
+import '../PageMonitoring.css'
 import {
     getOneYearStartEndDatetime,
     makeBubbleChartDataForCluster,
@@ -914,6 +914,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                               size={20}/>
                         </div>
                         }*/}
+                        <AButton type={'primary'}>sdkjfskdjfksjdf</AButton>
                     </div>
                 </Grid.Row>
             )

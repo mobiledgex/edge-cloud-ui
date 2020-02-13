@@ -9,25 +9,16 @@ import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
-import {DatePicker, Progress,} from 'antd';
-import {filterListBykey, filterListBykeyForCloudlet, getCloudletList, renderBubbleChartForCloudlet,} from "../admin/PageAdminMonitoringService";
-import {
-    CLASSIFICATION,
-    HARDWARE_OPTIONS_FOR_CLOUDLET,
-    HARDWARE_TYPE,
-    HARDWARE_TYPE_FOR_CLOUDLET,
-    NETWORK_OPTIONS,
-    NETWORK_TYPE,
-    RECENT_DATA_LIMIT_COUNT,
-    REGIONS_OPTIONS
-} from "../../../../shared/Constants";
-import type {TypeCloudletUsageList, TypeGridInstanceList} from "../../../../shared/Types";
+import {DatePicker,} from 'antd';
+import {filterListBykeyForCloudlet, getCloudletList, renderBubbleChartForCloudlet,} from "../admin/PageAdminMonitoringService";
+import {CLASSIFICATION, HARDWARE_OPTIONS_FOR_CLOUDLET, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../../shared/Constants";
+import type {TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {numberWithCommas, renderGridLoader2, renderPlaceHolderCircular, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
+import {renderGridLoader2, renderPlaceHolderCircular, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
 import {
     getCloudletEventLog,
@@ -39,7 +30,6 @@ import {
 } from "./PageOperMonitoringService";
 import LeafletMap from "./LeafletMapWrapper";
 import {filterUsageByClassification, makeSelectBoxListWithKey} from "../dev/PageDevMonitoringService";
-import Lottie from "react-lottie";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
