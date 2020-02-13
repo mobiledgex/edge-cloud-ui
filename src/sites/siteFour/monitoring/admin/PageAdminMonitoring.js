@@ -74,6 +74,13 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
+// const isMobile = () => {
+//     return navigator.userAgent.indexOf('iPad') > -1;
+// };
+
+let isIOS = /iPad|iPhone|iPod/.test(navigator.platform)
+    || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+
 type Props = {
     handleLoadingSpinner: Function,
     toggleLoading: Function,
@@ -1478,7 +1485,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <Grid.Column>
                                 <div className="table-no-resized">
 
-                                    <div className="page_monitoring">
+                                    <div className={isIOS ? 'page_monitoring page_isIOS' : 'page_monitoring'}>
                                         {/*todo:---------------------------------*/}
                                         {/*todo:SELECTBOX_ROW        */}
                                         {/*todo:---------------------------------*/}
