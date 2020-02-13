@@ -931,8 +931,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 </Table.Row>
                                 }
                                 {this.state.cloudletSelectLoading &&
-                                <div style={StylesForMonitoring.center}>
-                                    <CircularProgress style={{color: '#1cecff', marginTop: 50}}/>
+                                <div style={StylesForMonitoring.center2}>
+                                    <CircularProgress style={{color: '#1cecff', marginTop: -70, }}/>
                                 </div>
                                 }
                                 {!this.state.cloudletSelectLoading && this.state.cloudletEventLogs.map(item => {

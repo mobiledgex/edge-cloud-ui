@@ -84,6 +84,15 @@ export const StylesForMonitoring = {
         alignItems: 'center',
         width: '100%',
         //backgroundColor:'red'
+    },
+    center2: {
+        display: 'flex',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        minHeight: 350,
+        //backgroundColor:'red'
     }
 
 }
@@ -126,9 +135,6 @@ export const renderGridLoader = () => {
         />
     )
 }
-
-
-
 
 
 export const renderPlaceHolderCircular = (type: string = '') => {
