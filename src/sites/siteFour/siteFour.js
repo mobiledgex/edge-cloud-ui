@@ -1045,7 +1045,7 @@ class SiteFour extends React.Component {
                                             }
                                             {
                                                 (viewMode === 'detailView' || viewMode === 'MexDetailView') ?
-                                                    <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.props.handleDetail({
+                                                    <Button color='teal' onClick={() => this.props.handleDetail({
                                                         data: null,
                                                         viewMode: 'listView'
                                                     })}>Close Details</Button>
