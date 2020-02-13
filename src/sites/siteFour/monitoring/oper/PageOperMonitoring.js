@@ -10,10 +10,10 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker,} from 'antd';
-import {filterListBykeyForCloudlet, getCloudletList, renderBubbleChartForCloudlet,} from "../admin/PageAdminMonitoringService";
+import {filterListBykeyForCloudlet, getAppLevelMetrics, getCloudletList, renderBubbleChartForCloudlet,} from "../admin/PageAdminMonitoringService";
 import {CLASSIFICATION, HARDWARE_OPTIONS_FOR_CLOUDLET, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../../shared/Constants";
 import type {TypeGridInstanceList} from "../../../../shared/Types";
-import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
+import {TypeAppInstance, TypeUtilization, TypeCloudlet} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
@@ -21,6 +21,7 @@ import '../PageMonitoring.css'
 import {renderGridLoader2, renderPlaceHolderCircular, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
 import {
+    getAllCloudletEventLogs,
     getCloudletEventLog,
     getClouletLevelUsageList,
     handleBubbleChartDropDownForCloudlet,
@@ -142,6 +143,8 @@ type State = {
     filteredCloudletList: Array,
     cloudletEventLogs: Array,
     cloudletSelectLoading: boolean,
+    filteredCloudletEventLogs: Array,
+    allCloudletEventLogs: Array,
 }
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
@@ -225,8 +228,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             allCloudletUsageList: [],
             filteredCloudletUsageList: [],
             filteredCloudletList: [],
-            cloudletEventLogs: [],
             cloudletSelectLoading: false,
+            filteredCloudletEventLogs: [],
+            allCloudletEventLogs: [],
         };
 
         interval = null;
@@ -238,14 +242,28 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         componentDidMount = async () => {
-            this.setState({
-                loading: true,
-            })
-            await this.loadInitDataForCloudlet();
-            this.setState({
-                loading: false,
-                isReady: true,
-            })
+            try {
+
+                this.setState({
+                    loading: true,
+                })
+                await this.loadInitDataForCloudlet();
+                this.setState({
+                    loading: false,
+                    isReady: true,
+                })
+
+
+            } catch (e) {
+                showToast(e.toString())
+            } finally {
+                this.setState({
+                    isRequesting: false,
+                    loading: false,
+                    isReady: true,
+                })
+            }
+
         }
 
         componentWillUnmount(): void {
@@ -253,59 +271,63 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         async loadInitDataForCloudlet() {
-            this.setState({
-                isRequesting: true,
-            })
-
-            let cloudletList = []
-            cloudletList = await getCloudletList();
-
-            //fixme : fakedata
-            //cloudletList = require('./cloudletList')
-
-            console.log('cloudletList222===>', cloudletList)
-
-            let cloudletListForDropdown = [];
-            cloudletList.map(item => {
-                /*{text: 'FLAVOR', value: 'flavor'},*/
-                cloudletListForDropdown.push({
-                    text: item.CloudletName,
-                    value: item.CloudletName + "|" + item.Region,
+            try {
+                this.setState({
+                    isRequesting: true,
                 })
-            })
+
+                let cloudletList = [];
+                let allCloudletEventLogList = []
+                //fixme : fakedata
+                //cloudletList = require('./cloudletList')
+                cloudletList = await getCloudletList();
+                allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList);
+                console.log('allCloudletEventLogList===>', allCloudletEventLogList);
+
+                let cloudletListForDropdown = [];
+                cloudletList.map(item => {
+                    cloudletListForDropdown.push({
+                        text: item.CloudletName,
+                        value: item.CloudletName + "|" + item.Region,
+                    })
+                })
 
 
-            await this.setState({
-                isAppInstaceDataReady: true,
-                dropdownCloudletList: cloudletListForDropdown,
-            }, () => {
-                console.log('dropdownCloudletList===>', this.state.dropdownCloudletList);
-            })
+                await this.setState({
+                    isAppInstaceDataReady: true,
+                    allCloudletEventLogs: allCloudletEventLogList,
+                    filteredCloudletEventLogs: allCloudletEventLogList,
+                    dropdownCloudletList: cloudletListForDropdown,
+                }, () => {
+                    console.log('dropdownCloudletList===>', this.state.dropdownCloudletList);
+                })
 
-            let allCloudletUsageList = await getClouletLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
-            let bubbleChartData = await this.makeBubbleChartDataForCloudlet(allCloudletUsageList);
-            await this.setState({
-                bubbleChartData: bubbleChartData,
-            })
+                let allCloudletUsageList = await getClouletLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
+                let bubbleChartData = await this.makeBubbleChartDataForCloudlet(allCloudletUsageList);
+                await this.setState({
+                    bubbleChartData: bubbleChartData,
+                })
 
-            let maxCpu = Math.max.apply(Math, allCloudletUsageList.map(function (o) {
-                return o.sumVCpuUsage;
-            }));
+                let maxCpu = Math.max.apply(Math, allCloudletUsageList.map(function (o) {
+                    return o.sumVCpuUsage;
+                }));
 
-            let maxMem = Math.max.apply(Math, allCloudletUsageList.map(function (o) {
-                return o.sumMemUsage;
-            }));
+                let maxMem = Math.max.apply(Math, allCloudletUsageList.map(function (o) {
+                    return o.sumMemUsage;
+                }));
 
-            await this.setState({
-                allCloudletUsageList: allCloudletUsageList,
-                cloudletList: cloudletList,
-                filteredCloudletUsageList: allCloudletUsageList,
-                filteredCloudletList: cloudletList,
-                maxCpu: maxCpu,
-                maxMem: maxMem,
-                isRequesting: false,
-            });
-
+                await this.setState({
+                    allCloudletUsageList: allCloudletUsageList,
+                    cloudletList: cloudletList,
+                    filteredCloudletUsageList: allCloudletUsageList,
+                    filteredCloudletList: cloudletList,
+                    maxCpu: maxCpu,
+                    maxMem: maxMem,
+                    isRequesting: false,
+                });
+            } catch (e) {
+                throw new Error(e)
+            }
         }
 
         async makeBubbleChartDataForCloudlet(usageList: any) {
@@ -321,41 +343,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
 
             return bubbleChartData;
-        }
-
-
-        async refreshAllData() {
-
-            toast({
-                type: 'success',
-                //icon: 'smile',
-                title: 'REFRESH ALL DATA',
-                animation: 'bounce',
-                time: 3 * 1000,
-                color: 'black',
-            });
-            await this.setState({
-                placeHolderStateTime: moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'),
-                placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
-            })
-            await this.setState({
-                cloudLetSelectBoxClearable: true,
-            })
-            this.setState({
-                loading: true,
-            })
-            await this.loadInitDataForCloudlet();
-            this.setState({
-                loading: false,
-            })
-
-            await this.setState({
-                currentRegion: 'ALL',
-                currentCloudLet: '',
-                currentCluster: '',
-                currentAppInst: '',
-            })
-
         }
 
 
@@ -572,7 +559,37 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentCloudLet: '',
                 filteredCloudletUsageList: this.state.allCloudletUsageList,
                 filteredCloudletList: this.state.cloudletList,
+                filteredCloudletEventLogs: this.state.allCloudletEventLogs,
             })
+        }
+
+
+        async handleRefreshAllDataForOper() {
+            toast({
+                type: 'success',
+                //icon: 'smile',
+                title: 'REFRESH ALL DATA',
+                animation: 'bounce',
+                time: 3 * 1000,
+                color: 'black',
+            });
+            await this.setState({
+                placeHolderStateTime: moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'),
+                placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
+                cloudLetSelectBoxClearable: true,
+                loading: true,
+                cloudletSelectLoading: true,
+            })
+            await this.loadInitDataForCloudlet();
+            await this.setState({
+                loading: false,
+                currentRegion: 'ALL',
+                currentCloudLet: '',
+                currentCluster: '',
+                currentAppInst: '',
+                cloudletSelectLoading: false,
+            })
+
         }
 
 
@@ -589,7 +606,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <Button
                             onClick={async () => {
                                 if (!this.state.loading) {
-                                    this.refreshAllData();
+                                    this.handleRefreshAllDataForOper();
                                 } else {
                                     showToast('Currently loading, you can\'t request again.')
                                 }
@@ -661,16 +678,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     showToast(e.toString())
                 }
 
-                console.log('cloudletEventLogs===>', cloudletEventLogs)
-                console.log('cloudletEventLogs===length>', cloudletEventLogs.length)
-
 
                 let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, selectedCloudlet.toString().trim(), CLASSIFICATION.cloudlet)
                 await this.setState({
                     // filteredCloudletList: filteredCloudletList,
                     cloudletSelectLoading: false,
                     filteredCloudletUsageList: filteredCloudletUsageList,
-                    cloudletEventLogs: cloudletEventLogs === undefined ? [] : cloudletEventLogs,
+                    filteredCloudletEventLogs: cloudletEventLogs === undefined ? [] : cloudletEventLogs,
                     isReady: true,
 
                 })
@@ -920,10 +934,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </Table.Header>
                             <Table.Body className="">
                                 {/*todo: 데이터가 없는경우*/}
-                                {!this.state.cloudletSelectLoading && this.state.cloudletEventLogs.length === 0 &&
+                                {!this.state.cloudletSelectLoading && this.state.filteredCloudletEventLogs.length === 0 &&
                                 <Table.Row className='' style={{backgroundColor: 'red', height: '25'}}>
                                     <Table.Cell style={{width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent'}}>
-                                        <div style={{minHeight: 360, fontSize:30, fontFamily:'Encode Sans Condensed'}}>
+                                        <div style={{minHeight: 360, fontSize: 30, fontFamily: 'Encode Sans Condensed'}}>
                                             NO DATA
                                         </div>
                                     </Table.Cell>
@@ -932,10 +946,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }
                                 {this.state.cloudletSelectLoading &&
                                 <div style={StylesForMonitoring.center2}>
-                                    <CircularProgress style={{color: '#1cecff', marginTop: -70, }}/>
+                                    <CircularProgress style={{color: '#1cecff', marginTop: -70,}}/>
                                 </div>
                                 }
-                                {!this.state.cloudletSelectLoading && this.state.cloudletEventLogs.map(item => {
+                                {!this.state.cloudletSelectLoading && this.state.filteredCloudletEventLogs.map(item => {
                                     return (
                                         <Table.Row className='page_monitoring_popup_table_row'>
 
