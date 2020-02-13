@@ -29,7 +29,6 @@ class AutoProvPolicyReg extends React.Component {
             step: 0,
             forms: []
         }
-        this.formData = {};
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
         this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
         this.OrganizationList = []
@@ -37,7 +36,6 @@ class AutoProvPolicyReg extends React.Component {
     }
 
     onValueChange = (currentForm, data) => {
-        this.formData = data;
     }
 
     getRegionData = () => {
@@ -123,9 +121,6 @@ class AutoProvPolicyReg extends React.Component {
             action = 'Delete'
             this.removeUnSelectedCloudlets();
         }
-        this.formData.Region = region
-        this.formData.Organization = organization
-        this.formData.AutoPolicyName = autoPolicyName
         let step2 = [
             { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible:true, options: this.getRegionData(), value: region },
             { field: 'Organization', label: 'Organization', type: 'Select', placeholder: 'Select Organization', rules: { disabled: true }, visible:true, options: this.getOrganizationData(this.OrganizationList), value: organization },
@@ -158,8 +153,8 @@ class AutoProvPolicyReg extends React.Component {
 
         if(valid)
         {
-            let msg = this.props.action === 'Delete' ? 'Removed' : 'Added'
-            this.props.handleAlertInfo('success', `Cloudlets ${msg} Successfully`)
+            let msg = this.props.action === 'Delete' ? 'removed' : 'added'
+            this.props.handleAlertInfo('success', `Cloudlets ${msg} successfully`)
             setTimeout(()=>{this.gotoUrl('site4', 'pg=8')},2000)
         }
     }
@@ -180,8 +175,23 @@ class AutoProvPolicyReg extends React.Component {
         }
     }
 
-    onCreateAutoProvPolicy = (data) => {
+    formattedData = ()=>
+    {
+        let data = {};
+        let forms = this.state.forms;
+        for(let i=0;i<forms.length;i++)
+        {
+            let form = forms[i];
+            if(form.field)
+            {
+                data[form.field] = form.value;   
+            }
+        }
+        return data
+    }
 
+    onCreateAutoProvPolicy = () => {
+        let data = this.formattedData()
         let AutoProvPolicy = {
             deploy_client_count: parseInt(data.DeployClientCount),
             deploy_interval_count: parseInt(data.DeployIntervalCount), 
@@ -202,7 +212,8 @@ class AutoProvPolicyReg extends React.Component {
         }
     }
 
-    onAddCloudlets = (data)=>{
+    onAddCloudlets = ()=>{
+        let data = this.formattedData()
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let token = store.userToken;
 
@@ -252,7 +263,7 @@ class AutoProvPolicyReg extends React.Component {
                                         ))
                                     }
                                 </Step.Group></div>}
-                        <MexForms formData = {this.formData} forms={this.state.forms} onValueChange={this.onValueChange} />
+                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} />
                     </Item>
                 </div>
             </div>

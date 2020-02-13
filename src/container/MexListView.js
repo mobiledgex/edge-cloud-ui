@@ -9,19 +9,9 @@ import * as actions from '../actions';
 import './styles.css';
 import _ from "lodash";
 
-
-
-
-let _self = null;
-const organizationEdit = [
-    { key: 'Audit', text: 'Audit', icon: null },
-    { key: 'AddUser', text: 'Add User', icon: null },
-    { key: 'Delete', text: 'Delete', icon: 'trash alternate' },
-]
-class DeveloperListView extends React.Component {
+class MexListView extends React.Component {
     constructor(props) {
         super(props);
-        _self = this;
         this.state = {
             dummyData: [],
             anchorEl : null
@@ -52,7 +42,7 @@ class DeveloperListView extends React.Component {
     handleSort = clickedColumn => (a) => {
 
         this.sorting = true;
-        const { column, dummyData, direction } = _self.state
+        const { column, dummyData, direction } = this.state
         if ((column !== clickedColumn) && dummyData) {
             let sorted = _.sortBy(dummyData, [clm => typeof clm[clickedColumn] === 'string' ? String(clm[clickedColumn]).toLowerCase() : clm[clickedColumn]])
             this.setState({
@@ -98,11 +88,6 @@ class DeveloperListView extends React.Component {
 
     getCellClick = (field, item) => {
         this.selectedRow = item
-        // return (
-        //         field === 'Actions' ?
-        //             null :
-        //             this.detailView(item)
-        // )
     }
 
     onActionClose = (action) => {
@@ -130,8 +115,7 @@ class DeveloperListView extends React.Component {
                     {
                         field === 'Actions' ? this.getAction(item)
                         :
-                        <div ref={ref => this.tooltipref = ref}
-                            data-tip='tooltip' data-for='happyFace'>
+                        <div>
                             {String(item[field])}
                         </div>
                     }</Table.Cell>
@@ -182,7 +166,7 @@ class DeveloperListView extends React.Component {
                             {({ TransitionProps, placement }) => (
                                 <Grow
                                     {...TransitionProps}
-                                    style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+                                    style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center right' }}
                                 >
                                     <Paper style={{ backgroundColor: '#212121', color: 'white' }}>
                                         <ClickAwayListener onClickAway={this.onActionClose}>
@@ -246,6 +230,6 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(DeveloperListView));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(MexListView));
 
 

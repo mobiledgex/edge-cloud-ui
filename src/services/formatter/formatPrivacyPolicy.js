@@ -1,17 +1,21 @@
 import { generateUniqueId } from '../serviceMC';
 
-
-// {"data":{"key":{"developer":"org1580940442-3506691","name":"privacypolicy1580940442-3506691"},"outbound_security_rules":[{"protocol":"icmp","remote_cidr":"1.1.1.1/3"},{"protocol":"tcp","port_range_min":1,"port_range_max":65,"remote_cidr":"1.1.1.1/1"},{"protocol":"udp","port_range_min":3,"port_range_max":6,"remote_cidr":"1.1.1.1/2"}]}}
-// {"data":{"key":{"developer":"org1580940673-4308748","name":"privacypolicy1580940673-4308748"},"outbound_security_rules":[{"protocol":"icmp","remote_cidr":"1.1.1.1/3"},{"protocol":"tcp","port_range_min":1,"port_range_max":65,"remote_cidr":"1.1.1.1/1"},{"protocol":"udp","port_range_min":3,"port_range_max":6,"remote_cidr":"1.1.1.1/2"}]}}
-// {"data":{"key":{"developer":"org1580940930-626354","name":"privacypolicy1580940930-626354"},"outbound_security_rules":[{"protocol":"icmp","remote_cidr":"1.1.1.1/3"},{"protocol":"tcp","port_range_min":1,"port_range_max":65,"remote_cidr":"1.1.1.1/1"},{"protocol":"udp","port_range_min":3,"port_range_max":6,"remote_cidr":"1.1.1.1/2"}]}}
-// {"data":{"key":{"developer":"MobiledgeX","name":"Policy3"},"outbound_security_rules":[{"protocol":"tcp","port_range_min":443,"port_range_max":99999999,"remote_cidr":"2.1.1.1/1"}]}}
-// {"data":{"key":{"developer":"org1580937948-988787","name":"privacypolicy1580937948-988787"},"outbound_security_rules":[{"protocol":"icmp","remote_cidr":"1.1.1.1/3"},{"protocol":"tcp","port_range_min":1,"port_range_max":65,"remote_cidr":"1.1.1.1/1"},{"protocol":"udp","port_range_min":3,"port_range_max":6,"remote_cidr":"1.1.1.1/2"}]}}
-// {"data":{"key":{"developer":"org1580940373-705716","name":"privacypolicy1580940373-705716"},"outbound_security_rules":[{"protocol":"icmp","remote_cidr":"1.1.1.1/3"},{"protocol":"tcp","port_range_min":1,"port_range_max":65,"remote_cidr":"1.1.1.1/1"},{"protocol":"udp","port_range_min":3,"port_range_max":6,"remote_cidr":"1.1.1.1/2"}]}}
-
+export const layouts = [
+  {key:'Region', label:'Region'},
+  {key:'OrganizationName', label:'Organization Name'},
+  {key:'PrivacyPolicyName', label:'Privacy Policy Name'},
+  {key:'OutboundSecurityRules', label:'Outbound Security Rules', 
+        layouts : [
+          {key:'Protocol', label:'Protocol'},
+          {key:'PortRangeMin', label:'Port Range Min'},
+          {key:'PortRangeMax', label:'Port Range Max'},
+          {key:'RemoteCIDR', label:'Remote CIDR'},
+        ]},
+]
 export const formatData = (datas, body) => {
 
   let values = [];
-  if (datas.data && datas.data.length > 0) {
+  if (datas.data) {
     let toArray = null;
     let toJson = null;
     if (typeof datas.data === 'object') {
