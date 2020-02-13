@@ -1164,8 +1164,6 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                 appInstanceHealth: appInstanceHealthCheckList[index],
             });
         })
-
-
         /*
          0: "time"
          1: "app"
@@ -1219,7 +1217,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                     if (series["3"] !== undefined) {
                         let cpuSeries = series["3"]
                         cpuSeries.values.map(item => {
-                            let cpuUsage = item[6];//cpuUsage..index
+                            let cpuUsage = item[APP_INST_MATRIX_HW_USAGE_INDEX.CPU];//cpuUsage..index
                             sumCpuUsage += cpuUsage;
                         })
 
@@ -1240,7 +1238,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                     if (series["1"] !== undefined) {
                         let memSeries = series["1"]
                         memSeries.values.map(item => {
-                            let usageOne = item[7];//memUsage..index
+                            let usageOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.MEM];//memUsage..index
                             sumMemUsage += usageOne;
                         })
 
@@ -1253,14 +1251,13 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                         })
                     }
 
-
                     //@todo###########################
                     //@todo DiskSeriesList
                     //@todo###########################
                     if (series["2"] !== undefined) {
                         let diskSeries = series["2"]
                         diskSeries.values.map(item => {
-                            let usageOne = item[8];//diskUsage..index
+                            let usageOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.DISK];//diskUsage..index
                             sumDiskUsage += usageOne;
                         })
 
@@ -1279,9 +1276,9 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                     if (series["0"] !== undefined) {
                         let networkSeries = series["0"]
                         networkSeries.values.map(item => {
-                            let sendBytesOne = item[9];//sendBytesOne
+                            let sendBytesOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.SENDBYTES];//sendBytesOne
                             sumSendBytes += sendBytesOne;
-                            let recvBytesOne = item[10];//recvBytesOne
+                            let recvBytesOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.RECVBYTES];//recvBytesOne
                             sumRecvBytes += recvBytesOne;
                         })
 
@@ -1305,11 +1302,11 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                         14: "accepts"*/
                         let connectionsSeries = series["4"]
                         connectionsSeries.values.map(item => {
-                            let connection1One = item[12];//1
+                            let connection1One = item[APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE];//1
                             sumActiveConnection += connection1One;
-                            let connection2One = item[13];//2
+                            let connection2One = item[APP_INST_MATRIX_HW_USAGE_INDEX.HANDLED];//2
                             sumHandledConnection += connection2One;
-                            let connection3One = item[14];//3
+                            let connection3One = item[APP_INST_MATRIX_HW_USAGE_INDEX.ACCEPTS];//3
                             sumAcceptsConnection += connection3One;
                         })
 
