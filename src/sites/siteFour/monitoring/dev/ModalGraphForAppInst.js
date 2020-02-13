@@ -5,9 +5,9 @@ import {Line} from 'react-chartjs-2';
 import PageDevMonitoring from "./PageDevMonitoring";
 import type {TypeLineChartData2} from "../../../../shared/Types";
 import {convertByteToMegaByte} from "../PageMonitoringCommonService";
-import {makeGradientColor, makeGradientColorOne} from "./PageDevMonitoringService";
+import {makeGradientColorOne} from "./PageDevMonitoringService";
 import {Dropdown} from "semantic-ui-react";
-import {CONNECTIONS_OPTIONS, HARDWARE_OPTIONS, HARDWARE_OPTIONS_FOR_APPINST, HARDWARE_TYPE} from "../../../../shared/Constants";
+import {HARDWARE_OPTIONS_FOR_APPINST} from "../../../../shared/Constants";
 
 type Props = {
     modalIsOpen: boolean,

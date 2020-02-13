@@ -3,17 +3,19 @@ import React from "react";
 import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
 import {
     getCloudletLevelMatric,
-    makeFormForCloudletLevelMatric, numberWithCommas,
+    makeFormForCloudletLevelMatric,
+    numberWithCommas,
     renderBarChartCore,
-    renderLineChartCore, renderPlaceHolderCircular,
-    renderUsageByType2, showToast,
+    renderLineChartCore,
+    renderPlaceHolderCircular,
+    renderUsageByType2,
+    showToast,
     sortUsageListByType,
     StylesForMonitoring
 } from "../PageMonitoringCommonService";
 import PageOperMonitoring from "./PageOperMonitoring";
 import {Table} from "semantic-ui-react";
-import Lottie from "react-lottie";
-import type {TypeCloudlet, TypeCloudletUsageList} from "../../../../shared/Types";
+import type {TypeCloudlet} from "../../../../shared/Types";
 import {Progress} from "antd";
 import axios from "axios";
 

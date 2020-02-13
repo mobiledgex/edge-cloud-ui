@@ -1,5 +1,4 @@
 import 'react-hot-loader'
-import {Icon as AIcon} from 'antd';
 import React from "react";
 import * as L from 'leaflet';
 import "../PageMonitoring.css";
@@ -8,14 +7,8 @@ import 'react-leaflet-fullscreen-control'
 import type {TypeAppInstance} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 
-import {Tooltip, Map, Marker, Popup, TileLayer, Polyline} from "../../../../components/react-leaflet_kj/src/index";
-import $ from 'jquery';
-import {getOneYearStartEndDatetime, showToast, showToast2, StylesForMonitoring} from "../PageMonitoringCommonService";
+import {Map, Marker, Popup, TileLayer, Tooltip} from "../../../../components/react-leaflet_kj/src/index";
 import PageDevMonitoring from "./PageDevMonitoring";
-import {filterUsageByClassification, makeBarChartDataForCluster, makeLineChartDataForAppInst, makeLineChartDataForCluster} from "./PageDevMonitoringService";
-import {getAppLevelUsageList} from "../admin/PageAdminMonitoringService";
-import {RECENT_DATA_LIMIT_COUNT} from "../../../../shared/Constants";
-import CircularProgress from "@material-ui/core/CircularProgress";
 
 
 const DEFAULT_VIEWPORT = {
