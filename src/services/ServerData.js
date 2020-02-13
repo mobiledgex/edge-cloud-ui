@@ -10,7 +10,7 @@ const getToken = ()=>
 const processData = (mcRequest)=>
 {
     let dataList = [];
-    if(mcRequest.response)
+    if(mcRequest && mcRequest.response)
     {
         let response  = mcRequest.response;
         if(response.data)

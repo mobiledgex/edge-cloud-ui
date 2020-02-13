@@ -4,7 +4,7 @@ import { set } from 'd3';
 const MexCheckbox = (props) => {
     let form = props.form
 
-    const [value, setValue] = React.useState(props.form.value ? props.form.value : '')
+    const [value, setValue] = React.useState(props.form.value ? props.form.value : false)
 
     const onChange = (checked)=>
     {
