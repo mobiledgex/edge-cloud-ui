@@ -88,10 +88,7 @@ export const StylesForMonitoring = {
 
 }
 
-
-export const renderGridLoader2 = (width, height) => {
-    return (
-        <Lottie
+{/*<Lottie
             options={{
                 loop: true,
                 autoplay: true,
@@ -105,6 +102,15 @@ export const renderGridLoader2 = (width, height) => {
             isStopped={false}
             isPaused={false}
             speed={3.0}
+        />*/
+}
+export const renderGridLoader2 = (width, height) => {
+    return (
+        <GridLoader
+            sizeUnit={"px"}
+            size={25}
+            color={'#70b2bc'}
+            loading={true}
         />
 
     )
