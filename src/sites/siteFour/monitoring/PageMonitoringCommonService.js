@@ -108,7 +108,7 @@ export const renderGridLoader2 = (width, height) => {
     return (
         <GridLoader
             sizeUnit={"px"}
-            size={25}
+            size={20}
             color={'#70b2bc'}
             loading={true}
         />
