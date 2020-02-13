@@ -1191,6 +1191,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 onClick={async () => {
 
                                     await this.resetAllDataForDev()
+                                    this.setState({
+                                        currentHardwareType: HARDWARE_TYPE.CPU
+                                    })
 
                                 }}>reset
                             </MButton>
