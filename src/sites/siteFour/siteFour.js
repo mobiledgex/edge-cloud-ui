@@ -1025,8 +1025,9 @@ class SiteFour extends React.Component {
 
                          }}
                     >
-
-                        <i className="material-icons" style={{color:'rgba(255,255,255,.6)', fontSize:20}}>menu_open</i>
+                        {this.state.hideLeftMenu ?
+                            <i className="material-icons" style={{color:'rgba(255,255,255,.6)', fontSize:20}}>menu</i>
+                            : <i className="material-icons" style={{color:'rgba(255,255,255,.6)', fontSize:20}}>menu_open</i>}
                     </div>
                 </Container>
                 <Container className='contents_body_container' style={{ top: this.headerH, left: this.state.menuW, width:window.innerWidth - this.state.menuW}}>
