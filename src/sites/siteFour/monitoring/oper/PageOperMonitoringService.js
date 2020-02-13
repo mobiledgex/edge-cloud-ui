@@ -1,4 +1,4 @@
-import {CHART_COLOR_LIST, HARDWARE_TYPE, HARDWARE_TYPE_FOR_CLOUDLET, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX} from "../../../../shared/Constants";
+import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX} from "../../../../shared/Constants";
 import React from "react";
 import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
 import {
@@ -43,7 +43,6 @@ export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
                 chartDataList.push(barDataOne);
             }
         }
-        console.log(`renderBarGraphForCloudlet====>${hardwareType}`, chartDataList)
 
         return renderBarChartCore(chartDataList, hardwareType)
     }

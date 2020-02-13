@@ -24,7 +24,7 @@ import {
     getAllCloudletEventLogs,
     getCloudletEventLog,
     getClouletLevelUsageList,
-    handleBubbleChartDropDownForCloudlet, handleBubbleChartDropDownForCloudlet,
+    handleBubbleChartDropDownForCloudlet,
     makeBarChartDataForCloudlet,
     makeLineChartForCloudlet,
     renderBottomGridAreaForCloudlet
