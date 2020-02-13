@@ -228,3 +228,9 @@
     height:36px;
     background-color: black;
 }
+
+.ant-calendar-picker-input.ant-input.ant-input-disabled  {
+    line-height: 1.5;
+    height: 36px;
+    background-color: #1e2124;
+}
