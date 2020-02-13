@@ -60,7 +60,7 @@ class DeleteItem extends React.Component {
                         msg = 'Your application ' + data.app.key.name + ' deleted successfully'
                         break;
                     case 'Cloudlet Pools':
-                        msg = 'Deleted successfully'
+                        msg = 'deleted successfully'
                         break;
                 }
 

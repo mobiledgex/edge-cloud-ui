@@ -240,7 +240,7 @@ class SiteFourPoolStepView extends React.Component {
          * @type {{pool: *, cloudlet: *, region: *, operator: *}}
          * @private
          */
-        let cloudletTest = this.state.dummyData[0].AddCloudlet[0];
+        let selectedRegion = this.state.selectedRegion;
         //console.log('20200104 cloudlet == ', cloudletTest)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let _params = {};
@@ -250,24 +250,26 @@ class SiteFourPoolStepView extends React.Component {
             selectedNumber.map((no) => {
                 cloudlet = this.state.dummyData[0].AddCloudlet[parseInt(no)];
                 //console.log('20200104 cloudlet--- ', cloudlet)
-                _params = {
-                    "cloudletpoolmember":{
-                        "cloudlet_key":{
-                            "name":cloudlet.cloudlet,
-                            "operator_key":{
-                                "name":cloudlet.orgaName
+                if(cloudlet.region === selectedRegion) {
+                    _params = {
+                        "cloudletpoolmember":{
+                            "cloudlet_key":{
+                                "name":cloudlet.cloudlet,
+                                "operator_key":{
+                                    "name":cloudlet.orgaName
+                                }
+                            },
+                            "pool_key":{
+                                "name":this.state.formValue.poolName
                             }
                         },
-                        "pool_key":{
-                            "name":this.state.formValue.poolName
-                        }
-                    },
-                    "region":cloudlet.region
+                        "region":cloudlet.region
+                    }
+                    //console.log('20200104 _params == ', _params)
+                    ////////// new
+                    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+                    serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().CREATE_CLOUDLET_POOL_MEMBER, data : _params }, _self.receiveResultCreateMember)
                 }
-                //console.log('20200104 _params == ', _params)
-                ////////// new
-                let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-                serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().CREATE_CLOUDLET_POOL_MEMBER, data : _params }, _self.receiveResultCreateMember)
             })
         }
 
@@ -431,7 +433,7 @@ class SiteFourPoolStepView extends React.Component {
 
             if(this.state.step === 1) {
                 let form = nextProps.formClusterInst.values;
-                if(form.poolName.length < 1 || typeof form.Region !== 'string' || form.invisibleField === '') {
+                if(form.poolName && form.poolName.length < 1 || typeof form.Region !== 'string' || form.invisibleField === '') {
                     this.props.handleAlertInfo('error', 'You must fill in required of the fields')
                     return;
                 }

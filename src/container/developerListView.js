@@ -12,6 +12,8 @@ import DeleteItem from './deleteItem';
 import './styles.css';
 import _ from "lodash";
 import * as reducer from '../utils'
+import { IconButton } from '@material-ui/core';
+import ListIcon from '@material-ui/icons/List';
 
 /*****************
  * configuration menus of Edit field
@@ -375,8 +377,9 @@ class DeveloperListView extends React.Component {
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <div ref={acell => this['actionCell_' + index] = acell}
                 style={{ backgroundColor: 'transparent', width: 0, height: 0, position: 'relative' }}></div>
-            <Button
-                className="table_actions_button"
+            <IconButton 
+                aria-label="Action" 
+                onClick={e => this.setState({ anchorEl: e.currentTarget })}
                 disabled={(localStorage.selectRole === 'AdminManager' || localStorage.selectOrg == item.Organization || (this.state.selectUse == index)) ? false : true}
                 onClick={() => {
                     this.setState({ actionContextRef: 'actionCell_' + index })
@@ -387,10 +390,8 @@ class DeveloperListView extends React.Component {
                 }}
                 onMouseOver={() => _self.onOverDropMenu(item, value, index)}
                 onMouseOut={() => _self.onOutDropMenu(item, value, index)}>
-                <Button.Content visible>
-                    <Icon name='bars' />
-                </Button.Content>
-            </Button>
+                <ListIcon style={{ color: '#76ff03' }} />
+            </IconButton>
         </div>
     )
     makeEditMenu = (item, j, i) => (
