@@ -191,7 +191,6 @@ export const APP_INST_MATRIX_HW_USAGE_INDEX = {
     BYTESRECVD: 16,
 }
 
-
 export const USAGE_INDEX = {
     TIME: 0,
     CLOUDLET: 1,

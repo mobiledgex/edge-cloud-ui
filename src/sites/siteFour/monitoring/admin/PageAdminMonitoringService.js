@@ -637,16 +637,17 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
                     } else if (hardwareType === HARDWARE_TYPE.DISK) {
                         usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.DISK];
                     } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.SENDBYTES];//receivceBytes
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.SENDBYTES];
                     } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.RECVBYTES]; //sendBytes
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.RECVBYTES];
                     } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE];
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE.toString()];
                     } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
-                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.HANDLED];
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.HANDLED.toString()];
                     } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACCEPTS];
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACCEPTS.toString()];
                     }
+
 
                     usageList.push(usageOne);
                     let dateOne = seriesValues[j]["0"];
