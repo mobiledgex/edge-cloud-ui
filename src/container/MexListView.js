@@ -123,18 +123,6 @@ class MexListView extends React.Component {
         })
     }
 
-
-    componentDidUpdate(prevProps, prevState) {
-        if(prevProps.devData !== this.props.devData)
-        {
-            this.setState({
-                dummyData:this.props.devData
-            })
-        }
-    }
-   
-    
-
     render() {
         return (
             <div style={{ display: 'flex', overflowY: 'auto', overflowX: 'hidden', width: '100%' }}>
@@ -171,8 +159,8 @@ class MexListView extends React.Component {
                                     <Paper style={{ backgroundColor: '#212121', color: 'white' }}>
                                         <ClickAwayListener onClickAway={this.onActionClose}>
                                             <MenuList autoFocusItem={Boolean(this.state.anchorEl)} id="menu-list-grow" >
-                                                {this.props.actionMenu.map(action => {
-                                                    return <MenuItem onClick={(e)=>{this.onActionClose(action)}}>{action.label}</MenuItem>
+                                                {this.props.actionMenu.map((action, i) => {
+                                                    return <MenuItem key={i} onClick={(e)=>{this.onActionClose(action)}}>{action.label}</MenuItem>
                                                 })}
                                             </MenuList>
                                         </ClickAwayListener>
@@ -183,6 +171,22 @@ class MexListView extends React.Component {
             </div>
         );
 
+    }
+
+    componentDidMount()
+    {
+        this.setState({
+            dummyData:this.props.devData
+        })
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if(prevProps.devData !== this.props.devData)
+        {
+            this.setState({
+                dummyData:this.props.devData
+            })
+        }
     }
 }
 

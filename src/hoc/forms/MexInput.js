@@ -3,7 +3,6 @@ import { Form, Icon, Popup } from 'semantic-ui-react';
 const MexInput = (props) => {
 
     let form = props.form
-
     const [value, setValue] = React.useState(props.form.value ? props.form.value : '')
     
     const onValueChange = (value) =>
