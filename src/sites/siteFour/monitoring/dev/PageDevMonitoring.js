@@ -914,7 +914,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                               size={20}/>
                         </div>
                         }*/}
-                        <AButton type={'primary'}>sdkjfskdjfksjdf</AButton>
+                        {/*<AButton type={'primary'}>sdkjfskdjfksjdf</AButton>*/}
                     </div>
                 </Grid.Row>
             )
