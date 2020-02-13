@@ -281,7 +281,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
 
                 let cloudletList = [];
-                let allCloudletEventLogList = []
+                let allCloudletEventLogList=[];
                 //fixme : fakedata
                 //cloudletList = require('./cloudletList')
                 cloudletList = await getCloudletList();
