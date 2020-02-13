@@ -621,7 +621,7 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
                             try {
                                 let lineChartDataSet = makeLineChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this)
                                 cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
-                                handleLegendClickedEvent(_this, cluster_cloudlet, lineChartDataSet)
+                                handleLegendAndBubbleClickedEvent(_this, cluster_cloudlet, lineChartDataSet)
                             } catch (e) {
 
                             }
@@ -632,7 +632,7 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
                             try {
                                 let lineChartDataSet = makeLineChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this)
                                 cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
-                                handleLegendClickedEvent(_this, cluster_cloudlet, lineChartDataSet)
+                                handleLegendAndBubbleClickedEvent(_this, cluster_cloudlet, lineChartDataSet)
                             } catch (e) {
 
                             }
@@ -920,30 +920,24 @@ export const getColorOne = () => {
  * @param clickedItem
  * @param lineChartDataSet
  */
-export const handleLegendClickedEvent = (_this: PageDevMonitoring, clickedItem, lineChartDataSet) => {
+export const handleLegendAndBubbleClickedEvent = (_this: PageDevMonitoring, clickedItem, lineChartDataSet) => {
 
-    ///////////////////////////////////////////////////////////////
-    let selectOne = clickedItem;
-    let lineChartOne = []
     let selectedIndex = 0;
     lineChartDataSet.levelTypeNameList.map((item, jIndex) => {
         let newItem = item.toString().replace('\n', "|").replace("[", '').replace("]", '')
-        if (selectOne === newItem) {
-            lineChartOne.push({
-                cluster_cloudlet: selectOne,
-                index: jIndex,
-            })
+        clickedItem = clickedItem.toString().replace('\n', "|").replace("[", '').replace("]", '')
+        if (clickedItem === newItem) {
             selectedIndex = jIndex;
         }
     })
-    let selected_lineChartDataSetOne = {
+    let selectedLineChartDataSetOne = {
         levelTypeNameList: lineChartDataSet.levelTypeNameList[selectedIndex],
         usageSetList: lineChartDataSet.usageSetList[selectedIndex],
         newDateTimeList: lineChartDataSet.newDateTimeList,
         hardwareType: lineChartDataSet.hardwareType,
     }
 
-    _this.showModalClusterLineChart(selected_lineChartDataSetOne, selectedIndex)
+    _this.showModalClusterLineChart(selectedLineChartDataSetOne, selectedIndex)
 }
 
 
@@ -1026,9 +1020,13 @@ export const renderLineChartCoreForDev_Cluster = (_this: PageDevMonitoring, line
             labels: {
                 boxWidth: 10,
                 fontColor: 'white'
-            },//@todo:리전드 클릭 이벤트.
+            },//@todo: lineChart 리전드 클릭 이벤트.
             onClick: (e, clickedItem) => {
-                handleLegendClickedEvent(_this, clickedItem, lineChartDataSet)
+
+                let selectedClusterOne = clickedItem.text.toString().replace('\n', "|");
+
+                handleLegendAndBubbleClickedEvent(_this, selectedClusterOne, lineChartDataSet)
+
             },
             onHover: (e, item) => {
                 //alert(`Item with text ${item.text} and index ${item.index} hovered`)
