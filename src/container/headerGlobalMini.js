@@ -1,36 +1,36 @@
 import React from 'react';
-import { Image } from 'semantic-ui-react';
+import {Button, Image, Popup} from 'semantic-ui-react';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as serviceMC from '../services/serviceMC';
 import PopProfileViewer from '../container/popProfileViewer';
-import { withStyles } from '@material-ui/core/styles';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { IconButton, Menu, MenuItem, ListItemIcon, Divider, ListItemText } from '@material-ui/core';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
-const StyledMenu = withStyles({
-    paper: {
-        border: '1px solid #d3d4d5',
-    },
-})(props => (
-    <Menu
-        PaperProps={{ style: { backgroundColor: '#424242', color: 'white' } }}
-        elevation={0}
-        getContentAnchorEl={null}
-        anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-        }}
-        transformOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-        }}
-        {...props}
-    />
-));
+
+
+// const StyledMenu = withStyles({
+//     paper: {
+//         border: '1px solid #d3d4d5',
+//     },
+// })(props => (
+//     <Menu
+//         PaperProps={{ style: { backgroundColor: '#424242', color: 'white' } }}
+//         elevation={0}
+//         getContentAnchorEl={null}
+//         anchorOrigin={{
+//             vertical: 'bottom',
+//             horizontal: 'center',
+//         }}
+//         transformOrigin={{
+//             vertical: 'top',
+//             horizontal: 'center',
+//         }}
+//         {...props}
+//     />
+// ));
 
 
 let _self = null;
@@ -118,33 +118,61 @@ class headerGlobalMini extends React.Component {
             anchorEl: null
         })
     }
+    makeProfileButton = () => (
+        <Button.Group vertical className="table_actions_popup_group">
+            <Button className="table_actions_popup_group_button">
+                {this.state.userInfo['Name']}
+            </Button>
+            <Button onClick={() => this.profileView()} className="table_actions_popup_group_button">
+                <i className="material-icons">account_box</i>
+                Profile
+            </Button>
+            <Button onClick={() => this.gotoPreview('/logout')} className="table_actions_popup_group_button">
+                <i className="material-icons">exit_to_app</i>
+                LogOut
+            </Button>
+        </Button.Group>
+    )
 
     render() {
         return (
 
             <div>
-                <div style={{ cursor: 'pointer',marginTop:10  }} onClick={(e) => { this.setState({ anchorEl: e.currentTarget }) }}><AccountCircleOutlinedIcon fontSize='large'/></div>
-                <StyledMenu
-                    anchorEl={this.state.anchorEl}
-                    keepMounted
-                    open={Boolean(this.state.anchorEl)}
-                    onClose={this.onMenuClose}
-                >
-                    <div align="center" style={{ textTransform: 'uppercase', margin: 5 }}><ListItemText primary={this.state.userInfo['Name']} /></div>
-                    <Divider />
-                    <MenuItem onClick={() => this.profileView()}>
-                        <ListItemIcon style={{ color: 'white' }}>
-                            <AccountBoxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Profile" />
-                    </MenuItem>
-                    <MenuItem onClick={() => this.gotoPreview('/logout')}>
-                        <ListItemIcon style={{ color: 'white' }}>
-                            <ExitToAppIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Logout" />
-                    </MenuItem>
-                </StyledMenu>
+                {/*<div style={{ cursor: 'pointer',marginTop:10  }} onClick={(e) => { this.setState({ anchorEl: e.currentTarget }) }}><AccountCircleOutlinedIcon fontSize='large'/></div>*/}
+                <Popup
+                    inverted
+                    trigger={
+                        <div className='navbar_icon' style={{padding:0}} onClick={(e) => { this.setState({ anchorEl: e.currentTarget }) }}>
+                            <AccountCircleOutlinedIcon fontSize='large'/>
+                        </div>
+                    }
+                    content={this.makeProfileButton()}
+                    on='click'
+                    position='bottom right'
+                    className="table_actions_popup gnb_profile"
+                    basic
+                />
+                {/*<StyledMenu*/}
+                {/*    anchorEl={this.state.anchorEl}*/}
+                {/*    keepMounted*/}
+                {/*    open={Boolean(this.state.anchorEl)}*/}
+                {/*    onClose={this.onMenuClose}*/}
+                {/*>*/}
+                {/*    <div align="center" style={{ textTransform: 'uppercase', margin: 5 }}><ListItemText primary={this.state.userInfo['Name']} /></div>*/}
+                {/*    <Divider />*/}
+                {/*    <MenuItem onClick={() => this.profileView()}>*/}
+                {/*        <ListItemIcon style={{ color: 'white' }}>*/}
+                {/*            <AccountBoxIcon />*/}
+                {/*        </ListItemIcon>*/}
+                {/*        <ListItemText primary="Profile" />*/}
+                {/*    </MenuItem>*/}
+                {/*    <MenuItem onClick={() => this.gotoPreview('/logout')}>*/}
+                {/*        <ListItemIcon style={{ color: 'white' }}>*/}
+                {/*            <ExitToAppIcon />*/}
+                {/*        </ListItemIcon>*/}
+                {/*        <ListItemText primary="Logout" />*/}
+                {/*    </MenuItem>*/}
+                {/*</StyledMenu>*/}
                 <PopProfileViewer data={this.state.userInfo} dimmer={false} open={this.state.openProfile} close={this.closeProfile} ></PopProfileViewer>
             </div >
 
