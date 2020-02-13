@@ -140,7 +140,7 @@ class SiteFour extends React.Component {
         this.hgap = 0;
         this.OrgMenu = [
             { label: 'Organizations', icon: 'people', pg: 0 },
-            { label: 'Users & Roles', icon: 'dvr', pg: 1 },
+            { label: 'Users & Roles', icon: 'assignment_ind', pg: 1 },
             { label: 'Accounts', icon: 'dvr', pg: 101 }
         ]
         this.menuItemsAll = [ //admin menu
@@ -149,7 +149,7 @@ class SiteFour extends React.Component {
             { label: 'Flavors', icon: 'free_breakfast', pg: 3 },
             { label: 'Cluster Instances', icon: 'storage', pg: 4 },
             { label: 'Apps', icon: 'apps', pg: 5 },
-            { label: 'App Instances', icon: 'storage', pg: 6 },
+            { label: 'App Instances', icon: 'sports_esports', pg: 6 },
             { label: 'Monitoring', icon: 'tv', pg: 'Monitoring' },
             { label: 'Policies', icon: 'playlist_play', pg: 8 },
             { label: 'Audit Logs', icon: 'check', pg: 'audits' }
