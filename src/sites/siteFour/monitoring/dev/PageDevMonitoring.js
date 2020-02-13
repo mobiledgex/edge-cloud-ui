@@ -14,6 +14,8 @@ import {DatePicker,} from 'antd';
 import {
     convertHwTypePhrases,
     filterUsageByClassification,
+    getClusterLevelUsageList,
+    getClusterList,
     handleHardwareTabChanges,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
@@ -50,14 +52,12 @@ import {
     showToast,
     StylesForMonitoring
 } from "../PageMonitoringCommonService";
-import {getAppLevelUsageList} from "../admin/PageAdminMonitoringService";
+import {getAppInstList, getAppLevelUsageList, getCloudletList} from "../admin/PageAdminMonitoringService";
 import * as reducer from "../../../../utils";
 import {TabPanel, Tabs} from "react-tabs";
 import LeafletMapWrapperForDev from "./LeafletMapWrapperForDev";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraphForCluster from "./ModalGraphForCluster";
-
-import {Button as AButton} from "antd";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -331,16 +331,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         async loadInitDataForCluster(isInterval: boolean = false) {
             clearInterval(this.intervalForAppInst)
             this.setState({dropdownRequestLoading: true})
-            /*let clusterList = await getClusterList();
+            let clusterList = await getClusterList();
             let cloudletList = await getCloudletList()
-            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();*/
+            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
 
 
             //fixme: fakeData
             //fixme: fakeData
+            /*
             let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
-            let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
+               let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
+               let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')*/
             console.log('appInstanceList====>', appInstanceList);
 
             console.log('clusterList===>', clusterList);
@@ -370,16 +371,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             }
             let allClusterUsageList = []
-            /* try {
-                 allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
-             } catch (e) {
+            try {
+                allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
+            } catch (e) {
 
-             }*/
-
+            }
 
             //fixme: fakeData
             //fixme: fakeData
-            allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+            //allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
 
             console.log('filteredAppInstanceList===>', appInstanceList)
 
