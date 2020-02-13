@@ -9,8 +9,9 @@ import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
-import {DatePicker, Progress,} from 'antd';
+import {DatePicker, Progress, TimePicker,} from 'antd';
 import * as reducer from "../../../../utils";
+import {Button as AButton} from 'antd'
 import {
     cutArrayList,
     filterAppInstanceListByClassification,
@@ -51,11 +52,11 @@ import {TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
-import '../PageMonitoring.css'
+
 import {numberWithCommas, renderGridLoader, renderGridLoader2, renderPlaceHolderCircular, showToast, showToast2, StylesForMonitoring} from "../PageMonitoringCommonService";
 import LeafletMap from "../oper/LeafletMapWrapper";
 import {filterUsageByClassification} from "../dev/PageDevMonitoringService";
-
+import '../PageMonitoring.css'
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
 const {Column, Row} = Grid;
@@ -1260,6 +1261,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                                 // style={{width: 300}}
                             />
+                           {/* <AButton type="primary">Primary</AButton>
+                            <div>
+                                <TimePicker use12Hours onChange={() => {
+                                    // alert('sdlfk')
+                                }}/>
+                                <TimePicker use12Hours format="h:mm:ss A" onChange={() => {
+                                    //alert('sdlfk')
+                                }}/>
+                                <TimePicker use12Hours format="h:mm a" onChange={() => {
+                                    //alert('sdlfk')
+                                }}/>
+                            </div>*/}
                         </div>
                     </div>
                 </div>

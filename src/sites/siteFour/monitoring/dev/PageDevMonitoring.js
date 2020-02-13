@@ -3,29 +3,27 @@ import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import OutsideClickHandler from 'react-outside-click-handler';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Button, Dropdown, Grid, Header, Modal, Tab, Table} from 'semantic-ui-react'
+import {Button, Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
-import ReactModal from 'react-modal-resizable-draggable';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {Button as MButton, CircularProgress} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
-import {DatePicker, Progress,} from 'antd';
-import {Modal as AModal, Button as AButton} from 'antd';
+import {DatePicker,} from 'antd';
 import {
     convertHwTypePhrases,
     filterUsageByClassification,
-    getClusterLevelUsageList,
-    getClusterList, handleHardwareTabChanges,
+    handleHardwareTabChanges,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
     makeLineChartDataForAppInst,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
-    makeSelectBoxListWithThreeValuePipe, renderBottomGridAreaForCluster,
-    renderBubbleChartCoreForDev_Cluster, renderLineChartCoreForDev_Cluster,
-    sortUsageListByTypeForCluster,
+    makeSelectBoxListWithThreeValuePipe,
+    renderBottomGridAreaForCluster,
+    renderBubbleChartCoreForDev_Cluster,
+    renderLineChartCoreForDev_Cluster,
 } from "./PageDevMonitoringService";
 import {
     CLASSIFICATION,
@@ -38,30 +36,28 @@ import {
     TCP_OPTIONS,
     UDP_OPTIONS
 } from "../../../../shared/Constants";
-import Lottie from "react-lottie";
-import type {TypeBarChartData, TypeClusterUsageList, TypeGridInstanceList, TypeLineChartData} from "../../../../shared/Types";
+import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
-import '../PageMonitoring.css'
+import '../PageMonitoring_new.css'
 import {
     getOneYearStartEndDatetime,
     makeBubbleChartDataForCluster,
-    numberWithCommas,
     renderBarChartCore,
     renderGridLoader2,
     renderPlaceHolderCircular,
     showToast,
     StylesForMonitoring
 } from "../PageMonitoringCommonService";
-import {getAppInstList, getAppLevelUsageList, getCloudletList} from "../admin/PageAdminMonitoringService";
+import {getAppLevelUsageList} from "../admin/PageAdminMonitoringService";
 import * as reducer from "../../../../utils";
 import {TabPanel, Tabs} from "react-tabs";
-import Icon from "@material-ui/core/Icon";
 import LeafletMapWrapperForDev from "./LeafletMapWrapperForDev";
 import TerminalViewer from "../../../../container/TerminalViewer";
-import ModalGraphForAppInst from "./ModalGraphForAppInst";
 import ModalGraphForCluster from "./ModalGraphForCluster";
+
+import {Button as AButton} from "antd";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
