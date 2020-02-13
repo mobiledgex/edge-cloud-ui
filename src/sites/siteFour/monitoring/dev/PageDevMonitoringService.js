@@ -284,6 +284,15 @@ export const sortUsageListByTypeForCluster = (usageList, hardwareType) => {
     return usageList;
 }
 
+export const sortByKey = (arrList, key) => {
+
+
+    arrList.sort((a, b) => b[key] - a[key]);
+
+
+    return arrList;
+}
+
 
 export const makeBarChartDataForCluster = (usageList, hardwareType, _this) => {
 

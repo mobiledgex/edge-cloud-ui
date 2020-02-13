@@ -30,7 +30,7 @@ import {
     renderBottomGridAreaForCloudlet
 } from "./PageOperMonitoringService";
 import LeafletMap from "./LeafletMapWrapper";
-import {filterUsageByClassification, makeSelectBoxListWithKey} from "../dev/PageDevMonitoringService";
+import {filterUsageByClassification, makeSelectBoxListWithKey, sortByKey} from "../dev/PageDevMonitoringService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -145,6 +145,8 @@ type State = {
     cloudletSelectLoading: boolean,
     filteredCloudletEventLogs: Array,
     allCloudletEventLogs: Array,
+    column: string,
+    direction: string,
 }
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
@@ -231,6 +233,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             cloudletSelectLoading: false,
             filteredCloudletEventLogs: [],
             allCloudletEventLogs: [],
+            column: null,
+            direction: null,
         };
 
         interval = null;
@@ -908,26 +912,56 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderCloudletEventLog() {
+        handleSortForEventLogTable = (clickedColumn) => () => {
+
+
+            if (this.state.column !== clickedColumn) {
+                let filteredCloudletEventLogs = sortByKey(this.state.filteredCloudletEventLogs)
+                this.setState({
+                    column: clickedColumn,
+                    filteredCloudletEventLogs: filteredCloudletEventLogs,
+                    direction: 'ascending',
+                })
+            }else{
+                this.setState({
+                    filteredCloudletEventLogs: this.state.filteredCloudletEventLogs.reverse(),
+                    direction: this.state.direction === 'ascending' ? 'descending' : 'ascending',
+                })
+            }
+        }
+
+        renderCloudletEventLogTable() {
             return (
                 <div className='page_monitoring_column'>
                     <div className='page_monitoring_title_area'>
                         <div className='page_monitoring_title_select'>
                             Cloudlet Event Log
                         </div>
-                        <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
+                        <Table className="viewListTable" basic='very' sortable celled fixed>
                             <Table.Header className="viewListTableHeader">
                                 <Table.Row>
-                                    <Table.HeaderCell>
+                                    <Table.HeaderCell
+                                        sorted={this.state.column === 'Time' ? this.state.direction : null}
+                                        onClick={this.handleSortForEventLogTable('Time')}
+                                    >
                                         Time
                                     </Table.HeaderCell>
-                                    <Table.HeaderCell>
+                                    <Table.HeaderCell
+                                        sorted={this.state.column === 'Cloudlet' ? this.state.direction : null}
+                                        onClick={this.handleSortForEventLogTable('Cloudlet')}
+                                    >
                                         Cloudlet
                                     </Table.HeaderCell>
-                                    <Table.HeaderCell>
+                                    <Table.HeaderCell
+                                        sorted={this.state.column === 'Event' ? this.state.direction : null}
+                                        onClick={this.handleSortForEventLogTable('Event')}
+                                    >
                                         Event
                                     </Table.HeaderCell>
-                                    <Table.HeaderCell>
+                                    <Table.HeaderCell
+                                        sorted={this.state.column === 'Status' ? this.state.direction : null}
+                                        onClick={this.handleSortForEventLogTable('Status')}
+                                    >
                                         Status
                                     </Table.HeaderCell>
                                 </Table.Row>
@@ -935,7 +969,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <Table.Body className="">
                                 {/*todo: 데이터가 없는경우*/}
                                 {!this.state.cloudletSelectLoading && this.state.filteredCloudletEventLogs.length === 0 &&
-                                <Table.Row className='' style={{backgroundColor: 'red', height: '25'}}>
+                                <Table.Row className='' style={{backgroundColor: 'transparent', height: '25'}}>
                                     <Table.Cell style={{width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent'}}>
                                         <div style={{minHeight: 360, fontSize: 30, fontFamily: 'Encode Sans Condensed'}}>
                                             NO DATA
@@ -1124,7 +1158,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/*todo: renderCloudletEventLog*/}
                                                 {/*todo: renderCloudletEventLog*/}
                                                 {/*todo: renderCloudletEventLog*/}
-                                                {this.renderCloudletEventLog()}
+                                                {this.renderCloudletEventLogTable()}
 
 
                                             </div>
