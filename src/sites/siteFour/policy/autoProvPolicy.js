@@ -173,7 +173,7 @@ class SiteFourPageFlavor extends React.Component {
     render() {
         return (
             this.state.viewMode === LIST_VIEW ?
-                <MexListView devData={this.state.devData} headerInfo={this.headerInfo} actionMenu={this.actionMenu} dataRefresh={this.getDataDeveloper}/> :
+                <MexListView devData={this.state.devData} headerInfo={this.headerInfo} actionMenu={this.actionMenu} onSelect = {this.onView}/> :
                 <MexDetailViewer detailData={this.state.detailData} layouts={layouts}/>
         )
     }

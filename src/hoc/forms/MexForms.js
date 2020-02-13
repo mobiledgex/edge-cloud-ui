@@ -26,6 +26,16 @@ const getIcon = (id)=>
     }
 }
 
+const isDisabled = (form)=>
+{
+    let disabled = false;
+    if (form.rules) {
+        let rules = form.rules;
+        return rules.disabled === undefined ? false : rules.disabled;
+    }
+    return disabled;
+}
+
 
 const MexForms = (props) => {
 
@@ -39,7 +49,7 @@ const MexForms = (props) => {
                     }
                 }
             }
-            else if (form.visible) {
+            else if (form.visible && !isDisabled(form)) {
                 let rules = form.rules;
                 if (rules) {
                     if (rules.required) {

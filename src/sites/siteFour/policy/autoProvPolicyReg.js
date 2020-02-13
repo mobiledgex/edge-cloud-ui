@@ -161,7 +161,7 @@ class AutoProvPolicyReg extends React.Component {
 
     onCreateAutoProvPolicyResponse = (mcRequest)=>
     {
-        if(mcRequest.response)
+        if(mcRequest && mcRequest.response)
         {
             let response = mcRequest.response;
             if(response.status === 200)
@@ -170,6 +170,7 @@ class AutoProvPolicyReg extends React.Component {
                 let region = data.Region
                 let organization = data.AutoProvPolicy.key.developer;
                 let autoPolicyName = data.AutoProvPolicy.key.name;
+                this.props.handleAlertInfo('success', `Auto Provisioning Policy ${autoPolicyName} created successfully`)
                 this.selectCloudlet(region, organization, autoPolicyName)
             }
         }

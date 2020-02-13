@@ -72,13 +72,6 @@ class MexListView extends React.Component {
         })
     }
 
-   
-
-    detailView(item) {
-       
-    }
-
-   
     appLaunch = (data) => {
         this.gotoUrl('/site4', 'pg=createAppInst', 'pg=5')
         this.props.handleAppLaunch(data)
@@ -88,6 +81,10 @@ class MexListView extends React.Component {
 
     getCellClick = (field, item) => {
         this.selectedRow = item
+        if(field !== 'Actions' && this.props.onSelect)
+        {
+            this.props.onSelect(item)
+        }
     }
 
     onActionClose = (action) => {

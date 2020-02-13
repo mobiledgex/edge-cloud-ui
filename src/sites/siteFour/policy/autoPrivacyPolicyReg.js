@@ -23,7 +23,7 @@ class AutoProvPolicyReg extends React.Component {
 
     validateRemoteCIDR=(form)=>
     {
-        if (form.value.length > 0) {
+        if (form.value && form.value.length > 0) {
             if (!/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/([0-9]|1[0-9]|2[0-9]|3[0-2]?)$/.test(form.value)) {
                 form.error = 'Remote CIDR format is invalid (must be between 0.0.0.0/0 to 255.255.255.255/32)'
                 return false;
@@ -36,7 +36,7 @@ class AutoProvPolicyReg extends React.Component {
 
     validatePortRange=(form)=>
     {
-        if (form.value.length > 0) {
+        if (form.value && form.value.length > 0) {
             let value = parseInt(form.value)
             if(value < 1 || value > 65535)
             {
@@ -145,7 +145,7 @@ class AutoProvPolicyReg extends React.Component {
         }
         else
         {
-            this.props.handleAlertInfo('error', 'Enable full isolation to disable all rules')
+            this.props.handleAlertInfo('error', 'Enable Full Isolation to disable all rules')
         }
     }
 
@@ -392,7 +392,7 @@ class AutoProvPolicyReg extends React.Component {
             if (data.OutboundSecurityRules && data.OutboundSecurityRules.length > 0) {
                 for (let i = 0; i < data.OutboundSecurityRules.length; i++) {
                     let OutboundSecurityRule = data.OutboundSecurityRules[i]
-                    let outboundRules = JSON.parse(JSON.stringify(this.outboundRules));
+                    let outboundRules = this.getOutBoundRules();
                     let isICMP = false;
                     for (let j = 0; j < outboundRules.length > 0; j++) {
                         let outboundRule = outboundRules[j];
