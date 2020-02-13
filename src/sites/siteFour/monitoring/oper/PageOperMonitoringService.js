@@ -317,72 +317,81 @@ export const makeLineChartForCloudlet = (_this: PageOperMonitoring, pUsageList: 
 
 export const getAllCloudletEventLogs = async (cloudletList) => {
 
-    let promiseList = []
-    cloudletList.map((cloudletOne: TypeCloudlet, index) => {
-        promiseList.push(getCloudletEventLog(cloudletOne.CloudletName, cloudletOne.Region))
-    })
-
-    let AllCloudletEventLogList = await Promise.all(promiseList);
-
-    let newAllCloudletEventLogList = []
-    AllCloudletEventLogList.map(listOne => {
-        listOne.map(item => {
-            newAllCloudletEventLogList.push(item)
+    try {
+        let promiseList = []
+        cloudletList.map((cloudletOne: TypeCloudlet, index) => {
+            promiseList.push(getCloudletEventLog(cloudletOne.CloudletName, cloudletOne.Region))
         })
 
-    })
+        let AllCloudletEventLogList = await Promise.all(promiseList);
 
-    return newAllCloudletEventLogList;
+        let newAllCloudletEventLogList = []
+        AllCloudletEventLogList.map(listOne => {
+            listOne.map(item => {
+                newAllCloudletEventLogList.push(item)
+            })
+
+        })
+
+        return newAllCloudletEventLogList;
+    } catch (e) {
+        throw new Error(e)
+    }
+
 
 }
 
 
 export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
-    let store = JSON.parse(localStorage.PROJECT_INIT);
-    let token = store ? store.userToken : 'null';
-    let selectOrg = localStorage.getItem('selectOrg')
+    try {
+        let store = JSON.parse(localStorage.PROJECT_INIT);
+        let token = store ? store.userToken : 'null';
+        let selectOrg = localStorage.getItem('selectOrg')
 
-    let result = await axios({
-        url: '/api/v1/auth/events/cloudlet',
-        method: 'post',
-        data: {
-            "region": pRegion,
-            "cloudlet": {
-                "operator_key": {
-                    "name": selectOrg
+        let result = await axios({
+            url: '/api/v1/auth/events/cloudlet',
+            method: 'post',
+            data: {
+                "region": pRegion,
+                "cloudlet": {
+                    "operator_key": {
+                        "name": selectOrg
+                    },
+                    "name": cloudletSelectedOne
                 },
-                "name": cloudletSelectedOne
+                "last": 10
             },
-            "last": 10
-        },
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + token
-        },
-        timeout: 15 * 1000
-    }).then(async response => {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token
+            },
+            timeout: 15 * 1000
+        }).then(async response => {
 
 
-        console.log('response===>Series', response.data.data["0"].Series);
+            console.log('response===>Series', response.data.data["0"].Series);
 
-        /*
-            "time",
-            "cloudlet",
-            "operator",
-            "event",
-            "status"
-        */
-        if (response.data.data["0"].Series !== null) {
-            let values = response.data.data["0"].Series["0"].values
-            return values;
-        } else {
-            return [];
-        }
+            /*
+                "time",
+                "cloudlet",
+                "operator",
+                "event",
+                "status"
+            */
+            if (response.data.data["0"].Series !== null) {
+                let values = response.data.data["0"].Series["0"].values
+                return values;
+            } else {
+                return [];
+            }
 
-    }).catch(e => {
-        // showToast(e.toString())
-    })
-    return result;
+        }).catch(e => {
+            // showToast(e.toString())
+        })
+        return result;
+    } catch (e) {
+        throw new Error(e)
+    }
 }
 
 
