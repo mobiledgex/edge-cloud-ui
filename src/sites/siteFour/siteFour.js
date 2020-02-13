@@ -883,13 +883,13 @@ class SiteFour extends React.Component {
                         </Header>
                     </Grid.Column>
                     <Grid.Column width={10} className='navbar_right'>
-                        <div style={{ cursor: 'pointer',marginTop:10 }} onClick={this.computeRefresh}>
+                        <div className='navbar_icon' onClick={this.computeRefresh}>
                             <RefreshOutlinedIcon fontSize='large'/>
                         </div>
-                        <div style={{ cursor: 'pointer',marginTop:10  }} onClick={() => this.gotoUrl('/site1', 'pg=0')}>
+                        <div className='navbar_icon' onClick={() => this.gotoUrl('/site1', 'pg=0')}>
                             <PublicOutlinedIcon fontSize='large' />
                         </div>
-                        <div style={{ cursor: 'pointer',marginTop:10 , display: 'none' }}>
+                        <div className='navbar_icon' style={{display: 'none' }}>
                             <MaterialIcon icon={'notifications_none'} />
                         </div>
                         {
@@ -899,14 +899,16 @@ class SiteFour extends React.Component {
                                 this.state.headerTitle !== 'User Roles' &&
                                 this.state.headerTitle !== 'Accounts' &&
                                 this.state.headerTitle !== 'Flavors'
-                            ) ? <div style={{ cursor: 'pointer',marginTop:10  }} onClick={this.enalbeSteps}>
+                            ) ? <div className='navbar_icon' onClick={this.enalbeSteps}>
                                     <HelpOutlineOutlinedIcon fontSize='large' />
                                 </div> : null
                         }
                         <Popup
-                            trigger={<div style={{ cursor: 'pointer', display: 'none' }}>
-                                <MaterialIcon icon={'add'} />
-                            </div>}
+                            trigger={
+                                <div className='navbar_icon' style={{ display: 'none' }}>
+                                    <MaterialIcon icon={'add'} />
+                                </div>
+                            }
                             content={this.menuAddItem()}
                             on='click'
                             position='bottom center'

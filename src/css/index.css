@@ -499,18 +499,27 @@ body, button, input, textarea, optgroup, select, textarea,
     text-align: right;
     padding-right: 2em !important;
 }
-.navbar_right div{
+.navbar_right>div{
     height: 70px;
     line-height: 70px;
-    vertical-align: top;
+    vertical-align: middle;
     display: inline-block;
     padding: 0 1em;
 }
 .navbar_right .material-icons {
     line-height: 70px;
     color: rgba(255, 255, 255, 0.5) !important;
-    font-size: 32px !important;
 }
+
+.navbar_right .navbar_icon {
+    line-height: 70px;
+    cursor: pointer;
+}
+.navbar_right .navbar_icon>svg {
+    vertical-align: middle;
+}
+
+
 .ui.header .material-icons:hover,
 .navbar_left .nav_filter .material-icons:hover,
 .navbar_right .material-icons:hover {
@@ -1393,6 +1402,23 @@ body, button, input, textarea, optgroup, select, textarea,
     background-color: rgba(71,82,102,1) !important;
     color: rgba(255,255,255,0.9) !important;
 }
+
+.table_actions_popup.gnb_profile .table_actions_popup_group .table_actions_popup_group_button {
+    text-align: left;
+}
+.table_actions_popup.gnb_profile .table_actions_popup_group .table_actions_popup_group_button .material-icons {
+    vertical-align: middle;
+    margin-right:10px;
+}
+.table_actions_popup.gnb_profile .table_actions_popup_group .table_actions_popup_group_button:first-child {
+    text-transform: uppercase;
+    background: #000000;
+    color: rgba(255,255,255,.7);
+    pointer-events: none;
+    text-align: center;
+    height: 46px;
+}
+
 .table_actions_tooltip {
     background: #000000 !important;
     border: 1px solid rgba(255,255,255,.4) !important;
