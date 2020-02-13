@@ -1,3 +1,224 @@
+@import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Bungee|Candal|Righteous&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Acme|Roboto|Bungee|Barlow+Semi+Condensed|Candal|Encode+Sans+Condensed|Righteous|Karla|Roboto+Condensed&display=swap');
+@import url('~react-leaflet-markercluster/dist/styles.min.css');
+.tooltipclass {
+    z-index: 100;
+}
+
+.popup1 {
+    background-color: black;
+    opacity: 0.7;
+}
+
+.leaflet-container {
+    width: 100%;
+    height: 100%;
+    /*      left top right bottom*/
+    /*margin: 0 auto;*/
+}
+
+/*.leaflet-map-pane {
+    height: 400px;
+    background-color: #0a0a0c;
+
+}*/
+.map_outer_background {
+    background-color: #262626
+}
+
+.leaflet-container {
+    -ms-touch-action: none;
+    touch-action: none;
+    background-color: #262626
+}
+
+.bottomGridArea {
+    zIndex: 999999
+}
+
+
+.leaflet-control-container {
+    background-color: #3b3f47;
+}
+
+.leaflet-control-zoom-out {
+    background-color: #3b3f47;
+}
+
+.leaflet-control-attribution {
+    display: none;
+}
+
+.leaflet-popup-content-wrapper {
+    background-color: rgba(71, 82, 102, 0.65);
+    font-weight: bold;
+    color: white;
+    font-size: 20px;
+}
+
+.marker1 {
+    background-color: green;
+    font-weight: bold;
+}
+
+.request-popup .leaflet-popup-content-wrapper {
+    border-radius: 0px;
+    background-color: #575757;
+}
+
+
+.leafMapDiv {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.mapbox-logo {
+    display: none !important;
+}
+
+.mapboxgl-ctrl {
+    display: none !important;
+}
+
+#zoomIn {
+    background-color: green;
+}
+
+
+.title_align2 {
+    font-family: 'Helvetica Neue', Arial, sans-serif !important;
+    font-weight: bolder;
+}
+
+.header001 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    /*//background-color: chartreuse;*/
+}
+
+.wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 100000;
+}
+
+
+/*######################################################################*/
+/*#########@todo modal popup style######*/
+/*######################################################################*/
+
+.ant-modal {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    color: rgba(0, 0, 0, 0.65);
+    font-size: 14px;
+    font-variant: tabular-nums;
+    line-height: 1.5;
+    list-style: none;
+    -webkit-font-feature-settings: 'tnum';
+    font-feature-settings: 'tnum';
+    position: relative;
+    top: 100px;
+    width: auto;
+    margin: 0 auto;
+    padding-bottom: 24px;
+    pointer-events: none;
+}
+
+.ant-modal-wrap {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    overflow: auto;
+    outline: 0;
+    -webkit-overflow-scrolling: touch;
+}
+
+.ant-modal-title {
+    margin: 0;
+    color: rgba(0, 0, 0, 0.85);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 22px;
+    word-wrap: break-word;
+}
+
+.ant-modal-content {
+    position: relative;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 0;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    pointer-events: auto;
+}
+
+.ant-modal-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 10;
+    padding: 0;
+    color: rgba(0, 0, 0, 0.45);
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    cursor: pointer;
+    -webkit-transition: color 0.3s;
+    transition: color 0.3s;
+}
+
+.ant-modal-close-x {
+    display: block;
+    width: 56px;
+    height: 56px;
+    font-size: 16px;
+    font-style: normal;
+    line-height: 56px;
+    text-align: center;
+    text-transform: none;
+    text-rendering: auto;
+}
+
+.ant-modal-close:focus,
+.ant-modal-close:hover {
+    color: rgba(0, 0, 0, 0.75);
+    text-decoration: none;
+}
+
+.ant-modal-header {
+    padding: 16px 24px;
+    color: rgba(0, 0, 0, 0.65);
+    background: #fff;
+    border-bottom: 1px solid #e8e8e8;
+    border-radius: 4px 4px 0 0;
+}
+
 .ant-modal-body {
-    box-shadow: 0 4px 50px white;
+    box-shadow: 0 4px 50px red;
 }
