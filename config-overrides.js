@@ -31,7 +31,7 @@ module.exports = override(
             '@btn-ghost-color': 'fade(@light, 45)',
             '@btn-ghost-border': 'fade(@light, 45)',
             '@input-color': '@text-color',
-            '@input-bg': '#3b3b4d',
+            '@input-bg': '#22222d',
             '@input-disabled-bg': '#4c4c61',
             '@input-placeholder-color': '@text-color-secondary',
             '@input-hover-border-color': 'fade(@light, 10)',
