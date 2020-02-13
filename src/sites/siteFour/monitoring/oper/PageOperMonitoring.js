@@ -686,7 +686,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             } catch (e) {
 
-            }finally {
+            } finally {
                 await this.setState({
                     loading: false,
                     isReady: true,
@@ -921,9 +921,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <Table.Body className="">
                                 {/*todo: 데이터가 없는경우*/}
                                 {!this.state.cloudletSelectLoading && this.state.cloudletEventLogs.length === 0 &&
-                                <Table.Row className=''>
-                                    <Table.Cell style={{width:'100%', display: 'flex', justifyContent: 'center', alignItems: 'center',  backgroundColor: 'transparent'}} >
-                                        <div style={{}}>
+                                <Table.Row className='' style={{backgroundColor: 'red', height: '25'}}>
+                                    <Table.Cell style={{width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent'}}>
+                                        <div style={{minHeight: 360, fontSize:30, fontFamily:'Encode Sans Condensed'}}>
                                             NO DATA
                                         </div>
                                     </Table.Cell>
@@ -941,7 +941,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                             <Table.Cell>
                                                 {item[0].split("T")[0]}{`  `}
-                                                {item[0].split("T")[1].toString().substring(0,8)}
+                                                {item[0].split("T")[1].toString().substring(0, 8)}
                                             </Table.Cell>
                                             <Table.Cell>
                                                 {item[1]}

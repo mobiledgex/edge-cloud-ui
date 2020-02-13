@@ -237,3 +237,9 @@
     height: 36px;
     background-color: #1e2124;
 }
+
+tbody{
+    background-color: rgb(30, 33, 36);
+    height: 360px;
+    min-height: 350px;
+}
