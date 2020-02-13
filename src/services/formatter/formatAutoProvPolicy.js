@@ -1,9 +1,22 @@
 import { generateUniqueId } from '../serviceMC';
+import {TYPE_JSON} from '../../hoc/constant';
+
+export const layouts = [
+  {key:'Region', label:'Region'},
+  {key:'OrganizationName', label:'Organization Name'},
+  {key:'AutoPolicyName', label:'Auto Provisioning Policy Name'},
+  {key:'Cloudlets', label:'Cloudlets', 
+        layouts : [
+          {key:'CloudletName', label:'Cloudlet Name'},
+          {key:'Operator', label:'Operator'},
+          {key:'Location', label:'Location', type:TYPE_JSON}
+        ]}
+]
 
 export const formatData = (datas, body) => {
 
   let values = [];
-  if (datas.data && datas.data.length > 0) {
+  if (datas.data) {
     let toArray = null;
     let toJson = null;
     if (typeof datas.data === 'object') {
@@ -45,8 +58,20 @@ export const formatData = (datas, body) => {
           let AutoPolicyName = dataResult.data.key.name || '-';
           let DeployClientCount = dataResult.data.deploy_client_count || 0;
           let DeployIntervalCount = dataResult.data.deploy_interval_count || 0;
-          let Cloudlets = dataResult.data.cloudlets ? dataResult.data.cloudlets : [];
-          let CloudletCount = dataResult.data.cloudlets ? dataResult.data.cloudlets.length : 0
+
+          let cloudlets = [];
+
+          if(dataResult.data.cloudlets && dataResult.data.cloudlets.length>0)
+          {
+            for(let i=0;i<dataResult.data.cloudlets.length;i++)
+            {
+                let data = dataResult.data.cloudlets[i];
+                let CloudletName = data.key.name;
+                let Operator = data.key.operator_key.name;
+                let Location = data.loc;
+                cloudlets.push({ CloudletName: CloudletName, Operator: Operator, Location: Location })
+            }
+          }
 
           values.push({
             uuid: generateUniqueId(),
@@ -55,8 +80,8 @@ export const formatData = (datas, body) => {
             AutoPolicyName: AutoPolicyName,
             DeployClientCount: DeployClientCount,
             DeployIntervalCount: DeployIntervalCount,
-            Cloudlets:Cloudlets,
-            CloudletCount: CloudletCount,
+            Cloudlets:cloudlets,
+            CloudletCount: cloudlets.length,
             Edit: newRegistKey,
           })
         }

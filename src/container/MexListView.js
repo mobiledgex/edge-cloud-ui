@@ -9,19 +9,9 @@ import * as actions from '../actions';
 import './styles.css';
 import _ from "lodash";
 
-
-
-
-let _self = null;
-const organizationEdit = [
-    { key: 'Audit', text: 'Audit', icon: null },
-    { key: 'AddUser', text: 'Add User', icon: null },
-    { key: 'Delete', text: 'Delete', icon: 'trash alternate' },
-]
-class DeveloperListView extends React.Component {
+class MexListView extends React.Component {
     constructor(props) {
         super(props);
-        _self = this;
         this.state = {
             dummyData: [],
             anchorEl : null
@@ -52,7 +42,7 @@ class DeveloperListView extends React.Component {
     handleSort = clickedColumn => (a) => {
 
         this.sorting = true;
-        const { column, dummyData, direction } = _self.state
+        const { column, dummyData, direction } = this.state
         if ((column !== clickedColumn) && dummyData) {
             let sorted = _.sortBy(dummyData, [clm => typeof clm[clickedColumn] === 'string' ? String(clm[clickedColumn]).toLowerCase() : clm[clickedColumn]])
             this.setState({
@@ -82,13 +72,6 @@ class DeveloperListView extends React.Component {
         })
     }
 
-   
-
-    detailView(item) {
-       
-    }
-
-   
     appLaunch = (data) => {
         this.gotoUrl('/site4', 'pg=createAppInst', 'pg=5')
         this.props.handleAppLaunch(data)
@@ -98,6 +81,10 @@ class DeveloperListView extends React.Component {
 
     getCellClick = (field, item) => {
         this.selectedRow = item
+        if(field !== 'Actions' && this.props.onSelect)
+        {
+            this.props.onSelect(item)
+        }
     }
 
     onActionClose = (action) => {
@@ -132,18 +119,6 @@ class DeveloperListView extends React.Component {
             }
         })
     }
-
-
-    componentDidUpdate(prevProps, prevState) {
-        if(prevProps.devData !== this.props.devData)
-        {
-            this.setState({
-                dummyData:this.props.devData
-            })
-        }
-    }
-   
-    
 
     render() {
         return (
@@ -181,8 +156,8 @@ class DeveloperListView extends React.Component {
                                     <Paper style={{ backgroundColor: '#212121', color: 'white' }}>
                                         <ClickAwayListener onClickAway={this.onActionClose}>
                                             <MenuList autoFocusItem={Boolean(this.state.anchorEl)} id="menu-list-grow" >
-                                                {this.props.actionMenu.map(action => {
-                                                    return <MenuItem onClick={(e)=>{this.onActionClose(action)}}>{action.label}</MenuItem>
+                                                {this.props.actionMenu.map((action, i) => {
+                                                    return <MenuItem key={i} onClick={(e)=>{this.onActionClose(action)}}>{action.label}</MenuItem>
                                                 })}
                                             </MenuList>
                                         </ClickAwayListener>
@@ -193,6 +168,22 @@ class DeveloperListView extends React.Component {
             </div>
         );
 
+    }
+
+    componentDidMount()
+    {
+        this.setState({
+            dummyData:this.props.devData
+        })
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if(prevProps.devData !== this.props.devData)
+        {
+            this.setState({
+                dummyData:this.props.devData
+            })
+        }
     }
 }
 
@@ -240,6 +231,6 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(DeveloperListView));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(MexListView));
 
 

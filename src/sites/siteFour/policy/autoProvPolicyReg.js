@@ -153,15 +153,15 @@ class AutoProvPolicyReg extends React.Component {
 
         if(valid)
         {
-            let msg = this.props.action === 'Delete' ? 'Removed' : 'Added'
-            this.props.handleAlertInfo('success', `Cloudlets ${msg} Successfully`)
+            let msg = this.props.action === 'Delete' ? 'removed' : 'added'
+            this.props.handleAlertInfo('success', `Cloudlets ${msg} successfully`)
             setTimeout(()=>{this.gotoUrl('site4', 'pg=8')},2000)
         }
     }
 
     onCreateAutoProvPolicyResponse = (mcRequest)=>
     {
-        if(mcRequest.response)
+        if(mcRequest && mcRequest.response)
         {
             let response = mcRequest.response;
             if(response.status === 200)
@@ -170,6 +170,7 @@ class AutoProvPolicyReg extends React.Component {
                 let region = data.Region
                 let organization = data.AutoProvPolicy.key.developer;
                 let autoPolicyName = data.AutoProvPolicy.key.name;
+                this.props.handleAlertInfo('success', `Auto Provisioning Policy ${autoPolicyName} created successfully`)
                 this.selectCloudlet(region, organization, autoPolicyName)
             }
         }
@@ -242,6 +243,13 @@ class AutoProvPolicyReg extends React.Component {
         serviceMC.sendMultiRequest(this, requestDataList, this.addCloudletResponse)
     }
 
+    /*Required*/
+    reloadForms = () => {
+        this.setState({
+            forms: this.state.forms
+        })
+    }
+
     render() {
         return (
             <div className="round_panel">
@@ -263,7 +271,7 @@ class AutoProvPolicyReg extends React.Component {
                                         ))
                                     }
                                 </Step.Group></div>}
-                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} />
+                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} />
                     </Item>
                 </div>
             </div>
@@ -302,7 +310,7 @@ class AutoProvPolicyReg extends React.Component {
                 { field: 'AutoPolicyName', label: 'Auto Policy Name', type: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { required: true }, visible:true },
                 { field: 'DeployClientCount', label: 'Deploy Client Count', type: 'Input', rules: { type: 'number' }, visible:true },
                 { field: 'DeployIntervalCount', label: 'Deploy Interval Count (s)', type: 'Input', rules: { type: 'number' }, visible:true },
-                { label: 'Create Policy', type: 'Button', onClick: this.onCreateAutoProvPolicy },
+                { label: 'Create Policy', type: 'Button', onClick: this.onCreateAutoProvPolicy, validate:true },
                 { label: 'Cancel', type: 'Button', onClick: this.onAddCancel }
             ]
 

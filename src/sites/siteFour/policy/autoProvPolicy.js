@@ -8,25 +8,23 @@ import * as actions from '../../../actions';
 
 import * as serviceMC from '../../../services/serviceMC';
 import SiteFourAutoProvPolicyReg from './autoProvPolicyReg'
+import {layouts} from '../../../services/formatter/formatAutoProvPolicy';
+import MexDetailViewer from '../../../hoc/dataViewer/DetailViewer';
 
 
-let _self = null;
-let rgn = [];
+const LIST_VIEW = 'ListView'
+const DETAIL_VIEW = 'DetailView'
 class SiteFourPageFlavor extends React.Component {
     constructor(props) {
         super(props);
-        _self = this;
         this.state = {
             devData: [],
-            regionToggle: false,
-            edit: false,
+            viewMode:LIST_VIEW,
+            detailData:{}
         };
-        this.initLoad = false;
         this.action = '';
         this.requestCount = 0;
         this.multiRequestData = [];
-        this.headerH = 70;
-        this.hgap = 0;
         this.data = {}
 
         this.headerInfo = [
@@ -40,8 +38,9 @@ class SiteFourPageFlavor extends React.Component {
         ]
 
         this.actionMenu = [
-            { label: 'Add Cloudlet', onClick: this.onAddCloudlet },
-            { label: 'Delete Cloudlet', onClick: this.onDeleteClouldlet },
+            { label: 'View', onClick: this.onView },
+            { label: 'Add Cloudlet', onClick: this.onAdd },
+            { label: 'Delete Cloudlet', onClick: this.onDelete },
             { label: 'Delete', onClick: this.onDelete }
         ]
     }
@@ -51,13 +50,22 @@ class SiteFourPageFlavor extends React.Component {
         return store.userToken
     }
 
-    onAddCloudlet = (data) => {
+    onView = (data)=>
+    {
+        this.props.handleDetail({ data: null, viewMode: 'MexDetailView' })
+        this.setState({
+            viewMode : DETAIL_VIEW,
+            detailData:data
+        })
+    }
+
+    onAdd = (data) => {
         this.data = data;
         this.action = 'Add'
         this.props.childPage(<SiteFourAutoProvPolicyReg data={this.data} action={this.action} childPage={this.props.childPage}></SiteFourAutoProvPolicyReg>)
     }
 
-    onDeleteClouldlet = (data) => {
+    onDelete = (data) => {
         this.data = data;
         this.action = 'Delete'
         this.props.childPage(<SiteFourAutoProvPolicyReg data={this.data} action={this.action} childPage={this.props.childPage}></SiteFourAutoProvPolicyReg>)
@@ -73,20 +81,20 @@ class SiteFourPageFlavor extends React.Component {
             AutoProvPolicy: AutoProvPolicy
         }
         let mcRequest = await serviceMC.sendSyncRequest(this, { token: this.getToken(), method: serviceMC.getEP().DELETE_AUTO_PROV_POLICY, data: requestData })
-        if (mcRequest.response && mcRequest.response.status === 200) {
-            this.props.handleAlertInfo('success', `Auto Provisioning Policy ${data.AutoPolicyName} Deleted Successfully`)
+        if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
+            this.props.handleAlertInfo('success', `Auto Provisioning Policy ${data.AutoPolicyName} deleted successfully`)
         }
         this.props.handleComputeRefresh(true);
     }
 
     gotoUrl(site, subPath) {
         let mainPath = site;
-        _self.props.history.push({
+        this.props.history.push({
             pathname: site,
             search: subPath
         });
-        _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
+        this.props.history.location.search = subPath;
+        this.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
 
     }
 
@@ -99,7 +107,15 @@ class SiteFourPageFlavor extends React.Component {
 
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.computeRefresh.compute) {
+        if (nextProps.viewMode !== this.props.viewMode) {
+            if (this.props.viewMode === LIST_VIEW) {
+                this.setState({
+                    viewMode: LIST_VIEW,
+                    detailData: {}
+                })
+            }
+        }
+        else if (nextProps.computeRefresh.compute) {
             this.getDataDeveloper(nextProps.changeRegion);
             this.props.handleComputeRefresh(false);
         }
@@ -109,31 +125,32 @@ class SiteFourPageFlavor extends React.Component {
     }
 
     receiveResult = (mcRequest) => {
-        _self.requestCount -= 1;
+        this.requestCount -= 1;
         if (mcRequest) {
             if (mcRequest.response) {
                 let response = mcRequest.response;
                 if (response.data && response.data.length > 0) {
-                    _self.multiRequestData = [..._self.multiRequestData, ...response.data]
+                    this.multiRequestData = [...this.multiRequestData, ...response.data]
                 }
             }
         }
 
-        if (_self.requestCount === 0) {
-            if (_self.multiRequestData.length > 0) {
-                let sortedData = _.orderBy(_self.multiRequestData, ['Region', 'AutoPolicyName'])
-                _self.setState({
+        if (this.requestCount === 0) {
+            if (this.multiRequestData.length > 0) {
+                let sortedData = _.orderBy(this.multiRequestData, ['Region', 'AutoPolicyName'])
+                this.setState({
                     devData: sortedData
                 })
-                _self.multiRequestData = [];
+                this.multiRequestData = [];
             } else {
-                _self.props.handleComputeRefresh(false);
-                _self.props.handleAlertInfo('error', 'Requested data is empty')
+                this.props.handleComputeRefresh(false);
+                this.props.handleAlertInfo('error', 'Requested data is empty')
             }
         }
     }
 
     getDataDeveloper = (region, regionArr) => {
+        let rgn = [] 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({ devData: [] })
         this.multiRequestData = [];
@@ -149,27 +166,35 @@ class SiteFourPageFlavor extends React.Component {
             this.requestCount = rgn.length;
             rgn.map((item) => {
                 let requestData = { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_AUTO_PROV_POLICY, data: { region: item } };
-                serviceMC.sendRequest(_self, requestData, _self.receiveResult)
+                serviceMC.sendRequest(this, requestData, this.receiveResult)
             })
         }
     }
     render() {
         return (
-            <MexListView devData={this.state.devData} headerInfo={this.headerInfo} actionMenu={this.actionMenu} siteId={'Flavors'} dataRefresh={this.getDataDeveloper}></MexListView>
-        );
+            this.state.viewMode === LIST_VIEW ?
+                <MexListView devData={this.state.devData} headerInfo={this.headerInfo} actionMenu={this.actionMenu} onSelect = {this.onView}/> :
+                <MexDetailViewer detailData={this.state.detailData} layouts={layouts}/>
+        )
     }
 };
 
 const mapStateToProps = (state) => {
+    let viewMode = null;
     let regionInfo = (state.regionInfo) ? state.regionInfo : null;
+    if (state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
+        viewMode = state.changeViewMode.mode.viewMode;
+    }
     return {
         computeRefresh: (state.computeRefresh) ? state.computeRefresh : null,
         changeRegion: state.changeRegion.region ? state.changeRegion.region : null,
-        regionInfo: regionInfo
+        regionInfo: regionInfo,
+        viewMode : viewMode==='listView' ? DETAIL_VIEW : LIST_VIEW
     }
 };
 const mapDispatchProps = (dispatch) => {
     return {
+        handleDetail: (data) => { dispatch(actions.changeDetail(data)) },
         handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
         handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data)) },
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },

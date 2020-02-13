@@ -1018,7 +1018,7 @@ class SiteFour extends React.Component {
                                         <Grid.Column floated='left' width={10}>
                                             <label style={{fontSize:25, marginRight:20}}>{this.state.headerTitle}</label>
                                             {
-                                                (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'User Roles' && this.state.headerTitle !== 'Accounts' && this.state.headerTitle !== 'Audit Log' && viewMode !== 'detailView' && this.state.page.indexOf('create') === -1 && this.state.page.indexOf('edit') == -1 && !this.state.currentPage) ?
+                                                (viewMode!== 'MexDetailView' && this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'User Roles' && this.state.headerTitle !== 'Accounts' && this.state.headerTitle !== 'Audit Log' && viewMode !== 'detailView' && this.state.page.indexOf('create') === -1 && this.state.page.indexOf('edit') == -1 && !this.state.currentPage) ?
                                                     (this.state.intoCity) ? 
                                                         <Button onClick={this.onClickBackBtn}>Back</Button> :
                                                         <Dropdown className='selection'
@@ -1030,7 +1030,7 @@ class SiteFour extends React.Component {
                                                     : null
                                             }
                                             {
-                                                (this.state.page.indexOf('pg=8') >= 0 && !this.state.currentPage) ?
+                                                (viewMode!== 'MexDetailView' &&  this.state.page.indexOf('pg=8') >= 0 && !this.state.currentPage) ?
                                                     <Dropdown className='selection'
                                                         style={{ position: 'relative', marginRight: 20, height: 20 }}
                                                         options={autoPolicy}
@@ -1039,12 +1039,12 @@ class SiteFour extends React.Component {
                                                     /> : null
                                             }
                                             {
-                                                (!this.state.currentPage && this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView' && this.props.location.search.indexOf('audits') === -1 ) ?
+                                                (viewMode!== 'MexDetailView' && !this.state.currentPage && this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView' && this.props.location.search.indexOf('audits') === -1 ) ?
                                                     <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>New</Button>
                                                     : null
                                             }
                                             {
-                                                (viewMode === 'detailView') ?
+                                                (viewMode === 'detailView' || viewMode === 'MexDetailView') ?
                                                     <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.props.handleDetail({
                                                         data: null,
                                                         viewMode: 'listView'
