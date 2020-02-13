@@ -1,5 +1,5 @@
 const darkTheme = require('@ant-design/dark-theme');
-const { override, fixBabelImports, addLessLoader } = require('customize-cra');
+const {override, fixBabelImports, addLessLoader} = require('customize-cra');
 
 module.exports = override(
     fixBabelImports('import', {
@@ -31,8 +31,8 @@ module.exports = override(
             '@btn-ghost-color': 'fade(@light, 45)',
             '@btn-ghost-border': 'fade(@light, 45)',
             '@input-color': '@text-color',
-            '@input-bg': '#22222d',
-            '@input-disabled-bg': '#4c4c61',
+            '@input-bg': 'rgba(0,0,0,.6)',
+            '@input-disabled-bg': '#1f1f1f',
             '@input-placeholder-color': '@text-color-secondary',
             '@input-hover-border-color': 'fade(@light, 10)',
             '@checkbox-check-color': '#3b3b4d',
