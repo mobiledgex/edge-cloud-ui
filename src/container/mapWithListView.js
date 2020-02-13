@@ -271,7 +271,7 @@ class MapWithListView extends React.Component {
 
         if (_item.State === 5) {
             this.setState({
-                stepsArray: [{ uuid: _item.uuid, steps: [{ message: 'Created Successfully', code: CODE_FINISH }] }]
+                stepsArray: [{ uuid: _item.uuid, steps: [{ message: 'Created successfully', code: CODE_FINISH }] }]
             })
         }
     }
