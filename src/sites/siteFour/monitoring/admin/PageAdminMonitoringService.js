@@ -998,6 +998,7 @@ export const getCloudletList = async () => {
         return mergedOrgCloudletList;
     } catch (e) {
 
+        showToast('getCloudletList===>' + e.toString())
     }
 }
 

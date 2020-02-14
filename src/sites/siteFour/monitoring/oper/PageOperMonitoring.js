@@ -285,7 +285,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //fixme : fakedata
                 //cloudletList = require('./cloudletList')
                 cloudletList = await getCloudletList();
-                allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList);
+                try{
+                    allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList);
+                }catch (e) {
+                    //showToast('EVENTLOG fetch error')
+                }
+
                 console.log('allCloudletEventLogList===>', allCloudletEventLogList);
 
                 let cloudletListForDropdown = [];
@@ -295,7 +300,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         value: item.CloudletName + "|" + item.Region,
                     })
                 })
-
 
                 await this.setState({
                     isAppInstaceDataReady: true,
@@ -328,9 +332,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     maxCpu: maxCpu,
                     maxMem: maxMem,
                     isRequesting: false,
+                    isAppInstaceDataReady: true,
                 });
             } catch (e) {
                 throw new Error(e)
+            }finally {
+                this.setState({
+                    isRequesting: false,
+                    loading: false,
+                    isReady: true,
+                    isAppInstaceDataReady: true,
+                })
             }
         }
 
