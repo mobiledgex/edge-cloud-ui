@@ -332,16 +332,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         async loadInitDataForCluster(isInterval: boolean = false) {
             clearInterval(this.intervalForAppInst)
             this.setState({dropdownRequestLoading: true})
-            /*let clusterList = await getClusterList();
+            let clusterList = await getClusterList();
             let cloudletList = await getCloudletList()
-            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();*/
+            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
 
 
             //fixme: fakeData
             //fixme: fakeData
-            let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+         /*   let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
             let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
+            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')*/
             console.log('appInstanceList====>', appInstanceList);
 
             console.log('clusterList===>', clusterList);
@@ -371,15 +371,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             }
             let allClusterUsageList = []
-            /*try {
+            try {
                 allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
             } catch (e) {
 
-            }*/
+            }
 
             //fixme: fakeData
             //fixme: fakeData
-            allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+            //allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
             console.log('filteredAppInstanceList===>', appInstanceList)
 
             let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
@@ -476,7 +476,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-        makeChartDataAndRenderTabBody(hwType, subCategoryType = '') {
+        makeChartDataAndRenderTabBody(hwType,) {
             let barChartDataSet: TypeBarChartData = [];
             let lineChartDataSet: TypeLineChartData = [];
             if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
@@ -486,7 +486,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
                 lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
             }
-            console.log(`barChartDataSet===${hwType}>`, barChartDataSet);
+            console.log(`lineChartDataSet===${hwType}>`, lineChartDataSet);
             if (hwType === HARDWARE_TYPE.RECVBYTES
                 || hwType === HARDWARE_TYPE.SENDBYTES
                 || hwType === HARDWARE_TYPE.ACTIVE_CONNECTION
@@ -497,7 +497,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 || hwType === HARDWARE_TYPE.UDPSENT
 
             ) {
-                return this.renderGraphAreaMulti(subCategoryType, barChartDataSet, lineChartDataSet)
+                return this.renderGraphAreaMulti(hwType, barChartDataSet, lineChartDataSet)
             } else {
 
                 return this.renderGraphArea(hwType, barChartDataSet, lineChartDataSet)
@@ -754,13 +754,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <Tabs selectedIndex={this.state.connectionsTabIndex} className='page_monitoring_tab'>
 
                                 <TabPanel>
-                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.ACTIVE_CONNECTION, HARDWARE_TYPE.ACTIVE_CONNECTION)}
+                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.ACTIVE_CONNECTION)}
                                 </TabPanel>
                                 <TabPanel>
-                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.HANDLED_CONNECTION, HARDWARE_TYPE.HANDLED_CONNECTION)}
+                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.HANDLED_CONNECTION)}
                                 </TabPanel>
                                 <TabPanel>
-                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.ACCEPTS_CONNECTION, HARDWARE_TYPE.ACCEPTS_CONNECTION)}
+                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.ACCEPTS_CONNECTION)}
                                 </TabPanel>
                             </Tabs>
                         </Pane>
@@ -810,10 +810,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <Tabs selectedIndex={this.state.tcpTabIndex} className='page_monitoring_tab'>
 
                                 <TabPanel>
-                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.TCPCONNS, HARDWARE_TYPE.TCPCONNS)}
+                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.TCPCONNS)}
                                 </TabPanel>
                                 <TabPanel>
-                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.TCPRETRANS, HARDWARE_TYPE.TCPRETRANS)}
+                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.TCPRETRANS)}
                                 </TabPanel>
 
                             </Tabs>
@@ -827,10 +827,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <Pane>
                             <Tabs selectedIndex={this.state.udpTabIndex} className='page_monitoring_tab'>
                                 <TabPanel>
-                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.UDPRECV, HARDWARE_TYPE.UDPRECV)}
+                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.UDPRECV)}
                                 </TabPanel>
                                 <TabPanel>
-                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.UDPSENT, HARDWARE_TYPE.UDPSENT)}
+                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.UDPSENT)}
                                 </TabPanel>
 
                             </Tabs>
@@ -1358,10 +1358,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*todo:---------------------------------*/}
                                                         <Tabs selectedIndex={this.state.connectionsTabIndex} className='page_monitoring_tab'>
                                                             <TabPanel>
-                                                                {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.RECVBYTES, HARDWARE_TYPE.RECVBYTES)}
+                                                                {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.RECVBYTES)}
                                                             </TabPanel>
                                                             <TabPanel>
-                                                                {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.SENDBYTES, HARDWARE_TYPE.SENDBYTES)}
+                                                                {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.SENDBYTES)}
                                                             </TabPanel>
                                                         </Tabs>
                                                     </div>

@@ -114,7 +114,7 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
                     columns: columns,
                     udpSeriesList,
                     tcpSeriesList,
-                    networkSeriesList,
+                    networkSeriesList: networkSeriesList,
                     memSeriesList,
                     diskSeriesList,
                     cpuSeriesList,
@@ -963,6 +963,9 @@ export const renderLineChartCoreForDev_Cluster = (_this: PageDevMonitoring, line
     let hardwareType = lineChartDataSet.hardwareType;
 
 
+    console.log('lineChartDataSet==77777=>', lineChartDataSet);
+
+
     const lineChartData = (canvas) => {
 
         let gradientList = makeGradientColor(canvas, height);
@@ -1046,7 +1049,7 @@ export const renderLineChartCoreForDev_Cluster = (_this: PageDevMonitoring, line
                 ticks: {
                     beginAtZero: true,
                     min: 0,
-                    max: 100,
+                    //max: 100,//todo max value
                     fontColor: 'white',
                     callback(value, index, label) {
                         return convertByteToMegaByte(value, hardwareType)
