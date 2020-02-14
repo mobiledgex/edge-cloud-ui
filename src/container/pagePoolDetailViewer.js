@@ -52,44 +52,36 @@ const detailViewer = (props, type) => (
     </Fragment>
 )
 
+const returnReWord = (label) => {
+    let newName = '';
+    switch (label) {
+        case 'PoolName' : newName = 'Pool Name'; break;
+        case 'Cloudlets' : newName = 'Number of Cloudlets'; break;
+        case 'Organizations' : newName = 'Number of Organizations'; break;
+        case 'cloudletGroup' : newName = 'Cloudlets'; break;
+        case 'OrganizGroup' : newName = 'Organizations'; break;
+        default: newName = label; break;
+    }
+    return newName;
+
+}
+
 const makeCloudletTable = (values, label, i) => (
     (label !== 'Edit' && label !== 'uuid')?
         <Table.Row key={i}>
             <Table.Cell>
-                
-                        {(label == 'CloudletName')?'Cloudlet Name'
-                            :(label == 'CloudletLocation')?'Cloudlet Location'
-                                :(label == 'Ip_support')?'IP Support'
-                                    :(label == 'Num_dynamic_ips')?'Number of Dynamic IPs' /* Cloudlets */
-                                        :(label == 'ClusterName')?'Cluster Name'
-                                            :(label == 'OrganizationName')?'Organization Name'
-                                                :(label == 'IpAccess')?'IP Access' /* Cluster Inst */
-                                                    :(label == 'Mapped_port')?'Mapped Port' /* Cluster Inst */
-                                                        :(label == 'AppName')?'App Name'
-                                                            :(label == 'ClusterInst')?'Cluster Instance'
-                                                                :(label == 'Physical_name')?'Physical Name'
-                                                                    :(label == 'Platform_type')?'Platform Type'
-                                                                    :(label == 'PoolName')?'Pool Name'
-                                                                    :(label == 'Cloudlets')?'Number of Cloudlets'
-                                                                    :(label == 'Organizations')?'Number of Organizations'
-                                                                                    :(label == 'cloudletGroup')? 'Cloudlets'
-                                                                                        :(label == 'OrganizGroup')? 'Organizations'
-                                                                        :label}
-                    
+                <Header as='h4' image>
+                    <Icon name={'dot'} />
+                    <Header.Content>
+                        {returnReWord(label)}
+                    </Header.Content>
+                </Header>
             </Table.Cell>
             <Table.Cell>
-                {(label === 'Ip_support' && String(values[label]) == '1')?'Static'
-                    :(label === 'Ip_support' && String(values[label]) == '2')?'Dynamic' /* Cloudlets */
-                        :(label === 'IpAccess' && String(values[label]) == '1')?'Dedicated'
-                            :(label === 'IpAccess' && String(values[label]) == '3')?'Shared' /* Cluster Inst */
-                                :(label === 'Created')? String( makeUTC(values[label]) )
-                                    :(label === 'State')? _status[values[label]]
-                                        :(label === 'Liveness')? _liveness[values[label]]
-                                            :(label === 'cloudletGroup')? tableCloudletPool(values[label])
-                                            :(label === 'OrganizGroup')? tableCloudletPoolOrg(values[label])
-                                            :(typeof values[label] === 'object')? jsonView(values[label],label)
-                                                :(label === 'Platform_type')? String( makePFT(values[label]) )
-                                                    :String(values[label])}
+                {(label === 'cloudletGroup')? tableCloudletPool(values[label])
+                    :(label === 'OrganizGroup')? tableCloudletPoolOrg(values[label])
+                        :(typeof values[label] === 'object')? jsonView(values[label],label)
+                            :String(values[label])}
             </Table.Cell>
         </Table.Row> : null
 )
