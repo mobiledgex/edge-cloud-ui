@@ -3,108 +3,113 @@ import type {TypeCloudlet} from "../../../shared/Types";
 import {SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET} from "../../../services/endPointTypes";
 import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../shared/Constants";
 import {sendSyncRequest} from "../../../services/serviceMC";
-import { makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
+import {makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
 import {formatData} from "../../../services/formatter/formatComputeInstance";
 import {makeFormForAppInstance} from "./admin/PageAdminMonitoringService";
 
 
 export const getAppInstList = async (pArrayRegion = ['EU', 'US']) => {
-    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-    let mergedAppInstanceList = [];
+    try {
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        let mergedAppInstanceList = [];
 
-    for (let index = 0; index < pArrayRegion.length; index++) {
-        let serviceBody = {
-            "token": store.userToken,
-            "params": {
-                "region": pArrayRegion[index],
-                "appinst": {
-                    "key": {
-                        "app_key": {
-                            "developer_key": {"name": localStorage.selectOrg},
+        for (let index = 0; index < pArrayRegion.length; index++) {
+            let serviceBody = {
+                "token": store.userToken,
+                "params": {
+                    "region": pArrayRegion[index],
+                    "appinst": {
+                        "key": {
+                            "app_key": {
+                                "developer_key": {"name": localStorage.selectOrg},
+                            }
                         }
                     }
                 }
             }
-        }
 
-        let responseResult = await axios({
-            url: '/api/v1/auth/ctrl/ShowAppInst',
-            method: 'post',
-            data: serviceBody['params'],
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: 'Bearer ' + store.userToken
-            },
-            timeout: 15 * 1000
-        }).then(async response => {
-            let parseData = JSON.parse(JSON.stringify(response));
-            if (parseData.data === '') {
-                return null;
-            } else {
-                let finalizedJSON = formatData(parseData, serviceBody)
-                return finalizedJSON;
+            let responseResult = await axios({
+                url: '/api/v1/auth/ctrl/ShowAppInst',
+                method: 'post',
+                data: serviceBody['params'],
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + store.userToken
+                },
+                timeout: 15 * 1000
+            }).then(async response => {
+                let parseData = JSON.parse(JSON.stringify(response));
+                if (parseData.data === '') {
+                    return null;
+                } else {
+                    let finalizedJSON = formatData(parseData, serviceBody)
+                    return finalizedJSON;
+                }
+
+            }).catch(e => {
+                showToast(e.toString())
+            }).finally(() => {
+
+            })
+
+            if (responseResult !== null) {
+                let mergedList = mergedAppInstanceList.concat(responseResult);
+                mergedAppInstanceList = mergedList;
             }
 
-        }).catch(e => {
-            showToast(e.toString())
-        }).finally(() => {
-
-        })
-
-        if (responseResult !== null) {
-            let mergedList = mergedAppInstanceList.concat(responseResult);
-            mergedAppInstanceList = mergedList;
         }
-
+        return mergedAppInstanceList;
+    } catch (e) {
+        showToast("getAppInstList===>" + e.toString())
     }
-    return mergedAppInstanceList;
 }
 
 
 export const getClusterList = async () => {
-    let store = JSON.parse(localStorage.PROJECT_INIT);
-    let token = store ? store.userToken : 'null';
-    let requestData = {showSpinner: false, token: token, method: SHOW_CLUSTER_INST, data: {region: REGION.EU}};
-    let requestData2 = {showSpinner: false, token: token, method: SHOW_CLUSTER_INST, data: {region: REGION.US}};
-    let promiseList = []
-    promiseList.push(sendSyncRequest(this, requestData))
-    promiseList.push(sendSyncRequest(this, requestData2))
-    let showClusterList = await Promise.all(promiseList);
+    try {
+        let store = JSON.parse(localStorage.PROJECT_INIT);
+        let token = store ? store.userToken : 'null';
+        let requestData = {showSpinner: false, token: token, method: SHOW_CLUSTER_INST, data: {region: REGION.EU}};
+        let requestData2 = {showSpinner: false, token: token, method: SHOW_CLUSTER_INST, data: {region: REGION.US}};
+        let promiseList = []
+        promiseList.push(sendSyncRequest(this, requestData))
+        promiseList.push(sendSyncRequest(this, requestData2))
+        let showClusterList = await Promise.all(promiseList);
 
-    console.log('showClusterList====>', showClusterList);
+        console.log('showClusterList====>', showClusterList);
 
-    let mergedClusterList = [];
-    showClusterList.map(item => {
-        //@todo : null check
-        if (item && item.response && item.response.data && item.response.data.length !== 0) {
-            let clusterList = item.response.data;
-            clusterList.map(item => {
-                mergedClusterList.push(item);
-            })
-        }
-    })
+        let mergedClusterList = [];
+        showClusterList.map(item => {
+            //@todo : null check
+            if (item && item.response && item.response.data && item.response.data.length !== 0) {
+                let clusterList = item.response.data;
+                clusterList.map(item => {
+                    mergedClusterList.push(item);
+                })
+            }
+        })
 
-    //todo: 현재 속한 조직의 것만을 가져오도록 필터링
-    let orgClusterList = []
-    mergedClusterList.map(item => {
-        if (item.OrganizationName === localStorage.selectOrg) {
-            orgClusterList.push(item)
-        }
-    })
+        //todo: 현재 속한 조직의 것만을 가져오도록 필터링
+        let orgClusterList = []
+        mergedClusterList.map(item => {
+            if (item.OrganizationName === localStorage.selectOrg) {
+                orgClusterList.push(item)
+            }
+        })
 
-    console.log('orgClusterList====>', orgClusterList);
+        console.log('orgClusterList====>', orgClusterList);
 
-    return orgClusterList;
+        return orgClusterList;
+    } catch (e) {
+
+    }
 }
-
 
 
 export const getCloudletList = async () => {
     try {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
-        //data: { region: region, org: _self.props.selectOrg || localStorage.selectOrg }
-
         let requestData = {showSpinner: false, token: token, method: SHOW_ORG_CLOUDLET, data: {region: REGION.EU, org: localStorage.selectOrg}};
         let requestData2 = {showSpinner: false, token: token, method: SHOW_ORG_CLOUDLET, data: {region: REGION.US, org: localStorage.selectOrg}};
         let promiseList = []
@@ -114,7 +119,6 @@ export const getCloudletList = async () => {
         let orgCloudletList = await Promise.all(promiseList);
         console.log('results===EU>', orgCloudletList[0].response.data);
         console.log('results===US>', orgCloudletList[1].response.data);
-
         let cloudletEU = orgCloudletList[0].response.data;
         let cloudletUS = orgCloudletList[1].response.data;
 
@@ -135,12 +139,8 @@ export const getCloudletList = async () => {
                 mergedOrgCloudletList.push(item)
             }
         })
-
-        console.log('mergedOrgCloudletList===>', mergedOrgCloudletList);
-
         return mergedOrgCloudletList;
     } catch (e) {
-
         showToast('getCloudletList===>' + e.toString())
     }
 }
@@ -160,9 +160,8 @@ export const getCloudletListAll = async () => {
         let orgCloudletList = await Promise.all(promiseList);
         console.log('results===EU>', orgCloudletList[0].response.data);
         console.log('results===US>', orgCloudletList[1].response.data);
-
-        let cloudletEU = orgCloudletList[0].response.data;
-        let cloudletUS = orgCloudletList[1].response.data;
+        /*let cloudletEU = orgCloudletList[0].response.data;
+        let cloudletUS = orgCloudletList[1].response.data;*/
 
         let mergedCloudletList = [];
         orgCloudletList.map(item => {
@@ -254,10 +253,6 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
             if (item.appInstanceHealth !== undefined) {
 
                 let series = item.appInstanceHealth.data["0"].Series;
-
-                /*
-
-                */
 
                 if (series !== null) {
                     //@todo###########################
@@ -608,7 +603,7 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
         let usageList = []
         cloudletLevelMatricUsageList.map((item, index) => {
 
-            if ( item!==undefined){
+            if (item !== undefined) {
                 let Region = cloudletList[index].Region
                 if (item.data["0"] !== undefined) {
                     let series = item.data["0"].Series["0"].values
@@ -685,7 +680,7 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
 
         return usageList;
     } catch (e) {
-        showToast('lskfsdlkfldskflk__매트릭'+ e.toString())
+        //showToast('getClouletLevelUsageList'+ e.toString())
     }
 
 }
@@ -751,7 +746,6 @@ export const getClusterLevelMatric = async (serviceBody: any, pToken: string) =>
 }
 
 
-
 export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
     try {
         let store = JSON.parse(localStorage.PROJECT_INIT);
@@ -793,7 +787,6 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
         throw new Error(e)
     }
 }
-
 
 
 export const getAllCloudletEventLogs = async (cloudletList) => {
