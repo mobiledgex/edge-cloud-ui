@@ -798,7 +798,10 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
                 series = pUsageList[i].udpSeriesList
             } else if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
                 series = pUsageList[i].tcpSeriesList
-            } else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
+            } else if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
+                series = pUsageList[i].tcpSeriesList
+            }
+            else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
                 series = pUsageList[i].udpSeriesList
             } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
                 series = pUsageList[i].networkSeriesList
@@ -822,16 +825,17 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
                     usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.DISK];
                 } else if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
                     usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.TCPCONNS];
-                } else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
+                } else if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
+                    usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.TCPRETRANS];
+                }
+                else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
                     usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.UDPSENT];
                 } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
                     usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.SENDBYTES];
                 } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
                     usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.RECVBYTES];
                 }
-
                 usageList.push(usageOne);
-
                 let dateOne = series[j]["0"];
                 dateOne = dateOne.toString().split("T")
                 dateTimeList.push(dateOne[1]);
