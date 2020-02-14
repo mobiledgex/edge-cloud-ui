@@ -315,11 +315,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         showModalClusterLineChart(lineChartDataOne, index) {
-            //alert(JSON.stringify(lineChartDataOne))
-
-
-            /*currentAppInstLineChartData={this.state.currentAppInstLineChartData} parent={this} modalIsOpen={this.state.modalIsOpen}*/
-
             this.setState({
                 selectedClusterUsageOne: lineChartDataOne,
                 modalIsOpen: true,
