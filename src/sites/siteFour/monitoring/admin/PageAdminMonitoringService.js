@@ -818,7 +818,7 @@ function isEmptyObject(obj) {
  */
 export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet, _this: PageAdminMonitoring) => {
 
-
+    let cloudletListLength = Object.keys(appInstanceListSortByCloudlet).length
     if (isEmptyObject(appInstanceListSortByCloudlet)) {
         //do something
         return (
@@ -839,6 +839,7 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
 
         let chunkedCloudletListOfColSize = toChunkArray(cloudletList, 6);
 
+
         return (
             <Tabs selectedIndex={_this.state.currentSixGridIndex} className='page_monitoring_tab'>
 
@@ -857,6 +858,7 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
                 {/*todo:#####################..*/}
                 {/*todo:하단의 dot paging ..*/}
                 {/*todo:#####################..*/}
+                {cloudletListLength > 6 &&
                 <div className='page_monitoring_pager_row'>
                     {chunkedCloudletListOfColSize.map((item, index) => {
                         return (
@@ -876,6 +878,8 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
                         )
                     })}
                 </div>
+                }
+
             </Tabs>
         )
 
@@ -951,8 +955,6 @@ export const filterUsageListByRegion = (pRegion, usageList) => {
         return filteredUsageListByRegion;
     }
 }
-
-
 
 
 /**
