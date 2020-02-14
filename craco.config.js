@@ -98,7 +98,7 @@ module.exports = {
                                             '@disabled-color': 'fade(@light, 25)',
                                             '@primary-5': '#40a9ff',
                                             '@primary-6': '#096dd9',
-                                            //todo:'primary-color'
+                                            //todo:'@primary-color': '#77BD25',
                                             '@primary-color': '#77BD25',
                                             '@outline-color': '@primary-color',
                                             '@icon-color': 'fade(@light, 65)',

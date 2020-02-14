@@ -228,23 +228,24 @@
 /*todo: ###############################*/
 /*todo: 켈린더 dateTime picker 관련 style*/
 /*todo: ###############################*/
-/*.ant-calendar-picker-input.ant-input {
+.ant-calendar-picker-input.ant-input {
     line-height: 1.5;
-    height:36px;
+    height: 36px;
     background-color: black;
 }
 
-.ant-calendar-picker-input.ant-input.ant-input-disabled  {
+.ant-calendar-picker-input.ant-input.ant-input-disabled {
     line-height: 1.5;
     height: 36px;
     background-color: #1e2124;
 }
 
-tbody{
+tbody {
     background-color: rgb(30, 33, 36);
     height: 360px;
     min-height: 350px;
-}*/
+}
+
 
 
 
