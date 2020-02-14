@@ -45,8 +45,6 @@ module.exports = {
                 'no-useless-escape': 'off',
                 'no-self-assign': 'off',
                 'jsx-a11y/alt-text': 'off',
-
-
             }
         }
     },

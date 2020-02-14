@@ -21,6 +21,49 @@ export default hot(
             return (
                 <div style={{flex: 1, margin: 100}}>
                     <Button type="primary">Primary</Button>
+                    <Button type="primary">Primary</Button>
+                    <Button type="primary">Primary</Button>
+
+
+                    <br/>
+                    <Button type="waring">Primary</Button>
+                    <br/>
+                    <Button type="waring">Primary</Button>
+                    <br/>
+                    <Button type="waring">Primary</Button>
+                    <br/>
+                    <Button type="waring">Primary</Button>
+                    <br/>
+                    <Button type="waring">고경준 천재님이십니디ㅏsdflksdlkf</Button>
+
+                    <br/>
+                    <Button type="waring">고경준 천재님이십니디ㅏsdflksdlkf</Button>
+                    <br/>
+                    <Button type="waring">고경준 천재님이십니디ㅏsdflksdlkf</Button>
+                    <br/>
+                    <Button type="waring">고경준 천재님이십니디ㅏsdflksdlkf</Button>
+
+                    <Button type="danger">고경준 천1212121lkf</Button><br/>
+                    <Button type="danger">고경준 천1212121lkf</Button><br/>
+                    <Button type="danger">고경준 천1212121lkf</Button><br/>
+
+                    <Button type="waring">고경준 천1212121lkf</Button><br/>
+                    <Button type="waring">고경준 천1212121lkf</Button><br/>
+                    <Button type="waring">고경준 천1212121lkf</Button><br/>
+
+
+
+                    <Button type="waring">고경준 천재님이십니디ㅏsdflksdlkf</Button><br/>
+                    <Button type="waring">고경준 천재님이십니디ㅏsdflksdlkf</Button><br/>
+                    <Button type="waring">고경준 천재님이십니디ㅏsdflksdlkf</Button><br/>
+
+                    <Button type="waring">고경준 천재님이십니디ㅏsdflksdlkf</Button>
+
+
+                    <Button type="waring">고경준 천재님이십니디ㅏsdflksdlkf</Button>
+                    <Button type="waring">고경준 천재님이십니디ㅏsdflksdlkf</Button>
+
+
                     <Select defaultValue="lucy" style={{width: 120}} onChange={() => {
                         alert('sdlfksdlfk')
                     }}>
@@ -32,9 +75,6 @@ export default hot(
                         <Option value="Yiminghe">yiminghe</Option>
                     </Select>
                     <Select defaultValue="lucy" style={{width: 120}} disabled>
-                        <Option value="lucy">Lucy</Option>
-                    </Select>
-                    <Select defaultValue="lucy" style={{width: 120}} loading>
                         <Option value="lucy">Lucy</Option>
                     </Select>
                     <Button type="primary">Primary</Button>
