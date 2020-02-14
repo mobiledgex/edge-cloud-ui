@@ -10,7 +10,6 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker,} from 'antd';
-import {filterListBykeyForCloudlet, getCloudletList, renderBubbleChartForCloudlet,} from "../admin/PageAdminMonitoringService";
 import {CLASSIFICATION, HARDWARE_OPTIONS_FOR_CLOUDLET, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../../shared/Constants";
 import type {TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
@@ -21,9 +20,6 @@ import '../PageMonitoring.css'
 import {renderGridLoader2, renderPlaceHolderCircular, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
 import {
-    getAllCloudletEventLogs,
-    getCloudletEventLog,
-    getClouletLevelUsageList,
     handleBubbleChartDropDownForCloudlet,
     makeBarChartDataForCloudlet,
     makeLineChartForCloudlet,
@@ -31,6 +27,8 @@ import {
 } from "./PageOperMonitoringService";
 import LeafletMap from "./LeafletMapWrapper";
 import {filterUsageByClassification, makeSelectBoxListWithKey, sortByKey} from "../dev/PageDevMonitoringService";
+import {getAllCloudletEventLogs, getCloudletEventLog, getCloudletList, getClouletLevelUsageList} from "../PageMonitoringMetricService";
+import {filterListBykeyForCloudlet, renderBubbleChartForCloudlet} from "../admin/PageAdminMonitoringService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;

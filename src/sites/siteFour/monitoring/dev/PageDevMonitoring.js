@@ -14,8 +14,6 @@ import {DatePicker,} from 'antd';
 import {
     convertHwTypePhrases,
     filterUsageByClassification,
-    getClusterLevelUsageList,
-    getClusterList,
     handleHardwareTabChanges,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
@@ -53,12 +51,12 @@ import {
     showToast,
     StylesForMonitoring
 } from "../PageMonitoringCommonService";
-import {getAppInstList, getAppLevelUsageList, getCloudletList} from "../admin/PageAdminMonitoringService";
 import * as reducer from "../../../../utils";
 import {TabPanel, Tabs} from "react-tabs";
 import LeafletMapWrapperForDev from "./LeafletMapWrapperForDev";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraphForCluster from "./ModalGraphForCluster";
+import {getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList} from "../PageMonitoringMetricService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;

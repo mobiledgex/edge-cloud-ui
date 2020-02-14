@@ -19,9 +19,6 @@ import {
     filterInstanceCountOnCloutLetOne,
     filterListBykey,
     filterUsageListByRegion,
-    getAppInstList,
-    getAppLevelUsageList,
-    getCloudletListAll,
     instanceFlavorToPerformanceValue,
     makeBarChartDataForInst,
     makeCloudletListSelectBox,
@@ -55,6 +52,7 @@ import {TabPanel, Tabs} from "react-tabs";
 
 import {numberWithCommas, renderGridLoader2, renderPlaceHolderCircular, showToast, showToast2, StylesForMonitoring} from "../PageMonitoringCommonService";
 import '../PageMonitoring.css'
+import {getAppInstList, getAppLevelUsageList, getCloudletListAll} from "../PageMonitoringMetricService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
