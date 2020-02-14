@@ -17,7 +17,6 @@
     "chart.js": "^2.9.3",
     "classnames": "^2.2.6",
     "clsx": "^1.0.4",
-    "customize-cra": "^0.9.1",
     "d3": "4.10.0",
     "d3-scale": "^2.1.2",
     "datamaps": "^0.5.9",
@@ -132,7 +131,7 @@
     "react-scripts": "^3.3.0"
   },
   "scripts": {
-    "start":  "craco start",
+    "start": "craco start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
