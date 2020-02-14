@@ -7,6 +7,7 @@ import { makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToas
 import {formatData} from "../../../services/formatter/formatComputeInstance";
 import {makeFormForAppInstance} from "./admin/PageAdminMonitoringService";
 
+
 export const getAppInstList = async (pArrayRegion = ['EU', 'US']) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     let mergedAppInstanceList = [];
@@ -572,15 +573,10 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
                     memSeriesList: [],
                     diskSeriesList: [],
                     cpuSeriesList: [],
-
-
                 })
             }
 
         })
-
-        console.log('newClusterLevelUsageList===>', newClusterLevelUsageList)
-
         return newClusterLevelUsageList;
     } catch (e) {
         return [];
@@ -781,9 +777,7 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
             },
             timeout: 15 * 1000
         }).then(async response => {
-            /*
-                "time",                "cloudlet",                "operator",                "event",                "status"
-            */
+            // "time",                "cloudlet",                "operator",                "event",                "status"
             if (response.data.data["0"].Series !== null) {
                 let values = response.data.data["0"].Series["0"].values
                 return values;
