@@ -1,3 +1,5 @@
+import {convertByteToMegaByte} from "../sites/siteFour/monitoring/PageMonitoringCommonService";
+
 export const API_ENDPOINT_PREFIX = '/api/v1/';
 export const BORDER_CHART_COLOR_LIST = ["rgb(112,0,28)", "rgb(255,94,29)", "rgb(227,220,57)", "rgb(18,135,2)", "rgb(28,34,255)"]
 export const CHART_COLOR_LIST = ['rgb(222,0,0)', 'rgb(255,150,0)', 'rgb(255,246,0)', 'rgb(91,203,0)', 'rgb(0,150,255)']
@@ -9,79 +11,6 @@ export const REGION = {
     US: "US",
     EU: 'EU',
 }
-
-export const lineGraphOptionsForAppInst =  {
-    animation: {
-        duration: 500
-    },
-    maintainAspectRatio: false,//@todo
-    responsive: true,//@todo
-    datasetStrokeWidth: 3,
-    pointDotStrokeWidth: 4,
-    layout: {
-        padding: {
-            left: 0,
-            right: 10,
-            top: 0,
-            bottom: 0
-        }
-    },
-    legend: {
-        position: 'top',
-        labels: {
-            boxWidth: 10,
-            fontColor: 'white'
-        }
-    },
-    scales: {
-        yAxes: [{
-            ticks: {
-                beginAtZero: true,
-                fontColor: 'white',
-               /* callback(value, index, label) {
-                    return convertByteToMegaByte(value, hardwareType)
-
-                },*/
-            },
-            gridLines: {
-                color: "#505050",
-            },
-            //stacked: true
-
-        }],
-        xAxes: [{
-            /*ticks: {
-                fontColor: 'white'
-            },*/
-            gridLines: {
-                color: "#505050",
-            },
-            ticks: {
-                fontSize: 14,
-                fontColor: 'white',
-                //maxRotation: 0.05,
-                //autoSkip: true,
-                maxRotation: 45,
-                minRotation: 45,
-                padding: 10,
-                labelOffset: 0,
-                callback(value, index, label) {
-                    return value;
-
-                },
-            },
-            beginAtZero: false,
-            /* gridLines: {
-                 drawTicks: true,
-             },*/
-        }],
-        backgroundColor: {
-            fill: "#1e2124"
-        },
-    }
-
-}
-
 
 
 export const lineGraphOptions = {

@@ -1,7 +1,7 @@
 import React from 'react';
 import './PageMonitoring.css';
 import {toast} from "react-semantic-toasts";
-import {HARDWARE_TYPE, lineGraphOptions, USAGE_TYPE,} from "../../../shared/Constants";
+import {HARDWARE_TYPE, USAGE_TYPE,} from "../../../shared/Constants";
 import Lottie from "react-lottie";
 import {makeGradientColor} from "./dev/PageDevMonitoringService";
 import {Chart} from "react-google-charts";
@@ -230,7 +230,6 @@ export const renderPlaceHolder3 = (type: string = '') => {
     return (
         <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
             <CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 20}}/>
-
         </div>
     )
 }
@@ -306,10 +305,88 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
                 //height={hardwareType === "recv_bytes" || hardwareType === "send_bytes" ? chartHeight + 20 : chartHeight}
                 //height={'100%'}
                 data={lineChartData}
-                options={lineGraphOptions}
+                options={lineGraphOptionsForAppInst(hardwareType)}
             />
         </div>
     );
+}
+
+
+export const lineGraphOptionsForAppInst = (hardwareType) => {
+
+    return (
+        {
+            animation: {
+                duration: 500
+            },
+            maintainAspectRatio: false,//@todo
+            responsive: true,//@todo
+            datasetStrokeWidth: 3,
+            pointDotStrokeWidth: 4,
+            layout: {
+                padding: {
+                    left: 0,
+                    right: 10,
+                    top: 0,
+                    bottom: 0
+                }
+            },
+            legend: {
+                position: 'top',
+                labels: {
+                    boxWidth: 10,
+                    fontColor: 'white'
+                }
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        fontColor: 'white',
+                        callback(value, index, label) {
+                            return convertByteToMegaByte(value, hardwareType)
+
+                        },
+                    },
+                    gridLines: {
+                        color: "#505050",
+                    },
+                    //stacked: true
+
+                }],
+                xAxes: [{
+                    /*ticks: {
+                        fontColor: 'white'
+                    },*/
+                    gridLines: {
+                        color: "#505050",
+                    },
+                    ticks: {
+                        fontSize: 14,
+                        fontColor: 'white',
+                        //maxRotation: 0.05,
+                        //autoSkip: true,
+                        maxRotation: 45,
+                        minRotation: 45,
+                        padding: 10,
+                        labelOffset: 0,
+                        callback(value, index, label) {
+                            return value;
+
+                        },
+                    },
+                    beginAtZero: false,
+                    /* gridLines: {
+                         drawTicks: true,
+                     },*/
+                }],
+                backgroundColor: {
+                    fill: "#1e2124"
+                },
+            }
+
+        }
+    )
 }
 
 
@@ -709,7 +786,7 @@ export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType) => 
             label: cluster_cloudlet_fullLabel.toString().substring(0, 17) + "...",
             value: usageValue,
             favor: usageValue,
-            fullLabel: item.cluster.toString() + ' [' + item.cloudlet.toString().trim().substring(0, 15)+ "]",
+            fullLabel: item.cluster.toString() + ' [' + item.cloudlet.toString().trim().substring(0, 15) + "]",
             cluster_cloudlet: item.cluster.toString() + ' | ' + item.cloudlet.toString(),
         })
     })

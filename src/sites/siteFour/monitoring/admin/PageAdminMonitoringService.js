@@ -5,7 +5,7 @@ import Lottie from "react-lottie";
 import BubbleChart from "../../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../../shared/Types";
 import PageAdminMonitoring from "./PageAdminMonitoring";
-import {numberWithCommas, renderBarChartCore, renderLineChartCore, renderUsageByType2, StylesForMonitoring} from "../PageMonitoringCommonService";
+import {convertByteToMegaByte, numberWithCommas, renderBarChartCore, renderLineChartCore, renderUsageByType2, StylesForMonitoring} from "../PageMonitoringCommonService";
 import {TabPanel, Tabs} from "react-tabs";
 
 export const cutArrayList = async (length: number = 5, paramArrayList: any) => {
@@ -674,6 +674,9 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
     }
 
 }
+
+
+
 
 
 export const makeNetworkBarData = (networkUsageList, hwType) => {
