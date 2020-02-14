@@ -1,7 +1,7 @@
 import React from 'react';
 import './PageMonitoring.css';
 import {toast} from "react-semantic-toasts";
-import {HARDWARE_TYPE, USAGE_TYPE,} from "../../../shared/Constants";
+import {HARDWARE_TYPE, lineGraphOptions, USAGE_TYPE,} from "../../../shared/Constants";
 import Lottie from "react-lottie";
 import {makeGradientColor} from "./dev/PageDevMonitoringService";
 import {Chart} from "react-google-charts";
@@ -255,12 +255,9 @@ export const convertByteToMegaByte2 = (value, hardwareType) => {
 
 export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDateTimeList, hardwareType) => {
 
-
     const lineChartData = (canvas) => {
-
         let gradientList = makeGradientColor(canvas, height);
-
-        let finalSeriesDataSets = [];
+        let finishedSeriesDataSets = [];
         for (let i in usageSetList) {
             //@todo: top5 만을 추린다
             if (i < 5) {
@@ -282,93 +279,18 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
 
                 }
 
-                finalSeriesDataSets.push(datasetsOne)
+                finishedSeriesDataSets.push(datasetsOne)
             }
 
         }
-
-
-        console.log('finalSeriesDataSets====>', finalSeriesDataSets);
-
         return {
             labels: newDateTimeList,
-            datasets: finalSeriesDataSets,
+            datasets: finishedSeriesDataSets,
         }
     }
 
 
     let height = 500 + 100;
-    let options = {
-        animation: {
-            duration: 500
-        },
-        maintainAspectRatio: false,//@todo
-        responsive: true,//@todo
-        datasetStrokeWidth: 3,
-        pointDotStrokeWidth: 4,
-        layout: {
-            padding: {
-                left: 0,
-                right: 10,
-                top: 0,
-                bottom: 0
-            }
-        },
-        legend: {
-            position: 'top',
-            labels: {
-                boxWidth: 10,
-                fontColor: 'white'
-            }
-        },
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true,
-                    fontColor: 'white',
-                    callback(value, index, label) {
-                        return convertByteToMegaByte(value, hardwareType)
-
-                    },
-                },
-                gridLines: {
-                    color: "#505050",
-                },
-                //stacked: true
-
-            }],
-            xAxes: [{
-                /*ticks: {
-                    fontColor: 'white'
-                },*/
-                gridLines: {
-                    color: "#505050",
-                },
-                ticks: {
-                    fontSize: 14,
-                    fontColor: 'white',
-                    //maxRotation: 0.05,
-                    //autoSkip: true,
-                    maxRotation: 45,
-                    minRotation: 45,
-                    padding: 10,
-                    labelOffset: 0,
-                    callback(value, index, label) {
-                        return value;
-
-                    },
-                },
-                beginAtZero: false,
-                /* gridLines: {
-                     drawTicks: true,
-                 },*/
-            }],
-            backgroundColor: {
-                fill: "#1e2124"
-            },
-        }
-
-    }
 
     //todo :#######################
     //todo : chart rendering part
@@ -384,8 +306,7 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
                 //height={hardwareType === "recv_bytes" || hardwareType === "send_bytes" ? chartHeight + 20 : chartHeight}
                 //height={'100%'}
                 data={lineChartData}
-                options={options}
-
+                options={lineGraphOptions}
             />
         </div>
     );

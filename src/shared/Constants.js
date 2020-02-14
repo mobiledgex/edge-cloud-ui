@@ -1,22 +1,88 @@
 export const API_ENDPOINT_PREFIX = '/api/v1/';
-
-
-//rgb(255,0,10)
-
 export const BORDER_CHART_COLOR_LIST = ["rgb(112,0,28)", "rgb(255,94,29)", "rgb(227,220,57)", "rgb(18,135,2)", "rgb(28,34,255)"]
-
 export const CHART_COLOR_LIST = ['rgb(222,0,0)', 'rgb(255,150,0)', 'rgb(255,246,0)', 'rgb(91,203,0)', 'rgb(0,150,255)']
 //export const CHART_COLOR_LIST = ["rgb(112,0,28)", "rgb(255,94,29)", "rgb(227,220,57)", "rgb(18,135,2)", "rgb(28,34,255)"]
-
 export const CHART_COLOR_LIST2 = ["rgba(112,0,28, 0.25)", "rgba(255,94,29,0.25)", "rgba(227,220,57,0.25)", "rgba(18,135,2,0.25)", "rgba(28,34,255,0.25)"]
-
 export const GRAPH_HEIGHT = 300
-
 export const REGION = {
     ALL: 'ALL',
     US: "US",
     EU: 'EU',
 }
+
+export const lineGraphOptionsForAppInst =  {
+    animation: {
+        duration: 500
+    },
+    maintainAspectRatio: false,//@todo
+    responsive: true,//@todo
+    datasetStrokeWidth: 3,
+    pointDotStrokeWidth: 4,
+    layout: {
+        padding: {
+            left: 0,
+            right: 10,
+            top: 0,
+            bottom: 0
+        }
+    },
+    legend: {
+        position: 'top',
+        labels: {
+            boxWidth: 10,
+            fontColor: 'white'
+        }
+    },
+    scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero: true,
+                fontColor: 'white',
+               /* callback(value, index, label) {
+                    return convertByteToMegaByte(value, hardwareType)
+
+                },*/
+            },
+            gridLines: {
+                color: "#505050",
+            },
+            //stacked: true
+
+        }],
+        xAxes: [{
+            /*ticks: {
+                fontColor: 'white'
+            },*/
+            gridLines: {
+                color: "#505050",
+            },
+            ticks: {
+                fontSize: 14,
+                fontColor: 'white',
+                //maxRotation: 0.05,
+                //autoSkip: true,
+                maxRotation: 45,
+                minRotation: 45,
+                padding: 10,
+                labelOffset: 0,
+                callback(value, index, label) {
+                    return value;
+
+                },
+            },
+            beginAtZero: false,
+            /* gridLines: {
+                 drawTicks: true,
+             },*/
+        }],
+        backgroundColor: {
+            fill: "#1e2124"
+        },
+    }
+
+}
+
+
 
 export const lineGraphOptions = {
     animation: {
@@ -37,7 +103,7 @@ export const lineGraphOptions = {
             ticks: {
                 beginAtZero: true,
                 min: 0,
-                max: 100,
+                //max: 100,
                 fontColor: 'white',
             },
             gridLines: {
