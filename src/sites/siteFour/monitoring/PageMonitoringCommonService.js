@@ -790,7 +790,7 @@ export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType) => 
             label: cluster_cloudlet_fullLabel.toString().substring(0, 17) + "...",
             value: usageValue,
             favor: usageValue,
-            fullLabel: item.cluster.toString() + ' [' + item.cloudlet.toString().trim() + "]",
+            fullLabel: item.cluster.toString() + ' [' + item.cloudlet.toString().trim().substring(0, 15)+ "]",
             cluster_cloudlet: item.cluster.toString() + ' | ' + item.cloudlet.toString(),
         })
     })
