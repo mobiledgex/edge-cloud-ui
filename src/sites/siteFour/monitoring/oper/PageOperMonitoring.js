@@ -9,27 +9,19 @@ import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
-import {DatePicker, Progress,} from 'antd';
-import {filterListBykey, filterListBykeyForCloudlet, getCloudletList, renderBubbleChartForCloudlet,} from "../admin/PageAdminMonitoringService";
-import {
-    CLASSIFICATION,
-    HARDWARE_OPTIONS_FOR_CLOUDLET,
-    HARDWARE_TYPE,
-    HARDWARE_TYPE_FOR_CLOUDLET,
-    NETWORK_OPTIONS,
-    NETWORK_TYPE,
-    RECENT_DATA_LIMIT_COUNT,
-    REGIONS_OPTIONS
-} from "../../../../shared/Constants";
-import type {TypeCloudletUsageList, TypeGridInstanceList} from "../../../../shared/Types";
+import {DatePicker,} from 'antd';
+import {filterListBykeyForCloudlet, getCloudletList, renderBubbleChartForCloudlet,} from "../admin/PageAdminMonitoringService";
+import {CLASSIFICATION, HARDWARE_OPTIONS_FOR_CLOUDLET, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../../shared/Constants";
+import type {TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {numberWithCommas, renderLottieLoader, renderPlaceHolderLottie, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
+import {renderGridLoader2, renderPlaceHolderCircular, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
 import {
+    getAllCloudletEventLogs,
     getCloudletEventLog,
     getClouletLevelUsageList,
     handleBubbleChartDropDownForCloudlet,
@@ -38,8 +30,7 @@ import {
     renderBottomGridAreaForCloudlet
 } from "./PageOperMonitoringService";
 import LeafletMap from "./LeafletMapWrapper";
-import {filterUsageByClassification, makeSelectBoxListWithKey} from "../dev/PageDevMonitoringService";
-import Lottie from "react-lottie";
+import {filterUsageByClassification, makeSelectBoxListWithKey, sortByKey} from "../dev/PageDevMonitoringService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -152,6 +143,10 @@ type State = {
     filteredCloudletList: Array,
     cloudletEventLogs: Array,
     cloudletSelectLoading: boolean,
+    filteredCloudletEventLogs: Array,
+    allCloudletEventLogs: Array,
+    eventLogColumn: string,
+    direction: string,
 }
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
@@ -235,8 +230,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             allCloudletUsageList: [],
             filteredCloudletUsageList: [],
             filteredCloudletList: [],
-            cloudletEventLogs: [],
             cloudletSelectLoading: false,
+            filteredCloudletEventLogs: [],
+            allCloudletEventLogs: [],
+            eventLogColumn: null,
+            direction: null,
         };
 
         interval = null;
@@ -248,14 +246,28 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         componentDidMount = async () => {
-            this.setState({
-                loading: true,
-            })
-            await this.loadInitDataForCloudlet();
-            this.setState({
-                loading: false,
-                isReady: true,
-            })
+            try {
+
+                this.setState({
+                    loading: true,
+                })
+                await this.loadInitDataForCloudlet();
+                this.setState({
+                    loading: false,
+                    isReady: true,
+                })
+
+
+            } catch (e) {
+                showToast(e.toString())
+            } finally {
+                this.setState({
+                    isRequesting: false,
+                    loading: false,
+                    isReady: true,
+                })
+            }
+
         }
 
         componentWillUnmount(): void {
@@ -263,59 +275,63 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         async loadInitDataForCloudlet() {
-            this.setState({
-                isRequesting: true,
-            })
-
-            let cloudletList = []
-            cloudletList = await getCloudletList();
-
-            //fixme : fakedata
-            //cloudletList = require('./cloudletList')
-
-            console.log('cloudletList222===>', cloudletList)
-
-            let cloudletListForDropdown = [];
-            cloudletList.map(item => {
-                /*{text: 'FLAVOR', value: 'flavor'},*/
-                cloudletListForDropdown.push({
-                    text: item.CloudletName,
-                    value: item.CloudletName + "|" + item.Region,
+            try {
+                this.setState({
+                    isRequesting: true,
                 })
-            })
+
+                let cloudletList = [];
+                let allCloudletEventLogList=[];
+                //fixme : fakedata
+                //cloudletList = require('./cloudletList')
+                cloudletList = await getCloudletList();
+                allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList);
+                console.log('allCloudletEventLogList===>', allCloudletEventLogList);
+
+                let cloudletListForDropdown = [];
+                cloudletList.map(item => {
+                    cloudletListForDropdown.push({
+                        text: item.CloudletName,
+                        value: item.CloudletName + "|" + item.Region,
+                    })
+                })
 
 
-            await this.setState({
-                isAppInstaceDataReady: true,
-                dropdownCloudletList: cloudletListForDropdown,
-            }, () => {
-                console.log('dropdownCloudletList===>', this.state.dropdownCloudletList);
-            })
+                await this.setState({
+                    isAppInstaceDataReady: true,
+                    allCloudletEventLogs: allCloudletEventLogList,
+                    filteredCloudletEventLogs: allCloudletEventLogList,
+                    dropdownCloudletList: cloudletListForDropdown,
+                }, () => {
+                    console.log('dropdownCloudletList===>', this.state.dropdownCloudletList);
+                })
 
-            let allCloudletUsageList = await getClouletLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
-            let bubbleChartData = await this.makeBubbleChartDataForCloudlet(allCloudletUsageList);
-            await this.setState({
-                bubbleChartData: bubbleChartData,
-            })
+                let allCloudletUsageList = await getClouletLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
+                let bubbleChartData = await this.makeBubbleChartDataForCloudlet(allCloudletUsageList);
+                await this.setState({
+                    bubbleChartData: bubbleChartData,
+                })
 
-            let maxCpu = Math.max.apply(Math, allCloudletUsageList.map(function (o) {
-                return o.sumVCpuUsage;
-            }));
+                let maxCpu = Math.max.apply(Math, allCloudletUsageList.map(function (o) {
+                    return o.sumVCpuUsage;
+                }));
 
-            let maxMem = Math.max.apply(Math, allCloudletUsageList.map(function (o) {
-                return o.sumMemUsage;
-            }));
+                let maxMem = Math.max.apply(Math, allCloudletUsageList.map(function (o) {
+                    return o.sumMemUsage;
+                }));
 
-            await this.setState({
-                allCloudletUsageList: allCloudletUsageList,
-                cloudletList: cloudletList,
-                filteredCloudletUsageList: allCloudletUsageList,
-                filteredCloudletList: cloudletList,
-                maxCpu: maxCpu,
-                maxMem: maxMem,
-                isRequesting: false,
-            });
-
+                await this.setState({
+                    allCloudletUsageList: allCloudletUsageList,
+                    cloudletList: cloudletList,
+                    filteredCloudletUsageList: allCloudletUsageList,
+                    filteredCloudletList: cloudletList,
+                    maxCpu: maxCpu,
+                    maxMem: maxMem,
+                    isRequesting: false,
+                });
+            } catch (e) {
+                throw new Error(e)
+            }
         }
 
         async makeBubbleChartDataForCloudlet(usageList: any) {
@@ -334,41 +350,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        async refreshAllData() {
-
-            toast({
-                type: 'success',
-                //icon: 'smile',
-                title: 'REFRESH ALL DATA',
-                animation: 'bounce',
-                time: 3 * 1000,
-                color: 'black',
-            });
-            await this.setState({
-                placeHolderStateTime: moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'),
-                placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
-            })
-            await this.setState({
-                cloudLetSelectBoxClearable: true,
-            })
-            this.setState({
-                loading: true,
-            })
-            await this.loadInitDataForCloudlet();
-            this.setState({
-                loading: false,
-            })
-
-            await this.setState({
-                currentRegion: 'ALL',
-                currentCloudLet: '',
-                currentCluster: '',
-                currentAppInst: '',
-            })
-
-        }
-
-
         renderCpuTabArea() {
             return (
                 <div className='page_monitoring_dual_column'>
@@ -383,7 +364,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.VCPU)}
+                            {this.state.loading ? renderPlaceHolderCircular() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.VCPU)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -396,7 +377,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.VCPU)}
+                            {this.state.loading ? renderPlaceHolderCircular() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.VCPU)}
                         </div>
                     </div>
                 </div>
@@ -416,7 +397,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.MEM)}
+                            {this.state.loading ? renderPlaceHolderCircular() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.MEM)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -429,7 +410,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.MEM)}
+                            {this.state.loading ? renderPlaceHolderCircular() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.MEM)}
                         </div>
                     </div>
 
@@ -448,7 +429,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.DISK)}
+                            {this.state.loading ? renderPlaceHolderCircular() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.DISK)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -459,7 +440,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.DISK)}
+                            {this.state.loading ? renderPlaceHolderCircular() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.DISK)}
                         </div>
                     </div>
                 </div>
@@ -477,7 +458,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.FLOATING_IPS)}
+                            {this.state.loading ? renderPlaceHolderCircular() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.FLOATING_IPS)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -488,7 +469,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.FLOATING_IPS)}
+                            {this.state.loading ? renderPlaceHolderCircular() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.FLOATING_IPS)}
                         </div>
                     </div>
                 </div>
@@ -506,7 +487,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.IPV4)}
+                            {this.state.loading ? renderPlaceHolderCircular() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.IPV4)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -517,7 +498,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.IPV4)}
+                            {this.state.loading ? renderPlaceHolderCircular() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.IPV4)}
                         </div>
                     </div>
                 </div>
@@ -535,7 +516,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie('network') : makeBarChartDataForCloudlet(this.state.allCloudletUsageList, networkType, this)}
+                            {this.state.loading ? renderPlaceHolderCircular('network') : makeBarChartDataForCloudlet(this.state.allCloudletUsageList, networkType, this)}
                         </div>
                     </div>
                     <div className='page_monitoring_dual_container'>
@@ -568,7 +549,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLottie('network') : makeLineChartForCloudlet(this, this.state.allCloudletUsageList, networkType)}
+                            {this.state.loading ? renderPlaceHolderCircular('network') : makeLineChartForCloudlet(this, this.state.allCloudletUsageList, networkType)}
                         </div>
                     </div>
                 </div>
@@ -582,7 +563,44 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentCloudLet: '',
                 filteredCloudletUsageList: this.state.allCloudletUsageList,
                 filteredCloudletList: this.state.cloudletList,
+                filteredCloudletEventLogs: this.state.allCloudletEventLogs,
+                eventLogColumn: null,
             })
+        }
+
+        async handleReload_Oper() {
+            try {
+
+                await this.setState({
+                    placeHolderStateTime: moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'),
+                    placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
+                    cloudLetSelectBoxClearable: true,
+                    loading: true,
+                    cloudletSelectLoading: true,
+                })
+                await this.loadInitDataForCloudlet();
+                await this.setState({
+                    loading: false,
+                    currentRegion: 'ALL',
+                    currentCloudLet: '',
+                    currentCluster: '',
+                    currentAppInst: '',
+                    cloudletSelectLoading: false,
+                    eventLogColumn: null,
+                })
+
+            } catch (e) {
+
+            } finally {
+                toast({
+                    type: 'success',
+                    //icon: 'smile',
+                    title: 'REFRESH ALL DATA',
+                    animation: 'bounce',
+                    time: 1 * 1000,
+                    color: 'black',
+                });
+            }
         }
 
 
@@ -599,11 +617,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <Button
                             onClick={async () => {
                                 if (!this.state.loading) {
-                                    this.refreshAllData();
+                                    this.handleReload_Oper();
                                 } else {
                                     showToast('Currently loading, you can\'t request again.')
                                 }
-
                             }}
                             className="ui circular icon button"
                         >
@@ -671,16 +688,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     showToast(e.toString())
                 }
 
-                console.log('cloudletEventLogs===>', cloudletEventLogs)
-                console.log('cloudletEventLogs===length>', cloudletEventLogs.length)
-
 
                 let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, selectedCloudlet.toString().trim(), CLASSIFICATION.cloudlet)
                 await this.setState({
                     // filteredCloudletList: filteredCloudletList,
                     cloudletSelectLoading: false,
                     filteredCloudletUsageList: filteredCloudletUsageList,
-                    cloudletEventLogs: cloudletEventLogs === undefined ? [] : cloudletEventLogs,
+                    filteredCloudletEventLogs: cloudletEventLogs === undefined ? [] : cloudletEventLogs,
                     isReady: true,
 
                 })
@@ -696,7 +710,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             } catch (e) {
 
-            }finally {
+            } finally {
                 await this.setState({
                     loading: false,
                     isReady: true,
@@ -904,36 +918,65 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderCloudletEventLog() {
+        handleSortForEventLogTable = (clickedColumn) => () => {
+
+            if (this.state.eventLogColumn !== clickedColumn) {
+                let filteredCloudletEventLogs = sortByKey(this.state.filteredCloudletEventLogs)
+                this.setState({
+                    eventLogColumn: clickedColumn,
+                    filteredCloudletEventLogs: filteredCloudletEventLogs,
+                    direction: 'ascending',
+                })
+            } else {
+                this.setState({
+                    filteredCloudletEventLogs: this.state.filteredCloudletEventLogs.reverse(),
+                    direction: this.state.direction === 'ascending' ? 'descending' : 'ascending',
+                })
+            }
+        }
+
+        renderCloudletEventLogTable() {
             return (
                 <div className='page_monitoring_column'>
                     <div className='page_monitoring_title_area'>
                         <div className='page_monitoring_title_select'>
                             Cloudlet Event Log
                         </div>
-                        <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
+                        <Table className="viewListTable" basic='very' sortable celled fixed>
                             <Table.Header className="viewListTableHeader">
                                 <Table.Row>
-                                    <Table.HeaderCell>
+                                    <Table.HeaderCell
+                                        sorted={this.state.eventLogColumn === 'Time' ? this.state.direction : null}
+                                        onClick={this.handleSortForEventLogTable('Time')}
+                                    >
                                         Time
                                     </Table.HeaderCell>
-                                    <Table.HeaderCell>
+                                    <Table.HeaderCell
+                                        sorted={this.state.eventLogColumn === 'Cloudlet' ? this.state.direction : null}
+                                        onClick={this.handleSortForEventLogTable('Cloudlet')}
+                                    >
                                         Cloudlet
                                     </Table.HeaderCell>
-                                    <Table.HeaderCell>
+                                    <Table.HeaderCell
+                                        sorted={this.state.eventLogColumn === 'Event' ? this.state.direction : null}
+                                        onClick={this.handleSortForEventLogTable('Event')}
+                                    >
                                         Event
                                     </Table.HeaderCell>
-                                    <Table.HeaderCell>
+                                    <Table.HeaderCell
+                                        sorted={this.state.eventLogColumn === 'Status' ? this.state.direction : null}
+                                        onClick={this.handleSortForEventLogTable('Status')}
+                                    >
                                         Status
                                     </Table.HeaderCell>
                                 </Table.Row>
                             </Table.Header>
                             <Table.Body className="">
                                 {/*todo: 데이터가 없는경우*/}
-                                {!this.state.cloudletSelectLoading && this.state.cloudletEventLogs.length === 0 &&
-                                <Table.Row className=''>
-                                    <Table.Cell style={{width:'100%', display: 'flex', justifyContent: 'center', alignItems: 'center',  backgroundColor: 'transparent'}} >
-                                        <div style={{}}>
+                                {!this.state.cloudletSelectLoading && this.state.filteredCloudletEventLogs.length === 0 &&
+                                <Table.Row className='' style={{backgroundColor: 'transparent', height: '25'}}>
+                                    <Table.Cell style={{width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent'}}>
+                                        <div style={{minHeight: 360, fontSize: 30, fontFamily: 'Encode Sans Condensed'}}>
                                             NO DATA
                                         </div>
                                     </Table.Cell>
@@ -941,17 +984,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 </Table.Row>
                                 }
                                 {this.state.cloudletSelectLoading &&
-                                <div style={StylesForMonitoring.center}>
-                                    <CircularProgress style={{color: '#1cecff', marginTop: 50}}/>
+                                <div style={StylesForMonitoring.center2}>
+                                    <CircularProgress style={{color: '#1cecff', marginTop: -70,}}/>
                                 </div>
                                 }
-                                {!this.state.cloudletSelectLoading && this.state.cloudletEventLogs.map(item => {
+                                {!this.state.cloudletSelectLoading && this.state.filteredCloudletEventLogs.map(item => {
                                     return (
                                         <Table.Row className='page_monitoring_popup_table_row'>
 
                                             <Table.Cell>
                                                 {item[0].split("T")[0]}{`  `}
-                                                {item[0].split("T")[1].toString().substring(0,8)}
+                                                {item[0].split("T")[1].toString().substring(0, 8)}
                                             </Table.Cell>
                                             <Table.Cell>
                                                 {item[1]}
@@ -983,7 +1026,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.renderHeader()}
                             <div style={{position: 'absolute', top: '37%', left: '48%'}}>
                                 <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                    {renderLottieLoader(150, 150)}
+                                    {renderGridLoader2(150, 150)}
                                 </div>
                             </div>
                         </Grid.Column>
@@ -1014,7 +1057,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {renderBottomGridAreaForCloudlet(this)}
                         </Modal.Content>
                     </Modal>
-                    <SemanticToastContainer position={"top-left"}/>
+                    <SemanticToastContainer position={"top-right"}/>
                     <Grid.Column className='contents_body'>
                         {/*todo:---------------------------------*/}
                         {/*todo:Content Header                   */}
@@ -1103,8 +1146,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             options={HARDWARE_OPTIONS_FOR_CLOUDLET}
                                                             defaultValue={HARDWARE_OPTIONS_FOR_CLOUDLET[0].value}
                                                             onChange={async (e, {value}) => {
-
                                                                 await handleBubbleChartDropDownForCloudlet(value, this);
+                                                                this.setState({
+                                                                    currentHardwareType: value
+                                                                })
 
                                                             }}
                                                             value={this.state.currentHardwareType}
@@ -1114,13 +1159,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*todo: RENDER BUBBLE_CHART          */}
                                                     {/*todo:---------------------------------*/}
                                                     <div className='page_monitoring_container'>
-                                                        {this.state.loading ? renderPlaceHolderLottie() : renderBubbleChartForCloudlet(this, this.state.currentHardwareType, this.state.bubbleChartData)}
+                                                        {this.state.loading ? renderPlaceHolderCircular() : renderBubbleChartForCloudlet(this, this.state.currentHardwareType, this.state.bubbleChartData)}
                                                     </div>
                                                 </div>
                                                 {/*todo: renderCloudletEventLog*/}
                                                 {/*todo: renderCloudletEventLog*/}
                                                 {/*todo: renderCloudletEventLog*/}
-                                                {this.renderCloudletEventLog()}
+                                                {this.renderCloudletEventLogTable()}
 
 
                                             </div>
