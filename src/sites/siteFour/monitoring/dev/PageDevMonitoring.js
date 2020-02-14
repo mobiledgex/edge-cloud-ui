@@ -44,8 +44,6 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import '../PageMonitoring.css'
 
-
-
 import {
     getOneYearStartEndDatetime,
     makeBubbleChartDataForCluster,
