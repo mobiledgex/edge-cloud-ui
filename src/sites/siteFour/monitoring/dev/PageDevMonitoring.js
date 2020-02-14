@@ -339,9 +339,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             //fixme: fakeData
             //fixme: fakeData
-         /*   let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
-            let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')*/
+            /*   let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+               let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
+               let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')*/
             console.log('appInstanceList====>', appInstanceList);
 
             console.log('clusterList===>', clusterList);
@@ -491,6 +491,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 || hwType === HARDWARE_TYPE.SENDBYTES
                 || hwType === HARDWARE_TYPE.ACTIVE_CONNECTION
                 || hwType === HARDWARE_TYPE.ACCEPTS_CONNECTION
+                || hwType === HARDWARE_TYPE.HANDLED_CONNECTION
                 || hwType === HARDWARE_TYPE.TCPCONNS
                 || hwType === HARDWARE_TYPE.TCPRETRANS
                 || hwType === HARDWARE_TYPE.UDPRECV
@@ -596,7 +597,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 return this.renderDropdownForTCP(cate)
             } else if (cate === HARDWARE_TYPE.UDPRECV || cate === HARDWARE_TYPE.UDPSENT) {
                 return this.renderDropdownForUDP(cate)
-            } else if (cate === HARDWARE_TYPE.RECVBYTES || cate === HARDWARE_TYPE.SENDBYTES) {
+            } else if (cate === HARDWARE_TYPE.ACCEPTS_CONNECTION || cate === HARDWARE_TYPE.HANDLED_CONNECTION || cate === HARDWARE_TYPE.ACTIVE_CONNECTION) {
                 return this.renderDropdownForConnections(cate)
             }
 
@@ -633,7 +634,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderDropdownForNetwork(subCategoryType) {
+        renderDropdownForNetwork(hwType) {
             return (
                 <Dropdown
                     placeholder='SELECT NET TYPE'
@@ -645,15 +646,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         //TAB0 IS SENDBYTES
                         if (value === HARDWARE_TYPE.RECVBYTES) {
                             this.setState({
-                                connectionsTabIndex: 0,
+                                networkTabIndex: 0,
                             })
                         } else if (value === HARDWARE_TYPE.SENDBYTES) {
                             this.setState({
-                                connectionsTabIndex: 1,
+                                networkTabIndex: 1,
                             })
                         }
                     }}
-                    value={subCategoryType}
+                    value={hwType}
                     // style={Styles.dropDown}
                 />
             )
@@ -973,7 +974,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:##########################*/}
                         {/*todo: Time Range Dropdown       */}
                         {/*todo:##########################*/}
-                       {/* <div className="page_monitoring_dropdown_box">
+                        {/* <div className="page_monitoring_dropdown_box">
                             <div className="page_monitoring_dropdown_label">
                                 TimeRange
                             </div>
@@ -1356,7 +1357,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*todo:---------------------------------*/}
                                                         {/*todo: NETWORK TAB PANEL AREA           */}
                                                         {/*todo:---------------------------------*/}
-                                                        <Tabs selectedIndex={this.state.connectionsTabIndex} className='page_monitoring_tab'>
+                                                        <Tabs selectedIndex={this.state.networkTabIndex} className='page_monitoring_tab'>
                                                             <TabPanel>
                                                                 {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.RECVBYTES)}
                                                             </TabPanel>

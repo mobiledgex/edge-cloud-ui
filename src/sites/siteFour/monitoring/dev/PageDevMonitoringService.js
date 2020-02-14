@@ -664,18 +664,24 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
  * @returns {*}
  */
 export const makeLineChartDataForAppInst = (allHWUsageList: Array, hardwareType: string, _this: PageDevMonitoring) => {
+
+    console.log('hardwareType===>', hardwareType);
+
+
     let oneTypedUsageList = [];
     if (hardwareType === HARDWARE_TYPE.CPU) {
         oneTypedUsageList = allHWUsageList[0]
     } else if (hardwareType === HARDWARE_TYPE.MEM) {
         oneTypedUsageList = allHWUsageList[1]
-    } else if (hardwareType === HARDWARE_TYPE.NETWORK) {
-        oneTypedUsageList = allHWUsageList[2]
     } else if (hardwareType === HARDWARE_TYPE.DISK) {
         oneTypedUsageList = allHWUsageList[3]
-    } else if (hardwareType === HARDWARE_TYPE.CONNECTIONS) {
+    } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION || hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
         oneTypedUsageList = allHWUsageList[4]
+    } else if (hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
+        oneTypedUsageList = allHWUsageList[2]
     }
+
+    console.log(`oneTypedUsageList===${hardwareType}>`, oneTypedUsageList);
 
 
     if (oneTypedUsageList.length === 0) {
@@ -700,9 +706,9 @@ export const makeLineChartDataForAppInst = (allHWUsageList: Array, hardwareType:
                 let usageOne = 0;
                 if (hardwareType === HARDWARE_TYPE.CPU) {
                     usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.CPU];
-                } else if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
+                } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
                     usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.RECVBYTES];
-                } else if (hardwareType === HARDWARE_TYPE.SEND_BYTES) {
+                } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
                     usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.SENDBYTES];
                 } else if (hardwareType === HARDWARE_TYPE.MEM) {
                     usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.MEM];
@@ -792,14 +798,13 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
                 series = pUsageList[i].memSeriesList
             } else if (hardwareType === HARDWARE_TYPE.DISK) {
                 series = pUsageList[i].diskSeriesList
-            } else if (hardwareType === HARDWARE_TYPE.UDP) {
-                series = pUsageList[i].udpSeriesList
             } else if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
                 series = pUsageList[i].tcpSeriesList
             } else if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
                 series = pUsageList[i].tcpSeriesList
-            }
-            else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
+            } else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
+                series = pUsageList[i].udpSeriesList
+            } else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
                 series = pUsageList[i].udpSeriesList
             } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
                 series = pUsageList[i].networkSeriesList
@@ -825,9 +830,10 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
                     usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.TCPCONNS];
                 } else if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
                     usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.TCPRETRANS];
-                }
-                else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
+                } else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
                     usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.UDPSENT];
+                } else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
+                    usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.UDPRECV];
                 } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
                     usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.SENDBYTES];
                 } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
