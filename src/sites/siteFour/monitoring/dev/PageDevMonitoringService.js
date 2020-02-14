@@ -94,23 +94,22 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
                     sumCpuUsage += item[5]
                 })
 
-
                 newClusterLevelUsageList.push({
                     cluster: clusterList[index].ClusterName,
                     cloudletLocation: clusterList[index].CloudletLocation,
                     dev: clusterList[index].Region,
                     cloudlet: clusterList[index].Cloudlet,
                     operator: clusterList[index].Operator,
-                    sumUdpSent: sumUdpSent / 10,
-                    sumUdpRecv: sumUdpRecv / 10,
-                    sumUdpRecvErr: sumUdpRecvErr / 10,
-                    sumTcpConns: sumTcpConns / 10,
-                    sumTcpRetrans: sumTcpRetrans / 10,
-                    sumSendBytes: sumSendBytes / 10,
-                    sumRecvBytes: sumRecvBytes / 10,
-                    sumMemUsage: sumMemUsage / 10,
-                    sumDiskUsage: sumDiskUsage / 10,
-                    sumCpuUsage: sumCpuUsage / 10,
+                    sumUdpSent: sumUdpSent / RECENT_DATA_LIMIT_COUNT,
+                    sumUdpRecv: sumUdpRecv / RECENT_DATA_LIMIT_COUNT,
+                    sumUdpRecvErr: sumUdpRecvErr / RECENT_DATA_LIMIT_COUNT,
+                    sumTcpConns: sumTcpConns / RECENT_DATA_LIMIT_COUNT,
+                    sumTcpRetrans: sumTcpRetrans / RECENT_DATA_LIMIT_COUNT,
+                    sumSendBytes: sumSendBytes / RECENT_DATA_LIMIT_COUNT,
+                    sumRecvBytes: sumRecvBytes / RECENT_DATA_LIMIT_COUNT,
+                    sumMemUsage: sumMemUsage / RECENT_DATA_LIMIT_COUNT,
+                    sumDiskUsage: sumDiskUsage / RECENT_DATA_LIMIT_COUNT,
+                    sumCpuUsage: sumCpuUsage / RECENT_DATA_LIMIT_COUNT,
                     columns: columns,
                     udpSeriesList,
                     tcpSeriesList,
@@ -118,7 +117,6 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
                     memSeriesList,
                     diskSeriesList,
                     cpuSeriesList,
-
 
                 })
 
