@@ -126,8 +126,6 @@
   "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "devDependencies": {
-    "react-app-rewire-less-modules": "^1.3.0",
-    "react-app-rewired": "^2.1.5",
     "react-scripts": "^3.3.0"
   },
   "scripts": {
