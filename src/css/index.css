@@ -1814,13 +1814,13 @@ body ::-webkit-scrollbar-track {
 
 /** css for Tablet **/
 .left_menu_hide_button {
-    background: #545961;
+    background: #3b3f47;
     position:absolute;
-    width:30px;
+    width:20px;
     height:30px;
     top:15px;
-    right:-15px;
-    border-radius: 50%;
+    right:-20px;
+    border-radius: 0 5px 5px 0;
     display:flex;
     justify-content:center;
     align-items: center;
@@ -1829,20 +1829,20 @@ body ::-webkit-scrollbar-track {
 }
 
 .left_menu_hide_button:hover {
-    background-color: #757a85
+    background-color: #4c515a
 }
 
 .left_menu_hide_button i.material-icons {
     color: rgba(255,255,255,.6);
-    font-size:20px;
+    font-size:16px;
 }
 
 .view_left_container.left_menu_hide .ui.secondary.menu.view_left_menu.org_menu .left_org {
-    padding:20px .92857143em 0 .92857143em;
+    display: none;
 
 }
 .view_left_container.left_menu_hide .ui.secondary.menu.view_left_menu.org_menu .left_authority {
-    padding:10px .92857143em 20px .92857143em;
+    padding:20px .92857143em 20px .92857143em;
 
 }
 .view_left_container.left_menu_hide .ui.secondary.menu.view_left_menu.org_menu .left_authority .ui.segment {

@@ -921,7 +921,7 @@ class SiteFour extends React.Component {
                             <Menu secondary vertical className='view_left_menu org_menu'>
                                 {/* show name of organization */}
                                 <Grid.Column className="left_org">
-                                    <div className="left_org_title">{this.state.hideLeftMenu? 'Org' : 'Organization'}</div>
+                                    <div className="left_org_title">Organization</div>
                                     <div className="left_org_selected">{localStorage.selectOrg ? localStorage.selectOrg : 'No organization selected'}</div>
                                 </Grid.Column>
                                 {/* show role of user */}
@@ -1026,8 +1026,8 @@ class SiteFour extends React.Component {
                          }}
                     >
                         {this.state.hideLeftMenu ?
-                            <i className="material-icons" style={{color:'rgba(255,255,255,.6)', fontSize:20}}>menu</i>
-                            : <i className="material-icons" style={{color:'rgba(255,255,255,.6)', fontSize:20}}>menu_open</i>}
+                            <i className="material-icons" style={{color:'rgba(255,255,255,.6)', fontSize:20}}>chevron_right</i>
+                            : <i className="material-icons" style={{color:'rgba(255,255,255,.6)', fontSize:20}}>chevron_left</i>}
                     </div>
                 </Container>
                 <Container className='contents_body_container' style={{ top: this.headerH, left: this.state.menuW, width:window.innerWidth - this.state.menuW}}>
