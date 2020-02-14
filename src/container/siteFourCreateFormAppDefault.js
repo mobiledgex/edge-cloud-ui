@@ -344,8 +344,8 @@ class SiteFourCreateFormAppDefault extends React.Component {
     }
     RemovePorts = (num, cnum) => {
         let arr = this.state.portArray;
-        this.props.dispatch(change('createAppFormDefault', 'Ports_' + cnum, null));
-        this.props.dispatch(change('createAppFormDefault', 'Portsselect_' + cnum, null));
+        this.props.dispatch(change('createAppFormDefault', 'Ports_' + cnum, {key:'delete', value:cnum}));
+        this.props.dispatch(change('createAppFormDefault', 'Portsselect_' + cnum, {key:'delete', value:cnum}));
         if (arr.length > 0) {
             arr.splice(num, 1)
         }

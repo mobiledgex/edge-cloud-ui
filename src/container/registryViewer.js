@@ -412,7 +412,7 @@ class RegistryViewer extends React.Component {
                 newBodyData.app['key'] = key;
                 newBodyData.app['image_type'] = nextProps.editData['ImageType'];
                 newBodyData.app['official_fqdn'] = nextProps.editData['DefaultFQDN'];
-                //newBodyData.app['fields'] = nextProps.submitValues.app['fields'];
+                newBodyData.app['fields'] = nextProps.submitValues.app['fields'];
                 nextProps.submitValues.app['key'] = key;
 
                 // concat submitValues with newBodyData
@@ -423,12 +423,41 @@ class RegistryViewer extends React.Component {
                         newBodyData.app[key] = sValue[key];
                     }
                     if(sValue[key] !== "" && typeof sValue[key] === 'object') {
-                        if(key === 'default_flavor') {
+                        if(key === 'default_flavor' && sValue[key]['name'] !== '') {
                             newBodyData.app[key]['name'] = sValue[key]['name']
                         }
                     }
 
                 }) 
+                // combin ports
+                let combinPorts = "";
+                if(nextProps.editData && (nextProps.editData.Ports !== "" && nextProps.submitValues.app['access_ports'] !== "")) {
+                    //has delete port
+                    if(nextProps.submitValues.app['access_ports'].indexOf('[object Object]')>-1) {
+                        combinPorts = nextProps.editData.Ports
+                    } else {
+                        combinPorts = nextProps.editData.Ports+","+nextProps.submitValues.app['access_ports']
+                    }
+                    newBodyData.app['access_ports'] = combinPorts;
+                }
+                // if delete port
+                if(nextProps.editData && (nextProps.editData.Ports !== "" && nextProps.submitValues.app['delete_ports'].length > 0)) {
+                    let deletePorts = nextProps.submitValues.app['delete_ports'];
+                    let portArray = nextProps.editData.Ports.split(',');
+                    let deleteIndexs = [];
+                    deletePorts.map((port) => {
+                        let nm = parseInt(port['value'])
+                        deleteIndexs.push(nm);
+                    })
+                    portArray = portArray.filter(function(value, index) { 
+                        return deleteIndexs.indexOf(index) == -1; 
+                    })
+                    let portString = "";
+                    portArray.map((portValue, i) => {
+                        portString += ((i === 0)? '' : ',') +portValue;
+                    })
+                    newBodyData.app['access_ports'] = portString;
+                }
                 
                 console.log('new body =', newBodyData)
                 this.props.handleLoadingSpinner(true);
@@ -521,6 +550,7 @@ const createFormat = (data) => (
                 "image_type":itData,
                 "image_path":data['ImagePath'],
                 "access_ports":accessport(data),
+                "delete_ports":deleteport(data),
                 "auto_prov_policy":data['AutoProvPolicy'],
                 "default_flavor":{"name":data['DefaultFlavor']},
                 "default_privacy_policy":data['DefaultPrivacyPolicy'],
@@ -545,6 +575,22 @@ const accessport = (data) => {
         num++;
     })
     portSum = portSum.substr(0, portSum.length -1)
+    return portSum;
+}
+
+const deleteport = (data) => {
+    let key = Object.keys(data);
+    let num = 0;
+    let portSum = [];
+    key.map((item,i) => {
+        if(data['Ports_'+num] && data['Portsselect_'+num]){
+            if(data['Portsselect_'+num]['key'] && data['Portsselect_'+num]['key'] === 'delete') {
+                // if delete port
+                portSum.push(data['Ports_'+num]);
+            } 
+        }
+        num++;
+    })
     return portSum;
 }
 
