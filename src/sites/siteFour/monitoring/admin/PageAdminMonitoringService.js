@@ -1,15 +1,11 @@
 import React from 'react';
-import axios from "axios";
-import {formatData} from "../../../../services/formatter/formatComputeInstance";
 import '../PageMonitoring.css';
 import {APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
 import BubbleChart from "../../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../../shared/Types";
 import PageAdminMonitoring from "./PageAdminMonitoring";
-import {numberWithCommas, renderBarChartCore, renderLineChartCore, renderUsageByType2, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
-import {SHOW_CLOUDLET, SHOW_ORG_CLOUDLET} from "../../../../services/endPointTypes";
-import {sendSyncRequest,} from "../../../../services/serviceMC";
+import {numberWithCommas, renderBarChartCore, renderLineChartCore, renderUsageByType2, StylesForMonitoring} from "../PageMonitoringCommonService";
 import {TabPanel, Tabs} from "react-tabs";
 
 export const cutArrayList = async (length: number = 5, paramArrayList: any) => {

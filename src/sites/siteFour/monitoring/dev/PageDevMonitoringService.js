@@ -1,27 +1,15 @@
 import React from 'react';
 import '../PageMonitoring.css';
-import {APP_INST_USAGE_TYPE_INDEX, CHART_COLOR_LIST, CLASSIFICATION, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION, USAGE_INDEX_FOR_CLUSTER} from "../../../../shared/Constants";
+import {APP_INST_USAGE_TYPE_INDEX, CHART_COLOR_LIST, CLASSIFICATION, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX_FOR_CLUSTER} from "../../../../shared/Constants";
 import BubbleChart from "../../../../components/BubbleChart";
 import PageDevMonitoring from "./PageDevMonitoring";
-import {
-    convertByteToMegaByte,
-    getClusterLevelMatric,
-    makeFormForClusterLevelMatric,
-    numberWithCommas,
-    renderUsageByType,
-    showToast,
-    showToast2,
-    StylesForMonitoring
-} from "../PageMonitoringCommonService";
-import {SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
-import {sendSyncRequest} from "../../../../services/serviceMC";
+import {convertByteToMegaByte, numberWithCommas, renderUsageByType, StylesForMonitoring} from "../PageMonitoringCommonService";
 import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {Table} from "semantic-ui-react";
 import Lottie from "react-lottie";
 import type {TypeClusterUsageList} from "../../../../shared/Types";
 import {Progress} from "antd";
-
 
 
 export const filterUsageByClassification = (originalList, selectOne, filterKey,) => {

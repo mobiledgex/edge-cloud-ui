@@ -25,7 +25,7 @@ import {
     makeLineChartForCloudlet,
     renderBottomGridAreaForCloudlet
 } from "./PageOperMonitoringService";
-import LeafletMap from "./LeafletMapWrapper";
+import LeafletMap from "./LeafletMapWrapperForOper";
 import {filterUsageByClassification, makeSelectBoxListWithKey, sortByKey} from "../dev/PageDevMonitoringService";
 import {getAllCloudletEventLogs, getCloudletEventLog, getCloudletList, getClouletLevelUsageList} from "../PageMonitoringMetricService";
 import {filterListBykeyForCloudlet, renderBubbleChartForCloudlet} from "../admin/PageAdminMonitoringService";
