@@ -49,11 +49,9 @@ import {TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
-
 import {numberWithCommas, renderGridLoader2, renderPlaceHolderCircular, showToast, showToast2, StylesForMonitoring} from "../PageMonitoringCommonService";
 import '../PageMonitoring.css'
 import {getAppInstList, getAppLevelUsageList, getCloudletListAll} from "../PageMonitoringMetricService";
-
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
 const {Column, Row} = Grid;
@@ -71,7 +69,6 @@ const mapDispatchProps = (dispatch) => {
         }
     };
 };
-
 // const isMobile = () => {
 //     return navigator.userAgent.indexOf('iPad') > -1;
 // };
@@ -687,25 +684,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
 
         }
-
-        handleSelectCloudlet = async (cloudletSelectedOne) => {
-
-            showToast(cloudletSelectedOne)
-            /*
-                        this.setState({
-                            currentCloudLet: cloudletSelectedOne,
-                        })
-
-                        let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, cloudletSelectedOne, 'cloudlet')
-
-                        console.log('filterCloudletList===>', filteredCloudletUsageList);
-
-                        this.setState({
-                            filteredCloudletUsageList: filteredCloudletUsageList,
-                        })*/
-
-        }
-
 
         renderBottomGridArea() {
             return (

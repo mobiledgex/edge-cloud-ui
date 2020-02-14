@@ -272,7 +272,5 @@ export default hot(
                 </div>
             );
         }
-
-
     }
 )

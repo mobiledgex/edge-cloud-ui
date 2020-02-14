@@ -29,7 +29,6 @@ import LeafletMap from "./LeafletMapWrapperForOper";
 import {filterUsageByClassification, makeSelectBoxListWithKey, sortByKey} from "../dev/PageDevMonitoringService";
 import {getAllCloudletEventLogs, getCloudletEventLog, getCloudletList, getClouletLevelUsageList} from "../PageMonitoringMetricService";
 import {filterListBykeyForCloudlet, renderBubbleChartForCloudlet} from "../admin/PageAdminMonitoringService";
-
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
 const {Column, Row} = Grid;

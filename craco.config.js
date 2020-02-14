@@ -22,7 +22,7 @@ const getLoader = function (rules, matcher) {
 
 module.exports = {
     dev: {
-        useEslint: false
+        useEslint: true
     },
     eslint: {
         configure: {
