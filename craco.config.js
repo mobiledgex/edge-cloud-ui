@@ -1,3 +1,5 @@
+/*craco.config.js*/
+
 const path = require('path');
 
 const loaderNameMatches = function (rule, loaderName) {
