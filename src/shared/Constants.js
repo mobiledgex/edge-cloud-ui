@@ -368,22 +368,12 @@ export const HARDWARE_TYPE = {
     FLAVOR: 'FLAVOR',
     CPU: 'CPU',
     VCPU: 'vCPU',
-    VCPU_MAX: 'VCPU_MAX',
     NET_SEND: 'NET_SEND',
     NET_RECV: 'NET_RECV',
-    VCPU_USED: 'VCPU_USED',
-
-    MEM_USED: 'MEM_USED',
-    MEM_MAX: 'MEM_MAX',
-    DISK_USED: 'DISK_USED',
-    DISK_MAX: 'DISK_MAX',
-    FLOATING_IPS_USED: 'FLOATING_IPS_USED',
-    FLOATING_IPS_MAX: 'FLOATING_IPS_MAX',
     FLOATING_IPS: 'FLOATING_IPS',
-    IPV4_USED: 'IPV4_USED',
-    IPV4_MAX: 'IPV4_MAX',
     IPV4: 'IPV4',
 
+    ////////////
     UDP: 'UDP',
     TCP: 'TCP',
     NETWORK: 'NETWORK',
@@ -399,7 +389,6 @@ export const HARDWARE_TYPE = {
     //NETWORK
     SENDBYTES: 'SEND_BYTES',
     RECVBYTES: 'RECV_BYTES',
-
 
     MEM: 'MEM',
     MEM2: 'MEM',
