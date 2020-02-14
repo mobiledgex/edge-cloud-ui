@@ -43,6 +43,9 @@ import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import '../PageMonitoring.css'
+
+
+
 import {
     getOneYearStartEndDatetime,
     makeBubbleChartDataForCluster,
@@ -976,8 +979,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:##########################*/}
                         {/*todo: Time Range Dropdown       */}
                         {/*todo:##########################*/}
-                        {/* <div className="page_monitoring_dropdown_box">
-                             <div className="page_monitoring_dropdown_label">
+                        <div className="page_monitoring_dropdown_box">
+                            <div className="page_monitoring_dropdown_label">
                                 TimeRange
                             </div>
                             <RangePicker
@@ -1009,7 +1012,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                                 style={{width: 300}}
                             />
-                        </div>*/}
+                        </div>
 
                     </div>
                 </div>

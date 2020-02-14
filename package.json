@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@ant-design/dark-theme": "^1.0.3",
+    "@craco/craco": "^5.6.3",
     "@crowdlinker/react-pager": "^0.2.6",
     "@material-ui/core": "^4.9.0",
     "@material-ui/icons": "^3.0.2",
@@ -131,7 +132,7 @@
     "react-scripts": "^3.3.0"
   },
   "scripts": {
-    "start": "react-app-rewired start",
+    "start":  "craco start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
@@ -142,5 +143,10 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "eslintConfig": {
+    "rules": {
+      "no-unused-vars": "off"
+    }
+  }
 }
