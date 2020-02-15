@@ -687,7 +687,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                                                                 <Field
                                                                                                                                     fid = {'singlePortInput'}
                                                                                                                                     component={renderInputNum}
-                                                                                                                                    placeholder={this.getPlaceholder({placeholder:'Select port', key: key, pId: pId, cid: item.num, fid:'singlePortInput'})}
+                                                                                                                                    placeholder={this.getPlaceholder({placeholder:'', key: key, pId: pId, cid: item.num, fid:'singlePortInput'})}
                                                                                                                                     type="input"
                                                                                                                                     name={key + '_' + item.num}
                                                                                                                                     value={this.getPlaceholder({placeholder:data[key], key: key, pId: pId, fid:'singlePortInput'})}
