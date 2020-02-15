@@ -452,6 +452,7 @@ class RegistryViewer extends React.Component {
                     if(nextProps.editData && (nextProps.editData.Ports !== "" && nextProps.submitValues.app['delete_ports'].length > 0)) {
                         let deletePorts = nextProps.submitValues.app['delete_ports'];
                         let portArray = nextProps.editData.Ports.split(',');
+                        let addedPort = nextProps.submitValues.app['access_ports'].split(',');
                         let deleteIndexs = [];
                         deletePorts.map((port) => {
                             let nm = parseInt(port['value'])
@@ -463,6 +464,12 @@ class RegistryViewer extends React.Component {
                         let portString = "";
                         portArray.map((portValue, i) => {
                             portString += ((i === 0)? '' : ',') +portValue;
+                        })
+                        //added port
+                        addedPort.map(port => {
+                            if(port.indexOf('[object Object]') === -1) {
+                                portString += (','+port)
+                            }
                         })
                         newBodyData.app['access_ports'] = portString;
                     }
