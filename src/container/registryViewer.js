@@ -390,76 +390,89 @@ class RegistryViewer extends React.Component {
         if(nextProps.submitValues && !this.state.toggleSubmit) {
             const apps = ['Region','OrganizationName','AppName','Version','DeploymentType','DefaultFlavor']
             let error = [];
-            apps.map((item) => {
-                if(!nextProps.validateValue[item]) {
+            // edit mode 일 때와 new 일 떼 구분하기
+            if(!nextProps.editMode) apps.map((item) => {
+                if(nextProps.validateValue[item] === "") {
                     error.push(item)
                 }
             })
-            /* make body code by @Smith */
-            if(nextProps.formApps.submitSucceeded && nextProps.editMode){
-                let method = serviceMC.getEP().UPDATE_APP;
-                nextProps.submitValues.app['fields'] = this.updateFields(nextProps.editData, nextProps.submitValues.app)
-                nextProps.submitValues.region = nextProps.editData.Region;
-                // TODO 20200207 @Smith: we need formating to app properly body to send to update url 
-                this.setState({toggleSubmit:true,validateError:error});
-                // reset submitValues as use the editData and the submitValues
-                let newBodyData = createFormat(nextProps.editData);
-                let key = {
-                    "developer_key":{"name":nextProps.editData['OrganizationName']},
-                    "name":nextProps.editData['AppName'],
-                    "version":nextProps.editData['Version']
-                }
-                newBodyData.app['key'] = key;
-                newBodyData.app['image_type'] = nextProps.editData['ImageType'];
-                newBodyData.app['official_fqdn'] = nextProps.editData['DefaultFQDN'];
-                newBodyData.app['fields'] = nextProps.submitValues.app['fields'];
-                nextProps.submitValues.app['key'] = key;
-
-                // concat submitValues with newBodyData
-                let sValue = nextProps.submitValues.app;
-                let keys = Object.keys(sValue);
-                keys.map((key) => {
-                    if(sValue[key] !== "" && typeof sValue[key] === 'string') {
-                        newBodyData.app[key] = sValue[key];
+            
+            if(nextProps.formApps.submitSucceeded && error.length == 0){
+                let method = serviceMC.getEP().CREATE_APP;
+                let newBodyData = nextProps.submitValues;
+                /* 
+                * ================== update start ===================
+                * make body code by @Smith 
+                */
+                if(nextProps.editMode) {
+                    method = serviceMC.getEP().UPDATE_APP;
+                    nextProps.submitValues.app['fields'] = this.updateFields(nextProps.editData, nextProps.submitValues.app)
+                    nextProps.submitValues.region = nextProps.editData.Region;
+                    // TODO 20200207 @Smith: we need formating to app properly body to send to update url 
+                    this.setState({toggleSubmit:true,validateError:error});
+                    // reset submitValues as use the editData and the submitValues
+                    newBodyData = createFormat(nextProps.editData);
+                    let key = {
+                        "developer_key":{"name":nextProps.editData['OrganizationName']},
+                        "name":nextProps.editData['AppName'],
+                        "version":nextProps.editData['Version']
                     }
-                    if(sValue[key] !== "" && typeof sValue[key] === 'object') {
-                        if(key === 'default_flavor' && sValue[key]['name'] !== '') {
-                            newBodyData.app[key]['name'] = sValue[key]['name']
+                    newBodyData.app['key'] = key;
+                    newBodyData.app['image_type'] = nextProps.editData['ImageType'];
+                    newBodyData.app['official_fqdn'] = nextProps.editData['DefaultFQDN'];
+                    newBodyData.app['fields'] = nextProps.submitValues.app['fields'];
+                    nextProps.submitValues.app['key'] = key;
+
+                    // concat submitValues with newBodyData
+                    let sValue = nextProps.submitValues.app;
+                    let keys = Object.keys(sValue);
+                    keys.map((key) => {
+                        if(sValue[key] !== "" && typeof sValue[key] === 'string') {
+                            newBodyData.app[key] = sValue[key];
                         }
-                    }
+                        if(sValue[key] !== "" && typeof sValue[key] === 'object') {
+                            if(key === 'default_flavor' && sValue[key]['name'] !== '') {
+                                newBodyData.app[key]['name'] = sValue[key]['name']
+                            }
+                        }
 
-                }) 
-                // combin ports
-                let combinPorts = "";
-                if(nextProps.editData && (nextProps.editData.Ports !== "" && nextProps.submitValues.app['access_ports'] !== "")) {
-                    //has delete port
-                    if(nextProps.submitValues.app['access_ports'].indexOf('[object Object]')>-1) {
-                        combinPorts = nextProps.editData.Ports
-                    } else {
-                        combinPorts = nextProps.editData.Ports+","+nextProps.submitValues.app['access_ports']
+                    }) 
+                    // combin ports
+                    let combinPorts = "";
+                    if(nextProps.editData && (nextProps.editData.Ports !== "" && nextProps.submitValues.app['access_ports'] !== "")) {
+                        //has delete port
+                        if(nextProps.submitValues.app['access_ports'].indexOf('[object Object]')>-1) {
+                            combinPorts = nextProps.editData.Ports
+                        } else {
+                            combinPorts = nextProps.editData.Ports+","+nextProps.submitValues.app['access_ports']
+                        }
+                        newBodyData.app['access_ports'] = combinPorts;
                     }
-                    newBodyData.app['access_ports'] = combinPorts;
+                    // if delete port
+                    if(nextProps.editData && (nextProps.editData.Ports !== "" && nextProps.submitValues.app['delete_ports'].length > 0)) {
+                        let deletePorts = nextProps.submitValues.app['delete_ports'];
+                        let portArray = nextProps.editData.Ports.split(',');
+                        let deleteIndexs = [];
+                        deletePorts.map((port) => {
+                            let nm = parseInt(port['value'])
+                            deleteIndexs.push(nm);
+                        })
+                        portArray = portArray.filter(function(value, index) { 
+                            return deleteIndexs.indexOf(index) == -1; 
+                        })
+                        let portString = "";
+                        portArray.map((portValue, i) => {
+                            portString += ((i === 0)? '' : ',') +portValue;
+                        })
+                        newBodyData.app['access_ports'] = portString;
+                    }
+                    
+                    console.log('new body =', newBodyData)
                 }
-                // if delete port
-                if(nextProps.editData && (nextProps.editData.Ports !== "" && nextProps.submitValues.app['delete_ports'].length > 0)) {
-                    let deletePorts = nextProps.submitValues.app['delete_ports'];
-                    let portArray = nextProps.editData.Ports.split(',');
-                    let deleteIndexs = [];
-                    deletePorts.map((port) => {
-                        let nm = parseInt(port['value'])
-                        deleteIndexs.push(nm);
-                    })
-                    portArray = portArray.filter(function(value, index) { 
-                        return deleteIndexs.indexOf(index) == -1; 
-                    })
-                    let portString = "";
-                    portArray.map((portValue, i) => {
-                        portString += ((i === 0)? '' : ',') +portValue;
-                    })
-                    newBodyData.app['access_ports'] = portString;
-                }
-                
-                console.log('new body =', newBodyData)
+                /**
+                 * ======================= update end =====================
+                 */
+                this.setState({toggleSubmit:true,validateError:error});
                 this.props.handleLoadingSpinner(true);
                 let serviceBody = {
                     method : method,

@@ -343,13 +343,19 @@ class SiteFourCreateFormAppDefault extends React.Component {
         portNum++;
     }
     RemovePorts = (num, cnum) => {
-        let arr = this.state.portArray;
-        this.props.dispatch(change('createAppFormDefault', 'Ports_' + cnum, {key:'delete', value:cnum}));
-        this.props.dispatch(change('createAppFormDefault', 'Portsselect_' + cnum, {key:'delete', value:cnum}));
-        if (arr.length > 0) {
-            arr.splice(num, 1)
-        }
-        this.setState({ portArray: arr });
+        let arr = Object.assign(this.state.portArray);
+        let data = Object.assign(this.state.data);
+        if(this.state.editDsb) {
+            // data
+            this.props.dispatch(change('createAppFormDefault', 'Ports_' + cnum, {key:'delete', value:cnum}));
+            this.props.dispatch(change('createAppFormDefault', 'Portsselect_' + cnum, {key:'delete', value:cnum}));
+        } else {
+            // portArray
+            if (arr.length > 0) {
+                arr.splice(num, 1)
+            }
+            this.setState({ portArray: arr });
+        }   
     }
     receiveResult = (mcRequest) => {
         if (mcRequest) {
