@@ -9,6 +9,7 @@ import Ripples from "react-ripples";
 
 import {Map, Marker, Popup, TileLayer, Tooltip} from "../../../../components/react-leaflet_kj/src/index";
 import PageDevMonitoring from "./PageDevMonitoring";
+import {Icon} from "antd";
 
 
 const DEFAULT_VIEWPORT = {
@@ -188,6 +189,20 @@ export default hot(
                          dragging={true}
                          boundsOptions={{padding: [50, 50]}}
                     >
+                        <div id="button-wrapper" style={{zIndex: 999999, backgroundColor: 'white'}}>
+                            <Icon onClick={() => {
+                                alert('sdfksdlkfldkf')
+                            }} type="star" style={{fontSize: '16px', color: 'black', cursor: 'pointer'}}
+                                  theme="outlined"/>
+                            <Icon onClick={() => {
+                                alert('sdfksdlkfldkf')
+                            }} type="star" style={{fontSize: '16px', color: 'black', cursor: 'pointer'}}
+                                  theme="outlined"/>
+                            <Icon onClick={() => {
+                                alert('sdfksdlkfldkf')
+                            }} type="star" style={{fontSize: '16px', color: 'black', cursor: 'pointer'}}
+                                  theme="outlined"/>
+                        </div>
                         <TileLayer
                             url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
                             //url={'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'}
@@ -257,7 +272,11 @@ export default hot(
                                                         }}
                                                     >
                                                         {AppName}
-                                                        <div style={{color: '#77BD25', fontFamily: 'Roboto', fontSize: 12}}>
+                                                        <div style={{
+                                                            color: '#77BD25',
+                                                            fontFamily: 'Roboto',
+                                                            fontSize: 12
+                                                        }}>
                                                             &nbsp;&nbsp;{` [${ClusterInst.trim()}]`}
                                                         </div>
                                                     </Ripples>

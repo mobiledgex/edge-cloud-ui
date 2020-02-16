@@ -10,7 +10,7 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {Button as MButton, CircularProgress} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
-import {DatePicker,} from 'antd';
+import {DatePicker, Button as AButton} from 'antd';
 import {
     convertHwTypePhrases,
     filterUsageByClassification,
@@ -56,7 +56,13 @@ import {TabPanel, Tabs} from "react-tabs";
 import LeafletMapWrapperForDev from "./LeafletMapWrapperForDev";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraphForCluster from "./ModalGraphForCluster";
-import {getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList} from "../PageMonitoringMetricService";
+import {
+    getAppInstList,
+    getAppLevelUsageList,
+    getCloudletList,
+    getClusterLevelUsageList,
+    getClusterList
+} from "../PageMonitoringMetricService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -516,7 +522,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title_select'>
-                                {convertHwTypePhrases(pHardwareType)} Usage of {this.convertToClassification(this.state.currentClassification)}
+                                {convertHwTypePhrases(pHardwareType)} Usage
+                                of {this.convertToClassification(this.state.currentClassification)}
                             </div>
                             {!this.state.loading && this.renderDropDownForMultiTab(pHardwareType)}
                         </div>
@@ -530,7 +537,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                Top 5 {convertHwTypePhrases(pHardwareType)} usage of {this.convertToClassification(this.state.currentClassification)}
+                                Top 5 {convertHwTypePhrases(pHardwareType)} usage
+                                of {this.convertToClassification(this.state.currentClassification)}
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
@@ -571,7 +579,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container' style={{flex: .5}}>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                Top 5 {convertHwTypePhrases(pHardwareType)} usage of {this.convertToClassification(this.state.currentClassification)}
+                                Top 5 {convertHwTypePhrases(pHardwareType)} usage
+                                of {this.convertToClassification(this.state.currentClassification)}
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
@@ -867,7 +876,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {this.state.currentClassification === CLASSIFICATION.APPINST &&
                         <div>
                             <MButton
-                                style={{backgroundColor: this.state.isStream ? 'green' : '#6c6c6c', color: 'white', height: 37}}
+                                style={{
+                                    backgroundColor: this.state.isStream ? 'green' : '#6c6c6c',
+                                    color: 'white',
+                                    height: 37
+                                }}
                                 onClick={async () => {
                                     this.setState({
                                         isStream: !this.state.isStream,
@@ -894,7 +907,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {this.state.intervalLoading &&
                         <div>
                             <div style={{marginLeft: 15}}>
-                                <CircularProgress style={{color: this.state.currentClassification === CLASSIFICATION.APPINST ? 'grey' : 'green', zIndex: 9999999, fontSize: 10}}
+                                <CircularProgress style={{
+                                    color: this.state.currentClassification === CLASSIFICATION.APPINST ? 'grey' : 'green',
+                                    zIndex: 9999999,
+                                    fontSize: 10
+                                }}
                                                   size={20}/>
                             </div>
                         </div>
@@ -907,7 +924,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                               size={20}/>
                         </div>
                         }*/}
-                        {/*<AButton type={'primary'}>sdkjfskdjfksjdf</AButton>*/}
+                        <AButton type={'primary'}>sdkjfskdjfksjdf</AButton>
+                        <AButton type={'info'}>sdkjfskdjfksjdf</AButton>
+                        <AButton type={'danger'}>sdkjfskdjfksjdf</AButton>
+                        <AButton style={{backgroundColor:'#50c1ff'}}>sdkjfskdjfksjdf</AButton>
+                        <AButton style={{backgroundColor:'#50c1ff'}}>sdkjfskdjfksjdf</AButton>
+                        <AButton style={{backgroundColor:'#50c1ff'}}>sdkjfskdjfksjdf</AButton>
+                        <AButton style={{backgroundColor:'#50c1ff'}}>sdkjfskdjfksjdf</AButton>
                     </div>
                 </Grid.Row>
             )
@@ -1176,7 +1199,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:---------------------------------*/}
                         {/*todo: bubbleChart DropDown            */}
                         {/*todo:---------------------------------*/}
-                        <div style={{marginRight: 10, marginTop: 1, backgroundColor: 'transparent', display: 'flex', alignSelf: 'center'}}>
+                        <div style={{
+                            marginRight: 10,
+                            marginTop: 1,
+                            backgroundColor: 'transparent',
+                            display: 'flex',
+                            alignSelf: 'center'
+                        }}>
                             <MButton
                                 style={{backgroundColor: '#6c6c6c', color: 'white', height: 25}}
                                 onClick={async () => {
@@ -1256,7 +1285,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*<ModalForGraph currentAppInstLineChartData={this.state.currentAppInstLineChartData} parent={this} modalIsOpen={this.state.modalIsOpen}
                                    currentGraphAppInst={this.state.currentGraphAppInst} cluster={this.state.currentGraphCluster} contents={''}/>*/}
 
-                    <ModalGraphForCluster selectedClusterUsageOne={this.state.selectedClusterUsageOne} selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex} parent={this}
+                    <ModalGraphForCluster selectedClusterUsageOne={this.state.selectedClusterUsageOne}
+                                          selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
+                                          parent={this}
                                           modalIsOpen={this.state.modalIsOpen}
                                           cluster={''} contents={''}/>
 
@@ -1288,14 +1319,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 <div className='page_monitoring_row'>
 
                                                     <div className='page_monitoring_column' style={{}}>
-                                                        <div className='page_monitoring_title_area' style={{display: 'flex'}}>
-                                                            <div className='page_monitoring_title' style={{backgroundColor: 'transparent', flex: .35}}>
+                                                        <div className='page_monitoring_title_area'
+                                                             style={{display: 'flex'}}>
+                                                            <div className='page_monitoring_title'
+                                                                 style={{backgroundColor: 'transparent', flex: .35}}>
                                                                 Launch status of the {this.state.currentClassification}
                                                             </div>
-                                                            <div className='page_monitoring_title' style={{backgroundColor: 'transparent', flex: .65}}>
+                                                            <div className='page_monitoring_title'
+                                                                 style={{backgroundColor: 'transparent', flex: .65}}>
                                                                 {this.state.mapPopUploading &&
                                                                 <div style={{zIndex: 99999999999}}>
-                                                                    <CircularProgress style={{color: '#1cecff', marginRight: 0, marginBottom: -2, fontWeight: 'bold',}} size={14}/>
+                                                                    <CircularProgress style={{
+                                                                        color: '#1cecff',
+                                                                        marginRight: 0,
+                                                                        marginBottom: -2,
+                                                                        fontWeight: 'bold',
+                                                                    }} size={14}/>
                                                                 </div>
                                                                 }
                                                             </div>
@@ -1304,8 +1343,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*@todo: LeafletMapWrapperForDev*/}
                                                         {/*todo:---------------------------------*/}
                                                         <div className='page_monitoring_container'>
-                                                            <LeafletMapWrapperForDev mapPopUploading={this.state.mapPopUploading} parent={this} handleAppInstDropdown={this.handleAppInstDropdown}
-                                                                                     markerList={this.state.appInstanceListGroupByCloudlet}/>
+                                                            <LeafletMapWrapperForDev
+                                                                mapPopUploading={this.state.mapPopUploading}
+                                                                parent={this}
+                                                                handleAppInstDropdown={this.handleAppInstDropdown}
+                                                                markerList={this.state.appInstanceListGroupByCloudlet}/>
                                                         </div>
                                                     </div>
 
@@ -1350,7 +1392,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*todo:---------------------------------*/}
                                                         {/*todo: NETWORK TAB PANEL AREA           */}
                                                         {/*todo:---------------------------------*/}
-                                                        <Tabs selectedIndex={this.state.networkTabIndex} className='page_monitoring_tab'>
+                                                        <Tabs selectedIndex={this.state.networkTabIndex}
+                                                              className='page_monitoring_tab'>
                                                             <TabPanel>
                                                                 {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.RECVBYTES)}
                                                             </TabPanel>
@@ -1392,13 +1435,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/*todo:---------------------------------*/}
                                                 {/*todo: BOTTOM_GRID_AREA_SHOW_UP_AREA   */}
                                                 {/*todo:---------------------------------*/}
-                                                <ToggleDisplay if={this.state.isShowBottomGrid} tag="section" className='bottomGridArea'>
+                                                <ToggleDisplay if={this.state.isShowBottomGrid} tag="section"
+                                                               className='bottomGridArea'>
                                                     <OutsideClickHandler
                                                         onOutsideClick={() => {
                                                         }}
                                                     >
-                                                        <div className='page_monitoring_popup_column' style={{zIndex: 999999}}>
-                                                            <div className='page_monitoring_popup_header_row' style={{zIndex: 999999}}
+                                                        <div className='page_monitoring_popup_column'
+                                                             style={{zIndex: 999999}}>
+                                                            <div className='page_monitoring_popup_header_row'
+                                                                 style={{zIndex: 999999}}
                                                                  onClick={() => {
                                                                      this.setState({
                                                                          isShowBottomGrid: !this.state.isShowBottomGrid,
@@ -1406,10 +1452,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                                                  }}
                                                             >
-                                                                <div className='page_monitoring_popup_header_title' style={{zIndex: 999999}}>
+                                                                <div className='page_monitoring_popup_header_title'
+                                                                     style={{zIndex: 999999}}>
                                                                     Status of Cluster
                                                                 </div>
-                                                                <div className='page_monitoring_popup_header_button' style={{zIndex: 999999}}>
+                                                                <div className='page_monitoring_popup_header_button'
+                                                                     style={{zIndex: 999999}}>
                                                                     <div>
                                                                         HIDE CLUSTER LIST
                                                                     </div>
