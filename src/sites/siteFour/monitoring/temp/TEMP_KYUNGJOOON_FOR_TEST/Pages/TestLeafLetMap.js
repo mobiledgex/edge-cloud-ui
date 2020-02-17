@@ -40,10 +40,10 @@ export default class TestLeafLetMap extends React.Component<Props, State> {
         let point2 = L.marker([51.5, -0.09], {
             icon: greenIcon,
         }).addTo(map).on('click', () => {
-            //showToast(point2.getLatLng().toString())
-            this.setState({
+            showToast(point2.getLatLng().toString())
+            /*this.setState({
                 visible: !this.state.visible
-            })
+            })*/
         })
 
         /*L.tileLayer('"https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"', {

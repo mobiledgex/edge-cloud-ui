@@ -917,20 +917,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </div>
                         }
 
-                        {/*   {this.state.dropdownRequestLoading &&
-
-                        <div style={{marginLeft: 15}}>
-                            <CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 10}}
-                                              size={20}/>
-                        </div>
-                        }*/}
-                        <AButton type={'primary'}>sdkjfskdjfksjdf</AButton>
-                        <AButton type={'info'}>sdkjfskdjfksjdf</AButton>
-                        <AButton type={'danger'}>sdkjfskdjfksjdf</AButton>
-                        <AButton style={{backgroundColor: '#50c1ff'}}>sdkjfskdjfksjdf</AButton>
-                        <AButton style={{backgroundColor: '#50c1ff'}}>sdkjfskdjfksjdf</AButton>
-                        <AButton style={{backgroundColor: '#50c1ff'}}>sdkjfskdjfksjdf</AButton>
-                        <AButton style={{backgroundColor: '#50c1ff'}}>sdkjfskdjfksjdf</AButton>
                     </div>
                 </Grid.Row>
             )
