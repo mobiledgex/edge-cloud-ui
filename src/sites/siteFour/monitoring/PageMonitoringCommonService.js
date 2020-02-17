@@ -8,13 +8,96 @@ import {Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {makeCompleteDateTime} from "./admin/PageAdminMonitoringService";
 import moment from "moment";
-import {Line as ReactChartJs} from "react-chartjs-2";
+import {Line as ReactChartJsLine} from "react-chartjs-2";
 import axios from "axios";
 import {GridLoader} from "react-spinners";
 
-export const renderLottieLoader = (width, height) => {
-    return (
-        <Lottie
+
+export const StylesForMonitoring = {
+    selectBoxRow: {
+        alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,
+    },
+    tabPaneDiv: {
+        display: 'flex', flexDirection: 'row', height: 380,
+    },
+    selectHeader: {
+        color: 'white',
+        backgroundColor: '#565656',
+        height: 35,
+        alignItems: 'center',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        marginTop: -10,
+        width: 100,
+        display: 'flex'
+    },
+    header00001: {
+        fontSize: 21,
+        marginLeft: 5,
+        color: 'white',
+    },
+    div001: {
+        fontSize: 25,
+        color: 'white',
+    },
+    dropDown: {
+        //minWidth: 150,
+        minWidth: '350px',
+        //fontSize: '12px',
+        minHeight: '40px',
+        zIndex: 9999999,
+        //height: '50px',
+    },
+    cell000: {
+        marginLeft: 0,
+        backgroundColor: '#a3a3a3',
+        flex: .4,
+        alignItems: 'center',
+        fontSize: 13,
+    },
+    noData: {
+        fontSize: 30,
+        display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', alignSelf: 'center', width: '100%'
+    },
+    cell001: {
+        marginLeft: 0,
+        backgroundColor: 'transparent',
+        flex: .6,
+        alignItems: 'center',
+        fontSize: 13
+    },
+    cpuDiskCol001: {
+        marginTop: 0, height: 33, width: '100%'
+    },
+    cell003: {
+        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center'
+        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 35, marginTop: -9,
+    },
+    cell004: {
+        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center', backgroundColor: 'transparent'
+        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 35
+    },
+    center: {
+        display: 'flex',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        //backgroundColor:'red'
+    },
+    center2: {
+        display: 'flex',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        minHeight: 350,
+        //backgroundColor:'red'
+    }
+
+}
+
+{/*<Lottie
             options={{
                 loop: true,
                 autoplay: true,
@@ -28,7 +111,17 @@ export const renderLottieLoader = (width, height) => {
             isStopped={false}
             isPaused={false}
             speed={3.0}
+        />*/
+}
+export const renderGridLoader2 = (width, height) => {
+    return (
+        <GridLoader
+            sizeUnit={"px"}
+            size={20}
+            color={'#70b2bc'}
+            loading={true}
         />
+
     )
 }
 
@@ -44,7 +137,7 @@ export const renderGridLoader = () => {
 }
 
 
-export const renderPlaceHolderLottie = (type: string = '') => {
+export const renderPlaceHolderCircular = (type: string = '') => {
     return (
         <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
             {/*<Lottie
@@ -179,7 +272,8 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
                     fill: false,//todo: 라인차트 area fill True/false
                     //backgroundColor: '',
                     borderColor: gradientList[i],
-                    borderWidth: 2,
+                    borderWidth: 3.7, //lineBorder
+                    lineTension: 0.5,
                     pointColor: "#fff",
                     pointStrokeColor: 'white',
                     pointHighlightFill: "#fff",
@@ -208,7 +302,7 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
     let height = 500 + 100;
     let options = {
         animation: {
-            duration: 0
+            duration: 500
         },
         maintainAspectRatio: false,//@todo
         responsive: true,//@todo
@@ -287,7 +381,7 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
             width: '99%',
             height: '96%'
         }}>
-            <ReactChartJs
+            <ReactChartJsLine
                 //width={'100%'}
                 //height={hardwareType === "recv_bytes" || hardwareType === "send_bytes" ? chartHeight + 20 : chartHeight}
                 //height={'100%'}
@@ -423,7 +517,7 @@ export const renderBarChartCore = (chartDataList, hardwareType) => {
             //height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
             height={'100%'}
             chartType="BarChart"
-            loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
+            loader={<div><CircularProgress style={{color: '#1cecff', zIndex: 999999}}/></div>}
             data={chartDataList}
             options={{
                 annotations: {
@@ -501,7 +595,7 @@ export const renderBarChartCore = (chartDataList, hardwareType) => {
                         color: "white",
                         fontSize: 12,
                     },
-
+                    stacked: true,
                 },
                 //colors: ['#FB7A21'],
                 fontColor: 'white',
@@ -669,6 +763,14 @@ export const hardwareTypeToUsageKey = (hwType: string) => {
         return USAGE_TYPE.SUM_UDP_SENT
     }
 
+    if (hwType === HARDWARE_TYPE.RECVBYTES.toUpperCase()) {
+        return USAGE_TYPE.SUM_RECV_BYTES
+    }
+
+    if (hwType === HARDWARE_TYPE.SENDBYTES.toUpperCase()) {
+        return USAGE_TYPE.SUM_SEND_BYTES
+    }
+
 
 }
 
@@ -681,12 +783,15 @@ export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType) => 
         let usageValue: number = item[hardwareTypeToUsageKey(pHardwareType)]
         usageValue = usageValue.toFixed(2)
 
+        let cluster_cloudlet_fullLabel = item.cluster.toString() + ' [' + item.cloudlet.toString().trim() + "]";
+
         bubbleChartData.push({
             index: index,
-            label: item.cluster.toString().substring(0, 10) + "...",
+            label: cluster_cloudlet_fullLabel.toString().substring(0, 17) + "...",
             value: usageValue,
             favor: usageValue,
-            fullLabel: item.cluster.toString(),
+            fullLabel: item.cluster.toString() + ' [' + item.cloudlet.toString().trim().substring(0, 15)+ "]",
+            cluster_cloudlet: item.cluster.toString() + ' | ' + item.cloudlet.toString(),
         })
     })
 
@@ -731,83 +836,4 @@ export const getClusterLevelMatric = async (serviceBody: any, pToken: string) =>
     })
     return result;
 }
-
-
-export const StylesForMonitoring = {
-    selectBoxRow: {
-        alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,
-    },
-    tabPaneDiv: {
-        display: 'flex', flexDirection: 'row', height: 380,
-    },
-    selectHeader: {
-        color: 'white',
-        backgroundColor: '#565656',
-        height: 35,
-        alignItems: 'center',
-        alignSelf: 'center',
-        justifyContent: 'center',
-        marginTop: -10,
-        width: 100,
-        display: 'flex'
-    },
-    header00001: {
-        fontSize: 21,
-        marginLeft: 5,
-        color: 'white',
-    },
-    div001: {
-        fontSize: 25,
-        color: 'white',
-    },
-    dropDown: {
-        //minWidth: 150,
-        minWidth: '350px',
-        //fontSize: '12px',
-        minHeight: '40px',
-        zIndex: 9999999,
-        //height: '50px',
-    },
-    cell000: {
-        marginLeft: 0,
-        backgroundColor: '#a3a3a3',
-        flex: .4,
-        alignItems: 'center',
-        fontSize: 13,
-    },
-    noData: {
-        fontSize: 30,
-        display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', alignSelf: 'center', width: '100%'
-    },
-    cell001: {
-        marginLeft: 0,
-        backgroundColor: 'transparent',
-        flex: .6,
-        alignItems: 'center',
-        fontSize: 13
-    },
-    cpuDiskCol001: {
-        marginTop: 0, height: 33, width: '100%'
-    },
-    cell003: {
-        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center'
-        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 35, marginTop: -9,
-    },
-    cell004: {
-        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center', backgroundColor: 'transparent'
-        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 35
-    },
-    center: {
-        display: 'flex',
-        alignSelf: 'center',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%',
-        //backgroundColor:'red'
-    }
-
-}
-
-
-
 
