@@ -113,29 +113,31 @@ export function sendWSRequest(request, callback) {
 
 
 export function sendMultiRequest(self, requestDataList, callback) {
-    let isSpinner = requestDataList[0].showSpinner === undefined ? true : requestDataList[0].showSpinner;
-    showSpinner(self, isSpinner)
-    let promise = [];
-    let resResults = [];
-    requestDataList.map((request) => {
-        promise.push(axios.post(EP.getPath(request), request.data,
-            {
-                headers: getHeader(request)
-            }))
+    if (requestDataList && requestDataList.length > 0) {
+        let isSpinner = requestDataList[0].showSpinner === undefined ? true : requestDataList[0].showSpinner;
+        showSpinner(self, isSpinner)
+        let promise = [];
+        let resResults = [];
+        requestDataList.map((request) => {
+            promise.push(axios.post(EP.getPath(request), request.data,
+                {
+                    headers: getHeader(request)
+                }))
 
-    })
-    axios.all(promise)
-        .then(responseList => {
-            responseList.map((response, i) => {
-                resResults.push(EP.formatData(requestDataList[i], response));
+        })
+        axios.all(promise)
+            .then(responseList => {
+                responseList.map((response, i) => {
+                    resResults.push(EP.formatData(requestDataList[i], response));
+                })
+
+                showSpinner(self, false)
+                callback(resResults);
+
+            }).catch(error => {
+                responseError(self, requestDataList[0], error.response, callback)
             })
-
-            showSpinner(self, false)
-            callback(resResults);
-
-        }).catch(error => {
-        responseError(self, requestDataList[0], error.response, callback)
-    })
+    }
 }
 
 export const sendSyncRequest = async (self, request) => {

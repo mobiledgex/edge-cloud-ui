@@ -499,18 +499,27 @@ body, button, input, textarea, optgroup, select, textarea,
     text-align: right;
     padding-right: 2em !important;
 }
-.navbar_right div{
+.navbar_right>div{
     height: 70px;
     line-height: 70px;
-    vertical-align: top;
+    vertical-align: middle;
     display: inline-block;
     padding: 0 1em;
 }
 .navbar_right .material-icons {
     line-height: 70px;
     color: rgba(255, 255, 255, 0.5) !important;
-    font-size: 32px !important;
 }
+
+.navbar_right .navbar_icon {
+    line-height: 70px;
+    cursor: pointer;
+}
+.navbar_right .navbar_icon>svg {
+    vertical-align: middle;
+}
+
+
 .ui.header .material-icons:hover,
 .navbar_left .nav_filter .material-icons:hover,
 .navbar_right .material-icons:hover {
@@ -896,6 +905,9 @@ body, button, input, textarea, optgroup, select, textarea,
     font-size: 14px;
     /* font-weight: bold; */
     color: #e2e4e7;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .ui.secondary.menu.view_left_menu.org_menu .left_authority {
     background: #202329;
@@ -1192,6 +1204,7 @@ body, button, input, textarea, optgroup, select, textarea,
     height:100%;
     flex-direction: row;
     align-items: center;
+    padding-left:20px;
 }
 
 .content_title_label{
@@ -1389,6 +1402,23 @@ body, button, input, textarea, optgroup, select, textarea,
     background-color: rgba(71,82,102,1) !important;
     color: rgba(255,255,255,0.9) !important;
 }
+
+.table_actions_popup.gnb_profile .table_actions_popup_group .table_actions_popup_group_button {
+    text-align: left;
+}
+.table_actions_popup.gnb_profile .table_actions_popup_group .table_actions_popup_group_button .material-icons {
+    vertical-align: middle;
+    margin-right:10px;
+}
+.table_actions_popup.gnb_profile .table_actions_popup_group .table_actions_popup_group_button:first-child {
+    text-transform: uppercase;
+    background: #000000;
+    color: rgba(255,255,255,.7);
+    pointer-events: none;
+    text-align: center;
+    height: 46px;
+}
+
 .table_actions_tooltip {
     background: #000000 !important;
     border: 1px solid rgba(255,255,255,.4) !important;
@@ -1797,3 +1827,70 @@ body ::-webkit-scrollbar-track {
 .round_panel .appinst > table {
     min-width: 2000px;
 } */
+
+.versionView {
+    zIndex: 100;
+    color: rgba(255,255,255,.2);
+    padding: 0 10px;
+    background: none;
+    position: absolute;
+    bottom:70px;
+
+}
+
+/** css for Tablet **/
+.left_menu_hide_button {
+    background: #545961;
+    position:absolute;
+    width:30px;
+    height:30px;
+    top:15px;
+    right:-15px;
+    border-radius: 50%;
+    display:flex;
+    justify-content:center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 9999;
+}
+
+.left_menu_hide_button:hover {
+    background-color: #757a85
+}
+
+.left_menu_hide_button i.material-icons {
+    color: rgba(255,255,255,.6);
+    font-size:20px;
+}
+
+.view_left_container.left_menu_hide .ui.secondary.menu.view_left_menu.org_menu .left_org {
+    padding:20px .92857143em 0 .92857143em;
+
+}
+.view_left_container.left_menu_hide .ui.secondary.menu.view_left_menu.org_menu .left_authority {
+    padding:10px .92857143em 20px .92857143em;
+
+}
+.view_left_container.left_menu_hide .ui.secondary.menu.view_left_menu.org_menu .left_authority .ui.segment {
+    border: none;
+    background: none;
+    padding: 0;
+}
+
+.view_left_container.left_menu_hide .ui.secondary.menu.view_left_menu.org_menu .left_authority .row > .column > div:last-child {
+    display: none;
+}
+
+.view_left_container.left_menu_hide .ui.secondary.menu a.item .left_menu_item .label {
+    display: none;
+}
+
+.view_left_container.left_menu_hide a.item .left_menu_item i.material-icons {
+    padding-right: 0;
+}
+
+
+.view_left_container.left_menu_hide .ui.secondary.menu.view_left_menu.main_menu {
+    height: calc(100% - 234px);
+    overflow-y: auto;
+}

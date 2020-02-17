@@ -129,15 +129,18 @@ class SiteFour extends React.Component {
             camBtnStat: 'leave',
             regionToggle: false,
             intoCity: false,
-            currentPage:null
+            currentPage:null,
+            menuW:240,
+            hideLeftMenu:false,
+            animate: false,
         };
 
         this.headerH = 70;
-        this.menuW = 240;
+        //this.menuW = 240;
         this.hgap = 0;
         this.OrgMenu = [
             { label: 'Organizations', icon: 'people', pg: 0 },
-            { label: 'Users & Roles', icon: 'dvr', pg: 1 },
+            { label: 'Users & Roles', icon: 'assignment_ind', pg: 1 },
             { label: 'Accounts', icon: 'dvr', pg: 101 }
         ]
         this.menuItemsAll = [ //admin menu
@@ -146,7 +149,7 @@ class SiteFour extends React.Component {
             { label: 'Flavors', icon: 'free_breakfast', pg: 3 },
             { label: 'Cluster Instances', icon: 'storage', pg: 4 },
             { label: 'Apps', icon: 'apps', pg: 5 },
-            { label: 'App Instances', icon: 'storage', pg: 6 },
+            { label: 'App Instances', icon: 'sports_esports', pg: 6 },
             { label: 'Monitoring', icon: 'tv', pg: 'Monitoring' },
             { label: 'Policies', icon: 'playlist_play', pg: 8 },
             { label: 'Audit Logs', icon: 'check', pg: 'audits' }
@@ -486,13 +489,14 @@ class SiteFour extends React.Component {
         if (this.props.params.subPath !== 'pg=audits') {
             this.getDataAudit();
         }
+
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
         try {
             this.setState({ bodyHeight: (window.innerHeight - this.headerH) })
             this.setState({ contHeight: (nextProps.size.height - this.headerH) / 2 - this.hgap })
-            this.setState({ contWidth: (window.innerWidth - this.menuW) })
+            this.setState({ contWidth: (window.innerWidth - this.state.menuW) })
             this.setState({ userToken: nextProps.userToken })
             this.setState({ userName: (nextProps.userInfo && nextProps.userInfo.info) ? nextProps.userInfo.info.Name : null })
         } catch (e) {
@@ -843,7 +847,6 @@ class SiteFour extends React.Component {
     }
 
 
-
     render() {
         const { shouldShowBox, shouldShowCircle, viewMode } = this.state;
         const { stepsEnabled, initialStep, hintsEnabled, hints, steps } = this.state;
@@ -880,13 +883,13 @@ class SiteFour extends React.Component {
                         </Header>
                     </Grid.Column>
                     <Grid.Column width={10} className='navbar_right'>
-                        <div style={{ cursor: 'pointer',marginTop:10 }} onClick={this.computeRefresh}>
+                        <div className='navbar_icon' onClick={this.computeRefresh}>
                             <RefreshOutlinedIcon fontSize='large'/>
                         </div>
-                        <div style={{ cursor: 'pointer',marginTop:10  }} onClick={() => this.gotoUrl('/site1', 'pg=0')}>
+                        <div className='navbar_icon' onClick={() => this.gotoUrl('/site1', 'pg=0')}>
                             <PublicOutlinedIcon fontSize='large' />
                         </div>
-                        <div style={{ cursor: 'pointer',marginTop:10 , display: 'none' }}>
+                        <div className='navbar_icon' style={{display: 'none' }}>
                             <MaterialIcon icon={'notifications_none'} />
                         </div>
                         {
@@ -896,14 +899,16 @@ class SiteFour extends React.Component {
                                 this.state.headerTitle !== 'User Roles' &&
                                 this.state.headerTitle !== 'Accounts' &&
                                 this.state.headerTitle !== 'Flavors'
-                            ) ? <div style={{ cursor: 'pointer',marginTop:10  }} onClick={this.enalbeSteps}>
+                            ) ? <div className='navbar_icon' onClick={this.enalbeSteps}>
                                     <HelpOutlineOutlinedIcon fontSize='large' />
                                 </div> : null
                         }
                         <Popup
-                            trigger={<div style={{ cursor: 'pointer', display: 'none' }}>
-                                <MaterialIcon icon={'add'} />
-                            </div>}
+                            trigger={
+                                <div className='navbar_icon' style={{ display: 'none' }}>
+                                    <MaterialIcon icon={'add'} />
+                                </div>
+                            }
                             content={this.menuAddItem()}
                             on='click'
                             position='bottom center'
@@ -912,13 +917,13 @@ class SiteFour extends React.Component {
                         <HeaderGlobalMini email={this.state.email} data={this.props.userInfo.info} dimmer={false} />
                     </Grid.Column>
                 </Grid.Row>
-                <Container className='view_left_container' style={{ width: this.menuW }}>
+                <Container className={['view_left_container', this.state.hideLeftMenu && 'left_menu_hide']} style={{position: 'relative', width: this.state.menuW }}>
                     <Grid.Row className='view_contents'>
                         <Grid.Column className='view_left'>
                             <Menu secondary vertical className='view_left_menu org_menu'>
                                 {/* show name of organization */}
                                 <Grid.Column className="left_org">
-                                    <div className="left_org_title">Organization</div>
+                                    <div className="left_org_title">{this.state.hideLeftMenu? 'Org' : 'Organization'}</div>
                                     <div className="left_org_selected">{localStorage.selectOrg ? localStorage.selectOrg : 'No organization selected'}</div>
                                 </Grid.Column>
                                 {/* show role of user */}
@@ -1001,28 +1006,45 @@ class SiteFour extends React.Component {
                                     }
                                 </div>
                             </Menu>
-                            <div style={{ zIndex: '100', color: 'rgba(255,255,255,.2)', padding: '10px' }}>
+                            <div className='versionView' style={{display:this.state.hideLeftMenu ? 'none' : 'block'}}>
                                 {
                                     (localStorage.selectRole == 'AdminManager') ? this.state.currentVersion : null
                                 }
                             </div>
                         </Grid.Column>
                     </Grid.Row>
+                    <div className='left_menu_hide_button'
+                         onClick={()=>{
+
+                             this.setState({ hideLeftMenu: !this.state.hideLeftMenu }, () => {
+
+                                 if (this.state.hideLeftMenu) {
+                                     this.setState({menuW:50});
+                                 } else {
+                                     this.setState({menuW:240});
+                                 }
+                             });
+
+                         }}
+                    >
+                        {this.state.hideLeftMenu ?
+                            <i className="material-icons" style={{color:'rgba(255,255,255,.6)', fontSize:20}}>menu</i>
+                            : <i className="material-icons" style={{color:'rgba(255,255,255,.6)', fontSize:20}}>menu_open</i>}
+                    </div>
                 </Container>
-                <Container className='contents_body_container' style={{ top: this.headerH, left: this.menuW }}>
+                <Container className='contents_body_container' style={{ top: this.headerH, left: this.state.menuW, width:window.innerWidth - this.state.menuW}}>
                     {(this.state.page === 'pg=Monitoring') ? <PageMonitoringMain /> :
                         <Grid.Row className='view_contents'>
                             <Grid.Column className='contents_body'>
-                                <div>
-                                    <Grid>
-                                        <Grid.Column floated='left' width={10}>
-                                            <label style={{fontSize:25, marginRight:20}}>{this.state.headerTitle}</label>
+                                <Grid.Row className='content_title'>
+                                    <div className='content_title_wrap'>
+                                        <div className='content_title_label'>{this.state.headerTitle}</div>
                                             {
                                                 (viewMode!== 'MexDetailView' && this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'User Roles' && this.state.headerTitle !== 'Accounts' && this.state.headerTitle !== 'Audit Log' && viewMode !== 'detailView' && this.state.page.indexOf('create') === -1 && this.state.page.indexOf('edit') == -1 && !this.state.currentPage) ?
+
                                                     (this.state.intoCity) ? 
                                                         <Button onClick={this.onClickBackBtn}>Back</Button> :
                                                         <Dropdown className='selection'
-                                                            style={{position: 'relative', marginRight:20, height:20 }}
                                                             options={this.state.regions}
                                                             defaultValue={this.state.regions[0].value}
                                                             onChange={this.onChangeRegion}
@@ -1045,7 +1067,7 @@ class SiteFour extends React.Component {
                                             }
                                             {
                                                 (viewMode === 'detailView' || viewMode === 'MexDetailView') ?
-                                                    <Button color='teal' onClick={() => this.props.handleDetail({
+                                                    <Button disabled={this.props.viewBtn.onlyView} onClick={() => this.props.handleDetail({
                                                         data: null,
                                                         viewMode: 'listView'
                                                     })}>Close Details</Button>
@@ -1053,20 +1075,19 @@ class SiteFour extends React.Component {
                                             }
                                             {
                                                 (this.state.headerTitle == 'User Roles') ?
-                                                    <div className='' style={{display:'inline'}}>
+                                                    <div>
                                                         <Input icon='search' placeholder={'Search ' + this.state.searchChangeValue} style={{ marginRight: '20px' }} onChange={this.searchClick} />
                                                         <Dropdown defaultValue={this.searchOptions[0].value} search selection options={this.searchOptions} onChange={this.searchChange} />
                                                     </div>
                                                     : null
                                             }
-                                        </Grid.Column>
-                                    </Grid>
-                                </div>
+                                    </div>
+                                </Grid.Row>
+
 
                                 <Grid.Row className='site_content_body'>
                                     <Grid.Column>
-                                        <div className="table-no-resized"
-                                            style={{ height: '100%', display: 'flex', overflow: 'hidden' }}>
+                                        <div className="table-no-resized">
                                             {
                                                 this.state.currentPage ? this.state.currentPage : 
                                                 (this.state.page === 'pg=0') ? <SiteFourPageOrganization></SiteFourPageOrganization> :

@@ -6,15 +6,89 @@ import MexCheckbox  from './MexCheckbox';
 import { Form, Grid, Divider } from 'semantic-ui-react';
 import { IconButton } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
+import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 
 export const HEADER = 'Header'
 export const SELECT = 'Select'
 export const DUALLIST = 'DualList'
 export const INPUT = 'Input'
 export const CHECKBOX = 'Checkbox'
+export const ICON_BUTTON = 'IconButton'
+
+
+const getIcon = (id)=>
+{
+    switch(id)
+    {
+        case 'delete':
+            return <DeleteOutlineOutlinedIcon/>
+
+    }
+}
+
+const isDisabled = (form)=>
+{
+    let disabled = false;
+    if (form.rules) {
+        let rules = form.rules;
+        return rules.disabled === undefined ? false : rules.disabled;
+    }
+    return disabled;
+}
+
 
 const MexForms = (props) => {
+
+    const validateRules = (form, valid) => {
+        if (valid) {
+            if (form.forms) {
+                for (let i = 0; i < form.forms.length; i++) {
+                    valid = validateRules(form.forms[i], valid)
+                    if (!valid) {
+                        break;
+                    }
+                }
+            }
+            else if (form.visible && !isDisabled(form)) {
+                let rules = form.rules;
+                if (rules) {
+                    if (rules.required) {
+                        if (form.value === undefined || form.value.length === 0) {
+                            form.error = `${form.label} is mandatory`
+                            valid = false;
+                        }
+                        else {
+                            form.error = undefined
+                        }
+                    }
+                }
+            }
+        }
+        if (valid && form.dataValidateFunc) {
+            valid = form.dataValidateFunc(form)
+        }
+        return valid
+    }
+
+    const onSubmit = (form) => {
+        let valid = true;
+        if (form.validate) {
+            for (let i = 0; i < props.forms.length; i++) {
+                let form = forms[i]
+                valid = form.visible ? validateRules(form, valid) : valid
+                if (!valid) {
+                    break;
+                }
+            }
+        }
+        if (valid) {
+            form.onClick();
+        }
+        else
+        {
+            props.reloadForms()
+        }
+    }
 
     const onValueSelect = (form, value, parentForm) => {
         form.value = value;
@@ -24,13 +98,10 @@ const MexForms = (props) => {
         }
         
     }
-    const onRemoveMultiForm = (index, form)=>
-    {
-        form.onClick(index)
-    }
     
     const loadHeader = (index, form)=>
     {
+        form.id = { id: index }
         let subForm = form.forms
         return (
             <div key={index} style={{ width: '100%' }}>
@@ -51,26 +122,31 @@ const MexForms = (props) => {
     
     const loadHorizontalForms = (parentId, forms)=>
     {
+
         let parentForm = props.forms[parentId];
         return forms.map((form, i) => {
-            
+            let key = parentForm.uuid+''+i
             let required = false;
             let disabled = false;
+            form.id = { id: i }
+            form.parent = { id: parentId, form : parentForm }
             if (form.rules) {
                 let rules = form.rules;
                 required = rules.required ? rules.required : false;
                 disabled = rules.disabled ? rules.disabled : false;
             }
             return (
-                form.field && form.visible ?
-                    <Grid.Column width={3} key={i}>
+                form.visible ?
+                    <Grid.Column width={3} key={key}>
                         {form.label}{required ? ' *' : ''}
                         {
                             form.type === INPUT ?
                                 <MexInput parentForm={parentForm} form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
-                            form.type === SELECT ?
-                                <MexSelect parentForm={parentForm} form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
-                                null
+                                form.type === SELECT ?
+                                    <MexSelect parentForm={parentForm} form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                                form.type === ICON_BUTTON ?
+                                    <IconButton onClick={()=>{form.onClick(form)}} style={{color:form.color, top:15}}>{getIcon(form.icon)}</IconButton>:
+                                    null
                         }
                     </Grid.Column> : null
             )
@@ -79,6 +155,7 @@ const MexForms = (props) => {
     
     const loadForms = (index, form)=>
     {
+        form.id = { id: index }
         let required = false;
         let disabled = false;
         if (form.rules) {
@@ -112,17 +189,8 @@ const MexForms = (props) => {
     const loadMultiForm=(index, form)=>
     {
         return (
-            <Grid.Row columns={2} key={index}>
+            <Grid.Row columns={2} key={index} id={form.field}>
                 {loadHorizontalForms(index, form.forms) }
-                {
-                    index === props.forms.length-1 && form.showDelete? 
-                        <div>
-                            <p></p>
-                            <IconButton style={{color:'white'}} onClick={()=>{onRemoveMultiForm(index, form)}} ><DeleteOutlinedIcon/></IconButton>
-                        </div> : 
-                        null
-                }
-                
             </Grid.Row>
         )
     }
@@ -154,7 +222,7 @@ const MexForms = (props) => {
                                     key={i}
                                     positive
                                     content={form.label}
-                                    onClick={(e) => { form.onClick() }}
+                                    onClick={(e) => { onSubmit(form) }}
                                 /> : null)
                         })}
 

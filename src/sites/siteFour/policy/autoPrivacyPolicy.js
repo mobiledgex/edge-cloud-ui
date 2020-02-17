@@ -19,17 +19,12 @@ class SiteFourPageFlavor extends React.Component {
         super(props);
         this.state = {
             devData: [],
-            regionToggle: false,
-            edit:false,
             viewMode:LIST_VIEW,
             detailData:{}
         };
-        this.initLoad = false;
         this.action = '';
         this.requestCount = 0;
         this.multiRequestData = [];
-        this.headerH = 70;
-        this.hgap = 0;
         this.data={}
 
         this.headerInfo = [
@@ -107,7 +102,6 @@ class SiteFourPageFlavor extends React.Component {
                     viewMode:LIST_VIEW,
                     detailData:{}
                 })
-                this.props.handleComputeRefresh(true)
             }
         }
         else if (nextProps.computeRefresh && nextProps.computeRefresh.compute) {
@@ -178,10 +172,11 @@ class SiteFourPageFlavor extends React.Component {
             })
         }
     }
+    
     render() {
         return (
             this.state.viewMode === LIST_VIEW ?
-                <MexListView devData={this.state.devData} headerInfo={this.headerInfo} actionMenu={this.actionMenu} siteId={'Flavors'} dataRefresh={this.getDataDeveloper}/> :
+                <MexListView devData={this.state.devData} headerInfo={this.headerInfo} actionMenu={this.actionMenu} onSelect = {this.onView}/> :
                 <MexDetailViewer detailData={this.state.detailData} layouts={layouts}/>
         )
     }

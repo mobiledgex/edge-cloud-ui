@@ -1,8 +1,24 @@
 import React from 'react';
 import {Table } from 'semantic-ui-react'
+import ReactJson from 'react-json-view';
 
+const jsonViewProps = {
+    name: null,
+    theme: "monokai",
+    collapsed: false,
+    collapseStringsAfter: 15,
+    onAdd: false,
+    onEdit: false,
+    onDelete: false,
+    displayObjectSize: true,
+    enableClipboard: true,
+    indentWidth: 4,
+    displayDataTypes: false,
+    iconStyle: "triangle"
+}
 const subView = (layouts, dataList) => {
     return (
+        dataList && dataList.length>0 ?
         <Table celled>
             <Table.Header>
                 <Table.Row>
@@ -14,18 +30,21 @@ const subView = (layouts, dataList) => {
             <Table.Body>
                 {dataList.map((data, i) => {
                     return (
-                        <Table.Row >{(
+                        <Table.Row key={i}>{(
                             layouts.map((layout, j) => {
                                 return (
                                     <Table.Cell key={j}>
-                                        {data[layout.key]}
+                                        {layout.type === 'JSON' ? 
+                                            <ReactJson src={data[layout.key]} {...jsonViewProps} /> : 
+                                            data[layout.key]}
                                     </Table.Cell>)
                             }))
                         }
                         </Table.Row>)
                 })}
             </Table.Body>
-        </Table>
+        </Table> : 
+        'None'
     )
 }
 const MexDetailViewer = (props) => {

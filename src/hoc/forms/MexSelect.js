@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { Form, Popup, Icon } from 'semantic-ui-react';
 
 
@@ -9,13 +9,14 @@ const defaultData = [
 
 const MexSelect = (props) => {
 
+
     const [selected, setSelected] = useState(props.form.value ? props.form.value : null)
 
     const onSelected = (value) => {
         setSelected(value)
         props.onChange(form, value, props.parentForm)
     }
-
+    
     const getForm = () => (
         <Form.Select
             icon={form.error ? <Icon color='red' name='times circle outline' style={{marginRight:10, position:'absolute',right: '0px'}}/> : null}

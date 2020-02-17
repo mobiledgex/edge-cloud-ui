@@ -21,6 +21,31 @@ export type TypeGridInstanceList = {
     "sumSendBytes": number,
 }
 
+export type TypeLineChartData2 = {
+    levelTypeNameList: Array,
+    usageSetList: Array,
+    newDateTimeList: Array,
+    hardwareType: string,
+
+}
+
+
+export type TypeCloudlet = {
+    uuid: string,
+    CloudletInfoState: number,
+    Region: string,
+    CloudletName: string,
+    Operator: string,
+    CloudletLocation: any,
+    Ip_support: number,
+    Num_dynamic_ips: number,
+    Physical_name: string,
+    Platform_type: number,
+    State: number,
+    Progress: string,
+
+}
+
 export type TypeCloudletUsageList = {
     avgVCpuUsed: number,
     avgVCpuMax: number,
