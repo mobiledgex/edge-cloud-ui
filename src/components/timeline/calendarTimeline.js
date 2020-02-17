@@ -63,15 +63,8 @@ export default class CalendarTimeline extends Component {
         let randomSeed = Math.floor(Math.random() * 1000)
         let groups = []
         this.props.tasksList.map( (tValue, tIndex) => {
-            let a = 0
-            for(let i=0; i < this.props.tasksList.length; i++) {
-                if(groups[i] !== undefined) {
-                    if(groups[i].title === tValue) {
-                        a = 1
-                    }
-                }
-            }
-            if(a !== 1){
+            let groupsIndex = groups.findIndex(g => g.title === tValue)
+            if(groupsIndex === (-1)){
                 groups.push({
                     id: (tIndex+1),
                     title: tValue,
@@ -93,7 +86,7 @@ export default class CalendarTimeline extends Component {
                         this.props.timesList.map( (item, index) =>{
                             const startDate = Date.parse(item)
                             const startValue = Math.floor(moment(startDate).valueOf() / 10000000) * 10000000
-                            const endValue = moment(startDate + 130 * 60 * 1000).valueOf()
+                            const endValue = moment(startDate + 150 * 60 * 1000).valueOf()
                             if(tIndex === index){
                                 items.push({
                                     id: index + '',
@@ -123,6 +116,9 @@ export default class CalendarTimeline extends Component {
         const { left: leftResizeProps, right: rightResizeProps } = getResizeProps();
         const backgroundColor = itemContext.selected ? (itemContext.dragging ? "red" : item.selectedBgColor) : item.bgColor;
         const borderColor = itemContext.resizing ? "red" : item.color;
+        const storageTimeList = JSON.parse(localStorage.getItem("selectedTime"))
+        const storageTimeIndex = storageTimeList.findIndex(s => new Date(s).getTime() === new Date(itemContext.title).getTime())
+        console.log("20200217 " + storageTimeIndex)
         return (
             <div
                 {...getItemProps({
@@ -150,6 +146,7 @@ export default class CalendarTimeline extends Component {
                     }}
                 >
                     {itemContext.title}
+                    {(storageTimeIndex !== (-1))? 'V' :null}
                 </div>
 
                 {itemContext.useResizeHandle ? <div {...rightResizeProps} /> : null}

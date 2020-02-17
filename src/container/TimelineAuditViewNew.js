@@ -14,6 +14,7 @@ import FlexBox from "flexbox-react";
 import HorizontalTimelineKJ from "../components/horizontal_timeline_kj/Components/HorizontalTimeline";
 import { hot } from "react-hot-loader/root";
 import CalendarTimeline from "../components/timeline/calendarTimeline";
+import randomColor from "randomcolor";
 
 const countryOptions = [
     { key: '24', value: '24', flag: '24', text: 'Last 24 hours' },
@@ -306,19 +307,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         setStorageData(data) {
             let timeList = [];
             let storageTimeList = JSON.parse(localStorage.getItem("selectedTime"))
-            let a=0
             let makeDate = this.makeUTC(data)
             let makeTime = this.makeNotUTC(data)
             let newDate =  new Date(makeDate + " " + makeTime)
 
             if (storageTimeList) {
                 timeList = storageTimeList
-                storageTimeList.map( (storage, index) => {
-                    if(newDate.getTime() === new Date(storage).getTime()){
-                        a = 1
-                    }
-                })
-                if(a === 0){
+                let storageTimeIndex = storageTimeList.findIndex(s => new Date(s).getTime() === newDate.getTime())
+                if(storageTimeIndex === (-1)){
                     timeList.push(newDate)
                     localStorage.setItem("selectedTime", JSON.stringify(timeList))
                 }
