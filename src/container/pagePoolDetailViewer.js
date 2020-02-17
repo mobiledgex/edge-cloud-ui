@@ -56,10 +56,8 @@ const returnReWord = (label) => {
     let newName = '';
     switch (label) {
         case 'PoolName' : newName = 'Pool Name'; break;
-        case 'Cloudlets' : newName = 'Number of Cloudlets'; break;
-        case 'Organizations' : newName = 'Number of Organizations'; break;
-        case 'cloudletGroup' : newName = 'Cloudlets'; break;
-        case 'OrganizGroup' : newName = 'Organizations'; break;
+        case 'NumOfCloudlets' : newName = 'Number of Cloudlets'; break;
+        case 'NumOfOrganizations' : newName = 'Number of Organizations'; break;
         default: newName = label; break;
     }
     return newName;
@@ -78,8 +76,8 @@ const makeCloudletTable = (values, label, i) => (
                 </Header>
             </Table.Cell>
             <Table.Cell>
-                {(label === 'cloudletGroup')? tableCloudletPool(values[label])
-                    :(label === 'OrganizGroup')? tableCloudletPoolOrg(values[label])
+                {(label === 'Cloudlets')? tableCloudletPool(values[label])
+                    :(label === 'Organizations')? tableCloudletPoolOrg(values[label])
                         :(typeof values[label] === 'object')? jsonView(values[label],label)
                             :String(values[label])}
             </Table.Cell>
@@ -293,15 +291,15 @@ class PagePoolDetailViewer extends React.Component {
             let filterDefine = null;
             let cloneListData = _.cloneDeep(_self.state.listData)
             if(item.type === 'delete member') {
-                groupData = _self.state.listData['cloudletGroup'];
+                groupData = _self.state.listData['Cloudlets'];
                 filterDefine = groupData.filter( data => data['Cloudlet'] !== item.item['Cloudlet']);
-                cloneListData['cloudletGroup'] = filterDefine;
-                cloneListData['Cloudlets'] = parseInt(cloneListData['Cloudlets']) - 1;
+                cloneListData['Cloudlets'] = filterDefine;
+                cloneListData['NumOfCloudlets'] = parseInt(cloneListData['NumOfCloudlets']) - 1;
             } else if(item.type === 'delete link') {
-                groupData = _self.state.listData['OrganizGroup'];
+                groupData = _self.state.listData['Organizations'];
                 filterDefine = groupData.filter( data => data['Org'] !== item.item['Org']);
-                cloneListData['OrganizGroup'] = filterDefine;
-                cloneListData['Organizations'] = parseInt(cloneListData['Organizations']) - 1;
+                cloneListData['Organizations'] = filterDefine;
+                cloneListData['NumOfOrganizations'] = parseInt(cloneListData['NumOfOrganizations']) - 1;
             }
             
             

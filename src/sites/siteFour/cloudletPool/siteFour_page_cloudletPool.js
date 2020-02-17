@@ -32,7 +32,7 @@ class SiteFourPageCloudletPool extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.hiddenKeys = ['Ip_support', 'Num_dynamic_ips', 'Status', 'Physical_name', 'Platform_type', 'cloudletGroup', 'OrganizGroup', 'uuid'];
+        this.hiddenKeys = ['Ip_support', 'Num_dynamic_ips', 'Status', 'Physical_name', 'Platform_type', 'Cloudlets', 'Organizations', 'uuid'];
         this.headerLayout = [1, 3, 3, 3, 2, 2, 2];
         this.userToken = null;
         this._devData = [];
@@ -217,14 +217,14 @@ class SiteFourPageCloudletPool extends React.Component {
         let orgData = Object.assign([], this._linkDummy)
 
         cloneData.map((data, i) => {
-            data['cloudletGroup'] = [];
-            data['OrganizGroup'] = [];
+            data['Cloudlets'] = [];
+            data['Organizations'] = [];
             cloudlet.map(member => {
                 if (member[data['PoolName']]) {
                     member[data['PoolName']].map((pn) => {
                         if (pn['Region'] === data['Region']) {
-                            data['Cloudlets'] += 1
-                            data['cloudletGroup'].push(pn)
+                            data['NumOfCloudlets'] += 1
+                            data['Cloudlets'].push(pn)
                         }
                     })
                 }
@@ -232,8 +232,8 @@ class SiteFourPageCloudletPool extends React.Component {
             if (orgData[data['PoolName']]) {
                 orgData[data['PoolName']].map((org) => {
                     if (org['Region'] === data['Region']) {
-                        data['Organizations'] += 1
-                        data['OrganizGroup'].push(org)
+                        data['NumOfOrganizations'] += 1
+                        data['Organizations'].push(org)
                     }
                 })
             }

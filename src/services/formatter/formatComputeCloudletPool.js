@@ -38,8 +38,8 @@ export const formatData = (datas, body) => {
                     values.push({
                         Region: '',
                         PoolName: '',
-                        Cloudlets: '',
-                        Organizations: '',
+                        NumOfCloudlets: '',
+                        NumOfOrganizations: '',
                         Edit: null
                     })
                 } else {
@@ -48,7 +48,7 @@ export const formatData = (datas, body) => {
                     let PoolName = dataResult.data.key.name || '-';
                     let Cloudlets = dataResult.data.state || 0;
                     let Organizations = 0;
-                    values.push({ uuid: generateUniqueId(), Region: Region, PoolName: PoolName, Cloudlets: Cloudlets, Organizations: Organizations, Edit: newRegistKey })
+                    values.push({ uuid: generateUniqueId(), Region: Region, PoolName: PoolName, NumOfCloudlets: Cloudlets, NumOfOrganizations: Organizations, Edit: newRegistKey })
                 }
 
             })
