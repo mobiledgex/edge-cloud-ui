@@ -117,8 +117,10 @@ export default class CalendarTimeline extends Component {
         const backgroundColor = itemContext.selected ? (itemContext.dragging ? "red" : item.selectedBgColor) : item.bgColor;
         const borderColor = itemContext.resizing ? "red" : item.color;
         const storageTimeList = JSON.parse(localStorage.getItem("selectedTime"))
-        const storageTimeIndex = storageTimeList.findIndex(s => new Date(s).getTime() === new Date(itemContext.title).getTime())
-        console.log("20200217 " + storageTimeIndex)
+        let storageTimeIndex = (-1);
+        if(storageTimeList){
+            storageTimeIndex = storageTimeList.findIndex(s => new Date(s).getTime() === new Date(itemContext.title).getTime())
+        }
         return (
             <div
                 {...getItemProps({
