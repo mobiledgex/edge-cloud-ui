@@ -2,12 +2,25 @@ import React from 'react';
 import '../PageMonitoring.css';
 import {APP_INST_USAGE_TYPE_INDEX, CHART_COLOR_LIST, CLASSIFICATION, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION, USAGE_INDEX_FOR_CLUSTER} from "../../../../shared/Constants";
 import BubbleChart from "../../../../components/BubbleChart";
-import PageMonitoring from "./PageDevMonitoring";
-import PageMonitoringForDeveloper from "./PageDevMonitoring";
-import {getClusterLevelMatric, makeFormForClusterLevelMatric, numberWithCommas, renderUsageByType, StylesForMonitoring} from "../PageMonitoringCommonService";
+import PageDevMonitoring from "./PageDevMonitoring";
+import {
+    convertByteToMegaByte,
+    getClusterLevelMatric,
+    makeFormForClusterLevelMatric,
+    numberWithCommas,
+    renderUsageByType,
+    showToast,
+    showToast2,
+    StylesForMonitoring
+} from "../PageMonitoringCommonService";
 import {SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../../services/serviceMC";
 import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
+import {Line as ReactChartJsLine} from "react-chartjs-2";
+import {Table} from "semantic-ui-react";
+import Lottie from "react-lottie";
+import type {TypeClusterUsageList} from "../../../../shared/Types";
+import {Progress} from "antd";
 
 export const getClusterLevelUsageList = async (clusterList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
     try {
@@ -81,31 +94,29 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
                     sumCpuUsage += item[5]
                 })
 
-
                 newClusterLevelUsageList.push({
                     cluster: clusterList[index].ClusterName,
                     cloudletLocation: clusterList[index].CloudletLocation,
                     dev: clusterList[index].Region,
                     cloudlet: clusterList[index].Cloudlet,
                     operator: clusterList[index].Operator,
-                    sumUdpSent: sumUdpSent / 10,
-                    sumUdpRecv: sumUdpRecv / 10,
-                    sumUdpRecvErr: sumUdpRecvErr / 10,
-                    sumTcpConns: sumTcpConns / 10,
-                    sumTcpRetrans: sumTcpRetrans / 10,
-                    sumSendBytes: sumSendBytes / 10,
-                    sumRecvBytes: sumRecvBytes / 10,
-                    sumMemUsage: sumMemUsage / 10,
-                    sumDiskUsage: sumDiskUsage / 10,
-                    sumCpuUsage: sumCpuUsage / 10,
+                    sumUdpSent: sumUdpSent / RECENT_DATA_LIMIT_COUNT,
+                    sumUdpRecv: sumUdpRecv / RECENT_DATA_LIMIT_COUNT,
+                    sumUdpRecvErr: sumUdpRecvErr / RECENT_DATA_LIMIT_COUNT,
+                    sumTcpConns: sumTcpConns / RECENT_DATA_LIMIT_COUNT,
+                    sumTcpRetrans: sumTcpRetrans / RECENT_DATA_LIMIT_COUNT,
+                    sumSendBytes: sumSendBytes / RECENT_DATA_LIMIT_COUNT,
+                    sumRecvBytes: sumRecvBytes / RECENT_DATA_LIMIT_COUNT,
+                    sumMemUsage: sumMemUsage / RECENT_DATA_LIMIT_COUNT,
+                    sumDiskUsage: sumDiskUsage / RECENT_DATA_LIMIT_COUNT,
+                    sumCpuUsage: sumCpuUsage / RECENT_DATA_LIMIT_COUNT,
                     columns: columns,
                     udpSeriesList,
                     tcpSeriesList,
-                    networkSeriesList,
+                    networkSeriesList: networkSeriesList,
                     memSeriesList,
                     diskSeriesList,
                     cpuSeriesList,
-
 
                 })
 
@@ -153,7 +164,7 @@ export const getClusterList = async () => {
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
     let requestData = {showSpinner: false, token: token, method: SHOW_CLUSTER_INST, data: {region: REGION.EU}};
-    let requestData2 = {showSpinner: false,token: token, method: SHOW_CLUSTER_INST, data: {region: REGION.US}};
+    let requestData2 = {showSpinner: false, token: token, method: SHOW_CLUSTER_INST, data: {region: REGION.US}};
     let promiseList = []
     promiseList.push(sendSyncRequest(this, requestData))
     promiseList.push(sendSyncRequest(this, requestData2))
@@ -271,6 +282,15 @@ export const sortUsageListByTypeForCluster = (usageList, hardwareType) => {
     return usageList;
 }
 
+export const sortByKey = (arrList, key) => {
+
+
+    arrList.sort((a, b) => b[key] - a[key]);
+
+
+    return arrList;
+}
+
 
 export const makeBarChartDataForCluster = (usageList, hardwareType, _this) => {
 
@@ -302,6 +322,147 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this) => {
     }
 }
 
+export const renderBottomGridAreaForCluster = (_this: PageDevMonitoring, pClusterList) => {
+
+    //pClusterList
+    pClusterList = sortUsageListByTypeForCluster(pClusterList, HARDWARE_TYPE.CPU)
+
+    return (
+        <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing styles={{zIndex: 999999999999}}>
+            <Table.Header className="viewListTableHeader" styles={{zIndex: 99999999999}}>
+                <Table.Row>
+                    <Table.HeaderCell>
+                        index
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        Cluster
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        CPU(%)
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        MEM
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        DISK
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        NETWORK RECV
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        NETWORK SENT
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        TCP CONN
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        TCP RETRANS
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        UDP REV
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        UDP SENT
+                    </Table.HeaderCell>
+
+                </Table.Row>
+            </Table.Header>
+            <Table.Body className="tbBodyList"
+                        ref={(div) => {
+                            _this.messageList = div;
+                        }}
+            >
+                {/*-----------------------*/}
+                {/*todo:ROW HEADER        */}
+                {/*-----------------------*/}
+                {!_this.state.isReady &&
+                <Table.Row className='page_monitoring_popup_table_empty'>
+                    <Table.Cell>
+                        <Lottie
+                            options={{
+                                loop: true,
+                                autoplay: true,
+                                animationData: require('../../../../lotties/loader001'),
+                                rendererSettings: {
+                                    preserveAspectRatio: 'xMidYMid slice'
+                                }
+                            }}
+                            height={240}
+                            width={240}
+                            isStopped={false}
+                            isPaused={false}
+                        />
+                    </Table.Cell>
+                </Table.Row>}
+                {!_this.state.isRequesting && pClusterList.map((item: TypeClusterUsageList, index) => {
+
+                    console.log('pClusterList==item==>', item);
+
+                    return (
+                        <Table.Row className='page_monitoring_popup_table_row'>
+
+                            <Table.Cell>
+                                {index}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {item.cluster}<br/>[{item.cloudlet}]
+                            </Table.Cell>
+                            <Table.Cell>
+                                <div>
+                                    <div>
+                                        {item.sumCpuUsage.toFixed(2) + '%'}
+                                    </div>
+                                    <div>
+                                        <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                                  percent={(item.sumCpuUsage / _this.state.maxCpu * 100)}
+                                            //percent={(item.sumCpuUsage / _this.state.gridInstanceListCpuMax) * 100}
+                                                  strokeColor={'#29a1ff'} status={'normal'}/>
+                                    </div>
+                                </div>
+                            </Table.Cell>
+                            <Table.Cell>
+                                <div>
+                                    <div>
+                                        {numberWithCommas(item.sumMemUsage.toFixed(2)) + ' %'}
+                                    </div>
+                                    <div>
+                                        <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                                  percent={(item.sumMemUsage / _this.state.maxMem * 100)}
+                                                  strokeColor={'#29a1ff'} status={'normal'}/>
+                                    </div>
+                                </div>
+                            </Table.Cell>
+                            <Table.Cell>
+                                {numberWithCommas(item.sumDiskUsage.toFixed(2)) + ' %'}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {numberWithCommas(item.sumRecvBytes.toFixed(2)) + ' '}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {numberWithCommas(item.sumSendBytes.toFixed(2)) + ' '}
+                            </Table.Cell>
+
+                            <Table.Cell>
+                                {numberWithCommas(item.sumTcpConns.toFixed(2)) + ' '}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {numberWithCommas(item.sumTcpRetrans.toFixed(2)) + ' '}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {numberWithCommas(item.sumUdpRecv.toFixed(2)) + ' '}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {numberWithCommas(item.sumUdpSent.toFixed(2)) + ' '}
+                            </Table.Cell>
+
+                        </Table.Row>
+
+                    )
+                })}
+            </Table.Body>
+        </Table>
+    )
+}
 
 /**
  *
@@ -310,10 +471,9 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this) => {
  * @param _this
  * @returns {string|{chartDataList: [], hardwareType: *}}
  */
-export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: PageMonitoringForDeveloper) => {
+export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: PageDevMonitoring) => {
 
     console.log('allHWUsageList===>', allHWUsageList);
-
     let typedUsageList = [];
     if (hardwareType === HARDWARE_TYPE.CPU) {
         typedUsageList = allHWUsageList[0]
@@ -330,7 +490,6 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
     } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
         typedUsageList = allHWUsageList[4]
     }
-
     console.log('typedUsageList===>', typedUsageList);
 
     if (typedUsageList.length === 0) {
@@ -359,7 +518,38 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
 
 }
 
-export const renderBubbleChartForCloudlet = (_this: PageMonitoring, hardwareType: string, pBubbleChartData: any) => {
+
+export const handleHardwareTabChanges = async (_this: PageDevMonitoring, selectedValueOne) => {
+    if (_this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+        if (selectedValueOne === HARDWARE_TYPE.CPU) {
+            await _this.setState({
+                currentTabIndex: 0
+            })
+        } else if (selectedValueOne === HARDWARE_TYPE.MEM) {
+            await _this.setState({
+                currentTabIndex: 1
+            })
+        } else if (selectedValueOne === HARDWARE_TYPE.DISK) {
+            await _this.setState({
+                currentTabIndex: 2
+            })
+        } else if (selectedValueOne === HARDWARE_TYPE.TCPRETRANS || selectedValueOne === HARDWARE_TYPE.TCPCONNS) {
+            await _this.setState({
+                currentTabIndex: 3
+            })
+        } else if (selectedValueOne === HARDWARE_TYPE.UDPSENT || selectedValueOne === HARDWARE_TYPE.UDPRECV) {
+            await _this.setState({
+                currentTabIndex: 4
+            })
+        }
+    }
+}
+
+
+export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, hardwareType: string, pBubbleChartData: any) => {
+
+    console.log('pBubbleChartData===>', pBubbleChartData);
+
 
     if (pBubbleChartData.length === 0 && _this.loading === false) {
         return (
@@ -434,12 +624,25 @@ export const renderBubbleChartForCloudlet = (_this: PageMonitoring, hardwareType
                             color: 'black',
                             weight: 'bold',
                         }}
-                        bubbleClickFun={async (label, index) => {
+                        bubbleClickFun={async (cluster_cloudlet, index) => {
+                            try {
+                                let lineChartDataSet = makeLineChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this)
+                                cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
+                                handleLegendAndBubbleClickedEvent(_this, cluster_cloudlet, lineChartDataSet)
+                            } catch (e) {
+
+                            }
 
 
                         }}
-                        legendClickFun={async (label, index) => {
+                        legendClickFun={async (cluster_cloudlet, index) => {
+                            try {
+                                let lineChartDataSet = makeLineChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this)
+                                cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
+                                handleLegendAndBubbleClickedEvent(_this, cluster_cloudlet, lineChartDataSet)
+                            } catch (e) {
 
+                            }
                         }}
                         data={pBubbleChartData}
                     />
@@ -460,19 +663,25 @@ export const renderBubbleChartForCloudlet = (_this: PageMonitoring, hardwareType
  * @param hardwareType
  * @returns {*}
  */
-export const makeLineChartDataForAppInst = (allHWUsageList: Array, hardwareType: string, _this: PageMonitoringForDeveloper) => {
+export const makeLineChartDataForAppInst = (allHWUsageList: Array, hardwareType: string, _this: PageDevMonitoring) => {
+
+    console.log('hardwareType===>', hardwareType);
+
+
     let oneTypedUsageList = [];
     if (hardwareType === HARDWARE_TYPE.CPU) {
         oneTypedUsageList = allHWUsageList[0]
     } else if (hardwareType === HARDWARE_TYPE.MEM) {
         oneTypedUsageList = allHWUsageList[1]
-    } else if (hardwareType === HARDWARE_TYPE.NETWORK) {
-        oneTypedUsageList = allHWUsageList[2]
     } else if (hardwareType === HARDWARE_TYPE.DISK) {
         oneTypedUsageList = allHWUsageList[3]
-    } else if (hardwareType === HARDWARE_TYPE.CONNECTIONS) {
+    } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION || hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
         oneTypedUsageList = allHWUsageList[4]
+    } else if (hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
+        oneTypedUsageList = allHWUsageList[2]
     }
+
+    console.log(`oneTypedUsageList===${hardwareType}>`, oneTypedUsageList);
 
 
     if (oneTypedUsageList.length === 0) {
@@ -497,9 +706,9 @@ export const makeLineChartDataForAppInst = (allHWUsageList: Array, hardwareType:
                 let usageOne = 0;
                 if (hardwareType === HARDWARE_TYPE.CPU) {
                     usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.CPU];
-                } else if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
+                } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
                     usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.RECVBYTES];
-                } else if (hardwareType === HARDWARE_TYPE.SEND_BYTES) {
+                } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
                     usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.SENDBYTES];
                 } else if (hardwareType === HARDWARE_TYPE.MEM) {
                     usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.MEM];
@@ -589,11 +798,13 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
                 series = pUsageList[i].memSeriesList
             } else if (hardwareType === HARDWARE_TYPE.DISK) {
                 series = pUsageList[i].diskSeriesList
-            } else if (hardwareType === HARDWARE_TYPE.UDP) {
-                series = pUsageList[i].udpSeriesList
             } else if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
                 series = pUsageList[i].tcpSeriesList
+            } else if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
+                series = pUsageList[i].tcpSeriesList
             } else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
+                series = pUsageList[i].udpSeriesList
+            } else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
                 series = pUsageList[i].udpSeriesList
             } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
                 series = pUsageList[i].networkSeriesList
@@ -617,16 +828,18 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
                     usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.DISK];
                 } else if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
                     usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.TCPCONNS];
+                } else if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
+                    usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.TCPRETRANS];
                 } else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
                     usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.UDPSENT];
+                } else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
+                    usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.UDPRECV];
                 } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
                     usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.SENDBYTES];
                 } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
                     usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.RECVBYTES];
                 }
-
                 usageList.push(usageOne);
-
                 let dateOne = series[j]["0"];
                 dateOne = dateOne.toString().split("T")
                 dateTimeList.push(dateOne[1]);
@@ -680,7 +893,7 @@ export const makeGradientColor = (canvas, height) => {
 
     const gradient2 = ctx.createLinearGradient(0, 0, 0, height);
     gradient2.addColorStop(0, 'rgb(255,150,0)');
-    gradient2.addColorStop(1, 'rgba(55,150,0,0)');
+    gradient2.addColorStop(1, 'rgba(255,150,0,0)');
 
     const gradient3 = ctx.createLinearGradient(0, 0, 0, height);
     gradient3.addColorStop(0, 'rgb(255,246,0)');
@@ -701,6 +914,229 @@ export const makeGradientColor = (canvas, height) => {
     gradientList.push(gradient5)
 
     return gradientList;
+}
+
+
+export const makeGradientColorOne = (canvas, height) => {
+    const ctx = canvas.getContext("2d");
+    const gradient = ctx.createLinearGradient(0, 0, 0, height);
+    gradient.addColorStop(0, 'rgb(111,253,255)');
+    gradient.addColorStop(1.0, 'rgb(62,113,243)');
+    return gradient;
+}
+
+
+export const getColorOne = () => {
+    return 'rgb(111,253,255)';
+}
+
+
+/**
+ *
+ * @param _this
+ * @param clickedItem
+ * @param lineChartDataSet
+ */
+export const handleLegendAndBubbleClickedEvent = (_this: PageDevMonitoring, clickedItem, lineChartDataSet) => {
+
+    let selectedIndex = 0;
+    lineChartDataSet.levelTypeNameList.map((item, jIndex) => {
+        let newItem = item.toString().replace('\n', "|").replace("[", '').replace("]", '')
+        clickedItem = clickedItem.toString().replace('\n', "|").replace("[", '').replace("]", '')
+        if (clickedItem === newItem) {
+            selectedIndex = jIndex;
+        }
+    })
+    let selectedLineChartDataSetOne = {
+        levelTypeNameList: lineChartDataSet.levelTypeNameList[selectedIndex],
+        usageSetList: lineChartDataSet.usageSetList[selectedIndex],
+        newDateTimeList: lineChartDataSet.newDateTimeList,
+        hardwareType: lineChartDataSet.hardwareType,
+    }
+
+    _this.showModalClusterLineChart(selectedLineChartDataSetOne, selectedIndex)
+}
+
+
+/**
+ * @todo: renderLineChartCoreForDev_Cluster
+ * @param _this
+ * @param lineChartDataSet
+ * @returns {*|string|undefined}
+ */
+export const renderLineChartCoreForDev_Cluster = (_this: PageDevMonitoring, lineChartDataSet) => {
+    let levelTypeNameList = lineChartDataSet.levelTypeNameList;
+    let usageSetList = lineChartDataSet.usageSetList;
+    let newDateTimeList = lineChartDataSet.newDateTimeList;
+    let hardwareType = lineChartDataSet.hardwareType;
+
+
+    console.log('lineChartDataSet==77777=>', lineChartDataSet);
+
+
+    const lineChartData = (canvas) => {
+
+        let gradientList = makeGradientColor(canvas, height);
+        let finalSeriesDataSets = [];
+        for (let index in usageSetList) {
+            //@todo: top5 만을 추린다
+            if (index < 5) {
+                let datasetsOne = {
+                    label: levelTypeNameList[index],
+                    radius: 0,
+                    borderWidth: 3.5,//todo:라인 두께
+                    fill: false,
+                    lineTension: 0.5,
+                    /*backgroundColor:  gradientList[index],
+                    borderColor: gradientList[index],*/
+                    backgroundColor: CHART_COLOR_LIST[index],
+                    borderColor: CHART_COLOR_LIST[index],
+                    data: usageSetList[index],
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: 'rgba(75,192,192,1)',
+                    pointBackgroundColor: '#fff',
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+                    pointHoverBorderColor: 'rgba(220,220,220,1)',
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+
+                }
+
+                finalSeriesDataSets.push(datasetsOne)
+            }
+
+        }
+        return {
+            labels: newDateTimeList,
+            datasets: finalSeriesDataSets,
+        }
+    }
+
+    let height = 500 + 100;
+    let options = {
+        animation: {
+            duration: 500
+        },
+        maintainAspectRatio: false,//@todo
+        responsive: true,//@todo
+        datasetStrokeWidth: 3,
+        pointDotStrokeWidth: 4,
+        layout: {
+            padding: {
+                left: 0,
+                right: 10,
+                top: 0,
+                bottom: 0
+            }
+        },
+        legend: {
+            position: 'top',
+            labels: {
+                boxWidth: 10,
+                fontColor: 'white'
+            },//@todo: lineChart 리전드 클릭 이벤트.
+            onClick: (e, clickedItem) => {
+
+                let selectedClusterOne = clickedItem.text.toString().replace('\n', "|");
+
+                handleLegendAndBubbleClickedEvent(_this, selectedClusterOne, lineChartDataSet)
+
+            },
+            onHover: (e, item) => {
+                //alert(`Item with text ${item.text} and index ${item.index} hovered`)
+            },
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                    min: 0,
+                    //max: 100,//todo max value
+                    fontColor: 'white',
+                    callback(value, index, label) {
+                        return convertByteToMegaByte(value, hardwareType)
+
+                    },
+                },
+                gridLines: {
+                    color: "#505050",
+                },
+                //stacked: true
+
+            }],
+            xAxes: [{
+                /*ticks: {
+                    fontColor: 'white'
+                },*/
+                gridLines: {
+                    color: "#505050",
+                },
+                ticks: {
+                    fontSize: 14,
+                    fontColor: 'white',
+                    //maxRotation: 0.05,
+                    //autoSkip: true,
+                    maxRotation: 45,
+                    minRotation: 45,
+                    padding: 10,
+                    labelOffset: 0,
+                    callback(value, index, label) {
+                        return value;
+
+                    },
+                },
+                beginAtZero: false,
+                /* gridLines: {
+                     drawTicks: true,
+                 },*/
+            }],
+            backgroundColor: {
+                fill: "#1e2124"
+            },
+        },//scales
+        onClick: function (c, i) {
+            /*let e = i[0];
+            console.log(e._index)
+            var x_value = this.data.labels[e._index];
+            var y_value = this.data.datasets[0].data[e._index];
+            console.log(x_value);
+            console.log(y_value);*/
+            if (i.length > 0) {
+                console.log('onClick===>', i);
+            }
+
+        }
+    }//options
+
+
+    //todo :#######################
+    //todo : chart rendering part
+    //todo :#######################
+    return (
+        <div style={{
+            position: 'relative',
+            width: '99%',
+            height: '96%'
+        }}>
+            <ReactChartJsLine
+                //width={'100%'}
+                //height={hardwareType === "recv_bytes" || hardwareType === "send_bytes" ? chartHeight + 20 : chartHeight}
+                //height={'100%'}
+                data={lineChartData}
+                options={options}
+                /* getDatasetAtEvent={dataset => {
+                     alert(dataset)
+                 }}*/
+
+            />
+        </div>
+    );
 }
 
 

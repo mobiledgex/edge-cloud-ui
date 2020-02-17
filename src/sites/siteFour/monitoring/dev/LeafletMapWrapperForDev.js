@@ -1,6 +1,5 @@
 import 'react-hot-loader'
 import React from "react";
-import {Map, Marker, Popup, TileLayer, Tooltip, Polyline} from "react-leaflet";
 import * as L from 'leaflet';
 import "../PageMonitoring.css";
 import {hot} from "react-hot-loader/root";
@@ -8,24 +7,14 @@ import 'react-leaflet-fullscreen-control'
 import type {TypeAppInstance} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 
+import {Map, Marker, Popup, TileLayer, Tooltip} from "../../../../components/react-leaflet_kj/src/index";
+import PageDevMonitoring from "./PageDevMonitoring";
+
 
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
     zoom: 13,
 }
-
-const multiPolygon = [
-    [
-        [51.51, -0.12],
-        [51.51, -0.13],
-        [51.53, -0.13],
-    ],
-    [
-        [51.51, -0.05],
-        [51.51, -0.07],
-        [51.53, -0.07],
-    ],
-]
 let greenIcon = new L.Icon({
     iconUrl: require('../leaflet_markers/marker-icon-2x-green.png'),
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -35,11 +24,21 @@ let greenIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
+type Props = {
+    parent: PageDevMonitoring,
+    markerList: Array,
+
+};
+type State = {
+    popUploading: boolean,
+    newCloudLetLocationList: Array,
+
+};
 
 export default hot(
-    class LeafletMapWrapperForDev extends React.Component {
+    class LeafletMapWrapperForDev extends React.Component<Props, State> {
 
-        constructor(props) {
+        constructor(props: Props) {
             super(props);
             this.state = {
                 zoom: 0.9,//mapZoom
@@ -57,15 +56,18 @@ export default hot(
                     {key: 'marker2', position: [51.51, -0.1], content: 'My second popup'},
                     {key: 'marker3', position: [51.49, -0.05], content: 'My third popup'},
                 ],
-
+                popupLoading: false,
 
             };
+
+
         }
 
         componentDidMount = async () => {
             console.log('markerList2222===>', this.props.markerList);
             let appInstanceListGroupByCloudlet = this.props.markerList
             this.setCloudletLocation(appInstanceListGroupByCloudlet)
+
 
         };
 
@@ -143,62 +145,33 @@ export default hot(
 
         }
 
-        renderPopup() {
-            return (
-                <Popup
-                    //position={[100.110924, 8.682127]}
-                    offset={[0, 0]}
-                    opacity={0.7}
-                    className="tooltip1"
-                >
-                    <div style={{display: 'flex', flexDirection: 'column'}}>
-                        <div style={{fontSize: 20, fontFamily: 'Acme'}}>
-                            [KR , SEONGNAM]
-                        </div>
-                        <button style={{backgroundColor: 'green', color: "white"}} onClick={() => {
-                            alert('eundew')
-                        }}>eundew
-                        </button>
-                        <div style={{height: 5}}/>
-                        <button onClick={() => {
-                            alert('GO')
-                        }}>GO
-                        </button>
-                        <div style={{height: 5}}/>
-                        <button onClick={() => {
-                            alert('Rahul')
-                        }}>Rahul
-                        </button>
-                        <div style={{height: 5}}/>
-                        <button onClick={() => {
-                            alert('redstar')
-                        }}>redstar
-                        </button>
-                    </div>
-                </Popup>
-            )
-        }
+        /*async showGraphForAppInst(AppName_ClusterInst, ClusterInst, AppName, item) {
+            let arrayTemp = AppName_ClusterInst.split(" | ");
+            let Cluster = arrayTemp[1].trim();
+            let AppInst = arrayTemp[0].trim()
+            let dataSet = AppInst + " | " + item.Cloudlet.trim() + " | " + Cluster
+            //showToast2(AppName)
+            let filteredAppList = filterUsageByClassification(this.props.parent.state.appInstanceList, item.Cloudlet.trim(), 'Cloudlet');
+            filteredAppList = filterUsageByClassification(filteredAppList, ClusterInst, 'ClusterInst');
+            filteredAppList = filterUsageByClassification(filteredAppList, AppName, 'AppName');
+            let arrDateTime = getOneYearStartEndDatetime();
+            let filteredAppInstUsageList = [];
+            try {
+                filteredAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime[0], arrDateTime[1]);
+                console.log('allAppInstUsageList===>', filteredAppInstUsageList);
+                //let clickedClusterLineChartData = makeLineChartDataForCluster(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
+                let lineChartDataSet = makeLineChartDataForAppInst(filteredAppInstUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
 
-        renderMarkerOne(item) {
+                this.props.parent.setState({
+                    modalIsOpen: true,
+                    currentGraphCluster: Cluster,
+                    currentGraphAppInst: AppInst,
+                    currentAppInstLineChartData: lineChartDataSet,
+                })
+            } catch (e) {
 
-            return (
-                <Marker
-                    ref={c => this.marker1 = c}
-                    icon={greenIcon}
-                    className='marker1'
-                    position={
-                        [item.CloudletLocation.latitude, item.CloudletLocation.longitude,]
-                    }
-                    onClick={() => {
-                        this.props.handleSelectCloudletForMapkerClicked(item.CloudletName)
-                    }}
-                >
-                    <Tooltip direction='right' offset={[0, 0]} opacity={0.5} permanent>
-                        <span>{item.CloudletName}</span>
-                    </Tooltip>
-                </Marker>
-            )
-        }
+            }
+        }*/
 
 
         render() {
@@ -222,9 +195,7 @@ export default hot(
                             style={{zIndex: 1}}
                             //maxZoom={15}
                         />
-
                         {this.state.newCloudLetLocationList.map((item, outerIndex) => {
-
                             let listAppName = item.AppNames.split(",")
 
                             return (
@@ -239,15 +210,24 @@ export default hot(
                                         //this.props.handleSelectCloudletForMapkerClicked(item.CloudletName)
                                     }}
                                 >
-                                    <Tooltip direction='right' offset={[0, 0]} opacity={0.8} permanent
+                                    <Tooltip
+                                        direction='right'
+                                        offset={[0, 0]}
+                                        opacity={0.8}
+                                        permanent
+                                        ref={c => {
+                                            this.toolTip = c;
+                                        }}
+                                        style={{cursor: 'pointer', pointerEvents: 'auto'}}
 
-                                             onClick={() => {
-                                                 alert('lklsdkflksd====>>>')
-                                             }}
                                     >
-                                        <span style={{color: 'black'}}>{item.Cloudlet}</span>
+
+                                        <span
+                                            className='toolTip'
+                                            style={{color: 'black'}}>{item.Cloudlet}</span>
                                     </Tooltip>
                                     <Popup className='popup1'>
+
                                         {listAppName.map(AppName_ClusterInst => {
 
                                             let AppName = AppName_ClusterInst.trim().split(" | ")[0].trim()
@@ -255,15 +235,14 @@ export default hot(
 
 
                                             return (
-
                                                 <div style={{
-                                                    fontSize: 14, fontFamily: 'Righteous', cursor: 'crosshair',
+                                                    fontSize: 14, fontFamily: 'Roboto', cursor: 'crosshair',
                                                     flexDirection: 'column',
                                                     marginTop: 5, marginBottom: 5
                                                 }}
                                                 >
                                                     <Ripples
-                                                        style={{}}
+                                                        style={{marginLeft: 5}}
                                                         color='#1cecff' during={500}
                                                         onClick={() => {
 
@@ -273,17 +252,16 @@ export default hot(
                                                             let AppInst = arrayTemp[0].trim()
                                                             let dataSet = AppInst + " | " + item.Cloudlet.trim() + " | " + Cluster
                                                             //showToast(dataSet)
+
                                                             this.props.handleAppInstDropdown(dataSet)
                                                         }}
                                                     >
                                                         {AppName}
-                                                        <div style={{color: '#77BD25', fontFamily: 'Acme', fontSize: 12}}>
+                                                        <div style={{color: '#77BD25', fontFamily: 'Roboto', fontSize: 12}}>
                                                             &nbsp;&nbsp;{` [${ClusterInst.trim()}]`}
                                                         </div>
                                                     </Ripples>
                                                 </div>
-
-
                                             )
                                         })}
                                     </Popup>
