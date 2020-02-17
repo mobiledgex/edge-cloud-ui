@@ -72,6 +72,7 @@ export default class BubbleChart extends Component {
                     d.id = d.data.label.toLowerCase().replace(/ |\//g, "-");
                     d.favor = d.data.favor;
                     d.fullLabel = d.data.fullLabel;
+                    d.cluster_cloudlet = d.data.cluster_cloudlet;
                     d.index = d.data.index;
                 }
             });
@@ -122,7 +123,10 @@ export default class BubbleChart extends Component {
                 return "translate(" + d.x + "," + d.y + ")";
             })
             .on("click", function (d) {
-                bubbleClickFun(d.fullLabel, d.index);
+                try{
+                    bubbleClickFun(d.cluster_cloudlet, d.index);
+                }catch (e) {
+                }
             })
 
 
@@ -298,7 +302,7 @@ export default class BubbleChart extends Component {
                   d3.select('#' + d.id).attr("r", r);*/
             })
             .on("click", function (d) {
-                legendClickFun(d.fullLabel, d.index);
+                legendClickFun(d.cluster_cloudlet, d.index);
             });
         ;
 

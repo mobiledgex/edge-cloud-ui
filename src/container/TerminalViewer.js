@@ -110,7 +110,7 @@ class MexTerminal extends Component {
         if (!this.success) {
             this.success = true;
             this.setState({
-                history: ['Connected Successfully']
+                history: ['Connected successfully']
             })
         }
         var textDecoder = new TextDecoder("utf-8");
