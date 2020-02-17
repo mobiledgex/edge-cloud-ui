@@ -447,7 +447,7 @@ class InsideListView extends React.Component {
                                 (value === 'Edit')?
                                     String(item[value]) === 'null' ? <Table.Cell /> :
                                         <Table.Cell className="table_actions" key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444', overflow:'visible'} :{whiteSpace:'nowrap', overflow:'visible'} }>
-                                            {this.makeEditButtonGroup(item, value, j, i, item['Organizations'] && item['Organizations'])}
+                                            {this.makeEditButtonGroup(item, value, j, i, item['NumOfOrganizations'] && item['NumOfOrganizations'])}
                                         </Table.Cell>
                                 :
                                 (value === 'Type')?
@@ -559,7 +559,9 @@ class InsideListView extends React.Component {
                 <Popup
                     className="table_actions_tooltip"
                     open={this.state.isOpenTip}
-                    content='Click this button to perform "Launch", "Update" and "Delete".'
+                    content={this.props.siteId === "Cloudlet Pools"?
+                        'Click this button to perform "Add Cloudlet", "Link Organization" and "Delete Cloudlet Pool".'
+                        : 'Click this button to perform "Launch", "Update" and "Delete".'}
                     size='mini'
                     position='left center'
                     context={this[this.state.actionContextRef]}
