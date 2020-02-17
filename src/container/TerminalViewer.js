@@ -59,7 +59,6 @@ class MexTerminal extends Component {
     }
 
     sendRequest = (data) => {
-        console.log('Rahuhul1234', data)
         const { Region, OrganizationName, AppName, Version, ClusterInst, Cloudlet, Operator } = this.props.data;
         let ExecRequest =
         {
@@ -94,7 +93,7 @@ class MexTerminal extends Component {
             this.editable = false;
             method = serviceMC.getEP().SHOW_LOGS;
             let showLogs = data.ShowLogs
-            let tail = showLogs.tail ? parseInt(showLogs.Tail) : undefined
+            let tail = showLogs.Tail ? parseInt(showLogs.Tail) : undefined
             ExecRequest.log = showLogs ?  { since: showLogs.Since, tail: tail, timestamps: showLogs.Timestamps, follow: showLogs.Follow } : {} 
         }
         let requestedData = {
