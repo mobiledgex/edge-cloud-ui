@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
-import ReactMapboxGl, { Layer, Feature, Marker } from 'react-mapbox-gl';
-import type {TypeAppInstance} from "../../../../../../shared/Types";
+import ReactMapboxGl, {Feature, Layer} from 'react-mapbox-gl';
+
 const Map = ReactMapboxGl({
     accessToken:
         'pk.eyJ1Ijoia3l1bmdqb29uLWdvLWNvbnN1bHRhbnQiLCJhIjoiY2s2Mnk2eHl0MDI5bzNzcGc0MTQ3NTM4NSJ9.BVwP4hu1ySJCJpGyVQBWSQ'

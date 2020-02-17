@@ -23,6 +23,8 @@ import './css/pages/audit.css';
 import './css/pages/cloudletPool.css';
 import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
+import Test001 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/Test001";
+import TestLeafLetMap from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/TestLeafLetMap";
 // API
 
 let self = null;
@@ -330,6 +332,7 @@ class App extends Component {
                     <Route exact path='/createAccount' component={DashboardContainer.bind(this, {mainPath:'/createAccount'})} />
                     <Route exact path='/passwordreset' component={DashboardContainer.bind(this, {mainPath:'/passwordreset'})} />
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
+                    <Route exact path='/TestLeafLetMap' component={TestLeafLetMap} />
 
                 </div>
             </Router>
