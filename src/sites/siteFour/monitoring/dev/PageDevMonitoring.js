@@ -1258,7 +1258,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
             return (
-
                 <div style={{width: '100%', height: '100%'}}>
                     {/*<ModalForGraph currentAppInstLineChartData={this.state.currentAppInstLineChartData} parent={this} modalIsOpen={this.state.modalIsOpen}
                                    currentGraphAppInst={this.state.currentGraphAppInst} cluster={this.state.currentGraphCluster} contents={''}/>*/}
@@ -1447,8 +1446,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </Grid.Column>
 
                     </Grid.Row>
-                    <Modal open={this.state.openTerminal} dimmer={'inverted'}>
-                        <TerminalViewer data={this.state.terminalData} dialog={true} onClose={() => {
+                    <Modal style={{width:'100%',height:'100%'}} open={this.state.openTerminal}>
+                        <TerminalViewer data={this.state.terminalData} onClose={() => {
                             this.setState({openTerminal: false})
                         }}/>
                     </Modal>
