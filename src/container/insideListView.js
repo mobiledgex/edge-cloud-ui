@@ -559,7 +559,9 @@ class InsideListView extends React.Component {
                 <Popup
                     className="table_actions_tooltip"
                     open={this.state.isOpenTip}
-                    content='Click this button to perform "Launch", "Update" and "Delete".'
+                    content={this.props.siteId === "Cloudlet Pools"?
+                        'Click this button to perform "Add Cloudlet", "Link Organization" and "Delete Cloudlet Pool".'
+                        : 'Click this button to perform "Launch", "Update" and "Delete".'}
                     size='mini'
                     position='left center'
                     context={this[this.state.actionContextRef]}
