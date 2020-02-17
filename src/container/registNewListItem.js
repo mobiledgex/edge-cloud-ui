@@ -168,8 +168,6 @@ class RegistNewListItem extends React.Component {
         //playing spinner
         //this.props.handleSpinner(true)
 
-
-
         //TODO: 20190410 메뉴 별 구분 필요
         if(localStorage.selectMenu === 'Flavors'){
             const flavor = ['Region','FlavorName','RAM','vCPUs','Disk']
