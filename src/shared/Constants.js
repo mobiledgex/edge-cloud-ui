@@ -18,6 +18,67 @@ export const REGION = {
     EU: 'EU',
 }
 
+export const lineGraphOptions = {
+    animation: {
+        duration: 1000
+    },
+    datasetStrokeWidth: 3,
+    pointDotStrokeWidth: 4,
+    legend: {
+        position: 'top',
+        labels: {
+            boxWidth: 10,
+            fontColor: 'white'
+        }
+    },
+    scales: {
+        yAxes: [{
+
+            ticks: {
+                beginAtZero: true,
+                min: 0,
+                max: 100,
+                fontColor: 'white',
+            },
+            gridLines: {
+                color: "#505050",
+            },
+            stacked: true
+
+        }],
+        xAxes: [{
+            /*ticks: {
+                fontColor: 'white'
+            },*/
+            gridLines: {
+                color: "#505050",
+            },
+            ticks: {
+                fontSize: 14,
+                fontColor: 'white',
+                //maxRotation: 0.05,
+                //autoSkip: true,
+                maxRotation: 45,
+                minRotation: 45,
+                padding: 10,
+                labelOffset: 0,
+                callback(value, index, label) {
+                    return value;
+
+                },
+            },
+            beginAtZero: false,
+            /* gridLines: {
+                 drawTicks: true,
+             },*/
+        }],
+        backgroundColor: {
+            fill: "#1e2124"
+        },
+    }
+
+}
+
 export const USAGE_TYPE = {
     SUM_CPU_USAGE: 'sumCpuUsage',
     SUM_MEM_USAGE: 'sumMemUsage',
@@ -64,7 +125,7 @@ export const APP_INST_USAGE_TYPE_INDEX = {
 }
 
 
-export const RECENT_DATA_LIMIT_COUNT = 20
+export const RECENT_DATA_LIMIT_COUNT = 10
 
 export const APP_PERFORMANCE_VALUES = {
     M4_MEDIUM: {
@@ -110,6 +171,25 @@ export const NETWORK_OPTIONS2 = [
     {text: 'NET_RECV', value: 'NET_RECV'},
 ]
 
+export const APP_INST_MATRIX_HW_USAGE_INDEX = {
+    TIME: 0,
+    APP: 1,
+    CLUSTER: 2,
+    DEV: 3,
+    CLOUDLET: 4,
+    OPERATOR: 5,
+    CPU: 6,
+    MEM: 7,
+    DISK: 8,
+    SENDBYTES: 9,
+    RECVBYTES: 10,
+    PORT: 11,
+    ACTIVE: 12,
+    HANDLED: 13,
+    ACCEPTS: 14,
+    BYTESSENT: 15,
+    BYTESRECVD: 16,
+}
 
 export const USAGE_INDEX = {
     TIME: 0,
@@ -163,6 +243,15 @@ export const HARDWARE_OPTIONS = [
     {text: 'SEND_BYTES', value: 'SEND_BYTES'},
 ]
 
+export const HARDWARE_OPTIONS_FOR_APPINST = [
+    {text: 'CPU', value: 'CPU'},
+    {text: 'MEM', value: 'MEM'},
+    {text: 'DISK', value: 'DISK'},
+    {text: 'CONNECTION', value: 'CONNECTION'},
+    {text: 'RECV_BYTES', value: 'RECV_BYTES'},
+    {text: 'SEND_BYTES', value: 'SEND_BYTES'},
+]
+
 
 export const HARDWARE_OPTIONS_FOR_CLOUDLET = [
     {text: 'vCPU', value: 'vCPU'},
@@ -179,12 +268,12 @@ export const HARDWARE_OPTIONS_FOR_CLUSTER = [
     {text: 'CPU', value: 'CPU'},
     {text: 'MEM', value: 'MEM'},
     {text: 'DISK', value: 'DISK'},
-    {text: 'RECV BYTES', value: 'RECVBYTES'},
-    {text: 'SEND BYTES', value: 'SENDBYTES'},
     {text: 'TCP CONNS', value: 'TCPCONNS'},
     {text: 'TCP RETRANS', value: 'TCPRETRANS'},
-    {text: 'UDP RECV', value: 'UDPRECVERR'},
+    {text: 'UDP RECV', value: 'UDPRECV'},
     {text: 'UDP SENT', value: 'UDPSENT'},
+    {text: 'RECV BYTES', value: 'RECV_BYTES'},
+    {text: 'SEND BYTES', value: 'SEND_BYTES'},
 ]
 
 
