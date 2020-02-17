@@ -447,7 +447,7 @@ class InsideListView extends React.Component {
                                 (value === 'Edit')?
                                     String(item[value]) === 'null' ? <Table.Cell /> :
                                         <Table.Cell className="table_actions" key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444', overflow:'visible'} :{whiteSpace:'nowrap', overflow:'visible'} }>
-                                            {this.makeEditButtonGroup(item, value, j, i, item['Organizations'] && item['Organizations'])}
+                                            {this.makeEditButtonGroup(item, value, j, i, item['NumOfOrganizations'] && item['NumOfOrganizations'])}
                                         </Table.Cell>
                                 :
                                 (value === 'Type')?
