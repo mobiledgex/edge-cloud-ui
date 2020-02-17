@@ -331,16 +331,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         async loadInitDataForCluster(isInterval: boolean = false) {
             clearInterval(this.intervalForAppInst)
             this.setState({dropdownRequestLoading: true})
-            let clusterList = await getClusterList();
+            /*let clusterList = await getClusterList();
             let cloudletList = await getCloudletList()
-            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
+            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();*/
 
 
             //fixme: fakeData
             //fixme: fakeData
-            /*   let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
-               let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-               let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')*/
+            let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+            let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
+            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
             console.log('appInstanceList====>', appInstanceList);
 
             console.log('clusterList===>', clusterList);
@@ -370,15 +370,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             }
             let allClusterUsageList = []
-            try {
-                allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
-            } catch (e) {
+            /*   try {
+                   allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
+               } catch (e) {
 
-            }
+               }*/
 
             //fixme: fakeData
             //fixme: fakeData
-            //allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+            allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
             console.log('filteredAppInstanceList===>', appInstanceList)
 
             let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
@@ -927,10 +927,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <AButton type={'primary'}>sdkjfskdjfksjdf</AButton>
                         <AButton type={'info'}>sdkjfskdjfksjdf</AButton>
                         <AButton type={'danger'}>sdkjfskdjfksjdf</AButton>
-                        <AButton style={{backgroundColor:'#50c1ff'}}>sdkjfskdjfksjdf</AButton>
-                        <AButton style={{backgroundColor:'#50c1ff'}}>sdkjfskdjfksjdf</AButton>
-                        <AButton style={{backgroundColor:'#50c1ff'}}>sdkjfskdjfksjdf</AButton>
-                        <AButton style={{backgroundColor:'#50c1ff'}}>sdkjfskdjfksjdf</AButton>
+                        <AButton style={{backgroundColor: '#50c1ff'}}>sdkjfskdjfksjdf</AButton>
+                        <AButton style={{backgroundColor: '#50c1ff'}}>sdkjfskdjfksjdf</AButton>
+                        <AButton style={{backgroundColor: '#50c1ff'}}>sdkjfskdjfksjdf</AButton>
+                        <AButton style={{backgroundColor: '#50c1ff'}}>sdkjfskdjfksjdf</AButton>
                     </div>
                 </Grid.Row>
             )
