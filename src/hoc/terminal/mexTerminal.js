@@ -20,7 +20,7 @@ const MexTerminal = (props) => {
     }
 
     const onTerminal = () => {
-        if(cmdInput)
+        if(cmdInput && cmdInput.current)
         {
             cmdInput.current.focus();
         }
@@ -41,7 +41,6 @@ const MexTerminal = (props) => {
                         <span className={classes.cmdPath} id="path">
                             {'\n' + props.path}
                         </span>
-
                         <input ref={cmdInput} autoComplete='off' value={cmd} onChange={onCmdChange} onKeyPress={onEnter} className={classes.cmdInput} type="text" id="input" autoFocus={true} />
                     </div> :
                     null
