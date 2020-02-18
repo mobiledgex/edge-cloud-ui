@@ -27,7 +27,7 @@ import {
     makeGridInstanceList,
     makeLineChartDataForAppInst,
     makeNetworkBarData,
-    makeNetworkLineChartData,
+    makeNetworkLineChartData, renderBottomGridArea,
     renderBubbleChart,
     renderPlaceHolder2,
     renderSixGridForAppInstOnCloudlet,
@@ -685,138 +685,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-        renderBottomGridArea() {
-            return (
-                <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
-                    <Table.Header className="viewListTableHeader">
-                        <Table.Row>
-                            <Table.HeaderCell>
-                                index
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                NAME
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                CPU(%)
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                MEM
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                DISK
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                RECV BYTES
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                SEND BYTES
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                FLAVOR
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                ACTIVE CONN
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                HANDLED CONN
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                ACCEPTS CONN
-                            </Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Header>
-                    <Table.Body className="tbBodyList"
-                                ref={(div) => {
-                                    this.messageList = div;
-                                }}
-                    >
-                        {/*-----------------------*/}
-                        {/*todo:ROW HEADER        */}
-                        {/*-----------------------*/}
-                        {!this.state.isReady &&
-                        <Table.Row className='page_monitoring_popup_table_empty'>
-                            <Table.Cell>
-                                <Lottie
-                                    options={{
-                                        loop: true,
-                                        autoplay: true,
-                                        animationData: require('../../../../lotties/loader001'),
-                                        rendererSettings: {
-                                            preserveAspectRatio: 'xMidYMid slice'
-                                        }
-                                    }}
-                                    height={240}
-                                    width={240}
-                                    isStopped={false}
-                                    isPaused={false}
-                                />
-                            </Table.Cell>
-                        </Table.Row>}
-                        {this.state.isReady && this.state.filteredGridInstanceList.map((item: TypeGridInstanceList, index) => {
-
-                            return (
-                                <Table.Row className='page_monitoring_popup_table_row'
-                                >
-                                    <Table.Cell>
-                                        {index}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {item.instance.AppName}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <div>
-                                            <div>
-                                                {item.sumCpuUsage.toFixed(2) + '%'}
-                                            </div>
-                                            <div>
-                                                <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
-                                                          percent={(item.sumCpuUsage / this.state.gridInstanceListCpuMax) * 100}
-                                                          strokeColor={'#29a1ff'} status={'normal'}/>
-                                            </div>
-                                        </div>
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <div>
-                                            <div>
-                                                {numberWithCommas(item.sumMemUsage) + ' Byte'}
-                                            </div>
-                                            <div>
-                                                <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
-                                                          percent={(item.sumMemUsage / this.state.gridInstanceListMemMax) * 100}
-                                                          strokeColor={'#29a1ff'} status={'normal'}/>
-                                            </div>
-
-                                        </div>
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {numberWithCommas(item.sumDiskUsage) + ' Byte'}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {numberWithCommas(item.sumRecvBytes) + ' Byte'}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {numberWithCommas(item.sumSendBytes) + ' Byte'}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {item.instance.Flavor}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {item.sumActiveConnection}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {item.sumHandledConnection}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {item.sumAcceptsConnection}
-                                    </Table.Cell>
-                                </Table.Row>
-
-                            )
-                        })}
-                    </Table.Body>
-                </Table>
-            )
-        }
 
         renderCpuTabArea() {
             return (
@@ -1432,25 +1300,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
 
                 <Grid.Row className='view_contents'>
-                    {/*todo:---------------------------------*/}
-                    {/*todo: POPUP APP INSTACE LIST DIV      */}
-                    {/*todo:---------------------------------*/}
-                    <Modal
-                        closeIcon={true}
-                        open={this.state.isModalOpened}
-                        closeOnDimmerClick={true}
-                        onClose={() => {
-                            this.setState({
-                                isModalOpened: false,
-                            })
-                        }}
-                        style={{width: '80%'}}
-                    >
-                        <Modal.Header>Status of App Instance</Modal.Header>
-                        <Modal.Content>
-                            {this.renderBottomGridArea()}
-                        </Modal.Content>
-                    </Modal>
                     <SemanticToastContainer position={"top-right"}/>
                     <Grid.Column className='contents_body'>
                         {/*todo:---------------------------------*/}
@@ -1636,7 +1485,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                 <div style={StylesForMonitoring.noData}>
                                                                     NO DATA
                                                                 </div>
-                                                                : this.renderBottomGridArea()}
+                                                                : renderBottomGridArea(this)}
                                                         </div>
                                                     </div>
                                                 </OutsideClickHandler>
