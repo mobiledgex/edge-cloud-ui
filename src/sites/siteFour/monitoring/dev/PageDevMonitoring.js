@@ -56,7 +56,7 @@ import {TabPanel, Tabs} from "react-tabs";
 import LeafletMapWrapperForDev from "./LeafletMapWrapperForDev";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraphForCluster from "./ModalGraphForCluster";
-import {getAppLevelUsageList__NEW} from "../PageMonitoringMetricService";
+import {getAppLevelUsageList__NEW, getClusterLevelUsageList} from "../PageMonitoringMetricService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -367,7 +367,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             try {
                 allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
             } catch (e) {
-
+                showToast(e.toString())
             }
 
             //fixme: fakeData
