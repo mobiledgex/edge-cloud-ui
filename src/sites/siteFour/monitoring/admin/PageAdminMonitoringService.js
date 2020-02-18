@@ -1,6 +1,6 @@
 import React from 'react';
 import '../PageMonitoring.css';
-import {APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../../shared/Constants";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
 import BubbleChart from "../../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../../shared/Types";
@@ -679,9 +679,6 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
 }
 
 
-
-
-
 export const makeNetworkBarData = (networkUsageList, hwType) => {
     let chartDataList = [];
     chartDataList.push(["Element", hwType + " USAGE", {role: "style"}, {role: 'annotation'}])
@@ -702,7 +699,98 @@ export const makeNetworkBarData = (networkUsageList, hwType) => {
 
 }
 
-export const renderBottomGridArea =(_this)=> {
+
+export const handleBubbleChartDropDown = async (_this,value) => {
+   try{
+       await _this.setState({
+           currentHardwareType: value,
+       });
+
+       let appInstanceList = _this.state.appInstanceList;
+       let allCpuUsageList = _this.state.filteredCpuUsageList;
+       let allMemUsageList = _this.state.filteredMemUsageList;
+       let allDiskUsageList = _this.state.filteredDiskUsageList;
+       let allNetworkUsageList = _this.state.filteredNetworkUsageList;
+       let chartData = [];
+
+       if (value === HARDWARE_TYPE.FLAVOR) {
+           appInstanceList.map((item, index) => {
+               chartData.push({
+                   //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+                   index: index,
+                   label: item.AppName.toString().substring(0, 10) + "...",
+                   value: instanceFlavorToPerformanceValue(item.Flavor),
+                   favor: item.Flavor,
+                   fullLabel: item.AppName.toString(),
+               })
+           })
+       } else if (value === HARDWARE_TYPE.CPU) {
+           allCpuUsageList.map((item, index) => {
+               chartData.push({
+                   //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+                   index: index,
+                   label: item.instance.AppName.toString().substring(0, 10) + "...",
+                   value: (item.sumCpuUsage * 100).toFixed(0),
+                   favor: (item.sumCpuUsage * 100).toFixed(0),
+                   fullLabel: item.instance.AppName.toString(),
+               })
+           })
+       } else if (value === HARDWARE_TYPE.MEM) {
+           allMemUsageList.map((item, index) => {
+               chartData.push({
+                   //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+                   index: index,
+                   label: item.instance.AppName.toString().substring(0, 10) + "...",
+                   value: item.sumMemUsage,
+                   favor: item.sumMemUsage,
+                   fullLabel: item.instance.AppName.toString(),
+               })
+           })
+       } else if (value === HARDWARE_TYPE.DISK) {
+           allDiskUsageList.map((item, index) => {
+               chartData.push({
+                   //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+                   index: index,
+                   label: item.instance.AppName.toString().substring(0, 10) + "...",
+                   value: item.sumDiskUsage,
+                   favor: item.sumDiskUsage,
+                   fullLabel: item.instance.AppName.toString(),
+               })
+           })
+       } else if (value === NETWORK_TYPE.RECV_BYTES) {
+           allNetworkUsageList.map((item, index) => {
+               chartData.push({
+                   index: index,
+                   label: item.instance.AppName.toString().substring(0, 10) + "...",
+                   value: item.sumRecvBytes,
+                   favor: item.sumRecvBytes,
+                   fullLabel: item.instance.AppName.toString(),
+               })
+           })
+       } else if (value === HARDWARE_TYPE.SEND_BYTES) {
+           allNetworkUsageList.map((item, index) => {
+               chartData.push({
+                   index: index,
+                   label: item.instance.AppName.toString().substring(0, 10) + "...",
+                   value: item.sumSendBytes,
+                   favor: item.sumSendBytes,
+                   fullLabel: item.instance.AppName.toString(),
+               })
+           })
+       }
+       //@todo:-----------------------
+       //todo: bubbleChart
+       //@todo:-----------------------
+       _this.setState({
+           bubbleChartData: chartData,
+       });
+   }catch (e) {
+       
+   }
+}
+
+
+export const renderBottomGridArea = (_this) => {
     return (
         <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
             <Table.Header className="viewListTableHeader">
@@ -987,7 +1075,8 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
                                 {/*todo:#####################..*/}
                                 {/*todo:선택된 index는 그린Color */}
                                 {/*todo:#####################..*/}
-                                <div className='page_monitoring_pager_btn' style={{backgroundColor: _this.state.currentSixGridIndex === index ? 'rgba(136,221,0,.9)' : 'rgba(255,255,255,.5)'}}/>
+                                <div className='page_monitoring_pager_btn'
+                                     style={{backgroundColor: _this.state.currentSixGridIndex === index ? 'rgba(136,221,0,.9)' : 'rgba(255,255,255,.5)'}}/>
                             </div>
                         )
                     })}

@@ -18,7 +18,7 @@ import {
     filterAppInstOnCloudlet,
     filterInstanceCountOnCloutLetOne,
     filterListBykey,
-    filterUsageListByRegion,
+    filterUsageListByRegion, handleBubbleChartDropDown,
     instanceFlavorToPerformanceValue,
     makeBarChartDataForInst,
     makeCloudletListSelectBox,
@@ -1130,91 +1130,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        async handleBubbleChartDropDown(value) {
-            await this.setState({
-                currentHardwareType: value,
-            });
-
-            let appInstanceList = this.state.appInstanceList;
-            let allCpuUsageList = this.state.filteredCpuUsageList;
-            let allMemUsageList = this.state.filteredMemUsageList;
-            let allDiskUsageList = this.state.filteredDiskUsageList;
-            let allNetworkUsageList = this.state.filteredNetworkUsageList;
-            let chartData = [];
-
-            if (value === HARDWARE_TYPE.FLAVOR) {
-                appInstanceList.map((item, index) => {
-                    chartData.push({
-                        //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
-                        index: index,
-                        label: item.AppName.toString().substring(0, 10) + "...",
-                        value: instanceFlavorToPerformanceValue(item.Flavor),
-                        favor: item.Flavor,
-                        fullLabel: item.AppName.toString(),
-                    })
-                })
-            } else if (value === HARDWARE_TYPE.CPU) {
-                allCpuUsageList.map((item, index) => {
-                    chartData.push({
-                        //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
-                        index: index,
-                        label: item.instance.AppName.toString().substring(0, 10) + "...",
-                        value: (item.sumCpuUsage * 100).toFixed(0),
-                        favor: (item.sumCpuUsage * 100).toFixed(0),
-                        fullLabel: item.instance.AppName.toString(),
-                    })
-                })
-            } else if (value === HARDWARE_TYPE.MEM) {
-                allMemUsageList.map((item, index) => {
-                    chartData.push({
-                        //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
-                        index: index,
-                        label: item.instance.AppName.toString().substring(0, 10) + "...",
-                        value: item.sumMemUsage,
-                        favor: item.sumMemUsage,
-                        fullLabel: item.instance.AppName.toString(),
-                    })
-                })
-            } else if (value === HARDWARE_TYPE.DISK) {
-                allDiskUsageList.map((item, index) => {
-                    chartData.push({
-                        //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
-                        index: index,
-                        label: item.instance.AppName.toString().substring(0, 10) + "...",
-                        value: item.sumDiskUsage,
-                        favor: item.sumDiskUsage,
-                        fullLabel: item.instance.AppName.toString(),
-                    })
-                })
-            } else if (value === NETWORK_TYPE.RECV_BYTES) {
-                allNetworkUsageList.map((item, index) => {
-                    chartData.push({
-                        index: index,
-                        label: item.instance.AppName.toString().substring(0, 10) + "...",
-                        value: item.sumRecvBytes,
-                        favor: item.sumRecvBytes,
-                        fullLabel: item.instance.AppName.toString(),
-                    })
-                })
-            } else if (value === HARDWARE_TYPE.SEND_BYTES) {
-                allNetworkUsageList.map((item, index) => {
-                    chartData.push({
-                        index: index,
-                        label: item.instance.AppName.toString().substring(0, 10) + "...",
-                        value: item.sumSendBytes,
-                        favor: item.sumSendBytes,
-                        fullLabel: item.instance.AppName.toString(),
-                    })
-                })
-            }
-
-            //@todo:-----------------------
-            //todo: bubbleChart
-            //@todo:-----------------------
-            this.setState({
-                bubbleChartData: chartData,
-            });
-        }
 
         //@todo:-----------------------
         //@todo:    CPU,MEM,DISK TAB
@@ -1384,7 +1299,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             defaultValue={HARDWARE_OPTIONS[0].value}
                                                             onChange={async (e, {value}) => {
 
-                                                                this.handleBubbleChartDropDown(value);
+                                                                await handleBubbleChartDropDown(this, value);
 
                                                             }}
                                                             value={this.state.currentHardwareType}
