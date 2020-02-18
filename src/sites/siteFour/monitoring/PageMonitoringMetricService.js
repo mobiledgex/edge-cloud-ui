@@ -182,6 +182,168 @@ export const getCloudletListAll = async () => {
 }
 
 
+export const getAppLevelUsageList__NEW = async (appInstanceList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
+    try {
+        let instanceBodyList = []
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
+        for (let index = 0; index < appInstanceList.length; index++) {
+            //todo: Create a data FORM format for requests
+            let instanceInfoOneForm = makeFormForAppInstance(appInstanceList[index], pHardwareType, store.userToken, recentDataLimitCount, pStartTime, pEndTime)
+            instanceBodyList.push(instanceInfoOneForm);
+        }
+
+        let promiseList = []
+        for (let index = 0; index < instanceBodyList.length; index++) {
+            promiseList.push(getAppLevelMetrics(instanceBodyList[index]))
+        }
+        //todo: Bring health check list(cpu,mem,network,disk..) to the number of apps instance, by parallel request
+
+        let appInstanceHealthCheckList = []
+        try {
+            appInstanceHealthCheckList = await Promise.all(promiseList);
+        } catch (e) {
+            throw new Error(e)
+        }
+
+        let usageListForAllInstance = []
+        appInstanceList.map((item, index) => {
+            usageListForAllInstance.push({
+                instanceData: appInstanceList[index],
+                appInstanceHealth: appInstanceHealthCheckList[index],
+            });
+        })
+
+        let allUsageList = []
+        usageListForAllInstance.map((item, index) => {
+            let appName = item.instanceData.AppName;
+            let sumMemUsage = 0;
+            let sumDiskUsage = 0;
+            let sumRecvBytes = 0;
+            let sumSendBytes = 0;
+            let sumCpuUsage = 0;
+
+            let sumActiveConnection = 0;
+            let sumHandledConnection = 0
+            let sumAcceptsConnection = 0
+            let columns = []
+            let cpuSeriesValue=[]
+            let memSeriesValue=[]
+            let diskSeriesValue=[]
+            let networkSeriesValue=[]
+            let connectionsSeriesValue=[]
+
+            if (item.appInstanceHealth !== undefined) {
+                let series = item.appInstanceHealth.data["0"].Series;
+
+                if (series !== null) {
+                    if (series["3"] !== undefined) {
+                        let cpuSeries = series["3"]
+                        columns = cpuSeries.columns;
+                        cpuSeriesValue= cpuSeries.values;
+                        cpuSeries.values.map(item => {
+                            let cpuUsage = item[APP_INST_MATRIX_HW_USAGE_INDEX.CPU];//cpuUsage..index
+                            sumCpuUsage += cpuUsage;
+                        })
+                    }
+
+
+                    if (series["1"] !== undefined) {
+                        let memSeries = series["1"]
+                        memSeriesValue= memSeries.values;
+                        memSeries.values.map(item => {
+                            let usageOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.MEM];//memUsage..index
+                            sumMemUsage += usageOne;
+                        })
+                    }
+
+
+                    if (series["2"] !== undefined) {
+                        let diskSeries = series["2"]
+                        diskSeriesValue= diskSeries.values;
+                        diskSeries.values.map(item => {
+                            let usageOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.DISK];//diskUsage..index
+                            sumDiskUsage += usageOne;
+                        })
+                    }
+
+                    if (series["0"] !== undefined) {
+                        let networkSeries = series["0"]
+                        networkSeriesValue= networkSeries.values;
+                        networkSeries.values.map(item => {
+                            let sendBytesOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.SENDBYTES];//sendBytesOne
+                            sumSendBytes += sendBytesOne;
+                            let recvBytesOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.RECVBYTES];//recvBytesOne
+                            sumRecvBytes += recvBytesOne;
+                        })
+                    }
+
+
+                    if (series["4"] !== undefined) {
+                        let connectionsSeries = series["4"]
+                        connectionsSeriesValue= connectionsSeries.values;
+                        connectionsSeries.values.map(item => {
+                            let connection1One = item[APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE];//1
+                            sumActiveConnection += connection1One;
+                            let connection2One = item[APP_INST_MATRIX_HW_USAGE_INDEX.HANDLED];//2
+                            sumHandledConnection += connection2One;
+                            let connection3One = item[APP_INST_MATRIX_HW_USAGE_INDEX.ACCEPTS];//3
+                            sumAcceptsConnection += connection3One;
+                        })
+                    }
+
+                    allUsageList.push({
+                        instance: item.instanceData,
+                        columns: columns,
+                        appName: appName,
+                        sumCpuUsage: sumCpuUsage / RECENT_DATA_LIMIT_COUNT,
+                        sumMemUsage: Math.ceil(sumMemUsage / RECENT_DATA_LIMIT_COUNT),
+                        sumDiskUsage: Math.ceil(sumDiskUsage / RECENT_DATA_LIMIT_COUNT),
+                        sumRecvBytes: Math.ceil(sumRecvBytes / RECENT_DATA_LIMIT_COUNT),
+                        sumSendBytes: Math.ceil(sumSendBytes / RECENT_DATA_LIMIT_COUNT),
+                        sumActiveConnection: Math.ceil(sumActiveConnection / RECENT_DATA_LIMIT_COUNT),
+                        sumHandledConnection: Math.ceil(sumHandledConnection / RECENT_DATA_LIMIT_COUNT),
+                        sumAcceptsConnection: Math.ceil(sumAcceptsConnection / RECENT_DATA_LIMIT_COUNT),
+                        cpuSeriesValues:cpuSeriesValue,
+                        memSeriesValue: memSeriesValue,
+                        diskSeriesValue: diskSeriesValue,
+                        networkSeriesValue: networkSeriesValue,
+                        connectionsSeriesValues: connectionsSeriesValue,
+
+                    })
+
+                } else {//@todo: If series data is null
+                    allUsageList.push({
+                        instance: item.instanceData,
+                        columns: "",
+                        sumCpuUsage: 0,
+                        sumMemUsage: 0,
+                        sumDiskUsage: 0,
+                        sumRecvBytes: 0,
+                        sumSendBytes: 0,
+                        sumActiveConnection: 0,
+                        sumHandledConnection: 0,
+                        sumAcceptsConnection: 0,
+                        values: [],
+                        appName: appName,
+                    })
+
+
+                }
+            }
+
+        })
+
+
+        return allUsageList;
+    } catch (e) {
+        //throw new Error(e.toString())
+        showToast(e.toString())
+    }
+
+}
+
+
+
 export const getClusterLevelUsageList = async (clusterList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
     try {
         let instanceBodyList = []
@@ -314,174 +476,6 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
     }
 }
 
-
-
-export const getAppLevelUsageList__NEW = async (appInstanceList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
-    try {
-        let instanceBodyList = []
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
-        for (let index = 0; index < appInstanceList.length; index++) {
-            //todo: Create a data FORM format for requests
-            let instanceInfoOneForm = makeFormForAppInstance(appInstanceList[index], pHardwareType, store.userToken, recentDataLimitCount, pStartTime, pEndTime)
-            instanceBodyList.push(instanceInfoOneForm);
-        }
-
-        let promiseList = []
-        for (let index = 0; index < instanceBodyList.length; index++) {
-            promiseList.push(getAppLevelMetrics(instanceBodyList[index]))
-        }
-        //todo: Bring health check list(cpu,mem,network,disk..) to the number of apps instance, by parallel request
-
-        let appInstanceHealthCheckList = []
-        try {
-            appInstanceHealthCheckList = await Promise.all(promiseList);
-        } catch (e) {
-            throw new Error(e)
-        }
-
-        let usageListForAllInstance = []
-        appInstanceList.map((item, index) => {
-            usageListForAllInstance.push({
-                instanceData: appInstanceList[index],
-                appInstanceHealth: appInstanceHealthCheckList[index],
-            });
-        })
-
-        let allUsageList = []
-        usageListForAllInstance.map((item, index) => {
-            let appName = item.instanceData.AppName;
-            let sumMemUsage = 0;
-            let sumDiskUsage = 0;
-            let sumRecvBytes = 0;
-            let sumSendBytes = 0;
-            let sumCpuUsage = 0;
-
-            let sumActiveConnection = 0;
-            let sumHandledConnection = 0
-            let sumAcceptsConnection = 0
-            let columns = []
-            let cpuSeriesValue=[]
-            let memSeriesValue=[]
-            let diskSeriesValue=[]
-            let networkSeriesValue=[]
-            let connectionsSeriesValue=[]
-
-            if (item.appInstanceHealth !== undefined) {
-                let series = item.appInstanceHealth.data["0"].Series;
-
-                if (series !== null) {
-                    if (series["3"] !== undefined) {
-                        let cpuSeries = series["3"]
-                        columns = cpuSeries.columns;
-                        cpuSeriesValue= cpuSeries.values;
-                        cpuSeries.values.map(item => {
-                            let cpuUsage = item[APP_INST_MATRIX_HW_USAGE_INDEX.CPU];//cpuUsage..index
-                            sumCpuUsage += cpuUsage;
-                        })
-                    }
-
-
-                    if (series["1"] !== undefined) {
-                        let memSeries = series["1"]
-
-                        memSeriesValue= memSeries.values;
-
-                        memSeries.values.map(item => {
-                            let usageOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.MEM];//memUsage..index
-                            sumMemUsage += usageOne;
-                        })
-                    }
-
-
-                    if (series["2"] !== undefined) {
-                        let diskSeries = series["2"]
-
-                        diskSeriesValue= diskSeries.values;
-
-                        diskSeries.values.map(item => {
-                            let usageOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.DISK];//diskUsage..index
-                            sumDiskUsage += usageOne;
-                        })
-                    }
-
-                    if (series["0"] !== undefined) {
-                        let networkSeries = series["0"]
-
-                        networkSeriesValue= networkSeries.values;
-                        networkSeries.values.map(item => {
-                            let sendBytesOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.SENDBYTES];//sendBytesOne
-                            sumSendBytes += sendBytesOne;
-                            let recvBytesOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.RECVBYTES];//recvBytesOne
-                            sumRecvBytes += recvBytesOne;
-                        })
-                    }
-
-
-                    if (series["4"] !== undefined) {
-                        let connectionsSeries = series["4"]
-
-                        connectionsSeriesValue= connectionsSeries.values;
-                        connectionsSeries.values.map(item => {
-                            let connection1One = item[APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE];//1
-                            sumActiveConnection += connection1One;
-                            let connection2One = item[APP_INST_MATRIX_HW_USAGE_INDEX.HANDLED];//2
-                            sumHandledConnection += connection2One;
-                            let connection3One = item[APP_INST_MATRIX_HW_USAGE_INDEX.ACCEPTS];//3
-                            sumAcceptsConnection += connection3One;
-                        })
-                    }
-
-                    allUsageList.push({
-                        instance: item.instanceData,
-                        columns: columns,
-                        appName: appName,
-                        sumCpuUsage: sumCpuUsage / RECENT_DATA_LIMIT_COUNT,
-                        sumMemUsage: Math.ceil(sumMemUsage / RECENT_DATA_LIMIT_COUNT),
-                        sumDiskUsage: Math.ceil(sumDiskUsage / RECENT_DATA_LIMIT_COUNT),
-                        sumRecvBytes: Math.ceil(sumRecvBytes / RECENT_DATA_LIMIT_COUNT),
-                        sumSendBytes: Math.ceil(sumSendBytes / RECENT_DATA_LIMIT_COUNT),
-                        sumActiveConnection: Math.ceil(sumActiveConnection / RECENT_DATA_LIMIT_COUNT),
-                        sumHandledConnection: Math.ceil(sumHandledConnection / RECENT_DATA_LIMIT_COUNT),
-                        sumAcceptsConnection: Math.ceil(sumAcceptsConnection / RECENT_DATA_LIMIT_COUNT),
-                        cpuSeriesValues:cpuSeriesValue,
-                        memSeriesValue: memSeriesValue,
-                        diskSeriesValue: diskSeriesValue,
-                        networkSeriesValue: networkSeriesValue,
-                        connectionsSeriesValues: connectionsSeriesValue,
-
-                    })
-
-                } else {//@todo: If series data is null
-                    allUsageList.push({
-                        instance: item.instanceData,
-                        columns: "",
-                        sumCpuUsage: 0,
-                        sumMemUsage: 0,
-                        sumDiskUsage: 0,
-                        sumRecvBytes: 0,
-                        sumSendBytes: 0,
-                        sumActiveConnection: 0,
-                        sumHandledConnection: 0,
-                        sumAcceptsConnection: 0,
-                        values: [],
-                        appName: appName,
-                    })
-
-
-                }
-            }
-
-        })
-
-        console.log('allUsageList22====>',allUsageList)
-
-        return allUsageList;
-    } catch (e) {
-        //throw new Error(e.toString())
-        showToast(e.toString())
-    }
-
-}
 
 
 
