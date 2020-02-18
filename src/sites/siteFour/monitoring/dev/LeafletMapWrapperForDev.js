@@ -190,27 +190,6 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                      dragging={true}
                      boundsOptions={{padding: [50, 50]}}
                 >
-                    <div id="button-wrapper" style={{zIndex: 999999, backgroundColor: 'white'}}>
-                        <Icon onClick={async () => {
-
-                          /*  await this.setState({
-                                isUpdateEnable: true,
-                            })
-                            this.setState({
-                                zoom: 0.9,
-
-                            })*/
-                        }} type="reload" style={{fontSize: '16px', color: 'black', cursor: 'pointer'}}
-                              theme="outlined"/>
-                        {/*   <Icon onClick={() => {
-                            alert('sdfksdlkfldkf')
-                        }} type="star" style={{fontSize: '16px', color: 'black', cursor: 'pointer'}}
-                              theme="outlined"/>
-                        <Icon onClick={() => {
-                            alert('sdfksdlkfldkf')
-                        }} type="star" style={{fontSize: '16px', color: 'black', cursor: 'pointer'}}
-                              theme="outlined"/>*/}
-                    </div>
                     <TileLayer
                         url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
                         //url={'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'}
@@ -258,7 +237,7 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                             style={{color: 'black'}}>{item.Cloudlet}</span>
                                 </Tooltip>
 
-                                {item.isShowCircle &&
+                               {/* {item.isShowCircle &&
                                 <Circle
                                     center={[item.CloudletLocation.latitude, item.CloudletLocation.longitude,]}
                                     radius={5000000}
@@ -266,7 +245,7 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                     opacity={0.1}
                                     weight={0.1}
                                 />
-                                }
+                                }*/}
                                 <Popup className='popup1'>
 
                                     {listAppName.map(AppName_ClusterInst => {
