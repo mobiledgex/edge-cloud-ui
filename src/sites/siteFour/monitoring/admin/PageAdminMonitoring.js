@@ -291,7 +291,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 //@test: FAKE JSON FOR DEV
                 //let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
-                //@todo: realdata
+
+
+                //@fixme: realdata
                 let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
 
                 appInstanceList.map(async (item: TypeAppInstance, index) => {
@@ -326,22 +328,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     startTime,
                     endTime
                 });
-                let allAppInstUsageList = [];
 
+                let allAppInstUsageList = [];
                 //@todo:realdata
-                /*try {
+                try {
                     allAppInstUsageList = await getAppLevelUsageList__NEW(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
                 } catch (e) {
                     showToast(e.toString())
-                }*/
-                //allAppInstUsageList = require('./appAppLevelUsageList__all')
-
-                //console.log('allAppInstUsageList====>', allAppInstUsageList);
+                }
 
                 //fixme: fakedata
-                allAppInstUsageList = require('./appAppLevelUsageList__all')
-
-
+                //allAppInstUsageList = require('./appAppLevelUsageList__all')
+                //console.log('allAppInstUsageList====>', allAppInstUsageList);
 
 
                 //todo: MAKE SELECTBOX.
@@ -417,7 +415,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         async filterUsageListByDate() {
-            try{
+            try {
                 if (this.state.startTime !== '' && this.state.endTime !== '') {
                     let startTime = makeCompleteDateTime(this.state.startTime);
                     let endTime = makeCompleteDateTime(this.state.endTime);
@@ -425,7 +423,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     this.setState({loading: true})
                     let appInstUsageList_byDate = await getAppLevelUsageList__NEW(this.state.appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
 
-                    console.log('appInstUsageList_byDate====>',appInstUsageList_byDate);
+                    console.log('appInstUsageList_byDate====>', appInstUsageList_byDate);
 
                     this.setState({
                         usageListByDate: appInstUsageList_byDate,
@@ -433,7 +431,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     })
                     this.filterByClassification(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, this.state.currentAppInst, true)
                 }
-            }catch (e) {
+            } catch (e) {
 
             }
 
@@ -502,7 +500,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
 
                 let appInstanceList = []
-                let allAppInstUsageList=[];
+                let allAppInstUsageList = [];
                 let allGridInstanceList = []
 
                 //@todo: 날짜에 의한 필터링인경우
@@ -595,12 +593,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     let top5UsageList = await cutArrayList(5, this.state.filteredAppInstUsageList);
 
 
-                    console.log('top5UsageList====>',top5UsageList);
+                    console.log('top5UsageList====>', top5UsageList);
 
                     //todo: MAKE TOP5 INSTANCE LIST
                     let appInstanceListTop5 = makeSelectBoxListByClassification_byKey(top5UsageList, CLASSIFICATION.appName)
 
-                    console.log('appInstanceListTop5====>',appInstanceListTop5);
+                    console.log('appInstanceListTop5====>', appInstanceListTop5);
 
                     await this.setState({
                         appInstanceListTop5: appInstanceListTop5,
