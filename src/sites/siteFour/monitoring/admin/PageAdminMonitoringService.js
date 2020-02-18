@@ -8,10 +8,10 @@ import PageAdminMonitoring from "./PageAdminMonitoring";
 import {convertByteToMegaByte, numberWithCommas, renderBarChartCore, renderLineChartCore, renderUsageByType2, StylesForMonitoring} from "../PageMonitoringCommonService";
 import {TabPanel, Tabs} from "react-tabs";
 import {Table} from "semantic-ui-react";
-import type {TypeGridInstanceList} from "../../../../shared/Types";
+import type {TypeAppInstanceUsage2, TypeGridInstanceList} from "../../../../shared/Types";
 import {Progress} from "antd";
 
-export const cutArrayList = async (length: number = 5, paramArrayList: any) => {
+export const cutArrayList = (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];
     for (let index in paramArrayList) {
         if (index < 5) {
@@ -20,6 +20,33 @@ export const cutArrayList = async (length: number = 5, paramArrayList: any) => {
     }
     return newArrayList;
 }
+
+export const makeSelectBoxListByClassification = (arrList, keyName) => {
+    console.log('makeSelectBoxListByClassification====>', arrList);
+
+    let newArrList = [];
+    for (let i in arrList) {
+        newArrList.push({
+            value: arrList[i].AppName,
+            text: arrList[i].AppName,
+        })
+    }
+    return newArrList;
+}
+
+export const makeSelectBoxListByClassification_byKey = (arrList, keyName) => {
+    console.log('makeSelectBoxListByClassification====>', arrList);
+
+    let newArrList = [];
+    for (let i in arrList) {
+        newArrList.push({
+            value: arrList[i][keyName],
+            text: arrList[i][keyName],
+        })
+    }
+    return newArrList;
+}
+
 
 export const makeFormForAppInstance = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
 
@@ -274,6 +301,19 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
 
 export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
 
+    if (hardwareType === HARDWARE_TYPE.CPU) {
+        usageList.sort((a, b) => b.sumCpuUsage - a.sumCpuUsage);
+    } else if (hardwareType === HARDWARE_TYPE.MEM) {
+        usageList.sort((a, b) => b.sumMemUsage - a.sumMemUsage);
+    } else if (hardwareType === HARDWARE_TYPE.DISK) {
+        usageList.sort((a, b) => b.sumDiskUsage - a.sumDiskUsage);
+    } else if (hardwareType === HARDWARE_TYPE.NETWORK) {
+        usageList.sort((a, b) => b.sumRecvBytes - a.sumRecvBytes);
+    } else if (hardwareType === HARDWARE_TYPE.CONNECTIONS) {
+        usageList.sort((a, b) => b.sumAcceptsConnection - a.sumAcceptsConnection);
+    }
+
+
     if (usageList.length === 0) {
         return (
             <div style={StylesForMonitoring.noData}>
@@ -284,19 +324,20 @@ export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
 
         let chartDataList = [];
         chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
-        for (let index = 0; index < usageList.length; index++) {
+
+        usageList.map((item: TypeAppInstanceUsage2, index) => {
             if (index < 5) {
-                let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10),
-                    renderUsageByType2(usageList[index], hardwareType),
+                let barDataOne = [item.appName.toString().substring(0, 10),
+                    renderUsageByType2(item, hardwareType),
                     CHART_COLOR_LIST[index],
-                    renderUsageLabelByType(usageList[index], hardwareType)]
+                    renderUsageLabelByType(item, hardwareType)]
                 chartDataList.push(barDataOne);
             }
-        }
+        })
 
         return renderBarChartCore(chartDataList, hardwareType)
-    }
 
+    }
 
 }
 
@@ -305,25 +346,23 @@ export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
  * bottom Grid InstanceList maker..
  * @returns {[]}
  */
-export const makeGridInstanceList = (usageList: Array) => {
-    let allCpuUsageList = usageList[0]
-    let allMemUsageList = usageList[1]
-    let allNetworkUsageList = usageList[2]
-    let allDiskUsageList = usageList[3]
-    let allConnectionsList = usageList[4]
+export const makeGridInstanceList = (usageList: any) => {
+
+    usageList.sort((a, b) => b.sumCpuUsage - a.sumCpuUsage);
+
 
     let gridInstanceList = []
-    allCpuUsageList.map((item, index) => {
+    usageList.map((item: TypeAppInstanceUsage2, index) => {
         gridInstanceList.push({
             instance: item.instance,
             sumCpuUsage: item.sumCpuUsage,
-            sumDiskUsage: allDiskUsageList[index].sumDiskUsage,
-            sumMemUsage: allMemUsageList[index].sumMemUsage,
-            sumRecvBytes: allNetworkUsageList[index].sumRecvBytes,
-            sumSendBytes: allNetworkUsageList[index].sumSendBytes,
-            sumActiveConnection: allConnectionsList[index].sumActiveConnection,
-            sumHandledConnection: allConnectionsList[index].sumHandledConnection,
-            sumAcceptsConnection: allConnectionsList[index].sumAcceptsConnection,
+            sumDiskUsage: item.sumDiskUsage,
+            sumMemUsage: item.sumMemUsage,
+            sumRecvBytes: item.sumRecvBytes,
+            sumSendBytes: item.sumSendBytes,
+            sumActiveConnection: item.sumActiveConnection,
+            sumHandledConnection: item.sumHandledConnection,
+            sumAcceptsConnection: item.sumAcceptsConnection,
         })
     })
     return gridInstanceList;
@@ -602,32 +641,27 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
             let instanceNameList = [];
             let usageSetList = []
             let dateTimeList = []
-            for (let i in hardwareUsageList) {
-                let seriesValues = hardwareUsageList[i].values
+            /*for (let i in hardwareUsageList) {
+            }*/
+            hardwareUsageList.map((item: TypeAppInstanceUsage2, index) => {
 
-                instanceAppName = hardwareUsageList[i].instance.AppName
+                let seriesValues = []
+                if (hardwareType === HARDWARE_TYPE.CPU) {
+                    seriesValues = item.cpuSeriesValues
+                } else if (hardwareType === HARDWARE_TYPE.MEM) {
+                    seriesValues = item.memSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.DISK) {
+                    seriesValues = item.diskSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.NETWORK) {
+                    seriesValues = item.networkSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.CONNECTIONS) {
+                    seriesValues = item.connectionsSeriesValues
+                }
+
+                instanceAppName = item.instance.AppName
                 let usageList = [];
 
                 for (let j in seriesValues) {
-                    /*
-                      @todo: 하드웨어 매트릭 인덱스에 대한 상수처
-                      0: "time"
-                      1: "app"
-                      2: "cluster"
-                      3: "dev"
-                      4: "cloudlet"
-                      5: "operator"
-                      6: "cpu"
-                      7: "mem"
-                      8: "disk"
-                      9: "sendBytes"
-                      10: "recvBytes"
-                      11: "port"
-                      12: "active"
-                      13: "handled"
-                      14: "accepts"
-                      15: "bytesSent"
-                      16: "bytesRecvd"*/
                     let usageOne = 0;
                     if (hardwareType === HARDWARE_TYPE.CPU) {
                         usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.CPU];
@@ -647,7 +681,6 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
                         usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACCEPTS.toString()];
                     }
 
-
                     usageList.push(usageOne);
                     let dateOne = seriesValues[j]["0"];
                     dateOne = dateOne.toString().split("T")
@@ -657,7 +690,9 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
 
                 instanceNameList.push(instanceAppName)
                 usageSetList.push(usageList);
-            }
+
+            })
+
 
             //@todo: CUT LIST INTO RECENT_DATA_LIMIT_COUNT
             let newDateTimeList = []
@@ -700,93 +735,93 @@ export const makeNetworkBarData = (networkUsageList, hwType) => {
 }
 
 
-export const handleBubbleChartDropDown = async (_this,value) => {
-   try{
-       await _this.setState({
-           currentHardwareType: value,
-       });
+export const handleBubbleChartDropDown = async (_this, value) => {
+    try {
+        await _this.setState({
+            currentHardwareType: value,
+        });
 
-       let appInstanceList = _this.state.appInstanceList;
-       let allCpuUsageList = _this.state.filteredCpuUsageList;
-       let allMemUsageList = _this.state.filteredMemUsageList;
-       let allDiskUsageList = _this.state.filteredDiskUsageList;
-       let allNetworkUsageList = _this.state.filteredNetworkUsageList;
-       let chartData = [];
+        let appInstanceList = _this.state.appInstanceList;
+        let allCpuUsageList = _this.state.filteredCpuUsageList;
+        let allMemUsageList = _this.state.filteredMemUsageList;
+        let allDiskUsageList = _this.state.filteredDiskUsageList;
+        let allNetworkUsageList = _this.state.filteredNetworkUsageList;
+        let chartData = [];
 
-       if (value === HARDWARE_TYPE.FLAVOR) {
-           appInstanceList.map((item, index) => {
-               chartData.push({
-                   //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
-                   index: index,
-                   label: item.AppName.toString().substring(0, 10) + "...",
-                   value: instanceFlavorToPerformanceValue(item.Flavor),
-                   favor: item.Flavor,
-                   fullLabel: item.AppName.toString(),
-               })
-           })
-       } else if (value === HARDWARE_TYPE.CPU) {
-           allCpuUsageList.map((item, index) => {
-               chartData.push({
-                   //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
-                   index: index,
-                   label: item.instance.AppName.toString().substring(0, 10) + "...",
-                   value: (item.sumCpuUsage * 100).toFixed(0),
-                   favor: (item.sumCpuUsage * 100).toFixed(0),
-                   fullLabel: item.instance.AppName.toString(),
-               })
-           })
-       } else if (value === HARDWARE_TYPE.MEM) {
-           allMemUsageList.map((item, index) => {
-               chartData.push({
-                   //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
-                   index: index,
-                   label: item.instance.AppName.toString().substring(0, 10) + "...",
-                   value: item.sumMemUsage,
-                   favor: item.sumMemUsage,
-                   fullLabel: item.instance.AppName.toString(),
-               })
-           })
-       } else if (value === HARDWARE_TYPE.DISK) {
-           allDiskUsageList.map((item, index) => {
-               chartData.push({
-                   //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
-                   index: index,
-                   label: item.instance.AppName.toString().substring(0, 10) + "...",
-                   value: item.sumDiskUsage,
-                   favor: item.sumDiskUsage,
-                   fullLabel: item.instance.AppName.toString(),
-               })
-           })
-       } else if (value === NETWORK_TYPE.RECV_BYTES) {
-           allNetworkUsageList.map((item, index) => {
-               chartData.push({
-                   index: index,
-                   label: item.instance.AppName.toString().substring(0, 10) + "...",
-                   value: item.sumRecvBytes,
-                   favor: item.sumRecvBytes,
-                   fullLabel: item.instance.AppName.toString(),
-               })
-           })
-       } else if (value === HARDWARE_TYPE.SEND_BYTES) {
-           allNetworkUsageList.map((item, index) => {
-               chartData.push({
-                   index: index,
-                   label: item.instance.AppName.toString().substring(0, 10) + "...",
-                   value: item.sumSendBytes,
-                   favor: item.sumSendBytes,
-                   fullLabel: item.instance.AppName.toString(),
-               })
-           })
-       }
-       //@todo:-----------------------
-       //todo: bubbleChart
-       //@todo:-----------------------
-       _this.setState({
-           bubbleChartData: chartData,
-       });
-   }catch (e) {
-       
-   }
+        if (value === HARDWARE_TYPE.FLAVOR) {
+            appInstanceList.map((item, index) => {
+                chartData.push({
+                    //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+                    index: index,
+                    label: item.AppName.toString().substring(0, 10) + "...",
+                    value: instanceFlavorToPerformanceValue(item.Flavor),
+                    favor: item.Flavor,
+                    fullLabel: item.AppName.toString(),
+                })
+            })
+        } else if (value === HARDWARE_TYPE.CPU) {
+            allCpuUsageList.map((item, index) => {
+                chartData.push({
+                    //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+                    index: index,
+                    label: item.instance.AppName.toString().substring(0, 10) + "...",
+                    value: (item.sumCpuUsage * 100).toFixed(0),
+                    favor: (item.sumCpuUsage * 100).toFixed(0),
+                    fullLabel: item.instance.AppName.toString(),
+                })
+            })
+        } else if (value === HARDWARE_TYPE.MEM) {
+            allMemUsageList.map((item, index) => {
+                chartData.push({
+                    //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+                    index: index,
+                    label: item.instance.AppName.toString().substring(0, 10) + "...",
+                    value: item.sumMemUsage,
+                    favor: item.sumMemUsage,
+                    fullLabel: item.instance.AppName.toString(),
+                })
+            })
+        } else if (value === HARDWARE_TYPE.DISK) {
+            allDiskUsageList.map((item, index) => {
+                chartData.push({
+                    //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+                    index: index,
+                    label: item.instance.AppName.toString().substring(0, 10) + "...",
+                    value: item.sumDiskUsage,
+                    favor: item.sumDiskUsage,
+                    fullLabel: item.instance.AppName.toString(),
+                })
+            })
+        } else if (value === NETWORK_TYPE.RECV_BYTES) {
+            allNetworkUsageList.map((item, index) => {
+                chartData.push({
+                    index: index,
+                    label: item.instance.AppName.toString().substring(0, 10) + "...",
+                    value: item.sumRecvBytes,
+                    favor: item.sumRecvBytes,
+                    fullLabel: item.instance.AppName.toString(),
+                })
+            })
+        } else if (value === HARDWARE_TYPE.SEND_BYTES) {
+            allNetworkUsageList.map((item, index) => {
+                chartData.push({
+                    index: index,
+                    label: item.instance.AppName.toString().substring(0, 10) + "...",
+                    value: item.sumSendBytes,
+                    favor: item.sumSendBytes,
+                    fullLabel: item.instance.AppName.toString(),
+                })
+            })
+        }
+        //@todo:-----------------------
+        //todo: bubbleChart
+        //@todo:-----------------------
+        _this.setState({
+            bubbleChartData: chartData,
+        });
+    } catch (e) {
+
+    }
 }
 
 

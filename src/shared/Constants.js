@@ -92,6 +92,7 @@ export const CLASSIFICATION = {
     CloudletName: 'CloudletName',
     cloudlet: 'cloudlet',
     APP_NAME: 'AppName',
+    appName: 'appName',
     APPNAME: 'AppName',
     APPINST: 'AppInst',
     CLUSTER_INST: 'ClusterInst',
