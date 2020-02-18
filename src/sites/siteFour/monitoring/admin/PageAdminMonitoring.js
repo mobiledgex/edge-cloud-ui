@@ -638,7 +638,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        renderCpuTabArea() {
+        renderChartTabArea(hwType: string) {
             return (
                 <div className='page_monitoring_dual_column'>
 
@@ -652,7 +652,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : makeBarChartDataForInst(this.state.filteredAppInstUsageList, HARDWARE_TYPE.CPU)}
+                            {this.state.loading ? renderPlaceHolderCircular() : makeBarChartDataForInst(this.state.filteredAppInstUsageList, hwType)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -665,78 +665,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : makeLineChartDataForAppInst(this, this.state.filteredAppInstUsageList, HARDWARE_TYPE.CPU)}
+                            {this.state.loading ? renderPlaceHolderCircular() : makeLineChartDataForAppInst(this, this.state.filteredAppInstUsageList, hwType)}
                         </div>
                     </div>
                 </div>
             )
         }
 
-        renderMemTabArea() {
-            return (
-                <div className='page_monitoring_dual_column'>
-                    {/*1st_column*/}
-                    {/*1st_column*/}
-                    {/*1st_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                TOP5 of MEM Usage
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : makeBarChartDataForInst(this.state.filteredAppInstUsageList, HARDWARE_TYPE.MEM)}
-                        </div>
-                    </div>
-                    {/*2nd_column*/}
-                    {/*2nd_column*/}
-                    {/*2nd_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                MEM Usage
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : makeLineChartDataForAppInst(this, this.state.filteredAppInstUsageList, HARDWARE_TYPE.MEM)}
-                        </div>
-                    </div>
-
-                </div>
-            )
-        }
-
-        renderDiskTabArea() {
-            return (
-                <div className='page_monitoring_dual_column'>
-                    {/*1_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                TOP5 of DISK Usage
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : makeBarChartDataForInst(this.state.filteredAppInstUsageList, HARDWARE_TYPE.DISK)}
-                        </div>
-                    </div>
-                    {/*2nd_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                DISK Usage
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : makeLineChartDataForAppInst(this, this.state.filteredAppInstUsageList, HARDWARE_TYPE.DISK)}
-                        </div>
-                    </div>
-                </div>
-            )
-        }
-
-        renderConnectionsArea(connectionsType: string) {
-
+        renderMultiChartArea(hwType: string) {
             return (
                 <div className='page_monitoring_dual_column'>
                     <div className='page_monitoring_dual_container'>
@@ -746,7 +682,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular('network') : makeBarChartDataForInst(this.state.filteredAppInstUsageList, connectionsType, this)}
+                            {this.state.loading ? renderPlaceHolderCircular('network') : makeBarChartDataForInst(this.state.filteredAppInstUsageList, hwType, this)}
                         </div>
                     </div>
                     <div className='page_monitoring_dual_container'>
@@ -755,90 +691,74 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 Connections
                             </div>
                             {!this.state.loading &&
-                            <Dropdown
-                                placeholder='SELECT CONN'
-                                selection
-                                loading={this.state.loading}
-                                options={CONNECTIONS_OPTIONS}
-                                //defaultValue={CONNECTIONS_OPTIONS[0].value}
-                                onChange={async (e, {value}) => {
-
-                                    if (value === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-                                        this.setState({
-                                            connectionsTabIndex: 0,
-                                        })
-                                    } else if (value === HARDWARE_TYPE.HANDLED_CONNECTION) {
-                                        this.setState({
-                                            connectionsTabIndex: 1,
-                                        })
-                                    } else if (value === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-                                        this.setState({
-                                            connectionsTabIndex: 2,
-                                        })
-                                    }
-
-                                }}
-                                value={connectionsType}
-                                //style={StylesForMonitoring.dropDown}
-                            />
+                            this.renderDropDownForMultiChartArea(hwType)
                             }
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular('network') : makeLineChartDataForAppInst(this, this.state.filteredAppInstUsageList, connectionsType)}
+                            {this.state.loading ? renderPlaceHolderCircular('network') : makeLineChartDataForAppInst(this, this.state.filteredAppInstUsageList, hwType, this)}
                         </div>
                     </div>
                 </div>
             )
         }
 
-        renderNetworkArea(networkType: string) {
-            return (
-                <div className='page_monitoring_dual_column'>
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                TOP5 of NETWORK Usage
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular('network') : makeBarChartDataForInst(this.state.filteredAppInstUsageList, networkType, this)}
-                        </div>
-                    </div>
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title_select'>
-                                NETWORK Usage
-                            </div>
-                            {!this.state.loading &&
-                            <Dropdown
-                                placeholder='SELECT HARDWARE'
-                                selection
-                                loading={this.state.loading}
-                                options={NETWORK_OPTIONS}
-                                defaultValue={NETWORK_OPTIONS[0].value}
-                                onChange={async (e, {value}) => {
-                                    if (value === NETWORK_TYPE.RECV_BYTES) {
-                                        this.setState({
-                                            networkTabIndex: 0,
-                                        })
-                                    } else {
-                                        this.setState({
-                                            networkTabIndex: 1,
-                                        })
-                                    }
+        renderDropDownForMultiChartArea(chartType) {
+            if (chartType === HARDWARE_TYPE.ACTIVE_CONNECTION || chartType === HARDWARE_TYPE.ACCEPTS_CONNECTION || chartType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+                return (
+                    <Dropdown
+                        placeholder='SELECT CONN'
+                        selection
+                        loading={this.state.loading}
+                        options={CONNECTIONS_OPTIONS}
+                        //defaultValue={CONNECTIONS_OPTIONS[0].value}
+                        onChange={async (e, {value}) => {
 
-                                }}
-                                value={networkType}
-                                // style={Styles.dropDown}
-                            />
+                            if (value === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+                                this.setState({
+                                    connectionsTabIndex: 0,
+                                })
+                            } else if (value === HARDWARE_TYPE.HANDLED_CONNECTION) {
+                                this.setState({
+                                    connectionsTabIndex: 1,
+                                })
+                            } else if (value === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+                                this.setState({
+                                    connectionsTabIndex: 2,
+                                })
                             }
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular('network') : makeLineChartDataForAppInst(this, this.state.filteredAppInstUsageList, networkType)}
-                        </div>
-                    </div>
-                </div>
-            )
+
+                        }}
+                        value={chartType}
+                        //style={StylesForMonitoring.dropDown}
+                    />
+                )
+            } else {
+                return (
+                    <Dropdown
+                        placeholder='SELECT HARDWARE'
+                        selection
+                        loading={this.state.loading}
+                        options={NETWORK_OPTIONS}
+                        defaultValue={NETWORK_OPTIONS[0].value}
+                        onChange={async (e, {value}) => {
+                            if (value === NETWORK_TYPE.RECV_BYTES) {
+                                this.setState({
+                                    networkTabIndex: 0,
+                                })
+                            } else {
+                                this.setState({
+                                    networkTabIndex: 1,
+                                })
+                            }
+
+                        }}
+                        value={chartType}
+                        // style={Styles.dropDown}
+                    />
+                )
+            }
+
+
         }
 
         handleReset = async () => {
@@ -1080,7 +1000,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 menuItem: 'CPU', render: () => {
                     return (
                         <Pane>
-                            {this.renderCpuTabArea()}
+                            {this.renderChartTabArea(HARDWARE_TYPE.CPU)}
                         </Pane>
                     )
                 }
@@ -1089,7 +1009,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 menuItem: 'MEM', render: () => {
                     return (
                         <Pane>
-                            {this.renderMemTabArea()}
+                            {this.renderChartTabArea(HARDWARE_TYPE.MEM)}
                         </Pane>
                     )
                 }
@@ -1098,7 +1018,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 menuItem: 'DISK', render: () => {
                     return (
                         <Pane>
-                            {this.renderDiskTabArea()}
+                            {this.renderChartTabArea(HARDWARE_TYPE.DISK)}
                         </Pane>
                     )
                 }
@@ -1111,13 +1031,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <Tabs selectedIndex={this.state.connectionsTabIndex}
                                   className='page_monitoring_tab'>
                                 <TabPanel>
-                                    {this.renderConnectionsArea(HARDWARE_TYPE.ACTIVE_CONNECTION)}
+                                    {this.renderMultiChartArea(HARDWARE_TYPE.ACTIVE_CONNECTION)}
                                 </TabPanel>
                                 <TabPanel>
-                                    {this.renderConnectionsArea(HARDWARE_TYPE.HANDLED_CONNECTION)}
+                                    {this.renderMultiChartArea(HARDWARE_TYPE.HANDLED_CONNECTION)}
                                 </TabPanel>
                                 <TabPanel>
-                                    {this.renderConnectionsArea(HARDWARE_TYPE.ACCEPTS_CONNECTION)}
+                                    {this.renderMultiChartArea(HARDWARE_TYPE.ACCEPTS_CONNECTION)}
                                 </TabPanel>
                             </Tabs>
 
@@ -1262,10 +1182,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     <Tabs selectedIndex={this.state.networkTabIndex}
                                                           className='page_monitoring_tab'>
                                                         <TabPanel>
-                                                            {this.renderNetworkArea(NETWORK_TYPE.RECV_BYTES)}
+                                                            {this.renderMultiChartArea(HARDWARE_TYPE.RECVBYTES)}
                                                         </TabPanel>
                                                         <TabPanel>
-                                                            {this.renderNetworkArea(NETWORK_TYPE.SEND_BYTES)}
+                                                            {this.renderMultiChartArea(HARDWARE_TYPE.SENDBYTES)}
                                                         </TabPanel>
                                                     </Tabs>
                                                 </div>
