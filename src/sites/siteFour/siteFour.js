@@ -1061,7 +1061,7 @@ class SiteFour extends React.Component {
                                                     /> : null
                                             }
                                             {
-                                                (viewMode!== 'MexDetailView' && !this.state.currentPage && this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView' && this.props.location.search.indexOf('audits') === -1 ) ?
+                                                (viewMode!== 'MexDetailView' && !this.state.currentPage && this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView' && this.state.page.indexOf('create') === -1 && this.state.page.indexOf('edit') == -1 && this.props.location.search.indexOf('audits') === -1 ) ?
                                                     <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>New</Button>
                                                     : null
                                             }
