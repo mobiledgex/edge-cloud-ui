@@ -9,6 +9,7 @@ import * as serviceMC from '../../../services/serviceMC';
 import '../../siteThree.css';
 import MapWithListView from "../../../container/mapWithListView";
 import PageDetailViewer from '../../../container/pageDetailViewer';
+import TerminalViewer from '../../../container/TerminalViewer';
 import * as reducer from '../../../utils'
 
 let _self = null;
@@ -47,9 +48,15 @@ class SiteFourPageAppInst extends React.Component {
             { field: 'Cloudlet', label: 'Cloudlet', sortable: true, visible: true },
             { field: 'ClusterInst', label: 'Cluster Instance', sortable: true, visible: true },
             { field: 'CloudletLocation', label: 'Cloudlet Location', sortable: false, visible: false },
+            { field: 'DeploymentType', label: 'Deployment Type', sortable: true, visible: true },
             { field: 'State', label: 'State', sortable: true, visible: false },
             { field: 'Progress', label: 'Progress', sortable: false, visible: true },
-            { field: 'Actions', label: 'Actions', sortable: false, visible: true },
+            { field: 'Actions', label: 'Actions', sortable: false, visible: true }
+        ]
+
+        this.actionMenu = [
+            { label: 'Delete', icon:'delete_outline'},
+            { label: 'Terminal', icon:'code'}
         ]
     }
     gotoUrl(site, subPath) {
@@ -146,16 +153,35 @@ class SiteFourPageAppInst extends React.Component {
 
     }
 
-    receiveResult = (mcRequest) => {
-        _self.requestCount -= 1;
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let response = mcRequest.response;
-                if (response.data.length > 0) {
-                    _self.multiRequestData = [..._self.multiRequestData, ...response.data]
+    receiveResult = (mcRequestList) => {
+         _self.requestCount -= 1;
+         if (mcRequestList && mcRequestList.length > 0) {
+            let appInstList = [];
+            let appList = [];
+            mcRequestList.map(mcRequest => {
+                let request = mcRequest.request;
+                if (request.method === serviceMC.getEP().SHOW_APP_INST) {
+                    appInstList = mcRequest.response.data
                 }
+                else if (request.method === serviceMC.getEP().SHOW_APP) {
+                    appList = mcRequest.response.data
+                }
+            });
+
+            if (appInstList && appInstList.length > 0) {
+                for (let i = 0; i < appInstList.length; i++) {
+                    let appInst = appInstList[i]
+                    for (let j = 0; j < appList.length; j++) {
+                        let app = appList[j]
+                        if (appInst.AppName === app.AppName) {
+                            appInst.DeploymentType = app.DeploymentType;
+                            break;
+                        }
+                    }
+                }
+                _self.multiRequestData = [..._self.multiRequestData, ...appInstList]
             }
-        }
+        
 
         if (_self.requestCount === 0) {
             if (_self.multiRequestData.length > 0) {
@@ -168,8 +194,8 @@ class SiteFourPageAppInst extends React.Component {
                 _self.props.handleComputeRefresh(false);
                 _self.props.handleAlertInfo('error', 'Requested data is empty')
             }
-        }
-    }
+         }
+    }}
 
     getDataDeveloper = (region, regionArr) => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -186,13 +212,14 @@ class SiteFourPageAppInst extends React.Component {
         if (rgn && rgn.length > 0) {
             this.requestCount = rgn.length;
             let token = store ? store.userToken : 'null';
-            if (localStorage.selectRole == 'AdminManager') {
-                rgn.map((item) => {
-                    serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_APP_INST, data: { region: item } }, _self.receiveResult)
-                })
-            } else {
-                rgn.map((item) => {
-                    let data = {
+            rgn.map((item) => {
+                let requestList = []
+                let data = {}
+                if (localStorage.selectRole == 'AdminManager') {
+                    data = { region: item }
+                }
+                else {
+                    data = {
                         region: item,
                         appinst: {
                             key: {
@@ -202,9 +229,11 @@ class SiteFourPageAppInst extends React.Component {
                             }
                         }
                     }
-                    serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_APP_INST, data: data }, _self.receiveResult)
-                })
-            }
+                }
+                requestList.push({ token: token, method: serviceMC.getEP().SHOW_APP_INST, data: data })
+                requestList.push({ token: token, method: serviceMC.getEP().SHOW_APP, data: data })
+                serviceMC.sendMultiRequest(_self, requestList, _self.receiveResult)
+            })
         }
     }
     getDataDeveloperSub = (region) => {
@@ -213,11 +242,80 @@ class SiteFourPageAppInst extends React.Component {
         this.getDataDeveloper(_region);
     }
 
+    onTermialClose = ()=>
+    {
+        this.gotoUrl('/site4', 'pg=6')
+    }
+
+    setRemote = (mcRequest) => {
+        if (mcRequest && mcRequest.response)
+        {
+            let response  = mcRequest.response;
+            let responseData = response.data
+            if(responseData.code === 200)
+            {
+                let url = responseData.data;
+                url = url.replace('127.0.0.1', '192.168.3.5')
+                _self.setState({ viewMode: 'detailView' })
+                let vm = {}
+                vm.url = url
+                let data = {}
+                data.vm = vm;
+                if (this.props.terminalClick) {
+                    this.props.childPage(<TerminalViewer data={data} onClose={this.onTermialClose}></TerminalViewer>)
+                }
+            }
+        }
+    }
+
+    onTerminal = (data)=>
+    {
+        if (data.DeploymentType === 'vm') {
+            const { Region, OrganizationName, AppName, Version, ClusterInst, Cloudlet, Operator } = data;
+            let execrequest =
+            {
+                app_inst_key:
+                {
+                    app_key:
+                    {
+                        developer_key: { name: OrganizationName },
+                        name: AppName,
+                        version: Version
+                    },
+                    cluster_inst_key:
+                    {
+                        cluster_key: { name: ClusterInst },
+                        cloudlet_key: { operator_key: { name: Operator }, name: Cloudlet },
+                        //developer: OrganizationName
+                    }
+                }
+            }
+
+            let requestedData = {
+                execrequest: execrequest,
+                region: Region
+            }
+
+            let store = JSON.parse(localStorage.PROJECT_INIT);
+            let token = store ? store.userToken : 'null';
+            let requestData = {
+                token: token,
+                method: serviceMC.getEP().SHOW_CONSOLE,
+                data: requestedData
+            }
+            serviceMC.sendWSRequest(requestData, this.setRemote)
+        }
+        else if (data.Runtime.container_ids) {
+            this.props.childPage(<TerminalViewer data={data} onClose={this.onTermialClose}></TerminalViewer>)
+        }
+    }
+
     render() {
         const { viewMode, devData, detailData } = this.state;
         return (
+            
             (viewMode === 'listView') ?
-                <MapWithListView devData={devData} headerLayout={this.headerLayout} headerInfo={this.headerInfo} siteId='appinst' dataRefresh={this.getDataDeveloperSub} diffRev={this._diffRev} dataSort={this.state.dataSort}></MapWithListView>
+                <MapWithListView actionMenu={this.actionMenu} devData={devData} headerLayout={this.headerLayout} headerInfo={this.headerInfo} siteId='appinst' dataRefresh={this.getDataDeveloperSub} onTerminal={this.onTerminal} dataSort={this.state.dataSort}></MapWithListView>
                 :
                 <PageDetailViewer data={detailData} page='appInst' />
         );

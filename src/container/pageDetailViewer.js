@@ -4,7 +4,6 @@ import * as moment from 'moment';
 import ReactJson from 'react-json-view'
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import TerminalViewer from './TerminalViewer';
 import './styles.css';
 import TextareaAutosize from "react-textarea-autosize";
 
@@ -13,8 +12,7 @@ const pane = [
 ]
 
 const panesCommand = [
-    { menuItem: 'Details', render: (props) => <Tab.Pane>{detailViewer(props, 'detailViewer')}</Tab.Pane> },
-    { menuItem: 'Terminal', render: (props) => <Tab.Pane><TerminalViewer data={props.data} /></Tab.Pane> }
+    { menuItem: 'Details', render: (props) => <Tab.Pane>{detailViewer(props, 'detailViewer')}</Tab.Pane> }
 ]
 const detailViewer = (props, type) => (
     <Fragment>

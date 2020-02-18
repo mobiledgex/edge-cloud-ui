@@ -9,13 +9,6 @@ export const useStyles = makeStyles({
         width: '100%',
         height: '100%'
     },
-    terminalBodyDialog: {
-        overflow: 'scroll',
-        marginTop: 10,
-        backgroundColor: 'black',
-        width: '100%',
-        height: '600px'
-    },
     history: {
         fontFamily: 'Inconsolata, monospace',
         color: 'white',
