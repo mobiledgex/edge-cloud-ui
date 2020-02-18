@@ -276,11 +276,11 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
         return numberWithCommas(usageOne.sumDiskUsage) + " Byte"
     }
 
-    if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
+    if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
         return numberWithCommas(usageOne.sumRecvBytes) + " Byte";
     }
 
-    if (hardwareType === HARDWARE_TYPE.SEND_BYTES) {
+    if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
         return numberWithCommas(usageOne.sumSendBytes) + " Byte";
     }
 
@@ -307,11 +307,20 @@ export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
         usageList.sort((a, b) => b.sumMemUsage - a.sumMemUsage);
     } else if (hardwareType === HARDWARE_TYPE.DISK) {
         usageList.sort((a, b) => b.sumDiskUsage - a.sumDiskUsage);
-    } else if (hardwareType === HARDWARE_TYPE.NETWORK) {
+    } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
         usageList.sort((a, b) => b.sumRecvBytes - a.sumRecvBytes);
-    } else if (hardwareType === HARDWARE_TYPE.CONNECTIONS) {
+    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+        usageList.sort((a, b) => b.sumSendBytes - a.sumSendBytes);
+    } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
         usageList.sort((a, b) => b.sumAcceptsConnection - a.sumAcceptsConnection);
+    } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+        usageList.sort((a, b) => b.sumActiveConnection - a.sumActiveConnection);
+    } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+        usageList.sort((a, b) => b.sumHandledConnection - a.sumHandledConnection);
     }
+
+
+    console.log('hardwareType====>', hardwareType);
 
 
     if (usageList.length === 0) {

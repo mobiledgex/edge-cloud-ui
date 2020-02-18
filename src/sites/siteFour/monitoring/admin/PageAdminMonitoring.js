@@ -501,7 +501,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     currentSixGridIndex: 0,
                 })
 
-
                 let appInstanceList = []
                 let allAppInstUsageList=[];
                 let allGridInstanceList = []
@@ -555,8 +554,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     appInstanceList = filterAppInstanceListByClassification(appInstanceList, pCluster, CLASSIFICATION.CLUSTER_INST);
                     filteredAppInstUsageList = filterListBykey(CLASSIFICATION.CLUSTER_INST, pCluster, filteredAppInstUsageList);
                     filteredGridInstanceList = filterListBykey(CLASSIFICATION.CLUSTER_INST, pCluster, filteredGridInstanceList);
-
-
                 }
 
                 //todo: -------------------------------------------
