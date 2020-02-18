@@ -211,7 +211,7 @@ class EventsBar extends React.Component {
                                 left={this.props.barPaddingLeft}
                                 width={filledValue}
                                 fillingMotion={this.props.fillingMotion}
-                                backgroundColor={(this.props.events[this.props.index].status === 200)?this.props.styles.outline2:this.props.styles.outline3}
+                                backgroundColor={(this.props.events[this.props.index].status.status === 200)?this.props.styles.outline2:this.props.styles.outline3}
                             />
                             <Events
                                 events={this.props.events}

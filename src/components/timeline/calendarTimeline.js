@@ -91,14 +91,16 @@ export default class CalendarTimeline extends Component {
                                 items.push({
                                     id: index + '',
                                     group: groups[i].id + '',
-                                    title: item,
+                                    title: status[index].traceid,
+                                    // title: item,
                                     start: startDate,
                                     end: endValue,
                                     canMove: startValue > new Date().getTime(),
                                     canResize: startValue > new Date().getTime() ? (endValue > new Date().getTime() ? 'both' : 'left') : (endValue > new Date().getTime() ? 'right' : false),
                                     className: (moment(startDate).day() === 6 || moment(startDate).day() === 0) ? 'item-weekend' : '',
-                                    bgColor: (status[index] === 200) ? "#79BF1466" : "#bf000066",
-                                    selectedBgColor: (status[index] === 200) ? "#79BF14DD" : "#bf0000DD"
+                                    bgColor: (status[index].status === 200) ? "#79BF1466" : "#bf000066",
+                                    selectedBgColor: (status[index].status === 200) ? "#79BF14DD" : "#bf0000DD",
+                                    itemTime: item
                                 })
                             }
                         })
@@ -119,8 +121,10 @@ export default class CalendarTimeline extends Component {
         const storageTimeList = JSON.parse(localStorage.getItem("selectedTime"))
         let storageTimeIndex = (-1);
         if(storageTimeList){
-            storageTimeIndex = storageTimeList.findIndex(s => new Date(s).getTime() === new Date(itemContext.title).getTime())
+            storageTimeIndex = storageTimeList.findIndex(s => new Date(s).getTime() === new Date(item.itemTime).getTime())
         }
+
+        console.log("20200218 " + JSON.stringify(item))
         return (
             <div
                 {...getItemProps({

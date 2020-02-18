@@ -210,7 +210,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     let statusList = []
                     for (let i in auditList) {
                         let status = auditList[i].status;
-                        statusList.push(status);
+                        let traceid = auditList[i].traceid;
+                        statusList.push({"status":status, "traceid":traceid});
                     }
 
                     let storageTimeList = JSON.parse(localStorage.getItem("selectedTime"))
@@ -231,7 +232,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     await this.setState({
                         timesList: newTimesList,//@:todo: TimesList to display above the timeline Dot
                         tasksList: tasksList,//@:todo: 타임라인 Dot 위쪽에 표시해줄 tasksList
-                        statusList: statusList,//@:todo: 타임라인 Dot 위쪽에 색상을 표시해줄 statusList
+                        statusList: statusList,//@:todo: 타임라인 Dot 색상을 표시해줄 statusList
                         currentTask: tasksList[0],
                         currentTaskTime: timesList[0],
                         isLoading: false,

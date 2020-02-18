@@ -35,7 +35,7 @@ const dots = {
     future: (styles, status) => ({
         backgroundColor: styles.background,
         // border: `2px solid ${styles.background}`,
-        border: `2px solid ${(status === 200)? styles.outline2 : styles.outline3}`,
+        border: `2px solid ${(status.status === 200)? styles.outline2 : styles.outline3}`,
     }),
     /**
      * past: The styles information for the past dot (wrt selected)
@@ -43,15 +43,15 @@ const dots = {
      */
     past: (styles, status) => ({
         backgroundColor: styles.background,
-        border: `2px solid ${(status === 200)? styles.foreground : styles.errorground}`,
+        border: `2px solid ${(status.status === 200)? styles.foreground : styles.errorground}`,
     }),
     /**
      * present: The styles information for the preset dot
      * @param {object} styles User passed styles ( foreground, background etc info
      */
     present: (styles, status) => ({
-        backgroundColor: (status === 200)? styles.foreground : styles.errorground,
-        border: `2px solid ${(status === 200)? styles.foreground : styles.errorground}`,
+        backgroundColor: (status.status === 200)? styles.foreground : styles.errorground,
+        border: `2px solid ${(status.status === 200)? styles.foreground : styles.errorground}`,
     }),
 };
 
