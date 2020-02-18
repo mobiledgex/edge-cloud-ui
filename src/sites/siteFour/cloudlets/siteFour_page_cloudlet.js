@@ -49,6 +49,10 @@ class SiteFourPageCloudlet extends React.Component {
             { field: 'CloudletInfoState', label: 'Status', sortable: false, visible: true },
             { field: 'Actions', label: 'Actions', sortable: false, visible: true },
         ]
+
+        this.actionMenu = [
+            { label: 'Delete', icon:'delete_outline'}
+        ]
     }
 
     gotoUrl(site, subPath) {
@@ -221,7 +225,7 @@ class SiteFourPageCloudlet extends React.Component {
         let randomValue = Math.round(Math.random() * 100);
         return (
             (viewMode === 'listView') ?
-                <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} headerInfo = {this.headerInfo} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort}></MapWithListView>
+                <MapWithListView actionMenu={this.actionMenu} devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} headerInfo = {this.headerInfo} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort}></MapWithListView>
                 :
                 <PageDetailViewer data={detailData} page='cloudlet' />
         );

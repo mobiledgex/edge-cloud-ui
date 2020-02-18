@@ -79,6 +79,8 @@ export const DELETE_CLOUDLET_POOL_MEMBER = "DeleteCloudletPoolMember";
 export const SHOW_ORG_CLOUDLET = "orgcloudlet";
 export const DELETE_LINK_POOL_ORG = "DeleteLinkPoolOrg";
 export const RUN_COMMAND = "RunCommand";
+export const SHOW_LOGS = "ShowLogs";
+export const SHOW_CONSOLE = "RunConsole";
 export const SHOW_AUTO_PROV_POLICY = "ShowAutoProvPolicy";
 export const CREATE_AUTO_PROV_POLICY = "CreateAutoProvPolicy";
 export const DELETE_AUTO_PROV_POLICY= "DeleteAutoProvPolicy";
@@ -157,6 +159,8 @@ export function getPath(request) {
         case CREATE_PRIVACY_POLICY:
         case DELETE_PRIVACY_POLICY:
         case RUN_COMMAND:
+        case SHOW_LOGS:
+        case SHOW_CONSOLE:
             return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:
         case RESEND_VERIFY:

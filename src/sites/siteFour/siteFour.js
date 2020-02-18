@@ -130,6 +130,7 @@ class SiteFour extends React.Component {
             regionToggle: false,
             intoCity: false,
             currentPage:null,
+            fullPage:null,
             menuW:240,
             hideLeftMenu:false,
             animate: false,
@@ -846,11 +847,21 @@ class SiteFour extends React.Component {
         })
     }
 
+    showFullPage = (fullPage)=>
+    {
+        this.setState({
+            fullPage : fullPage
+        })
+    }
+
 
     render() {
         const { shouldShowBox, shouldShowCircle, viewMode } = this.state;
         const { stepsEnabled, initialStep, hintsEnabled, hints, steps } = this.state;
         return (
+            this.state.fullPage ? 
+            this.state.fullPage
+            :
             <Grid className='view_body'>
                 {steps ?
                     <Steps
@@ -1097,7 +1108,7 @@ class SiteFour extends React.Component {
                                                                 (this.state.page === 'pg=3') ? <SiteFourPageFlavor></SiteFourPageFlavor> :
                                                                     (this.state.page === 'pg=4') ? <SiteFourPageClusterInst></SiteFourPageClusterInst> :
                                                                         (this.state.page === 'pg=5') ? <SiteFourPageApps></SiteFourPageApps> :
-                                                                            (this.state.page === 'pg=6') ? <SiteFourPageAppInst></SiteFourPageAppInst> :
+                                                                            (this.state.page === 'pg=6') ? <SiteFourPageAppInst childPage={this.showFullPage}></SiteFourPageAppInst> :
                                                                                 (this.state.page === 'pg=7') ? <SiteFourPageCloudletPool></SiteFourPageCloudletPool> :
                                                                                     (this.state.page === 'pg=8') ? this.state.autoPolicy === 'Auto Provisioning Policy' ? <AutoProvPolicy childPage={this.showChildPage}></AutoProvPolicy> : <AutoPrivacyPolicy childPage={this.showChildPage}></AutoPrivacyPolicy> :
                                                                                     (this.state.page === 'pg=newOrg') ? <SiteFourPageCreateorga></SiteFourPageCreateorga> :

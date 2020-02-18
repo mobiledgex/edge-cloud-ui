@@ -158,7 +158,7 @@ class AutoProvPolicyReg extends React.Component {
         ])
 
     addRulesForm = () => {
-        this.setState(prevState => ({ forms: [...prevState.forms, { uuid: serviceMC.generateUniqueId(), field: 'OutboundSecurityRules', type: 'MultiForm', forms: this.getOutBoundRules(), visible: true, serverField: 'outbound_security_rules' }] }))
+        this.setState(prevState => ({ forms: [...prevState.forms, { uuid: serviceMC.generateUniqueId(), field: 'OutboundSecurityRules', type: 'MultiForm', forms: this.getOutBoundRules(), width:3, visible: true, serverField: 'outbound_security_rules' }] }))
     }
 
     getForms = () => ([
@@ -413,7 +413,7 @@ class AutoProvPolicyReg extends React.Component {
         else {
             this.OrganizationList = await serverData.getOrganizationInfo(this)
             this.loadData(forms)
-            forms.push({ uuid: serviceMC.generateUniqueId(), field: 'OutboundSecurityRules', type: 'MultiForm', forms: this.getOutBoundRules(), visible: true, serverField: 'outbound_security_rules' })
+            forms.push({ uuid: serviceMC.generateUniqueId(), field: 'OutboundSecurityRules', type: 'MultiForm', forms: this.getOutBoundRules(), width:3, visible: true, serverField: 'outbound_security_rules' })
         }
 
         this.setState({
