@@ -484,9 +484,9 @@ export const getAppLevelUsageList__NEW = async (appInstanceList, pHardwareType, 
 }
 
 
-export const getClouletLevelUsageList = async (cloudletList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
 
-    console.log('cloudletList===>', cloudletList);
+
+export const getCloudletLevelUsageList = async (cloudletList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
 
     try {
         let instanceBodyList = []

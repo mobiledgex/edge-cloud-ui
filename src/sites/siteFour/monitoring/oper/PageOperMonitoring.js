@@ -27,7 +27,7 @@ import {
 } from "./PageOperMonitoringService";
 import LeafletMap from "./LeafletMapWrapperForOper";
 import {filterUsageByClassification, makeSelectBoxListWithKey, sortByKey} from "../dev/PageDevMonitoringService";
-import {getAllCloudletEventLogs, getCloudletEventLog, getCloudletList, getClouletLevelUsageList} from "../PageMonitoringMetricService";
+import {getAllCloudletEventLogs, getCloudletEventLog, getCloudletList, getCloudletLevelUsageList} from "../PageMonitoringMetricService";
 import {filterListBykeyForCloudlet, renderBubbleChartForCloudlet} from "../admin/PageAdminMonitoringService";
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -307,7 +307,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     console.log('dropdownCloudletList===>', this.state.dropdownCloudletList);
                 })
 
-                let allCloudletUsageList = await getClouletLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
+                let allCloudletUsageList = await getCloudletLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
                 let bubbleChartData = await this.makeBubbleChartDataForCloudlet(allCloudletUsageList);
                 await this.setState({
                     bubbleChartData: bubbleChartData,
