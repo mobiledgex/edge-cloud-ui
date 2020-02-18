@@ -10,7 +10,7 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {Button as MButton, CircularProgress} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
-import {DatePicker, Button as AButton} from 'antd';
+import {DatePicker} from 'antd';
 import {
     convertHwTypePhrases,
     filterUsageByClassification,
@@ -56,13 +56,7 @@ import {TabPanel, Tabs} from "react-tabs";
 import LeafletMapWrapperForDev from "./LeafletMapWrapperForDev";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraphForCluster from "./ModalGraphForCluster";
-import {
-    getAppInstList,
-    getAppLevelUsageList,
-    getCloudletList,
-    getClusterLevelUsageList,
-    getClusterList
-} from "../PageMonitoringMetricService";
+import {getAppLevelUsageList__NEW} from "../PageMonitoringMetricService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -1038,7 +1032,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 console.log('allAppInstUsageList77===>startDate', arrDateTime2[0]);
                 console.log('allAppInstUsageList77===>EndDate', arrDateTime2[1]);
-                let allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT);
+                let allAppInstUsageList = await getAppLevelUsageList__NEW(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT);
                 console.log('allAppInstUsageList77===>', allAppInstUsageList);
                 this.setState({
                     intervalLoading: false,
@@ -1078,7 +1072,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let allAppInstUsageList = [];
             await this.setState({dropdownRequestLoading: true})
             try {
-                allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime[0], arrDateTime[1]);
+                allAppInstUsageList = await getAppLevelUsageList__NEW(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime[0], arrDateTime[1]);
             } catch (e) {
                 showToast(e.toString())
             } finally {
