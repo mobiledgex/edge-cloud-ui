@@ -314,6 +314,8 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
     }
 }
 
+
+
 export const getAppLevelUsageList__NEW = async (appInstanceList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
     try {
         let instanceBodyList = []
@@ -368,7 +370,6 @@ export const getAppLevelUsageList__NEW = async (appInstanceList, pHardwareType, 
                 let series = item.appInstanceHealth.data["0"].Series;
 
                 if (series !== null) {
-                    let cpuSeries = []
                     if (series["3"] !== undefined) {
                         let cpuSeries = series["3"]
                         columns = cpuSeries.columns;
@@ -380,7 +381,6 @@ export const getAppLevelUsageList__NEW = async (appInstanceList, pHardwareType, 
                     }
 
 
-                    let memSeries = []
                     if (series["1"] !== undefined) {
                         let memSeries = series["1"]
 
@@ -393,7 +393,6 @@ export const getAppLevelUsageList__NEW = async (appInstanceList, pHardwareType, 
                     }
 
 
-                    let diskSeries = []
                     if (series["2"] !== undefined) {
                         let diskSeries = series["2"]
 
@@ -405,13 +404,10 @@ export const getAppLevelUsageList__NEW = async (appInstanceList, pHardwareType, 
                         })
                     }
 
-                    let networkSeries = []
                     if (series["0"] !== undefined) {
                         let networkSeries = series["0"]
 
-
                         networkSeriesValue= networkSeries.values;
-
                         networkSeries.values.map(item => {
                             let sendBytesOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.SENDBYTES];//sendBytesOne
                             sumSendBytes += sendBytesOne;
@@ -421,12 +417,10 @@ export const getAppLevelUsageList__NEW = async (appInstanceList, pHardwareType, 
                     }
 
 
-                    let connectionsSeries = []
                     if (series["4"] !== undefined) {
                         let connectionsSeries = series["4"]
 
                         connectionsSeriesValue= connectionsSeries.values;
-
                         connectionsSeries.values.map(item => {
                             let connection1One = item[APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE];//1
                             sumActiveConnection += connection1One;
@@ -437,12 +431,6 @@ export const getAppLevelUsageList__NEW = async (appInstanceList, pHardwareType, 
                         })
                     }
 
-
-                    /*let cpuSeriesValue=[]
-                    let memSeriesValue=[]
-                    let diskSeriesValue=[]
-                    let networkSeriesValue=[]
-                    let connectionsSeriesValue=[]*/
                     allUsageList.push({
                         instance: item.instanceData,
                         columns: columns,
