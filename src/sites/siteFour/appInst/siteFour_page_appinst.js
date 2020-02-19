@@ -248,6 +248,11 @@ class SiteFourPageAppInst extends React.Component {
     }
 
     setRemote = (mcRequest) => {
+        this.props.handleLoadingSpinner(false)
+        let url = process.env.REACT_APP_API_ENDPOINT;
+        url  = url.replace('https://', '')
+        url  = url.replace('http://', '')
+        url = (url.substring(0,url.indexOf(':')))
         if (mcRequest && mcRequest.response)
         {
             let response  = mcRequest.response;
@@ -255,14 +260,19 @@ class SiteFourPageAppInst extends React.Component {
             if(responseData.code === 200)
             {
                 let url = responseData.data;
-                url = url.replace('127.0.0.1', '192.168.3.5')
+                url = url.replace('127.0.0.1', url)
                 _self.setState({ viewMode: 'detailView' })
                 let vm = {}
                 vm.url = url
                 let data = {}
                 data.vm = vm;
-                if (this.props.terminalClick) {
-                    this.props.childPage(<TerminalViewer data={data} onClose={this.onTermialClose}></TerminalViewer>)
+                this.props.childPage(<TerminalViewer data={data} onClose={this.onTermialClose}></TerminalViewer>)  
+            }
+            else
+            {
+                if(responseData.data)
+                {
+                    this.props.handleAlertInfo('error', responseData.data.message)
                 }
             }
         }
@@ -303,6 +313,7 @@ class SiteFourPageAppInst extends React.Component {
                 method: serviceMC.getEP().SHOW_CONSOLE,
                 data: requestedData
             }
+            this.props.handleLoadingSpinner(true)
             serviceMC.sendWSRequest(requestData, this.setRemote)
         }
         else if (data.Runtime.container_ids) {
