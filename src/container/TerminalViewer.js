@@ -6,12 +6,10 @@ import stripAnsi from 'strip-ansi'
 import * as actions from "../actions";
 import {withRouter} from "react-router-dom";
 import {connect} from "react-redux";
-import { Icon, Image, Label } from 'semantic-ui-react';
+import { Image, Label } from 'semantic-ui-react';
 import * as style from '../hoc/terminal/TerminalStyle';
 import { Paper, Box } from '@material-ui/core';
 import MexForms from '../hoc/forms/MexForms';
-import HighlightOffOutlinedIcon from '@material-ui/icons/HighlightOffOutlined';
-import BackspaceOutlinedIcon from '@material-ui/icons/BackspaceOutlined';
 
 
 const CMD_CLEAR = 'clear';
