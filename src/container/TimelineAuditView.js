@@ -254,7 +254,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             })
             let selectedIndex = value.value;
             let timelineDataOne = this.state.rawAllData[selectedIndex]
-            console.log('Rahul1234',timelineDataOne)
             setTimeout(() => {
                 this.setRequestView(timelineDataOne)
                 this.setResponseView(timelineDataOne)
