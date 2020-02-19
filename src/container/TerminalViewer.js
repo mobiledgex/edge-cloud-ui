@@ -10,6 +10,8 @@ import { Icon, Image, Label } from 'semantic-ui-react';
 import * as style from '../hoc/terminal/TerminalStyle';
 import { Paper, Box } from '@material-ui/core';
 import MexForms from '../hoc/forms/MexForms';
+import HighlightOffOutlinedIcon from '@material-ui/icons/HighlightOffOutlined';
+import BackspaceOutlinedIcon from '@material-ui/icons/BackspaceOutlined';
 
 
 const CMD_CLEAR = 'clear';
@@ -371,7 +373,7 @@ class MexTerminal extends Component {
                         </Box>
                         <Box p={1}>
                             <div onClick={() => { this.onTerminalClose() }} style={{ cursor: 'pointer' }}>
-                                <Icon color="red" size='small' name="circle" />
+                                <Label color='grey' style={{ color: 'white', fontFamily: 'Inconsolata, monospace', marginRight: 10 }}>{this.state.optionView ? 'CLOSE' : 'BACK'}</Label>
                             </div>
                         </Box>
                     </Box>
