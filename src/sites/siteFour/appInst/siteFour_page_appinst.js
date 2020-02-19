@@ -270,7 +270,10 @@ class SiteFourPageAppInst extends React.Component {
             }
             else
             {
-                this.props.handleAlertInfo('error', responseData.data.message)
+                if(responseData.data)
+                {
+                    this.props.handleAlertInfo('error', responseData.data.message)
+                }
             }
         }
     }
