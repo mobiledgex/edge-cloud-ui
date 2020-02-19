@@ -28,6 +28,7 @@ const MexTerminal = (props) => {
 
     return (
         <div onClick={onTerminal} className={classes.terminalBody}>
+            <div style={{maxHeight:'90%', overflow:'auto'}}>
             {
                 props.history ?
                     props.history.map((info, i) => {
@@ -35,6 +36,7 @@ const MexTerminal = (props) => {
                     }) :
                     null
             }
+            </div>
             {
                 props.editable ?
                     <div className={classes.cmdHead}>

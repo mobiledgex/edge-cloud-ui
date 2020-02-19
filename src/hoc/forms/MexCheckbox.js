@@ -20,7 +20,7 @@ const MexCheckbox = (props) => {
 
     const CustomSwitch = withStyles({
       switchBase: {
-        color: getColor(),
+        color: 'red',
         '&$checked': {
           color: getColor(),
         },
@@ -31,7 +31,7 @@ const MexCheckbox = (props) => {
       checked: {},
       track: {
         borderRadius: 26 / 2,
-        backgroundColor: '#A8A8A8',
+        backgroundColor: 'red',
         opacity: 1,
       },
     })(Switch);
