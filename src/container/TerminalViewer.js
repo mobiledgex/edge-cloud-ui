@@ -6,7 +6,7 @@ import stripAnsi from 'strip-ansi'
 import * as actions from "../actions";
 import {withRouter} from "react-router-dom";
 import {connect} from "react-redux";
-import { Icon, Image, Label } from 'semantic-ui-react';
+import { Image, Label } from 'semantic-ui-react';
 import * as style from '../hoc/terminal/TerminalStyle';
 import { Paper, Box } from '@material-ui/core';
 import MexForms from '../hoc/forms/MexForms';
@@ -22,8 +22,8 @@ class MexTerminal extends Component {
         this.state = ({
             success: false,
             history: [],
-            status:'Not Connected',
-            statusColor:'red',
+            status: this.props.data.vm ? 'Connected' : 'Not Connected',
+            statusColor: this.props.data.vm ? 'green' : 'red',
             path: '#',
             open: false,
             forms:[],
@@ -208,9 +208,8 @@ class MexTerminal extends Component {
     onTerminalClose = ()=>
     {
         this.close()
-        if(this.state.optionView && this.props.onClose)
-        {
-                this.props.onClose()
+        if (this.state.optionView && this.props.onClose) {
+            this.props.onClose()
         }
     }
 
@@ -228,6 +227,7 @@ class MexTerminal extends Component {
 
         this.setState({
             optionView: true,
+            history:[],
             path: '#',
             statusColor:'red',
             status: 'Not Connected'
@@ -319,8 +319,8 @@ class MexTerminal extends Component {
         [
             { field: 'Since', label: 'Since', type: 'Input', visible: true,labelStyle: style.label, style: style.cmdLine },
             { field: 'Tail', label: 'Tail', type: 'Input', rules: {type: 'number' }, visible: true,labelStyle: style.label, style: style.cmdLine },
-            { field: 'Timestamps', label: 'Timestamps', type: 'Checkbox', visible: true,labelStyle: style.label, style: {color:'white'}  },
-            { field: 'Follow', label: 'Follow', type: 'Checkbox', visible: true,labelStyle: style.label, style: {color:'white'} }
+            { field: 'Timestamps', label: 'Timestamps', type: 'Checkbox', visible: true,labelStyle: style.label, style: {color:'green'}  },
+            { field: 'Follow', label: 'Follow', type: 'Checkbox', visible: true,labelStyle: style.label, style: {color:'green'} }
         ]
     )
 
@@ -360,11 +360,8 @@ class MexTerminal extends Component {
 
     render() {
         return (
-            this.props.data.vm ?
-                <div>
-                    <iframe title="vm" id="ChatFrame" allowtransparency="true" frameborder="0" scrolling="no"  src={this.props.data.vm.url}></iframe>
-                </div> :
-                    <div style={{ backgroundColor: 'black', height: '100%' }}>
+            
+                <div style={{ backgroundColor: 'black', height: '100%' }}>
                     <Box display="flex" p={1}>
                         <Box p={1} flexGrow={1}>
                             <Image wrapped size='small' src='/assets/brand/logo_mex.svg' />
@@ -374,25 +371,29 @@ class MexTerminal extends Component {
                         </Box>
                         <Box p={1}>
                             <div onClick={() => { this.onTerminalClose() }} style={{ cursor: 'pointer' }}>
-                                <Icon color="red" size='small' name="circle" />
+                                <Label color='grey' style={{ color: 'white', fontFamily: 'Inconsolata, monospace', marginRight: 10 }}>{this.state.optionView ? 'CLOSE' : 'BACK'}</Label>
                             </div>
                         </Box>
                     </Box>
 
-                    {this.containerIds.length > 0 ?
-                        this.state.optionView ?
-                            <div style={style.layout}>
-                                <div style={style.container} align='center'>
-                                    <Paper variant="outlined" style={style.optionBody}>
-                                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} />
-                                    </Paper>
+                    {
+                    this.props.data.vm ?
+                        <iframe title="vm" id="ChatFrame" allowtransparency="true" frameborder="0" scrolling="no" src={this.props.data.vm.url} style={{ width: '100%', height: '100%' }}></iframe>
+                        :
+                        this.containerIds.length > 0 ?
+                            this.state.optionView ?
+                                <div style={style.layout}>
+                                    <div style={style.container} align='center'>
+                                        <Paper variant="outlined" style={style.optionBody}>
+                                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} />
+                                        </Paper>
+                                    </div>
                                 </div>
-                            </div>
-                            :
-                            <div style={{ paddingLeft: 20, paddingTop: 30, height: '100%' }}>
-                                <Terminal editable={this.editable} open={this.state.open} close={this.close} path={this.state.path} onEnter={this.onEnter} history={this.state.history} />
-                            </div> : null
-                    }
+                                :
+                                <div style={{ paddingLeft: 20, paddingTop: 30, height: '100%' }}>
+                                    <Terminal editable={this.editable} open={this.state.open} close={this.close} path={this.state.path} onEnter={this.onEnter} history={this.state.history} />
+                                </div> : null
+                }
                     </div>)
     }
 
