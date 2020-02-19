@@ -1,6 +1,21 @@
 import * as serviceMC from './serviceMC';
 import * as EP from './endPointTypes';
 
+const getUserRole = ()=>
+{
+    if(localStorage.selectRole)
+    {
+        return localStorage.selectRole
+    }
+}
+
+const getOrganization = ()=>
+{
+    if(localStorage.selectOrg)
+    {
+        return localStorage.selectOrg
+    }
+}
 
 const getRequestInfo = (method, data) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -27,14 +42,25 @@ const processData = (mcRequest) => {
 
 /* Organization */
 export const getOrganizationInfo = async (self) => {
-    let mcRequest = await sendSyncRequest(self, EP.SHOW_ORG)
-    return processData(mcRequest)
+    if (getOrganization()) {
+        return [{ OrganizationName: getOrganization(), isDefault: true }]
+    }
+    else {
+        let mcRequest = await sendSyncRequest(self, EP.SHOW_ORG)
+        return processData(mcRequest)
+    }
 }
 /* Organization */
 
 /* Clouldet */
 export const getCloudletInfo = async (self, data) => {
-    let mcRequest = await sendSyncRequest(self, EP.SHOW_CLOUDLET, data)
+    let method = EP.SHOW_ORG_CLOUDLET
+    let requestData = { region: data.region, org: getOrganization() }
+    if (getUserRole() === 'AdminManager') {
+        requestData.org = undefined;
+        method = EP.SHOW_CLOUDLET;
+    }
+    let mcRequest = await sendSyncRequest(self, method, data)
     return processData(mcRequest)
 }
 /* Clouldet */
