@@ -392,13 +392,13 @@ class SiteFour extends React.Component {
             enable = true;
         } else if (this.props.params.subPath === "pg=0") {
             if (this.props.dataExist) {
-                if (userName === 'mexadmin') {
+                if (localStorage.selectRole === 'AdminManager') {
                     currentStep = orgaSteps.stepsOrgDataAdmin;
                 } else {
                     currentStep = orgaSteps.stepsOrgDataDeveloper;
                 }
             } else {
-                if (userName === 'mexadmin') {
+                if (localStorage.selectRole === 'AdminManager') {
                     currentStep = orgaSteps.stepsOrgAdmin;
                 } else {
                     currentStep = orgaSteps.stepsOrgDeveloper;
@@ -408,7 +408,11 @@ class SiteFour extends React.Component {
             enable = true;
         } else if (this.props.params.subPath === "pg=2") {
             //Cloudlets
-            currentStep = cloudletSteps.stepsCloudlet;
+            if (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer') {
+                currentStep = cloudletSteps.stepsCloudletDev;
+            } else {
+                currentStep = cloudletSteps.stepsCloudlet;
+            }
             enable = true;
         } else if (this.props.params.subPath === "pg=3") {
             //Flavors
@@ -1073,7 +1077,7 @@ class SiteFour extends React.Component {
                                             }
                                             {
                                                 (viewMode!== 'MexDetailView' && !this.state.currentPage && this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView' && this.props.location.search.indexOf('audits') === -1 ) ?
-                                                    <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>New</Button>
+                                                    <Button color='teal' className='stepOrg2' disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>New</Button>
                                                     : null
                                             }
                                             {
