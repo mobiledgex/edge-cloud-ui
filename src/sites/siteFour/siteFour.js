@@ -162,14 +162,14 @@ class SiteFour extends React.Component {
             reducer.getFindIndex(this.menuItemsAll, 'label', 'Apps'),
             reducer.getFindIndex(this.menuItemsAll, 'label', 'App Instances'),
             reducer.getFindIndex(this.menuItemsAll, 'label', 'Monitoring'),
-            reducer.getFindIndex(this.menuItemsAll, 'label', 'Audit Log'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Audit Logs'),
         ]
 
         this.menuArr = ['Organization', 'User Roles', 'Cloudlets', 'Cloudlet Pools', 'Flavors', 'Cluster Instances', 'Apps', 'App Instances']
         this.auth_three = [ //operator menu
             reducer.getFindIndex(this.menuItemsAll, 'label', 'Cloudlets'),
             reducer.getFindIndex(this.menuItemsAll, 'label', 'Monitoring'),
-            reducer.getFindIndex(this.menuItemsAll, 'label', 'Audit Log'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Audit Logs'),
         ] //OperatorManager, OperatorContributor, OperatorViewer
 
         this.auth_list = [
