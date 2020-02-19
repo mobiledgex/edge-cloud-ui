@@ -7,7 +7,7 @@ import MexForms from '../../../hoc/forms/MexForms';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as serviceMC from '../../../services/serviceMC';
-import * as ServerData from '../../../services/ServerData';
+import * as serverData from '../../../services/ServerData';
 
 
 
@@ -111,7 +111,7 @@ class AutoProvPolicyReg extends React.Component {
 
 
     selectCloudlet = async (region, organization, autoPolicyName) => {
-        this.cloudletList = await ServerData.getCloudletInfo(this, {Region:region})
+        this.cloudletList = await serverData.getCloudletInfo(this, {region:region})
         
         let action = 'Add'
         if (this.props.action === 'Add') {
@@ -303,7 +303,7 @@ class AutoProvPolicyReg extends React.Component {
             this.selectCloudlet(data.Region, data.OrganizationName, data.AutoPolicyName)
         }
         else {
-            this.OrganizationList = await ServerData.getOrganizationInfo(this)
+            this.OrganizationList = await serverData.getOrganizationInfo(this)
             let step1 = [
                 { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { required: true }, visible:true, options: this.getRegionData() },
                 { field: 'Organization', label: 'Organization', type: 'Select', placeholder: 'Select Organization', rules: { required: true }, visible:true, options: this.getOrganizationData(this.OrganizationList) },
