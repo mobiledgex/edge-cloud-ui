@@ -124,7 +124,6 @@ export default class CalendarTimeline extends Component {
             storageTimeIndex = storageTimeList.findIndex(s => new Date(s).getTime() === new Date(item.itemTime).getTime())
         }
 
-        console.log("20200218 " + JSON.stringify(item))
         return (
             <div
                 {...getItemProps({

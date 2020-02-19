@@ -279,8 +279,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             return makeTime;
         }
         makeOper = (logName) => {
-            let lastSub = logName.substring(logName.lastIndexOf('/') + 1);
-            return lastSub
+            // let lastSub = logName.substring(logName.lastIndexOf('/') + 1);
+            let item = '';
+            let nameArray = logName.substring(1).split("/").filter(name => name != 'ws');
+
+            if(nameArray[2] === 'login'){
+                item = nameArray[2]
+            } else if(nameArray[2] === 'auth'){
+                if(nameArray[3] === 'ctrl'){
+                    item = nameArray[4]
+                } else {
+                    item = nameArray[3] + nameArray[4].charAt(0).toUpperCase() + nameArray[4].slice(1)
+                }
+            }
+            return item
         }
 
 
