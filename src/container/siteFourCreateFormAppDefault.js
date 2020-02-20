@@ -331,7 +331,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
             this.state.portArray.map((port) => {
                 numbers.push(port.num)
             })
-            portNum = Math.max(...numbers)
+            portNum = (numbers.length > 0) ? Math.max(...numbers) : 0
         }
         let pn = {
             num: parseInt(portNum) + 1,
