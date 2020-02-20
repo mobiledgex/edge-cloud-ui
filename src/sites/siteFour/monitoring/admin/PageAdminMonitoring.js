@@ -52,7 +52,7 @@ import {TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
-import {renderGridLoader2, renderPlaceHolderCircular, showToast, showToast2, StylesForMonitoring} from "../PageMonitoringCommonService";
+import {renderGridLoader2, renderLoaderArea, renderPlaceHolderCircular, showToast, showToast2, StylesForMonitoring} from "../PageMonitoringCommonService";
 import '../PageMonitoring.css'
 import {getAppInstList, getAppLevelUsageList, getCloudletListAll} from "../PageMonitoringMetricService";
 
@@ -1065,22 +1065,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             // todo: Components showing when the loading of graph data is not completed.
             if (!this.state.isAppInstaceDataReady) {
                 return (
-                    <Grid.Row className='view_contents'>
-                        <Grid.Column className='contents_body'>
-                            {this.renderHeader()}
-                            <Grid.Row className='site_content_body'>
-                                <Grid.Column>
-                                    <div className="table-no-resized">
-                                        <div style={{position: 'absolute', top: '37%', left: '48%'}}>
-                                            <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                                {renderGridLoader2(150, 150)}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Grid.Column>
-                            </Grid.Row>
-                        </Grid.Column>
-                    </Grid.Row>
+                    renderLoaderArea(this)
                 )
             }
 

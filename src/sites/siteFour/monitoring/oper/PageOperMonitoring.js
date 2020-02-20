@@ -18,7 +18,7 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {renderGridLoader2, renderPlaceHolderCircular, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
+import {renderGridLoader2, renderLoaderArea, renderPlaceHolderCircular, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
 import {Button as MButton, CircularProgress} from "@material-ui/core";
 import {
     handleBubbleChartDropDownForCloudlet,
@@ -1034,16 +1034,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             // todo: Components showing when the loading of graph data is not completed.
             if (!this.state.isAppInstaceDataReady) {
                 return (
-                    <Grid.Row className='view_contents'>
-                        <Grid.Column className='contents_body'>
-                            {this.renderHeader()}
-                            <div style={{position: 'absolute', top: '37%', left: '48%'}}>
-                                <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                    {renderGridLoader2(150, 150)}
-                                </div>
-                            </div>
-                        </Grid.Column>
-                    </Grid.Row>
+                    renderLoaderArea(this)
                 )
             }
 

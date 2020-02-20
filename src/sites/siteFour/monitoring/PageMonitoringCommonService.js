@@ -10,6 +10,7 @@ import {makeCompleteDateTime} from "./admin/PageAdminMonitoringService";
 import moment from "moment";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {GridLoader} from "react-spinners";
+import {Grid} from "semantic-ui-react";
 
 export const StylesForMonitoring = {
     selectBoxRow: {
@@ -111,6 +112,22 @@ export const StylesForMonitoring = {
             speed={3.0}
         />*/
 }
+
+export const renderLoaderArea = (_this) => (
+    <Grid.Row className='view_contents'>
+        <Grid.Column className='contents_body'>
+            {_this.renderHeader()}
+            <div style={{position: 'absolute', top: '37%', left: '48%'}}>
+                <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
+                    {renderGridLoader2(150, 150)}
+                </div>
+            </div>
+        </Grid.Column>
+
+    </Grid.Row>
+)
+
+
 export const renderGridLoader2 = (width, height) => {
     return (
         <GridLoader

@@ -46,7 +46,7 @@ import {
     getOneYearStartEndDatetime,
     makeBubbleChartDataForCluster,
     renderBarChartCore,
-    renderGridLoader2,
+    renderGridLoader2, renderLoaderArea,
     renderPlaceHolderCircular,
     showToast,
     StylesForMonitoring
@@ -319,14 +319,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             selectedClusterUsageOne: [],
             selectedClusterUsageOneIndex: 0,
             gridDraggable: true,
+            isNoData: false,
         };
 
         intervalForAppInst = null;
 
 
         constructor(props) {
-
-
             super(props);
         }
 
@@ -365,6 +364,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             clearInterval(this.intervalForAppInst)
             this.setState({dropdownRequestLoading: true})
             let clusterList = await getClusterList();
+
+            if (clusterList.length === 0) {
+                this.setState({
+                    isNoData: true,
+                })
+            }
+
             let cloudletList = await getCloudletList()
             let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
 
@@ -1358,16 +1364,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             // todo: Components showing when the loading of graph data is not completed.
             if (!this.state.isReady) {
                 return (
+                    renderLoaderArea(this)
+                )
+            }
+
+            if (this.state.isNoData) {
+                return (
                     <Grid.Row className='view_contents'>
                         <Grid.Column className='contents_body'>
                             {this.renderHeader()}
                             <div style={{position: 'absolute', top: '37%', left: '48%'}}>
-                                <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                    {renderGridLoader2(150, 150)}
+                                <div style={{marginLeft: -450, display: 'flex', flexDirection: 'row', fontSize: 30, opacity: 1, color: 'white'}}>
+                                    No data to express ( There is no cluster you can access ) 😅
                                 </div>
                             </div>
                         </Grid.Column>
-
                     </Grid.Row>
                 )
             }
@@ -1411,7 +1422,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             console.log('layout==22222=>', savedLayout);
 
                                                         }}
-                                                        style={{overflowY: 'auto', }}
+                                                        style={{overflowY: 'auto',}}
                                                     >
                                                         <div className='page_monitoring_column_kyungjoon1' style={{}} key="a"
                                                              onDoubleClick={() => {
