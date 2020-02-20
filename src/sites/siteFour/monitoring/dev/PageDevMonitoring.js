@@ -1411,7 +1411,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             console.log('layout==22222=>', savedLayout);
 
                                                         }}
-                                                        style={{overflowY: 'auto', backgroundColor: 'blue'}}
+                                                        style={{overflowY: 'auto', }}
                                                     >
                                                         <div className='page_monitoring_column_kyungjoon1' style={{}} key="a"
                                                              onDoubleClick={() => {

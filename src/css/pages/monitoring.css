@@ -6,11 +6,14 @@
     background: #292c33;
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1150px) {
     .page_monitoring {
         overflow-y: scroll;
     }
 }
+
+
+
 
 .page_monitoring_select_row {
 }
@@ -97,6 +100,29 @@
     min-height: calc(100% - 100px);
     max-height: calc(100% - 50px);
 }
+
+.page_monitoring_dashboard_kyungjoon {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-height: calc(100% - 100px);
+    max-height: calc(100% - 50px);
+}
+
+.page_monitoring_column_kyungjoon1 {
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid #4b4d52;
+    border-radius: 5px;
+    padding: 0 0px 10px 10px;
+    margin-right: 20px;
+    max-height: 475px;
+}
+
+
 .page_monitoring_row {
     display: flex;
     flex-direction: row;
@@ -121,6 +147,10 @@
     padding: 0 10px 10px 10px;
     margin-right: 20px;
 }
+
+
+
+
 .page_monitoring_column:last-child {
     flex: 2 2 0;
     margin-right: 0;
