@@ -829,128 +829,56 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         //@todo:-----------------------
         //@todo:    TAB_FOR_APP_INST
         //@todo:-----------------------`
-        TAB_FOR_APP_INST = [
+        /* TAB_FOR_APP_INST = [
 
-            {
-                menuItem: 'CPU', render: () => {
-                    return (
-                        <Pane>
-                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.CPU)}
-                        </Pane>
-                    )
-                },
-            },
-            {
-                menuItem: 'MEM', render: () => {
-                    return (
-                        <Pane>
-                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.MEM)}
-                        </Pane>
-                    )
-                }
-            },
+             {
+                 menuItem: 'CPU', render: () => {
+                     return (
+                         <Pane>
+                             {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.CPU)}
+                         </Pane>
+                     )
+                 },
+             },
+             {
+                 menuItem: 'MEM', render: () => {
+                     return (
+                         <Pane>
+                             {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.MEM)}
+                         </Pane>
+                     )
+                 }
+             },
 
-            {
-                menuItem: 'DISK', render: () => {
-                    return (
-                        <Pane>
-                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.DISK)}
-                        </Pane>
-                    )
-                }
-            },
-            {
-                menuItem: 'CONNECTIONS', render: () => {
-                    return (
-                        <Pane>
-                            <Tabs selectedIndex={this.state.connectionsTabIndex} className='page_monitoring_tab'>
-
-                                <TabPanel>
-                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.ACTIVE_CONNECTION)}
-                                </TabPanel>
-                                <TabPanel>
-                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.HANDLED_CONNECTION)}
-                                </TabPanel>
-                                <TabPanel>
-                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.ACCEPTS_CONNECTION)}
-                                </TabPanel>
-                            </Tabs>
-                        </Pane>
-                    )
-                }
-            },
-        ]
-
-
-        //@todo:-----------------------
-        //@todo:    TAB_FOR_CLUSTER
-        //@todo:-----------------------
-        TAB_FOR_CLUSTER = [
-
-            {
-                menuItem: 'CPU', render: () => {
-                    return (
-                        <Pane>
-                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.CPU)}
-                        </Pane>
-                    )
-                },
-            },
-            {
-                menuItem: 'MEM', render: () => {
-                    return (
-                        <Pane>
-                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.MEM)}
-                        </Pane>
-                    )
-                }
-            },
-
-            {
-                menuItem: 'DISK', render: () => {
-                    return (
-                        <Pane>
-                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.DISK)}
-                        </Pane>
-                    )
-                }
-            },
-            {
-                menuItem: 'TCP', render: () => {
-                    return (
-                        <Pane>
-                            <Tabs selectedIndex={this.state.tcpTabIndex} className='page_monitoring_tab'>
-
-                                <TabPanel>
-                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.TCPCONNS)}
-                                </TabPanel>
-                                <TabPanel>
-                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.TCPRETRANS)}
-                                </TabPanel>
-
-                            </Tabs>
-                        </Pane>
-                    )
-                }
-            },
-            {
-                menuItem: 'UDP', render: () => {
-                    return (
-                        <Pane>
-                            <Tabs selectedIndex={this.state.udpTabIndex} className='page_monitoring_tab'>
-                                <TabPanel>
-                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.UDPRECV)}
-                                </TabPanel>
-                                <TabPanel>
-                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.UDPSENT)}
-                                </TabPanel>
-
-                            </Tabs>
-                        </Pane>
-                    )
-                }
-            },
-        ]
+             {
+                 menuItem: 'DISK', render: () => {
+                     return (
+                         <Pane>
+                             {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.DISK)}
+                         </Pane>
+                     )
+                 }
+             },
+             {
+                 menuItem: 'CONNECTIONS', render: () => {
+                     return (
+                         <Pane>
+                             <Tabs selectedIndex={this.state.connectionsTabIndex} className='page_monitoring_tab'>
+                                 <TabPanel>
+                                     {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.ACTIVE_CONNECTION)}
+                                 </TabPanel>
+                                 <TabPanel>
+                                     {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.HANDLED_CONNECTION)}
+                                 </TabPanel>
+                                 <TabPanel>
+                                     {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.ACCEPTS_CONNECTION)}
+                                 </TabPanel>
+                             </Tabs>
+                         </Pane>
+                     )
+                 }
+             },
+         ]*/
 
         async resetGridPos() {
             try {
@@ -1116,44 +1044,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                             />
                         </div>
-                        {/*todo:##########################*/}
-                        {/*todo: Time Range Dropdown       */}
-                        {/*todo:##########################*/}
-                        {/* <div className="page_monitoring_dropdown_box">
-                            <div className="page_monitoring_dropdown_label">
-                                TimeRange
-                            </div>
-                            <RangePicker
-                                disabled={this.state.loading}
-                                //disabled={true}
-                                showTime={{format: 'HH:mm'}}
-                                format="YYYY-MM-DD HH:mm"
-                                placeholder={[moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]}
-                                onOk={async (date) => {
-                                    let stateTime = date[0].format('YYYY-MM-DD HH:mm')
-                                    let endTime = date[1].format('YYYY-MM-DD HH:mm')
-                                    await this.setState({
-                                        startTime: stateTime,
-                                        endTime: endTime,
-                                    })
-                                    //this.filterUsageListByDate()
-                                }}
-                                ranges={{
-                                    Today: [moment(), moment()],
-                                    'Last 7 Days': [moment().subtract(7, 'd'), moment().subtract(1, 'd')],
-                                    'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(1, 'd')],
-                                    'This Month': [moment().startOf('month'), moment().endOf('month')],
-                                    'Last Month': [moment().date(-30), moment().date(-1)],
-                                    'Last 3 Months': [moment().subtract(89, 'd'), moment().subtract(0, 'd')],
-                                    'Last 6 Months': [moment().subtract(181, 'd'), moment().subtract(0, 'd')],
-                                    'Last 1 Year': [moment().subtract(364, 'd'), moment().subtract(0, 'd')],
-                                    'Last 2 Years': [moment().subtract(729, 'd'), moment().subtract(0, 'd')],
-                                    'Last 3 Years': [moment().subtract(1094, 'd'), moment().subtract(0, 'd')],
-                                }}
-                                style={{width: 300}}
-                            />
-                        </div>*/}
-
                     </div>
                 </div>
 
@@ -1242,6 +1132,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentAppInst: pCurrentAppInst,
                 currentCluster: currentCluster,
                 //clusterSelectBoxPlaceholder: 'Select Cluster'
+            }, () => {
+                //alert(this.state.currentClassification)
             })
 
             await this.setState({
@@ -1523,28 +1415,49 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             </Tabs>
                                                         </div>
 
-                                                        <div className='page_monitoring_column_kyungjoon1' key="g">
-                                                            <Tabs selectedIndex={this.state.tcpTabIndex} className='page_monitoring_tab'>
-                                                                <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.TCPCONNS)}
-                                                                </TabPanel>
-                                                                <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.TCPRETRANS)}
-                                                                </TabPanel>
-                                                            </Tabs>
-                                                        </div>
+                                                        {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
+                                                            <div className='page_monitoring_column_kyungjoon1' key="g">
+                                                                <Tabs selectedIndex={this.state.tcpTabIndex} className='page_monitoring_tab'>
+                                                                    <TabPanel>
+                                                                        {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.TCPCONNS)}
+                                                                    </TabPanel>
+                                                                    <TabPanel>
+                                                                        {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.TCPRETRANS)}
+                                                                    </TabPanel>
+                                                                </Tabs>
+                                                            </div>
+                                                            :
+                                                            <div className='page_monitoring_column_kyungjoon1' key="g">
+                                                                <Tabs selectedIndex={this.state.connectionsTabIndex} className='page_monitoring_tab'>
+                                                                    <TabPanel>
+                                                                        {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.ACTIVE_CONNECTION)}
+                                                                    </TabPanel>
+                                                                    <TabPanel>
+                                                                        {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.HANDLED_CONNECTION)}
+                                                                    </TabPanel>
+                                                                    <TabPanel>
+                                                                        {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.ACCEPTS_CONNECTION)}
+                                                                    </TabPanel>
+                                                                </Tabs>
+                                                            </div>
+                                                        }
 
-                                                        <div className='page_monitoring_column_kyungjoon1' key="h">
-                                                            <Tabs selectedIndex={this.state.udpTabIndex} className='page_monitoring_tab'>
-                                                                <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.UDPSENT)}
-                                                                </TabPanel>
-                                                                <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.UDPRECV)}
-                                                                </TabPanel>
-                                                            </Tabs>
-                                                        </div>
+                                                        {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
+                                                            <div className='page_monitoring_column_kyungjoon1' key="h">
+                                                                <Tabs selectedIndex={this.state.udpTabIndex} className='page_monitoring_tab'>
+                                                                    <TabPanel>
+                                                                        {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.UDPSENT)}
+                                                                    </TabPanel>
+                                                                    <TabPanel>
+                                                                        {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.UDPRECV)}
+                                                                    </TabPanel>
+                                                                </Tabs>
+                                                            </div> :
+                                                            <div>
 
+                                                            </div>
+
+                                                        }
 
                                                         <div className='page_monitoring_column_kyungjoon1' key="i">
                                                             {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.CPU)}
@@ -1576,31 +1489,48 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             </Tabs>
                                                         </div>
 
+                                                        {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
+                                                            <div className='page_monitoring_column_kyungjoon1' key="m">
+                                                                <Tabs selectedIndex={this.state.tcpTabIndex} className='page_monitoring_tab'>
+                                                                    <TabPanel>
+                                                                        {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.TCPCONNS)}
+                                                                    </TabPanel>
+                                                                    <TabPanel>
+                                                                        {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.TCPRETRANS)}
+                                                                    </TabPanel>
+                                                                </Tabs>
+                                                            </div>
+                                                            :
+                                                            <div className='page_monitoring_column_kyungjoon1' key="m">
+                                                                <Tabs selectedIndex={this.state.connectionsTabIndex} className='page_monitoring_tab'>
+                                                                    <TabPanel>
+                                                                        {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.ACTIVE_CONNECTION)}
+                                                                    </TabPanel>
+                                                                    <TabPanel>
+                                                                        {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.HANDLED_CONNECTION)}
+                                                                    </TabPanel>
+                                                                    <TabPanel>
+                                                                        {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.ACCEPTS_CONNECTION)}
+                                                                    </TabPanel>
+                                                                </Tabs>
+                                                            </div>
+                                                        }
 
-                                                        <div className='page_monitoring_column_kyungjoon1' key="m">
-                                                            <Tabs selectedIndex={this.state.tcpTabIndex} className='page_monitoring_tab'>
-                                                                <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.TCPCONNS)}
-                                                                </TabPanel>
-                                                                <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.TCPRETRANS)}
-                                                                </TabPanel>
-                                                            </Tabs>
-                                                        </div>
+                                                        {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
 
-                                                        {/*5nd Row*/}
-                                                        {/*5nd Row*/}
-                                                        {/*5nd Row*/}
-                                                        <div className='page_monitoring_column_kyungjoon1' key="n">
-                                                            <Tabs selectedIndex={this.state.udpTabIndex} className='page_monitoring_tab'>
-                                                                <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.UDPRECV)}
-                                                                </TabPanel>
-                                                                <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.UDPSENT)}
-                                                                </TabPanel>
-                                                            </Tabs>
-                                                        </div>
+                                                            <div className='page_monitoring_column_kyungjoon1' key="n">
+                                                                <Tabs selectedIndex={this.state.udpTabIndex} className='page_monitoring_tab'>
+                                                                    <TabPanel>
+                                                                        {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.UDPRECV)}
+                                                                    </TabPanel>
+                                                                    <TabPanel>
+                                                                        {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.UDPSENT)}
+                                                                    </TabPanel>
+                                                                </Tabs>
+                                                            </div> :
+                                                            <div>
+                                                            </div>
+                                                        }
 
                                                         <div className='page_monitoring_column_kyungjoon1' key="p">
                                                             <div className='page_monitoring_table_column' style={{marginLeft: -120, width: window.innerWidth * 0.65}}>

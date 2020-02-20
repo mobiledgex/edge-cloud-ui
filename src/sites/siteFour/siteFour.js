@@ -1,33 +1,17 @@
 import React from 'react';
-import {
-    Grid,
-    Image,
-    Header,
-    Menu,
-    Dropdown,
-    Button,
-    Popup,
-    Label,
-    Modal,
-    Input,
-    Segment,
-    Icon,
-    Container
-} from 'semantic-ui-react';
+import {Button, Container, Dropdown, Grid, Header, Icon, Image, Input, Label, Menu, Modal, Popup, Segment} from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
 
 import {withRouter} from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
 import {Motion, spring} from "react-motion";
-import {Steps, Hints} from 'intro.js-react';
-
+import {Hints, Steps} from 'intro.js-react';
 //redux
 import {connect} from 'react-redux';
 import * as actions from '../../actions';
 
-import {GridLoader, ClipLoader} from "react-spinners";
+import {ClipLoader, GridLoader} from "react-spinners";
 import HeaderGlobalMini from '../../container/headerGlobalMini';
-
 //pages
 import SiteFourPageFlavor from './flavors/siteFour_page_flavor';
 import SiteFourPageUser from './userRole/siteFour_page_user';
@@ -62,7 +46,7 @@ import PopLegendViewer from '../../container/popLegendViewer';
 import * as serviceMC from '../../services/serviceMC';
 import * as reducer from '../../utils'
 
-import {organizationTutor, CloudletTutor} from '../../tutorial';
+import {CloudletTutor, organizationTutor} from '../../tutorial';
 
 import Alert from 'react-s-alert';
 
@@ -70,7 +54,6 @@ import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
 import PageDevMonitoring from "./monitoring/dev/PageDevMonitoring";
 import PageOperMonitoring from "./monitoring/oper/PageOperMonitoring";
-import {PageModalOperMonitoring} from "./monitoring/child_comp/PageModalOperMonitoring";
 import {PageModalMonitoring} from "./monitoring/child_comp/PageModalMonitoring";
 
 let defaultMotion = {left: window.innerWidth / 2, top: window.innerHeight / 2, opacity: 1}
