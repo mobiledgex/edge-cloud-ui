@@ -161,6 +161,7 @@ type State = {
     isAppInstaceOnCloudletDataReady: boolean,
     allAppInstUsageList: Array,
     filteredAppInstUsageList: Array,
+    showGridLoader: boolean,
 
 }
 
@@ -234,6 +235,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             isAppInstaceOnCloudletDataReady: false,
             allAppInstUsageList: [],
             filteredAppInstUsageList: [],
+            showGridLoader: false,
         };
 
         constructor(props) {
@@ -500,6 +502,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 await this.setState({
                     currentSixGridIndex: 0,
+                    showGridLoader: true,
                 })
 
                 let appInstanceList = []
@@ -516,8 +519,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     allAppInstUsageList = this.state.allAppInstUsageList
                     allGridInstanceList = this.state.allGridInstanceList;
                 }
-
-                this.props.toggleLoading(true)
                 await this.setState({
                     loading0: true,
                     appInstanceListSortByCloudlet: [],
@@ -631,11 +632,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     networkChartData: networkChartData,
                     networkBarChartData: networkBarChartData,
                 })
-                this.props.toggleLoading(false)
+
+                setTimeout(() => {
+                    this.setState({
+                        showGridLoader: false,
+                    })
+                }, 1)
             } catch (e) {
                 showToast(e.toString())
             } finally {
-                this.props.toggleLoading(false)
+                setTimeout(() => {
+                    this.setState({
+                        showGridLoader: false,
+                    })
+                }, 1)
             }
 
         }
@@ -1085,6 +1095,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:---------------------------------*/}
                         {this.renderHeader()}
                         <Grid.Row className='site_content_body'>
+                            {this.state.showGridLoader && <div style={{position: 'absolute', top: '37%', left: '48%', zIndex: 999999999999}}>
+                                <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
+                                    {renderGridLoader2(150, 150)}
+                                </div>
+                            </div>}
                             <Grid.Column>
                                 <div className="table-no-resized">
 
