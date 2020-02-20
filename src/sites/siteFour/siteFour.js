@@ -846,13 +846,6 @@ class SiteFour extends React.Component {
             currentPage : currentPage
         })
     }
-    
-    getButtonNew = () => {
-        return (
-            (this.state.page.indexOf('create') === -1 && this.state.page.indexOf('edit') == -1)?
-            <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>New</Button>
-            : <Button disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>Reset</Button> )
-    }
 
     showFullPage = (fullPage)=>
     {
@@ -1080,7 +1073,13 @@ class SiteFour extends React.Component {
                                             }
                                             {
                                                 (viewMode!== 'MexDetailView' && !this.state.currentPage && this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView' && this.props.location.search.indexOf('audits') === -1 ) ?
-                                                    this.getButtonNew()
+
+
+                                                    <Button color={(this.state.page.indexOf('create') === -1 && this.state.page.indexOf('edit') == -1)? 'teal' : null}
+                                                        disabled={this.props.viewBtn.onlyView}
+                                                        onClick={() => this.onHandleRegistry()}>
+                                                        {(this.state.page.indexOf('create') === -1 && this.state.page.indexOf('edit') == -1)?'New' : 'reset'}
+                                                    </Button>
                                                     : null
                                             }
                                             {
