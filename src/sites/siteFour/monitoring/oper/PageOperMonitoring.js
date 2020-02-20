@@ -10,6 +10,7 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker,} from 'antd';
+import {filterListBykeyForCloudlet, renderBubbleChartForCloudlet,} from "../admin/PageAdminMonitoringService";
 import {CLASSIFICATION, HARDWARE_OPTIONS_FOR_CLOUDLET, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../../shared/Constants";
 import type {TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
@@ -18,7 +19,7 @@ import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
 import {renderGridLoader2, renderPlaceHolderCircular, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
-import {CircularProgress} from "@material-ui/core";
+import {Button as MButton, CircularProgress} from "@material-ui/core";
 import {
     handleBubbleChartDropDownForCloudlet,
     makeBarChartDataForCloudlet,
@@ -27,8 +28,12 @@ import {
 } from "./PageOperMonitoringService";
 import LeafletMap from "./LeafletMapWrapperForOper";
 import {filterUsageByClassification, makeSelectBoxListWithKey, sortByKey} from "../dev/PageDevMonitoringService";
-import {getAllCloudletEventLogs, getCloudletEventLog, getCloudletList, getCloudletLevelUsageList} from "../PageMonitoringMetricService";
-import {filterListBykeyForCloudlet, renderBubbleChartForCloudlet} from "../admin/PageAdminMonitoringService";
+
+import {
+    getAllCloudletEventLogs,
+    getCloudletEventLog, getCloudletList, getCloudletLevelUsageList,
+} from '../PageMonitoringMetricService'
+
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
 const {Column, Row} = Grid;
@@ -232,6 +237,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             allCloudletEventLogs: [],
             eventLogColumn: null,
             direction: null,
+            isNoData: false,
         };
 
         interval = null;
@@ -278,16 +284,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
 
                 let cloudletList = [];
-                let allCloudletEventLogList=[];
+                let allCloudletEventLogList = [];
                 //fixme : fakedata
                 //cloudletList = require('./cloudletList')
                 cloudletList = await getCloudletList();
-                try{
-                    allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList);
-                }catch (e) {
-                    //showToast('EVENTLOG fetch error')
+
+                if (cloudletList.length === 0) {
+                    //alert('no data!!!')
+                    this.setState({
+                        isNoData: true,
+                    })
                 }
 
+                allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList);
                 console.log('allCloudletEventLogList===>', allCloudletEventLogList);
 
                 let cloudletListForDropdown = [];
@@ -297,6 +306,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         value: item.CloudletName + "|" + item.Region,
                     })
                 })
+
 
                 await this.setState({
                     isAppInstaceDataReady: true,
@@ -329,17 +339,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     maxCpu: maxCpu,
                     maxMem: maxMem,
                     isRequesting: false,
-                    isAppInstaceDataReady: true,
                 });
             } catch (e) {
                 throw new Error(e)
-            }finally {
-                this.setState({
-                    isRequesting: false,
-                    loading: false,
-                    isReady: true,
-                    isAppInstaceDataReady: true,
-                })
             }
         }
 
@@ -636,12 +638,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <i aria-hidden="true"
                                className="sync alternate icon"></i>
                         </Button>
+
                         <Button
                             onClick={async () => {
                                 this.handleResetForCloudlet()
                                 //await this.filterByEachTypes('ALL', '', '', '')
                             }}
                         >RESET</Button>
+
                         <div>
                             {this.state.userType}
                         </div>
@@ -1036,6 +1040,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <div style={{position: 'absolute', top: '37%', left: '48%'}}>
                                 <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
                                     {renderGridLoader2(150, 150)}
+                                </div>
+                            </div>
+                        </Grid.Column>
+                    </Grid.Row>
+                )
+            }
+
+            if (this.state.isNoData) {
+                return (
+                    <Grid.Row className='view_contents'>
+                        <Grid.Column className='contents_body'>
+                            {this.renderHeader()}
+                            <div style={{position: 'absolute', top: '37%', left: '48%'}}>
+                                <div style={{marginLeft: -450, display: 'flex', flexDirection: 'row', fontSize: 30, opacity: 1, color: 'white'}}>
+                                    No data to express ( There is no cloudlet you can access ) 😅
                                 </div>
                             </div>
                         </Grid.Column>
