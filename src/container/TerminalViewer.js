@@ -3,11 +3,13 @@ import React, { Component } from 'react';
 import Terminal from '../hoc/terminal/mexTerminal'
 import * as serviceMC from '../services/serviceMC'
 import stripAnsi from 'strip-ansi'
-import Options from '../hoc/terminal/options/terminalOptions'
 import * as actions from "../actions";
 import {withRouter} from "react-router-dom";
 import {connect} from "react-redux";
-import { Button, Icon } from 'semantic-ui-react';
+import { Image, Label } from 'semantic-ui-react';
+import * as style from '../hoc/terminal/TerminalStyle';
+import { Paper, Box } from '@material-ui/core';
+import MexForms from '../hoc/forms/MexForms';
 
 
 const CMD_CLEAR = 'clear';
@@ -17,19 +19,24 @@ class MexTerminal extends Component {
 
     constructor(props) {
         super(props)
-        this.containerIds = [];
-        if (props.data.Runtime.container_ids) {
-            this.containerIds = props.data.Runtime.container_ids;
-        }
         this.state = ({
             success: false,
             history: [],
+            status: this.props.data.vm ? 'Connected' : 'Not Connected',
+            statusColor: this.props.data.vm ? 'green' : 'red',
             path: '#',
             open: false,
-            containerId: (this.containerIds.length > 0 ? this.containerIds[0] : ''),
+            forms:[],
             cmd: '',
             optionView: true,
         })
+        this.editable = false;
+        this.containerIds = [];
+        if (props.data.Runtime && props.data.Runtime.container_ids) {
+            this.containerIds = props.data.Runtime.container_ids;
+        }
+
+        this.requestTypes = ['Run Command', 'Show Logs']
         this.success = false;
         this.localConnection = null;
         this.sendChannel = null;
@@ -51,39 +58,55 @@ class MexTerminal extends Component {
         }
     }
 
-    sendRequest = () => {
+    sendRequest = (data) => {
         const { Region, OrganizationName, AppName, Version, ClusterInst, Cloudlet, Operator } = this.props.data;
-        let data = {
-            Region: Region,
-            ExecRequest:
+        let ExecRequest =
+        {
+            app_inst_key:
             {
-                app_inst_key:
+                app_key:
                 {
-                    app_key:
-                    {
-                        developer_key: { name: OrganizationName },
-                        name: AppName,
-                        version: Version
-                    },
-                    cluster_inst_key:
-                    {
-                        cluster_key: { name: ClusterInst },
-                        cloudlet_key: { operator_key: { name: Operator }, name: Cloudlet },
-                        developer: OrganizationName
-                    }
+                    developer_key: { name: OrganizationName },
+                    name: AppName,
+                    version: Version
                 },
-                container_id: this.state.containerId,
-                cmd: {command:this.state.cmd},
-                offer: JSON.stringify(this.localConnection.localDescription)
-            }
+                cluster_inst_key:
+                {
+                    cluster_key: { name: ClusterInst },
+                    cloudlet_key: { operator_key: { name: Operator }, name: Cloudlet },
+                    developer: OrganizationName
+                }
+            },
+            container_id: data.Container,
+            offer: JSON.stringify(this.localConnection.localDescription)
+        }
+
+        let method = '';
+        if(data.Request === 'Run Command')
+        {
+            this.editable = true;
+            method = serviceMC.getEP().RUN_COMMAND;
+            ExecRequest.cmd = {command:data.Command}
+        }
+        else if(data.Request === 'Show Logs')
+        {
+            this.editable = false;
+            method = serviceMC.getEP().SHOW_LOGS;
+            let showLogs = data.ShowLogs
+            let tail = showLogs.Tail ? parseInt(showLogs.Tail) : undefined
+            ExecRequest.log = showLogs ?  { since: showLogs.Since, tail: tail, timestamps: showLogs.Timestamps, follow: showLogs.Follow } : {} 
+        }
+        let requestedData = {
+            Region: Region,
+            ExecRequest:ExecRequest
         }
 
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
         let requestData = {
             token: token,
-            method: serviceMC.getEP().RUN_COMMAND,
-            data: data
+            method: method,
+            data: requestedData
         }
         serviceMC.sendRequest(this, requestData, this.setRemote)
     }
@@ -110,7 +133,8 @@ class MexTerminal extends Component {
         if (!this.success) {
             this.success = true;
             this.setState({
-                history: ['Connected successfully']
+                statusColor:'green',
+                status: 'Connected'
             })
         }
         var textDecoder = new TextDecoder("utf-8");
@@ -126,7 +150,7 @@ class MexTerminal extends Component {
         this.currentCmd = '';
     }
 
-    openTerminal = () => {
+    openTerminal = (data) => {
         try {
             this.localConnection = new RTCPeerConnection({
                 iceServers: [
@@ -155,7 +179,8 @@ class MexTerminal extends Component {
                 if(connectionState !== 'connected')
                 {
                     this.setState({
-                        history: [connectionState]
+                        statusColor:'orange',
+                        status: connectionState
                     })
                 }
             }
@@ -166,7 +191,7 @@ class MexTerminal extends Component {
                 }).catch(this.log)
 
 
-            setTimeout(() => { this.sendRequest() }, 1000);
+            setTimeout(() => { this.sendRequest(data) }, 1000);
         }
         catch (e) {
             alert(e)
@@ -183,8 +208,7 @@ class MexTerminal extends Component {
     onTerminalClose = ()=>
     {
         this.close()
-        if(this.props.onClose)
-        {
+        if (this.state.optionView && this.props.onClose) {
             this.props.onClose()
         }
     }
@@ -203,8 +227,10 @@ class MexTerminal extends Component {
 
         this.setState({
             optionView: true,
+            history:[],
             path: '#',
-            history: ['Connection Closed']
+            statusColor:'red',
+            status: 'Not Connected'
         })
     }
 
@@ -245,42 +271,136 @@ class MexTerminal extends Component {
         })
     }
 
-    connect = () => {
-        if (this.state.cmd.length === 0) {
-            this.props.handleAlertInfo('error', 'Please input command')
+    formattedData = () => {
+        let data = {};
+        let forms = this.state.forms;
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i];
+            if (form.field) {
+                if(form.forms)
+                {
+                    data[form.uuid] = {};
+                    let subForms = form.forms
+                    for (let j = 0; j < subForms.length; j++) {
+                        let subForm = subForms[j];
+                        data[form.uuid][subForm.field] = subForm.value;
+                    }
+
+                }
+                else
+                {
+                    data[form.field] = form.value;
+                }
+            }
         }
-        else {
-            this.setState({
-                history: ["Please wait connecting"],
-                optionView: false
-            })
-            this.openTerminal()
+        return data
+    }
+
+    onConnect = () => {
+        this.setState({
+            forms : this.getForms()
+        })
+        let data = this.formattedData()
+        this.setState({
+            statusColor:'orange',
+            status: "connecting",
+            optionView: false
+        })
+        this.openTerminal(data) 
+    }
+
+    getOptions = (dataList) => {
+        return dataList.map(data => {
+            return { key: data, value: data, text: data }
+        })
+    }
+
+    getLogOptions = ()=>(
+        [
+            { field: 'Since', label: 'Since', type: 'Input', visible: true,labelStyle: style.label, style: style.cmdLine },
+            { field: 'Tail', label: 'Tail', type: 'Input', rules: {type: 'number' }, visible: true,labelStyle: style.label, style: style.cmdLine },
+            { field: 'Timestamps', label: 'Timestamps', type: 'Checkbox', visible: true,labelStyle: style.label, style: {color:'green'}  },
+            { field: 'Follow', label: 'Follow', type: 'Checkbox', visible: true,labelStyle: style.label, style: {color:'green'} }
+        ]
+    )
+
+    getForms = () => (
+        [
+            { field: 'Request', label: 'Request', type: 'Select', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions(this.requestTypes), value: this.requestTypes[0] },
+            { field: 'Container', label: 'Container', type: 'Select', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions(this.containerIds), value: this.containerIds[0] },
+            { field: 'Command', label: 'Command', type: 'Input', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine },
+            { uuid:'ShowLogs', field: 'LogOptions', type:'MultiForm', visible: false, forms:this.getLogOptions(),width:4 },
+            { label: 'Connect', type: 'Button', style: style.button, onClick: this.onConnect, validate: true }
+        ])
+
+    onValueChange = (currentForm) => {
+        let forms = this.state.forms;
+        if (currentForm.field === 'Request') {
+            for (let i = 0; i < forms.length; i++) {
+                let form = forms[i];
+                if (form.field === 'Command') {
+                    form.visible = currentForm.value === 'Show Logs' ? false : true
+                }
+                if (form.field === 'LogOptions') {
+                    form.visible = currentForm.value === 'Show Logs' ? true : false
+                }
+            }
+
+            this.reloadForms()
         }
     }
 
+    reloadForms = () => {
+        this.setState({
+            forms: this.state.forms
+        })
+    }
 
+    
 
     render() {
         return (
-            this.containerIds.length > 0 ?
+            
                 <div style={{ backgroundColor: 'black', height: '100%' }}>
-                    <div onClick={()=>{this.onTerminalClose()}} align="right" style={{padding:10, cursor:'pointer'}}>
-                        <Icon color="red" size='small' name="circle" />
-                    </div>
-                    {this.state.optionView ?
-                        <Options
-                            connect={this.connect}
-                            onCmd={this.onCmd}
-                            onContainerSelect={this.onContainerSelect}
-                            containerIds={this.containerIds}
-                            containerId={this.state.containerId}
-                            cmd={this.state.cmd} />
+                    <Box display="flex" p={1}>
+                        <Box p={1} flexGrow={1}>
+                            <Image wrapped size='small' src='/assets/brand/logo_mex.svg' />
+                        </Box>
+                        <Box p={1} alignSelf="flex-center">
+                            <Label color={this.state.statusColor} style={{ color: 'white', fontFamily: 'Inconsolata, monospace', marginRight: 10 }}>{this.state.status}</Label>
+                        </Box>
+                        <Box p={1}>
+                            <div onClick={() => { this.onTerminalClose() }} style={{ cursor: 'pointer' }}>
+                                <Label color='grey' style={{ color: 'white', fontFamily: 'Inconsolata, monospace', marginRight: 10 }}>{this.state.optionView ? 'CLOSE' : 'BACK'}</Label>
+                            </div>
+                        </Box>
+                    </Box>
+
+                    {
+                    this.props.data.vm ?
+                        <iframe title="vm" id="ChatFrame" allowtransparency="true" frameborder="0" scrolling="no" src={this.props.data.vm.url} style={{ width: '100%', height: '100%' }}></iframe>
                         :
-                        <div style={{ paddingLeft: 20, paddingTop: 30, height: '100%' }}>
-                            <Terminal open={this.state.open} close={this.close} dialog={this.props.dialog} path={this.state.path} onEnter={this.onEnter} history={this.state.history} />
-                        </div>
-                    }
-                </div> : 'Container not found')
+                        this.containerIds.length > 0 ?
+                            this.state.optionView ?
+                                <div style={style.layout}>
+                                    <div style={style.container} align='center'>
+                                        <Paper variant="outlined" style={style.optionBody}>
+                                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} />
+                                        </Paper>
+                                    </div>
+                                </div>
+                                :
+                                <div style={{ paddingLeft: 20, paddingTop: 30, height: '100%' }}>
+                                    <Terminal editable={this.editable} open={this.state.open} close={this.close} path={this.state.path} onEnter={this.onEnter} history={this.state.history} />
+                                </div> : null
+                }
+                    </div>)
+    }
+
+    componentDidMount(){
+        this.setState({
+            forms : this.getForms()
+        })
     }
 
 

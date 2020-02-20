@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import * as actions from '../../../actions';
 import * as serviceMC from '../../../services/serviceMC';
 import '../../siteThree.css';
-import TimelineAuditViewNew from "../../../container/TimelineAuditViewNew";
+import TimelineAuditView from "../../../container/TimelineAuditView";
 
 
 let _self = null;
@@ -257,10 +257,10 @@ class SiteFourPageAudits extends React.Component {
         let randomValue = Math.round(Math.random() * 100);
         return (
             (viewMode === 'listView') ?
-                <TimelineAuditViewNew data={this.state.devData} randomValue={randomValue}
+                <TimelineAuditView data={this.state.devData} randomValue={randomValue}
                                       headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Audit'}
                                       userToken={this.userToken} mounted={this.state.auditMounted}
-                                      handleSelectedAudit={this.selectedAudit}></TimelineAuditViewNew>
+                                      handleSelectedAudit={this.selectedAudit}></TimelineAuditView>
                 :
                 <div></div>
 
