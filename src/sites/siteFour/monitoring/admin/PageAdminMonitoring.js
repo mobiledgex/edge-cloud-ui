@@ -3,13 +3,13 @@ import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import OutsideClickHandler from 'react-outside-click-handler';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Button, Dropdown, Grid, Modal, Tab, Table} from 'semantic-ui-react'
+import {Button, Dropdown, Grid, Tab} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
-import {DatePicker, Progress,} from 'antd';
+import {DatePicker,} from 'antd';
 import * as reducer from "../../../../utils";
 import {
     cutArrayList,
@@ -18,7 +18,8 @@ import {
     filterAppInstOnCloudlet,
     filterInstanceCountOnCloutLetOne,
     filterListBykey,
-    filterUsageListByRegion, handleBubbleChartDropDown,
+    filterUsageListByRegion,
+    handleBubbleChartDropDown,
     instanceFlavorToPerformanceValue,
     makeBarChartDataForInst,
     makeCloudletListSelectBox,
@@ -27,7 +28,10 @@ import {
     makeGridInstanceList,
     makeLineChartDataForAppInst,
     makeNetworkBarData,
-    makeNetworkLineChartData, makeSelectBoxListByClassification, makeSelectBoxListByClassification_byKey, renderBottomGridArea,
+    makeNetworkLineChartData,
+    makeSelectBoxListByClassification,
+    makeSelectBoxListByClassification_byKey,
+    renderBottomGridArea,
     renderBubbleChart,
     renderPlaceHolder2,
     renderSixGridForAppInstOnCloudlet,
@@ -43,15 +47,14 @@ import {
     RECENT_DATA_LIMIT_COUNT,
     REGIONS_OPTIONS
 } from "../../../../shared/Constants";
-import Lottie from "react-lottie";
 import type {TypeAppInstance, TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
-import {numberWithCommas, renderGridLoader2, renderPlaceHolderCircular, showToast, showToast2, StylesForMonitoring} from "../PageMonitoringCommonService";
+import {renderGridLoader2, renderPlaceHolderCircular, showToast, showToast2, StylesForMonitoring} from "../PageMonitoringCommonService";
 import '../PageMonitoring.css'
-import {getAppInstList, getAppLevelUsageList, getAppLevelUsageList__NEW, getCloudletListAll} from "../PageMonitoringMetricService";
+import {getAppInstList, getAppLevelUsageList, getCloudletListAll} from "../PageMonitoringMetricService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -332,7 +335,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 let allAppInstUsageList = [];
                 //@todo:realdata
                 try {
-                    allAppInstUsageList = await getAppLevelUsageList__NEW(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
+                    allAppInstUsageList = await getAppLevelUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
                 } catch (e) {
                     showToast(e.toString())
                 }
@@ -421,7 +424,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     let endTime = makeCompleteDateTime(this.state.endTime);
 
                     this.setState({loading: true})
-                    let appInstUsageList_byDate = await getAppLevelUsageList__NEW(this.state.appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
+                    let appInstUsageList_byDate = await getAppLevelUsageList(this.state.appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
 
                     console.log('appInstUsageList_byDate====>', appInstUsageList_byDate);
 

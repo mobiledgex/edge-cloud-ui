@@ -126,7 +126,8 @@
   "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "devDependencies": {
-    "react-scripts": "^3.3.0"
+    "react-scripts": "^3.3.0",
+    "reactjs-localstorage": "0.0.8"
   },
   "scripts": {
     "start": "craco start",
