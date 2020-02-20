@@ -52,7 +52,7 @@ import {TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
-import {renderGridLoader2, renderLoaderArea, renderPlaceHolderCircular, showToast, showToast2, StylesForMonitoring} from "../PageMonitoringCommonService";
+import {renderGridLoader2, renderLoaderArea, renderPlaceHolderCircular, showToast, showToast2, PageMonitoringStyles} from "../PageMonitoringCommonService";
 import '../PageMonitoring.css'
 import {getAppInstList, getAppLevelUsageList, getCloudletListAll} from "../PageMonitoringMetricService";
 
@@ -1260,7 +1260,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*todo:---------------------------------*/}
                                                         <div className='page_monitoring_popup_table'>
                                                             {this.state.filteredGridInstanceList.length && this.state.isReady === 0 ?
-                                                                <div style={StylesForMonitoring.noData}>
+                                                                <div style={PageMonitoringStyles.noData}>
                                                                     NO DATA
                                                                 </div>
                                                                 : renderBottomGridArea(this)}

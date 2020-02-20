@@ -47,7 +47,7 @@ export const getAppInstList = async (pArrayRegion = ['EU', 'US']) => {
                 }
 
             }).catch(e => {
-                showToast(e.toString())
+                //showToast(e.toString())
             }).finally(() => {
 
             })
@@ -133,13 +133,13 @@ export const getCloudletList = async () => {
             }
         })
 
-        let mergedOrgCloudletList = []
+       /* let mergedOrgCloudletList = []
         mergedCloudletList.map(item => {
             if (item.Operator === localStorage.selectOrg) {
                 mergedOrgCloudletList.push(item)
             }
-        })
-        return mergedOrgCloudletList;
+        })*/
+        return mergedCloudletList;
     } catch (e) {
         showToast('getCloudletList===>' + e.toString())
     }

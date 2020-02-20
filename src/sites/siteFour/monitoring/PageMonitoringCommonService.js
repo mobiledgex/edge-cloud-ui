@@ -12,7 +12,7 @@ import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {GridLoader} from "react-spinners";
 import {Grid} from "semantic-ui-react";
 
-export const StylesForMonitoring = {
+export const PageMonitoringStyles = {
     selectBoxRow: {
         alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,
     },
@@ -92,6 +92,17 @@ export const StylesForMonitoring = {
         width: '100%',
         minHeight: 350,
         //backgroundColor:'red'
+    },
+    center3: {
+        display: 'flex',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        minHeight: 350,
+        fontSize:29,
+        fontFamily: 'Karla'
+        //backgroundColor:'red'
     }
 
 }
@@ -112,6 +123,13 @@ export const StylesForMonitoring = {
             speed={3.0}
         />*/
 }
+
+export const noDataArea = () =>(
+    <div style={PageMonitoringStyles.center3}>
+        There is no data to represent.
+    </div>
+)
+
 
 export const renderLoaderArea = (_this) => (
     <Grid.Row className='view_contents'>
@@ -524,6 +542,11 @@ export const renderUsageByType = (usageOne, hardwareType, role = '',) => {
 }
 
 export const renderBarChartCore = (chartDataList, hardwareType) => {
+
+
+
+    console.log(`chartDataList==${hardwareType}=>`, chartDataList);
+
     return (
         <Chart
             width={"100%"}

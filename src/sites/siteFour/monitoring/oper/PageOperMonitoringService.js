@@ -1,7 +1,7 @@
 import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX} from "../../../../shared/Constants";
 import React from "react";
 import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
-import {numberWithCommas, renderBarChartCore, renderLineChartCore, renderPlaceHolderCircular, renderUsageByType2, sortUsageListByType, StylesForMonitoring} from "../PageMonitoringCommonService";
+import {numberWithCommas, renderBarChartCore, renderLineChartCore, renderPlaceHolderCircular, renderUsageByType2, sortUsageListByType, PageMonitoringStyles} from "../PageMonitoringCommonService";
 import PageOperMonitoring from "./PageOperMonitoring";
 import {Table} from "semantic-ui-react";
 import {Progress} from "antd";
@@ -12,7 +12,7 @@ export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
 
     if (usageList.length === 0) {
         return (
-            <div style={StylesForMonitoring.noData}>
+            <div style={PageMonitoringStyles.noData}>
                 NO DATA
             </div>
         )
@@ -187,7 +187,7 @@ export const makeLineChartForCloudlet = (_this: PageOperMonitoring, pUsageList: 
 
     if (pUsageList.length === 0) {
         return (
-            <div style={StylesForMonitoring.noData}>
+            <div style={PageMonitoringStyles.noData}>
                 NO DATA
             </div>
         )

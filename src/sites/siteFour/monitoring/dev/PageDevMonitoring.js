@@ -49,7 +49,7 @@ import {
     renderGridLoader2, renderLoaderArea,
     renderPlaceHolderCircular,
     showToast,
-    StylesForMonitoring
+    PageMonitoringStyles, noDataArea
 } from "../PageMonitoringCommonService";
 import {getAppInstList, getAppLevelUsageList, getCloudletList} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
@@ -364,15 +364,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             clearInterval(this.intervalForAppInst)
             this.setState({dropdownRequestLoading: true})
             let clusterList = await getClusterList();
+            let cloudletList = await getCloudletList()
 
-            if (clusterList.length === 0) {
+            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
+            if (appInstanceList.length === 0) {
                 this.setState({
                     isNoData: true,
                 })
             }
-
-            let cloudletList = await getCloudletList()
-            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
 
 
             //fixme: fakeData
@@ -519,15 +518,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-        makeChartDataAndRenderTabBody(hwType,) {
-            let barChartDataSet: TypeBarChartData = [];
+        makeChartDataAndRenderTabBody_LineChart(hwType,) {
             let lineChartDataSet: TypeLineChartData = [];
             if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
                 lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
             } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
-                barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
                 lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
+            }
+
+            if (lineChartDataSet === undefined) {
+                lineChartDataSet = []
             }
             console.log(`lineChartDataSet===${hwType}>`, lineChartDataSet);
             if (hwType === HARDWARE_TYPE.RECVBYTES
@@ -541,25 +541,26 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 || hwType === HARDWARE_TYPE.UDPSENT
 
             ) {
-                return this.renderGraphAreaMulti(hwType, barChartDataSet, lineChartDataSet)
+                return this.renderGraphAreaMultiForLineChart(hwType, [], lineChartDataSet)
             } else {
 
-                return this.renderGraphArea(hwType, barChartDataSet, lineChartDataSet)
+                return this.renderGraphAreaForLineChart(hwType, [], lineChartDataSet)
             }
         }
 
 
-        makeChartDataAndRenderTabBody__Bar(hwType,) {
+        makeChartDataAndRenderTabBody_BarChart(hwType,) {
             let barChartDataSet: TypeBarChartData = [];
-            let lineChartDataSet: TypeLineChartData = [];
             if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                 barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
-                lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
             } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
                 barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
-                lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
             }
-            console.log(`lineChartDataSet===${hwType}>`, lineChartDataSet);
+
+            if (barChartDataSet === undefined) {
+                barChartDataSet = []
+            }
+            console.log(`lineChartDataSet===${hwType}>`, []);
             if (hwType === HARDWARE_TYPE.RECVBYTES
                 || hwType === HARDWARE_TYPE.SENDBYTES
                 || hwType === HARDWARE_TYPE.ACTIVE_CONNECTION
@@ -571,10 +572,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 || hwType === HARDWARE_TYPE.UDPSENT
 
             ) {
-                return this.renderGraphAreaMulti__Bar(hwType, barChartDataSet, lineChartDataSet)
+
+                return this.renderGraphAreaMultiForBarChart(hwType, barChartDataSet, [])
+
             } else {
 
-                return this.renderGraphArea___Bar(hwType, barChartDataSet, lineChartDataSet)
+                return this.renderGraphAreaForBarChart(hwType, barChartDataSet)
+
             }
         }
 
@@ -587,7 +591,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
         }
 
-        renderGraphAreaMulti(pHardwareType, barChartDataSet, lineChartDataSet) {
+        renderGraphAreaMultiForLineChart(pHardwareType, barChartDataSet, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column'>
                     {/*@todo:LInechart*/}
@@ -608,7 +612,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderGraphAreaMulti__Bar(pHardwareType, barChartDataSet, lineChartDataSet) {
+        renderGraphAreaMultiForBarChart(pHardwareType, barChartDataSet, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column'>
                     {/*@todo:BarChart*/}
@@ -621,7 +625,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
+                            {this.state.loading ? renderPlaceHolderCircular() :
+                                lineChartDataSet.length === 0 ?
+                                    noDataArea()
+                                    :
+                                    renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
                         </div>
                     </div>
 
@@ -630,7 +638,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        renderGraphArea(pHardwareType, barChartDataSet, lineChartDataSet) {
+        renderGraphAreaForLineChart(pHardwareType, barChartDataSet, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
                     {/*@todo:LInechart*/}
@@ -649,14 +657,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : renderLineChartCoreForDev_Cluster(this, lineChartDataSet)}
+                            {this.state.loading ? renderPlaceHolderCircular() :
+                                lineChartDataSet.length === 0 ?
+                                    noDataArea()
+                                    :
+                                    renderLineChartCoreForDev_Cluster(this, lineChartDataSet)}
                         </div>
                     </div>
                 </div>
             )
         }
 
-        renderGraphArea___Bar(pHardwareType, barChartDataSet, lineChartDataSet) {
+        renderGraphAreaForBarChart(pHardwareType, barChartDataSet) {
+
+            console.log(`renderGraphAreaForBarChart===${pHardwareType}, ${barChartDataSet}>` + JSON.stringify(barChartDataSet));
+
+
             return (
                 <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
 
@@ -670,7 +686,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType, this)}
+                            {this.state.loading ? renderPlaceHolderCircular() :
+
+                                barChartDataSet.length === 0 || barChartDataSet.chartDataList.length === 1 ?
+                                    noDataArea()
+                                    :
+                                    renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType, this)
+
+                            }
                         </div>
                     </div>
                 </div>
@@ -812,7 +835,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 menuItem: 'CPU', render: () => {
                     return (
                         <Pane>
-                            {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.CPU)}
+                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.CPU)}
                         </Pane>
                     )
                 },
@@ -821,7 +844,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 menuItem: 'MEM', render: () => {
                     return (
                         <Pane>
-                            {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.MEM)}
+                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.MEM)}
                         </Pane>
                     )
                 }
@@ -831,7 +854,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 menuItem: 'DISK', render: () => {
                     return (
                         <Pane>
-                            {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.DISK)}
+                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.DISK)}
                         </Pane>
                     )
                 }
@@ -843,13 +866,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <Tabs selectedIndex={this.state.connectionsTabIndex} className='page_monitoring_tab'>
 
                                 <TabPanel>
-                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.ACTIVE_CONNECTION)}
+                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.ACTIVE_CONNECTION)}
                                 </TabPanel>
                                 <TabPanel>
-                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.HANDLED_CONNECTION)}
+                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.HANDLED_CONNECTION)}
                                 </TabPanel>
                                 <TabPanel>
-                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.ACCEPTS_CONNECTION)}
+                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.ACCEPTS_CONNECTION)}
                                 </TabPanel>
                             </Tabs>
                         </Pane>
@@ -868,7 +891,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 menuItem: 'CPU', render: () => {
                     return (
                         <Pane>
-                            {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.CPU)}
+                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.CPU)}
                         </Pane>
                     )
                 },
@@ -877,7 +900,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 menuItem: 'MEM', render: () => {
                     return (
                         <Pane>
-                            {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.MEM)}
+                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.MEM)}
                         </Pane>
                     )
                 }
@@ -887,7 +910,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 menuItem: 'DISK', render: () => {
                     return (
                         <Pane>
-                            {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.DISK)}
+                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.DISK)}
                         </Pane>
                     )
                 }
@@ -899,10 +922,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <Tabs selectedIndex={this.state.tcpTabIndex} className='page_monitoring_tab'>
 
                                 <TabPanel>
-                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.TCPCONNS)}
+                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.TCPCONNS)}
                                 </TabPanel>
                                 <TabPanel>
-                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.TCPRETRANS)}
+                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.TCPRETRANS)}
                                 </TabPanel>
 
                             </Tabs>
@@ -916,10 +939,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <Pane>
                             <Tabs selectedIndex={this.state.udpTabIndex} className='page_monitoring_tab'>
                                 <TabPanel>
-                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.UDPRECV)}
+                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.UDPRECV)}
                                 </TabPanel>
                                 <TabPanel>
-                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.UDPSENT)}
+                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.UDPSENT)}
                                 </TabPanel>
 
                             </Tabs>
@@ -952,7 +975,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 <Grid.Row className='content_title'>
                     <div className='content_title_wrap'>
-                        <div className='content_title_label'>Monitoring</div>
+                        <div className='content_title_label'>Monitoring For Dev</div>
                         {/*todo:---------------------------*/}
                         {/*todo:REFRESH, RESET BUTTON DIV  */}
                         {/*todo:---------------------------*/}
@@ -1063,7 +1086,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 selection
                                 loading={this.state.loading}
                                 options={this.state.clusterDropdownList}
-                                style={StylesForMonitoring.dropDown}
+                                style={PageMonitoringStyles.dropDown}
                                 onChange={async (e, {value}) => {
                                     this.handleClusterDropdown(value.trim())
                                 }}
@@ -1375,7 +1398,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.renderHeader()}
                             <div style={{position: 'absolute', top: '37%', left: '48%'}}>
                                 <div style={{marginLeft: -450, display: 'flex', flexDirection: 'row', fontSize: 30, opacity: 1, color: 'white'}}>
-                                    No data to express ( There is no cluster you can access ) 😅
+                                    There is no app instance you can access.. 😅😅😅
                                 </div>
                             </div>
                         </Grid.Column>
@@ -1478,24 +1501,24 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             {this.renderBubbleChartArea()}
                                                         </div>
                                                         <div className='page_monitoring_column_kyungjoon1' key="c">
-                                                            {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.CPU)}
+                                                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.CPU)}
 
                                                         </div>
                                                         <div className='page_monitoring_column_kyungjoon1' key="d">
-                                                            {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.MEM)}
+                                                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.MEM)}
                                                         </div>
 
                                                         <div className='page_monitoring_column_kyungjoon1' key="e">
-                                                            {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.DISK)}
+                                                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.DISK)}
                                                         </div>
 
                                                         <div className='page_monitoring_column_kyungjoon1' key="f">
                                                             <Tabs selectedIndex={this.state.networkTabIndex} className='page_monitoring_tab'>
                                                                 <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.RECVBYTES)}
+                                                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.RECVBYTES)}
                                                                 </TabPanel>
                                                                 <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.SENDBYTES)}
+                                                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.SENDBYTES)}
                                                                 </TabPanel>
                                                             </Tabs>
                                                         </div>
@@ -1503,10 +1526,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         <div className='page_monitoring_column_kyungjoon1' key="g">
                                                             <Tabs selectedIndex={this.state.tcpTabIndex} className='page_monitoring_tab'>
                                                                 <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.TCPCONNS)}
+                                                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.TCPCONNS)}
                                                                 </TabPanel>
                                                                 <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.TCPRETRANS)}
+                                                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.TCPRETRANS)}
                                                                 </TabPanel>
                                                             </Tabs>
                                                         </div>
@@ -1514,22 +1537,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         <div className='page_monitoring_column_kyungjoon1' key="h">
                                                             <Tabs selectedIndex={this.state.udpTabIndex} className='page_monitoring_tab'>
                                                                 <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.UDPSENT)}
+                                                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.UDPSENT)}
                                                                 </TabPanel>
                                                                 <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody(HARDWARE_TYPE.UDPRECV)}
+                                                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.UDPRECV)}
                                                                 </TabPanel>
                                                             </Tabs>
                                                         </div>
 
 
                                                         <div className='page_monitoring_column_kyungjoon1' key="i">
-                                                            {this.makeChartDataAndRenderTabBody__Bar(HARDWARE_TYPE.CPU)}
+                                                            {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.CPU)}
                                                         </div>
 
 
                                                         <div className='page_monitoring_column_kyungjoon1' key="j">
-                                                            {this.makeChartDataAndRenderTabBody__Bar(HARDWARE_TYPE.MEM)}
+                                                            {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.MEM)}
                                                         </div>
 
 
@@ -1538,17 +1561,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*4nd Row*/}
                                                         {/*4nd Row*/}
                                                         <div className='page_monitoring_column_kyungjoon1' key="k">
-                                                            {this.makeChartDataAndRenderTabBody__Bar(HARDWARE_TYPE.DISK)}
+                                                            {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.DISK)}
                                                         </div>
 
 
                                                         <div className='page_monitoring_column_kyungjoon1' key="l">
                                                             <Tabs selectedIndex={this.state.networkTabIndex} className='page_monitoring_tab'>
                                                                 <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody__Bar(HARDWARE_TYPE.RECVBYTES)}
+                                                                    {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.RECVBYTES)}
                                                                 </TabPanel>
                                                                 <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody__Bar(HARDWARE_TYPE.SENDBYTES)}
+                                                                    {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.SENDBYTES)}
                                                                 </TabPanel>
                                                             </Tabs>
                                                         </div>
@@ -1557,10 +1580,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         <div className='page_monitoring_column_kyungjoon1' key="m">
                                                             <Tabs selectedIndex={this.state.tcpTabIndex} className='page_monitoring_tab'>
                                                                 <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody__Bar(HARDWARE_TYPE.TCPCONNS)}
+                                                                    {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.TCPCONNS)}
                                                                 </TabPanel>
                                                                 <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody__Bar(HARDWARE_TYPE.TCPRETRANS)}
+                                                                    {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.TCPRETRANS)}
                                                                 </TabPanel>
                                                             </Tabs>
                                                         </div>
@@ -1571,10 +1594,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         <div className='page_monitoring_column_kyungjoon1' key="n">
                                                             <Tabs selectedIndex={this.state.udpTabIndex} className='page_monitoring_tab'>
                                                                 <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody__Bar(HARDWARE_TYPE.UDPRECV)}
+                                                                    {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.UDPRECV)}
                                                                 </TabPanel>
                                                                 <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody__Bar(HARDWARE_TYPE.UDPSENT)}
+                                                                    {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.UDPSENT)}
                                                                 </TabPanel>
                                                             </Tabs>
                                                         </div>
@@ -1582,7 +1605,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         <div className='page_monitoring_column_kyungjoon1' key="p">
                                                             <div className='page_monitoring_table_column' style={{marginLeft: -120, width: window.innerWidth * 0.65}}>
                                                                 <div className='page_monitoring_title_area'>
-                                                                    <div className='page_monitoring_title' style={StylesForMonitoring.center}>
+                                                                    <div className='page_monitoring_title' style={PageMonitoringStyles.center}>
                                                                         CLUSTER LIST
                                                                     </div>
                                                                 </div>

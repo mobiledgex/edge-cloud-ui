@@ -5,7 +5,7 @@ import Lottie from "react-lottie";
 import BubbleChart from "../../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../../shared/Types";
 import PageAdminMonitoring from "./PageAdminMonitoring";
-import {convertByteToMegaByte, numberWithCommas, renderBarChartCore, renderLineChartCore, renderUsageByType2, StylesForMonitoring} from "../PageMonitoringCommonService";
+import {convertByteToMegaByte, numberWithCommas, renderBarChartCore, renderLineChartCore, renderUsageByType2, PageMonitoringStyles} from "../PageMonitoringCommonService";
 import {TabPanel, Tabs} from "react-tabs";
 import {Table} from "semantic-ui-react";
 import type {TypeAppInstanceUsage2, TypeGridInstanceList} from "../../../../shared/Types";
@@ -325,7 +325,7 @@ export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
 
     if (usageList.length === 0) {
         return (
-            <div style={StylesForMonitoring.noData}>
+            <div style={PageMonitoringStyles.noData}>
                 NO DATA
             </div>
         )
@@ -456,7 +456,7 @@ export const renderBubbleChart = (_this: PageAdminMonitoring, hardwareType: stri
 
     if (pBubbleChartData.length === 0) {
         return (
-            <div style={StylesForMonitoring.noData}>
+            <div style={PageMonitoringStyles.noData}>
                 NO DATA
             </div>
         )
@@ -544,7 +544,7 @@ export const renderBubbleChart = (_this: PageAdminMonitoring, hardwareType: stri
 export const renderBubbleChartForCloudlet = (_this: PageAdminMonitoring, hardwareType: string, pBubbleChartData: any) => {
     if (pBubbleChartData.length === 0 && _this.loading === false) {
         return (
-            <div style={StylesForMonitoring.noData}>
+            <div style={PageMonitoringStyles.noData}>
                 NO DATA
             </div>
         )
@@ -636,7 +636,7 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
     try {
         if (hardwareUsageList.length === 0) {
             return (
-                <div style={StylesForMonitoring.noData}>
+                <div style={PageMonitoringStyles.noData}>
                     NO DATA
                 </div>
             )
@@ -1068,7 +1068,7 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
     if (isEmptyObject(appInstanceListSortByCloudlet)) {
         //do something
         return (
-            <div style={StylesForMonitoring.noData}>
+            <div style={PageMonitoringStyles.noData}>
                 NO DATA
             </div>
         )

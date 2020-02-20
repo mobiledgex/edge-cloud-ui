@@ -18,7 +18,7 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {renderGridLoader2, renderLoaderArea, renderPlaceHolderCircular, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
+import {renderGridLoader2, renderLoaderArea, renderPlaceHolderCircular, showToast, PageMonitoringStyles} from "../PageMonitoringCommonService";
 import {Button as MButton, CircularProgress} from "@material-ui/core";
 import {
     handleBubbleChartDropDownForCloudlet,
@@ -997,7 +997,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 </Table.Row>
                                 }
                                 {this.state.cloudletSelectLoading &&
-                                <div style={StylesForMonitoring.center2}>
+                                <div style={PageMonitoringStyles.center2}>
                                     <CircularProgress style={{color: '#1cecff', marginTop: -70,}}/>
                                 </div>
                                 }
@@ -1253,7 +1253,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*todo:---------------------------------*/}
                                                         <div className='page_monitoring_popup_table' style={{zIndex: 999999}}>
                                                             {this.state.cloudletList.length && this.state.isReady === 0 ?
-                                                                <div style={StylesForMonitoring.noData}>
+                                                                <div style={PageMonitoringStyles.noData}>
                                                                     NO DATA
                                                                 </div>
                                                                 : renderBottomGridAreaForCloudlet(this)}
