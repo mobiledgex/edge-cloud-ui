@@ -16,6 +16,8 @@ const MexSelect = (props) => {
         setSelected(value)
         props.onChange(form, value, props.parentForm)
     }
+
+    
     
     const getForm = () => (
         <Form.Select
@@ -24,9 +26,10 @@ const MexSelect = (props) => {
             label={props.label ? props.label : null}
             required={props.required}
             disabled={props.disabled}
-            options={form.options ? form.options : defaultData}
+            options={form.options ? form.options : null}
             onChange={(e, { value }) => onSelected(value)}
             value={selected}
+            style={form.style}
         />
     )
 

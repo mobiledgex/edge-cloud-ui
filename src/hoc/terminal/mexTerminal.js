@@ -20,11 +20,15 @@ const MexTerminal = (props) => {
     }
 
     const onTerminal = () => {
-        cmdInput.current.focus();
+        if(cmdInput && cmdInput.current)
+        {
+            cmdInput.current.focus();
+        }
     }
 
     return (
-        <div onClick={onTerminal} className={props.dialog ? classes.terminalBodyDialog : classes.terminalBody}>
+        <div onClick={onTerminal} className={classes.terminalBody}>
+            <div style={{maxHeight:'90%', overflow:'auto'}}>
             {
                 props.history ?
                     props.history.map((info, i) => {
@@ -32,12 +36,17 @@ const MexTerminal = (props) => {
                     }) :
                     null
             }
-            <div className={classes.cmdHead}>
-                <span className={classes.cmdPath} id="path">
-                    {'\n' + props.path}
-                </span>
-                <input ref={cmdInput} autoComplete='off' value={cmd} onChange={onCmdChange} onKeyPress={onEnter} className={classes.cmdInput} type="text" id="input" autoFocus={true} />
             </div>
+            {
+                props.editable ?
+                    <div className={classes.cmdHead}>
+                        <span className={classes.cmdPath} id="path">
+                            {'\n' + props.path}
+                        </span>
+                        <input ref={cmdInput} autoComplete='off' value={cmd} onChange={onCmdChange} onKeyPress={onEnter} className={classes.cmdInput} type="text" id="input" autoFocus={true} />
+                    </div> :
+                    null
+            }
         </div>)
 }
 

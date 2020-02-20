@@ -130,6 +130,7 @@ class SiteFour extends React.Component {
             regionToggle: false,
             intoCity: false,
             currentPage:null,
+            fullPage:null,
             menuW:240,
             hideLeftMenu:false,
             animate: false,
@@ -161,14 +162,14 @@ class SiteFour extends React.Component {
             reducer.getFindIndex(this.menuItemsAll, 'label', 'Apps'),
             reducer.getFindIndex(this.menuItemsAll, 'label', 'App Instances'),
             reducer.getFindIndex(this.menuItemsAll, 'label', 'Monitoring'),
-            reducer.getFindIndex(this.menuItemsAll, 'label', 'Audit Log'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Audit Logs'),
         ]
 
         this.menuArr = ['Organization', 'User Roles', 'Cloudlets', 'Cloudlet Pools', 'Flavors', 'Cluster Instances', 'Apps', 'App Instances']
         this.auth_three = [ //operator menu
             reducer.getFindIndex(this.menuItemsAll, 'label', 'Cloudlets'),
             reducer.getFindIndex(this.menuItemsAll, 'label', 'Monitoring'),
-            reducer.getFindIndex(this.menuItemsAll, 'label', 'Audit Log'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Audit Logs'),
         ] //OperatorManager, OperatorContributor, OperatorViewer
 
         this.auth_list = [
@@ -391,13 +392,13 @@ class SiteFour extends React.Component {
             enable = true;
         } else if (this.props.params.subPath === "pg=0") {
             if (this.props.dataExist) {
-                if (userName === 'mexadmin') {
+                if (localStorage.selectRole === 'AdminManager') {
                     currentStep = orgaSteps.stepsOrgDataAdmin;
                 } else {
                     currentStep = orgaSteps.stepsOrgDataDeveloper;
                 }
             } else {
-                if (userName === 'mexadmin') {
+                if (localStorage.selectRole === 'AdminManager') {
                     currentStep = orgaSteps.stepsOrgAdmin;
                 } else {
                     currentStep = orgaSteps.stepsOrgDeveloper;
@@ -407,7 +408,11 @@ class SiteFour extends React.Component {
             enable = true;
         } else if (this.props.params.subPath === "pg=2") {
             //Cloudlets
-            currentStep = cloudletSteps.stepsCloudlet;
+            if (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer') {
+                currentStep = cloudletSteps.stepsCloudletDev;
+            } else {
+                currentStep = cloudletSteps.stepsCloudlet;
+            }
             enable = true;
         } else if (this.props.params.subPath === "pg=3") {
             //Flavors
@@ -846,11 +851,21 @@ class SiteFour extends React.Component {
         })
     }
 
+    showFullPage = (fullPage)=>
+    {
+        this.setState({
+            fullPage : fullPage
+        })
+    }
+
 
     render() {
         const { shouldShowBox, shouldShowCircle, viewMode } = this.state;
         const { stepsEnabled, initialStep, hintsEnabled, hints, steps } = this.state;
         return (
+            this.state.fullPage ? 
+            this.state.fullPage
+            :
             <Grid className='view_body'>
                 {steps ?
                     <Steps
@@ -1028,8 +1043,8 @@ class SiteFour extends React.Component {
                          }}
                     >
                         {this.state.hideLeftMenu ?
-                            <i className="material-icons" style={{color:'rgba(255,255,255,.6)', fontSize:20}}>menu</i>
-                            : <i className="material-icons" style={{color:'rgba(255,255,255,.6)', fontSize:20}}>menu_open</i>}
+                            <i className="material-icons" style={{color:'rgba(255,255,255,.6)', fontSize:20}}>chevron_right</i>
+                            : <i className="material-icons" style={{color:'rgba(255,255,255,.6)', fontSize:20}}>chevron_left</i>}
                     </div>
                 </Container>
                 <Container className='contents_body_container' style={{ top: this.headerH, left: this.state.menuW, width:window.innerWidth - this.state.menuW}}>
@@ -1062,7 +1077,7 @@ class SiteFour extends React.Component {
                                             }
                                             {
                                                 (viewMode!== 'MexDetailView' && !this.state.currentPage && this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView' && this.props.location.search.indexOf('audits') === -1 ) ?
-                                                    <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>New</Button>
+                                                    <Button color='teal' className='stepOrg2' disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>New</Button>
                                                     : null
                                             }
                                             {
@@ -1097,7 +1112,7 @@ class SiteFour extends React.Component {
                                                                 (this.state.page === 'pg=3') ? <SiteFourPageFlavor></SiteFourPageFlavor> :
                                                                     (this.state.page === 'pg=4') ? <SiteFourPageClusterInst></SiteFourPageClusterInst> :
                                                                         (this.state.page === 'pg=5') ? <SiteFourPageApps></SiteFourPageApps> :
-                                                                            (this.state.page === 'pg=6') ? <SiteFourPageAppInst></SiteFourPageAppInst> :
+                                                                            (this.state.page === 'pg=6') ? <SiteFourPageAppInst childPage={this.showFullPage}></SiteFourPageAppInst> :
                                                                                 (this.state.page === 'pg=7') ? <SiteFourPageCloudletPool></SiteFourPageCloudletPool> :
                                                                                     (this.state.page === 'pg=8') ? this.state.autoPolicy === 'Auto Provisioning Policy' ? <AutoProvPolicy childPage={this.showChildPage}></AutoProvPolicy> : <AutoPrivacyPolicy childPage={this.showChildPage}></AutoPrivacyPolicy> :
                                                                                     (this.state.page === 'pg=newOrg') ? <SiteFourPageCreateorga></SiteFourPageCreateorga> :

@@ -14,8 +14,10 @@ import ClustersMap from '../libs/simpleMaps/with-react-motion/index_clusters';
 import PopDetailViewer from './popDetailViewer';
 import * as serviceMC from '../services/serviceMC';
 import ReactJson from 'react-json-view';
+import ListIcon from '@material-ui/icons/List';
 
 import MexMessageStream, { CODE_FINISH } from '../hoc/mexMessageStream';
+import { IconButton, Popper, Grow, Paper, ClickAwayListener, MenuList, MenuItem } from '@material-ui/core';
 
 let prgInter = null;
 
@@ -65,6 +67,7 @@ class MapWithListView extends React.Component {
             changeRegion: null,
             viewMode: null,
             _resetMap: null,
+            anchorEl : null,
             steps: [],
             stepsArray: [],
             uuid: 0
@@ -89,6 +92,7 @@ class MapWithListView extends React.Component {
             { margin: '0 0 10px 0', padding: '5px 15px 15px', alignItems: 'center', display: 'flex', flexDirection: 'column' },
             { margin: '0 0 10px 0', padding: '5px 15px 15px', alignItems: 'center', display: 'flex', flexDirection: 'column', height: '28px' }
         ]
+        this.selectedRow = {};
         this.streamInterval = null;
         this.oldTemp = {};
         this.live = true;
@@ -430,14 +434,14 @@ class MapWithListView extends React.Component {
 
     makeHeader() {
         const { column, direction } = this.state
-            return this.props.headerInfo.map((header, i) => {
-                if (header.visible) {
-                    return (
-                        <Table.HeaderCell key={i} className={header.sortable ? '' : 'unsortable'} textAlign='center' sorted={column === header.field ? direction : null} onClick={header.sortable ? this.handleSort(header.field) : null}>
-                            {header.label}
-                        </Table.HeaderCell>)
-                }
-            })
+        return this.props.headerInfo.map((header, i) => {
+            if (header.visible) {
+                return (
+                    <Table.HeaderCell key={i} className={header.sortable ? '' : 'unsortable'} textAlign='center' sorted={column === header.field ? direction : null} onClick={header.sortable ? this.handleSort(header.field) : null}>
+                        {header.label}
+                    </Table.HeaderCell>)
+            }
+        })
     }
 
     showProgress = (item) => {
@@ -446,7 +450,7 @@ class MapWithListView extends React.Component {
         let color = 'red';
         switch (state) {
             case 5:
-                icon = <Popup content={this.getStateStatus(state)} trigger={<Icon className="progressIndicator" name='check' color='green' />}/>
+                icon = <Popup content={this.getStateStatus(state)} trigger={<Icon className="progressIndicator" name='check' color='green' />} />
                 break;
             case 3:
             case 7:
@@ -458,18 +462,37 @@ class MapWithListView extends React.Component {
                 icon = <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading size={12} color='red' name='circle notch' />} />
                 break;
             default:
-                icon = <Popup content={this.getStateStatus(state)} trigger={<Icon className="progressIndicator" name='close' color='red' />}/>
+                icon = <Popup content={this.getStateStatus(state)} trigger={<Icon className="progressIndicator" name='close' color='red' />} />
         }
         return (
             icon
         )
     }
 
+    onActionClose = (action) => {
+        if(action.label === 'Delete')
+        {
+            this.setState({ openDelete: true })
+        }
+        else if(action.label === 'Terminal')
+        {
+            this.props.onTerminal(this.state.selected)  
+        }
+        this.setState({
+            anchorEl: null
+        })
+    }
+
     showAction = (item, field) => {
         return (
-            String(item[field]) === 'null' ? '' : <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({ openDelete: true, selected: item })}><Icon name={'trash alternate'} /></Button>
+            String(item[field]) === 'null' ? '' :
+                <IconButton aria-label="Action" onClick={e => this.setState({ anchorEl: e.currentTarget, selected: item  })}>
+                    <ListIcon style={{ color: '#76ff03' }} />
+                </IconButton>
         )
     }
+
+   
 
     getCloudletInfoState = (id) => {
 
@@ -514,7 +537,7 @@ class MapWithListView extends React.Component {
         return (
             field === 'Progress' ?
                 this.onProgressClick(item, this.props.siteId, '', item['State']) :
-                field === 'Actions' ?
+                field === 'Actions'?
                     null :
                     this.detailView(item)
         )
@@ -541,21 +564,21 @@ class MapWithListView extends React.Component {
                 let field = header.field;
                 return <Table.Cell key={j} textAlign='center' ref={cell => this.tableCell = cell} onClick={() => this.getCellClick(field, item)} style={(this.state.selectedItem == i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
                     {
-                        field === 'Actions' ?
-                            this.showAction(item, field) :
-                            field === 'Progress' ?
-                                this.showProgress(item) :
-                                (field === 'State' && item[field]) ?
-                                    this.getStateStatus(item[field]) :
-                                    (field === 'CloudletLocation' && item[field]) ?
-                                        item[field].latitude && item[field].longitude ? <div> {`Latitude : ${item[field].latitude}`} <br /> {`Longitude : ${item[field].longitude}`} </div> : '' :
-                                        (field === 'CloudletInfoState' && item[field]) ?
-                                            this.getCloudletInfoState(item[field]) :
-                                            (field === 'IpAccess' && item[field]) ?
-                                                this.getIPAccessState(item[field]) :
-                                                <div style={{ display: 'flex', alignContent: 'Column', justifyContent: 'center', alignItems: 'center', wordBreak: 'break-all' }}>
-                                                    <div>{String(item[field])}</div>{(this.compareDate(item['Created']).new && field === 'Region') ? <div className="userNewMark" style={{ marginLeft: 5, fontSize: 10, padding: '0 5px' }}>{`New`}</div> : null}
-                                                </div>
+                            field === 'Actions' ?
+                                this.showAction(item, field) :
+                                field === 'Progress' ?
+                                    this.showProgress(item) :
+                                    (field === 'State' && item[field]) ?
+                                        this.getStateStatus(item[field]) :
+                                        (field === 'CloudletLocation' && item[field]) ?
+                                            item[field].latitude && item[field].longitude ? <div> {`Latitude : ${item[field].latitude}`} <br /> {`Longitude : ${item[field].longitude}`} </div> : '' :
+                                            (field === 'CloudletInfoState' && item[field]) ?
+                                                this.getCloudletInfoState(item[field]) :
+                                                (field === 'IpAccess' && item[field]) ?
+                                                    this.getIPAccessState(item[field]) :
+                                                    <div style={{ display: 'flex', alignContent: 'Column', justifyContent: 'center', alignItems: 'center', wordBreak: 'break-all' }}>
+                                                        <div>{String(item[field])}</div>{(this.compareDate(item['Created']).new && field === 'Region') ? <div className="userNewMark" style={{ marginLeft: 5, fontSize: 10, padding: '0 5px' }}>{`New`}</div> : null}
+                                                    </div>
                     }</Table.Cell>
             }
         })
@@ -705,6 +728,14 @@ class MapWithListView extends React.Component {
             })
     }
 
+    showMenu = (action) => {
+        let visible = true;
+        if (action.label === 'Terminal') {
+            visible = this.state.selected.Runtime.container_ids || this.state.selected.DeploymentType === 'vm'
+        }
+        return visible
+    }
+
     render() {
         const { open, dimmer, dummyData, resize, _resetMap } = this.state;
 
@@ -729,6 +760,31 @@ class MapWithListView extends React.Component {
                 </Container>
                 <MexMessageStream onClose={this.closeStepper} uuid={this.state.uuid} stepsArray={this.state.stepsArray} />
                 <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail} centered={false} style={{ right: 400 }}></PopDetailViewer>
+                {
+                    this.props.actionMenu ?
+                        <Popper open={Boolean(this.state.anchorEl)} anchorEl={this.state.anchorEl} role={undefined} transition disablePortal>
+                            {({ TransitionProps, placement }) => (
+                                <Grow
+                                    {...TransitionProps}
+                                    style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center right' }}
+                                >
+                                    <Paper style={{ backgroundColor: '#212121', color: 'white'}}>
+                                        <ClickAwayListener onClickAway={this.onActionClose}>
+                                            <MenuList autoFocusItem={Boolean(this.state.anchorEl)} id="menu-list-grow" >
+                                                {this.props.actionMenu.map((action, i) => {
+                                                    return this.showMenu(action) ? 
+                                                        <MenuItem  key={i} onClick={(e) => { this.onActionClose(action) }}>
+                                                            {/* <MaterialIcon color='white' icon={action.icon}/> */}
+                                                            <label>{action.label}</label> 
+                                                        </MenuItem> : 
+                                                        null
+                                                })}
+                                            </MenuList>
+                                        </ClickAwayListener>
+                                    </Paper>
+                                </Grow>
+                            )}
+                        </Popper> : null}
             </div>
 
 

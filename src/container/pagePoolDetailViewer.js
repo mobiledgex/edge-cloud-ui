@@ -52,42 +52,34 @@ const detailViewer = (props, type) => (
     </Fragment>
 )
 
+const returnReWord = (label) => {
+    let newName = '';
+    switch (label) {
+        case 'PoolName' : newName = 'Pool Name'; break;
+        case 'NumOfCloudlets' : newName = 'Number of Cloudlets'; break;
+        case 'NumOfOrganizations' : newName = 'Number of Organizations'; break;
+        default: newName = label; break;
+    }
+    return newName;
+
+}
+
 const makeCloudletTable = (values, label, i) => (
     (label !== 'Edit' && label !== 'uuid')?
         <Table.Row key={i}>
             <Table.Cell>
-                
-                        {(label == 'CloudletName')?'Cloudlet Name'
-                            :(label == 'CloudletLocation')?'Cloudlet Location'
-                                :(label == 'Ip_support')?'IP Support'
-                                    :(label == 'Num_dynamic_ips')?'Number of Dynamic IPs' /* Cloudlets */
-                                        :(label == 'ClusterName')?'Cluster Name'
-                                            :(label == 'OrganizationName')?'Organization Name'
-                                                :(label == 'IpAccess')?'IP Access' /* Cluster Inst */
-                                                    :(label == 'Mapped_port')?'Mapped Port' /* Cluster Inst */
-                                                        :(label == 'AppName')?'App Name'
-                                                            :(label == 'ClusterInst')?'Cluster Instance'
-                                                                :(label == 'Physical_name')?'Physical Name'
-                                                                    :(label == 'Platform_type')?'Platform Type'
-                                                                    :(label == 'PoolName')?'Pool Name'
-                                                                    :(label == 'Cloudlets')?'Number of Cloudlets'
-                                                                    :(label == 'Organizations')?'Number of Organizations'
-                                                                        :label}
-                    
+                <Header as='h4' image>
+                    <Icon name={'dot'} />
+                    <Header.Content>
+                        {returnReWord(label)}
+                    </Header.Content>
+                </Header>
             </Table.Cell>
             <Table.Cell>
-                {(label === 'Ip_support' && String(values[label]) == '1')?'Static'
-                    :(label === 'Ip_support' && String(values[label]) == '2')?'Dynamic' /* Cloudlets */
-                        :(label === 'IpAccess' && String(values[label]) == '1')?'Dedicated'
-                            :(label === 'IpAccess' && String(values[label]) == '3')?'Shared' /* Cluster Inst */
-                                :(label === 'Created')? String( makeUTC(values[label]) )
-                                    :(label === 'State')? _status[values[label]]
-                                        :(label === 'Liveness')? _liveness[values[label]]
-                                            :(label === 'cloudletGroup')? tableCloudletPool(values[label])
-                                            :(label === 'OrganizGroup')? tableCloudletPoolOrg(values[label])
-                                            :(typeof values[label] === 'object')? jsonView(values[label],label)
-                                                :(label === 'Platform_type')? String( makePFT(values[label]) )
-                                                    :String(values[label])}
+                {(label === 'Cloudlets')? tableCloudletPool(values[label])
+                    :(label === 'Organizations')? tableCloudletPoolOrg(values[label])
+                        :(typeof values[label] === 'object')? jsonView(values[label],label)
+                            :String(values[label])}
             </Table.Cell>
         </Table.Row> : null
 )
@@ -299,15 +291,15 @@ class PagePoolDetailViewer extends React.Component {
             let filterDefine = null;
             let cloneListData = _.cloneDeep(_self.state.listData)
             if(item.type === 'delete member') {
-                groupData = _self.state.listData['cloudletGroup'];
+                groupData = _self.state.listData['Cloudlets'];
                 filterDefine = groupData.filter( data => data['Cloudlet'] !== item.item['Cloudlet']);
-                cloneListData['cloudletGroup'] = filterDefine;
-                cloneListData['Cloudlets'] = parseInt(cloneListData['Cloudlets']) - 1;
+                cloneListData['Cloudlets'] = filterDefine;
+                cloneListData['NumOfCloudlets'] = parseInt(cloneListData['NumOfCloudlets']) - 1;
             } else if(item.type === 'delete link') {
-                groupData = _self.state.listData['OrganizGroup'];
+                groupData = _self.state.listData['Organizations'];
                 filterDefine = groupData.filter( data => data['Org'] !== item.item['Org']);
-                cloneListData['OrganizGroup'] = filterDefine;
-                cloneListData['Organizations'] = parseInt(cloneListData['Organizations']) - 1;
+                cloneListData['Organizations'] = filterDefine;
+                cloneListData['NumOfOrganizations'] = parseInt(cloneListData['NumOfOrganizations']) - 1;
             }
             
             
