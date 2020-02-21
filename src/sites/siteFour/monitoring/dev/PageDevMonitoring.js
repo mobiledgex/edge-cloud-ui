@@ -12,9 +12,9 @@ import {hot} from "react-hot-loader/root";
 import {DatePicker,} from 'antd';
 import {
     convertHwTypePhrases,
+    defaultLayoutForAppInst,
+    defaultLayoutForCluster,
     filterUsageByClassification,
-    getClusterLevelUsageList,
-    getClusterList,
     handleHardwareTabChanges,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
@@ -22,8 +22,10 @@ import {
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
     makeSelectBoxListWithThreeValuePipe,
-    renderBottomGridAreaForCluster,
-    renderBubbleChartCoreForDev_Cluster, renderLayoutForCluster, renderLineChartCoreForDev_AppInst,
+    renderBubbleChartCoreForDev_Cluster,
+    renderGridLayoutForAppInst,
+    renderGridLayoutForCluster,
+    renderLineChartCoreForDev_AppInst,
     renderLineChartCoreForDev_Cluster,
 } from "./PageDevMonitoringService";
 import {
@@ -44,19 +46,19 @@ import '../PageMonitoring.css'
 
 import {
     getOneYearStartEndDatetime,
+    isEmpty,
     makeBubbleChartDataForCluster,
+    noDataArea,
+    PageMonitoringStyles,
     renderBarChartCore,
-    renderGridLoader2, renderLoaderArea,
+    renderLoaderArea,
     renderPlaceHolderCircular,
-    showToast,
-    PageMonitoringStyles, noDataArea, isEmpty
+    showToast
 } from "../PageMonitoringCommonService";
-import {getAppInstList, getAppLevelUsageList, getCloudletList} from "../PageMonitoringMetricService";
+import {getAppLevelUsageList} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
-import {TabPanel, Tabs} from "react-tabs";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraphForCluster from "./ModalGraphForCluster";
-import GridLayout from "react-grid-layout";
 import {reactLocalStorage} from "reactjs-localstorage";
 import LeafletMapWrapperForDev from "./LeafletMapWrapperForDev";
 
@@ -65,55 +67,6 @@ const {RangePicker} = DatePicker;
 const {Column, Row} = Grid;
 const {Pane} = Tab
 
-const defaultLayout = [
-    {i: 'a', x: 0, y: 0, w: 1, h: 3},
-    {i: 'b', x: 1, y: 0, w: 1, h: 3},
-    {i: 'c', x: 2, y: 0, w: 1, h: 3},
-
-    {i: 'd', x: 0, y: 1, w: 1, h: 3,},
-    {i: 'e', x: 1, y: 1, w: 1, h: 3,},
-    {i: 'f', x: 2, y: 1, w: 1, h: 3,},
-
-    {i: 'g', x: 0, y: 2, w: 1, h: 3,},
-    {i: 'h', x: 1, y: 2, w: 1, h: 3,},
-    {i: 'i', x: 2, y: 2, w: 1, h: 3,},
-
-    {i: 'j', x: 0, y: 3, w: 1, h: 3,},
-    {i: 'k', x: 1, y: 3, w: 1, h: 3,},
-    {i: 'l', x: 2, y: 3, w: 1, h: 3,},
-
-    {i: 'm', x: 0, y: 4, w: 1, h: 3,},
-    {i: 'n', x: 1, y: 4, w: 1, h: 3,},
-    {i: 'o', x: 2, y: 4, w: 1, h: 3,},
-
-    {i: 'p', x: 0, y: 5, w: 2, h: 3,},
-    {i: 'q', x: 0, y: 6, w: 0, h: 0,},
-];
-
-const defaultLayoutForAppInst = [
-    {i: 'a', x: 0, y: 0, w: 1, h: 3},
-    {i: 'b', x: 1, y: 0, w: 1, h: 3},
-    {i: 'c', x: 2, y: 0, w: 1, h: 3},
-
-    {i: 'd', x: 0, y: 1, w: 1, h: 3,},
-    {i: 'e', x: 1, y: 1, w: 1, h: 3,},
-    {i: 'f', x: 2, y: 1, w: 1, h: 3,},
-
-    {i: 'g', x: 0, y: 2, w: 1, h: 3,},
-    {i: 'h', x: 1, y: 2, w: 1, h: 3,},
-    {i: 'i', x: 2, y: 2, w: 1, h: 3,},
-
-    {i: 'j', x: 0, y: 3, w: 1, h: 3,},
-    {i: 'k', x: 1, y: 3, w: 1, h: 3,},
-    {i: 'l', x: 2, y: 3, w: 1, h: 3,},
-
-    {i: 'm', x: 0, y: 4, w: 1, h: 3,},
-    {i: 'n', x: 1, y: 4, w: 1, h: 3,},
-    {i: 'o', x: 2, y: 4, w: 1, h: 3,},
-
-    {i: 'p', x: 0, y: 5, w: 2, h: 3,},
-    {i: 'q', x: 0, y: 6, w: 0, h: 0,},
-];
 
 const mapStateToProps = (state) => {
     return {
@@ -141,6 +94,8 @@ type Props = {
 }
 
 type State = {
+    layoutForCluster: any,
+    layoutForAppInst: any,
     date: string,
     time: string,
     dateTime: string,
@@ -237,8 +192,6 @@ type State = {
     selectedClusterUsageOneIndex: number,
     gridDraggable: boolean,
     diskGridItemOneStyleTranslate: string,
-    layoutForCluster: any,
-    layoutForAppInst: Array,
 
 }
 
@@ -253,10 +206,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         constructor(props) {
             super(props);
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            let savedlayoutKey = store.email + "_layout"
+            let savedlayoutKeyForCluster = store.email + "_layout"
+            let savedlayoutKeyForAppInst = store.email + "_layout2"
 
             this.state = {
-                layoutForCluster: isEmpty(reactLocalStorage.get(savedlayoutKey)) ? defaultLayout : reactLocalStorage.getObject(savedlayoutKey),
+                layoutForCluster: isEmpty(reactLocalStorage.get(savedlayoutKeyForCluster)) ? defaultLayoutForCluster : reactLocalStorage.getObject(savedlayoutKeyForCluster),
+                layoutForAppInst: isEmpty(reactLocalStorage.get(savedlayoutKeyForAppInst)) ? defaultLayoutForAppInst : reactLocalStorage.getObject(savedlayoutKeyForAppInst),
                 date: '',
                 time: '',
                 dateTime: '',
@@ -359,7 +314,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 diskGridItemOneStyleTranslate: {
                     transform: 'translate(10px, 1540px)',
                 },
-                layoutForAppInst: [],
             };
         }
 
@@ -394,22 +348,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             clearInterval(this.intervalForAppInst)
             this.setState({dropdownRequestLoading: true})
-            let clusterList = await getClusterList();
-            let cloudletList = await getCloudletList()
-
-            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
-            if (appInstanceList.length === 0) {
-                this.setState({
-                    isNoData: true,
-                })
-            }
-
+            /* let clusterList = await getClusterList();
+             let cloudletList = await getCloudletList()
+             let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
+             if (appInstanceList.length === 0) {
+                 this.setState({
+                     isNoData: true,
+                 })
+             }
+ */
 
             //fixme: fakeData
             //fixme: fakeData
-            /*let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+            let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
             let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')*/
+            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
             console.log('appInstanceList====>', appInstanceList);
 
             console.log('clusterList===>', clusterList);
@@ -444,15 +397,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             }
             let allClusterUsageList = []
-            try {
-                allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
-            } catch (e) {
+            /*  try {
+                  allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
+              } catch (e) {
 
-            }
-
+              }
+  */
             //fixme: fakeData
             //fixme: fakeData
-            //allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+            allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
             console.log('filteredAppInstanceList===>', appInstanceList)
 
             let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
@@ -506,6 +459,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentAppInst: '',
                 //currentTabIndex: 1,
             })
+
+           /* let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+            let savedlayoutKeyForCluster = store.email + "_layout"
+
+            alert(JSON.stringify(reactLocalStorage.get(savedlayoutKeyForCluster)))
+            await this.setState({
+                layoutForCluster: reactLocalStorage.get(savedlayoutKeyForCluster),
+            })*/
 
             /*   if (this.udpRef !== null) {
                    this.udpRef.style.height = '500px';
@@ -859,18 +820,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         async resetGridPos() {
             try {
-                reactLocalStorage.remove('layout003')
+                let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+                let savedlayoutKeyForCluster = store.email + "_layout"
+                let savedlayoutKeyForAppInst = store.email + "_layout2"
+
+                reactLocalStorage.remove(savedlayoutKeyForCluster)
                 await this.setState({
                     layoutForCluster: []
                 });
                 await this.setState({
-                    layoutForCluster: defaultLayout,
+                    layoutForCluster: defaultLayoutForCluster,
                 })
             } catch (e) {
 
                 showToast(e.toString())
             }
-
 
         }
 
@@ -1337,12 +1301,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        handleLayoutChange = (paramLayout) => {
-            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            let layoutUniqueId = store.email + "_layout"
-            reactLocalStorage.setObject(layoutUniqueId, paramLayout)
+        /*handleLayoutChange = (layout) => {
 
-        }
+
+        }*/
 
 
         render() {
@@ -1402,23 +1364,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/*todo:SELECTBOX_ROW        */}
                                                 {/*todo:---------------------------------*/}
                                                 {this.renderSelectBoxRow()}
-
                                                 <div className='page_monitoring_dashboard_kyungjoon'
                                                      style={{overflowY: 'auto'}}>
-                                                    <GridLayout
-                                                        isDraggable={this.state.gridDraggable}
-                                                        autoSize={true}
-                                                        className="layout"
-                                                        layout={this.state.layoutForCluster}
-                                                        cols={3}
-                                                        isDroppable={true}
-                                                        rowHeight={160}
-                                                        width={window.innerWidth * 0.86}
-                                                        onLayoutChange={this.handleLayoutChange}
-                                                        style={{overflowY: 'auto',}}
-                                                    >
-                                                        {renderLayoutForCluster(this)}
-                                                    </GridLayout>
+                                                    {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
+                                                        renderGridLayoutForCluster(this)
+                                                        :
+                                                        renderGridLayoutForAppInst(this)
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
