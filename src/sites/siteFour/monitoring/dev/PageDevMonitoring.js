@@ -353,14 +353,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         async loadInitDataForCluster(isInterval: boolean = false) {
             clearInterval(this.intervalForAppInst)
             this.setState({dropdownRequestLoading: true})
-             let clusterList = await getClusterList();
-             let cloudletList = await getCloudletList()
-             let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
-             if (appInstanceList.length === 0) {
-                 this.setState({
-                     isNoData: true,
-                 })
-             }
+            let clusterList = await getClusterList();
+            let cloudletList = await getCloudletList()
+            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
+            if (appInstanceList.length === 0) {
+                this.setState({
+                    isNoData: true,
+                })
+            }
 
             //fixme: fakeData
             //fixme: fakeData
@@ -1345,7 +1345,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
             return (
-                <div style={{width: '100%', height: '100%'}}>
+                <div style={{width: '100%', height: '100%', overflowY: 'auto'}}>
                     <ModalGraphForCluster selectedClusterUsageOne={this.state.selectedClusterUsageOne}
                                           selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
                                           parent={this}
@@ -1371,7 +1371,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/*todo:---------------------------------*/}
                                                 {this.renderSelectBoxRow()}
                                                 <div className='page_monitoring_dashboard_kyungjoon'
-                                                     style={{overflowY: 'auto'}}>
+                                                     style={{}}>
                                                     {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
                                                         renderGridLayoutForCluster(this)
                                                         :
