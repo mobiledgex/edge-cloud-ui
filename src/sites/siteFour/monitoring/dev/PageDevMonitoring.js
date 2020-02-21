@@ -18,12 +18,12 @@ import {
     handleHardwareTabChanges,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
-    makeLineChartDataForAppInst,
+    makeLineChartDataForAppInst_2222222,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
     makeSelectBoxListWithThreeValuePipe,
     renderBottomGridAreaForCluster,
-    renderBubbleChartCoreForDev_Cluster,
+    renderBubbleChartCoreForDev_Cluster, renderLineChartCoreForDev_AppInst,
     renderLineChartCoreForDev_Cluster,
 } from "./PageDevMonitoringService";
 import {
@@ -366,22 +366,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             clearInterval(this.intervalForAppInst)
             this.setState({dropdownRequestLoading: true})
-            let clusterList = await getClusterList();
-            let cloudletList = await getCloudletList()
+            /*  let clusterList = await getClusterList();
+              let cloudletList = await getCloudletList()
 
-            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
-            if (appInstanceList.length === 0) {
-                this.setState({
-                    isNoData: true,
-                })
-            }
+              let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
+              if (appInstanceList.length === 0) {
+                  this.setState({
+                      isNoData: true,
+                  })
+              }*/
 
 
             //fixme: fakeData
             //fixme: fakeData
-            /*let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+            let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
             let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')*/
+            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
             console.log('appInstanceList====>', appInstanceList);
 
             console.log('clusterList===>', clusterList);
@@ -416,15 +416,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             }
             let allClusterUsageList = []
-            try {
+            /*try {
                 allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
             } catch (e) {
 
-            }
+            }*/
 
             //fixme: fakeData
             //fixme: fakeData
-            //allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+            allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
             console.log('filteredAppInstanceList===>', appInstanceList)
 
             let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
@@ -527,13 +527,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
             } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
                 console.log('filteredAppInstUsageList===>', this.state.filteredAppInstUsageList)
-                lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
-                console.log('lineChartDataSet2222222===>', lineChartDataSet)
+                lineChartDataSet = makeLineChartDataForAppInst_2222222(this.state.filteredAppInstUsageList, hwType, this)
+                console.log('filteredAppInstUsageList===222222>', lineChartDataSet)
             }
 
-            if (lineChartDataSet === undefined) {
-                lineChartDataSet = []
-            }
             console.log(`lineChartDataSet===${hwType}>`, lineChartDataSet);
             if (hwType === HARDWARE_TYPE.RECVBYTES
                 || hwType === HARDWARE_TYPE.SENDBYTES
@@ -549,7 +546,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 return this.renderGraphAreaMultiFor___LineChart(hwType, lineChartDataSet)
             } else {
 
-                return this.renderGraphAreaForLineChart(hwType, lineChartDataSet)
+                console.log("hwType===>", hwType);
+                return this.renderGraphAreaFor_____LineChart(hwType, lineChartDataSet)
             }
         }
 
@@ -646,7 +644,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        renderGraphAreaForLineChart(pHardwareType, lineChartDataSet) {
+        renderGraphAreaFor_____LineChart(pHardwareType, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
                     {/*@todo:LInechart*/}
@@ -665,11 +663,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() :
-                                lineChartDataSet.length === 0 ?
-                                    noDataArea()
-                                    :
-                                    renderLineChartCoreForDev_Cluster(this, lineChartDataSet)}
+                            {this.state.loading ? renderPlaceHolderCircular() : this.state.currentClassification === CLASSIFICATION.CLUSTER ? renderLineChartCoreForDev_Cluster(this, lineChartDataSet) :
+                                renderLineChartCoreForDev_AppInst(this, lineChartDataSet)
+                            }
                         </div>
                     </div>
                 </div>
@@ -1156,7 +1152,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 currentTabIndex: 0,
             })
-            this.diskGridElementOne.style.transform = 'translate(10px, 1540px)';
+            //this.diskGridElementOne.style.transform = 'translate(10px, 1540px)';
 
             if (this.state.isStream) {
                 this.setAppInstInterval(filteredAppList)
@@ -1457,6 +1453,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.MEM)}
                                                         </div>
 
+
                                                         <div className='page_monitoring_column_kyungjoon1' key="e">
                                                             {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.DISK)}
                                                         </div>
@@ -1518,31 +1515,41 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             </div>
                                                         }
 
-                                                        <div
-                                                            className='page_monitoring_column_kyungjoon1'
-                                                            key={this.state.currentClassification === CLASSIFICATION.CLUSTER ? 'i' : 'h'}>
-                                                            {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.CPU)}
-                                                        </div>
+                                                        {/*@todo:makeChartDataAndRenderTabBody_____BarChart
+                                                        @todo:makeChartDataAndRenderTabBody_____BarChart
+                                                        @todo:makeChartDataAndRenderTabBody_____BarChart*/}
+                                                        {/*{this.state.currentClassification === CLASSIFICATION.CLUSTER ?
+                                                            <div
+                                                                className='page_monitoring_column_kyungjoon1'
+                                                                key={'i'}>
+                                                                {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.CPU)}
+                                                            </div> :
+                                                            <div>
+                                                            </div>
+                                                        }
 
-
+                                                        {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
                                                         <div className='page_monitoring_column_kyungjoon1'
-                                                             key={this.state.currentClassification === CLASSIFICATION.CLUSTER ? 'j' : 'i'}>
+                                                             key={'j'}>
                                                             {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.MEM)}
                                                         </div>
+                                                        }
 
-
+                                                        {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
                                                         <div
                                                             style={this.state.diskGridItemOneStyleTranslate}
                                                             className='page_monitoring_column_kyungjoon1'
-                                                            key={this.state.currentClassification === CLASSIFICATION.CLUSTER ? 'k' : 'j'}
+                                                            key={'k'}
                                                             ref={c => this.diskGridElementOne = c}
                                                         >
                                                             {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.DISK)}
                                                         </div>
+                                                        }
 
 
+                                                        {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
                                                         <div className='page_monitoring_column_kyungjoon1'
-                                                             key={this.state.currentClassification === CLASSIFICATION.CLUSTER ? 'l' : 'k'}>
+                                                             key={'l'}>
                                                             <Tabs selectedIndex={this.state.networkTabIndex}
                                                                   className='page_monitoring_tab'>
                                                                 <TabPanel>
@@ -1553,6 +1560,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                 </TabPanel>
                                                             </Tabs>
                                                         </div>
+                                                        }
 
                                                         {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
                                                             <div className='page_monitoring_column_kyungjoon1' key="m">
@@ -1567,19 +1575,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                 </Tabs>
                                                             </div>
                                                             :
-                                                            <div className='page_monitoring_column_kyungjoon1' key="l">
-                                                                <Tabs selectedIndex={this.state.connectionsTabIndex}
-                                                                      className='page_monitoring_tab'>
-                                                                    <TabPanel>
-                                                                        {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.ACTIVE_CONNECTION)}
-                                                                    </TabPanel>
-                                                                    <TabPanel>
-                                                                        {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.HANDLED_CONNECTION)}
-                                                                    </TabPanel>
-                                                                    <TabPanel>
-                                                                        {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.ACCEPTS_CONNECTION)}
-                                                                    </TabPanel>
-                                                                </Tabs>
+                                                            <div>
                                                             </div>
                                                         }
 
@@ -1596,12 +1592,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                     </TabPanel>
                                                                 </Tabs>
                                                             </div> :
-                                                            <div style={{width: 0, height: 0}}>
+                                                            <div style={{}}>
                                                             </div>
-                                                        }
+                                                        }*/}
 
                                                         <div className='page_monitoring_column_kyungjoon1'
-                                                             key={this.state.currentClassification === CLASSIFICATION.CLUSTER ? 'p' : 'p'}>
+                                                             key={'p'}>
                                                             <div className='page_monitoring_table_column' style={{
                                                                 marginLeft: -120,
                                                                 width: window.innerWidth * 0.65

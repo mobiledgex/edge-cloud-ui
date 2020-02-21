@@ -1,16 +1,33 @@
 import React from 'react';
 import '../PageMonitoring.css';
-import {APP_INST_USAGE_TYPE_INDEX, CHART_COLOR_LIST, CLASSIFICATION, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION, USAGE_INDEX_FOR_CLUSTER} from "../../../../shared/Constants";
+import {
+    APP_INST_MATRIX_HW_USAGE_INDEX,
+    APP_INST_USAGE_TYPE_INDEX,
+    CHART_COLOR_LIST,
+    CLASSIFICATION,
+    HARDWARE_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    REGION,
+    USAGE_INDEX_FOR_CLUSTER
+} from "../../../../shared/Constants";
 import BubbleChart from "../../../../components/BubbleChart";
 import PageDevMonitoring from "./PageDevMonitoring";
-import {convertByteToMegaByte, makeFormForClusterLevelMatric, numberWithCommas, renderUsageByType, showToast, PageMonitoringStyles} from "../PageMonitoringCommonService";
+import {
+    convertByteToMegaByte,
+    makeFormForClusterLevelMatric,
+    numberWithCommas,
+    renderUsageByType,
+    showToast,
+    PageMonitoringStyles,
+    renderLineChartCore
+} from "../PageMonitoringCommonService";
 import {SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../../services/serviceMC";
 import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {Table} from "semantic-ui-react";
 import Lottie from "react-lottie";
-import type {TypeClusterUsageList} from "../../../../shared/Types";
+import type {TypeAppInstanceUsage2, TypeClusterUsageList} from "../../../../shared/Types";
 import {Progress} from "antd";
 import {getClusterLevelMatric} from "../PageMonitoringMetricService";
 
@@ -266,17 +283,13 @@ export const sortUsageListByTypeForCluster = (usageList, hardwareType) => {
         usageList.sort((a, b) => b.sumDiskUsage - a.sumDiskUsage);
     } else if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
         usageList.sort((a, b) => b.sumTcpConns - a.sumTcpConns);
-    }else if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
+    } else if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
         usageList.sort((a, b) => b.sumTcpRetrans - a.sumTcpRetrans);
-    }
-
-    else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
+    } else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
         usageList.sort((a, b) => b.sumUdpSent - a.sumUdpSent);
-    }
-    else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
+    } else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
         usageList.sort((a, b) => b.sumUdpRecv - a.sumUdpRecv);
-    }
-    else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
         usageList.sort((a, b) => b.sumSendBytes - a.sumSendBytes);
     } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
         usageList.sort((a, b) => b.sumRecvBytes - a.sumRecvBytes);
@@ -331,7 +344,8 @@ export const renderBottomGridAreaForCluster = (_this: PageDevMonitoring, pCluste
     pClusterList = sortUsageListByTypeForCluster(pClusterList, HARDWARE_TYPE.CPU)
 
     return (
-        <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing styles={{zIndex: 999999999999}}>
+        <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing
+               styles={{zIndex: 999999999999}}>
             <Table.Header className="viewListTableHeader" styles={{zIndex: 99999999999}}>
                 <Table.Row>
                     <Table.HeaderCell>
@@ -407,7 +421,8 @@ export const renderBottomGridAreaForCluster = (_this: PageDevMonitoring, pCluste
                                         {item.sumCpuUsage.toFixed(2) + '%'}
                                     </div>
                                     <div>
-                                        <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                        <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10}
+                                                  showInfo={false}
                                                   percent={(item.sumCpuUsage / _this.state.maxCpu * 100)}
                                             //percent={(item.sumCpuUsage / _this.state.gridInstanceListCpuMax) * 100}
                                                   strokeColor={'#29a1ff'} status={'normal'}/>
@@ -420,7 +435,8 @@ export const renderBottomGridAreaForCluster = (_this: PageDevMonitoring, pCluste
                                         {numberWithCommas(item.sumMemUsage.toFixed(2)) + ' %'}
                                     </div>
                                     <div>
-                                        <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                        <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10}
+                                                  showInfo={false}
                                                   percent={(item.sumMemUsage / _this.state.maxMem * 100)}
                                                   strokeColor={'#29a1ff'} status={'normal'}/>
                                     </div>
@@ -467,7 +483,7 @@ export const renderBottomGridAreaForCluster = (_this: PageDevMonitoring, pCluste
  */
 export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: PageDevMonitoring) => {
 
-    try{
+    try {
         console.log('allHWUsageList===>', allHWUsageList);
         let typedUsageList = [];
         if (hardwareType === HARDWARE_TYPE.CPU) {
@@ -510,7 +526,7 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
             }
             return chartDataSet
         }
-    }catch (e) {
+    } catch (e) {
         //showToast(e.toString())
     }
 
@@ -662,99 +678,93 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
  * @param hardwareType
  * @returns {*}
  */
-export const makeLineChartDataForAppInst = (allHWUsageList: Array, hardwareType: string, _this: PageDevMonitoring) => {
-    try {
+export const makeLineChartDataForAppInst_2222222 = (hardwareUsageList: Array, hardwareType: string, _this: PageDevMonitoring) => {
 
-        console.log(`allHWUsageList===${hardwareType}>`, allHWUsageList);
+    if (hardwareUsageList.length === 0) {
+        return (
+            <div style={PageMonitoringStyles.noData}>
+                NO DATA
+            </div>
+        )
+    } else {
 
-
-        let oneTypedUsageList = [];
-        if (hardwareType === HARDWARE_TYPE.CPU) {
-            oneTypedUsageList = allHWUsageList["0"].cpuSeriesValue
-        } else if (hardwareType === HARDWARE_TYPE.MEM) {
-            oneTypedUsageList =  allHWUsageList["0"].memSeriesValue
-        } else if (hardwareType === HARDWARE_TYPE.DISK) {
-            oneTypedUsageList =  allHWUsageList["0"].diskSeriesValue
-        } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION || hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-            oneTypedUsageList =  allHWUsageList["0"].connectionsSeriesValue
-        } else if (hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
-            oneTypedUsageList =  allHWUsageList["0"].networkSeriesValue
-        }
-
-        console.log(`oneTypedUsageList===${hardwareType}>`, oneTypedUsageList);
+        console.log('hardwareUsageList===>', hardwareUsageList);
+        console.log('hardwareUsageList===hardwareType>', hardwareType);
 
 
-        if (oneTypedUsageList.length === 0) {
-            return (
-                <div style={PageMonitoringStyles.noData}>
-                    NO DATA
-                </div>
-            )
-        } else {
-            let instanceAppName = ''
-            let levelTypeNameList = [];
-            let usageSetList = []
-            let dateTimeList = []
-            for (let i in oneTypedUsageList) {
-                let seriesValues = oneTypedUsageList[i].values
+        let instanceAppName = ''
+        let instanceNameList = [];
+        let usageSetList = []
+        let dateTimeList = []
+        /*for (let i in hardwareUsageList) {
+        }*/
+        hardwareUsageList.map((item: TypeAppInstanceUsage2, index) => {
 
-                instanceAppName = oneTypedUsageList[i].instance.AppName + "[" + oneTypedUsageList[i].instance.Cloudlet + "]"
-                let usageList = [];
+            let seriesValues = []
+            if (hardwareType === HARDWARE_TYPE.CPU) {
+                seriesValues = item.cpuSeriesValues
+            } else if (hardwareType === HARDWARE_TYPE.MEM) {
+                seriesValues = item.memSeriesValue
+            } else if (hardwareType === HARDWARE_TYPE.DISK) {
+                seriesValues = item.diskSeriesValue
+            } else if (hardwareType === HARDWARE_TYPE.NETWORK) {
+                seriesValues = item.networkSeriesValue
+            } else if (hardwareType === HARDWARE_TYPE.CONNECTIONS) {
+                seriesValues = item.connectionsSeriesValues
+            }
 
-                for (let j in seriesValues) {
+            instanceAppName = item.instance.AppName
+            let usageList = [];
 
-                    let usageOne = 0;
-                    if (hardwareType === HARDWARE_TYPE.CPU) {
-                        usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.CPU];
-                    } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-                        usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.RECVBYTES];
-                    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-                        usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.SENDBYTES];
-                    } else if (hardwareType === HARDWARE_TYPE.MEM) {
-                        usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.MEM];
-                    } else if (hardwareType === HARDWARE_TYPE.DISK) {
-                        usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.DISK];
-                    } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-                        usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.ACTIVE];
-                    } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
-                        usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.HANDLED];
-                    } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-                        usageOne = seriesValues[j][APP_INST_USAGE_TYPE_INDEX.ACCEPTS];
-                    }
-
-                    usageList.push(usageOne);
-                    let dateOne = seriesValues[j]["0"];
-                    dateOne = dateOne.toString().split("T")
-
-                    dateTimeList.push(dateOne[1]);
+            for (let j in seriesValues) {
+                let usageOne = 0;
+                if (hardwareType === HARDWARE_TYPE.CPU) {
+                    usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.CPU];
+                } else if (hardwareType === HARDWARE_TYPE.MEM) {
+                    usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.MEM]; //mem usage
+                } else if (hardwareType === HARDWARE_TYPE.DISK) {
+                    usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.DISK];
+                } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+                    usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.SENDBYTES];
+                } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+                    usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.RECVBYTES];
+                } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+                    usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE.toString()];
+                } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+                    usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.HANDLED.toString()];
+                } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+                    usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACCEPTS.toString()];
                 }
 
-                levelTypeNameList.push(instanceAppName)
-                usageSetList.push(usageList);
+                usageList.push(usageOne);
+                let dateOne = seriesValues[j]["0"];
+                dateOne = dateOne.toString().split("T")
+
+                dateTimeList.push(dateOne[1]);
             }
 
+            instanceNameList.push(instanceAppName)
+            usageSetList.push(usageList);
 
-            //@todo: CUST LIST INTO RECENT_DATA_LIMIT_COUNT
-            let newDateTimeList = []
-            for (let i in dateTimeList) {
-                if (i < RECENT_DATA_LIMIT_COUNT) {
-                    let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
-                    let timeOne = splitDateTimeArrayList[0].replace("T", "T");
-                    newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
-                }
+        })
 
+
+        //@todo: CUT LIST INTO RECENT_DATA_LIMIT_COUNT
+        let newDateTimeList = []
+        for (let i in dateTimeList) {
+            if (i < RECENT_DATA_LIMIT_COUNT) {
+                let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
+                let timeOne = splitDateTimeArrayList[0].replace("T", "T");
+                newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
             }
 
-            let chartDataset = {
-                levelTypeNameList,
-                usageSetList,
-                newDateTimeList,
-                hardwareType
-            }
-            return chartDataset;
         }
-    } catch (e) {
-        //showToast(e.toString())
+        return {
+            levelTypeNameList: instanceNameList,
+            usageSetList,
+            newDateTimeList,
+            hardwareType
+        }
     }
 
 }
@@ -1140,7 +1150,189 @@ export const renderLineChartCoreForDev_Cluster = (_this: PageDevMonitoring, line
             </div>
         );
     } catch (e) {
-       // showToast(e.toString())
+        // showToast(e.toString())
+    }
+}
+
+
+export const renderLineChartCoreForDev_AppInst = (_this: PageDevMonitoring, lineChartDataSet) => {
+
+    console.log("renderLineChartCoreForDev_AppInst===>", lineChartDataSet);
+
+    try {
+        let levelTypeNameList = lineChartDataSet.levelTypeNameList;
+        let usageSetList = lineChartDataSet.usageSetList;
+        let newDateTimeList = lineChartDataSet.newDateTimeList;
+        let hardwareType = lineChartDataSet.hardwareType;
+
+        console.log('lineChartDataSet==77777=>', lineChartDataSet);
+
+
+        const lineChartData = (canvas) => {
+
+            let gradientList = makeGradientColor(canvas, height);
+            let finalSeriesDataSets = [];
+            for (let index in usageSetList) {
+                //@todo: top5 만을 추린다
+                if (index < 5) {
+                    let datasetsOne = {
+                        label: levelTypeNameList[index],
+                        radius: 0,
+                        borderWidth: 3.5,//todo:라인 두께
+                        fill: false,
+                        lineTension: 0.5,
+                        /*backgroundColor:  gradientList[index],
+                        borderColor: gradientList[index],*/
+                        backgroundColor: CHART_COLOR_LIST[index],
+                        borderColor: CHART_COLOR_LIST[index],
+                        data: usageSetList[index],
+                        borderCapStyle: 'butt',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: 'rgba(75,192,192,1)',
+                        pointBackgroundColor: '#fff',
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+                        pointHoverBorderColor: 'rgba(220,220,220,1)',
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 10,
+
+                    }
+
+                    finalSeriesDataSets.push(datasetsOne)
+                }
+
+            }
+            return {
+                labels: newDateTimeList,
+                datasets: finalSeriesDataSets,
+            }
+        }
+
+        let height = 500 + 100;
+        let options = {
+            animation: {
+                duration: 500
+            },
+            maintainAspectRatio: false,//@todo
+            responsive: true,//@todo
+            datasetStrokeWidth: 3,
+            pointDotStrokeWidth: 4,
+            layout: {
+                padding: {
+                    left: 0,
+                    right: 10,
+                    top: 0,
+                    bottom: 0
+                }
+            },
+            legend: {
+                position: 'top',
+                labels: {
+                    boxWidth: 10,
+                    fontColor: 'white'
+                },//@todo: lineChart 리전드 클릭 이벤트.
+                onClick: (e, clickedItem) => {
+
+                    let selectedClusterOne = clickedItem.text.toString().replace('\n', "|");
+
+                    handleLegendAndBubbleClickedEvent(_this, selectedClusterOne, lineChartDataSet)
+
+                },
+                onHover: (e, item) => {
+                    //alert(`Item with text ${item.text} and index ${item.index} hovered`)
+                },
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        min: 0,
+                        //max: 100,//todo max value
+                        fontColor: 'white',
+                        callback(value, index, label) {
+                            return convertByteToMegaByte(value, hardwareType)
+
+                        },
+                    },
+                    gridLines: {
+                        color: "#505050",
+                    },
+                    //stacked: true
+
+                }],
+                xAxes: [{
+                    /*ticks: {
+                        fontColor: 'white'
+                    },*/
+                    gridLines: {
+                        color: "#505050",
+                    },
+                    ticks: {
+                        fontSize: 14,
+                        fontColor: 'white',
+                        //maxRotation: 0.05,
+                        //autoSkip: true,
+                        maxRotation: 45,
+                        minRotation: 45,
+                        padding: 10,
+                        labelOffset: 0,
+                        callback(value, index, label) {
+                            return value;
+
+                        },
+                    },
+                    beginAtZero: false,
+                    /* gridLines: {
+                         drawTicks: true,
+                     },*/
+                }],
+                backgroundColor: {
+                    fill: "#1e2124"
+                },
+            },//scales
+            onClick: function (c, i) {
+                /*let e = i[0];
+                console.log(e._index)
+                var x_value = this.data.labels[e._index];
+                var y_value = this.data.datasets[0].data[e._index];
+                console.log(x_value);
+                console.log(y_value);*/
+                if (i.length > 0) {
+                    console.log('onClick===>', i);
+                }
+
+            }
+        }//options
+
+
+        //todo :#######################
+        //todo : chart rendering part
+        //todo :#######################
+        return (
+            <div style={{
+                position: 'relative',
+                width: '99%',
+                height: '96%'
+            }}>
+                <ReactChartJsLine
+                    //width={'100%'}
+                    //height={hardwareType === "recv_bytes" || hardwareType === "send_bytes" ? chartHeight + 20 : chartHeight}
+                    //height={'100%'}
+                    data={lineChartData}
+                    options={options}
+                    /* getDatasetAtEvent={dataset => {
+                         alert(dataset)
+                     }}*/
+
+                />
+            </div>
+        );
+    } catch (e) {
+        // showToast(e.toString())
     }
 }
 
