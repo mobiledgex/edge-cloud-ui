@@ -485,9 +485,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //currentTabIndex: 1,
             })
 
-            if (this.udpRef !== null) {
+         /*   if (this.udpRef !== null) {
                 this.udpRef.style.height = '500px';
-            }
+            }*/
 
             /* setTimeout(() => {
                  this.setState({
@@ -1162,12 +1162,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 currentTabIndex: 0,
             })
-
-            if (this.udpRef !== null) {
-                alert('sdlkfk!!!')
-                this.udpRef.style.height = '500px';
-            }
-
             /*if (this.clusterListGridItemRef!==null){
                 this.clusterListGridItemRef.style.transform = 'translate(10px, 1540px)';
             }*/
@@ -1523,24 +1517,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                 </Tabs>
                                                             </div>
                                                         }
-                                                        {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                                                            <div className='page_monitoring_column_kyungjoon1' key="h"
-                                                                 ref={c => {
-                                                                     this.udpRef = c;
-                                                                 }}>
-                                                                <Tabs selectedIndex={this.state.udpTabIndex}
-                                                                      className='page_monitoring_tab'>
-                                                                    <TabPanel>
-                                                                        {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.UDPSENT)}
-                                                                    </TabPanel>
-                                                                    <TabPanel>
-                                                                        {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.UDPRECV)}
-                                                                    </TabPanel>
-                                                                </Tabs>
-                                                            </div> :
-                                                            <div>
-                                                            </div>
-                                                        }
+                                                        <div className='page_monitoring_column_kyungjoon1' key="h"
+                                                             ref={c => {
+                                                                 this.udpRef = c;
+                                                             }}>
+                                                            {this.state.currentClassification ===CLASSIFICATION.CLUSTER &&
+                                                            <Tabs selectedIndex={this.state.udpTabIndex}
+                                                                  className='page_monitoring_tab'>
+                                                                <TabPanel>
+                                                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.UDPSENT)}
+                                                                </TabPanel>
+                                                                <TabPanel>
+                                                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.UDPRECV)}
+                                                                </TabPanel>
+                                                            </Tabs>
+                                                            }
+
+                                                        </div>
 
                                                         {/*
                                                         @todo:makeChartDataAndRenderTabBody_____BarChart
