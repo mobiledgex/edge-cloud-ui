@@ -23,9 +23,7 @@ import './css/pages/audit.css';
 import './css/pages/cloudletPool.css';
 import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
-import Test001 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/Test001";
-import TestLeafLetMap from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/TestLeafLetMap";
-import PageModalMonitoring from "./sites/siteFour/monitoring/child_comp/PageModalMonitoring";
+import PageModalMonitoring from "./sites/siteFour/monitoring/components/PageModalMonitoring";
 // API
 
 let self = null;

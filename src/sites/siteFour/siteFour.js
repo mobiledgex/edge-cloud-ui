@@ -1,5 +1,19 @@
 import React from 'react';
-import {Button, Container, Dropdown, Grid, Header, Icon, Image, Input, Label, Menu, Modal, Popup, Segment} from 'semantic-ui-react';
+import {
+    Button,
+    Container,
+    Dropdown,
+    Grid,
+    Header,
+    Icon,
+    Image,
+    Input,
+    Label,
+    Menu,
+    Modal,
+    Popup,
+    Segment
+} from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
 
 import {withRouter} from 'react-router-dom';
@@ -54,7 +68,7 @@ import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
 import PageDevMonitoring from "./monitoring/dev/PageDevMonitoring";
 import PageOperMonitoring from "./monitoring/oper/PageOperMonitoring";
-import PageModalMonitoring from "./monitoring/child_comp/PageModalMonitoring";
+import PageModalMonitoring from "./monitoring/components/PageModalMonitoring";
 import PageAdminMonitoring from "./monitoring/admin/PageAdminMonitoring";
 
 let defaultMotion = {left: window.innerWidth / 2, top: window.innerHeight / 2, opacity: 1}

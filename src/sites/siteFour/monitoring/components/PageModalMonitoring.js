@@ -30,7 +30,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             super(props)
         }
 
-
         render() {
             return (
                 <div style={{display: 'flex', flex: 1, margin: 100}}>
