@@ -1345,7 +1345,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
             return (
-                <div style={{width: '100%', height: '100%', overflowY: 'auto'}}>
+                <div style={{width: '100%', height: '100%'}}>
                     <ModalGraphForCluster selectedClusterUsageOne={this.state.selectedClusterUsageOne}
                                           selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
                                           parent={this}
