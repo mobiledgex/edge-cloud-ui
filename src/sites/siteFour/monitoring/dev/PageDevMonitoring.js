@@ -217,119 +217,125 @@ type State = {
 
 }
 
+
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class PageDevMonitoring extends Component<Props, State> {
-        state = {
-            layout: reactLocalStorage.getObject('layout003').length === undefined ? defaultLayout : reactLocalStorage.getObject('layout003'),
-            date: '',
-            time: '',
-            dateTime: '',
-            datesRange: '',
-            appInstanceListGroupByCloudlet: [],
-            loading: false,
-            loading0: false,
-            cloudletList: [],
-            clusterInstanceGroupList: [],
-            clusterList: [],
-            filteredCpuUsageList: [],
-            filteredMemUsageList: [],
-            filteredDiskUsageList: [],
-            filteredNetworkUsageList: [],
-            isReady: false,
-            counter: 0,
-            appInstanceList: [],
-            allAppInstanceList: [],
-            appInstanceOne: {},
-            cloudLetSelectBoxPlaceholder: 'Select CloudLet',
-            clusterSelectBoxPlaceholder: 'Select Cluster',
-            appInstSelectBoxPlaceholder: 'Select App Inst',
-            currentRegion: 'ALL',
-            currentCloudLet: '',
-            currentCluster: '',
-            currentAppInst: '',
-            isModalOpened: false,
-            appInstanceListTop5: [],
-            selectBoxTop5InstanceForMem: [],
-            startTime: '',
-            endTime: '',
-            currentAppInstaceListIndex: 0,
-            loading777: false,
-            currentUtilization: '',
-            regionSelectBoxClearable: false,
-            cloudLetSelectBoxClearable: false,
-            clusterSelectBoxClearable: false,
-            appInstSelectBoxClearable: false,
-            isShowUtilizationArea: false,
-            currentGridIndex: -1,
-            currentTabIndex: 0,
-            isShowBottomGrid: false,
-            isShowBottomGridForMap: false,
-            mapZoomLevel: 0,
-            currentHardwareType: HARDWARE_TYPE.CPU.toUpperCase(),
-            bubbleChartData: [],
-            currentNetworkType: NETWORK_TYPE.RECV_BYTES,
-            lineChartData: [],
-            isReadyNetWorkCharts: false,
-            isEnableCloutletDropDown: true,
-            isEnableClusterDropDown: false,
-            isEnableAppInstDropDown: false,
-            currentNetworkTab: 0,
-            allGridInstanceList: [],
-            filteredGridInstanceList: [],
-            gridInstanceListMemMax: 0,
-            networkTabIndex: 0,
-            gridInstanceListCpuMax: 0,
-            usageListByDate: [],
-            userType: '',
-            placeHolderStateTime: moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'),
-            placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
-            allConnectionsUsageList: [],
-            filteredConnectionsUsageList: [],
 
-            connectionsTabIndex: 0,
-            tcpTabIndex: 0,
-            udpTabIndex: 0,
-
-            dropdownCloudletList: [],
-            allUsageList: [],
-            maxCpu: 0,
-            maxMem: 0,
-            intervalLoading: false,
-            isRequesting: false,
-            clusterDropdownList: [],
-            currentClassification: 'Cluster',
-            selectOrg: '',
-            filteredAppInstanceList: [],
-            appInstDropdown: [],
-            dropdownRequestLoading: false,
-            cloudletKeys: [],
-            filteredClusterUsageList: [],
-            allClusterUsageList: [],
-            filteredAppInstUsageList: [],
-            allAppInstUsageList: [],
-            clusterListLoading: true,
-            allClusterUsageList003: [],
-            isStream: false,
-            bubbleChartLoader: false,
-            modalIsOpen: false,
-            currentGraphCluster: '',
-            currentAppInstLineChartData: [],
-            currentGraphAppInst: '',
-            mapPopUploading: false,
-            selectedClusterUsageOne: [],
-            selectedClusterUsageOneIndex: 0,
-            gridDraggable: true,
-            isNoData: false,
-            diskGridItemOneStyleTranslate: {
-                transform: 'translate(10px, 1540px)',
-            },
-        };
 
         intervalForAppInst = null;
 
 
         constructor(props) {
             super(props);
+
+            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+            let layoutUniqueId = store.email + '_layoutForGrid'
+
+            this.state = {
+                layout: layoutUniqueId.length === undefined ? defaultLayout : reactLocalStorage.getObject(layoutUniqueId),
+                date: '',
+                time: '',
+                dateTime: '',
+                datesRange: '',
+                appInstanceListGroupByCloudlet: [],
+                loading: false,
+                loading0: false,
+                cloudletList: [],
+                clusterInstanceGroupList: [],
+                clusterList: [],
+                filteredCpuUsageList: [],
+                filteredMemUsageList: [],
+                filteredDiskUsageList: [],
+                filteredNetworkUsageList: [],
+                isReady: false,
+                counter: 0,
+                appInstanceList: [],
+                allAppInstanceList: [],
+                appInstanceOne: {},
+                cloudLetSelectBoxPlaceholder: 'Select CloudLet',
+                clusterSelectBoxPlaceholder: 'Select Cluster',
+                appInstSelectBoxPlaceholder: 'Select App Inst',
+                currentRegion: 'ALL',
+                currentCloudLet: '',
+                currentCluster: '',
+                currentAppInst: '',
+                isModalOpened: false,
+                appInstanceListTop5: [],
+                selectBoxTop5InstanceForMem: [],
+                startTime: '',
+                endTime: '',
+                currentAppInstaceListIndex: 0,
+                loading777: false,
+                currentUtilization: '',
+                regionSelectBoxClearable: false,
+                cloudLetSelectBoxClearable: false,
+                clusterSelectBoxClearable: false,
+                appInstSelectBoxClearable: false,
+                isShowUtilizationArea: false,
+                currentGridIndex: -1,
+                currentTabIndex: 0,
+                isShowBottomGrid: false,
+                isShowBottomGridForMap: false,
+                mapZoomLevel: 0,
+                currentHardwareType: HARDWARE_TYPE.CPU.toUpperCase(),
+                bubbleChartData: [],
+                currentNetworkType: NETWORK_TYPE.RECV_BYTES,
+                lineChartData: [],
+                isReadyNetWorkCharts: false,
+                isEnableCloutletDropDown: true,
+                isEnableClusterDropDown: false,
+                isEnableAppInstDropDown: false,
+                currentNetworkTab: 0,
+                allGridInstanceList: [],
+                filteredGridInstanceList: [],
+                gridInstanceListMemMax: 0,
+                networkTabIndex: 0,
+                gridInstanceListCpuMax: 0,
+                usageListByDate: [],
+                userType: '',
+                placeHolderStateTime: moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'),
+                placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
+                allConnectionsUsageList: [],
+                filteredConnectionsUsageList: [],
+
+                connectionsTabIndex: 0,
+                tcpTabIndex: 0,
+                udpTabIndex: 0,
+
+                dropdownCloudletList: [],
+                allUsageList: [],
+                maxCpu: 0,
+                maxMem: 0,
+                intervalLoading: false,
+                isRequesting: false,
+                clusterDropdownList: [],
+                currentClassification: 'Cluster',
+                selectOrg: '',
+                filteredAppInstanceList: [],
+                appInstDropdown: [],
+                dropdownRequestLoading: false,
+                cloudletKeys: [],
+                filteredClusterUsageList: [],
+                allClusterUsageList: [],
+                filteredAppInstUsageList: [],
+                allAppInstUsageList: [],
+                clusterListLoading: true,
+                allClusterUsageList003: [],
+                isStream: false,
+                bubbleChartLoader: false,
+                modalIsOpen: false,
+                currentGraphCluster: '',
+                currentAppInstLineChartData: [],
+                currentGraphAppInst: '',
+                mapPopUploading: false,
+                selectedClusterUsageOne: [],
+                selectedClusterUsageOneIndex: 0,
+                gridDraggable: true,
+                isNoData: false,
+                diskGridItemOneStyleTranslate: {
+                    transform: 'translate(10px, 1540px)',
+                },
+            };
         }
 
         componentDidMount = async () => {
@@ -1301,9 +1307,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderMapArea(){
+        renderMapArea() {
             return (
-                <div style={{width:'100%', height:'100%'}}>
+                <div style={{width: '100%', height: '100%'}}>
                     <div className='page_monitoring_title_area'
                          style={{display: 'flex'}}>
                         <div style={{
@@ -1368,6 +1374,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     </div>
                 </div>
             )
+        }
+
+        handleLayoutChange = (layout) => {
+            console.log('layout===>', layout);
+            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+            let layoutUniqueId = store.email + '_layoutForGrid'
+            reactLocalStorage.setObject(layoutUniqueId, layout)
+            let savedLayout = reactLocalStorage.getObject('layoutUniqueId');
+            console.log('layoutUniqueId=>', savedLayout);
         }
 
 
@@ -1440,13 +1455,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         isDroppable={true}
                                                         rowHeight={160}
                                                         width={window.innerWidth * 0.86}
-                                                        onLayoutChange={(layout) => {
-                                                            console.log('layout===>', layout);
-                                                            reactLocalStorage.setObject('layout003', layout)
-                                                            let savedLayout = reactLocalStorage.getObject('layout003');
-                                                            console.log('layout==22222=>', savedLayout);
-
-                                                        }}
+                                                        onLayoutChange={this.handleLayoutChange}
                                                         style={{overflowY: 'auto',}}
                                                     >
 
@@ -1614,11 +1623,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             </div>
                                                         }*/}
 
-                                                      {/*  */}
+                                                        {/*  */}
                                                         <div
-                                                           /* ref={c=>{
-                                                                this.clusterListGridItemRef = c;
-                                                            }}*/
+                                                            /* ref={c=>{
+                                                                 this.clusterListGridItemRef = c;
+                                                             }}*/
                                                             className='page_monitoring_column_kyungjoon1'
                                                             key={'p'}
                                                         >
