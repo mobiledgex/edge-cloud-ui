@@ -23,7 +23,7 @@ import {
     makeSelectBoxListWithKeyValuePipe,
     makeSelectBoxListWithThreeValuePipe,
     renderBottomGridAreaForCluster,
-    renderBubbleChartCoreForDev_Cluster, renderLineChartCoreForDev_AppInst,
+    renderBubbleChartCoreForDev_Cluster, renderLayoutForCluster, renderLineChartCoreForDev_AppInst,
     renderLineChartCoreForDev_Cluster,
 } from "./PageDevMonitoringService";
 import {
@@ -87,7 +87,31 @@ const defaultLayout = [
     {i: 'o', x: 2, y: 4, w: 1, h: 3,},
 
     {i: 'p', x: 0, y: 5, w: 2, h: 3,},
+    {i: 'q', x: 0, y: 6, w: 0, h: 0,},
+];
 
+const defaultLayoutForAppInst = [
+    {i: 'a', x: 0, y: 0, w: 1, h: 3},
+    {i: 'b', x: 1, y: 0, w: 1, h: 3},
+    {i: 'c', x: 2, y: 0, w: 1, h: 3},
+
+    {i: 'd', x: 0, y: 1, w: 1, h: 3,},
+    {i: 'e', x: 1, y: 1, w: 1, h: 3,},
+    {i: 'f', x: 2, y: 1, w: 1, h: 3,},
+
+    {i: 'g', x: 0, y: 2, w: 1, h: 3,},
+    {i: 'h', x: 1, y: 2, w: 1, h: 3,},
+    {i: 'i', x: 2, y: 2, w: 1, h: 3,},
+
+    {i: 'j', x: 0, y: 3, w: 1, h: 3,},
+    {i: 'k', x: 1, y: 3, w: 1, h: 3,},
+    {i: 'l', x: 2, y: 3, w: 1, h: 3,},
+
+    {i: 'm', x: 0, y: 4, w: 1, h: 3,},
+    {i: 'n', x: 1, y: 4, w: 1, h: 3,},
+    {i: 'o', x: 2, y: 4, w: 1, h: 3,},
+
+    {i: 'p', x: 0, y: 5, w: 2, h: 3,},
     {i: 'q', x: 0, y: 6, w: 0, h: 0,},
 ];
 
@@ -211,9 +235,10 @@ type State = {
     mapPopUploading: boolean,
     selectedClusterUsageOne: Array,
     selectedClusterUsageOneIndex: number,
-    layout: any,
     gridDraggable: boolean,
     diskGridItemOneStyleTranslate: string,
+    layoutForCluster: any,
+    layoutForAppInst: Array,
 
 }
 
@@ -231,7 +256,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let savedlayoutKey = store.email + "_layout"
 
             this.state = {
-                layout: isEmpty(reactLocalStorage.get(savedlayoutKey)) ? defaultLayout : reactLocalStorage.getObject(savedlayoutKey),
+                layoutForCluster: isEmpty(reactLocalStorage.get(savedlayoutKey)) ? defaultLayout : reactLocalStorage.getObject(savedlayoutKey),
                 date: '',
                 time: '',
                 dateTime: '',
@@ -334,6 +359,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 diskGridItemOneStyleTranslate: {
                     transform: 'translate(10px, 1540px)',
                 },
+                layoutForAppInst: [],
             };
         }
 
@@ -835,10 +861,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             try {
                 reactLocalStorage.remove('layout003')
                 await this.setState({
-                    layout: []
+                    layoutForCluster: []
                 });
                 await this.setState({
-                    layout: defaultLayout,
+                    layoutForCluster: defaultLayout,
                 })
             } catch (e) {
 
@@ -1311,10 +1337,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        handleLayoutChange = (layout) => {
+        handleLayoutChange = (paramLayout) => {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             let layoutUniqueId = store.email + "_layout"
-            reactLocalStorage.setObject(layoutUniqueId, layout)
+            reactLocalStorage.setObject(layoutUniqueId, paramLayout)
 
         }
 
@@ -1383,7 +1409,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         isDraggable={this.state.gridDraggable}
                                                         autoSize={true}
                                                         className="layout"
-                                                        layout={this.state.layout}
+                                                        layout={this.state.layoutForCluster}
                                                         cols={3}
                                                         isDroppable={true}
                                                         rowHeight={160}
@@ -1391,164 +1417,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         onLayoutChange={this.handleLayoutChange}
                                                         style={{overflowY: 'auto',}}
                                                     >
-
-                                                        <div className='page_monitoring_column_kyungjoon1' style={{}}
-                                                             key="a">
-                                                            {this.renderBubbleChartArea()}
-                                                        </div>
-                                                        {/* todo:map*/}
-                                                        {/* todo:map*/}
-                                                        {/* todo:map*/}
-                                                        {/* todo:map*/}
-                                                        {/* todo:map*/}
-                                                        {this.renderMapArea()}
-                                                        <div className='page_monitoring_column_kyungjoon1' key="c">
-                                                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.CPU)}
-
-                                                        </div>
-                                                        <div className='page_monitoring_column_kyungjoon1' key="d">
-                                                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.MEM)}
-                                                        </div>
-
-
-                                                        <div className='page_monitoring_column_kyungjoon1' key="e">
-                                                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.DISK)}
-                                                        </div>
-
-                                                        <div className='page_monitoring_column_kyungjoon1' key="f">
-                                                            <Tabs selectedIndex={this.state.networkTabIndex}
-                                                                  className='page_monitoring_tab'>
-                                                                <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.RECVBYTES)}
-                                                                </TabPanel>
-                                                                <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.SENDBYTES)}
-                                                                </TabPanel>
-                                                            </Tabs>
-                                                        </div>
-
-                                                        {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                                                            <div className='page_monitoring_column_kyungjoon1' key="g">
-                                                                <Tabs selectedIndex={this.state.tcpTabIndex}
-                                                                      className='page_monitoring_tab'>
-                                                                    <TabPanel>
-                                                                        {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.TCPCONNS)}
-                                                                    </TabPanel>
-                                                                    <TabPanel>
-                                                                        {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.TCPRETRANS)}
-                                                                    </TabPanel>
-                                                                </Tabs>
-                                                            </div>
-                                                            :
-                                                            <div className='page_monitoring_column_kyungjoon1' key="g">
-                                                                <Tabs selectedIndex={this.state.connectionsTabIndex}
-                                                                      className='page_monitoring_tab'>
-                                                                    <TabPanel>
-                                                                        {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.ACTIVE_CONNECTION)}
-                                                                    </TabPanel>
-                                                                    <TabPanel>
-                                                                        {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.HANDLED_CONNECTION)}
-                                                                    </TabPanel>
-                                                                    <TabPanel>
-                                                                        {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.ACCEPTS_CONNECTION)}
-                                                                    </TabPanel>
-                                                                </Tabs>
-                                                            </div>
-                                                        }
-                                                        <div className='page_monitoring_column_kyungjoon1' key="h"
-                                                             ref={c => {
-                                                                 this.udpRef = c;
-                                                             }}>
-                                                            {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
-                                                            <Tabs selectedIndex={this.state.udpTabIndex}
-                                                                  className='page_monitoring_tab'>
-                                                                <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.UDPSENT)}
-                                                                </TabPanel>
-                                                                <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.UDPRECV)}
-                                                                </TabPanel>
-                                                            </Tabs>
-                                                            }
-
-                                                        </div>
-                                                        <div
-                                                            className='page_monitoring_column_kyungjoon1'
-                                                            key={'i'}>
-                                                            {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.CPU)}
-                                                        </div>
-                                                        <div className='page_monitoring_column_kyungjoon1'
-                                                             key={'j'}>
-                                                            {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.MEM)}
-                                                        </div>
-                                                        <div
-                                                            style={this.state.diskGridItemOneStyleTranslate}
-                                                            className='page_monitoring_column_kyungjoon1'
-                                                            key={'k'}
-                                                            ref={c => this.diskGridElementOne = c}
-                                                        >
-                                                            {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.DISK)}
-                                                        </div>
-                                                        <div className='page_monitoring_column_kyungjoon1'
-                                                             key={'l'}>
-                                                            <Tabs selectedIndex={this.state.networkTabIndex}
-                                                                  className='page_monitoring_tab'>
-                                                                <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.RECVBYTES)}
-                                                                </TabPanel>
-                                                                <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.SENDBYTES)}
-                                                                </TabPanel>
-                                                            </Tabs>
-                                                        </div>
-                                                        <div className='page_monitoring_column_kyungjoon1' key="m">
-                                                            <Tabs selectedIndex={this.state.tcpTabIndex}
-                                                                  className='page_monitoring_tab'>
-                                                                <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.TCPCONNS)}
-                                                                </TabPanel>
-                                                                <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.TCPRETRANS)}
-                                                                </TabPanel>
-                                                            </Tabs>
-                                                        </div>
-                                                        <div className='page_monitoring_column_kyungjoon1' key="n">
-                                                            <Tabs selectedIndex={this.state.udpTabIndex}
-                                                                  className='page_monitoring_tab'>
-                                                                <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.UDPRECV)}
-                                                                </TabPanel>
-                                                                <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.UDPSENT)}
-                                                                </TabPanel>
-                                                            </Tabs>
-                                                        </div>
-
-
-                                                        <div
-
-                                                            className='page_monitoring_column_kyungjoon1'
-                                                            key={'p'}
-                                                        >
-                                                            <div className='page_monitoring_table_column'
-                                                                 style={{
-                                                                     marginLeft: -120,
-                                                                     width: window.innerWidth * 0.65
-                                                                 }}>
-                                                                <div className='page_monitoring_title_area'>
-                                                                    <div className='page_monitoring_title'
-                                                                         style={PageMonitoringStyles.center}>
-                                                                        CLUSTER LIST
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className='page_monitoring_popup_table'
-                                                                 style={{marginLeft: -10,}}>
-                                                                {renderBottomGridAreaForCluster(this, this.state.filteredClusterUsageList)}
-                                                            </div>
-                                                        </div>
-
-
+                                                        {renderLayoutForCluster(this)}
                                                     </GridLayout>
                                                 </div>
                                             </div>

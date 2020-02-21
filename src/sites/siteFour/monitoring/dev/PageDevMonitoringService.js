@@ -2,7 +2,6 @@ import React from 'react';
 import '../PageMonitoring.css';
 import {
     APP_INST_MATRIX_HW_USAGE_INDEX,
-    APP_INST_USAGE_TYPE_INDEX,
     CHART_COLOR_LIST,
     CLASSIFICATION,
     HARDWARE_TYPE,
@@ -16,10 +15,9 @@ import {
     convertByteToMegaByte,
     makeFormForClusterLevelMatric,
     numberWithCommas,
-    renderUsageByType,
-    showToast,
     PageMonitoringStyles,
-    renderLineChartCore
+    renderUsageByType,
+    showToast
 } from "../PageMonitoringCommonService";
 import {SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../../services/serviceMC";
@@ -30,6 +28,164 @@ import Lottie from "react-lottie";
 import type {TypeAppInstanceUsage2, TypeClusterUsageList} from "../../../../shared/Types";
 import {Progress} from "antd";
 import {getClusterLevelMatric} from "../PageMonitoringMetricService";
+import {TabPanel, Tabs} from "react-tabs";
+
+
+export const renderLayoutForCluster = (_this) =>{
+    return (
+        <>
+            <div className='page_monitoring_column_kyungjoon1' style={{}}
+                 key="a">
+                {_this.renderBubbleChartArea()}
+            </div>
+            {/* todo:map*/}
+            {_this.renderMapArea()}
+            <div className='page_monitoring_column_kyungjoon1' key="c">
+                {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.CPU)}
+
+            </div>
+            <div className='page_monitoring_column_kyungjoon1' key="d">
+                {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.MEM)}
+            </div>
+
+
+            <div className='page_monitoring_column_kyungjoon1' key="e">
+                {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.DISK)}
+            </div>
+
+            <div className='page_monitoring_column_kyungjoon1' key="f">
+                <Tabs selectedIndex={_this.state.networkTabIndex}
+                      className='page_monitoring_tab'>
+                    <TabPanel>
+                        {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.RECVBYTES)}
+                    </TabPanel>
+                    <TabPanel>
+                        {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.SENDBYTES)}
+                    </TabPanel>
+                </Tabs>
+            </div>
+
+            {_this.state.currentClassification === CLASSIFICATION.CLUSTER ?
+                <div className='page_monitoring_column_kyungjoon1' key="g">
+                    <Tabs selectedIndex={_this.state.tcpTabIndex}
+                          className='page_monitoring_tab'>
+                        <TabPanel>
+                            {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.TCPCONNS)}
+                        </TabPanel>
+                        <TabPanel>
+                            {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.TCPRETRANS)}
+                        </TabPanel>
+                    </Tabs>
+                </div>
+                :
+                <div className='page_monitoring_column_kyungjoon1' key="g">
+                    <Tabs selectedIndex={_this.state.connectionsTabIndex}
+                          className='page_monitoring_tab'>
+                        <TabPanel>
+                            {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.ACTIVE_CONNECTION)}
+                        </TabPanel>
+                        <TabPanel>
+                            {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.HANDLED_CONNECTION)}
+                        </TabPanel>
+                        <TabPanel>
+                            {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.ACCEPTS_CONNECTION)}
+                        </TabPanel>
+                    </Tabs>
+                </div>
+            }
+            <div className='page_monitoring_column_kyungjoon1' key="h"
+                 ref={c => {
+                     _this.udpRef = c;
+                 }}>
+                {_this.state.currentClassification === CLASSIFICATION.CLUSTER &&
+                <Tabs selectedIndex={_this.state.udpTabIndex}
+                      className='page_monitoring_tab'>
+                    <TabPanel>
+                        {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.UDPSENT)}
+                    </TabPanel>
+                    <TabPanel>
+                        {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.UDPRECV)}
+                    </TabPanel>
+                </Tabs>
+                }
+
+            </div>
+            <div
+                className='page_monitoring_column_kyungjoon1'
+                key={'i'}>
+                {_this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.CPU)}
+            </div>
+            <div className='page_monitoring_column_kyungjoon1'
+                 key={'j'}>
+                {_this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.MEM)}
+            </div>
+            <div
+                style={_this.state.diskGridItemOneStyleTranslate}
+                className='page_monitoring_column_kyungjoon1'
+                key={'k'}
+                ref={c => _this.diskGridElementOne = c}
+            >
+                {_this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.DISK)}
+            </div>
+            <div className='page_monitoring_column_kyungjoon1'
+                 key={'l'}>
+                <Tabs selectedIndex={_this.state.networkTabIndex}
+                      className='page_monitoring_tab'>
+                    <TabPanel>
+                        {_this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.RECVBYTES)}
+                    </TabPanel>
+                    <TabPanel>
+                        {_this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.SENDBYTES)}
+                    </TabPanel>
+                </Tabs>
+            </div>
+            <div className='page_monitoring_column_kyungjoon1' key="m">
+                <Tabs selectedIndex={_this.state.tcpTabIndex}
+                      className='page_monitoring_tab'>
+                    <TabPanel>
+                        {_this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.TCPCONNS)}
+                    </TabPanel>
+                    <TabPanel>
+                        {_this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.TCPRETRANS)}
+                    </TabPanel>
+                </Tabs>
+            </div>
+            <div className='page_monitoring_column_kyungjoon1' key="n">
+                <Tabs selectedIndex={_this.state.udpTabIndex}
+                      className='page_monitoring_tab'>
+                    <TabPanel>
+                        {_this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.UDPRECV)}
+                    </TabPanel>
+                    <TabPanel>
+                        {_this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.UDPSENT)}
+                    </TabPanel>
+                </Tabs>
+            </div>
+            <div
+                className='page_monitoring_column_kyungjoon1'
+                key={'p'}
+            >
+                <div className='page_monitoring_table_column'
+                     style={{
+                         marginLeft: -120,
+                         width: window.innerWidth * 0.65
+                     }}>
+                    <div className='page_monitoring_title_area'>
+                        <div className='page_monitoring_title'
+                             style={PageMonitoringStyles.center}>
+                            CLUSTER LIST
+                        </div>
+                    </div>
+                </div>
+                <div className='page_monitoring_popup_table'
+                     style={{marginLeft: -10,}}>
+                    {renderBottomGridAreaForCluster(_this, _this.state.filteredClusterUsageList)}
+                </div>
+            </div>
+        </>
+    )
+}
+
 
 export const getClusterLevelUsageList = async (clusterList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
     try {
