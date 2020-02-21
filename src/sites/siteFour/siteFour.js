@@ -54,7 +54,8 @@ import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
 import PageDevMonitoring from "./monitoring/dev/PageDevMonitoring";
 import PageOperMonitoring from "./monitoring/oper/PageOperMonitoring";
-import {PageModalMonitoring} from "./monitoring/child_comp/PageModalMonitoring";
+import PageModalMonitoring from "./monitoring/child_comp/PageModalMonitoring";
+import PageAdminMonitoring from "./monitoring/admin/PageAdminMonitoring";
 
 let defaultMotion = {left: window.innerWidth / 2, top: window.innerHeight / 2, opacity: 1}
 
@@ -1042,117 +1043,122 @@ class SiteFour extends React.Component {
                     <Container className='contents_body_container' style={{top: this.headerH, left: this.state.menuW, width: window.innerWidth - this.state.menuW}}>
 
                         {(this.state.page === 'pg=Monitoring') ? <PageMonitoringMain/> :
-                            (this.state.page === 'pg=MonitoringDev') ? <PageDevMonitoring/> :
-                                (this.state.page === 'pg=MonitoringOper') ? <PageOperMonitoring/> :
-                                    (this.state.page === 'pg=MonitoringModal') ? <PageModalMonitoring/> :
+                            (this.state.page === 'pg=PageAdminMonitoring') ? <PageAdminMonitoring/> :
+                                (this.state.page === 'pg=PageDevMonitoring') ? <PageDevMonitoring/> :
+                                    (this.state.page === 'pg=PageOperMonitoring') ? <PageOperMonitoring/> :
+                                        (this.state.page === 'pg=PageModalMonitoring') ? <PageModalMonitoring/> :
 
-                                    <Grid.Row className='view_contents'>
-                                        <Grid.Column className='contents_body'>
-                                            <Grid.Row className='content_title'>
-                                                <div className='content_title_wrap'>
-                                                    <div className='content_title_label'>{this.state.headerTitle}</div>
-                                                    {
-                                                        (viewMode !== 'MexDetailView' && this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'User Roles' && this.state.headerTitle !== 'Accounts' && this.state.headerTitle !== 'Audit Log' && viewMode !== 'detailView' && this.state.page.indexOf('create') === -1 && this.state.page.indexOf('edit') == -1 && !this.state.currentPage) ?
+                                            <Grid.Row className='view_contents'>
+                                                <Grid.Column className='contents_body'>
+                                                    <Grid.Row className='content_title'>
+                                                        <div className='content_title_wrap'>
+                                                            <div className='content_title_label'>{this.state.headerTitle}</div>
+                                                            {
+                                                                (viewMode !== 'MexDetailView' && this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'User Roles' && this.state.headerTitle !== 'Accounts' && this.state.headerTitle !== 'Audit Log' && viewMode !== 'detailView' && this.state.page.indexOf('create') === -1 && this.state.page.indexOf('edit') == -1 && !this.state.currentPage) ?
 
-                                                            (this.state.intoCity) ?
-                                                                <Button onClick={this.onClickBackBtn}>Back</Button> :
-                                                                <Dropdown className='selection'
-                                                                          options={this.state.regions}
-                                                                          defaultValue={this.state.regions[0].value}
-                                                                          onChange={this.onChangeRegion}
-                                                                />
-                                                            : null
-                                                    }
-                                                    {
-                                                        (viewMode !== 'MexDetailView' && this.state.page.indexOf('pg=8') >= 0 && !this.state.currentPage) ?
-                                                            <Dropdown className='selection'
-                                                                      style={{position: 'relative', marginRight: 20, height: 20}}
-                                                                      options={autoPolicy}
-                                                                      defaultValue={this.state.autoPolicy}
-                                                                      onChange={(e, {value}) => {
-                                                                          this.onPolicyChange(value)
-                                                                      }}
-                                                            /> : null
-                                                    }
-                                                    {
-                                                        (viewMode !== 'MexDetailView' && !this.state.currentPage && this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView' && this.props.location.search.indexOf('audits') === -1) ?
-                                                            <Button color='teal' className='stepOrg2' disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>New</Button>
-                                                            : null
-                                                    }
-                                                    {
-                                                        (viewMode === 'detailView' || viewMode === 'MexDetailView') ?
-                                                            <Button disabled={this.props.viewBtn.onlyView} onClick={() => this.props.handleDetail({
-                                                                data: null,
-                                                                viewMode: 'listView'
-                                                            })}>Close Details</Button>
-                                                            : null
-                                                    }
-                                                    {
-                                                        (this.state.headerTitle == 'User Roles') ?
-                                                            <div>
-                                                                <Input icon='search' placeholder={'Search ' + this.state.searchChangeValue} style={{marginRight: '20px'}} onChange={this.searchClick}/>
-                                                                <Dropdown defaultValue={this.searchOptions[0].value} search selection options={this.searchOptions} onChange={this.searchChange}/>
+                                                                    (this.state.intoCity) ?
+                                                                        <Button onClick={this.onClickBackBtn}>Back</Button> :
+                                                                        <Dropdown className='selection'
+                                                                                  options={this.state.regions}
+                                                                                  defaultValue={this.state.regions[0].value}
+                                                                                  onChange={this.onChangeRegion}
+                                                                        />
+                                                                    : null
+                                                            }
+                                                            {
+                                                                (viewMode !== 'MexDetailView' && this.state.page.indexOf('pg=8') >= 0 && !this.state.currentPage) ?
+                                                                    <Dropdown className='selection'
+                                                                              style={{position: 'relative', marginRight: 20, height: 20}}
+                                                                              options={autoPolicy}
+                                                                              defaultValue={this.state.autoPolicy}
+                                                                              onChange={(e, {value}) => {
+                                                                                  this.onPolicyChange(value)
+                                                                              }}
+                                                                    /> : null
+                                                            }
+                                                            {
+                                                                (viewMode !== 'MexDetailView' && !this.state.currentPage && this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView' && this.props.location.search.indexOf('audits') === -1) ?
+                                                                    <Button color='teal' className='stepOrg2' disabled={this.props.viewBtn.onlyView}
+                                                                            onClick={() => this.onHandleRegistry()}>New</Button>
+                                                                    : null
+                                                            }
+                                                            {
+                                                                (viewMode === 'detailView' || viewMode === 'MexDetailView') ?
+                                                                    <Button disabled={this.props.viewBtn.onlyView} onClick={() => this.props.handleDetail({
+                                                                        data: null,
+                                                                        viewMode: 'listView'
+                                                                    })}>Close Details</Button>
+                                                                    : null
+                                                            }
+                                                            {
+                                                                (this.state.headerTitle == 'User Roles') ?
+                                                                    <div>
+                                                                        <Input icon='search' placeholder={'Search ' + this.state.searchChangeValue} style={{marginRight: '20px'}}
+                                                                               onChange={this.searchClick}/>
+                                                                        <Dropdown defaultValue={this.searchOptions[0].value} search selection options={this.searchOptions}
+                                                                                  onChange={this.searchChange}/>
+                                                                    </div>
+                                                                    : null
+                                                            }
+                                                        </div>
+                                                    </Grid.Row>
+
+
+                                                    <Grid.Row className='site_content_body'>
+                                                        <Grid.Column>
+                                                            <div className="table-no-resized">
+                                                                {
+                                                                    this.state.currentPage ? this.state.currentPage :
+                                                                        (this.state.page === 'pg=0') ? <SiteFourPageOrganization></SiteFourPageOrganization> :
+                                                                            (this.state.page === 'pg=1') ? <SiteFourPageUser></SiteFourPageUser> :
+                                                                                (this.state.page === 'pg=101') ? <SiteFourPageAccount></SiteFourPageAccount> :
+                                                                                    (this.state.page === 'pg=2') ? <SiteFourPageCloudlet></SiteFourPageCloudlet> :
+                                                                                        (this.state.page === 'pg=3') ? <SiteFourPageFlavor></SiteFourPageFlavor> :
+                                                                                            (this.state.page === 'pg=4') ? <SiteFourPageClusterInst></SiteFourPageClusterInst> :
+                                                                                                (this.state.page === 'pg=5') ? <SiteFourPageApps></SiteFourPageApps> :
+                                                                                                    (this.state.page === 'pg=6') ?
+                                                                                                        <SiteFourPageAppInst childPage={this.showFullPage}></SiteFourPageAppInst> :
+                                                                                                        (this.state.page === 'pg=7') ? <SiteFourPageCloudletPool></SiteFourPageCloudletPool> :
+                                                                                                            (this.state.page === 'pg=8') ? this.state.autoPolicy === 'Auto Provisioning Policy' ?
+                                                                                                                <AutoProvPolicy childPage={this.showChildPage}></AutoProvPolicy> :
+                                                                                                                <AutoPrivacyPolicy childPage={this.showChildPage}></AutoPrivacyPolicy> :
+                                                                                                                (this.state.page === 'pg=newOrg') ? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
+                                                                                                                    (this.state.page === 'pg=createApp') ?
+                                                                                                                        <SiteFourPageAppReg editable={false}></SiteFourPageAppReg> :
+                                                                                                                        (this.state.page === 'pg=editApp') ?
+                                                                                                                            <SiteFourPageAppReg editable={true}></SiteFourPageAppReg> :
+                                                                                                                            (this.state.page === 'pg=createAppInst') ?
+                                                                                                                                <SiteFourPageAppInstReg editable={false}></SiteFourPageAppInstReg> :
+                                                                                                                                (this.state.page === 'pg=createCloudletPool') ?
+                                                                                                                                    <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
+                                                                                                                                    (this.state.page === 'pg=createPolicy') ?
+                                                                                                                                        <SiteFourAutoProvPolicyReg></SiteFourAutoProvPolicyReg> :
+                                                                                                                                        (this.state.page === 'pg=createPrivacyPolicy') ?
+                                                                                                                                            <AutoPrivacyPolicyReg></AutoPrivacyPolicyReg> :
+                                                                                                                                            (this.state.page === 'pg=updateCloudletPool') ?
+                                                                                                                                                <SiteFourPageCloudletPoolUpdate></SiteFourPageCloudletPoolUpdate> :
+                                                                                                                                                (this.state.page === 'pg=linkOrganize') ?
+                                                                                                                                                    <SiteFourPageLinkOrganizeReg></SiteFourPageLinkOrganizeReg> :
+                                                                                                                                                    (this.state.page === 'pg=createCloudletPool') ?
+                                                                                                                                                        <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
+                                                                                                                                                        (this.state.page === 'pg=editAppInst') ?
+                                                                                                                                                            <SiteFourPageAppInstReg
+                                                                                                                                                                editable={true}></SiteFourPageAppInstReg> :
+                                                                                                                                                            (this.state.page === 'pg=createClusterInst') ?
+                                                                                                                                                                <SiteFourPageClusterInstReg></SiteFourPageClusterInstReg> :
+                                                                                                                                                                (this.state.page === 'pg=createCloudlet') ?
+                                                                                                                                                                    <SiteFourPageCloudletReg></SiteFourPageCloudletReg> :
+                                                                                                                                                                    (this.state.page === 'pg=createFlavor') ?
+                                                                                                                                                                        <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
+                                                                                                                                                                        (this.state.page === 'pg=audits') ?
+                                                                                                                                                                            <SiteFourPageAudits></SiteFourPageAudits> :
+                                                                                                                                                                            null
+                                                                }
                                                             </div>
-                                                            : null
-                                                    }
-                                                </div>
-                                            </Grid.Row>
-
-
-                                            <Grid.Row className='site_content_body'>
-                                                <Grid.Column>
-                                                    <div className="table-no-resized">
-                                                        {
-                                                            this.state.currentPage ? this.state.currentPage :
-                                                                (this.state.page === 'pg=0') ? <SiteFourPageOrganization></SiteFourPageOrganization> :
-                                                                    (this.state.page === 'pg=1') ? <SiteFourPageUser></SiteFourPageUser> :
-                                                                        (this.state.page === 'pg=101') ? <SiteFourPageAccount></SiteFourPageAccount> :
-                                                                            (this.state.page === 'pg=2') ? <SiteFourPageCloudlet></SiteFourPageCloudlet> :
-                                                                                (this.state.page === 'pg=3') ? <SiteFourPageFlavor></SiteFourPageFlavor> :
-                                                                                    (this.state.page === 'pg=4') ? <SiteFourPageClusterInst></SiteFourPageClusterInst> :
-                                                                                        (this.state.page === 'pg=5') ? <SiteFourPageApps></SiteFourPageApps> :
-                                                                                            (this.state.page === 'pg=6') ? <SiteFourPageAppInst childPage={this.showFullPage}></SiteFourPageAppInst> :
-                                                                                                (this.state.page === 'pg=7') ? <SiteFourPageCloudletPool></SiteFourPageCloudletPool> :
-                                                                                                    (this.state.page === 'pg=8') ? this.state.autoPolicy === 'Auto Provisioning Policy' ?
-                                                                                                        <AutoProvPolicy childPage={this.showChildPage}></AutoProvPolicy> :
-                                                                                                        <AutoPrivacyPolicy childPage={this.showChildPage}></AutoPrivacyPolicy> :
-                                                                                                        (this.state.page === 'pg=newOrg') ? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
-                                                                                                            (this.state.page === 'pg=createApp') ?
-                                                                                                                <SiteFourPageAppReg editable={false}></SiteFourPageAppReg> :
-                                                                                                                (this.state.page === 'pg=editApp') ?
-                                                                                                                    <SiteFourPageAppReg editable={true}></SiteFourPageAppReg> :
-                                                                                                                    (this.state.page === 'pg=createAppInst') ?
-                                                                                                                        <SiteFourPageAppInstReg editable={false}></SiteFourPageAppInstReg> :
-                                                                                                                        (this.state.page === 'pg=createCloudletPool') ?
-                                                                                                                            <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
-                                                                                                                            (this.state.page === 'pg=createPolicy') ?
-                                                                                                                                <SiteFourAutoProvPolicyReg></SiteFourAutoProvPolicyReg> :
-                                                                                                                                (this.state.page === 'pg=createPrivacyPolicy') ?
-                                                                                                                                    <AutoPrivacyPolicyReg></AutoPrivacyPolicyReg> :
-                                                                                                                                    (this.state.page === 'pg=updateCloudletPool') ?
-                                                                                                                                        <SiteFourPageCloudletPoolUpdate></SiteFourPageCloudletPoolUpdate> :
-                                                                                                                                        (this.state.page === 'pg=linkOrganize') ?
-                                                                                                                                            <SiteFourPageLinkOrganizeReg></SiteFourPageLinkOrganizeReg> :
-                                                                                                                                            (this.state.page === 'pg=createCloudletPool') ?
-                                                                                                                                                <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
-                                                                                                                                                (this.state.page === 'pg=editAppInst') ?
-                                                                                                                                                    <SiteFourPageAppInstReg
-                                                                                                                                                        editable={true}></SiteFourPageAppInstReg> :
-                                                                                                                                                    (this.state.page === 'pg=createClusterInst') ?
-                                                                                                                                                        <SiteFourPageClusterInstReg></SiteFourPageClusterInstReg> :
-                                                                                                                                                        (this.state.page === 'pg=createCloudlet') ?
-                                                                                                                                                            <SiteFourPageCloudletReg></SiteFourPageCloudletReg> :
-                                                                                                                                                            (this.state.page === 'pg=createFlavor') ?
-                                                                                                                                                                <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
-                                                                                                                                                                (this.state.page === 'pg=audits') ?
-                                                                                                                                                                    <SiteFourPageAudits></SiteFourPageAudits> :
-                                                                                                                                                                    null
-                                                        }
-                                                    </div>
+                                                        </Grid.Column>
+                                                    </Grid.Row>
                                                 </Grid.Column>
-                                            </Grid.Row>
-                                        </Grid.Column>
-                                    </Grid.Row>}
+                                            </Grid.Row>}
                     </Container>
                     <PopLegendViewer data={this.state.detailViewData} dimmer={false} open={this.state.openLegend} close={this.closeLegend} siteId={this.props.siteId}></PopLegendViewer>
                     <Motion defaultStyle={defaultMotion} style={this.state.setMotion}>

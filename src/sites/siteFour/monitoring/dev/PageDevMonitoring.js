@@ -82,12 +82,13 @@ const defaultLayout = [
     {i: 'k', x: 1, y: 3, w: 1, h: 3,},
     {i: 'l', x: 2, y: 3, w: 1, h: 3,},
 
-
     {i: 'm', x: 0, y: 4, w: 1, h: 3,},
     {i: 'n', x: 1, y: 4, w: 1, h: 3,},
     {i: 'o', x: 2, y: 4, w: 1, h: 3,},
 
     {i: 'p', x: 0, y: 5, w: 2, h: 3,},
+
+    {i: 'q', x: 0, y: 6, w: 0, h: 0,},
 ];
 
 const mapStateToProps = (state) => {
@@ -212,13 +213,12 @@ type State = {
     selectedClusterUsageOneIndex: number,
     layout: any,
     gridDraggable: boolean,
+    diskGridItemOneStyleTranslate: string,
 
 }
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class PageDevMonitoring extends Component<Props, State> {
-
-
         state = {
             layout: reactLocalStorage.getObject('layout003').length === undefined ? defaultLayout : reactLocalStorage.getObject('layout003'),
             date: '',
@@ -320,6 +320,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             selectedClusterUsageOneIndex: 0,
             gridDraggable: true,
             isNoData: false,
+            diskGridItemOneStyleTranslate: {
+                transform: 'translate(10px, 1540px)',
+            },
         };
 
         intervalForAppInst = null;
@@ -934,14 +937,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         >Reset Grid Position
                         </Button>
 
-                        {/*    <Button
+                        <Button
                             onClick={async () => {
-                                this.setState({
-                                    isShowBottomGrid: !this.state.isShowBottomGrid,
-                                })
+                                this.props.history.push('/PageModalMonitoring')
                             }}
-                        >Cluster List Table
-                        </Button>*/}
+                        >PUSH Modal
+                        </Button>
 
 
                         {this.state.currentClassification === CLASSIFICATION.APPINST &&
@@ -1139,6 +1140,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 currentTabIndex: 0,
             })
+            this.diskGridElementOne.style.transform = 'translate(10px, 1540px)';
 
             if (this.state.isStream) {
                 this.setAppInstInterval(filteredAppList)
@@ -1325,11 +1327,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {this.renderSelectBoxRow()}
 
                                                 <div className='page_monitoring_dashboard_kyungjoon' style={{overflowY: 'auto'}}>
-
                                                     <GridLayout
                                                         isDraggable={this.state.gridDraggable}
                                                         autoSize={true}
-                                                        className="layout" layout={this.state.layout} cols={3} rowHeight={160} width={window.innerWidth * 0.86}
+                                                        className="layout"
+                                                        layout={this.state.layout}
+                                                        cols={3}
+                                                        isDroppable={true}
+                                                        rowHeight={160}
+                                                        width={window.innerWidth * 0.86}
                                                         onLayoutChange={(layout) => {
                                                             console.log('layout===>', layout);
                                                             reactLocalStorage.setObject('layout003', layout)
@@ -1454,31 +1460,31 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                 </Tabs>
                                                             </div> :
                                                             <div>
-
                                                             </div>
-
                                                         }
 
-                                                        <div className='page_monitoring_column_kyungjoon1' key="i">
+                                                        <div
+                                                            className='page_monitoring_column_kyungjoon1' key={this.state.currentClassification === CLASSIFICATION.CLUSTER ? 'i' : 'h'}>
                                                             {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.CPU)}
                                                         </div>
 
 
-                                                        <div className='page_monitoring_column_kyungjoon1' key="j">
+                                                        <div className='page_monitoring_column_kyungjoon1' key={this.state.currentClassification === CLASSIFICATION.CLUSTER ? 'j' : 'i'}>
                                                             {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.MEM)}
                                                         </div>
 
 
-                                                        {/*4nd Row*/}
-                                                        {/*4nd Row*/}
-                                                        {/*4nd Row*/}
-                                                        {/*4nd Row*/}
-                                                        <div className='page_monitoring_column_kyungjoon1' key="k">
+                                                        <div
+                                                            style={this.state.diskGridItemOneStyleTranslate}
+                                                            className='page_monitoring_column_kyungjoon1'
+                                                            key={this.state.currentClassification === CLASSIFICATION.CLUSTER ? 'k' : 'j'}
+                                                            ref={c => this.diskGridElementOne = c}
+                                                        >
                                                             {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.DISK)}
                                                         </div>
 
 
-                                                        <div className='page_monitoring_column_kyungjoon1' key="l">
+                                                        <div className='page_monitoring_column_kyungjoon1' key={this.state.currentClassification === CLASSIFICATION.CLUSTER ? 'l' : 'k'}>
                                                             <Tabs selectedIndex={this.state.networkTabIndex} className='page_monitoring_tab'>
                                                                 <TabPanel>
                                                                     {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.RECVBYTES)}
@@ -1501,7 +1507,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                 </Tabs>
                                                             </div>
                                                             :
-                                                            <div className='page_monitoring_column_kyungjoon1' key="m">
+                                                            <div className='page_monitoring_column_kyungjoon1' key="l">
                                                                 <Tabs selectedIndex={this.state.connectionsTabIndex} className='page_monitoring_tab'>
                                                                     <TabPanel>
                                                                         {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.ACTIVE_CONNECTION)}
@@ -1528,11 +1534,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                     </TabPanel>
                                                                 </Tabs>
                                                             </div> :
-                                                            <div>
+                                                            <div style={{width: 0, height: 0}}>
                                                             </div>
                                                         }
 
-                                                        <div className='page_monitoring_column_kyungjoon1' key="p">
+                                                        <div className='page_monitoring_column_kyungjoon1' key={this.state.currentClassification === CLASSIFICATION.CLUSTER ? 'p' : 'p'}>
                                                             <div className='page_monitoring_table_column' style={{marginLeft: -120, width: window.innerWidth * 0.65}}>
                                                                 <div className='page_monitoring_title_area'>
                                                                     <div className='page_monitoring_title' style={PageMonitoringStyles.center}>
