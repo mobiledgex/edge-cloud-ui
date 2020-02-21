@@ -479,6 +479,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //currentTabIndex: 1,
             })
 
+            if (this.udpRef !== null) {
+                this.udpRef.style.height = '500px';
+            }
+
             /* setTimeout(() => {
                  this.setState({
                      currentTabIndex: 0,
@@ -1152,7 +1156,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 currentTabIndex: 0,
             })
-            //this.diskGridElementOne.style.transform = 'translate(10px, 1540px)';
+
+            if (this.udpRef !== null) {
+                alert('sdlkfk!!!')
+                this.udpRef.style.height = '500px';
+            }
+
+            /*if (this.clusterListGridItemRef!==null){
+                this.clusterListGridItemRef.style.transform = 'translate(10px, 1540px)';
+            }*/
+
 
             if (this.state.isStream) {
                 this.setAppInstInterval(filteredAppList)
@@ -1288,6 +1301,75 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+        renderMapArea(){
+            return (
+                <div style={{width:'100%', height:'100%'}}>
+                    <div className='page_monitoring_title_area'
+                         style={{display: 'flex'}}>
+                        <div style={{
+                            display: 'flex',
+                            width: '100%',
+                            height: 30
+                        }}>
+                            <div className='page_monitoring_title' style={{
+                                backgroundColor: 'transparent',
+                                flex: .9
+                            }}>
+                                Launch status of
+                                the {this.state.currentClassification}
+                            </div>
+                            <div style={{flex: .1, marginRight: -30}}>
+                                <MButton style={{
+                                    height: 30,
+                                    backgroundColor: !this.state.gridDraggable ? 'green' : 'grey',
+                                    color: 'white'
+                                }}
+                                         onClick={() => {
+                                             this.setState({
+                                                 gridDraggable: !this.state.gridDraggable,
+                                                 appInstanceListGroupByCloudlet: [],
+                                             }, () => {
+                                                 this.setState({
+                                                     appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
+                                                 });
+
+                                             })
+                                         }}>
+                                    drag
+                                </MButton>
+                            </div>
+
+                        </div>
+
+                        <div className='page_monitoring_title' style={{
+                            backgroundColor: 'transparent',
+                            flex: .65
+                        }}>
+                            {this.state.mapPopUploading &&
+                            <div style={{zIndex: 99999999999}}>
+                                <CircularProgress style={{
+                                    color: '#1cecff',
+                                    marginRight: 0,
+                                    marginBottom: -2,
+                                    fontWeight: 'bold',
+                                }}
+                                                  size={14}/>
+                            </div>
+                            }
+                        </div>
+                    </div>
+                    {/*@todo: LeafletMapWrapperForDev*/}
+                    <div className='page_monitoring_container'>
+                        <LeafletMapWrapperForDev
+                            mapPopUploading={this.state.mapPopUploading}
+                            parent={this}
+                            handleAppInstDropdown={this.handleAppInstDropdown}
+                            markerList={this.state.appInstanceListGroupByCloudlet}/>
+                    </div>
+                </div>
+            )
+        }
+
 
         render() {
             // todo: Components showing when the loading of graph data is not completed.
@@ -1367,83 +1449,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         }}
                                                         style={{overflowY: 'auto',}}
                                                     >
-                                                        <div className='page_monitoring_column_kyungjoon1' style={{}}
-                                                             key="a"
-                                                             onDoubleClick={() => {
-                                                                 /*this.setState({
-                                                                     gridDraggable: !this.state.gridDraggable
-                                                                 })*/
-
-                                                             }}
-                                                        >
-                                                            <div className='page_monitoring_title_area'
-                                                                 style={{display: 'flex'}}>
-                                                                <div style={{
-                                                                    display: 'flex',
-                                                                    width: '100%',
-                                                                    height: 30
-                                                                }}>
-                                                                    <div className='page_monitoring_title' style={{
-                                                                        backgroundColor: 'transparent',
-                                                                        flex: .9
-                                                                    }}>
-                                                                        Launch status of
-                                                                        the {this.state.currentClassification}
-                                                                    </div>
-                                                                    <div style={{flex: .1, marginRight: -30}}>
-                                                                        <MButton style={{
-                                                                            height: 30,
-                                                                            backgroundColor: !this.state.gridDraggable ? 'green' : 'grey',
-                                                                            color: 'white'
-                                                                        }}
-                                                                                 onClick={() => {
-                                                                                     this.setState({
-                                                                                         gridDraggable: !this.state.gridDraggable,
-                                                                                         appInstanceListGroupByCloudlet: [],
-                                                                                     }, () => {
-                                                                                         this.setState({
-                                                                                             appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
-                                                                                         });
-
-                                                                                     })
-                                                                                 }}>
-                                                                            drag
-                                                                        </MButton>
-                                                                    </div>
-
-                                                                </div>
-
-                                                                <div className='page_monitoring_title' style={{
-                                                                    backgroundColor: 'transparent',
-                                                                    flex: .65
-                                                                }}>
-                                                                    {this.state.mapPopUploading &&
-                                                                    <div style={{zIndex: 99999999999}}>
-                                                                        <CircularProgress style={{
-                                                                            color: '#1cecff',
-                                                                            marginRight: 0,
-                                                                            marginBottom: -2,
-                                                                            fontWeight: 'bold',
-                                                                        }}
-                                                                                          size={14}/>
-                                                                    </div>
-                                                                    }
-                                                                </div>
-                                                            </div>
-                                                            {/*@todo: LeafletMapWrapperForDev*/}
-                                                            <div className='page_monitoring_container'>
-                                                                <LeafletMapWrapperForDev
-                                                                    mapPopUploading={this.state.mapPopUploading}
-                                                                    parent={this}
-                                                                    handleAppInstDropdown={this.handleAppInstDropdown}
-                                                                    markerList={this.state.appInstanceListGroupByCloudlet}/>
-                                                            </div>
-                                                        </div>
-
 
                                                         <div className='page_monitoring_column_kyungjoon1' style={{}}
-                                                             key="b">
+                                                             key="a">
                                                             {this.renderBubbleChartArea()}
+                                                        </div>
+                                                        {/* todo:map*/}
+                                                        {/* todo:map*/}
+                                                        <div className='page_monitoring_column_kyungjoon1' style={{}}
+                                                             key="b"
+                                                        >
+                                                            {this.renderMapArea()}
                                                         </div>
                                                         <div className='page_monitoring_column_kyungjoon1' key="c">
                                                             {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.CPU)}
@@ -1498,9 +1514,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                 </Tabs>
                                                             </div>
                                                         }
-
                                                         {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                                                            <div className='page_monitoring_column_kyungjoon1' key="h">
+                                                            <div className='page_monitoring_column_kyungjoon1' key="h"
+                                                                 ref={c => {
+                                                                     this.udpRef = c;
+                                                                 }}>
                                                                 <Tabs selectedIndex={this.state.udpTabIndex}
                                                                       className='page_monitoring_tab'>
                                                                     <TabPanel>
@@ -1596,12 +1614,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             </div>
                                                         }*/}
 
-                                                        <div className='page_monitoring_column_kyungjoon1'
-                                                             key={'p'}>
-                                                            <div className='page_monitoring_table_column' style={{
-                                                                marginLeft: -120,
-                                                                width: window.innerWidth * 0.65
-                                                            }}>
+                                                      {/*  */}
+                                                        <div
+                                                           /* ref={c=>{
+                                                                this.clusterListGridItemRef = c;
+                                                            }}*/
+                                                            className='page_monitoring_column_kyungjoon1'
+                                                            key={'p'}
+                                                        >
+                                                            <div className='page_monitoring_table_column'
+                                                                 style={{
+                                                                     marginLeft: -120,
+                                                                     width: window.innerWidth * 0.65
+                                                                 }}>
                                                                 <div className='page_monitoring_title_area'>
                                                                     <div className='page_monitoring_title'
                                                                          style={PageMonitoringStyles.center}>

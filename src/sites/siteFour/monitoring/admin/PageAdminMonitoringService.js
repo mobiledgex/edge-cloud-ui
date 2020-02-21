@@ -656,15 +656,18 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
 
                 let seriesValues = []
                 if (hardwareType === HARDWARE_TYPE.CPU) {
-                    seriesValues = item.cpuSeriesValues
+                    seriesValues = item.cpuSeriesValue
                 } else if (hardwareType === HARDWARE_TYPE.MEM) {
                     seriesValues = item.memSeriesValue
                 } else if (hardwareType === HARDWARE_TYPE.DISK) {
                     seriesValues = item.diskSeriesValue
-                } else if (hardwareType === HARDWARE_TYPE.NETWORK) {
+                } else if (hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
                     seriesValues = item.networkSeriesValue
-                } else if (hardwareType === HARDWARE_TYPE.CONNECTIONS) {
-                    seriesValues = item.connectionsSeriesValues
+
+                    console.log("NETWORK__seriesValues===>", seriesValues);
+
+                } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+                    seriesValues = item.connectionsSeriesValue
                 }
 
                 instanceAppName = item.instance.AppName

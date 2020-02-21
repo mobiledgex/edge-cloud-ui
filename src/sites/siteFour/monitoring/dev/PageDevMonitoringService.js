@@ -688,30 +688,29 @@ export const makeLineChartDataForAppInst_2222222 = (hardwareUsageList: Array, ha
         )
     } else {
 
-        console.log('hardwareUsageList===>', hardwareUsageList);
-        console.log('hardwareUsageList===hardwareType>', hardwareType);
+
 
 
         let instanceAppName = ''
         let instanceNameList = [];
         let usageSetList = []
         let dateTimeList = []
-        /*for (let i in hardwareUsageList) {
-        }*/
         hardwareUsageList.map((item: TypeAppInstanceUsage2, index) => {
 
             let seriesValues = []
             if (hardwareType === HARDWARE_TYPE.CPU) {
-                seriesValues = item.cpuSeriesValues
+                seriesValues = item.cpuSeriesValue
             } else if (hardwareType === HARDWARE_TYPE.MEM) {
                 seriesValues = item.memSeriesValue
             } else if (hardwareType === HARDWARE_TYPE.DISK) {
                 seriesValues = item.diskSeriesValue
-            } else if (hardwareType === HARDWARE_TYPE.NETWORK) {
+            } else if (hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
                 seriesValues = item.networkSeriesValue
-            } else if (hardwareType === HARDWARE_TYPE.CONNECTIONS) {
-                seriesValues = item.connectionsSeriesValues
+            } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+                seriesValues = item.connectionsSeriesValue
             }
+
+            console.log(`seriesValues===${hardwareType}>`, seriesValues);
 
             instanceAppName = item.instance.AppName
             let usageList = [];
