@@ -46,7 +46,7 @@ const showError = (request, message) => {
 }
 
 const checkExpiry = (self, message) => {
-    let isExpired = message.indexOf('expired jwt') > -1 && message.indexOf('expired token') > -1
+    let isExpired = message.indexOf('expired jwt') > -1 || message.indexOf('expired token') > -1
     if (isExpired && self.gotoUrl) {
         localStorage.setItem('userInfo', null)
         localStorage.setItem('sessionData', null)
