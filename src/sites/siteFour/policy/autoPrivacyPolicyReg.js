@@ -103,10 +103,17 @@ class AutoProvPolicyReg extends React.Component {
             })
     }
 
-    getOrganizationData = (dataList) => {
+    getOrganizationData = (form, dataList) => {
         if (dataList && dataList.length > 0)
             return dataList.map(data => {
                 let organization = data.Organization;
+                if (data.isDefault) {
+                    organization = data.OrganizationName;
+                    form.value = organization;
+                    let rules = form.rules ? form.rules : {}
+                    rules.disabled = true;
+                    form.rules = rules;
+                }
                 return { key: organization, value: organization, text: organization }
             })
     }
@@ -342,7 +349,7 @@ class AutoProvPolicyReg extends React.Component {
                 if (form.type === 'Select') {
                     switch (form.field) {
                         case 'OrganizationName':
-                            form.options = this.getOrganizationData(this.OrganizationList)
+                            form.options = this.getOrganizationData(form, this.OrganizationList)
                             break;
                         case 'Region':
                             form.options = this.getRegionData();

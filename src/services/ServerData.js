@@ -60,13 +60,17 @@ export const getCloudletInfo = async (self, data) => {
         requestData.org = undefined;
         method = EP.SHOW_CLOUDLET;
     }
-    let mcRequest = await sendSyncRequest(self, method, data)
+    let mcRequest = await sendSyncRequest(self, method, requestData)
     return processData(mcRequest)
 }
 /* Clouldet */
 
 /* Auto Provisioning Policy */
 export const getAutoProvPolicy = async (self, data) => {
+    if(getOrganization())
+    {
+        data.AutoProvPolicy = {key:{developer:getOrganization()}}
+    }
     let mcRequest = await sendSyncRequest(self, EP.SHOW_AUTO_PROV_POLICY, data)
     return processData(mcRequest)
 }
@@ -78,6 +82,10 @@ export const deleteAutoProvPolicy = async (self, data) => {
 
 /* Privacy Policy */
 export const getPrivacyPolicy = async (self, data) => {
+    if(getOrganization())
+    {
+        data.privacypolicy = {key:{developer:getOrganization()}}
+    }
     let mcRequest = await sendSyncRequest(self, EP.SHOW_PRIVACY_POLICY, data)
     return processData(mcRequest)
 }
