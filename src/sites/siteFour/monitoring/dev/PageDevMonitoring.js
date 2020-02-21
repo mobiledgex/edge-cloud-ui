@@ -1524,7 +1524,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             </Tabs>
                                                         </div>
 
-                                                        {/*
+
                                                         <div
 
                                                             className='page_monitoring_column_kyungjoon1'
@@ -1546,7 +1546,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                  style={{marginLeft: -10,}}>
                                                                 {renderBottomGridAreaForCluster(this, this.state.filteredClusterUsageList)}
                                                             </div>
-                                                        </div>*/}
+                                                        </div>
 
 
                                                     </GridLayout>
