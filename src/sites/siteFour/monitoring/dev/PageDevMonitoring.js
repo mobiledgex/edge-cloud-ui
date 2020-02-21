@@ -55,7 +55,13 @@ import {
     renderPlaceHolderCircular,
     showToast
 } from "../PageMonitoringCommonService";
-import {getAppLevelUsageList} from "../PageMonitoringMetricService";
+import {
+    getAppInstList,
+    getAppLevelUsageList,
+    getCloudletList,
+    getClusterLevelUsageList,
+    getClusterList
+} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraphForCluster from "./ModalGraphForCluster";
@@ -345,10 +351,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         async loadInitDataForCluster(isInterval: boolean = false) {
-
             clearInterval(this.intervalForAppInst)
             this.setState({dropdownRequestLoading: true})
-            /* let clusterList = await getClusterList();
+             let clusterList = await getClusterList();
              let cloudletList = await getCloudletList()
              let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
              if (appInstanceList.length === 0) {
@@ -356,13 +361,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                      isNoData: true,
                  })
              }
- */
 
             //fixme: fakeData
             //fixme: fakeData
+            /*
             let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
             let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
+            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')*/
             console.log('appInstanceList====>', appInstanceList);
 
             console.log('clusterList===>', clusterList);
@@ -397,16 +402,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             }
             let allClusterUsageList = []
-            /*  try {
-                  allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
-              } catch (e) {
+            try {
+                allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
+            } catch (e) {
 
-              }
-  */
+            }
             //fixme: fakeData
             //fixme: fakeData
-            allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
-            console.log('filteredAppInstanceList===>', appInstanceList)
+            /*allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+            console.log('filteredAppInstanceList===>', appInstanceList)*/
 
             let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
             await this.setState({
@@ -540,7 +544,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             } else {
 
                 console.log("hwType===>", hwType);
-                return this.renderGraphAreaFor_LineChart(hwType, lineChartDataSet)
+                return this.renderGraphAreaFoLineChart(hwType, lineChartDataSet)
             }
         }
 
@@ -637,7 +641,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        renderGraphAreaFor_LineChart(pHardwareType, lineChartDataSet) {
+        renderGraphAreaFoLineChart(pHardwareType, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
                     {/*@todo:LInechart*/}

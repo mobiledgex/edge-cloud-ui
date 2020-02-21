@@ -297,7 +297,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //@test: FAKE JSON FOR DEV
                 //let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
 
-
                 //@fixme: realdata
                 let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
 
