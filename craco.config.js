@@ -46,6 +46,7 @@ module.exports = {
                 'no-self-assign': 'off',
                 'jsx-a11y/alt-text': 'off',
                 'react/style-prop-object': 'off',
+                'jsx-a11y/accessible-emoji': 'off',
             }
         }
     },

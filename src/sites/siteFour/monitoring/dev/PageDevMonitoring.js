@@ -369,22 +369,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             clearInterval(this.intervalForAppInst)
             this.setState({dropdownRequestLoading: true})
-            /*  let clusterList = await getClusterList();
-              let cloudletList = await getCloudletList()
+            let clusterList = await getClusterList();
+            let cloudletList = await getCloudletList()
 
-              let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
-              if (appInstanceList.length === 0) {
-                  this.setState({
-                      isNoData: true,
-                  })
-              }*/
+            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
+            if (appInstanceList.length === 0) {
+                this.setState({
+                    isNoData: true,
+                })
+            }
 
 
             //fixme: fakeData
             //fixme: fakeData
-            let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+            /*let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
             let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
+            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')*/
             console.log('appInstanceList====>', appInstanceList);
 
             console.log('clusterList===>', clusterList);
@@ -419,15 +419,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             }
             let allClusterUsageList = []
-            /*try {
+            try {
                 allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
             } catch (e) {
 
-            }*/
+            }
 
             //fixme: fakeData
             //fixme: fakeData
-            allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+            //allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
             console.log('filteredAppInstanceList===>', appInstanceList)
 
             let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
@@ -482,9 +482,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //currentTabIndex: 1,
             })
 
-         /*   if (this.udpRef !== null) {
-                this.udpRef.style.height = '500px';
-            }*/
+            /*   if (this.udpRef !== null) {
+                   this.udpRef.style.height = '500px';
+               }*/
 
             /* setTimeout(() => {
                  this.setState({
@@ -886,12 +886,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         >Reset Grid Position
                         </Button>
 
-                        <Button
+                        {/* <Button
                             onClick={async () => {
                                 this.props.history.push('/PageModalMonitoring')
                             }}
                         >PUSH Modal
-                        </Button>
+                        </Button>*/}
 
 
                         {this.state.currentClassification === CLASSIFICATION.APPINST &&
@@ -1240,9 +1240,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderMapArea() {
             return (
-                <div style={{width: '100%', height: '100%'}}>
-                    <div className='page_monitoring_title_area'
-                         style={{display: 'flex'}}>
+                <div className='page_monitoring_column_kyungjoon1' style={{width: '100%', height: '100%'}}
+                     key="b">
+
+                    <div className='page_monitoring_title_area' style={{display: 'flex'}}>
+
                         <div style={{
                             display: 'flex',
                             width: '100%',
@@ -1396,11 +1398,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                         {/* todo:map*/}
                                                         {/* todo:map*/}
-                                                        <div className='page_monitoring_column_kyungjoon1' style={{}}
-                                                             key="b"
-                                                        >
-                                                            {this.renderMapArea()}
-                                                        </div>
+                                                        {/* todo:map*/}
+                                                        {/* todo:map*/}
+                                                        {/* todo:map*/}
+                                                        {this.renderMapArea()}
                                                         <div className='page_monitoring_column_kyungjoon1' key="c">
                                                             {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.CPU)}
 
@@ -1458,7 +1459,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                              ref={c => {
                                                                  this.udpRef = c;
                                                              }}>
-                                                            {this.state.currentClassification ===CLASSIFICATION.CLUSTER &&
+                                                            {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
                                                             <Tabs selectedIndex={this.state.udpTabIndex}
                                                                   className='page_monitoring_tab'>
                                                                 <TabPanel>
