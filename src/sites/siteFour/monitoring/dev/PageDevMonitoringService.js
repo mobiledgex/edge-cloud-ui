@@ -266,9 +266,17 @@ export const sortUsageListByTypeForCluster = (usageList, hardwareType) => {
         usageList.sort((a, b) => b.sumDiskUsage - a.sumDiskUsage);
     } else if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
         usageList.sort((a, b) => b.sumTcpConns - a.sumTcpConns);
-    } else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
+    }else if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
+        usageList.sort((a, b) => b.sumTcpRetrans - a.sumTcpRetrans);
+    }
+
+    else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
         usageList.sort((a, b) => b.sumUdpSent - a.sumUdpSent);
-    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+    }
+    else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
+        usageList.sort((a, b) => b.sumUdpRecv - a.sumUdpRecv);
+    }
+    else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
         usageList.sort((a, b) => b.sumSendBytes - a.sumSendBytes);
     } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
         usageList.sort((a, b) => b.sumRecvBytes - a.sumRecvBytes);

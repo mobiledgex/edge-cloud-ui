@@ -546,15 +546,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 || hwType === HARDWARE_TYPE.UDPSENT
 
             ) {
-                return this.renderGraphAreaMultiForLineChart(hwType, [], lineChartDataSet)
+                return this.renderGraphAreaMultiFor___LineChart(hwType, lineChartDataSet)
             } else {
 
-                return this.renderGraphAreaForLineChart(hwType, [], lineChartDataSet)
+                return this.renderGraphAreaForLineChart(hwType, lineChartDataSet)
             }
         }
 
 
-        makeChartDataAndRenderTabBody_BarChart(hwType,) {
+        makeChartDataAndRenderTabBody_____BarChart(hwType,) {
             let barChartDataSet: TypeBarChartData = [];
             if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                 barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
@@ -578,11 +578,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             ) {
 
-                return this.renderGraphAreaMultiForBarChart(hwType, barChartDataSet, [])
+                return this.renderGraphAreaMultiFor___BarChart(hwType, barChartDataSet)
 
             } else {
 
-                return this.renderGraphAreaForBarChart(hwType, barChartDataSet)
+                return this.renderGraphAreaFor__BarChart(hwType, barChartDataSet)
 
             }
         }
@@ -596,7 +596,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
         }
 
-        renderGraphAreaMultiForLineChart(pHardwareType, barChartDataSet, lineChartDataSet) {
+        renderGraphAreaMultiFor___LineChart(pHardwareType, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column'>
                     {/*@todo:LInechart*/}
@@ -605,7 +605,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title_select'>
-                                {convertHwTypePhrases(pHardwareType)} Usage of {this.convertToClassification(this.state.currentClassification)}
+                                {convertHwTypePhrases(pHardwareType)} Usage
+                                of {this.convertToClassification(this.state.currentClassification)}
                             </div>
                             {!this.state.loading && this.renderDropDownForMultiTab(pHardwareType)}
                         </div>
@@ -617,7 +618,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderGraphAreaMultiForBarChart(pHardwareType, barChartDataSet, lineChartDataSet) {
+        renderGraphAreaMultiFor___BarChart(pHardwareType, barChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column'>
                     {/*@todo:BarChart*/}
@@ -625,13 +626,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*@todo:BarChart*/}
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                Top 5 {convertHwTypePhrases(pHardwareType)} usage of {this.convertToClassification(this.state.currentClassification)}
+                            <div className='page_monitoring_title_select'>
+                                Top 5 {convertHwTypePhrases(pHardwareType)} usage
+                                of {this.convertToClassification(this.state.currentClassification)}
                             </div>
+                            {!this.state.loading && this.renderDropDownForMultiTab(pHardwareType)}
                         </div>
                         <div className='page_monitoring_container'>
                             {this.state.loading ? renderPlaceHolderCircular() :
-                                lineChartDataSet.length === 0 ?
+                                barChartDataSet.length === 0 ?
                                     noDataArea()
                                     :
                                     renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
@@ -643,7 +646,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        renderGraphAreaForLineChart(pHardwareType, barChartDataSet, lineChartDataSet) {
+        renderGraphAreaForLineChart(pHardwareType, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
                     {/*@todo:LInechart*/}
@@ -673,7 +676,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderGraphAreaForBarChart(pHardwareType, barChartDataSet) {
+        renderGraphAreaFor__BarChart(pHardwareType, barChartDataSet) {
 
             console.log(`renderGraphAreaForBarChart===${pHardwareType}, ${barChartDataSet}>` + JSON.stringify(barChartDataSet));
 
@@ -687,7 +690,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container' style={{flex: 1}}>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                Top 5 {convertHwTypePhrases(pHardwareType)} usage of {this.convertToClassification(this.state.currentClassification)}
+                                Top 5 {convertHwTypePhrases(pHardwareType)} usage
+                                of {this.convertToClassification(this.state.currentClassification)}
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
@@ -950,7 +954,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {this.state.currentClassification === CLASSIFICATION.APPINST &&
                         <div>
                             <MButton
-                                style={{backgroundColor: this.state.isStream ? 'green' : '#6c6c6c', color: 'white', height: 37}}
+                                style={{
+                                    backgroundColor: this.state.isStream ? 'green' : '#6c6c6c',
+                                    color: 'white',
+                                    height: 37
+                                }}
                                 onClick={async () => {
                                     this.setState({
                                         isStream: !this.state.isStream,
@@ -977,7 +985,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {this.state.intervalLoading &&
                         <div>
                             <div style={{marginLeft: 15}}>
-                                <CircularProgress style={{color: this.state.currentClassification === CLASSIFICATION.APPINST ? 'grey' : 'green', zIndex: 9999999, fontSize: 10}}
+                                <CircularProgress style={{
+                                    color: this.state.currentClassification === CLASSIFICATION.APPINST ? 'grey' : 'green',
+                                    zIndex: 9999999,
+                                    fontSize: 10
+                                }}
                                                   size={20}/>
                             </div>
                         </div>
@@ -1295,7 +1307,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <Grid.Column className='contents_body'>
                             {this.renderHeader()}
                             <div style={{position: 'absolute', top: '37%', left: '48%'}}>
-                                <div style={{marginLeft: -450, display: 'flex', flexDirection: 'row', fontSize: 30, opacity: 1, color: 'white'}}>
+                                <div style={{
+                                    marginLeft: -450,
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    fontSize: 30,
+                                    opacity: 1,
+                                    color: 'white'
+                                }}>
                                     There is no app instance you can access.. 😅😅😅
                                 </div>
                             </div>
@@ -1307,7 +1326,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             return (
                 <div style={{width: '100%', height: '100%', overflowY: 'auto'}}>
-                    <ModalGraphForCluster selectedClusterUsageOne={this.state.selectedClusterUsageOne} selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
+                    <ModalGraphForCluster selectedClusterUsageOne={this.state.selectedClusterUsageOne}
+                                          selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
                                           parent={this}
                                           modalIsOpen={this.state.modalIsOpen}
                                           cluster={''} contents={''}/>
@@ -1324,13 +1344,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <Grid.Column>
                                         <div className="table-no-resized">
 
-                                            <div className="page_monitoring" style={{backgroundColor: 'transparent', height: 3250}}>
+                                            <div className="page_monitoring"
+                                                 style={{backgroundColor: 'transparent', height: 3250}}>
                                                 {/*todo:---------------------------------*/}
                                                 {/*todo:SELECTBOX_ROW        */}
                                                 {/*todo:---------------------------------*/}
                                                 {this.renderSelectBoxRow()}
 
-                                                <div className='page_monitoring_dashboard_kyungjoon' style={{overflowY: 'auto'}}>
+                                                <div className='page_monitoring_dashboard_kyungjoon'
+                                                     style={{overflowY: 'auto'}}>
                                                     <GridLayout
                                                         isDraggable={this.state.gridDraggable}
                                                         autoSize={true}
@@ -1349,7 +1371,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         }}
                                                         style={{overflowY: 'auto',}}
                                                     >
-                                                        <div className='page_monitoring_column_kyungjoon1' style={{}} key="a"
+                                                        <div className='page_monitoring_column_kyungjoon1' style={{}}
+                                                             key="a"
                                                              onDoubleClick={() => {
                                                                  /*this.setState({
                                                                      gridDraggable: !this.state.gridDraggable
@@ -1357,13 +1380,26 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                                              }}
                                                         >
-                                                            <div className='page_monitoring_title_area' style={{display: 'flex'}}>
-                                                                <div style={{display: 'flex', width: '100%', height: 30}}>
-                                                                    <div className='page_monitoring_title' style={{backgroundColor: 'transparent', flex: .9}}>
-                                                                        Launch status of the {this.state.currentClassification}
+                                                            <div className='page_monitoring_title_area'
+                                                                 style={{display: 'flex'}}>
+                                                                <div style={{
+                                                                    display: 'flex',
+                                                                    width: '100%',
+                                                                    height: 30
+                                                                }}>
+                                                                    <div className='page_monitoring_title' style={{
+                                                                        backgroundColor: 'transparent',
+                                                                        flex: .9
+                                                                    }}>
+                                                                        Launch status of
+                                                                        the {this.state.currentClassification}
                                                                     </div>
                                                                     <div style={{flex: .1, marginRight: -30}}>
-                                                                        <MButton style={{height: 30, backgroundColor: !this.state.gridDraggable ? 'green' : 'grey', color: 'white'}}
+                                                                        <MButton style={{
+                                                                            height: 30,
+                                                                            backgroundColor: !this.state.gridDraggable ? 'green' : 'grey',
+                                                                            color: 'white'
+                                                                        }}
                                                                                  onClick={() => {
                                                                                      this.setState({
                                                                                          gridDraggable: !this.state.gridDraggable,
@@ -1381,10 +1417,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                                                 </div>
 
-                                                                <div className='page_monitoring_title' style={{backgroundColor: 'transparent', flex: .65}}>
+                                                                <div className='page_monitoring_title' style={{
+                                                                    backgroundColor: 'transparent',
+                                                                    flex: .65
+                                                                }}>
                                                                     {this.state.mapPopUploading &&
                                                                     <div style={{zIndex: 99999999999}}>
-                                                                        <CircularProgress style={{color: '#1cecff', marginRight: 0, marginBottom: -2, fontWeight: 'bold',}}
+                                                                        <CircularProgress style={{
+                                                                            color: '#1cecff',
+                                                                            marginRight: 0,
+                                                                            marginBottom: -2,
+                                                                            fontWeight: 'bold',
+                                                                        }}
                                                                                           size={14}/>
                                                                     </div>
                                                                     }
@@ -1392,14 +1436,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             </div>
                                                             {/*@todo: LeafletMapWrapperForDev*/}
                                                             <div className='page_monitoring_container'>
-                                                                <LeafletMapWrapperForDev mapPopUploading={this.state.mapPopUploading} parent={this}
-                                                                                         handleAppInstDropdown={this.handleAppInstDropdown}
-                                                                                         markerList={this.state.appInstanceListGroupByCloudlet}/>
+                                                                <LeafletMapWrapperForDev
+                                                                    mapPopUploading={this.state.mapPopUploading}
+                                                                    parent={this}
+                                                                    handleAppInstDropdown={this.handleAppInstDropdown}
+                                                                    markerList={this.state.appInstanceListGroupByCloudlet}/>
                                                             </div>
                                                         </div>
 
 
-                                                        <div className='page_monitoring_column_kyungjoon1' style={{}} key="b">
+                                                        <div className='page_monitoring_column_kyungjoon1' style={{}}
+                                                             key="b">
                                                             {this.renderBubbleChartArea()}
                                                         </div>
                                                         <div className='page_monitoring_column_kyungjoon1' key="c">
@@ -1415,7 +1462,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
 
                                                         <div className='page_monitoring_column_kyungjoon1' key="f">
-                                                            <Tabs selectedIndex={this.state.networkTabIndex} className='page_monitoring_tab'>
+                                                            <Tabs selectedIndex={this.state.networkTabIndex}
+                                                                  className='page_monitoring_tab'>
                                                                 <TabPanel>
                                                                     {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.RECVBYTES)}
                                                                 </TabPanel>
@@ -1427,7 +1475,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                                         {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
                                                             <div className='page_monitoring_column_kyungjoon1' key="g">
-                                                                <Tabs selectedIndex={this.state.tcpTabIndex} className='page_monitoring_tab'>
+                                                                <Tabs selectedIndex={this.state.tcpTabIndex}
+                                                                      className='page_monitoring_tab'>
                                                                     <TabPanel>
                                                                         {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.TCPCONNS)}
                                                                     </TabPanel>
@@ -1438,7 +1487,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             </div>
                                                             :
                                                             <div className='page_monitoring_column_kyungjoon1' key="g">
-                                                                <Tabs selectedIndex={this.state.connectionsTabIndex} className='page_monitoring_tab'>
+                                                                <Tabs selectedIndex={this.state.connectionsTabIndex}
+                                                                      className='page_monitoring_tab'>
                                                                     <TabPanel>
                                                                         {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.ACTIVE_CONNECTION)}
                                                                     </TabPanel>
@@ -1454,7 +1504,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                                         {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
                                                             <div className='page_monitoring_column_kyungjoon1' key="h">
-                                                                <Tabs selectedIndex={this.state.udpTabIndex} className='page_monitoring_tab'>
+                                                                <Tabs selectedIndex={this.state.udpTabIndex}
+                                                                      className='page_monitoring_tab'>
                                                                     <TabPanel>
                                                                         {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.UDPSENT)}
                                                                     </TabPanel>
@@ -1468,13 +1519,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         }
 
                                                         <div
-                                                            className='page_monitoring_column_kyungjoon1' key={this.state.currentClassification === CLASSIFICATION.CLUSTER ? 'i' : 'h'}>
-                                                            {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.CPU)}
+                                                            className='page_monitoring_column_kyungjoon1'
+                                                            key={this.state.currentClassification === CLASSIFICATION.CLUSTER ? 'i' : 'h'}>
+                                                            {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.CPU)}
                                                         </div>
 
 
-                                                        <div className='page_monitoring_column_kyungjoon1' key={this.state.currentClassification === CLASSIFICATION.CLUSTER ? 'j' : 'i'}>
-                                                            {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.MEM)}
+                                                        <div className='page_monitoring_column_kyungjoon1'
+                                                             key={this.state.currentClassification === CLASSIFICATION.CLUSTER ? 'j' : 'i'}>
+                                                            {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.MEM)}
                                                         </div>
 
 
@@ -1484,43 +1537,47 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             key={this.state.currentClassification === CLASSIFICATION.CLUSTER ? 'k' : 'j'}
                                                             ref={c => this.diskGridElementOne = c}
                                                         >
-                                                            {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.DISK)}
+                                                            {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.DISK)}
                                                         </div>
 
 
-                                                        <div className='page_monitoring_column_kyungjoon1' key={this.state.currentClassification === CLASSIFICATION.CLUSTER ? 'l' : 'k'}>
-                                                            <Tabs selectedIndex={this.state.networkTabIndex} className='page_monitoring_tab'>
+                                                        <div className='page_monitoring_column_kyungjoon1'
+                                                             key={this.state.currentClassification === CLASSIFICATION.CLUSTER ? 'l' : 'k'}>
+                                                            <Tabs selectedIndex={this.state.networkTabIndex}
+                                                                  className='page_monitoring_tab'>
                                                                 <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.RECVBYTES)}
+                                                                    {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.RECVBYTES)}
                                                                 </TabPanel>
                                                                 <TabPanel>
-                                                                    {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.SENDBYTES)}
+                                                                    {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.SENDBYTES)}
                                                                 </TabPanel>
                                                             </Tabs>
                                                         </div>
 
                                                         {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
                                                             <div className='page_monitoring_column_kyungjoon1' key="m">
-                                                                <Tabs selectedIndex={this.state.tcpTabIndex} className='page_monitoring_tab'>
+                                                                <Tabs selectedIndex={this.state.tcpTabIndex}
+                                                                      className='page_monitoring_tab'>
                                                                     <TabPanel>
-                                                                        {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.TCPCONNS)}
+                                                                        {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.TCPCONNS)}
                                                                     </TabPanel>
                                                                     <TabPanel>
-                                                                        {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.TCPRETRANS)}
+                                                                        {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.TCPRETRANS)}
                                                                     </TabPanel>
                                                                 </Tabs>
                                                             </div>
                                                             :
                                                             <div className='page_monitoring_column_kyungjoon1' key="l">
-                                                                <Tabs selectedIndex={this.state.connectionsTabIndex} className='page_monitoring_tab'>
+                                                                <Tabs selectedIndex={this.state.connectionsTabIndex}
+                                                                      className='page_monitoring_tab'>
                                                                     <TabPanel>
-                                                                        {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.ACTIVE_CONNECTION)}
+                                                                        {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.ACTIVE_CONNECTION)}
                                                                     </TabPanel>
                                                                     <TabPanel>
-                                                                        {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.HANDLED_CONNECTION)}
+                                                                        {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.HANDLED_CONNECTION)}
                                                                     </TabPanel>
                                                                     <TabPanel>
-                                                                        {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.ACCEPTS_CONNECTION)}
+                                                                        {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.ACCEPTS_CONNECTION)}
                                                                     </TabPanel>
                                                                 </Tabs>
                                                             </div>
@@ -1529,12 +1586,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
 
                                                             <div className='page_monitoring_column_kyungjoon1' key="n">
-                                                                <Tabs selectedIndex={this.state.udpTabIndex} className='page_monitoring_tab'>
+                                                                <Tabs selectedIndex={this.state.udpTabIndex}
+                                                                      className='page_monitoring_tab'>
                                                                     <TabPanel>
-                                                                        {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.UDPRECV)}
+                                                                        {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.UDPRECV)}
                                                                     </TabPanel>
                                                                     <TabPanel>
-                                                                        {this.makeChartDataAndRenderTabBody_BarChart(HARDWARE_TYPE.UDPSENT)}
+                                                                        {this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.UDPSENT)}
                                                                     </TabPanel>
                                                                 </Tabs>
                                                             </div> :
@@ -1542,15 +1600,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             </div>
                                                         }
 
-                                                        <div className='page_monitoring_column_kyungjoon1' key={this.state.currentClassification === CLASSIFICATION.CLUSTER ? 'p' : 'p'}>
-                                                            <div className='page_monitoring_table_column' style={{marginLeft: -120, width: window.innerWidth * 0.65}}>
+                                                        <div className='page_monitoring_column_kyungjoon1'
+                                                             key={this.state.currentClassification === CLASSIFICATION.CLUSTER ? 'p' : 'p'}>
+                                                            <div className='page_monitoring_table_column' style={{
+                                                                marginLeft: -120,
+                                                                width: window.innerWidth * 0.65
+                                                            }}>
                                                                 <div className='page_monitoring_title_area'>
-                                                                    <div className='page_monitoring_title' style={PageMonitoringStyles.center}>
+                                                                    <div className='page_monitoring_title'
+                                                                         style={PageMonitoringStyles.center}>
                                                                         CLUSTER LIST
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div className='page_monitoring_popup_table' style={{marginLeft: -10,}}>
+                                                            <div className='page_monitoring_popup_table'
+                                                                 style={{marginLeft: -10,}}>
                                                                 {renderBottomGridAreaForCluster(this, this.state.filteredClusterUsageList)}
                                                             </div>
                                                         </div>

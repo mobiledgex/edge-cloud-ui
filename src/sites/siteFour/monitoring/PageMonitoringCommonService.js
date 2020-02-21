@@ -557,7 +557,7 @@ export const renderBarChartCore = (chartDataList, hardwareType) => {
             data={chartDataList}
             options={{
                 annotations: {
-                    style: 'line',
+                    style:   'line',
                     textStyle: {
                         //fontName: 'Righteous',
                         fontSize: 12,
