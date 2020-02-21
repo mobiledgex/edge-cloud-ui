@@ -40,7 +40,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         goBack
                     </Button>
                     <div>
-                        고경준 천재님임fsdlkflsdkflsdk
+                        {/*고경준 천재님임fsdlkflsdkflsdk*/}
                     </div>
                 </div>
             );
