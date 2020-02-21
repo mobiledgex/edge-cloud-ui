@@ -162,6 +162,7 @@ class SiteFour extends React.Component {
             reducer.getFindIndex(this.menuItemsAll, 'label', 'Apps'),
             reducer.getFindIndex(this.menuItemsAll, 'label', 'App Instances'),
             reducer.getFindIndex(this.menuItemsAll, 'label', 'Monitoring'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Policies'),
             reducer.getFindIndex(this.menuItemsAll, 'label', 'Audit Logs'),
         ]
 
