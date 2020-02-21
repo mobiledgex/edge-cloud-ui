@@ -323,9 +323,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
         this.props.getOptionData(e)
         //this.props.dispatch(reset('createAppFormDefault'));
     }
-
-    AddPorts = (e) => {
-        e.preventDefault();
+    onHandlePorts = (_type) => {
         if(this.state.editDsb) {
             let numbers = [];
             this.state.portArray.map((port) => {
@@ -335,27 +333,20 @@ class SiteFourCreateFormAppDefault extends React.Component {
         }
         let pn = {
             num: parseInt(portNum) + 1,
-            name: 'single'
+            name: _type
         }
         this.setState({ portArray: this.state.portArray.concat(pn) })
         portNum++;
+    }
+    AddPorts = (e) => {
+        e.preventDefault();
+        this.onHandlePorts('single')
     }
     AddMultiPorts = (e) => {
         e.preventDefault();
-        if(this.state.editDsb) {
-            let numbers = [];
-            this.state.portArray.map((port) => {
-                numbers.push(port.num)
-            })
-            portNum = (numbers.length > 0) ? Math.max(...numbers) : 0
-        }
-        let pn = {
-            num: parseInt(portNum) + 1,
-            name: 'multi'
-        }
-        this.setState({ portArray: this.state.portArray.concat(pn) })
-        portNum++;
+        this.onHandlePorts('multi')
     }
+
     RemovePorts = (num, cnum) => {
         let arr = Object.assign(this.state.portArray); // new
         let data = Object.assign(this.state.data); // edit
