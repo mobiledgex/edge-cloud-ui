@@ -58,11 +58,11 @@ export type TypeAppInstanceUsage2 = {
     sumActiveConnection: number,
     sumHandledConnection: number,
     sumAcceptsConnection: number,
-    cpuSeriesValues: any,
+    cpuSeriesValue: any,
     memSeriesValue: any,
     diskSeriesValue: any,
     networkSeriesValue: any,
-    connectionsSeriesValues: any,
+    connectionsSeriesValue: any,
 }
 
 export type TypeCloudletUsageList = {

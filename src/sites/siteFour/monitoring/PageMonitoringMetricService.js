@@ -303,11 +303,11 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                         sumActiveConnection: Math.ceil(sumActiveConnection / RECENT_DATA_LIMIT_COUNT),
                         sumHandledConnection: Math.ceil(sumHandledConnection / RECENT_DATA_LIMIT_COUNT),
                         sumAcceptsConnection: Math.ceil(sumAcceptsConnection / RECENT_DATA_LIMIT_COUNT),
-                        cpuSeriesValues:cpuSeriesValue,
+                        cpuSeriesValue:cpuSeriesValue,
                         memSeriesValue: memSeriesValue,
                         diskSeriesValue: diskSeriesValue,
                         networkSeriesValue: networkSeriesValue,
-                        connectionsSeriesValues: connectionsSeriesValue,
+                        connectionsSeriesValue: connectionsSeriesValue,
 
                     })
 

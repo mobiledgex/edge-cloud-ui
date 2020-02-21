@@ -657,18 +657,20 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
 export const makeLineChartDataForAppInst = (allHWUsageList: Array, hardwareType: string, _this: PageDevMonitoring) => {
     try {
 
+        console.log(`allHWUsageList===${hardwareType}>`, allHWUsageList);
+
 
         let oneTypedUsageList = [];
         if (hardwareType === HARDWARE_TYPE.CPU) {
-            oneTypedUsageList = allHWUsageList[0]
+            oneTypedUsageList = allHWUsageList["0"].cpuSeriesValue
         } else if (hardwareType === HARDWARE_TYPE.MEM) {
-            oneTypedUsageList = allHWUsageList[1]
+            oneTypedUsageList =  allHWUsageList["0"].memSeriesValue
         } else if (hardwareType === HARDWARE_TYPE.DISK) {
-            oneTypedUsageList = allHWUsageList[3]
+            oneTypedUsageList =  allHWUsageList["0"].diskSeriesValue
         } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION || hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-            oneTypedUsageList = allHWUsageList[4]
+            oneTypedUsageList =  allHWUsageList["0"].connectionsSeriesValue
         } else if (hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
-            oneTypedUsageList = allHWUsageList[2]
+            oneTypedUsageList =  allHWUsageList["0"].networkSeriesValue
         }
 
         console.log(`oneTypedUsageList===${hardwareType}>`, oneTypedUsageList);

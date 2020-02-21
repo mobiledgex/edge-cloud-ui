@@ -526,7 +526,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                 lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
             } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
+                console.log('filteredAppInstUsageList===>', this.state.filteredAppInstUsageList)
                 lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
+                console.log('lineChartDataSet2222222===>', lineChartDataSet)
             }
 
             if (lineChartDataSet === undefined) {
@@ -1135,6 +1137,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //clusterSelectBoxPlaceholder: 'Select Cluster'
             }, () => {
                 //alert(this.state.currentClassification)
+
+                console.log('filteredAppInstUsageList===>', this.state.filteredAppInstUsageList)
             })
 
             await this.setState({
