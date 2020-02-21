@@ -368,9 +368,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
             let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
             let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')*/
-            console.log('appInstanceList====>', appInstanceList);
-
-            console.log('clusterList===>', clusterList);
 
             let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
 
@@ -380,9 +377,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             } catch (e) {
                 showToast(e.toString())
             }
-
-
-            console.log('appInstanceListGroupByCloudlet===>', appInstanceListGroupByCloudlet);
 
             await this.setState({
                 isReady: true,

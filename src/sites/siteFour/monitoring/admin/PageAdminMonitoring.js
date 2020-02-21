@@ -293,7 +293,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     cloudletList: allCloudletList,
                 })
 
-
                 //@test: FAKE JSON FOR DEV
                 //let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
 
@@ -334,6 +333,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 });
 
                 let allAppInstUsageList = [];
+
                 //@todo:realdata
                 try {
                     allAppInstUsageList = await getAppLevelUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
