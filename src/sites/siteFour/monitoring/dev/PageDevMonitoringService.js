@@ -49,11 +49,12 @@ export const defaultLayoutForAppInst = [
 ];
 
 export const defaultLayoutForCluster = [
-    {i: 'a', x: 0, y: 0, w: 2, h: 3},
-    {i: 'b', x: 2, y: 0, w: 1, h: 3},
+    {i: 'a', x: 0, y: 0, w: 1, h: 3},
+    {i: 'b', x: 1, y: 0, w: 1, h: 3},
+    {i: 'c', x: 2, y: 0, w: 1, h: 3},
 
-    {i: 'c', x: 0, y: 1, w: 1, h: 3},
-    {i: 'd', x: 1, y: 1, w: 1, h: 3,},
+
+    {i: 'd', x: 0, y: 1, w: 2, h: 3,},
     {i: 'e', x: 2, y: 1, w: 1, h: 3,},
 
     {i: 'f', x: 0, y: 2, w: 1, h: 3,},
@@ -99,13 +100,24 @@ export const renderGridLayoutForCluster = (_this) => {
                 style={{overflowY: 'auto',}}
             >
 
-                {/*todo: gridList(a)*/}
-                {/*todo: gridList(a)*/}
-                {/*todo: gridList(a)*/}
+
+                <div className='page_monitoring_column_kyungjoon1' key="a">
+                    {_this.renderBubbleChartArea()}
+                </div>
+                {/* todo:map(b)*/}
+                {_this.renderMapArea()}
+
+                {/* todo:cpu_usage(c)*/}
+                <div className='page_monitoring_column_kyungjoon1' key="c">
+                    {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.CPU)}
+                </div>
+                {/*todo: gridList(d)*/}
+                {/*todo: gridList(d)*/}
+                {/*todo: gridList(d)*/}
                 <div
 
                     className='page_monitoring_column_kyungjoon1'
-                    key={'a'}
+                    key={'d'}
                 >
                     <div className='page_monitoring_table_column'
                          style={{
@@ -124,23 +136,8 @@ export const renderGridLayoutForCluster = (_this) => {
                         {renderBottomGridAreaForCluster(_this, _this.state.filteredClusterUsageList)}
                     </div>
                 </div>
-                {/* todo:map(b)*/}
-                {/* todo:map(b)*/}
-                {/* todo:map(b)*/}
-                {_this.renderMapArea()}
 
-
-
-                {/* @todo:######################*/}
-                {/* @todo:######################*/}
-                {/* @todo:######################*/}
-                <div className='page_monitoring_column_kyungjoon1' key="c">
-                    {_this.renderBubbleChartArea()}
-                </div>
-                <div className='page_monitoring_column_kyungjoon1' key="d">
-                    {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.CPU)}
-
-                </div>
+                {/* @todo:######### eee ########*/}
                 <div className='page_monitoring_column_kyungjoon1' key="e">
                     {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.MEM)}
                 </div>
@@ -323,6 +320,20 @@ export const renderGridLayoutForAppInst = (_this: PageDevMonitoring) => {
                 {/*todo:3nd row*/}
                 {/*todo:3nd row*/}
                 {/*todo:3nd row*/}
+                <div className='page_monitoring_column_kyungjoon1' key="g">
+                    <Tabs selectedIndex={_this.state.connectionsTabIndex}
+                          className='page_monitoring_tab'>
+                        <TabPanel>
+                            {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.ACTIVE_CONNECTION)}
+                        </TabPanel>
+                        <TabPanel>
+                            {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.HANDLED_CONNECTION)}
+                        </TabPanel>
+                        <TabPanel>
+                            {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.ACCEPTS_CONNECTION)}
+                        </TabPanel>
+                    </Tabs>
+                </div>
             </GridLayout>
         </>
 

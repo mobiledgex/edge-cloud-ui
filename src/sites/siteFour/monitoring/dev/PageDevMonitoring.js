@@ -877,7 +877,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }}
                         >Reset Grid Position
                         </Button>
-
+                        {/*
                         <Button
                             onClick={async () => {
                                 let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -885,7 +885,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 reactLocalStorage.remove(savedlayoutKey)
                             }}
                         >remove
-                        </Button>
+                        </Button>*/}
 
 
                         {this.state.currentClassification === CLASSIFICATION.APPINST &&
