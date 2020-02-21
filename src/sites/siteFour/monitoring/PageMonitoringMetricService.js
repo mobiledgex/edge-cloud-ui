@@ -110,8 +110,18 @@ export const getCloudletList = async () => {
     try {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
-        let requestData = {showSpinner: false, token: token, method: SHOW_ORG_CLOUDLET, data: {region: REGION.EU, org: localStorage.selectOrg}};
-        let requestData2 = {showSpinner: false, token: token, method: SHOW_ORG_CLOUDLET, data: {region: REGION.US, org: localStorage.selectOrg}};
+        let requestData = {
+            showSpinner: false,
+            token: token,
+            method: SHOW_ORG_CLOUDLET,
+            data: {region: REGION.EU, org: localStorage.selectOrg}
+        };
+        let requestData2 = {
+            showSpinner: false,
+            token: token,
+            method: SHOW_ORG_CLOUDLET,
+            data: {region: REGION.US, org: localStorage.selectOrg}
+        };
         let promiseList = []
 
         promiseList.push(sendSyncRequest(this, requestData))
@@ -133,13 +143,14 @@ export const getCloudletList = async () => {
             }
         })
 
-       /* let mergedOrgCloudletList = []
+        //todo: current org에 관한것만 flitering
+        let mergedOrgCloudletList = []
         mergedCloudletList.map(item => {
             if (item.Operator === localStorage.selectOrg) {
                 mergedOrgCloudletList.push(item)
             }
-        })*/
-        return mergedCloudletList;
+        })
+        return mergedOrgCloudletList;
     } catch (e) {
         showToast('getCloudletList===>' + e.toString())
     }
@@ -226,11 +237,11 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
             let sumHandledConnection = 0
             let sumAcceptsConnection = 0
             let columns = []
-            let cpuSeriesValue=[]
-            let memSeriesValue=[]
-            let diskSeriesValue=[]
-            let networkSeriesValue=[]
-            let connectionsSeriesValue=[]
+            let cpuSeriesValue = []
+            let memSeriesValue = []
+            let diskSeriesValue = []
+            let networkSeriesValue = []
+            let connectionsSeriesValue = []
 
             if (item.appInstanceHealth !== undefined) {
                 let series = item.appInstanceHealth.data["0"].Series;
@@ -239,7 +250,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                     if (series["3"] !== undefined) {
                         let cpuSeries = series["3"]
                         columns = cpuSeries.columns;
-                        cpuSeriesValue= cpuSeries.values;
+                        cpuSeriesValue = cpuSeries.values;
                         cpuSeries.values.map(item => {
                             let cpuUsage = item[APP_INST_MATRIX_HW_USAGE_INDEX.CPU];//cpuUsage..index
                             sumCpuUsage += cpuUsage;
@@ -249,7 +260,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
                     if (series["1"] !== undefined) {
                         let memSeries = series["1"]
-                        memSeriesValue= memSeries.values;
+                        memSeriesValue = memSeries.values;
                         memSeries.values.map(item => {
                             let usageOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.MEM];//memUsage..index
                             sumMemUsage += usageOne;
@@ -259,7 +270,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
                     if (series["2"] !== undefined) {
                         let diskSeries = series["2"]
-                        diskSeriesValue= diskSeries.values;
+                        diskSeriesValue = diskSeries.values;
                         diskSeries.values.map(item => {
                             let usageOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.DISK];//diskUsage..index
                             sumDiskUsage += usageOne;
@@ -268,7 +279,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
                     if (series["0"] !== undefined) {
                         let networkSeries = series["0"]
-                        networkSeriesValue= networkSeries.values;
+                        networkSeriesValue = networkSeries.values;
                         networkSeries.values.map(item => {
                             let sendBytesOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.SENDBYTES];//sendBytesOne
                             sumSendBytes += sendBytesOne;
@@ -280,7 +291,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
                     if (series["4"] !== undefined) {
                         let connectionsSeries = series["4"]
-                        connectionsSeriesValue= connectionsSeries.values;
+                        connectionsSeriesValue = connectionsSeries.values;
                         connectionsSeries.values.map(item => {
                             let connection1One = item[APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE];//1
                             sumActiveConnection += connection1One;
@@ -303,7 +314,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                         sumActiveConnection: Math.ceil(sumActiveConnection / RECENT_DATA_LIMIT_COUNT),
                         sumHandledConnection: Math.ceil(sumHandledConnection / RECENT_DATA_LIMIT_COUNT),
                         sumAcceptsConnection: Math.ceil(sumAcceptsConnection / RECENT_DATA_LIMIT_COUNT),
-                        cpuSeriesValue:cpuSeriesValue,
+                        cpuSeriesValue: cpuSeriesValue,
                         memSeriesValue: memSeriesValue,
                         diskSeriesValue: diskSeriesValue,
                         networkSeriesValue: networkSeriesValue,
@@ -343,7 +354,6 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
     }
 
 }
-
 
 
 export const getClusterLevelUsageList = async (clusterList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
@@ -479,9 +489,6 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
 }
 
 
-
-
-
 export const getCloudletLevelUsageList = async (cloudletList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
 
     try {
@@ -500,13 +507,24 @@ export const getCloudletLevelUsageList = async (cloudletList, pHardwareType, rec
 
         let cloudletLevelMatricUsageList = await Promise.all(promiseList);
 
+        console.log("cloudletLevelMatricUsageList===>", cloudletLevelMatricUsageList);
+
+        //todo: check undefined element.
+        let newCloutletMetric = []
+        cloudletLevelMatricUsageList.map(item => {
+            if (item !== undefined) {
+                newCloutletMetric.push(item)
+            }
+        })
+
+        console.log("newCloutletMetric===>", newCloutletMetric);
 
         let usageList = []
-        cloudletLevelMatricUsageList.map((item, index) => {
+        newCloutletMetric.map((item, index) => {
 
             if (item !== undefined) {
                 let Region = cloudletList[index].Region
-                if (item.data["0"] !== undefined) {
+                if (item.data["0"] !== undefined && item.data["0"].Series !== null) {
                     let series = item.data["0"].Series["0"].values
                     let columns = item.data["0"].Series["0"].columns
 
@@ -581,6 +599,7 @@ export const getCloudletLevelUsageList = async (cloudletList, pHardwareType, rec
 
         return usageList;
     } catch (e) {
+        alert(e.toString())
         //showToast('getClouletLevelUsageList'+ e.toString())
     }
 

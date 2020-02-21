@@ -297,7 +297,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 }
 
                 allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList);
-                console.log('allCloudletEventLogList===>', allCloudletEventLogList);
+                console.log('cloudletList===>', cloudletList);
 
                 let cloudletListForDropdown = [];
                 cloudletList.map(item => {
@@ -318,6 +318,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
 
                 let allCloudletUsageList = await getCloudletLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
+
+                console.log("allCloudletUsageList===>", allCloudletUsageList);
+
                 let bubbleChartData = await this.makeBubbleChartDataForCloudlet(allCloudletUsageList);
                 await this.setState({
                     bubbleChartData: bubbleChartData,
