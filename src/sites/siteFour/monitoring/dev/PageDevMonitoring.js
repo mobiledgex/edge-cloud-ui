@@ -358,9 +358,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         showModalClusterLineChart(lineChartDataOne, index) {
-            //alert(JSON.stringify(lineChartDataOne))
-            /*currentAppInstLineChartData={this.state.currentAppInstLineChartData} parent={this} modalIsOpen={this.state.modalIsOpen}*/
-
             this.setState({
                 selectedClusterUsageOne: lineChartDataOne,
                 modalIsOpen: true,
@@ -553,11 +550,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 || hwType === HARDWARE_TYPE.UDPSENT
 
             ) {
-                return this.renderGraphAreaMultiFor___LineChart(hwType, lineChartDataSet)
+                return this.renderGraphAreaMultiFor_LineChart(hwType, lineChartDataSet)
             } else {
 
                 console.log("hwType===>", hwType);
-                return this.renderGraphAreaFor_____LineChart(hwType, lineChartDataSet)
+                return this.renderGraphAreaFor_LineChart(hwType, lineChartDataSet)
             }
         }
 
@@ -586,7 +583,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             ) {
 
-                return this.renderGraphAreaMultiFor___BarChart(hwType, barChartDataSet)
+                return this.renderGraphAreaMultiForBarChart(hwType, barChartDataSet)
 
             } else {
 
@@ -604,7 +601,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
         }
 
-        renderGraphAreaMultiFor___LineChart(pHardwareType, lineChartDataSet) {
+        renderGraphAreaMultiFor_LineChart(pHardwareType, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column'>
                     {/*@todo:LInechart*/}
@@ -626,7 +623,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderGraphAreaMultiFor___BarChart(pHardwareType, barChartDataSet) {
+        renderGraphAreaMultiForBarChart(pHardwareType, barChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column'>
                     {/*@todo:BarChart*/}
@@ -654,7 +651,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        renderGraphAreaFor_____LineChart(pHardwareType, lineChartDataSet) {
+        renderGraphAreaFor_LineChart(pHardwareType, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
                     {/*@todo:LInechart*/}
@@ -683,13 +680,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         renderGraphAreaFor__BarChart(pHardwareType, barChartDataSet) {
-
-            console.log(`renderGraphAreaForBarChart===${pHardwareType}, ${barChartDataSet}>` + JSON.stringify(barChartDataSet));
-
-
             return (
                 <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
-
                     {/*@todo:BarChart*/}
                     {/*@todo:BarChart*/}
                     {/*@todo:BarChart*/}
@@ -839,61 +831,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 />
             )
         }
-
-
-        //@todo:-----------------------
-        //@todo:    TAB_FOR_APP_INST
-        //@todo:-----------------------`
-        /* TAB_FOR_APP_INST = [
-
-             {
-                 menuItem: 'CPU', render: () => {
-                     return (
-                         <Pane>
-                             {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.CPU)}
-                         </Pane>
-                     )
-                 },
-             },
-             {
-                 menuItem: 'MEM', render: () => {
-                     return (
-                         <Pane>
-                             {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.MEM)}
-                         </Pane>
-                     )
-                 }
-             },
-
-             {
-                 menuItem: 'DISK', render: () => {
-                     return (
-                         <Pane>
-                             {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.DISK)}
-                         </Pane>
-                     )
-                 }
-             },
-             {
-                 menuItem: 'CONNECTIONS', render: () => {
-                     return (
-                         <Pane>
-                             <Tabs selectedIndex={this.state.connectionsTabIndex} className='page_monitoring_tab'>
-                                 <TabPanel>
-                                     {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.ACTIVE_CONNECTION)}
-                                 </TabPanel>
-                                 <TabPanel>
-                                     {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.HANDLED_CONNECTION)}
-                                 </TabPanel>
-                                 <TabPanel>
-                                     {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.ACCEPTS_CONNECTION)}
-                                 </TabPanel>
-                             </Tabs>
-                         </Pane>
-                     )
-                 }
-             },
-         ]*/
 
         async resetGridPos() {
             try {
