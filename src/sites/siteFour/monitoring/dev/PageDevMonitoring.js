@@ -49,7 +49,7 @@ import {
     renderGridLoader2, renderLoaderArea,
     renderPlaceHolderCircular,
     showToast,
-    PageMonitoringStyles, noDataArea
+    PageMonitoringStyles, noDataArea, isEmpty
 } from "../PageMonitoringCommonService";
 import {getAppInstList, getAppLevelUsageList, getCloudletList} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
@@ -227,12 +227,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         constructor(props) {
             super(props);
-
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            let layoutUniqueId = store.email + '_layoutForGrid'
+            let savedlayoutKey = store.email + "_layout"
 
             this.state = {
-                layout: layoutUniqueId.length === undefined ? defaultLayout : reactLocalStorage.getObject(layoutUniqueId),
+                layout: isEmpty(reactLocalStorage.get(savedlayoutKey)) ? defaultLayout : reactLocalStorage.getObject(savedlayoutKey),
                 date: '',
                 time: '',
                 dateTime: '',
@@ -886,12 +885,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         >Reset Grid Position
                         </Button>
 
-                        {/* <Button
+                        <Button
                             onClick={async () => {
-                                this.props.history.push('/PageModalMonitoring')
+                                let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+                                let savedlayoutKey = store.email + "_layout"
+                                reactLocalStorage.remove(savedlayoutKey)
+
                             }}
-                        >PUSH Modal
-                        </Button>*/}
+                        >remove
+                        </Button>
 
 
                         {this.state.currentClassification === CLASSIFICATION.APPINST &&
@@ -1310,12 +1312,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         handleLayoutChange = (layout) => {
-            console.log('layout===>', layout);
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            let layoutUniqueId = store.email + '_layoutForGrid'
+            let layoutUniqueId = store.email + "_layout"
             reactLocalStorage.setObject(layoutUniqueId, layout)
-            let savedLayout = reactLocalStorage.getObject('layoutUniqueId');
-            console.log('layoutUniqueId=>', savedLayout);
+
         }
 
 

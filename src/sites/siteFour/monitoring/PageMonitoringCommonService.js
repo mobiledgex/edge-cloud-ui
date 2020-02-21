@@ -56,7 +56,12 @@ export const PageMonitoringStyles = {
     },
     noData: {
         fontSize: 30,
-        display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', alignSelf: 'center', width: '100%'
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        width: '100%'
     },
     cell001: {
         marginLeft: 0,
@@ -100,7 +105,7 @@ export const PageMonitoringStyles = {
         alignItems: 'center',
         width: '100%',
         minHeight: 350,
-        fontSize:29,
+        fontSize: 29,
         fontFamily: 'Karla'
         //backgroundColor:'red'
     }
@@ -124,11 +129,19 @@ export const PageMonitoringStyles = {
         />*/
 }
 
-export const noDataArea = () =>(
+export const noDataArea = () => (
     <div style={PageMonitoringStyles.center3}>
         There is no data to represent.
     </div>
 )
+
+export const isEmpty = (value) => {
+    if (value == "" || value == null || value == undefined || (value != null && typeof value == "object" && !Object.keys(value).length)) {
+        return true
+    } else {
+        return false
+    }
+};
 
 
 export const renderLoaderArea = (_this) => (
@@ -172,7 +185,8 @@ export const renderGridLoader = () => {
 
 export const renderPlaceHolderCircular = (type: string = '') => {
     return (
-        <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
+        <div className='page_monitoring_blank_box'
+             style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
             {/*<Lottie
                 options={{
                     loop: true,
@@ -197,7 +211,8 @@ export const renderPlaceHolderCircular = (type: string = '') => {
 
 export const renderPlaceHolderLottiePinJump = (type: string = '') => {
     return (
-        <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%', zIndex: 999999999999}}>
+        <div className='page_monitoring_blank_box'
+             style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%', zIndex: 999999999999}}>
             <Lottie
                 options={{
                     loop: true,
@@ -219,7 +234,8 @@ export const renderPlaceHolderLottiePinJump = (type: string = '') => {
 
 export const renderPlaceHolderLottiePinJump2 = (type: string = '') => {
     return (
-        <div className='page_monitoring_blank_box' style={{zIndex: 999999999999, position: 'absolute', top: '1%', left: '1%'}}>
+        <div className='page_monitoring_blank_box'
+             style={{zIndex: 999999999999, position: 'absolute', top: '1%', left: '1%'}}>
             <Lottie
                 options={{
                     loop: true,
@@ -263,7 +279,8 @@ export const renderPlaceHolderLottie = (type: string = '') => {
 export const renderPlaceHolder3 = (type: string = '') => {
     // let boxWidth = window.innerWidth / 3 - 50;
     return (
-        <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
+        <div className='page_monitoring_blank_box'
+             style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
             <CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 20}}/>
         </div>
     )
@@ -544,7 +561,6 @@ export const renderUsageByType = (usageOne, hardwareType, role = '',) => {
 export const renderBarChartCore = (chartDataList, hardwareType) => {
 
 
-
     console.log(`chartDataList==${hardwareType}=>`, chartDataList);
 
     return (
@@ -557,7 +573,7 @@ export const renderBarChartCore = (chartDataList, hardwareType) => {
             data={chartDataList}
             options={{
                 annotations: {
-                    style:   'line',
+                    style: 'line',
                     textStyle: {
                         //fontName: 'Righteous',
                         fontSize: 12,
