@@ -26,6 +26,16 @@ export const cmdLine = {
   border:'solid 1px',
   borderRadius: '5px',
   borderColor: 'white',
+  minWidth:200,
+  backgroundColor: 'black',
+  height:'35px',
+}
+
+export const logs = {
+  color: 'white',
+  border:'solid 1px',
+  borderRadius: '5px',
+  borderColor: 'white',
   backgroundColor: 'black',
   height:'35px',
 }
