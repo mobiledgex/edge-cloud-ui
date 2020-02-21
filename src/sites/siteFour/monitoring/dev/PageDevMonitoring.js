@@ -1542,9 +1542,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             </div>
                                                         }
 
-                                                        {/*@todo:makeChartDataAndRenderTabBody_____BarChart
+                                                        {/*
                                                         @todo:makeChartDataAndRenderTabBody_____BarChart
-                                                        @todo:makeChartDataAndRenderTabBody_____BarChart*/}
+                                                        @todo:makeChartDataAndRenderTabBody_____BarChart
+                                                        @todo:makeChartDataAndRenderTabBody_____BarChart
+                                                        */}
                                                         {/*{this.state.currentClassification === CLASSIFICATION.CLUSTER ?
                                                             <div
                                                                 className='page_monitoring_column_kyungjoon1'
