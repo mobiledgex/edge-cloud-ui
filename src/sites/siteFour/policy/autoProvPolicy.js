@@ -36,8 +36,8 @@ class SiteFourPageFlavor extends React.Component {
 
         this.actionMenu = [
             { label: 'View', onClick: this.onView },
-            { label: 'Add Cloudlet', onClick: this.onAdd },
-            { label: 'Delete Cloudlet', onClick: this.onDelete },
+            { label: 'Add Cloudlet', onClick: this.onAddCloudlet },
+            { label: 'Delete Cloudlet', onClick: this.onDeleteCloudlet },
             { label: 'Delete', onClick: this.onDelete }
         ]
     }
@@ -56,13 +56,13 @@ class SiteFourPageFlavor extends React.Component {
         })
     }
 
-    onAdd = (data) => {
+    onAddCloudlet = (data) => {
         this.data = data;
         this.action = 'Add'
         this.props.childPage(<SiteFourAutoProvPolicyReg data={this.data} action={this.action} childPage={this.props.childPage}></SiteFourAutoProvPolicyReg>)
     }
 
-    onDelete = (data) => {
+    onDeleteCloudlet = (data) => {
         this.data = data;
         this.action = 'Delete'
         this.props.childPage(<SiteFourAutoProvPolicyReg data={this.data} action={this.action} childPage={this.props.childPage}></SiteFourAutoProvPolicyReg>)

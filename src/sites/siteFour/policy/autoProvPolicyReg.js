@@ -61,30 +61,7 @@ class AutoProvPolicyReg extends React.Component {
             })
     }
 
-    removeSelectedCloudlets=()=>
-    {
-        if(this.props.data)
-        {
-            let  selectedCloudlets = this.props.data.Cloudlets
-            if(selectedCloudlets && selectedCloudlets.length>0)
-            {
-                for(let i=0;i<this.cloudletList.length>0;i++)
-                {
-                    let cloudlet = this.cloudletList[i];
-                    for (let j = 0; j < selectedCloudlets.length > 0; j++) {
-                        let selectedCloudlet = selectedCloudlets[j]
-                        if(selectedCloudlet.key.name === cloudlet.CloudletName)
-                        {
-                            this.cloudletList.splice(i, 1)
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    removeUnSelectedCloudlets=()=>
+    filterCloudlets=()=>
     {
         let newCloudletList = []
         if(this.props.data)
@@ -92,21 +69,28 @@ class AutoProvPolicyReg extends React.Component {
             let  selectedCloudlets = this.props.data.Cloudlets
             if(selectedCloudlets && selectedCloudlets.length>0)
             {
-                for(let i=0;i<this.cloudletList.length>0;i++)
+                for(let i=0;i<selectedCloudlets.length;i++)
                 {
-                    let cloudlet = this.cloudletList[i];
-                    for (let j = 0; j < selectedCloudlets.length > 0; j++) {
-                        let selectedCloudlet = selectedCloudlets[j]
-                        if(selectedCloudlet.key.name === cloudlet.CloudletName)
+                    let selectedCloudlet = selectedCloudlets[i];
+                    for (let j = 0; j < this.cloudletList.length; j++) {
+                        let cloudlet = this.cloudletList[j]
+                        if(selectedCloudlet.CloudletName === cloudlet.CloudletName)
                         {
-                            newCloudletList.push(cloudlet)
+                            if(this.props.action === 'Add')
+                            {
+                                this.cloudletList.splice(j, 1)
+                            }
+                            else if(this.props.action === 'Delete')
+                            {
+                                newCloudletList.push(cloudlet)   
+                            }
                             break;
                         }
                     }
                 }
             }
         }
-        this.cloudletList = newCloudletList;
+        this.cloudletList = newCloudletList.length > 0 ? newCloudletList : this.cloudletList
     }
 
 
@@ -115,12 +99,11 @@ class AutoProvPolicyReg extends React.Component {
         
         let action = 'Add'
         if (this.props.action === 'Add') {
-            this.removeSelectedCloudlets();
         }
         else if (this.props.action === 'Delete') {
             action = 'Delete'
-            this.removeUnSelectedCloudlets();
         }
+        this.filterCloudlets();
         let step2 = [
             { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible:true, options: this.getRegionData(), value: region },
             { field: 'Organization', label: 'Organization', type: 'Select', placeholder: 'Select Organization', rules: { disabled: true }, visible:true, options: this.getOrganizationData(this.OrganizationList), value: organization },
