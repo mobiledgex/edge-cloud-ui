@@ -718,7 +718,7 @@ class SiteFour extends React.Component {
     }
 
     computeRefresh = () => {
-        this.props.handleLoadingSpinner(true);
+        //this.props.handleLoadingSpinner(true);
         this.props.handleComputeRefresh(true);
     }
     disableBtn = () => {
