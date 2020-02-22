@@ -1,7 +1,5 @@
 import React from 'react';
 
-import Picker from '../components/calendar/picker';
-
 import {Dropdown, Grid} from 'semantic-ui-react';
 
 
