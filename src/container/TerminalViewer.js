@@ -29,13 +29,14 @@ class MexTerminal extends Component {
             forms:[],
             cmd: '',
             optionView: true,
+            editable : false,
         })
-        this.editable = false;
         this.containerIds = [];
         if (props.data.Runtime && props.data.Runtime.container_ids) {
             this.containerIds = props.data.Runtime.container_ids;
         }
 
+        this.request='Run Command'
         this.requestTypes = ['Run Command', 'Show Logs']
         this.success = false;
         this.localConnection = null;
@@ -84,13 +85,11 @@ class MexTerminal extends Component {
         let method = '';
         if(data.Request === 'Run Command')
         {
-            this.editable = true;
             method = serviceMC.getEP().RUN_COMMAND;
             ExecRequest.cmd = {command:data.Command}
         }
         else if(data.Request === 'Show Logs')
         {
-            this.editable = false;
             method = serviceMC.getEP().SHOW_LOGS;
             let showLogs = data.ShowLogs
             let tail = showLogs.Tail ? parseInt(showLogs.Tail) : undefined
@@ -128,13 +127,16 @@ class MexTerminal extends Component {
         return newData;
     }
 
-    onRemoteMessage = (event) => {
+    onRemoteMessage = (event, data) => {
 
         if (!this.success) {
             this.success = true;
             this.setState({
                 statusColor:'green',
                 status: 'Connected'
+            })
+            this.setState({
+                editable:data.Request === 'Run Command' ? true : false
             })
         }
         var textDecoder = new TextDecoder("utf-8");
@@ -165,13 +167,14 @@ class MexTerminal extends Component {
             this.sendChannel = this.localConnection.createDataChannel('mex')
 
             this.sendChannel.onclose = () => {
-                //this.close();
+                this.setState({
+                    editable:false
+                })
             }
-            this.sendChannel.onopen = () => {
-
+            this.sendChannel.onopen = () => {   
             }
 
-            this.sendChannel.onmessage = e => { this.onRemoteMessage(e) }
+            this.sendChannel.onmessage = e => { this.onRemoteMessage(e, data) }
 
             this.localConnection.oniceconnectionstatechange = e => {
 
@@ -317,8 +320,8 @@ class MexTerminal extends Component {
 
     getLogOptions = ()=>(
         [
-            { field: 'Since', label: 'Since', type: 'Input', visible: true,labelStyle: style.label, style: style.cmdLine },
-            { field: 'Tail', label: 'Tail', type: 'Input', rules: {type: 'number' }, visible: true,labelStyle: style.label, style: style.cmdLine },
+            { field: 'Since', label: 'Since', type: 'Input', visible: true,labelStyle: style.label, style: style.logs },
+            { field: 'Tail', label: 'Tail', type: 'Input', rules: {type: 'number' }, visible: true,labelStyle: style.label, style: style.logs },
             { field: 'Timestamps', label: 'Timestamps', type: 'Checkbox', visible: true,labelStyle: style.label, style: {color:'green'}  },
             { field: 'Follow', label: 'Follow', type: 'Checkbox', visible: true,labelStyle: style.label, style: {color:'green'} }
         ]
@@ -326,16 +329,17 @@ class MexTerminal extends Component {
 
     getForms = () => (
         [
-            { field: 'Request', label: 'Request', type: 'Select', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions(this.requestTypes), value: this.requestTypes[0] },
+            { field: 'Request', label: 'Request', type: 'Select', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions(this.requestTypes), value: this.request },
             { field: 'Container', label: 'Container', type: 'Select', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions(this.containerIds), value: this.containerIds[0] },
-            { field: 'Command', label: 'Command', type: 'Input', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine },
-            { uuid:'ShowLogs', field: 'LogOptions', type:'MultiForm', visible: false, forms:this.getLogOptions(),width:4 },
+            { field: 'Command', label: 'Command', type: 'Input', rules: { required: true }, visible: this.request==='Run Command' ? true:false, labelStyle: style.label, style: style.cmdLine },
+            { uuid:'ShowLogs', field: 'LogOptions', type:'MultiForm', visible: this.request==='Show Logs' ? true:false, forms:this.getLogOptions(),width:4 },
             { label: 'Connect', type: 'Button', style: style.button, onClick: this.onConnect, validate: true }
         ])
 
     onValueChange = (currentForm) => {
         let forms = this.state.forms;
         if (currentForm.field === 'Request') {
+            this.request=currentForm.value
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i];
                 if (form.field === 'Command') {
@@ -391,7 +395,7 @@ class MexTerminal extends Component {
                                 </div>
                                 :
                                 <div style={{ paddingLeft: 20, paddingTop: 30, height: '100%' }}>
-                                    <Terminal editable={this.editable} open={this.state.open} close={this.close} path={this.state.path} onEnter={this.onEnter} history={this.state.history} />
+                                    <Terminal editable={this.state.editable} open={this.state.open} close={this.close} path={this.state.path} onEnter={this.onEnter} history={this.state.history} />
                                 </div> : null
                 }
                     </div>)
