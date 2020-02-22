@@ -376,7 +376,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 }
                                 {!this.state.isLoading && this.state.timesList.length !== 0 &&
                                     <HorizontalTimelineKJ
-                                        labelWidth={200}
+                                        labelWidth={250}
                                         getLabel={(date, task, index) => {
                                             return (
                                                 <View column={true}>
