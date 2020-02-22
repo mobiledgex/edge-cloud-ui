@@ -77,7 +77,7 @@ export const defaultLayoutForCluster = [
 
 export const renderGridLayoutForCluster = (_this) => {
     return (
-        <>
+        <div style={{width: '100%', flexGrow: 1}}>
             <GridLayout
                 isDraggable={_this.state.gridDraggable}
                 autoSize={true}
@@ -97,7 +97,7 @@ export const renderGridLayoutForCluster = (_this) => {
                     let layoutUniqueId = store.email + "_layout"
                     reactLocalStorage.setObject(layoutUniqueId, layout)
                 }}
-                style={{overflowY: 'auto',}}
+                style={{flexGrow: 1}}
             >
 
 
@@ -252,7 +252,7 @@ export const renderGridLayoutForCluster = (_this) => {
 
 
             </GridLayout>
-        </>
+        </div>
 
     )
 }

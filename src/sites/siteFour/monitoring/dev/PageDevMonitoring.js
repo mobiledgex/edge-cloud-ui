@@ -353,14 +353,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         async loadInitDataForCluster(isInterval: boolean = false) {
             clearInterval(this.intervalForAppInst)
             this.setState({dropdownRequestLoading: true})
-             let clusterList = await getClusterList();
-             let cloudletList = await getCloudletList()
-             let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
-             if (appInstanceList.length === 0) {
-                 this.setState({
-                     isNoData: true,
-                 })
-             }
+            let clusterList = await getClusterList();
+            let cloudletList = await getCloudletList()
+            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
+            if (appInstanceList.length === 0) {
+                this.setState({
+                    isNoData: true,
+                })
+            }
 
             //fixme: fakeData
             //fixme: fakeData
@@ -1339,44 +1339,36 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
             return (
-                <div style={{width: '100%', height: '100%', overflowY: 'auto'}}>
+                <div style={{width: '100%', height: '100%'}}>
                     <ModalGraphForCluster selectedClusterUsageOne={this.state.selectedClusterUsageOne}
                                           selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
                                           parent={this}
                                           modalIsOpen={this.state.modalIsOpen}
                                           cluster={''} contents={''}/>
 
-                    <Grid.Row className='view_contents'>
+                    <Grid.Row className='view_contents' style={{width:window.innerWidth}}>
                         <Grid.Column className='contents_body'>
                             {/*todo:---------------------------------*/}
                             {/*todo:Content Header                   */}
                             {/*todo:---------------------------------*/}
                             <SemanticToastContainer position={"top-right"}/>
                             {this.renderHeader()}
-                            <Grid.Row className='site_content_body' style={{marginTop: 22, overflowY: 'auto'}}>
-                                <div style={{overflowY: 'auto'}}>
-                                    <Grid.Column>
-                                        <div className="table-no-resized">
-
-                                            <div className="page_monitoring"
-                                                 style={{backgroundColor: 'transparent', height: 3250}}>
-                                                {/*todo:---------------------------------*/}
-                                                {/*todo:SELECTBOX_ROW        */}
-                                                {/*todo:---------------------------------*/}
-                                                {this.renderSelectBoxRow()}
-                                                <div className='page_monitoring_dashboard_kyungjoon'
-                                                     style={{overflowY: 'auto'}}>
-                                                    {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                                                        renderGridLayoutForCluster(this)
-                                                        :
-                                                        renderGridLayoutForAppInst(this)
-                                                    }
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Grid.Column>
+                            <Grid.Row className='site_content_body' style={{marginTop: 22, width: '100%', flexGrow: 1, overflowY: 'auto',}}>
+                                <div className="page_monitoring"
+                                     style={{backgroundColor: 'transparent', height: 3500}}>
+                                    {/*todo:---------------------------------*/}
+                                    {/*todo:SELECTBOX_ROW        */}
+                                    {/*todo:---------------------------------*/}
+                                    {this.renderSelectBoxRow()}
+                                    <div className='page_monitoring_dashboard_kyungjoon'
+                                         style={{ width: '100%', flexGrow: 1}}>
+                                        {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
+                                            renderGridLayoutForCluster(this)
+                                            :
+                                            renderGridLayoutForAppInst(this)
+                                        }
+                                    </div>
                                 </div>
-
                             </Grid.Row>
                         </Grid.Column>
                     </Grid.Row>

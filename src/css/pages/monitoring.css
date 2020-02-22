@@ -120,6 +120,7 @@
     padding: 0 0px 10px 10px;
     margin-right: 20px;
     max-height: 475px;
+    flex-grow: inherit;
 }
 
 
