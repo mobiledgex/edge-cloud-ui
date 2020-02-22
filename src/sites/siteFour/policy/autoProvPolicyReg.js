@@ -7,7 +7,7 @@ import MexForms from '../../../hoc/forms/MexForms';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as serviceMC from '../../../services/serviceMC';
-import * as ServerData from '../../../services/ServerData';
+import * as serverData from '../../../services/ServerData';
 
 
 
@@ -45,10 +45,17 @@ class AutoProvPolicyReg extends React.Component {
             })
     }
 
-    getOrganizationData = (dataList) => {
+    getOrganizationData = (form, dataList) => {
         if (dataList && dataList.length > 0)
             return dataList.map(data => {
                 let organization = data.Organization;
+                if (data.isDefault) {
+                    organization = data.OrganizationName;
+                    form.value = organization;
+                    let rules = form.rules ? form.rules : {}
+                    rules.disabled = true;
+                    form.rules = rules;
+                }
                 return { key: organization, value: organization, text: organization }
             })
     }
@@ -61,30 +68,7 @@ class AutoProvPolicyReg extends React.Component {
             })
     }
 
-    removeSelectedCloudlets=()=>
-    {
-        if(this.props.data)
-        {
-            let  selectedCloudlets = this.props.data.Cloudlets
-            if(selectedCloudlets && selectedCloudlets.length>0)
-            {
-                for(let i=0;i<this.cloudletList.length>0;i++)
-                {
-                    let cloudlet = this.cloudletList[i];
-                    for (let j = 0; j < selectedCloudlets.length > 0; j++) {
-                        let selectedCloudlet = selectedCloudlets[j]
-                        if(selectedCloudlet.key.name === cloudlet.CloudletName)
-                        {
-                            this.cloudletList.splice(i, 1)
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    removeUnSelectedCloudlets=()=>
+    filterCloudlets=()=>
     {
         let newCloudletList = []
         if(this.props.data)
@@ -92,44 +76,50 @@ class AutoProvPolicyReg extends React.Component {
             let  selectedCloudlets = this.props.data.Cloudlets
             if(selectedCloudlets && selectedCloudlets.length>0)
             {
-                for(let i=0;i<this.cloudletList.length>0;i++)
+                for(let i=0;i<selectedCloudlets.length;i++)
                 {
-                    let cloudlet = this.cloudletList[i];
-                    for (let j = 0; j < selectedCloudlets.length > 0; j++) {
-                        let selectedCloudlet = selectedCloudlets[j]
-                        if(selectedCloudlet.key.name === cloudlet.CloudletName)
+                    let selectedCloudlet = selectedCloudlets[i];
+                    for (let j = 0; j < this.cloudletList.length; j++) {
+                        let cloudlet = this.cloudletList[j]
+                        if(selectedCloudlet.CloudletName === cloudlet.CloudletName)
                         {
-                            newCloudletList.push(cloudlet)
+                            if(this.props.action === 'Add')
+                            {
+                                this.cloudletList.splice(j, 1)
+                            }
+                            else if(this.props.action === 'Delete')
+                            {
+                                newCloudletList.push(cloudlet)   
+                            }
                             break;
                         }
                     }
                 }
             }
         }
-        this.cloudletList = newCloudletList;
+        this.cloudletList = newCloudletList.length > 0 ? newCloudletList : this.cloudletList
     }
 
 
     selectCloudlet = async (region, organization, autoPolicyName) => {
-        this.cloudletList = await ServerData.getCloudletInfo(this, {Region:region})
+        this.cloudletList = await serverData.getCloudletInfo(this, {region:region})
         
         let action = 'Add'
         if (this.props.action === 'Add') {
-            this.removeSelectedCloudlets();
         }
         else if (this.props.action === 'Delete') {
             action = 'Delete'
-            this.removeUnSelectedCloudlets();
         }
+        this.filterCloudlets();
         let step2 = [
-            { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible:true, options: this.getRegionData(), value: region },
-            { field: 'Organization', label: 'Organization', type: 'Select', placeholder: 'Select Organization', rules: { disabled: true }, visible:true, options: this.getOrganizationData(this.OrganizationList), value: organization },
+            { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible:true, options: [{key: region, value: region, text: region}], value: region },
+            { field: 'Organization', label: 'Organization', type: 'Select', placeholder: 'Select Organization', rules: { disabled: true }, visible:true, options: [{ key: organization, value: organization, text: organization }], value: organization },
             { field: 'AutoPolicyName', label: 'Auto Policy Name', type: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { disabled: true }, visible:true, value: autoPolicyName  },
             { field: 'Cloudlets', label: 'Clouldets', type: 'DualList', rules: { required: true }, visible:true, options: this.getCloudletData(this.cloudletList) },
             { label: `${action} Cloudlets`, type: 'Button', onClick: this.onAddCloudlets },
             { label: 'Cancel', type: 'Button', onClick: this.onAddCancel }
         ]
-
+        this.loadData(step2)
         this.setState({
             step:1,
             forms: step2
@@ -194,8 +184,8 @@ class AutoProvPolicyReg extends React.Component {
     onCreateAutoProvPolicy = () => {
         let data = this.formattedData()
         let AutoProvPolicy = {
-            deploy_client_count: parseInt(data.DeployClientCount),
-            deploy_interval_count: parseInt(data.DeployIntervalCount), 
+            deploy_client_count: data.DeployClientCount ? parseInt(data.DeployClientCount) : undefined,
+            deploy_interval_count: data.DeployIntervalCount ? parseInt(data.DeployIntervalCount) : undefined, 
             key:{ developer: data.Organization, name: data.AutoPolicyName }
         }
 
@@ -294,7 +284,26 @@ class AutoProvPolicyReg extends React.Component {
     }
 
     
+    loadData(forms, data) {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i];
+            if (form.field) {
+                if (form.type === 'Select') {
+                    switch (form.field) {
+                        case 'Organization':
+                            form.options = this.getOrganizationData(form, this.OrganizationList)
+                            break;
+                        case 'Region':
+                            form.options = this.getRegionData();
+                            break;
+                        default:
+                            form.options = undefined;
+                    }
+                }
+            }
+        }
 
+    }
     getFormData = async(data)=>
     {
         if(data)
@@ -303,17 +312,17 @@ class AutoProvPolicyReg extends React.Component {
             this.selectCloudlet(data.Region, data.OrganizationName, data.AutoPolicyName)
         }
         else {
-            this.OrganizationList = await ServerData.getOrganizationInfo(this)
+            this.OrganizationList = await serverData.getOrganizationInfo(this)
             let step1 = [
-                { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { required: true }, visible:true, options: this.getRegionData() },
-                { field: 'Organization', label: 'Organization', type: 'Select', placeholder: 'Select Organization', rules: { required: true }, visible:true, options: this.getOrganizationData(this.OrganizationList) },
+                { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { required: true }, visible:true},
+                { field: 'Organization', label: 'Organization', type: 'Select', placeholder: 'Select Organization', rules: { required: true }, visible:true},
                 { field: 'AutoPolicyName', label: 'Auto Policy Name', type: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { required: true }, visible:true },
                 { field: 'DeployClientCount', label: 'Deploy Client Count', type: 'Input', rules: { type: 'number' }, visible:true },
                 { field: 'DeployIntervalCount', label: 'Deploy Interval Count (s)', type: 'Input', rules: { type: 'number' }, visible:true },
                 { label: 'Create Policy', type: 'Button', onClick: this.onCreateAutoProvPolicy, validate:true },
                 { label: 'Cancel', type: 'Button', onClick: this.onAddCancel }
             ]
-
+            this.loadData(step1)
             this.setState({
                 forms: step1
             })
