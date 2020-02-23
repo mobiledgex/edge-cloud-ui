@@ -1111,10 +1111,6 @@ export const convertHwTypePhrases = (pHardwareType) => {
 
 
 export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: string, _this) => {
-
-    console.log('usageList3333====>', pUsageList);
-
-
     pUsageList = sortUsageListByTypeForCluster(pUsageList, hardwareType)
 
     if (pUsageList.length === 0) {
