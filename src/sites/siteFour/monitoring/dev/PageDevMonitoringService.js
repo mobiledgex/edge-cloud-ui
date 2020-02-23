@@ -111,9 +111,9 @@ export const renderGridLayoutForCluster = (_this) => {
                 <div className='page_monitoring_column_kyungjoon1' key="c">
                     {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.CPU)}
                 </div>
-                {/*todo: gridList(d)*/}
-                {/*todo: gridList(d)*/}
-                {/*todo: gridList(d)*/}
+                {/*todo: CLUSTER gridList(d)*/}
+                {/*todo: CLUSTER gridList(d)*/}
+                {/*todo: CLUSTER gridList(d)*/}
                 <div
 
                     className='page_monitoring_column_kyungjoon1'
@@ -721,7 +721,20 @@ export const renderBottomGridAreaForCluster = (_this: PageDevMonitoring, pCluste
                 {!_this.state.isRequesting && pClusterList.map((item: TypeClusterUsageList, index) => {
 
                     return (
-                        <Table.Row className='page_monitoring_popup_table_row'>
+                        <Table.Row className='page_monitoring_popup_table_row'
+
+                            onClick={()=>{
+                                try {
+                                    let cluster_cloudlet=item.cluster.toString() + ' | ' + item.cloudlet.toString()
+                                    let lineChartDataSet = makeLineChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this)
+                                    cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
+                                    handleLegendAndBubbleClickedEvent(_this, cluster_cloudlet, lineChartDataSet)
+
+                                } catch (e) {
+
+                                }
+                            }}
+                        >
                             <Table.Cell>
                                 {item.cluster}<br/>[{item.cloudlet}]
                             </Table.Cell>
