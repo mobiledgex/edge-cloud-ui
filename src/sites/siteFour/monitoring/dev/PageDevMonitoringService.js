@@ -724,7 +724,7 @@ export const renderBottomGridAreaForCluster = (_this: PageDevMonitoring, pCluste
                         <Table.Row className='page_monitoring_popup_table_row'
 
                             onClick={()=>{
-                              /*  try {
+                                try {
                                     let cluster_cloudlet=item.cluster.toString() + ' | ' + item.cloudlet.toString()
                                     let lineChartDataSet = makeLineChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this)
                                     cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
@@ -732,7 +732,7 @@ export const renderBottomGridAreaForCluster = (_this: PageDevMonitoring, pCluste
 
                                 } catch (e) {
 
-                                }*/
+                                }
                             }}
                         >
                             <Table.Cell>
@@ -1001,7 +1001,7 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
  * @param hardwareType
  * @returns {*}
  */
-export const makeLineChartDataForAppInst_2222222 = (hardwareUsageList: Array, hardwareType: string, _this: PageDevMonitoring) => {
+export const make__LineChartDataForAppInst = (hardwareUsageList: Array, hardwareType: string, _this: PageDevMonitoring) => {
 
     if (hardwareUsageList.length === 0) {
         return (
@@ -1113,6 +1113,9 @@ export const convertHwTypePhrases = (pHardwareType) => {
 export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: string, _this) => {
 
     console.log('usageList3333====>', pUsageList);
+
+
+    pUsageList = sortUsageListByTypeForCluster(pUsageList, hardwareType)
 
     if (pUsageList.length === 0) {
         return "";

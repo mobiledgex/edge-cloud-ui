@@ -18,7 +18,7 @@ import {
     handleHardwareTabChanges,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
-    makeLineChartDataForAppInst_2222222,
+    make__LineChartDataForAppInst,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
     makeSelectBoxListWithThreeValuePipe,
@@ -523,7 +523,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
             } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
                 console.log('filteredAppInstUsageList===>', this.state.filteredAppInstUsageList)
-                lineChartDataSet = makeLineChartDataForAppInst_2222222(this.state.filteredAppInstUsageList, hwType, this)
+                lineChartDataSet = make__LineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
                 console.log('filteredAppInstUsageList===222222>', lineChartDataSet)
             }
 
