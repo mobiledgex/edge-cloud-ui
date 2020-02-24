@@ -14,7 +14,7 @@ import {
     convertHwTypePhrases,
     defaultLayoutForAppInst,
     defaultLayoutForCluster,
-    defaultLayoutForCluster_HW,
+    defaultHwMapperList,
     filterUsageByClassification,
     getUserId,
     handleHardwareTabChanges,
@@ -56,13 +56,7 @@ import {
     renderPlaceHolderCircular,
     showToast
 } from "../PageMonitoringCommonService";
-import {
-    getAppInstList,
-    getAppLevelUsageList,
-    getCloudletList,
-    getClusterLevelUsageList,
-    getClusterList
-} from "../PageMonitoringMetricService";
+import {getAppLevelUsageList} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraphForCluster from "./ModalGraphForCluster";
@@ -205,8 +199,8 @@ type State = {
     selectedClusterUsageOneIndex: number,
     gridDraggable: boolean,
     diskGridItemOneStyleTranslate: string,
-    layoutTypeForClusterHW: [],
-    checkedList: [],
+    gridLayoutMapperToHw: {},
+    hwList: [],
 
 }
 
@@ -225,13 +219,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let savedlayoutKeyForAppInst = store.email + "_layout2"
 
 
-            let hwList = Object.values(defaultLayoutForCluster_HW);
+            let hwList = Object.values(defaultHwMapperList);
 
             console.log("hwList===2222>", hwList);
 
             this.state = {
                 layoutForCluster: isEmpty(reactLocalStorage.get(savedlayoutKeyForCluster)) ? defaultLayoutForCluster : reactLocalStorage.getObject(savedlayoutKeyForCluster),
-                layoutTypeForClusterHW: defaultLayoutForCluster_HW,
+                gridLayoutMapperToHw: defaultHwMapperList,
                 layoutForAppInst: isEmpty(reactLocalStorage.get(savedlayoutKeyForAppInst)) ? defaultLayoutForAppInst : reactLocalStorage.getObject(savedlayoutKeyForAppInst),
                 date: '',
                 time: '',
@@ -335,7 +329,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 diskGridItemOneStyleTranslate: {
                     transform: 'translate(10px, 1540px)',
                 },
-                checkedList: [HARDWARE_TYPE.CPU, HARDWARE_TYPE.MEM, HARDWARE_TYPE.DISK, HARDWARE_TYPE.RECVBYTES, HARDWARE_TYPE.SENDBYTES, HARDWARE_TYPE.TCPRETRANS, HARDWARE_TYPE.TCPCONNS, HARDWARE_TYPE.UDPSENT, HARDWARE_TYPE.UDPRECV],
+                hwList: [HARDWARE_TYPE.CPU, HARDWARE_TYPE.MEM, HARDWARE_TYPE.DISK, HARDWARE_TYPE.RECVBYTES, HARDWARE_TYPE.SENDBYTES, HARDWARE_TYPE.TCPRETRANS, HARDWARE_TYPE.TCPCONNS, HARDWARE_TYPE.UDPSENT, HARDWARE_TYPE.UDPRECV],
             };
         }
 
@@ -369,20 +363,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         async loadInitDataForCluster(isInterval: boolean = false) {
             clearInterval(this.intervalForAppInst)
             this.setState({dropdownRequestLoading: true})
-            let clusterList = await getClusterList();
+            /*let clusterList = await getClusterList();
             let cloudletList = await getCloudletList()
             let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
             if (appInstanceList.length === 0) {
                 this.setState({
                     isNoData: true,
                 })
-            }
+            }*/
 
             //fixme: fakeData
             //fixme: fakeData
-            /*let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+            let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
             let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')*/
+            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
             console.log('appInstanceList====>', appInstanceList);
 
             console.log('clusterList===>', clusterList);
@@ -417,14 +411,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             }
             let allClusterUsageList = []
-            try {
+            /*try {
                 allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
             } catch (e) {
 
-            }
+            }*/
             //fixme: fakeData
             //fixme: fakeData
-            //allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+            allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
             console.log('filteredAppInstanceList===>', appInstanceList)
 
             let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
@@ -1008,7 +1002,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                             />
                         </div>
-                        <div className="page_monitoring_dropdown_label">
+                        <div className="page_monitoring_dropdown_label" style={{marginLeft: 10,}}>
                             Add Line Chart Item
                         </div>
                         <div style={{marginBottom: 0,}}>
@@ -1022,7 +1016,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     showToast('added ' + value + " item!!")
                                 }}
                             >
-                                {this.state.checkedList.map(item => {
+                                {this.state.hwList.map(item => {
                                     return (
                                         <Option value={item}>{item}</Option>
                                     )
@@ -1030,15 +1024,28 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </Select>
 
                         </div>
-                        {/* <div style={{color: 'white', marginLeft: 10, marginRight: 10,}}>
-                            <button onClick={async () => {
-                                reactLocalStorage.remove(getUserId() + "_layout")
+                        <div className="page_monitoring_dropdown_label" style={{marginLeft: 25,}}>
+                            Add Bar Chart Item
+                        </div>
+                        <div style={{marginBottom: 0,}}>
+                            <Select
+                                placeholder="Select Item"
+                                //defaultValue=''
+                                style={{width: 190, marginBottom: 10, marginLeft: 5}}
+                                onChange={async (value) => {
+                                    //alert(value)
+                                    await this.addGridItem(value)
+                                    showToast('added ' + value + " item!!")
+                                }}
+                            >
+                                {this.state.hwList.map(item => {
+                                    return (
+                                        <Option value={item}>{item}</Option>
+                                    )
+                                })}
+                            </Select>
 
-                            }} style={{color: 'blue'}}>delete lo
-                            </button>
-                        </div>*/}
-
-
+                        </div>
                     </div>
 
                 </div>
@@ -1356,7 +1363,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return result;
         }
 
-        async addGridItem(hwType) {
+        async addGridItem(hwType, graphType = 'line') {
             console.log("items===>", this.state.layoutForCluster)
             let currentItems = this.state.layoutForCluster;
             let maxY = -1;
@@ -1365,37 +1372,49 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
 
             let uniqueId = this.makeid(5)
-            let addedLayoutForClusterHw = this.state.layoutTypeForClusterHW
-            addedLayoutForClusterHw[uniqueId] = hwType
+            let gridLayoutMapperToHw = this.state.gridLayoutMapperToHw
 
+            console.log("addedGridLayoutMapToHwList===>", gridLayoutMapperToHw);
+
+            gridLayoutMapperToHw[uniqueId] = hwType
 
             await this.setState({
                 layoutForCluster: this.state.layoutForCluster.concat({
                     i: uniqueId,
                     x: 0,
                     y: maxY + 1,
-                    /*x: (this.state.layoutForCluster.length * 2) % (this.state.layoutForCluster.length),
-                    y: Infinity,*/
                     w: 1,
                     h: 1,
                 }),
-                layoutTypeForClusterHW: addedLayoutForClusterHw,
+                gridLayoutMapperToHw: gridLayoutMapperToHw,
             });
 
-            console.log("layoutTypeForClusterHW===>", this.state.layoutTypeForClusterHW)
+            console.log("gridLayoutMapperToHw===>", this.state.gridLayoutMapperToHw)
 
-            reactLocalStorage.setObject('l007', this.state.layoutForCluster)
+            reactLocalStorage.setObject(getUserId() + "_layout", this.state.layoutForCluster)
         }
 
         removeGridItem(i) {
             console.log("removing", i);
 
             let removedLayout = _.reject(this.state.layoutForCluster, {i: i});
-            reactLocalStorage.setObject('l007', removedLayout)
+            reactLocalStorage.setObject(getUserId() + "_layout", removedLayout)
+
             this.setState({
                 layoutForCluster: removedLayout,
             });
         }
+
+        handleLayoutChangeForCluster = (layout) => {
+            this.setState({
+                layoutForCluster: layout,
+            }, () => {
+                console.log("layoutForCluster===>", this.state.layoutForCluster);
+            })
+
+            reactLocalStorage.setObject(getUserId() + "_layout", layout)
+        }
+
 
         renderGridLayoutForCluster() {
             return (
@@ -1404,28 +1423,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     cols={{lg: 3, md: 3, sm: 3, xs: 3, xxs: 3}}
                     layout={this.state.layoutForCluster}
                     rowHeight={470}
-                    onLayoutChange={(layout) => {
-                        this.setState({
-                            layoutForCluster: layout,
-                        }, () => {
-                            console.log("layoutForCluster===>", this.state.layoutForCluster);
-                        })
-
-                        reactLocalStorage.setObject(getUserId() + "_layout", layout)
-
-
-                    }}
+                    onLayoutChange={this.handleLayoutChangeForCluster}
                     style={{backgroundColor: 'black'}}
                 >
                     {this.state.layoutForCluster.map((item, loopIndex) => {
 
                         const index = item.i;
-                        console.log("defaultLayoutForCluster_HW===>", defaultLayoutForCluster_HW);
-
+                        console.log("index===>", index);
+                        console.log("defaultHwMapperList===>", defaultHwMapperList[index]);
                         return (
                             <div key={index} data-grid={item} style={{margin: 5, backgroundColor: 'black'}}>
                                 <div className='page_monitoring_column_kyungjoon1' style={{height: 450}}>
-                                    {this.makeChartDataAndRenderTabBody_LineChart(defaultLayoutForCluster_HW[index])}
+                                    {this.makeChartDataAndRenderTabBody_LineChart(defaultHwMapperList[index])}
                                 </div>
                                 <div className="remove"
                                      onClick={() => {

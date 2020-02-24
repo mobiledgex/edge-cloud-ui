@@ -114,13 +114,12 @@ export const HARDWARE_TYPE_FOR_GRID = {
 }
 
 
-export const defaultLayoutForCluster_HW = {
+export const defaultHwMapperList = {
     '1': HARDWARE_TYPE_FOR_GRID.CPU,
     '2': HARDWARE_TYPE_FOR_GRID.MEM,
     '3': HARDWARE_TYPE_FOR_GRID.DISK,
     '4': HARDWARE_TYPE_FOR_GRID.RECVBYTES,
     '5': HARDWARE_TYPE_FOR_GRID.SENDBYTES,
-
 }
 
 
