@@ -9,13 +9,15 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {Button as MButton, CircularProgress} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
-import {DatePicker, Button as AButton} from 'antd';
+import {Checkbox, DatePicker, Select} from 'antd';
 import {
     convertHwTypePhrases,
     defaultLayoutForAppInst,
-    defaultLayoutForCluster, defaultLayoutForCluster_HW,
-    filterUsageByClassification, getUserId,
-    handleHardwareTabChanges, HARDWARE_TYPE_FOR_GRID,
+    defaultLayoutForCluster,
+    defaultLayoutForCluster_HW,
+    filterUsageByClassification,
+    getUserId,
+    handleHardwareTabChanges,
     make__LineChartDataForAppInst,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
@@ -54,16 +56,20 @@ import {
     renderPlaceHolderCircular,
     showToast
 } from "../PageMonitoringCommonService";
-import {getAppLevelUsageList} from "../PageMonitoringMetricService";
+import {
+    getAppInstList,
+    getAppLevelUsageList,
+    getCloudletList,
+    getClusterLevelUsageList,
+    getClusterList
+} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraphForCluster from "./ModalGraphForCluster";
 import {reactLocalStorage} from "reactjs-localstorage";
 import LeafletMapWrapperForDev from "./LeafletMapWrapperForDev";
-import {WidthProvider, Responsive} from "react-grid-layout";
+import {Responsive, WidthProvider} from "react-grid-layout";
 import _ from "lodash";
-
-import {Checkbox, Select} from 'antd';
 
 const {Option} = Select;
 
@@ -363,20 +369,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         async loadInitDataForCluster(isInterval: boolean = false) {
             clearInterval(this.intervalForAppInst)
             this.setState({dropdownRequestLoading: true})
-            /* let clusterList = await getClusterList();
-             let cloudletList = await getCloudletList()
-             let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
-             if (appInstanceList.length === 0) {
-                 this.setState({
-                     isNoData: true,
-                 })
-             }*/
+            let clusterList = await getClusterList();
+            let cloudletList = await getCloudletList()
+            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
+            if (appInstanceList.length === 0) {
+                this.setState({
+                    isNoData: true,
+                })
+            }
 
             //fixme: fakeData
             //fixme: fakeData
-            let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+            /*let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
             let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
+            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')*/
             console.log('appInstanceList====>', appInstanceList);
 
             console.log('clusterList===>', clusterList);
@@ -411,14 +417,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             }
             let allClusterUsageList = []
-            /*  try {
-                  allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
-              } catch (e) {
+            try {
+                allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
+            } catch (e) {
 
-              }*/
+            }
             //fixme: fakeData
             //fixme: fakeData
-            allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+            //allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
             console.log('filteredAppInstanceList===>', appInstanceList)
 
             let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
@@ -1009,7 +1015,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <Select
                                 placeholder="Select Item"
                                 //defaultValue=''
-                                style={{width: 190, marginBottom:10,marginLeft:5}}
+                                style={{width: 190, marginBottom: 10, marginLeft: 5}}
                                 onChange={async (value) => {
                                     //alert(value)
                                     await this.addGridItem(value)
@@ -1366,9 +1372,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 layoutForCluster: this.state.layoutForCluster.concat({
                     i: uniqueId,
-                    //x: (this.state.items.length * 2) % (this.state.cols || 12),
                     x: 0,
-                    y: maxY + 1, //
+                    y: maxY + 1,
+                    /*x: (this.state.layoutForCluster.length * 2) % (this.state.layoutForCluster.length),
+                    y: Infinity,*/
                     w: 1,
                     h: 1,
                 }),

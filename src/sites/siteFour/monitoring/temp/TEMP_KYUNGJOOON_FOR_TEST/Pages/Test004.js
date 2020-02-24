@@ -95,14 +95,13 @@ export default hot(
             console.log("items===>", this.state.items)
             let currentItems = this.state.items;
             let maxY = _.maxBy(currentItems, 'y').y;
-
             await this.setState({
                 // Add a new item. It must have a unique key!
                 items: this.state.items.concat({
                     i: this.makeid(5),
                     //x: (this.state.items.length * 2) % (this.state.cols || 12),
                     x: 0,
-                    y: maxY + 1, //
+                    y: Infinity, //
                     w: 1,
                     h: 1
                 }),
