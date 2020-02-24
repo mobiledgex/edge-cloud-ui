@@ -164,14 +164,13 @@ const MultiStream = (props) => {
         props.multiStepsArray.length > 0 ?
             <div>
                 {
-                    <Dialog open={props.multiStepsArray.length > 0}>
+                    <Dialog open={props.multiStepsArray.length > 0} maxWidth='lg' fullWidth={true}>
                         <div style={{ backgroundColor: '#24252b' }} align="right">
                             <IconButton aria-label="delete" className={classes.close_btn} onClick={(e) => props.onClose()}>
                                 <CloseIcon />
                             </IconButton>
                         </div>
-                        <DialogContent style={{ background: '#24252b', width: 600, maxHeight: 600 }}>
-
+                        <DialogContent style={{ background: '#24252b', maxHeight: 600 }}>
                             <Grid container spacing={2} style={{ paddingLeft: 10,paddingRight: 10 }}>
                                 <Grid item xs={3}>
                                     <h4 style={{ padding: '13px 0', color: '#88dd00' }}><strong>Cloudlet</strong></h4>

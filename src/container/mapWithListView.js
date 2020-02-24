@@ -293,8 +293,9 @@ class MapWithListView extends React.Component {
     requestResponse = (mcRequest) => {
         let request = mcRequest.request;
         let responseData = null;
-        if (this.state.stepsArray && this.state.stepsArray.length > 0) {
-            this.state.stepsArray.map((item, i) => {
+        let stepsArray =this.state.stepsArray;
+        if (stepsArray && stepsArray.length > 0) {
+            stepsArray.map((item, i) => {
                 if (request.uuid === item.uuid) {
                     if (mcRequest.response) {
                         responseData = item;
@@ -309,7 +310,7 @@ class MapWithListView extends React.Component {
                         }
 
                         if (this.state.uuid === 0) {
-                            this.state.stepsArray.splice(i, 1);
+                            stepsArray.splice(i, 1);
                         }
                     }
                 }
@@ -320,22 +321,21 @@ class MapWithListView extends React.Component {
             let response = mcRequest.response.data
             let step = { code: response.code, message: response.data.message }
             if (responseData === null) {
-                this.setState(prevState => ({
-                    stepsArray: [...prevState.stepsArray, { uuid: request.uuid, steps: [step] }]
-                }))
+                stepsArray.push({ uuid: request.uuid, steps: [step] })
             }
             else {
-                let stepsArray = this.state.stepsArray;
                 stepsArray.map((item, i) => {
                     if (request.uuid === item.uuid) {
                         item.steps.push(step)
                     }
                 })
-                this.setState({
-                    stepsArray: stepsArray
-                })
+               
             }
         }
+
+        this.setState({
+            stepsArray: stepsArray
+        })
     }
 
     closeStepper = () => {

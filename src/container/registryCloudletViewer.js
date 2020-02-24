@@ -248,6 +248,13 @@ class RegistryCloudletViewer extends React.Component {
 
     }
 
+    stepperClose = () => {
+        this.setState({
+            stepsArray:[]
+        })
+        this.props.gotoUrl();
+    }
+
     render() {
         const { open, dimmer, dummyData } = this.state;
         const { hiddenKeys } = this.props;
@@ -267,7 +274,7 @@ class RegistryCloudletViewer extends React.Component {
                 <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
                 <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
                 <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>
-                <MexMultiStepper multiStepsArray={this.state.stepsArray}/>
+                <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose}/>
             </div>
 
         );
