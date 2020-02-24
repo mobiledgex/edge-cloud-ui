@@ -2,7 +2,8 @@ import React from 'react'
 import MexSelect from './MexSelect';
 import MexInput from './MexInput';
 import MexDualList from './MexDualList';
-import MexCheckbox  from './MexCheckbox';
+import MexCheckbox from './MexCheckbox';
+import MexButton from './MexButton';
 import { Form, Grid, Divider } from 'semantic-ui-react';
 import { IconButton } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
@@ -16,18 +17,15 @@ export const CHECKBOX = 'Checkbox'
 export const ICON_BUTTON = 'IconButton'
 
 
-const getIcon = (id)=>
-{
-    switch(id)
-    {
+const getIcon = (id) => {
+    switch (id) {
         case 'delete':
-            return <DeleteOutlineOutlinedIcon/>
+            return <DeleteOutlineOutlinedIcon />
 
     }
 }
 
-const isDisabled = (form)=>
-{
+const isDisabled = (form) => {
     let disabled = false;
     if (form.rules) {
         let rules = form.rules;
@@ -81,55 +79,51 @@ const MexForms = (props) => {
                 }
             }
         }
-        if (valid) {
+        if (valid && form.onClick) {
             form.onClick();
         }
-        else
-        {
+        else if (props.reloadForms) {
             props.reloadForms()
         }
     }
 
     const onValueSelect = (form, value, parentForm) => {
         form.value = value;
-        if(props.onValueChange)
-        {
+        if (props.onValueChange) {
             props.onValueChange(form, parentForm)
         }
-        
+
     }
-    
-    const loadHeader = (index, form)=>
-    {
+
+    const loadHeader = (index, form) => {
         form.id = { id: index }
         let subForm = form.forms
         return (
             <div key={index} style={{ width: '100%' }}>
                 <h2 style={{ color: "white", display: 'inline' }}>{form.label}
                     {
-                        subForm ? subForm.type === 'Button' ? 
+                        subForm ? subForm.type === 'Button' ?
                             <IconButton style={{ color: "white", display: 'inline' }} onClick={subForm.onClick}>
                                 <AddIcon />
-                            </IconButton> : 
-                            null : 
-                        null
+                            </IconButton> :
+                            null :
+                            null
                     }
                 </h2>
                 <Divider />
             </div>
         )
     }
-    
-    const loadHorizontalForms = (parentId, forms)=>
-    {
+
+    const loadHorizontalForms = (parentId, forms) => {
 
         let parentForm = props.forms[parentId];
         return forms.map((form, i) => {
-            let key = parentForm.uuid+''+i
+            let key = parentForm.uuid + '' + i
             let required = false;
             let disabled = false;
             form.id = { id: i }
-            form.parent = { id: parentId, form : parentForm }
+            form.parent = { id: parentId, form: parentForm }
             if (form.rules) {
                 let rules = form.rules;
                 required = rules.required ? rules.required : false;
@@ -137,24 +131,25 @@ const MexForms = (props) => {
             }
             return (
                 form.visible ?
-                    <Grid.Column width={3} key={key}>
-                        {form.label}{required ? ' *' : ''}
+                    <Grid.Column width={parentForm.width} key={key}>
+                        <label style={form.labelStyle}>{form.label}{required ? ' *' : ''}</label>
                         {
                             form.type === INPUT ?
                                 <MexInput parentForm={parentForm} form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
                                 form.type === SELECT ?
                                     <MexSelect parentForm={parentForm} form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                                form.type === CHECKBOX ?   
+                                    <MexCheckbox horizontal={true} form={form} onChange={onValueSelect} /> : 
                                 form.type === ICON_BUTTON ?
-                                    <IconButton onClick={()=>{form.onClick(form)}} style={{color:form.color, top:15}}>{getIcon(form.icon)}</IconButton>:
+                                    <IconButton onClick={() => { form.onClick(form) }} style={{ color: form.color, top: 15 }}>{getIcon(form.icon)}</IconButton> :
                                     null
                         }
                     </Grid.Column> : null
             )
         })
     }
-    
-    const loadForms = (index, form)=>
-    {
+
+    const loadForms = (index, form) => {
         form.id = { id: index }
         let required = false;
         let disabled = false;
@@ -167,7 +162,7 @@ const MexForms = (props) => {
             form.field ?
                 <Grid.Row columns={3} key={index}>
                     <Grid.Column width={4} className='detail_item'>
-                        <div>{form.label}{required ? ' *' : ''}</div>
+                        <div style={form.labelStyle}>{form.label}{required ? ' *' : ''}</div>
                     </Grid.Column>
                     <Grid.Column width={11}>
                         {
@@ -177,20 +172,19 @@ const MexForms = (props) => {
                                     <MexDualList form={form} onChange={onValueSelect} /> :
                                     form.type === INPUT ?
                                         <MexInput form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
-                                    form.type === CHECKBOX ?
-                                        <MexCheckbox form={form} onChange={onValueSelect}/>:
-                                        null
+                                        form.type === CHECKBOX ?
+                                            <MexCheckbox form={form} onChange={onValueSelect} /> :
+                                            null
                         }
                     </Grid.Column>
                 </Grid.Row> : null
         )
     }
-    
-    const loadMultiForm=(index, form)=>
-    {
+
+    const loadMultiForm = (index, form) => {
         return (
             <Grid.Row columns={2} key={index} id={form.field}>
-                {loadHorizontalForms(index, form.forms) }
+                {loadHorizontalForms(index, form.forms)}
             </Grid.Row>
         )
     }
@@ -206,9 +200,9 @@ const MexForms = (props) => {
                                 form.visible ?
                                     form.type === HEADER ?
                                         loadHeader(i, form) :
-                                    form.type === 'MultiForm' ? 
-                                        form.forms ? loadMultiForm(i, form): null :
-                                        loadForms(i, form) :
+                                        form.type === 'MultiForm' ?
+                                            form.forms ? loadMultiForm(i, form) : null :
+                                            loadForms(i, form) :
                                     null
                             )
                         })}
@@ -218,12 +212,11 @@ const MexForms = (props) => {
                     <Form.Group inline>
                         {forms.map((form, i) => {
                             return (form.type === 'Button' ?
-                                <Form.Button
+                                <MexButton
+                                    form={form}
                                     key={i}
-                                    positive
-                                    content={form.label}
-                                    onClick={(e) => { onSubmit(form) }}
-                                /> : null)
+                                    onClick={onSubmit} />
+                                : null)
                         })}
 
                     </Form.Group>

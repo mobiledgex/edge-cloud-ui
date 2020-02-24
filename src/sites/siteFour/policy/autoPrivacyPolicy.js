@@ -8,7 +8,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 
-import * as serviceMC from '../../../services/serviceMC';
+import * as serverData from '../../../services/ServerData';
 import {layouts} from '../../../services/formatter/formatPrivacyPolicy';
 import PrivacyPolicyReg from './autoPrivacyPolicyReg'
 
@@ -64,7 +64,7 @@ class SiteFourPageFlavor extends React.Component {
             Region: data.Region,
             privacypolicy: privacypolicy
         }
-        let mcRequest = await serviceMC.sendSyncRequest(this, { token: this.getToken(), method: serviceMC.getEP().DELETE_PRIVACY_POLICY, data: requestData })
+        let mcRequest = await serverData.deletePrivacyPolicy(this, requestData )
         if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
             this.props.handleAlertInfo('success', `Privacy Policy ${data.PrivacyPolicyName} deleted successfully`)
         }
@@ -113,31 +113,6 @@ class SiteFourPageFlavor extends React.Component {
         }
     }
 
-    receiveResult = (mcRequest) => {
-        this.requestCount -= 1;
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let response = mcRequest.response;
-                if (response.data && response.data.length > 0) {
-                    this.multiRequestData = [...this.multiRequestData, ...response.data]
-                }
-            }
-        }
-
-        if (this.requestCount === 0) {
-            if (this.multiRequestData.length > 0) {
-                let sortedData = _.orderBy(this.multiRequestData, ['Region', 'PrivacyPolicyName'])
-                this.setState({
-                    devData: sortedData
-                })
-                this.multiRequestData = [];
-            } else {
-                this.props.handleComputeRefresh(false);
-                this.props.handleAlertInfo('error', 'Requested data is empty')
-            }
-        }
-    }
-
     onDetailViewClose = ()=>
     {
 
@@ -152,12 +127,11 @@ class SiteFourPageFlavor extends React.Component {
         })
     }
 
-    getDataDeveloper = (region, regionArr) => {
+    getDataDeveloper = async (region, regionArr) => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let rgn = [];
         this.setState({ devData: [] })
-        this.multiRequestData = [];
-        this.requestCount = 0;
+        let multiRequestData = [];
         if (region !== 'All') {
             rgn = [region]
         } else {
@@ -165,11 +139,21 @@ class SiteFourPageFlavor extends React.Component {
         }
 
         if (rgn && rgn.length > 0) {
-            this.requestCount = rgn.length;
-            rgn.map((item) => {
-                let requestData = { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_PRIVACY_POLICY, data: { region: item } };
-                serviceMC.sendRequest(this, requestData, this.receiveResult)
-            })
+            for (let i = 0; i < rgn.length; i++) {
+                let dataList = await serverData.getPrivacyPolicy(this, { region: rgn[i] })
+                if (dataList && dataList.length > 0) {
+                    multiRequestData = [...multiRequestData, ...dataList]
+                }
+            }
+            if (multiRequestData.length > 0) {
+                let sortedData = _.orderBy(multiRequestData, ['Region', 'PrivacyPolicyName'])
+                this.setState({
+                    devData: sortedData
+                })
+            } else {
+                this.props.handleComputeRefresh(false);
+                this.props.handleAlertInfo('error', 'Requested data is empty')
+            }
         }
     }
     

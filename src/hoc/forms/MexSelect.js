@@ -16,15 +16,31 @@ const MexSelect = (props) => {
         setSelected(value)
         props.onChange(form, value, props.parentForm)
     }
+
     
+    const getBasicForm = () => (
+        <select style={form.style}
+            onChange={(e) => { onSelected(e.target.value) }}
+            value={selected}
+            required={props.required}
+            disabled={props.disabled}>
+            {
+                form.options.map((options, i) => {
+                    return <option key={i}>{options.text}</option>
+                })
+            }
+        </select>
+    )
     const getForm = () => (
+        form.style ? 
+        getBasicForm() :
         <Form.Select
             icon={form.error ? <Icon color='red' name='times circle outline' style={{marginRight:10, position:'absolute',right: '0px'}}/> : null}
             placeholder={form.placeholder ? form.placeholder : null}
             label={props.label ? props.label : null}
             required={props.required}
             disabled={props.disabled}
-            options={form.options ? form.options : defaultData}
+            options={form.options ? form.options : null}
             onChange={(e, { value }) => onSelected(value)}
             value={selected}
         />

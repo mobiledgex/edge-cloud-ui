@@ -22,6 +22,7 @@ const MexInput = (props) => {
                 required={form.required ? form.rules.required : false}
                 disabled={props.disabled}
                 value={value}
+                style={form.style}
             />
         </div >
     )

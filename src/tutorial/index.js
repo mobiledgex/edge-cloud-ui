@@ -163,15 +163,15 @@ export const organizationTutor = () => {
                     intro: '<span>Shared IP Access represents that you would be sharing a Root Load Balancer with other developers.<br />Dedicated IP Access represents that you would have a dedicated Root Load Balancer.</span>'
                 },
                 {
-                    element: '.cloudletReg7',
+                    element: '.cloudletReg8',
                     intro: 'What flavor is needed to run your application?'
                 },
                 {
-                    element: '.cloudletReg8',
+                    element: '.cloudletReg9',
                     intro: 'This represents Kubernetes Master where it is responsible for maintaining the desired state for your cluster.'
                 },
                 {
-                    element: '.cloudletReg9',
+                    element: '.cloudletReg10',
                     intro: '<span>What is the number of nodes you want in this cluster?<br />The nodes in a cluster are the machines that run your applications.</span>'
                 }
             ],
@@ -185,7 +185,7 @@ export const organizationTutor = () => {
                     intro: '<span>Click “New” button to  start creating new app.<br />Please note that Developer Managers and Developer Contributors have permission to create apps.</span>'
                 },
                 {
-                    element: '.launchButton',
+                    element: '.actionButton',
                     intro: '<span>Click “Launch” button to start deploying your app.</span>'
                 }
             ],
@@ -216,7 +216,7 @@ export const organizationTutor = () => {
                 },
                 {
                     element: '.createApp6',
-                    intro: '<div style="height: 200px; overflow-y: auto;"><span>URI of where image resides. If image has not be uploaded to MobiledgeX registry, please use following instructions.<br />If your image is docker, please upload your image with your MobiledgeX Account Credentials to our docker registry using the following docker commands.<br /><br />$ docker login -u <username> docker.mobiledgex.net<br />$ docker tag <your application> docker.mobiledgex.net/<organization name>/images/<application name>:<version><br />$ docker push docker.mobiledgex.net/<organization name>/images/<application name>:<version><br />$ docker logout docker.mobiledgex.net<br /><br />If you image is VM, please upload your image with your MobiledgeX Account Credentials to our VM registry using the following curl command.<br /><br />$ curl -u<username> -T <path_to_file> "https://artifactory.mobiledgex.net/artifactory/repo-<organization name>/<target_file_path>" --progress-bar -o</span></div>'
+                    intro: '<div style="height: 200px; overflow-y: auto;"><span>URI of where image resides. If image has not be uploaded to MobiledgeX registry, please use following instructions.<br />If your image is docker, please upload your image with your MobiledgeX Account Credentials to our docker registry using the following docker commands.<br /><br />$ docker login -u <username> docker.mobiledgex.net<br />$ docker tag <your application> docker.mobiledgex.net/<organization name>/images/<application name>:<version><br />$ docker push docker.mobiledgex.net/<organization name>/images/<application name>:<version><br />$ docker logout docker.mobiledgex.net<br /><br />If you image is VM, please upload your image with your MobiledgeX Account Credentials to our VM registry using the following curl command.<br /><br />$ curl -u<username> -T <path_to_file> "https://artifactory.mobiledgex.net/artifactory/repo-<organization name>/<target_file_path>" --progress-bar -o <upload status filename></span></div>'
                 },
                 {
                     element: '.createApp7',
@@ -227,27 +227,27 @@ export const organizationTutor = () => {
                     intro: 'Hardware resource requirement to run this app.'
                 },
                 {
-                    element: '.createApp9',
+                    element: '.createApp10',
                     intro: 'protocol:port pairs that the app listens on'
                 },
                 {
-                    element: '.createApp10',
+                    element: '.createApp12',
                     intro: 'Official FQDN the app uses to connect by default'
                 },
                 {
-                    element: '.createApp11',
+                    element: '.createApp13',
                     intro: 'Android package name of the app.'
                 },
                 {
-                    element: '.createApp12',
+                    element: '.createApp14',
                     intro: 'Option to run App on all nodes of the cluster.'
                 },
                 {
-                    element: '.createApp13',
+                    element: '.createApp15',
                     intro: 'Command that the container runs to start service.'
                 },
                 {
-                    element: '.createApp14',
+                    element: '.createApp16',
                     intro: '<span>Deployment manifest is the deployment specific manifest file/config.<br />For docker deployment, this file can be a docker-compose or docker run. For kubernetes deployment, this file can be a kubernetes yaml or helm chart file.<br />For VM deployment, this file can be a cloud config.</span>'
                 }
             ],
@@ -374,6 +374,16 @@ export const CloudletTutor = () => {
                 {
                     element: '.stepOrg2',
                     intro: 'Click “New” button to start deploying new cloudlet. Please note that Operator Managers and Operator Contributors have permission to deploy cloudlets.'
+                },
+                {
+                    element: '.progressIndicator',
+                    intro: 'Click to View Detail Progress'
+                }
+            ],
+            stepsCloudletDev: [
+                {
+                    element: '.createAppInst0',
+                    intro: 'A Cloudlet is a set of compute resources at a particular location, provided by an Operator. Use this page to deploy, manage and view cloudlets.'
                 },
                 {
                     element: '.progressIndicator',

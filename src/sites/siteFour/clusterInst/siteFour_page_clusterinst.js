@@ -50,6 +50,10 @@ class SiteFourPageClusterInst extends React.Component {
             { field: 'Actions', label: 'Actions', sortable: false, visible: true },
         ]
 
+        this.actionMenu = [
+            { label: 'Delete', icon:'delete_outline'}
+        ]
+
     }
     gotoUrl(site, subPath) {
         let mainPath = site;
@@ -220,7 +224,7 @@ render() {
     let randomValue = Math.round(Math.random() * 100);
     return (
         (viewMode === 'listView') ?
-            <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} headerInfo = {this.headerInfo} siteId={'ClusterInst'} region='US' dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort}></MapWithListView>
+            <MapWithListView actionMenu={this.actionMenu}  devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} headerInfo = {this.headerInfo} siteId={'ClusterInst'} region='US' dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort}></MapWithListView>
             :
             <PageDetailViewer className="ttt" data={this.state.detailData} page='clusterInst' />
     );
