@@ -21,7 +21,6 @@ type State = {
 
 };
 
-
 export default class ModalGraphForCluster extends React.Component<Props, State> {
 
     constructor(props: Props) {
@@ -94,10 +93,10 @@ export default class ModalGraphForCluster extends React.Component<Props, State> 
     render() {
 
         return (
-            <div style={{flex: 1, display: 'flex', width:'100%'}}>
+            <div style={{flex: 1, display: 'flex', width: '100%'}}>
                 <AModal
                     mask={false}
-                    style={{ top: 220, left: -470,}} //@fixme :modal popup container location( absoulte)
+                    style={{top: 220, left: -470,}} //@fixme :modal popup container location( absoulte)
                     //title={this.props.currentGraphAppInst + " [" + this.props.cluster + "]" + "  " + this.state.hardwareType}
                     visible={this.props.modalIsOpen}
                     onOk={() => {
@@ -118,7 +117,15 @@ export default class ModalGraphForCluster extends React.Component<Props, State> 
                     footer={null}
                 >
                     <div style={{display: 'flex', backgroundColor: 'transparent', width: '100%', height: 59}}>
-                        <div style={{flex: .85, display: 'flex', color: '#FFF',fontFamily: 'Kanit', fontSize: 28, fontWeight: 'bold', marginLeft: 3,}}>
+                        <div style={{
+                            flex: .85,
+                            display: 'flex',
+                            color: '#FFF',
+                            fontFamily: 'Kanit',
+                            fontSize: 28,
+                            fontWeight: 'bold',
+                            marginLeft: 3,
+                        }}>
                             {this.state.cluster_cloudlet}
                         </div>
                         <div

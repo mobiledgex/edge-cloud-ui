@@ -9,7 +9,7 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {Button as MButton, CircularProgress} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
-import {Checkbox, DatePicker, Select} from 'antd';
+import {Checkbox, DatePicker, Select, Button as AButton} from 'antd';
 import {
     convertHwTypePhrases,
     defaultLayoutForAppInst,
@@ -201,6 +201,7 @@ type State = {
     diskGridItemOneStyleTranslate: string,
     gridLayoutMapperToHwList: [],
     hwList: [],
+    isDraggable: boolean,
 
 }
 
@@ -218,7 +219,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let savedlayoutKeyForClusterMapper = getUserId() + "_layout_mapper"
 
             let savedlayoutKeyForAppInst = getUserId() + "_layout2"
-
 
 
             this.state = {
@@ -328,6 +328,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     transform: 'translate(10px, 1540px)',
                 },
                 hwList: [HARDWARE_TYPE.CPU, HARDWARE_TYPE.MEM, HARDWARE_TYPE.DISK, HARDWARE_TYPE.RECVBYTES, HARDWARE_TYPE.SENDBYTES, HARDWARE_TYPE.TCPRETRANS, HARDWARE_TYPE.TCPCONNS, HARDWARE_TYPE.UDPSENT, HARDWARE_TYPE.UDPRECV],
+                isDraggable: true,
             };
         }
 
@@ -878,6 +879,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }}
                         >Reset
                         </Button>
+                        <MButton
+                            style={{backgroundColor: !this.state.isDraggable ? 'green' : 'rgba(117,122,133,1)', color: 'white'}}
+                            onClick={async () => {
+                                this.setState({
+                                    isDraggable: !this.state.isDraggable,
+                                })
+                            }}
+                        >Fix Grid23232
+                        </MButton>
                         <Button
                             onClick={async () => {
                                 this.resetGridPosition();
@@ -1418,12 +1428,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         renderGridLayoutForCluster() {
             return (
                 <ResponsiveReactGridLayout
+                    isResizable={false}
+                    isDraggable={this.state.isDraggable}
+                    useCSSTransforms={true}
                     className={'layout'}
                     cols={{lg: 3, md: 3, sm: 3, xs: 3, xxs: 3}}
                     layout={this.state.layoutForCluster}
                     rowHeight={470}
                     onLayoutChange={(layout) => {
-
                         this.handleLayoutChangeForCluster(layout)
 
                     }}
@@ -1443,7 +1455,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         }
                         console.log("hwType===>", hwType);
                         return (
-                            <div key={index} data-grid={item} style={{margin: 5, backgroundColor: 'black'}}>
+                            <div key={index} data-grid={item} style={{margin: 5, backgroundColor: 'black'}}
+                                 onClick={() => {
+                                     //alert('sdlkfdslkf')
+                                 }}
+                                 onDoubleClick={() => {
+                                     /* this.setState({
+                                          isDraggable: !this.state.isDraggable
+                                      })*/
+                                 }}
+                            >
                                 <div className='page_monitoring_column_kyungjoon1' style={{height: 450}}>
                                     {graphType === 'line' ? this.makeChartDataAndRenderTabBody_LineChart(hwType) : this.makeChartDataAndRenderTabBody_BarChart(hwType)}
                                 </div>
