@@ -134,6 +134,7 @@ class SiteFour extends React.Component {
             menuW:240,
             hideLeftMenu:false,
             animate: false,
+            selectRole: ''
         };
 
         this.headerH = 70;
@@ -306,7 +307,7 @@ class SiteFour extends React.Component {
                 this.props.handleRoleInfo(response.data)
                 response.data.map((item, i) => {
                     if (item.role.indexOf('Admin') > -1) {
-                        this.setState({ adminShow: true });
+                        this.setState({ adminShow: true, selectRole: item.role });
                         localStorage.setItem('selectRole', item.role)
                     }
                 })
@@ -475,7 +476,7 @@ class SiteFour extends React.Component {
     }
     componentDidMount() {
         let store = JSON.parse(localStorage.PROJECT_INIT);
-        this.setState({ activeItem: (localStorage.selectMenu) ? localStorage.selectMenu : 'Organizations', headerTitle: (localStorage.selectMenu) ? localStorage.selectMenu : 'Organizations' })
+        this.setState({ activeItem: (localStorage.selectMenu) ? localStorage.selectMenu : 'Organizations', headerTitle: (localStorage.selectMenu) ? localStorage.selectMenu : 'Organizations'})
 
         this.disableBtn();
 
@@ -525,7 +526,7 @@ class SiteFour extends React.Component {
 
         }
 
-        if (nextProps.viewMode) {
+        if (nextProps.viewMode && localStorage.selectRole.indexOf('Developer') === -1) {
             this.setState({ viewMode: nextProps.viewMode })
         } else {
             this.setState({ viewMode: 'listView' })

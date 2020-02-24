@@ -730,8 +730,10 @@ class MapWithListView extends React.Component {
 
     showMenu = (action) => {
         let visible = true;
-        if (action.label === 'Terminal') {
+        if (action && action.label === 'Terminal') {
             visible = this.state.selected.Runtime.container_ids //|| this.state.selected.DeploymentType === 'vm'
+        } else {
+            visible = false;
         }
         return visible
     }
@@ -777,7 +779,9 @@ class MapWithListView extends React.Component {
                                                             {/* <MaterialIcon color='white' icon={action.icon}/> */}
                                                             <label>{action.label}</label> 
                                                         </MenuItem> : 
-                                                        null
+                                                        <MenuItem  key={i}>
+                                                            <label>Not avaliable</label> 
+                                                        </MenuItem>
                                                 })}
                                             </MenuList>
                                         </ClickAwayListener>
