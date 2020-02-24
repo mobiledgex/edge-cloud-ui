@@ -9,22 +9,21 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {Button as MButton, CircularProgress} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
-import {DatePicker,} from 'antd';
+import {DatePicker, Button as AButton} from 'antd';
 import {
     convertHwTypePhrases,
     defaultLayoutForAppInst,
-    defaultLayoutForCluster,
-    filterUsageByClassification,
-    handleHardwareTabChanges,
+    defaultLayoutForCluster, defaultLayoutForCluster_HW,
+    filterUsageByClassification, getUserId,
+    handleHardwareTabChanges, HARDWARE_TYPE_FOR_GRID,
+    make__LineChartDataForAppInst,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
-    make__LineChartDataForAppInst,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
     makeSelectBoxListWithThreeValuePipe,
     renderBubbleChartCoreForDev_Cluster,
     renderGridLayoutForAppInst,
-    renderGridLayoutForCluster,
     renderLineChartCoreForDev_AppInst,
     renderLineChartCoreForDev_Cluster,
 } from "./PageDevMonitoringService";
@@ -55,23 +54,25 @@ import {
     renderPlaceHolderCircular,
     showToast
 } from "../PageMonitoringCommonService";
-import {
-    getAppInstList,
-    getAppLevelUsageList,
-    getCloudletList,
-    getClusterLevelUsageList,
-    getClusterList
-} from "../PageMonitoringMetricService";
+import {getAppLevelUsageList} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraphForCluster from "./ModalGraphForCluster";
 import {reactLocalStorage} from "reactjs-localstorage";
 import LeafletMapWrapperForDev from "./LeafletMapWrapperForDev";
+import {WidthProvider, Responsive} from "react-grid-layout";
+import _ from "lodash";
 
+import {Checkbox, Select} from 'antd';
+
+const {Option} = Select;
+
+const CheckboxGroup = Checkbox.Group;
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
 const {Column, Row} = Grid;
 const {Pane} = Tab
+const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 
 const mapStateToProps = (state) => {
@@ -198,6 +199,8 @@ type State = {
     selectedClusterUsageOneIndex: number,
     gridDraggable: boolean,
     diskGridItemOneStyleTranslate: string,
+    layoutTypeForClusterHW: [],
+    checkedList: [],
 
 }
 
@@ -215,8 +218,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let savedlayoutKeyForCluster = store.email + "_layout"
             let savedlayoutKeyForAppInst = store.email + "_layout2"
 
+
+            let hwList = Object.values(defaultLayoutForCluster_HW);
+
+            console.log("hwList===2222>", hwList);
+
             this.state = {
                 layoutForCluster: isEmpty(reactLocalStorage.get(savedlayoutKeyForCluster)) ? defaultLayoutForCluster : reactLocalStorage.getObject(savedlayoutKeyForCluster),
+                layoutTypeForClusterHW: defaultLayoutForCluster_HW,
                 layoutForAppInst: isEmpty(reactLocalStorage.get(savedlayoutKeyForAppInst)) ? defaultLayoutForAppInst : reactLocalStorage.getObject(savedlayoutKeyForAppInst),
                 date: '',
                 time: '',
@@ -320,6 +329,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 diskGridItemOneStyleTranslate: {
                     transform: 'translate(10px, 1540px)',
                 },
+                checkedList: [HARDWARE_TYPE.CPU, HARDWARE_TYPE.MEM, HARDWARE_TYPE.DISK, HARDWARE_TYPE.RECVBYTES, HARDWARE_TYPE.SENDBYTES, HARDWARE_TYPE.TCPRETRANS, HARDWARE_TYPE.TCPCONNS, HARDWARE_TYPE.UDPSENT, HARDWARE_TYPE.UDPRECV],
             };
         }
 
@@ -353,14 +363,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         async loadInitDataForCluster(isInterval: boolean = false) {
             clearInterval(this.intervalForAppInst)
             this.setState({dropdownRequestLoading: true})
-           /* let clusterList = await getClusterList();
-            let cloudletList = await getCloudletList()
-            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
-            if (appInstanceList.length === 0) {
-                this.setState({
-                    isNoData: true,
-                })
-            }*/
+            /* let clusterList = await getClusterList();
+             let cloudletList = await getCloudletList()
+             let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
+             if (appInstanceList.length === 0) {
+                 this.setState({
+                     isNoData: true,
+                 })
+             }*/
 
             //fixme: fakeData
             //fixme: fakeData
@@ -401,11 +411,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             }
             let allClusterUsageList = []
-          /*  try {
-                allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
-            } catch (e) {
+            /*  try {
+                  allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
+              } catch (e) {
 
-            }*/
+              }*/
             //fixme: fakeData
             //fixme: fakeData
             allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
@@ -599,7 +609,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title_select'>
-                                {convertHwTypePhrases(pHardwareType)} Usage
+                                {convertHwTypePhrases(pHardwareType) + " [" + pHardwareType + "]"} Usage
                                 of {this.convertToClassification(this.state.currentClassification)}
                             </div>
                             {!this.state.loading && this.renderDropDownForMultiTab(pHardwareType)}
@@ -649,7 +659,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container' style={{flex: 1}}>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                {convertHwTypePhrases(pHardwareType)} Usage of {this.state.loading ?
+                                {pHardwareType} Usage of {this.state.loading ?
                                 <CircularProgress size={9} style={{
                                     fontSize: 9,
                                     color: '#77BD25',
@@ -677,7 +687,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container' style={{flex: 1}}>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                Top 5 {convertHwTypePhrases(pHardwareType)} usage
+                                Top 5 {pHardwareType} usage
                                 of {this.convertToClassification(this.state.currentClassification)}
                             </div>
                         </div>
@@ -824,11 +834,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         async resetGridPosition() {
             try {
                 let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-                let savedlayoutKeyForCluster = store.email + "_layout"
-                let savedlayoutKeyForAppInst = store.email + "_layout2"
+                /*let savedlayoutKeyForCluster =
+                let savedlayoutKeyForAppInst = */
 
-                reactLocalStorage.remove(savedlayoutKeyForCluster)
-                reactLocalStorage.remove(savedlayoutKeyForAppInst)
+                reactLocalStorage.remove(store.email + "_layout")
+                reactLocalStorage.remove(store.email + "_layout2")
                 await this.setState({
                     layoutForCluster: [],
                     layoutForAppInst: [],
@@ -935,14 +945,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </div>
                         }
 
-                        {/*   {this.state.dropdownRequestLoading &&
 
-                        <div style={{marginLeft: 15}}>
-                            <CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 10}}
-                                              size={20}/>
-                        </div>
-                        }*/}
-                        {/*<AButton type={'primary'}>sdkjfskdjfksjdf</AButton>*/}
                     </div>
                 </Grid.Row>
             )
@@ -999,7 +1002,39 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                             />
                         </div>
+                        <div style={{color: 'white', marginLeft: 10, marginRight: 10,}}>
+                            Add Hardware Item
+                        </div>
+                        <div style={{marginBottom: 0,}}>
+                            <Select
+                                placeholder="Add item"
+                                defaultValue="CPU"
+                                style={{width: 190, minHeight: 40,}}
+                                onChange={async (value) => {
+                                    //alert(value)
+                                    await this.addGridItem(value)
+                                    showToast('add '+ value + " grid item")
+                                }}
+                            >
+                                {this.state.checkedList.map(item => {
+                                    return (
+                                        <Option value={item}>{item}</Option>
+                                    )
+                                })}
+                            </Select>
+
+                        </div>
+                        {/* <div style={{color: 'white', marginLeft: 10, marginRight: 10,}}>
+                            <button onClick={async () => {
+                                reactLocalStorage.remove(getUserId() + "_layout")
+
+                            }} style={{color: 'blue'}}>delete lo
+                            </button>
+                        </div>*/}
+
+
                     </div>
+
                 </div>
 
             )
@@ -1237,9 +1272,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderMapArea() {
             return (
-                <div className='page_monitoring_column_kyungjoon1' style={{width: '100%', height: '100%'}}
-                     key="b">
-
+                <>
                     <div className='page_monitoring_title_area' style={{display: 'flex'}}>
 
                         <div style={{
@@ -1302,14 +1335,118 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             handleAppInstDropdown={this.handleAppInstDropdown}
                             markerList={this.state.appInstanceListGroupByCloudlet}/>
                     </div>
-                </div>
+                </>
             )
         }
 
-        /*handleLayoutChange = (layout) => {
+
+        makeid(length) {
+            let result = '';
+            let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let charactersLength = characters.length;
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+        }
+
+        async addGridItem(hwType) {
+            console.log("items===>", this.state.layoutForCluster)
+            let currentItems = this.state.layoutForCluster;
+            let maxY = _.maxBy(currentItems, 'y').y;
+
+            let uniqueId = this.makeid(5)
+
+            //alert(JSON.stringify(this.state.layoutTypeForClusterHW))
+
+            let addedLayoutForClusterHw = this.state.layoutTypeForClusterHW //=  HARDWARE_TYPE_FOR_GRID.CPU,
+
+            addedLayoutForClusterHw[uniqueId] = hwType
 
 
-        }*/
+            await this.setState({
+                layoutForCluster: this.state.layoutForCluster.concat({
+                    i: uniqueId,
+                    //x: (this.state.items.length * 2) % (this.state.cols || 12),
+                    x: 0,
+                    y: maxY + 1, //
+                    w: 1,
+                    h: 1,
+                }),
+                layoutTypeForClusterHW: addedLayoutForClusterHw,
+            });
+            reactLocalStorage.setObject('l007', this.state.layoutForCluster)
+        }
+
+        removeGridItem(i) {
+            console.log("removing", i);
+
+            let removedLayout = _.reject(this.state.layoutForCluster, {i: i});
+            reactLocalStorage.setObject('l007', removedLayout)
+            this.setState({
+                layoutForCluster: removedLayout,
+            });
+        }
+
+        renderGridLayoutForCluster() {
+            return (
+                <ResponsiveReactGridLayout
+                    className={'layout'}
+                    cols={{lg: 3, md: 3, sm: 3, xs: 3, xxs: 3}}
+                    layout={this.state.layoutForCluster}
+                    rowHeight={470}
+                    onLayoutChange={(layout) => {
+                        this.setState({
+                            layoutForCluster: layout,
+                        }, () => {
+                            console.log("layoutForCluster===>", this.state.layoutForCluster);
+                        })
+
+                        reactLocalStorage.setObject(getUserId() + "_layout", layout)
+
+
+                    }}
+                    style={{backgroundColor: 'black'}}
+                >
+                    {this.state.layoutForCluster.map((item, loopIndex) => {
+
+                        const index = item.i;
+                        console.log("defaultLayoutForCluster_HW===>", defaultLayoutForCluster_HW);
+
+                        return (
+                            <div key={index} data-grid={item} style={{margin: 5, backgroundColor: 'black'}}>
+                                <div className='page_monitoring_column_kyungjoon1' style={{height: 450}}>
+                                    {this.makeChartDataAndRenderTabBody_LineChart(defaultLayoutForCluster_HW[index])}
+                                </div>
+                                <div className="remove"
+                                     onClick={() => {
+                                         this.removeGridItem(index)
+                                     }}
+                                     style={{
+                                         fontSize: 25,
+                                         width: 50,
+                                         display: 'flex',
+                                         alignItems: 'center',
+                                         justifyContent: 'center',
+                                         //backgroundColor: 'red',
+                                         position: "absolute",
+                                         right: "2px",
+                                         top: 0,
+                                         fontWeight: 'bold',
+                                         cursor: "pointer"
+                                     }}
+                                >
+                                    x
+                                </div>
+                            </div>
+                        );
+                    })}
+
+
+                </ResponsiveReactGridLayout>
+
+            )
+        }
 
 
         render() {
@@ -1372,7 +1509,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 <div className='page_monitoring_dashboard_kyungjoon'
                                                      style={{}}>
                                                     {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                                                        renderGridLayoutForCluster(this)
+                                                        this.renderGridLayoutForCluster(this)
                                                         :
                                                         renderGridLayoutForAppInst(this)
                                                     }

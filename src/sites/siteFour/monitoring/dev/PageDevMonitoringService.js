@@ -29,8 +29,11 @@ import type {TypeAppInstanceUsage2, TypeClusterUsageList} from "../../../../shar
 import {Progress} from "antd";
 import {getClusterLevelMatric} from "../PageMonitoringMetricService";
 import {TabPanel, Tabs} from "react-tabs";
-import GridLayout from "react-grid-layout";
+import _ from "lodash";
 import {reactLocalStorage} from "reactjs-localstorage";
+import {WidthProvider, Responsive} from "react-grid-layout";
+
+const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 
 export const defaultLayoutForAppInst = [
@@ -49,223 +52,96 @@ export const defaultLayoutForAppInst = [
 ];
 
 export const defaultLayoutForCluster = [
-    {i: 'a', x: 0, y: 0, w: 1, h: 3},
-    {i: 'b', x: 1, y: 0, w: 1, h: 3},
-    {i: 'c', x: 2, y: 0, w: 1, h: 3},
+    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false,},
+    {i: '2', x: 1, y: 0, w: 1, h: 1, "add": false,},
+    {i: '3', x: 2, y: 0, w: 1, h: 1, "add": false,},
 
 
-    {i: 'd', x: 0, y: 1, w: 2, h: 3,},
-    {i: 'e', x: 2, y: 1, w: 1, h: 3,},
+    {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false,},
+    {i: '5', x: 1, y: 1, w: 1, h: 1, "add": false,},
+    /*{i: '6', x: 2, y: 1, w: 1, h: 1, "add": false,},
 
-    {i: 'f', x: 0, y: 2, w: 1, h: 3,},
-    {i: 'g', x: 1, y: 2, w: 1, h: 3,},
-    {i: 'h', x: 2, y: 2, w: 1, h: 3,},
+    {i: '7', x: 0, y: 2, w: 1, h: 1, "add": false,},
+    {i: '8', x: 1, y: 2, w: 1, h: 1, "add": false,},
+    {i: '9', x: 2, y: 2, w: 1, h: 1, "add": false,},*/
 
-    {i: 'i', x: 0, y: 3, w: 1, h: 3,},
-    {i: 'j', x: 1, y: 3, w: 1, h: 3,},
-    {i: 'k', x: 2, y: 3, w: 1, h: 3,},
+    /*{i: '10', x: 0, y: 3, w: 1, h: 1, "add": fals
+    {i: '11', x: 1, y: 3, w: 1, h: 1, "add": false},
+    {i: '12', x: 2, y: 3, w: 1, h: 1, "add": false},
 
-    {i: 'l', x: 0, y: 4, w: 1, h: 3,},
-    {i: 'm', x: 1, y: 4, w: 1, h: 3,},
-    {i: 'n', x: 2, y: 4, w: 1, h: 3,},
+    {i: '13', x: 0, y: 4, w: 1, h: 1, "add": false},
+    {i: '14', x: 1, y: 4, w: 1, h: 1, "add": false},
+    {i: '15', x: 2, y: 4, w: 1, h: 1, "add": false},
 
-    {i: 'o', x: 0, y: 5, w: 1, h: 3,},
-    {i: 'p', x: 1, y: 5, w: 2, h: 3,},
-    {i: 'q', x: 2, y: 5, w: 0, h: 0,},
+    {i: '16', x: 0, y: 5, w: 1, h: 1, "add": false},
+    {i: '17', x: 1, y: 5, w: 1, h: 1, "add": false},
+    {i: '18', x: 2, y: 5, w: 1, h: 1, "add": false},*/
 ];
 
+export const HARDWARE_TYPE_FOR_GRID = {
+    FLAVOR: 'FLAVOR',
+    CPU: 'CPU',
+    VCPU: 'vCPU',
+    NET_SEND: 'NET_SEND',
+    NET_RECV: 'NET_RECV',
+    FLOATING_IPS: 'FLOATING_IPS',
+    IPV4: 'IPV4',
 
-export const renderGridLayoutForCluster = (_this) => {
-    return (
-        <>
-            <GridLayout
-                isDraggable={_this.state.gridDraggable}
-                autoSize={true}
-                className="layout"
-                layout={_this.state.layoutForCluster}
-                cols={3}
-                isDroppable={true}
-                rowHeight={160}
-                width={window.innerWidth * 0.86}
-                onLayoutChange={(layout) => {
-                    _this.setState({
-                        layoutForCluster: layout,
-                    }, () => {
-                        console.log("layoutForCluster===>", _this.state.layoutForCluster);
-                    })
-                    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-                    let layoutUniqueId = store.email + "_layout"
-                    reactLocalStorage.setObject(layoutUniqueId, layout)
-                }}
-                style={{overflowY: 'auto',}}
-            >
+    ////////////
+    UDP: 'UDP',
+    TCP: 'TCP',
+    NETWORK: 'NETWORK',
+    //UDP
+    UDPSENT: 'UDPSENT',
+    UDPRECV: 'UDPRECV',
+    UDPRECVERR: 'UDPRECVERR',
 
+    //TCP
+    TCPCONNS: 'TCPCONNS',
+    TCPRETRANS: 'TCPRETRANS',
 
-                <div className='page_monitoring_column_kyungjoon1' key="a">
-                    {_this.renderBubbleChartArea()}
-                </div>
-                {/* todo:map(b)*/}
-                {_this.renderMapArea()}
+    //NETWORK
+    SENDBYTES: 'SEND_BYTES',
+    RECVBYTES: 'RECV_BYTES',
 
-                {/* todo:cpu_usage(c)*/}
-                <div className='page_monitoring_column_kyungjoon1' key="c">
-                    {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.CPU)}
-                </div>
-                {/*todo: CLUSTER gridList(d)*/}
-                {/*todo: CLUSTER gridList(d)*/}
-                {/*todo: CLUSTER gridList(d)*/}
-                <div
+    MEM: 'MEM',
+    MEM2: 'MEM',
+    RECV_BYTES: 'RECV_BYTES',
+    SEND_BYTES: 'SEND_BYTES',
+    DISK: 'DISK',
+    CONNECTIONS: 'CONNECTIONS',
+    ACTIVE_CONNECTION: 'ACTIVE_CONNECTION',//12
+    HANDLED_CONNECTION: 'HANDLED_CONNECTION',//13
+    ACCEPTS_CONNECTION: 'ACCEPTS_CONNECTION',//14 (index)
 
-                    className='page_monitoring_column_kyungjoon1'
-                    key={'d'}
-                >
-                    <div className='page_monitoring_table_column'
-                         style={{
-                             marginLeft: -120,
-                             width: window.innerWidth * 0.65
-                         }}>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'
-                                 style={PageMonitoringStyles.center}>
-                                CLUSTER LIST
-                            </div>
-                        </div>
-                    </div>
-                    <div className='page_monitoring_popup_table'
-                         style={{marginLeft: -10,}}>
-                        {renderBottomGridAreaForCluster(_this, _this.state.filteredClusterUsageList)}
-                    </div>
-                </div>
-
-                {/* @todo:######### eee ########*/}
-                <div className='page_monitoring_column_kyungjoon1' key="e">
-                    {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.MEM)}
-                </div>
-
-                {/* @todo:######################*/}
-                {/* @todo:######################*/}
-                {/* @todo:######################*/}
-                <div className='page_monitoring_column_kyungjoon1' key="f">
-                    {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.DISK)}
-                </div>
-
-                <div className='page_monitoring_column_kyungjoon1' key="g">
-                    <Tabs selectedIndex={_this.state.networkTabIndex}
-                          className='page_monitoring_tab'>
-                        <TabPanel>
-                            {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.RECVBYTES)}
-                        </TabPanel>
-                        <TabPanel>
-                            {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.SENDBYTES)}
-                        </TabPanel>
-                    </Tabs>
-                </div>
-
-                <div className='page_monitoring_column_kyungjoon1' key="h">
-                    <Tabs selectedIndex={_this.state.tcpTabIndex}
-                          className='page_monitoring_tab'>
-                        <TabPanel>
-                            {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.TCPCONNS)}
-                        </TabPanel>
-                        <TabPanel>
-                            {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.TCPRETRANS)}
-                        </TabPanel>
-                    </Tabs>
-                </div>
-
-
-                {/* @todo:######################*/}
-                {/* @todo:######################*/}
-                {/* @todo:######################*/}
-                <div className='page_monitoring_column_kyungjoon1' key="i">
-
-                    <Tabs selectedIndex={_this.state.udpTabIndex}
-                          className='page_monitoring_tab'>
-                        <TabPanel>
-                            {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.UDPSENT)}
-                        </TabPanel>
-                        <TabPanel>
-                            {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.UDPRECV)}
-                        </TabPanel>
-                    </Tabs>
-
-                </div>
-                <div
-                    className='page_monitoring_column_kyungjoon1'
-                    key={'j'}>
-                    {_this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.CPU)}
-                </div>
-                <div className='page_monitoring_column_kyungjoon1'
-                     key={'k'}>
-                    {_this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.MEM)}
-                </div>
-
-                {/* @todo:######################*/}
-                {/* @todo:######################*/}
-                {/* @todo:######################*/}
-                <div
-                    style={_this.state.diskGridItemOneStyleTranslate}
-                    className='page_monitoring_column_kyungjoon1'
-                    key={'l'}
-                    ref={c => _this.diskGridElementOne = c}
-                >
-                    {_this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.DISK)}
-                </div>
-                <div className='page_monitoring_column_kyungjoon1'
-                     key={'m'}>
-                    <Tabs selectedIndex={_this.state.networkTabIndex}
-                          className='page_monitoring_tab'>
-                        <TabPanel>
-                            {_this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.RECVBYTES)}
-                        </TabPanel>
-                        <TabPanel>
-                            {_this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.SENDBYTES)}
-                        </TabPanel>
-                    </Tabs>
-                </div>
-                <div className='page_monitoring_column_kyungjoon1' key="n">
-                    <Tabs selectedIndex={_this.state.tcpTabIndex}
-                          className='page_monitoring_tab'>
-                        <TabPanel>
-                            {_this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.TCPCONNS)}
-                        </TabPanel>
-                        <TabPanel>
-                            {_this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.TCPRETRANS)}
-                        </TabPanel>
-                    </Tabs>
-                </div>
-
-                {/* @todo:######################*/}
-                {/* @todo:######################*/}
-                {/* @todo:######################*/}
-                <div className='page_monitoring_column_kyungjoon1' key="o">
-                    <Tabs selectedIndex={_this.state.udpTabIndex}
-                          className='page_monitoring_tab'>
-                        <TabPanel>
-                            {_this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.UDPRECV)}
-                        </TabPanel>
-                        <TabPanel>
-                            {_this.makeChartDataAndRenderTabBody_____BarChart(HARDWARE_TYPE.UDPSENT)}
-                        </TabPanel>
-                    </Tabs>
-                </div>
-
-
-            </GridLayout>
-        </>
-
-    )
 }
+
+
+export const defaultLayoutForCluster_HW = {
+    '1': HARDWARE_TYPE_FOR_GRID.CPU,
+    '2': HARDWARE_TYPE_FOR_GRID.MEM,
+    '3': HARDWARE_TYPE_FOR_GRID.DISK,
+    '4': HARDWARE_TYPE_FOR_GRID.RECVBYTES,
+    '5': HARDWARE_TYPE_FOR_GRID.SENDBYTES,
+
+}
+
+
+export const getUserId = () => {
+    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+    return store.email;
+}
+
 
 export const renderGridLayoutForAppInst = (_this: PageDevMonitoring) => {
     return (
         <>
-            <GridLayout
+            <ResponsiveReactGridLayout
                 isDraggable={_this.state.gridDraggable}
                 autoSize={true}
                 className="layout"
                 layout={_this.state.layoutForAppInst}
-                cols={3}
+                cols={{lg: 3, md: 3, sm: 3, xs: 3, xxs: 3}}
                 isDroppable={true}
                 rowHeight={160}
                 width={window.innerWidth * 0.86}
@@ -334,7 +210,7 @@ export const renderGridLayoutForAppInst = (_this: PageDevMonitoring) => {
                         </TabPanel>
                     </Tabs>
                 </div>
-            </GridLayout>
+            </ResponsiveReactGridLayout>
         </>
 
     )
@@ -723,17 +599,17 @@ export const renderBottomGridAreaForCluster = (_this: PageDevMonitoring, pCluste
                     return (
                         <Table.Row className='page_monitoring_popup_table_row'
 
-                            onClick={()=>{
-                                try {
-                                    let cluster_cloudlet=item.cluster.toString() + ' | ' + item.cloudlet.toString()
-                                    let lineChartDataSet = makeLineChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this)
-                                    cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
-                                    handleLegendAndBubbleClickedEvent(_this, cluster_cloudlet, lineChartDataSet)
+                                   onClick={() => {
+                                       try {
+                                           let cluster_cloudlet = item.cluster.toString() + ' | ' + item.cloudlet.toString()
+                                           let lineChartDataSet = makeLineChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this)
+                                           cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
+                                           handleLegendAndBubbleClickedEvent(_this, cluster_cloudlet, lineChartDataSet)
 
-                                } catch (e) {
+                                       } catch (e) {
 
-                                }
-                            }}
+                                       }
+                                   }}
                         >
                             <Table.Cell>
                                 {item.cluster}<br/>[{item.cloudlet}]
