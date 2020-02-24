@@ -3,13 +3,13 @@ import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import OutsideClickHandler from 'react-outside-click-handler';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Button, Dropdown, Grid, Modal, Tab, Table} from 'semantic-ui-react'
+import {Button, Dropdown, Grid, Tab} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
-import {DatePicker, Progress,} from 'antd';
+import {DatePicker,} from 'antd';
 import * as reducer from "../../../../utils";
 import {
     cutArrayList,
@@ -19,9 +19,7 @@ import {
     filterInstanceCountOnCloutLetOne,
     filterListBykey,
     filterUsageListByRegion,
-    getAppInstList,
-    getAppLevelUsageList,
-    getCloudletListAll,
+    handleBubbleChartDropDown,
     instanceFlavorToPerformanceValue,
     makeBarChartDataForInst,
     makeCloudletListSelectBox,
@@ -31,6 +29,9 @@ import {
     makeLineChartDataForAppInst,
     makeNetworkBarData,
     makeNetworkLineChartData,
+    makeSelectBoxListByClassification,
+    makeSelectBoxListByClassification_byKey,
+    renderBottomGridArea,
     renderBubbleChart,
     renderPlaceHolder2,
     renderSixGridForAppInstOnCloudlet,
@@ -46,15 +47,14 @@ import {
     RECENT_DATA_LIMIT_COUNT,
     REGIONS_OPTIONS
 } from "../../../../shared/Constants";
-import Lottie from "react-lottie";
 import type {TypeAppInstance, TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
-
-import {numberWithCommas, renderGridLoader2, renderPlaceHolderCircular, showToast, showToast2, StylesForMonitoring} from "../PageMonitoringCommonService";
+import {renderGridLoader2, renderLoaderArea, renderPlaceHolderCircular, showToast, showToast2, PageMonitoringStyles} from "../PageMonitoringCommonService";
 import '../PageMonitoring.css'
+import {getAppInstList, getAppLevelUsageList, getCloudletListAll} from "../PageMonitoringMetricService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -73,7 +73,6 @@ const mapDispatchProps = (dispatch) => {
         }
     };
 };
-
 // const isMobile = () => {
 //     return navigator.userAgent.indexOf('iPad') > -1;
 // };
@@ -106,19 +105,11 @@ type State = {
     startTime: string,
     endTime: string,
     clusterList: any,
-    filteredCpuUsageList: any,
-    filteredMemUsageList: any,
-    filteredDiskUsageList: any,
-    filteredNetworkUsageList: any,
     counter: number,
     appInstanceList: Array<TypeAppInstance>,
     allAppInstanceList: Array<TypeAppInstance>,
     appInstanceOne: TypeAppInstance,
     currentRegion: string,
-    allCpuUsageList: Array,
-    allMemUsageList: Array,
-    allDiskUsageList: Array,
-    allNetworkUsageList: Array,
     cloudLetSelectBoxPlaceholder: string,
     clusterSelectBoxPlaceholder: string,
     appInstSelectBoxPlaceholder: string,
@@ -168,6 +159,9 @@ type State = {
     newCloudletList: Array,
     currentSixGridIndex: number,
     isAppInstaceOnCloudletDataReady: boolean,
+    allAppInstUsageList: Array,
+    filteredAppInstUsageList: Array,
+    showGridLoader: boolean,
 
 }
 
@@ -183,19 +177,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             loading0: false,
             clusterInstanceGroupList: [],
             clusterList: [],
-            filteredCpuUsageList: [],
-            filteredMemUsageList: [],
-            filteredDiskUsageList: [],
-            filteredNetworkUsageList: [],
             isReady: false,
             counter: 0,
             appInstanceList: [],
             allAppInstanceList: [],
             appInstanceOne: {},
-            allCpuUsageList: [],
-            allMemUsageList: [],
-            allDiskUsageList: [],
-            allNetworkUsageList: [],
             cloudLetSelectBoxPlaceholder: 'Select CloudLet',
             clusterSelectBoxPlaceholder: 'Select Cluster',
             appInstSelectBoxPlaceholder: 'Select Instance',
@@ -247,6 +233,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             newCloudletList: [],
             currentSixGridIndex: 0,
             isAppInstaceOnCloudletDataReady: false,
+            allAppInstUsageList: [],
+            filteredAppInstUsageList: [],
+            showGridLoader: false,
         };
 
         constructor(props) {
@@ -299,17 +288,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     isReady: false,
                     userType: userRole,
                 })
-
-                //@test: FAKE JSON FOR DEV
-                //let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
                 let allCloudletList = await getCloudletListAll();
-
                 await this.setState({
                     cloudletList: allCloudletList,
                 })
 
+                //@test: FAKE JSON FOR DEV
+                //let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
 
-                //@todo: realdata
+                //@fixme: realdata
                 let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
 
                 appInstanceList.map(async (item: TypeAppInstance, index) => {
@@ -344,17 +331,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     startTime,
                     endTime
                 });
-                let usageList = [];
+
+                let allAppInstUsageList = [];
 
                 //@todo:realdata
                 try {
-                    usageList = await getAppLevelUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
+                    allAppInstUsageList = await getAppLevelUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
                 } catch (e) {
                     showToast(e.toString())
                 }
 
                 //fixme: fakedata
-                //usageList = require('../temp/appLevelUsageList')
+                //allAppInstUsageList = require('./appAppLevelUsageList__all')
+                //console.log('allAppInstUsageList====>', allAppInstUsageList);
+
 
                 //todo: MAKE SELECTBOX.
                 let clusterInstanceGroupList = reducer.groupBy(appInstanceList, CLASSIFICATION.CLUSTER_INST)
@@ -362,35 +352,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 let clusterList = this.makeSelectBoxList(clusterInstanceGroupList, CLASSIFICATION.CLUSTER_INST)
 
                 await this.setState({
-                    allCpuUsageList: usageList[0],
-                    allMemUsageList: usageList[1],
-                    allNetworkUsageList: usageList[2],//networkUsage
-                    allDiskUsageList: usageList[3],//disk is last array
-                    allConnectionsUsageList: usageList[4],
+                    allAppInstUsageList: allAppInstUsageList,
+                    filteredAppInstUsageList: allAppInstUsageList,
                     dropDownCloudletList: dropDownCloudletList,
                     clusterList: clusterList,
-                    filteredCpuUsageList: usageList[0],
-                    filteredMemUsageList: usageList[1],
-                    filteredNetworkUsageList: usageList[2],
-                    filteredDiskUsageList: usageList[3],
-                    filteredConnectionsUsageList: usageList[4],
                 }, () => {
-                    console.log('filteredConnectionsUsageList===>', this.state.filteredConnectionsUsageList);
+                    console.log('allAppInstUsageList====>', allAppInstUsageList);
                 });
 
                 //todo: -------------------------------------------------------------
                 //todo: MAKE TOP5 INSTANCE LIST
                 //todo: -------------------------------------------------------------
-                let appInstanceListTop5 = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), CLASSIFICATION.APP_NAME)
+                let appInstanceListTop5 = makeSelectBoxListByClassification(cutArrayList(5, this.state.filteredAppInstUsageList), CLASSIFICATION.APP_NAME)
 
-                //todo: -------------------------------------------
-                //todo: GridInstanceList
-                //todo: -------------------------------------------
-                let gridInstanceList = makeGridInstanceList(usageList);
+                console.log('appInstanceListTop5====>', appInstanceListTop5);
 
-                //todo: -------------------------------------------
-                //todo: GridInstanceList MEM,CPU MAX VALUE
-                //todo: -------------------------------------------
+                let gridInstanceList = makeGridInstanceList(allAppInstUsageList);
                 let gridInstanceListMemMax = Math.max.apply(Math, gridInstanceList.map(function (o) {
                     return o.sumMemUsage;
                 }));
@@ -409,6 +386,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     console.log('filteredGridInstanceList===>', this.state.filteredGridInstanceList);
                 });
 
+
                 this.props.toggleLoading(false);
                 await this.setState({
                     loading: false,
@@ -425,6 +403,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     time: 3 * 1000,
                     color: 'black',
                 });
+
+
             } catch (e) {
                 showToast(e.toString())
             } finally {
@@ -439,19 +419,26 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         async filterUsageListByDate() {
+            try {
+                if (this.state.startTime !== '' && this.state.endTime !== '') {
+                    let startTime = makeCompleteDateTime(this.state.startTime);
+                    let endTime = makeCompleteDateTime(this.state.endTime);
 
-            if (this.state.startTime !== '' && this.state.endTime !== '') {
-                let startTime = makeCompleteDateTime(this.state.startTime);
-                let endTime = makeCompleteDateTime(this.state.endTime);
+                    this.setState({loading: true})
+                    let appInstUsageList_byDate = await getAppLevelUsageList(this.state.appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
 
-                this.setState({loading: true})
-                let usageList = await getAppLevelUsageList(this.state.appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
-                this.setState({
-                    usageListByDate: usageList,
-                    loading: false
-                })
-                this.filterByClassification(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, this.state.currentAppInst, true)
+                    console.log('appInstUsageList_byDate====>', appInstUsageList_byDate);
+
+                    this.setState({
+                        usageListByDate: appInstUsageList_byDate,
+                        loading: false
+                    })
+                    this.filterByClassification(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, this.state.currentAppInst, true)
+                }
+            } catch (e) {
+
             }
+
         }
 
         async makeBubbleChartData(appInstanceList: any) {
@@ -476,17 +463,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 newArrList.push({
                     value: arrList[i][0][keyName],
                     text: arrList[i][0][keyName],//.toString()//.substring(0,25)+ "...",
-                })
-            }
-            return newArrList;
-        }
-
-        makeSelectBoxList2(arrList, keyName) {
-            let newArrList = [];
-            for (let i in arrList) {
-                newArrList.push({
-                    value: arrList[i].instance.AppName,
-                    text: arrList[i].instance.AppName,
                 })
             }
             return newArrList;
@@ -525,37 +501,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 await this.setState({
                     currentSixGridIndex: 0,
+                    showGridLoader: true,
                 })
 
-
                 let appInstanceList = []
-                let allCpuUsageList = []
-                let allMemUsageList = []
-                let allDiskUsageList = []
-                let allNetworkUsageList = []
-                let allConnectionsUsageList = []
+                let allAppInstUsageList = [];
                 let allGridInstanceList = []
 
                 //@todo: 날짜에 의한 필터링인경우
                 if (isDateFiltering) {
                     appInstanceList = this.state.appInstanceList;
-                    allCpuUsageList = this.state.usageListByDate[0]
-                    allMemUsageList = this.state.usageListByDate[1]
-                    allNetworkUsageList = this.state.usageListByDate[2]
-                    allDiskUsageList = this.state.usageListByDate[3]
-                    allConnectionsUsageList = this.state.usageListByDate[4]
+                    allAppInstUsageList = this.state.usageListByDate
                     allGridInstanceList = makeGridInstanceList(this.state.usageListByDate);
                 } else {
                     appInstanceList = this.state.allAppInstanceList;
-                    allCpuUsageList = this.state.allCpuUsageList
-                    allMemUsageList = this.state.allMemUsageList
-                    allDiskUsageList = this.state.allDiskUsageList
-                    allNetworkUsageList = this.state.allNetworkUsageList
-                    allConnectionsUsageList = this.state.allConnectionsUsageList
+                    allAppInstUsageList = this.state.allAppInstUsageList
                     allGridInstanceList = this.state.allGridInstanceList;
                 }
-
-                this.props.toggleLoading(true)
                 await this.setState({
                     loading0: true,
                     appInstanceListSortByCloudlet: [],
@@ -569,12 +531,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
                 let cloudletSelectBoxList = makeCloudletListSelectBox(appInstanceList)
                 let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
-                let filteredCpuUsageList = filterUsageListByRegion(pRegion, allCpuUsageList);
-                let filteredMemUsageList = filterUsageListByRegion(pRegion, allMemUsageList);
-                let filteredDiskUsageList = filterUsageListByRegion(pRegion, allDiskUsageList);
-                let filteredNetworkUsageList = filterUsageListByRegion(pRegion, allNetworkUsageList);
-                let filteredConnectionsUsageList = filterUsageListByRegion(pRegion, allConnectionsUsageList);
+                let filteredAppInstUsageList = filterUsageListByRegion(pRegion, allAppInstUsageList);
                 let filteredGridInstanceList = filterUsageListByRegion(pRegion, allGridInstanceList);
+
 
                 //todo: -------------------------------------------
                 //todo: FLITER  By pCloudLet
@@ -584,11 +543,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     appInstanceListGroupByCloudlet = filterInstanceCountOnCloutLetOne(appInstanceListGroupByCloudlet, pCloudLet)
                     appInstanceList = filterAppInstanceListByClassification(appInstanceList, pCloudLet, CLASSIFICATION.CLOUDLET);
                     clusterSelectBoxList = makeClusterListSelectBox(appInstanceList, pCloudLet)
-                    filteredCpuUsageList = filterListBykey(CLASSIFICATION.CLOUDLET, pCloudLet, filteredCpuUsageList);
-                    filteredMemUsageList = filterListBykey(CLASSIFICATION.CLOUDLET, pCloudLet, filteredMemUsageList);
-                    filteredDiskUsageList = filterListBykey(CLASSIFICATION.CLOUDLET, pCloudLet, filteredDiskUsageList);
-                    filteredNetworkUsageList = filterListBykey(CLASSIFICATION.CLOUDLET, pCloudLet, filteredNetworkUsageList);
-                    filteredConnectionsUsageList = filterListBykey(CLASSIFICATION.CLOUDLET, pCloudLet, filteredConnectionsUsageList);
+                    filteredAppInstUsageList = filterListBykey(CLASSIFICATION.CLOUDLET, pCloudLet, filteredAppInstUsageList);
                     filteredGridInstanceList = filterListBykey(CLASSIFICATION.CLOUDLET, pCloudLet, filteredGridInstanceList);
                 }
 
@@ -598,13 +553,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 if (pCluster !== '') {
                     appInstanceListGroupByCloudlet[0] = filterAppInstOnCloudlet(appInstanceListGroupByCloudlet[0], pCluster)
                     appInstanceList = filterAppInstanceListByClassification(appInstanceList, pCluster, CLASSIFICATION.CLUSTER_INST);
-                    filteredCpuUsageList = filterListBykey(CLASSIFICATION.CLUSTER_INST, pCluster, filteredCpuUsageList);
-                    filteredMemUsageList = filterListBykey(CLASSIFICATION.CLUSTER_INST, pCluster, filteredMemUsageList);
-                    filteredDiskUsageList = filterListBykey(CLASSIFICATION.CLUSTER_INST, pCluster, filteredDiskUsageList);
-                    filteredNetworkUsageList = filterListBykey(CLASSIFICATION.CLUSTER_INST, pCluster, filteredNetworkUsageList);
-                    filteredConnectionsUsageList = filterListBykey(CLASSIFICATION.CLUSTER_INST, pCluster, filteredConnectionsUsageList);
+                    filteredAppInstUsageList = filterListBykey(CLASSIFICATION.CLUSTER_INST, pCluster, filteredAppInstUsageList);
                     filteredGridInstanceList = filterListBykey(CLASSIFICATION.CLUSTER_INST, pCluster, filteredGridInstanceList);
-
                 }
 
                 //todo: -------------------------------------------
@@ -612,12 +562,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //todo: -------------------------------------------
                 if (pAppInstance !== '') {
                     appInstanceList = filterAppInstanceListByClassification(appInstanceList, pAppInstance, CLASSIFICATION.APP_NAME);
-                    filteredCpuUsageList = filterListBykey(CLASSIFICATION.APP_NAME, pAppInstance, filteredCpuUsageList);
-                    filteredMemUsageList = filterListBykey(CLASSIFICATION.APP_NAME, pAppInstance, filteredMemUsageList);
-                    filteredDiskUsageList = filterListBykey(CLASSIFICATION.APP_NAME, pAppInstance, filteredDiskUsageList);
-                    filteredNetworkUsageList = filterListBykey(CLASSIFICATION.APP_NAME, pAppInstance, filteredNetworkUsageList);
-                    filteredConnectionsUsageList = filterListBykey(CLASSIFICATION.APP_NAME, pAppInstance, filteredConnectionsUsageList);
+                    filteredAppInstUsageList = filterListBykey(CLASSIFICATION.APP_NAME, pAppInstance, filteredAppInstUsageList);
                     filteredGridInstanceList = filterListBykey(CLASSIFICATION.APP_NAME, pAppInstance, filteredGridInstanceList);
+
                 }
 
                 //todo: -------------------------------------------
@@ -631,11 +578,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 }));
 
                 await this.setState({
-                    filteredCpuUsageList: filteredCpuUsageList,
-                    filteredMemUsageList: filteredMemUsageList,
-                    filteredDiskUsageList: filteredDiskUsageList,
-                    filteredNetworkUsageList: filteredNetworkUsageList,
-                    filteredConnectionsUsageList: filteredConnectionsUsageList,
+                    filteredAppInstUsageList: filteredAppInstUsageList,
                     filteredGridInstanceList: filteredGridInstanceList,
                     gridInstanceListMemMax: gridInstanceListMemMax,
                     gridInstanceListCpuMax: gridInstanceListCpuMax,
@@ -650,9 +593,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 //todo: MAKE TOP5 CPU/MEM USAGE SELECTBOX
                 if (pAppInstance === '') {
-                    let top5UsageList = await cutArrayList(5, this.state.filteredCpuUsageList);
+                    let top5UsageList = await cutArrayList(5, this.state.filteredAppInstUsageList);
+
+
+                    console.log('top5UsageList====>', top5UsageList);
+
                     //todo: MAKE TOP5 INSTANCE LIST
-                    let appInstanceListTop5 = this.makeSelectBoxList2(top5UsageList, CLASSIFICATION.APP_NAME)
+                    let appInstanceListTop5 = makeSelectBoxListByClassification_byKey(top5UsageList, CLASSIFICATION.appName)
+
+                    console.log('appInstanceListTop5====>', appInstanceListTop5);
+
                     await this.setState({
                         appInstanceListTop5: appInstanceListTop5,
                     }, () => {
@@ -675,174 +625,32 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //todo: -------------------------------------------
                 //todo: NETWORK chart data filtering
                 //todo: -------------------------------------------
-                let networkChartData = makeNetworkLineChartData(this.state.filteredNetworkUsageList, this.state.currentNetworkType)
-                let networkBarChartData = makeNetworkBarData(this.state.filteredNetworkUsageList, this.state.currentNetworkType)
+                let networkChartData = makeNetworkLineChartData(this.state.filteredAppInstUsageList, this.state.currentNetworkType)
+                let networkBarChartData = makeNetworkBarData(this.state.filteredAppInstUsageList, this.state.currentNetworkType)
                 await this.setState({
                     networkChartData: networkChartData,
                     networkBarChartData: networkBarChartData,
                 })
-                this.props.toggleLoading(false)
+
+                setTimeout(() => {
+                    this.setState({
+                        showGridLoader: false,
+                    })
+                }, 1)
             } catch (e) {
                 showToast(e.toString())
             } finally {
-                this.props.toggleLoading(false)
+                setTimeout(() => {
+                    this.setState({
+                        showGridLoader: false,
+                    })
+                }, 1)
             }
 
         }
 
-        handleSelectCloudlet = async (cloudletSelectedOne) => {
 
-            showToast(cloudletSelectedOne)
-            /*
-                        this.setState({
-                            currentCloudLet: cloudletSelectedOne,
-                        })
-
-                        let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, cloudletSelectedOne, 'cloudlet')
-
-                        console.log('filterCloudletList===>', filteredCloudletUsageList);
-
-                        this.setState({
-                            filteredCloudletUsageList: filteredCloudletUsageList,
-                        })*/
-
-        }
-
-
-        renderBottomGridArea() {
-            return (
-                <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
-                    <Table.Header className="viewListTableHeader">
-                        <Table.Row>
-                            <Table.HeaderCell>
-                                index
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                NAME
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                CPU(%)
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                MEM
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                DISK
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                RECV BYTES
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                SEND BYTES
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                FLAVOR
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                ACTIVE CONN
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                HANDLED CONN
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                ACCEPTS CONN
-                            </Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Header>
-                    <Table.Body className="tbBodyList"
-                                ref={(div) => {
-                                    this.messageList = div;
-                                }}
-                    >
-                        {/*-----------------------*/}
-                        {/*todo:ROW HEADER        */}
-                        {/*-----------------------*/}
-                        {!this.state.isReady &&
-                        <Table.Row className='page_monitoring_popup_table_empty'>
-                            <Table.Cell>
-                                <Lottie
-                                    options={{
-                                        loop: true,
-                                        autoplay: true,
-                                        animationData: require('../../../../lotties/loader001'),
-                                        rendererSettings: {
-                                            preserveAspectRatio: 'xMidYMid slice'
-                                        }
-                                    }}
-                                    height={240}
-                                    width={240}
-                                    isStopped={false}
-                                    isPaused={false}
-                                />
-                            </Table.Cell>
-                        </Table.Row>}
-                        {this.state.isReady && this.state.filteredGridInstanceList.map((item: TypeGridInstanceList, index) => {
-
-                            return (
-                                <Table.Row className='page_monitoring_popup_table_row'
-                                >
-                                    <Table.Cell>
-                                        {index}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {item.instance.AppName}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <div>
-                                            <div>
-                                                {item.sumCpuUsage.toFixed(2) + '%'}
-                                            </div>
-                                            <div>
-                                                <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
-                                                          percent={(item.sumCpuUsage / this.state.gridInstanceListCpuMax) * 100}
-                                                          strokeColor={'#29a1ff'} status={'normal'}/>
-                                            </div>
-                                        </div>
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <div>
-                                            <div>
-                                                {numberWithCommas(item.sumMemUsage) + ' Byte'}
-                                            </div>
-                                            <div>
-                                                <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
-                                                          percent={(item.sumMemUsage / this.state.gridInstanceListMemMax) * 100}
-                                                          strokeColor={'#29a1ff'} status={'normal'}/>
-                                            </div>
-
-                                        </div>
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {numberWithCommas(item.sumDiskUsage) + ' Byte'}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {numberWithCommas(item.sumRecvBytes) + ' Byte'}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {numberWithCommas(item.sumSendBytes) + ' Byte'}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {item.instance.Flavor}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {item.sumActiveConnection}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {item.sumHandledConnection}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {item.sumAcceptsConnection}
-                                    </Table.Cell>
-                                </Table.Row>
-
-                            )
-                        })}
-                    </Table.Body>
-                </Table>
-            )
-        }
-
-        renderCpuTabArea() {
+        renderChartTabArea(hwType: string) {
             return (
                 <div className='page_monitoring_dual_column'>
 
@@ -856,7 +664,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : makeBarChartDataForInst(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                            {this.state.loading ? renderPlaceHolderCircular() : makeBarChartDataForInst(this.state.filteredAppInstUsageList, hwType)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -869,78 +677,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : makeLineChartDataForAppInst(this, this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                            {this.state.loading ? renderPlaceHolderCircular() : makeLineChartDataForAppInst(this, this.state.filteredAppInstUsageList, hwType)}
                         </div>
                     </div>
                 </div>
             )
         }
 
-        renderMemTabArea() {
-            return (
-                <div className='page_monitoring_dual_column'>
-                    {/*1st_column*/}
-                    {/*1st_column*/}
-                    {/*1st_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                TOP5 of MEM Usage
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : makeBarChartDataForInst(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
-                        </div>
-                    </div>
-                    {/*2nd_column*/}
-                    {/*2nd_column*/}
-                    {/*2nd_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                MEM Usage
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : makeLineChartDataForAppInst(this, this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
-                        </div>
-                    </div>
-
-                </div>
-            )
-        }
-
-        renderDiskTabArea() {
-            return (
-                <div className='page_monitoring_dual_column'>
-                    {/*1_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                TOP5 of DISK Usage
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : makeBarChartDataForInst(this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
-                        </div>
-                    </div>
-                    {/*2nd_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                DISK Usage
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : makeLineChartDataForAppInst(this, this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
-                        </div>
-                    </div>
-                </div>
-            )
-        }
-
-        renderConnectionsArea(connectionsType: string) {
-
+        renderMultiChartArea(hwType: string) {
             return (
                 <div className='page_monitoring_dual_column'>
                     <div className='page_monitoring_dual_container'>
@@ -950,7 +694,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular('network') : makeBarChartDataForInst(this.state.filteredConnectionsUsageList, connectionsType, this)}
+                            {this.state.loading ? renderPlaceHolderCircular('network') : makeBarChartDataForInst(this.state.filteredAppInstUsageList, hwType, this)}
                         </div>
                     </div>
                     <div className='page_monitoring_dual_container'>
@@ -959,90 +703,74 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 Connections
                             </div>
                             {!this.state.loading &&
-                            <Dropdown
-                                placeholder='SELECT CONN'
-                                selection
-                                loading={this.state.loading}
-                                options={CONNECTIONS_OPTIONS}
-                                //defaultValue={CONNECTIONS_OPTIONS[0].value}
-                                onChange={async (e, {value}) => {
-
-                                    if (value === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-                                        this.setState({
-                                            connectionsTabIndex: 0,
-                                        })
-                                    } else if (value === HARDWARE_TYPE.HANDLED_CONNECTION) {
-                                        this.setState({
-                                            connectionsTabIndex: 1,
-                                        })
-                                    } else if (value === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-                                        this.setState({
-                                            connectionsTabIndex: 2,
-                                        })
-                                    }
-
-                                }}
-                                value={connectionsType}
-                                //style={StylesForMonitoring.dropDown}
-                            />
+                            this.renderDropDownForMultiChartArea(hwType)
                             }
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular('network') : makeLineChartDataForAppInst(this, this.state.filteredConnectionsUsageList, connectionsType)}
+                            {this.state.loading ? renderPlaceHolderCircular('network') : makeLineChartDataForAppInst(this, this.state.filteredAppInstUsageList, hwType, this)}
                         </div>
                     </div>
                 </div>
             )
         }
 
-        renderNetworkArea(networkType: string) {
-            return (
-                <div className='page_monitoring_dual_column'>
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                TOP5 of NETWORK Usage
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular('network') : makeBarChartDataForInst(this.state.filteredNetworkUsageList, networkType, this)}
-                        </div>
-                    </div>
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title_select'>
-                                NETWORK Usage
-                            </div>
-                            {!this.state.loading &&
-                            <Dropdown
-                                placeholder='SELECT HARDWARE'
-                                selection
-                                loading={this.state.loading}
-                                options={NETWORK_OPTIONS}
-                                defaultValue={NETWORK_OPTIONS[0].value}
-                                onChange={async (e, {value}) => {
-                                    if (value === NETWORK_TYPE.RECV_BYTES) {
-                                        this.setState({
-                                            networkTabIndex: 0,
-                                        })
-                                    } else {
-                                        this.setState({
-                                            networkTabIndex: 1,
-                                        })
-                                    }
+        renderDropDownForMultiChartArea(chartType) {
+            if (chartType === HARDWARE_TYPE.ACTIVE_CONNECTION || chartType === HARDWARE_TYPE.ACCEPTS_CONNECTION || chartType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+                return (
+                    <Dropdown
+                        placeholder='SELECT CONN'
+                        selection
+                        loading={this.state.loading}
+                        options={CONNECTIONS_OPTIONS}
+                        //defaultValue={CONNECTIONS_OPTIONS[0].value}
+                        onChange={async (e, {value}) => {
 
-                                }}
-                                value={networkType}
-                                // style={Styles.dropDown}
-                            />
+                            if (value === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+                                this.setState({
+                                    connectionsTabIndex: 0,
+                                })
+                            } else if (value === HARDWARE_TYPE.HANDLED_CONNECTION) {
+                                this.setState({
+                                    connectionsTabIndex: 1,
+                                })
+                            } else if (value === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+                                this.setState({
+                                    connectionsTabIndex: 2,
+                                })
                             }
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular('network') : makeLineChartDataForAppInst(this, this.state.filteredNetworkUsageList, networkType)}
-                        </div>
-                    </div>
-                </div>
-            )
+
+                        }}
+                        value={chartType}
+                        //style={StylesForMonitoring.dropDown}
+                    />
+                )
+            } else {
+                return (
+                    <Dropdown
+                        placeholder='SELECT HARDWARE'
+                        selection
+                        loading={this.state.loading}
+                        options={NETWORK_OPTIONS}
+                        defaultValue={NETWORK_OPTIONS[0].value}
+                        onChange={async (e, {value}) => {
+                            if (value === NETWORK_TYPE.RECV_BYTES) {
+                                this.setState({
+                                    networkTabIndex: 0,
+                                })
+                            } else {
+                                this.setState({
+                                    networkTabIndex: 1,
+                                })
+                            }
+
+                        }}
+                        value={chartType}
+                        // style={Styles.dropDown}
+                    />
+                )
+            }
+
+
         }
 
         handleReset = async () => {
@@ -1267,18 +995,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                                 // style={{width: 300}}
                             />
-                           {/* <AButton type="primary">Primary</AButton>
-                            <div>
-                                <TimePicker use12Hours onChange={() => {
-                                    // alert('sdlfk')
-                                }}/>
-                                <TimePicker use12Hours format="h:mm:ss A" onChange={() => {
-                                    //alert('sdlfk')
-                                }}/>
-                                <TimePicker use12Hours format="h:mm a" onChange={() => {
-                                    //alert('sdlfk')
-                                }}/>
-                            </div>*/}
                         </div>
                     </div>
                 </div>
@@ -1286,91 +1002,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        async handleBubbleChartDropDown(value) {
-            await this.setState({
-                currentHardwareType: value,
-            });
-
-            let appInstanceList = this.state.appInstanceList;
-            let allCpuUsageList = this.state.filteredCpuUsageList;
-            let allMemUsageList = this.state.filteredMemUsageList;
-            let allDiskUsageList = this.state.filteredDiskUsageList;
-            let allNetworkUsageList = this.state.filteredNetworkUsageList;
-            let chartData = [];
-
-            if (value === HARDWARE_TYPE.FLAVOR) {
-                appInstanceList.map((item, index) => {
-                    chartData.push({
-                        //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
-                        index: index,
-                        label: item.AppName.toString().substring(0, 10) + "...",
-                        value: instanceFlavorToPerformanceValue(item.Flavor),
-                        favor: item.Flavor,
-                        fullLabel: item.AppName.toString(),
-                    })
-                })
-            } else if (value === HARDWARE_TYPE.CPU) {
-                allCpuUsageList.map((item, index) => {
-                    chartData.push({
-                        //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
-                        index: index,
-                        label: item.instance.AppName.toString().substring(0, 10) + "...",
-                        value: (item.sumCpuUsage * 100).toFixed(0),
-                        favor: (item.sumCpuUsage * 100).toFixed(0),
-                        fullLabel: item.instance.AppName.toString(),
-                    })
-                })
-            } else if (value === HARDWARE_TYPE.MEM) {
-                allMemUsageList.map((item, index) => {
-                    chartData.push({
-                        //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
-                        index: index,
-                        label: item.instance.AppName.toString().substring(0, 10) + "...",
-                        value: item.sumMemUsage,
-                        favor: item.sumMemUsage,
-                        fullLabel: item.instance.AppName.toString(),
-                    })
-                })
-            } else if (value === HARDWARE_TYPE.DISK) {
-                allDiskUsageList.map((item, index) => {
-                    chartData.push({
-                        //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
-                        index: index,
-                        label: item.instance.AppName.toString().substring(0, 10) + "...",
-                        value: item.sumDiskUsage,
-                        favor: item.sumDiskUsage,
-                        fullLabel: item.instance.AppName.toString(),
-                    })
-                })
-            } else if (value === NETWORK_TYPE.RECV_BYTES) {
-                allNetworkUsageList.map((item, index) => {
-                    chartData.push({
-                        index: index,
-                        label: item.instance.AppName.toString().substring(0, 10) + "...",
-                        value: item.sumRecvBytes,
-                        favor: item.sumRecvBytes,
-                        fullLabel: item.instance.AppName.toString(),
-                    })
-                })
-            } else if (value === HARDWARE_TYPE.SEND_BYTES) {
-                allNetworkUsageList.map((item, index) => {
-                    chartData.push({
-                        index: index,
-                        label: item.instance.AppName.toString().substring(0, 10) + "...",
-                        value: item.sumSendBytes,
-                        favor: item.sumSendBytes,
-                        fullLabel: item.instance.AppName.toString(),
-                    })
-                })
-            }
-
-            //@todo:-----------------------
-            //todo: bubbleChart
-            //@todo:-----------------------
-            this.setState({
-                bubbleChartData: chartData,
-            });
-        }
 
         //@todo:-----------------------
         //@todo:    CPU,MEM,DISK TAB
@@ -1381,7 +1012,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 menuItem: 'CPU', render: () => {
                     return (
                         <Pane>
-                            {this.renderCpuTabArea()}
+                            {this.renderChartTabArea(HARDWARE_TYPE.CPU)}
                         </Pane>
                     )
                 }
@@ -1390,7 +1021,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 menuItem: 'MEM', render: () => {
                     return (
                         <Pane>
-                            {this.renderMemTabArea()}
+                            {this.renderChartTabArea(HARDWARE_TYPE.MEM)}
                         </Pane>
                     )
                 }
@@ -1399,7 +1030,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 menuItem: 'DISK', render: () => {
                     return (
                         <Pane>
-                            {this.renderDiskTabArea()}
+                            {this.renderChartTabArea(HARDWARE_TYPE.DISK)}
                         </Pane>
                     )
                 }
@@ -1412,13 +1043,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <Tabs selectedIndex={this.state.connectionsTabIndex}
                                   className='page_monitoring_tab'>
                                 <TabPanel>
-                                    {this.renderConnectionsArea(HARDWARE_TYPE.ACTIVE_CONNECTION)}
+                                    {this.renderMultiChartArea(HARDWARE_TYPE.ACTIVE_CONNECTION)}
                                 </TabPanel>
                                 <TabPanel>
-                                    {this.renderConnectionsArea(HARDWARE_TYPE.HANDLED_CONNECTION)}
+                                    {this.renderMultiChartArea(HARDWARE_TYPE.HANDLED_CONNECTION)}
                                 </TabPanel>
                                 <TabPanel>
-                                    {this.renderConnectionsArea(HARDWARE_TYPE.ACCEPTS_CONNECTION)}
+                                    {this.renderMultiChartArea(HARDWARE_TYPE.ACCEPTS_CONNECTION)}
                                 </TabPanel>
                             </Tabs>
 
@@ -1433,22 +1064,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             // todo: Components showing when the loading of graph data is not completed.
             if (!this.state.isAppInstaceDataReady) {
                 return (
-                    <Grid.Row className='view_contents'>
-                        <Grid.Column className='contents_body'>
-                            {this.renderHeader()}
-                            <Grid.Row className='site_content_body'>
-                                <Grid.Column>
-                                    <div className="table-no-resized">
-                                        <div style={{position: 'absolute', top: '37%', left: '48%'}}>
-                                            <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                                {renderGridLoader2(150, 150)}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Grid.Column>
-                            </Grid.Row>
-                        </Grid.Column>
-                    </Grid.Row>
+                    renderLoaderArea(this)
                 )
             }
 
@@ -1456,25 +1072,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
 
                 <Grid.Row className='view_contents'>
-                    {/*todo:---------------------------------*/}
-                    {/*todo: POPUP APP INSTACE LIST DIV      */}
-                    {/*todo:---------------------------------*/}
-                    <Modal
-                        closeIcon={true}
-                        open={this.state.isModalOpened}
-                        closeOnDimmerClick={true}
-                        onClose={() => {
-                            this.setState({
-                                isModalOpened: false,
-                            })
-                        }}
-                        style={{width: '80%'}}
-                    >
-                        <Modal.Header>Status of App Instance</Modal.Header>
-                        <Modal.Content>
-                            {this.renderBottomGridArea()}
-                        </Modal.Content>
-                    </Modal>
                     <SemanticToastContainer position={"top-right"}/>
                     <Grid.Column className='contents_body'>
                         {/*todo:---------------------------------*/}
@@ -1482,6 +1079,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:---------------------------------*/}
                         {this.renderHeader()}
                         <Grid.Row className='site_content_body'>
+                            {this.state.showGridLoader && <div style={{position: 'absolute', top: '37%', left: '48%', zIndex: 999999999999}}>
+                                <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
+                                    {renderGridLoader2(150, 150)}
+                                </div>
+                            </div>}
                             <Grid.Column>
                                 <div className="table-no-resized">
 
@@ -1559,7 +1161,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             defaultValue={HARDWARE_OPTIONS[0].value}
                                                             onChange={async (e, {value}) => {
 
-                                                                this.handleBubbleChartDropDown(value);
+                                                                await handleBubbleChartDropDown(this, value);
 
                                                             }}
                                                             value={this.state.currentHardwareType}
@@ -1582,10 +1184,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     <Tabs selectedIndex={this.state.networkTabIndex}
                                                           className='page_monitoring_tab'>
                                                         <TabPanel>
-                                                            {this.renderNetworkArea(NETWORK_TYPE.RECV_BYTES)}
+                                                            {this.renderMultiChartArea(HARDWARE_TYPE.RECVBYTES)}
                                                         </TabPanel>
                                                         <TabPanel>
-                                                            {this.renderNetworkArea(NETWORK_TYPE.SEND_BYTES)}
+                                                            {this.renderMultiChartArea(HARDWARE_TYPE.SENDBYTES)}
                                                         </TabPanel>
                                                     </Tabs>
                                                 </div>
@@ -1657,10 +1259,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*todo:---------------------------------*/}
                                                         <div className='page_monitoring_popup_table'>
                                                             {this.state.filteredGridInstanceList.length && this.state.isReady === 0 ?
-                                                                <div style={StylesForMonitoring.noData}>
+                                                                <div style={PageMonitoringStyles.noData}>
                                                                     NO DATA
                                                                 </div>
-                                                                : this.renderBottomGridArea()}
+                                                                : renderBottomGridArea(this)}
                                                         </div>
                                                     </div>
                                                 </OutsideClickHandler>

@@ -1,7 +1,5 @@
 import React from 'react';
 
-import Picker from '../components/calendar/picker';
-
 import {Dropdown, Grid} from 'semantic-ui-react';
 
 
@@ -24,14 +22,6 @@ export default class SelectFromTo extends React.PureComponent {
         const state = this.state;
         return (
             <Grid style={{display:'flex', flexGrow:8, alignSelf:'flex-end'}}>
-
-                {/*<Grid.Row columns={4}>*/}
-                    {/*<Grid.Column width={1}><div>From</div></Grid.Column>*/}
-                    {/*<Grid.Column>*/}
-                        {/*<div><Picker></Picker></div>*/}
-                    {/*</Grid.Column>*/}
-                    {/*<Grid.Column width={1}><div>To</div></Grid.Column>*/}
-
                 <Grid.Row columns={2} className='panel_title_filter'>
                     <Grid.Column><div>Showing data for</div></Grid.Column>
                     <Grid.Column>
