@@ -162,14 +162,15 @@ class SiteFour extends React.Component {
             reducer.getFindIndex(this.menuItemsAll, 'label', 'Apps'),
             reducer.getFindIndex(this.menuItemsAll, 'label', 'App Instances'),
             reducer.getFindIndex(this.menuItemsAll, 'label', 'Monitoring'),
-            reducer.getFindIndex(this.menuItemsAll, 'label', 'Audit Log'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Policies'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Audit Logs'),
         ]
 
         this.menuArr = ['Organization', 'User Roles', 'Cloudlets', 'Cloudlet Pools', 'Flavors', 'Cluster Instances', 'Apps', 'App Instances']
         this.auth_three = [ //operator menu
             reducer.getFindIndex(this.menuItemsAll, 'label', 'Cloudlets'),
             reducer.getFindIndex(this.menuItemsAll, 'label', 'Monitoring'),
-            reducer.getFindIndex(this.menuItemsAll, 'label', 'Audit Log'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Audit Logs'),
         ] //OperatorManager, OperatorContributor, OperatorViewer
 
         this.auth_list = [
@@ -392,13 +393,13 @@ class SiteFour extends React.Component {
             enable = true;
         } else if (this.props.params.subPath === "pg=0") {
             if (this.props.dataExist) {
-                if (userName === 'mexadmin') {
+                if (localStorage.selectRole === 'AdminManager') {
                     currentStep = orgaSteps.stepsOrgDataAdmin;
                 } else {
                     currentStep = orgaSteps.stepsOrgDataDeveloper;
                 }
             } else {
-                if (userName === 'mexadmin') {
+                if (localStorage.selectRole === 'AdminManager') {
                     currentStep = orgaSteps.stepsOrgAdmin;
                 } else {
                     currentStep = orgaSteps.stepsOrgDeveloper;
@@ -408,7 +409,11 @@ class SiteFour extends React.Component {
             enable = true;
         } else if (this.props.params.subPath === "pg=2") {
             //Cloudlets
-            currentStep = cloudletSteps.stepsCloudlet;
+            if (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer') {
+                currentStep = cloudletSteps.stepsCloudletDev;
+            } else {
+                currentStep = cloudletSteps.stepsCloudlet;
+            }
             enable = true;
         } else if (this.props.params.subPath === "pg=3") {
             //Flavors
@@ -713,7 +718,7 @@ class SiteFour extends React.Component {
     }
 
     computeRefresh = () => {
-        this.props.handleLoadingSpinner(true);
+        //this.props.handleLoadingSpinner(true);
         this.props.handleComputeRefresh(true);
     }
     disableBtn = () => {
@@ -1073,12 +1078,12 @@ class SiteFour extends React.Component {
                                             }
                                             {
                                                 (viewMode!== 'MexDetailView' && !this.state.currentPage && this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView' && this.props.location.search.indexOf('audits') === -1 ) ?
-
-
-                                                    <Button color={(this.state.page.indexOf('create') === -1 && this.state.page.indexOf('edit') == -1)? 'teal' : null}
-                                                        disabled={this.props.viewBtn.onlyView}
-                                                        onClick={() => this.onHandleRegistry()}>
-                                                        {(this.state.page.indexOf('create') === -1 && this.state.page.indexOf('edit') == -1)?'New' : 'reset'}
+                                                    <Button color={(this.state.page.indexOf('create') === -1 && this.state.page.indexOf('edit') == -1 && this.state.page !== 'pg=newOrg')? 'teal' : null}
+                                                            className='stepOrg2'
+                                                            disabled={this.props.viewBtn.onlyView}
+                                                            onClick={() => this.onHandleRegistry()}
+                                                    >
+                                                        {(this.state.page.indexOf('create') === -1 && this.state.page.indexOf('edit') === -1 && this.state.page !== 'pg=newOrg')?'New' : 'reset'}
                                                     </Button>
                                                     : null
                                             }

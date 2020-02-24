@@ -325,6 +325,7 @@ class SiteFourOrgaTwo extends React.Component {
                                                 name="orgType"
                                                 type="input"
                                                 placeholder={type}
+                                                disabled={true}
                                                 />
                                             </Grid.Column>
                                         </Grid.Row>

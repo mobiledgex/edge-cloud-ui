@@ -407,7 +407,8 @@ class InsideListView extends React.Component {
         <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
             <div ref={acell => this['actionCell_'+i] = acell} style={{backgroundColor:'transparent', width:0, height:0, position:'relative'}}></div>
             
-            <IconButton 
+            <IconButton
+                className='actionButton'
                 aria-label="Action" 
                 onClick={(self) => {
                         _self.onClickDropMenu(item, value, i, self)

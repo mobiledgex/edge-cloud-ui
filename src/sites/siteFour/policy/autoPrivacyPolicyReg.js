@@ -5,7 +5,7 @@ import MexForms from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import * as serviceMC from '../../../services/serviceMC';
+import uuid from 'uuid';
 import * as serverData from '../../../services/ServerData';
 
 class AutoProvPolicyReg extends React.Component {
@@ -103,10 +103,17 @@ class AutoProvPolicyReg extends React.Component {
             })
     }
 
-    getOrganizationData = (dataList) => {
+    getOrganizationData = (form, dataList) => {
         if (dataList && dataList.length > 0)
             return dataList.map(data => {
                 let organization = data.Organization;
+                if (data.isDefault) {
+                    organization = data.OrganizationName;
+                    form.value = organization;
+                    let rules = form.rules ? form.rules : {}
+                    rules.disabled = true;
+                    form.rules = rules;
+                }
                 return { key: organization, value: organization, text: organization }
             })
     }
@@ -154,21 +161,27 @@ class AutoProvPolicyReg extends React.Component {
             { field: 'PortRangeMin', label: 'Port Range Min', type: 'Input', rules: { required: true, type: 'number' }, visible: true,serverField:'port_range_min', dataValidateFunc:this.validatePortRange },
             { field: 'PortRangeMax', label: 'Port Range Max', type: 'Input', rules: { required: true, type: 'number' }, visible: true,serverField:'port_range_max', dataValidateFunc:this.validatePortRange },
             { field: 'RemoteCIDR', label: 'Remote CIDR', type: 'Input', rules: { required: true },visible: true,serverField:'remote_cidr', dataValidateFunc:this.validateRemoteCIDR },
-            { icon: 'delete', type: 'IconButton', visible: true, color:'white', onClick: this.removeRulesForm }
-        ])
+        { icon: 'delete', type: 'IconButton', visible: true, color: 'white', onClick: this.removeRulesForm }
+    ])
 
-    addRulesForm = () => {
-        this.setState(prevState => ({ forms: [...prevState.forms, { uuid: serviceMC.generateUniqueId(), field: 'OutboundSecurityRules', type: 'MultiForm', forms: this.getOutBoundRules(), width:3, visible: true, serverField: 'outbound_security_rules' }] }))
-    }
+    getOutboundSecurityForm = (outBoundRules)=>(
+        { uuid: uuid(), field: 'OutboundSecurityRules', type: 'MultiForm', forms: outBoundRules, width:3, visible: true }
+    )
 
     getForms = () => ([
         { label: 'Create Privacy Policy', type: 'Header' },
-        { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true, serverField:'region' },
+        { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region' },
         { field: 'OrganizationName', label: 'Organization', type: 'Select', placeholder: 'Select Organization', rules: { required: true }, visible: true, serverField: 'privacypolicy#OS#key#OS#developer' },
         { field: 'PrivacyPolicyName', label: 'Privacy Policy Name', type: 'Input', placeholder: 'Enter Privacy Policy Name', rules: { required: true }, visible: true, serverField: 'privacypolicy#OS#key#OS#name' },
-        { field: 'FullIsolation', label: 'Full Isolation', type: 'Checkbox', visible: true, value:false },
-        { label: 'Outbound Security Rules', type: 'Header', forms: { type: 'Button', icon: 'Add', onClick: this.addRulesForm }, visible: true},
+        { field: 'FullIsolation', label: 'Full Isolation', type: 'Checkbox', visible: true, value: false },
+        { label: 'Outbound Security Rules', type: 'Header', forms: { type: 'Button', icon: 'Add', onClick: this.addRulesForm }, visible: true },
     ])
+
+    addRulesForm = () => {
+        this.setState(prevState => ({ forms: [...prevState.forms, this.getOutboundSecurityForm(this.getOutBoundRules())] }))
+    }
+
+    
 
     getNewJsonObject = (data)=>
     {
@@ -236,15 +249,6 @@ class AutoProvPolicyReg extends React.Component {
     onCreate = async () => {
         let data = this.formattedData()
         if (data) {
-            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            let token = store.userToken;
-
-            let method = serviceMC.getEP().CREATE_PRIVACY_POLICY;
-
-            if (this.props.action === 'Update') {
-                method = serviceMC.getEP().UPDATE_PRIVACY_POLICY;
-            }
-
             let outbound_security_rules = [];
             if (!data.FullIsolation) {
                 for (let i = 0; i < this.state.forms.length; i++) {
@@ -275,7 +279,7 @@ class AutoProvPolicyReg extends React.Component {
                     outbound_security_rules: outbound_security_rules
                 }
             }
-            let mcRequest = await serviceMC.sendSyncRequest(this, { token: token, method: method, data: requestData })
+            let mcRequest = this.props.action === 'Update' ? await serverData.updatePrivacyPolicy(this, requestData) : await serverData.createPrivacyPolicy(this, requestData)
             if (mcRequest.response) {
                 if (mcRequest.response.status === 200) {
                     let msg = 'Created'
@@ -345,7 +349,7 @@ class AutoProvPolicyReg extends React.Component {
                 if (form.type === 'Select') {
                     switch (form.field) {
                         case 'OrganizationName':
-                            form.options = this.getOrganizationData(this.OrganizationList)
+                            form.options = this.getOrganizationData(form, this.OrganizationList)
                             break;
                         case 'Region':
                             form.options = this.getRegionData();
@@ -405,15 +409,14 @@ class AutoProvPolicyReg extends React.Component {
                             outboundRule.visible = false;
                         }
                     }
-                    let uuid = serviceMC.generateUniqueId();
-                    forms.push({ uuid: uuid, field: 'OutboundSecurityRules', type: 'MultiForm', forms: outboundRules, visible:true, serverField: 'outbound_security_rules'})
+                    forms.push(this.getOutboundSecurityForm(outboundRules))
                 }
             }
         }
         else {
             this.OrganizationList = await serverData.getOrganizationInfo(this)
             this.loadData(forms)
-            forms.push({ uuid: serviceMC.generateUniqueId(), field: 'OutboundSecurityRules', type: 'MultiForm', forms: this.getOutBoundRules(), width:3, visible: true, serverField: 'outbound_security_rules' })
+            forms.push(this.getOutboundSecurityForm(this.getOutBoundRules()))
         }
 
         this.setState({
