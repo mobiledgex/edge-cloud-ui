@@ -1002,18 +1002,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                             />
                         </div>
-                        <div style={{color: 'white', marginLeft: 10, marginRight: 10,}}>
-                            Add Hardware Item
+                        <div className="page_monitoring_dropdown_label">
+                            Add Line Chart Item
                         </div>
                         <div style={{marginBottom: 0,}}>
                             <Select
-                                placeholder="Add item"
-                                defaultValue="CPU"
-                                style={{width: 190, minHeight: 40,}}
+                                placeholder="Select Item"
+                                //defaultValue=''
+                                style={{width: 190, marginBottom:10,marginLeft:5}}
                                 onChange={async (value) => {
                                     //alert(value)
                                     await this.addGridItem(value)
-                                    showToast('add '+ value + " grid item")
+                                    showToast('added ' + value + " item!!")
                                 }}
                             >
                                 {this.state.checkedList.map(item => {
@@ -1353,14 +1353,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         async addGridItem(hwType) {
             console.log("items===>", this.state.layoutForCluster)
             let currentItems = this.state.layoutForCluster;
-            let maxY = _.maxBy(currentItems, 'y').y;
+            let maxY = -1;
+            if (!isEmpty(currentItems)) {
+                maxY = _.maxBy(currentItems, 'y').y
+            }
 
             let uniqueId = this.makeid(5)
-
-            //alert(JSON.stringify(this.state.layoutTypeForClusterHW))
-
-            let addedLayoutForClusterHw = this.state.layoutTypeForClusterHW //=  HARDWARE_TYPE_FOR_GRID.CPU,
-
+            let addedLayoutForClusterHw = this.state.layoutTypeForClusterHW
             addedLayoutForClusterHw[uniqueId] = hwType
 
 
@@ -1375,6 +1374,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 }),
                 layoutTypeForClusterHW: addedLayoutForClusterHw,
             });
+
+            console.log("layoutTypeForClusterHW===>", this.state.layoutTypeForClusterHW)
+
             reactLocalStorage.setObject('l007', this.state.layoutForCluster)
         }
 
