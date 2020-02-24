@@ -733,7 +733,7 @@ class MapWithListView extends React.Component {
         if (action && action.label === 'Terminal') {
             visible = this.state.selected.Runtime.container_ids //|| this.state.selected.DeploymentType === 'vm'
         } else {
-            visible = false;
+            if(!action) visible = false;
         }
         return visible
     }
