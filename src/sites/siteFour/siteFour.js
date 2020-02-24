@@ -666,6 +666,11 @@ class SiteFour extends React.Component {
 
     //compute page menu view
     menuItemView = (item, i, activeItem) => (
+        <Popup
+            className="table_actions_tooltip"
+            content={item.label}
+            position='right center'
+            trigger={
         <Menu.Item
             className={'leftMenu_' + item.label}
             key={i}
@@ -704,6 +709,8 @@ class SiteFour extends React.Component {
             </div>
 
         </Menu.Item>
+        } />
+
     )
 
     searchClick = (e) => {
@@ -1145,7 +1152,7 @@ class SiteFour extends React.Component {
                                                                     disabled={this.props.viewBtn.onlyView}
                                                                     onClick={() => this.onHandleRegistry()}
                                                                 >
-                                                                    {(this.state.page.indexOf('create') === -1 && this.state.page.indexOf('edit') === -1 && this.state.page !== 'pg=newOrg') ? 'New' : 'reset'}
+                                                                    {(this.state.page.indexOf('create') === -1 && this.state.page.indexOf('edit') === -1 && this.state.page !== 'pg=newOrg') ? 'New' : 'Reset'}
                                                                 </Button>
                                                                 : null
                                                         }
