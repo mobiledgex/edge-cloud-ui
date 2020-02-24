@@ -13,6 +13,7 @@ import * as reducer from '../utils'
 
 import * as serviceMC from '../services/serviceMC';
 import SiteFourCreateInstForm from "./siteFourCreateInstForm";
+import MexMultiStepper, {updateStepper} from '../hoc/stepper/mexMessageMultiStream'
 const ReactGridLayout = WidthProvider(RGL);
 
 
@@ -70,6 +71,7 @@ class RegistryCloudletViewer extends React.Component {
             validateError:[],
             regSuccess:true,
             errorClose:false,
+            stepsArray:[],
             keysData:[
                 {
                     'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy.', active:true, items:[]},
@@ -172,20 +174,19 @@ class RegistryCloudletViewer extends React.Component {
             _self.setState({dummyData:_self.state.fakeData, resultData:(!_self.state.resultData)?_self.props.devData:_self.state.resultData})
         }
     }
+
+
     receiveSubmit = (mcRequest) => {
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let response = mcRequest.response.data
-                if (response.code === 200) {
-                    _self.props.gotoUrl();
-                    _self.setState({ errorClose: true })
+            if (mcRequest) {
+                let data = undefined;
+                let request = mcRequest.request;
+                let cloudletName = request.data.cloudlet.key.name;
+                if(mcRequest.response && mcRequest.response.data)
+                {
+                    data  = mcRequest.response.data;
                 }
-                else {
-                    this.props.handleAlertInfo('error', response.data.message)
-                }
+                this.setState({stepsArray:updateStepper(this.state.stepsArray, cloudletName, data)})
             }
-        }
-        _self.props.handleLoadingSpinner(false);
     }
 
     componentDidMount() {
@@ -236,13 +237,7 @@ class RegistryCloudletViewer extends React.Component {
             this.props.handleStateTutor('done');
             if(!this.pauseRender && nextProps.formClusterInst.submitSucceeded && error.length == 0){
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
-                this.props.handleLoadingSpinner(true);
                 serviceMC.sendWSRequest({ uuid:serviceMC.generateUniqueId(),token: store.userToken, method: serviceMC.getEP().CREATE_CLOUDLET, data: nextProps.submitValues }, this.receiveSubmit)
-                setTimeout(() => {
-                    this.props.handleLoadingSpinner(false);
-                    this.props.gotoUrl();
-                    this.setState({errorClose:true})
-                }, 3000)
                 this.pauseRender = true;
             } else {
                 this.setState({validateError:error,toggleSubmit:true})
@@ -272,6 +267,7 @@ class RegistryCloudletViewer extends React.Component {
                 <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
                 <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
                 <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>
+                <MexMultiStepper multiStepsArray={this.state.stepsArray}/>
             </div>
 
         );

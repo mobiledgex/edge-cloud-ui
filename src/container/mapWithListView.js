@@ -16,7 +16,7 @@ import * as serviceMC from '../services/serviceMC';
 import ReactJson from 'react-json-view';
 import ListIcon from '@material-ui/icons/List';
 
-import MexMessageStream, { CODE_FINISH } from '../hoc/mexMessageStream';
+import MexMessageStream, { CODE_FINISH } from '../hoc/stepper/mexMessageStream';
 import { IconButton, Popper, Grow, Paper, ClickAwayListener, MenuList, MenuItem } from '@material-ui/core';
 
 let prgInter = null;

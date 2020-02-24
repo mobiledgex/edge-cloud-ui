@@ -87,12 +87,8 @@ export function sendWSRequest(request, callback) {
         let response = {};
         response.data = data;
         switch (request.method) {
-            case getEP().CREATE_CLUSTER_INST:
             case getEP().DELETE_CLUSTER_INST:
-            case getEP().CREATE_CLOUDLET:
             case getEP().DELETE_CLOUDLET:
-            case getEP().CREATE_APP_INST:
-            case getEP().UPDATE_APP_INST:
             case getEP().DELETE_APP_INST:
                 clearSockets(request.uuid);
         }

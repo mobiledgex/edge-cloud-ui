@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, DateRange, DateRangePicker, DefinedRange } from 'react-date-range';
+import { DateRange, DateRangePicker, DefinedRange } from 'react-date-range';
 import { format, addDays } from 'date-fns';
 
 import 'react-date-range/dist/styles.css'; // main style file
