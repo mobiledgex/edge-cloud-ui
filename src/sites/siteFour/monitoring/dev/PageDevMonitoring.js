@@ -30,7 +30,7 @@ import {
     renderBubbleChartCoreForDev_Cluster,
     renderGridLayoutForAppInst,
     renderLineChartCoreForDev_AppInst,
-    renderLineChartCoreForDev_Cluster, HARDWARE_TYPE_FOR_GRID,
+    renderLineChartCoreForDev_Cluster, HARDWARE_TYPE_FOR_GRID, console_log,
 } from "./PageDevMonitoringService";
 import {
     CLASSIFICATION,
@@ -222,6 +222,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let savedlayoutKeyForClusterMapper = getUserId() + "_layout_mapper"
 
             let savedlayoutKeyForAppInst = getUserId() + "_layout2"
+
+
+            console_log('test===> 고경준천재님시입니다sdlkfsdlkflsdkflskdf', 'info')
 
 
             this.state = {
@@ -1467,9 +1470,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                      //alert('sdlkfdslkf')
                                  }}
                                  onDoubleClick={() => {
-                                     /* this.setState({
+                                      this.setState({
                                           isDraggable: !this.state.isDraggable
-                                      })*/
+                                      })
                                  }}
                             >
                                 <div className='page_monitoring_column_kyungjoon1' style={{height: 450}}>
