@@ -27,7 +27,7 @@ import {
     renderBubbleChartCoreForDev_Cluster,
     renderGridLayoutForAppInst,
     renderLineChartCoreForDev_AppInst,
-    renderLineChartCoreForDev_Cluster,
+    renderLineChartCoreForDev_Cluster, HARDWARE_TYPE_FOR_GRID,
 } from "./PageDevMonitoringService";
 import {
     CLASSIFICATION,
@@ -199,7 +199,7 @@ type State = {
     selectedClusterUsageOneIndex: number,
     gridDraggable: boolean,
     diskGridItemOneStyleTranslate: string,
-    gridLayoutMapperToHw: {},
+    gridLayoutMapperToHwList: [],
     hwList: [],
 
 }
@@ -214,18 +214,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         constructor(props) {
             super(props);
-            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            let savedlayoutKeyForCluster = store.email + "_layout"
-            let savedlayoutKeyForAppInst = store.email + "_layout2"
+            let savedlayoutKeyForCluster = getUserId() + "_layout"
+            let savedlayoutKeyForClusterMapper = getUserId() + "_layout_mapper"
+
+            let savedlayoutKeyForAppInst = getUserId() + "_layout2"
 
 
-            let hwList = Object.values(defaultHwMapperList);
-
-            console.log("hwList===2222>", hwList);
 
             this.state = {
                 layoutForCluster: isEmpty(reactLocalStorage.get(savedlayoutKeyForCluster)) ? defaultLayoutForCluster : reactLocalStorage.getObject(savedlayoutKeyForCluster),
-                gridLayoutMapperToHw: defaultHwMapperList,
+                gridLayoutMapperToHwList: isEmpty(reactLocalStorage.get(savedlayoutKeyForClusterMapper)) ? defaultLayoutForCluster : reactLocalStorage.getObject(savedlayoutKeyForClusterMapper),
                 layoutForAppInst: isEmpty(reactLocalStorage.get(savedlayoutKeyForAppInst)) ? defaultLayoutForAppInst : reactLocalStorage.getObject(savedlayoutKeyForAppInst),
                 date: '',
                 time: '',
@@ -558,7 +556,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        makeChartDataAndRenderTabBody_____BarChart(hwType,) {
+        makeChartDataAndRenderTabBody_BarChart(hwType,) {
             let barChartDataSet: TypeBarChartData = [];
             if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                 barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
@@ -1034,7 +1032,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 style={{width: 190, marginBottom: 10, marginLeft: 5}}
                                 onChange={async (value) => {
                                     //alert(value)
-                                    await this.addGridItem(value)
+                                    await this.addGridItem(value, 'bar')
                                     showToast('added ' + value + " item!!")
                                 }}
                             >
@@ -1372,11 +1370,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
 
             let uniqueId = this.makeid(5)
-            let gridLayoutMapperToHw = this.state.gridLayoutMapperToHw
+            let _gridLayoutMapperToHwList = this.state.gridLayoutMapperToHwList
 
-            console.log("addedGridLayoutMapToHwList===>", gridLayoutMapperToHw);
-
-            gridLayoutMapperToHw[uniqueId] = hwType
+            let itemOne = {
+                id: uniqueId,
+                hwType: hwType,
+                graphType: graphType,
+            }
 
             await this.setState({
                 layoutForCluster: this.state.layoutForCluster.concat({
@@ -1386,12 +1386,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     w: 1,
                     h: 1,
                 }),
-                gridLayoutMapperToHw: gridLayoutMapperToHw,
+                gridLayoutMapperToHwList: _gridLayoutMapperToHwList.concat(itemOne),
             });
 
-            console.log("gridLayoutMapperToHw===>", this.state.gridLayoutMapperToHw)
+            console.log("gridLayoutMapperToHwList===>", this.state.gridLayoutMapperToHwList)
 
             reactLocalStorage.setObject(getUserId() + "_layout", this.state.layoutForCluster)
+            reactLocalStorage.setObject(getUserId() + "_layout_mapper", this.state.gridLayoutMapperToHwList)
         }
 
         removeGridItem(i) {
@@ -1399,13 +1400,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             let removedLayout = _.reject(this.state.layoutForCluster, {i: i});
             reactLocalStorage.setObject(getUserId() + "_layout", removedLayout)
+            //reactLocalStorage.setObject(getUserId() + "_layout_mapper", removedLayout)
 
             this.setState({
                 layoutForCluster: removedLayout,
             });
         }
 
-        handleLayoutChangeForCluster = (layout) => {
+        handleLayoutChangeForCluster(layout) {
             this.setState({
                 layoutForCluster: layout,
             }, () => {
@@ -1413,6 +1415,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
 
             reactLocalStorage.setObject(getUserId() + "_layout", layout)
+            //reactLocalStorage.setObject(getUserId() + "_layout_mapper", layout)
         }
 
 
@@ -1423,18 +1426,30 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     cols={{lg: 3, md: 3, sm: 3, xs: 3, xxs: 3}}
                     layout={this.state.layoutForCluster}
                     rowHeight={470}
-                    onLayoutChange={this.handleLayoutChangeForCluster}
+                    onLayoutChange={(layout) => {
+
+                        this.handleLayoutChangeForCluster(layout)
+
+                    }}
                     style={{backgroundColor: 'black'}}
                 >
                     {this.state.layoutForCluster.map((item, loopIndex) => {
 
                         const index = item.i;
-                        console.log("index===>", index);
-                        console.log("defaultHwMapperList===>", defaultHwMapperList[index]);
+                        console.log("gridLayoutMapperToHwList===>", this.state.gridLayoutMapperToHwList);
+                        //console.log("defaultHwMapperList===>", defaultHwMapperList[index]);
+
+                        let hwType = 'CPU'
+                        let graphType = 'line';
+                        if (!isEmpty(this.state.gridLayoutMapperToHwList.find(x => x.id === index))) {
+                            hwType = this.state.gridLayoutMapperToHwList.find(x => x.id === index).hwType
+                            graphType = this.state.gridLayoutMapperToHwList.find(x => x.id === index).graphType
+                        }
+                        console.log("hwType===>", hwType);
                         return (
                             <div key={index} data-grid={item} style={{margin: 5, backgroundColor: 'black'}}>
                                 <div className='page_monitoring_column_kyungjoon1' style={{height: 450}}>
-                                    {this.makeChartDataAndRenderTabBody_LineChart(defaultHwMapperList[index])}
+                                    {graphType === 'line' ? this.makeChartDataAndRenderTabBody_LineChart(hwType) : this.makeChartDataAndRenderTabBody_BarChart(hwType)}
                                 </div>
                                 <div className="remove"
                                      onClick={() => {

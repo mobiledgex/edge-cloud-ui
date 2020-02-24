@@ -114,13 +114,43 @@ export const HARDWARE_TYPE_FOR_GRID = {
 }
 
 
+export const defaultHwMapperList = [
+    {
+        id: '1',
+        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
+        graphType: 'line',
+    },
+    {
+        id: '2',
+        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
+        graphType: 'line',
+    },
+    {
+        id: '3',
+        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
+        graphType: 'line',
+    },
+    {
+        id: '4',
+        hwType: HARDWARE_TYPE_FOR_GRID.RECVBYTES,
+        graphType: 'line',
+    },
+    {
+        id: '5',
+        hwType: HARDWARE_TYPE_FOR_GRID.SENDBYTES,
+        graphType: 'line',
+    },
+]
+
+
+/*
 export const defaultHwMapperList = {
     '1': HARDWARE_TYPE_FOR_GRID.CPU,
     '2': HARDWARE_TYPE_FOR_GRID.MEM,
     '3': HARDWARE_TYPE_FOR_GRID.DISK,
     '4': HARDWARE_TYPE_FOR_GRID.RECVBYTES,
     '5': HARDWARE_TYPE_FOR_GRID.SENDBYTES,
-}
+}*/
 
 
 export const getUserId = () => {
