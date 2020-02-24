@@ -831,12 +831,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         async resetGridPosition() {
             try {
-                let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-                /*let savedlayoutKeyForCluster =
-                let savedlayoutKeyForAppInst = */
-
-                reactLocalStorage.remove(store.email + "_layout")
-                reactLocalStorage.remove(store.email + "_layout2")
+                reactLocalStorage.remove(getUserId() + "_layout")
+                reactLocalStorage.remove(getUserId() + "_layout2")
                 await this.setState({
                     layoutForCluster: [],
                     layoutForAppInst: [],
