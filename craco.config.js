@@ -22,7 +22,7 @@ const getLoader = function (rules, matcher) {
 
 module.exports = {
     dev: {
-        useEslint: false
+        useEslint: true
     },
     eslint: {
         configure: {
@@ -45,6 +45,8 @@ module.exports = {
                 'no-useless-escape': 'off',
                 'no-self-assign': 'off',
                 'jsx-a11y/alt-text': 'off',
+                'react/style-prop-object': 'off',
+                'jsx-a11y/accessible-emoji': 'off',
             }
         }
     },

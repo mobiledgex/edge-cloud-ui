@@ -14,20 +14,8 @@ const DEFAULT_VIEWPORT = {
     zoom: 13,
 }
 
-const multiPolygon = [
-    [
-        [51.51, -0.12],
-        [51.51, -0.13],
-        [51.53, -0.13],
-    ],
-    [
-        [51.51, -0.05],
-        [51.51, -0.07],
-        [51.53, -0.07],
-    ],
-]
 let greenIcon = new L.Icon({
-    iconUrl: require('../leaflet_markers/marker-icon-2x-green.png'),
+    iconUrl: require('../../../../assets/leaflet_markers/marker-icon-2x-green.png'),
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
