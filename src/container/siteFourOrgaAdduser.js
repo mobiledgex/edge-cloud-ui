@@ -101,6 +101,7 @@ const renderInput = field => (
             type={field.type}
             label={field.label}
             placeholder={field.placeholder}
+            disabled={field.disabled}
         />
         {field.meta.touched && ((field.meta.error && <span className="text-danger">{field.meta.error}</span>) || (field.meta.warning && <span>{field.meta.warning}</span>))}
     </div>
@@ -289,6 +290,7 @@ class SiteFourOrgaAdduser extends React.Component {
                                                     name="orgName"
                                                     type="input"
                                                     placeholder={org}
+                                                    disabled={true}
                                                 />
                                             </Grid.Column>
                                         </Grid.Row>
@@ -302,6 +304,7 @@ class SiteFourOrgaAdduser extends React.Component {
                                                 name="orgType"
                                                 type="input"
                                                 placeholder={type}
+                                                disabled={true}
                                                 />
                                             </Grid.Column>
                                         </Grid.Row>
