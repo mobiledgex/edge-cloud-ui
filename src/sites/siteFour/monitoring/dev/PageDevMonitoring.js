@@ -7,9 +7,12 @@ import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
-import {Button as MButton, CircularProgress} from '@material-ui/core'
+import {Button as MButton, CircularProgress, Icon} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
-import {Checkbox, DatePicker, Select, Button as AButton} from 'antd';
+import {Checkbox, DatePicker, Select, Button as AButton,} from 'antd';
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
+
+
 import {
     convertHwTypePhrases,
     defaultLayoutForAppInst,
@@ -880,7 +883,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         >Reset
                         </Button>
                         <MButton
-                            style={{backgroundColor: !this.state.isDraggable ? 'green' : 'rgba(117,122,133,1)', color: 'white', height:38}}
+                            style={{
+                                backgroundColor: !this.state.isDraggable ? 'green' : 'rgba(117,122,133,1)',
+                                color: 'white',
+                                height: 38
+                            }}
                             onClick={async () => {
                                 this.setState({
                                     isDraggable: !this.state.isDraggable,
@@ -1468,6 +1475,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 <div className='page_monitoring_column_kyungjoon1' style={{height: 450}}>
                                     {graphType === 'line' ? this.makeChartDataAndRenderTabBody_LineChart(hwType) : this.makeChartDataAndRenderTabBody_BarChart(hwType)}
                                 </div>
+
                                 <div className="remove"
                                      onClick={() => {
                                          this.removeGridItem(index)
@@ -1480,13 +1488,34 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                          justifyContent: 'center',
                                          //backgroundColor: 'red',
                                          position: "absolute",
-                                         right: "2px",
+                                         right: "29px",
                                          top: 0,
+                                         fontWeight: 'bold',
+                                         cursor: "pointer",
+                                         color: 'white'
+                                     }}
+                                >
+                                    x
+                                </div>
+                                <div className="maxize"
+                                     onClick={() => {
+                                         alert('sdklfsldkflk')
+                                     }}
+                                     style={{
+                                         fontSize: 25,
+                                         width: 50,
+                                         display: 'flex',
+                                         alignItems: 'center',
+                                         justifyContent: 'center',
+                                         //backgroundColor: 'red',
+                                         position: "absolute",
+                                         right: "0px",
+                                         top: 7,
                                          fontWeight: 'bold',
                                          cursor: "pointer"
                                      }}
                                 >
-                                    x
+                                    <FullscreenIcon color="primary" style={{color: 'white', fontSize: 25}}/>
                                 </div>
                             </div>
                         );
