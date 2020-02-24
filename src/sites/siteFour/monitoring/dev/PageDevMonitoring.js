@@ -880,13 +880,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         >Reset
                         </Button>
                         <MButton
-                            style={{backgroundColor: !this.state.isDraggable ? 'green' : 'rgba(117,122,133,1)', color: 'white'}}
+                            style={{backgroundColor: !this.state.isDraggable ? 'green' : 'rgba(117,122,133,1)', color: 'white', height:38}}
                             onClick={async () => {
                                 this.setState({
                                     isDraggable: !this.state.isDraggable,
                                 })
                             }}
-                        >Fix Grid23232
+                        >Fix Grid
                         </MButton>
                         <Button
                             onClick={async () => {
