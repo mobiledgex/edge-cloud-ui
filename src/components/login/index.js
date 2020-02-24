@@ -284,7 +284,7 @@ class Login extends Component {
                     serviceMC.sendRequest(self, {method:serviceMC.getEP().RESET_PASSWORD, data : {token: store ? store.resetToken : 'null', password:nextProps.values.password}}, self.resultNewPass)
                 } else {
                     let requestBody ={
-                        method:serviceMC.getEP().CREATE_USER, 
+                        method:serviceMC.getEP().CREATE_USER,
                         data : {
                             name: nextProps.values.username,
                             passhash: nextProps.values.password,
@@ -323,8 +323,8 @@ class Login extends Component {
             localStorage.setItem('userInfo', null)
             let email = nextProps.userInfo && nextProps.userInfo.email;
             let msgTxt = `Thank you for signing up. Please verify your account.
-                            In order to login to your account, you must verify your account. 
-                            An email has been sent to ${email} with a link to verify your account. 
+                            In order to login to your account, you must verify your account.
+                            An email has been sent to ${email} with a link to verify your account.
                             If you have not received the email after a few minutes check your spam folder or resend the verification email.`
             this.setState({successCreate:true, loginMode:'signuped', successMsg:'Account created', resultMsg:msgTxt})
         }
@@ -465,7 +465,7 @@ class Login extends Component {
     handleClickLogin(mode) {
         self.setState({loginMode:mode})
     }
-   
+
     onSendEmail(mode) {
         if (mode === 'verify') {
             let requestBody = {

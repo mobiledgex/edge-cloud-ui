@@ -1,145 +1,147 @@
-import React, { Component } from 'react'
-import { withRouter } from 'react-router'
+import React, {Component} from 'react'
+import {withRouter} from 'react-router'
 
 // semantic-ui
-import { Container, Form, Input, Button, Grid } from 'semantic-ui-react'
+import {Container, Form, Input, Button, Grid} from 'semantic-ui-react'
 
 // alert
 import Alert from 'react-s-alert';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import * as actions from '../../actions';
 // API
 import * as MyAPI from '../utils/MyAPI'
-import { LOCAL_STRAGE_KEY } from '../utils/Settings'
+import {LOCAL_STRAGE_KEY} from '../utils/Settings'
 
-import { loginWithEmailRedux } from '../actions/UserActions'
+import {loginWithEmailRedux} from '../actions/UserActions'
 
 class LoginForm extends Component {
 
-  state = {
-    email: '',
-    password: '',
-  }
-
-  onSubmit = () => {
-
-    const { email, password } = this.state
-    const params = {
-      email: email,
-      password: password,
+    state = {
+        email: '',
+        password: '',
     }
 
-    // create account
-    MyAPI.signinWithPassword(params)
-    .then((data) => {
+    onSubmit = () => {
 
-      return new Promise((resolve, reject) => {
-
-        if (data.status !== 'success'){
-          let error_text = 'Error';
-          if (data.detail){
-            error_text = data.detail
-          }
-          reject(error_text)
-
-        } else {
-          // success
-          const params = {
-            user: data.user,
-            login_token: data.login_token,
-            email:email
-          }
-          this.props.handleChangeLoginMode('login')
-          localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(params))
-          this.props.mapDispatchToLoginWithPassword(params)
-          resolve()
+        const {email, password} = this.state
+        const params = {
+            email: email,
+            password: password,
         }
-      })
-    })
-    .then(() => {
-      // redirect
-      this.props.history.push("/dashboard")
-    })
-    .catch((err) => {
-      console.log("err:", err)
 
-      Alert.error(err, {
-        position: 'top-right',
-        effect: 'slide',
-        timeout: 5000
-      });
-    })
-  }
+        // create account
+        MyAPI.signinWithPassword(params)
+            .then((data) => {
 
-  handleChange = (e, { name, value }) => {
-    this.setState({ [name]: value })
-  }
+                return new Promise((resolve, reject) => {
 
-  render() {
+                    if (data.status !== 'success') {
+                        let error_text = 'Error';
+                        if (data.detail) {
+                            error_text = data.detail
+                        }
+                        reject(error_text)
 
-    const { email, password } = this.state
+                    } else {
+                        // success
+                        const params = {
+                            user: data.user,
+                            login_token: data.login_token,
+                            email: email
+                        }
+                        this.props.handleChangeLoginMode('login')
+                        localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(params))
+                        this.props.mapDispatchToLoginWithPassword(params)
+                        resolve()
+                    }
+                })
+            })
+            .then(() => {
+                // redirect
+                this.props.history.push("/dashboard")
+            })
+            .catch((err) => {
+                console.log("err:", err)
 
-    return(
-      <Container text className='create_acount_form'>
+                Alert.error(err, {
+                    position: 'top-right',
+                    effect: 'slide',
+                    timeout: 5000
+                });
+            })
+    }
 
-        <Form onSubmit={this.onSubmit} style={{marginTop:60}}>
-          <Grid>
+    handleChange = (e, {name, value}) => {
+        this.setState({[name]: value})
+    }
 
-            <Grid.Column textAlign='left' width={16}>
-              <label>Email</label>
-              <Input
-                style={{width: '100%'}}
-                icon='mail outline'
-                iconPosition='left'
-                name='email'
-                onChange={this.handleChange}
-                value={email}
-                placeholder='yourname@example.com' />
-            </Grid.Column>
+    render() {
 
-            <Grid.Column textAlign='left' width={16}>
-              <label>Password</label>
-              <Input
-                style={{width: '100%'}}
-                icon='key'
-                iconPosition='left'
-                name='password'
-                onChange={this.handleChange}
-                value={password}
-                placeholder='********' />
-            </Grid.Column>
+        const {email, password} = this.state
 
-            <Grid.Column  width={16}>
-              <Button
-                style={{width: '100%'}}
-                loading={this.state.loading}
-                disabled={this.state.loading}
-                type='submit'>Sign in</Button>
-            </Grid.Column>
+        return (
+            <Container text className='create_acount_form'>
 
-          </Grid>
+                <Form onSubmit={this.onSubmit} style={{marginTop: 60}}>
+                    <Grid>
 
-        </Form>
+                        <Grid.Column textAlign='left' width={16}>
+                            <label>Email</label>
+                            <Input
+                                style={{width: '100%'}}
+                                icon='mail outline'
+                                iconPosition='left'
+                                name='email'
+                                onChange={this.handleChange}
+                                value={email}
+                                placeholder='yourname@example.com'/>
+                        </Grid.Column>
 
-      </Container>
-    )
-  }
+                        <Grid.Column textAlign='left' width={16}>
+                            <label>Password</label>
+                            <Input
+                                style={{width: '100%'}}
+                                icon='key'
+                                iconPosition='left'
+                                name='password'
+                                onChange={this.handleChange}
+                                value={password}
+                                placeholder='********'/>
+                        </Grid.Column>
+
+                        <Grid.Column width={16}>
+                            <Button
+                                style={{width: '100%'}}
+                                loading={this.state.loading}
+                                disabled={this.state.loading}
+                                type='submit'>Sign in</Button>
+                        </Grid.Column>
+
+                    </Grid>
+
+                </Form>
+
+            </Container>
+        )
+    }
 }
 
 // react-redux
-function mapStateToProps ( {user} ) {
-  return {
-    user
-  }
+function mapStateToProps({user}) {
+    return {
+        user
+    }
 }
 
-function mapDispatchToProps (dispatch) {
-  return {
-    mapDispatchToLoginWithPassword: (data) => dispatch(loginWithEmailRedux({ params: data})),
-    handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data))},
-  }
+function mapDispatchToProps(dispatch) {
+    return {
+        mapDispatchToLoginWithPassword: (data) => dispatch(loginWithEmailRedux({params: data})),
+        handleChangeLoginMode: (data) => {
+            dispatch(actions.changeLoginMode(data))
+        },
+    }
 }
 
 
 // export default withRouter(MainPage);
-export default withRouter( connect( mapStateToProps, mapDispatchToProps )(LoginForm) )
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(LoginForm))

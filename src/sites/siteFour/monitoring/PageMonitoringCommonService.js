@@ -9,11 +9,10 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import {makeCompleteDateTime} from "./admin/PageAdminMonitoringService";
 import moment from "moment";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
-import axios from "axios";
 import {GridLoader} from "react-spinners";
+import {Grid} from "semantic-ui-react";
 
-
-export const StylesForMonitoring = {
+export const PageMonitoringStyles = {
     selectBoxRow: {
         alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,
     },
@@ -57,7 +56,12 @@ export const StylesForMonitoring = {
     },
     noData: {
         fontSize: 30,
-        display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', alignSelf: 'center', width: '100%'
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        width: '100%'
     },
     cell001: {
         marginLeft: 0,
@@ -93,6 +97,17 @@ export const StylesForMonitoring = {
         width: '100%',
         minHeight: 350,
         //backgroundColor:'red'
+    },
+    center3: {
+        display: 'flex',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        minHeight: 350,
+        fontSize: 29,
+        fontFamily: 'Karla'
+        //backgroundColor:'red'
     }
 
 }
@@ -113,6 +128,37 @@ export const StylesForMonitoring = {
             speed={3.0}
         />*/
 }
+
+export const noDataArea = () => (
+    <div style={PageMonitoringStyles.center3}>
+        There is no data to represent.
+    </div>
+)
+
+export const isEmpty = (value) => {
+    if (value == "" || value == null || value == undefined || (value != null && typeof value == "object" && !Object.keys(value).length)) {
+        return true
+    } else {
+        return false
+    }
+};
+
+
+export const renderLoaderArea = (_this) => (
+    <Grid.Row className='view_contents'>
+        <Grid.Column className='contents_body'>
+            {_this.renderHeader()}
+            <div style={{position: 'absolute', top: '37%', left: '48%'}}>
+                <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
+                    {renderGridLoader2(150, 150)}
+                </div>
+            </div>
+        </Grid.Column>
+
+    </Grid.Row>
+)
+
+
 export const renderGridLoader2 = (width, height) => {
     return (
         <GridLoader
@@ -139,7 +185,8 @@ export const renderGridLoader = () => {
 
 export const renderPlaceHolderCircular = (type: string = '') => {
     return (
-        <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
+        <div className='page_monitoring_blank_box'
+             style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
             {/*<Lottie
                 options={{
                     loop: true,
@@ -164,7 +211,8 @@ export const renderPlaceHolderCircular = (type: string = '') => {
 
 export const renderPlaceHolderLottiePinJump = (type: string = '') => {
     return (
-        <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%', zIndex: 999999999999}}>
+        <div className='page_monitoring_blank_box'
+             style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%', zIndex: 999999999999}}>
             <Lottie
                 options={{
                     loop: true,
@@ -186,7 +234,8 @@ export const renderPlaceHolderLottiePinJump = (type: string = '') => {
 
 export const renderPlaceHolderLottiePinJump2 = (type: string = '') => {
     return (
-        <div className='page_monitoring_blank_box' style={{zIndex: 999999999999, position: 'absolute', top: '1%', left: '1%'}}>
+        <div className='page_monitoring_blank_box'
+             style={{zIndex: 999999999999, position: 'absolute', top: '1%', left: '1%'}}>
             <Lottie
                 options={{
                     loop: true,
@@ -230,9 +279,9 @@ export const renderPlaceHolderLottie = (type: string = '') => {
 export const renderPlaceHolder3 = (type: string = '') => {
     // let boxWidth = window.innerWidth / 3 - 50;
     return (
-        <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
+        <div className='page_monitoring_blank_box'
+             style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
             <CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 20}}/>
-
         </div>
     )
 }
@@ -257,12 +306,9 @@ export const convertByteToMegaByte2 = (value, hardwareType) => {
 
 export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDateTimeList, hardwareType) => {
 
-
     const lineChartData = (canvas) => {
-
         let gradientList = makeGradientColor(canvas, height);
-
-        let finalSeriesDataSets = [];
+        let finishedSeriesDataSets = [];
         for (let i in usageSetList) {
             //@todo: top5 만을 추린다
             if (i < 5) {
@@ -284,93 +330,18 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
 
                 }
 
-                finalSeriesDataSets.push(datasetsOne)
+                finishedSeriesDataSets.push(datasetsOne)
             }
 
         }
-
-
-        console.log('finalSeriesDataSets====>', finalSeriesDataSets);
-
         return {
             labels: newDateTimeList,
-            datasets: finalSeriesDataSets,
+            datasets: finishedSeriesDataSets,
         }
     }
 
 
     let height = 500 + 100;
-    let options = {
-        animation: {
-            duration: 500
-        },
-        maintainAspectRatio: false,//@todo
-        responsive: true,//@todo
-        datasetStrokeWidth: 3,
-        pointDotStrokeWidth: 4,
-        layout: {
-            padding: {
-                left: 0,
-                right: 10,
-                top: 0,
-                bottom: 0
-            }
-        },
-        legend: {
-            position: 'top',
-            labels: {
-                boxWidth: 10,
-                fontColor: 'white'
-            }
-        },
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true,
-                    fontColor: 'white',
-                    callback(value, index, label) {
-                        return convertByteToMegaByte(value, hardwareType)
-
-                    },
-                },
-                gridLines: {
-                    color: "#505050",
-                },
-                //stacked: true
-
-            }],
-            xAxes: [{
-                /*ticks: {
-                    fontColor: 'white'
-                },*/
-                gridLines: {
-                    color: "#505050",
-                },
-                ticks: {
-                    fontSize: 14,
-                    fontColor: 'white',
-                    //maxRotation: 0.05,
-                    //autoSkip: true,
-                    maxRotation: 45,
-                    minRotation: 45,
-                    padding: 10,
-                    labelOffset: 0,
-                    callback(value, index, label) {
-                        return value;
-
-                    },
-                },
-                beginAtZero: false,
-                /* gridLines: {
-                     drawTicks: true,
-                 },*/
-            }],
-            backgroundColor: {
-                fill: "#1e2124"
-            },
-        }
-
-    }
 
     //todo :#######################
     //todo : chart rendering part
@@ -386,11 +357,88 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
                 //height={hardwareType === "recv_bytes" || hardwareType === "send_bytes" ? chartHeight + 20 : chartHeight}
                 //height={'100%'}
                 data={lineChartData}
-                options={options}
-
+                options={lineGraphOptionsForAppInst(hardwareType)}
             />
         </div>
     );
+}
+
+
+export const lineGraphOptionsForAppInst = (hardwareType) => {
+
+    return (
+        {
+            animation: {
+                duration: 500
+            },
+            maintainAspectRatio: false,//@todo
+            responsive: true,//@todo
+            datasetStrokeWidth: 3,
+            pointDotStrokeWidth: 4,
+            layout: {
+                padding: {
+                    left: 0,
+                    right: 10,
+                    top: 0,
+                    bottom: 0
+                }
+            },
+            legend: {
+                position: 'top',
+                labels: {
+                    boxWidth: 10,
+                    fontColor: 'white'
+                }
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        fontColor: 'white',
+                        callback(value, index, label) {
+                            return convertByteToMegaByte(value, hardwareType)
+
+                        },
+                    },
+                    gridLines: {
+                        color: "#505050",
+                    },
+                    //stacked: true
+
+                }],
+                xAxes: [{
+                    /*ticks: {
+                        fontColor: 'white'
+                    },*/
+                    gridLines: {
+                        color: "#505050",
+                    },
+                    ticks: {
+                        fontSize: 14,
+                        fontColor: 'white',
+                        //maxRotation: 0.05,
+                        //autoSkip: true,
+                        maxRotation: 45,
+                        minRotation: 45,
+                        padding: 10,
+                        labelOffset: 0,
+                        callback(value, index, label) {
+                            return value;
+
+                        },
+                    },
+                    beginAtZero: false,
+                    /* gridLines: {
+                         drawTicks: true,
+                     },*/
+                }],
+                backgroundColor: {
+                    fill: "#1e2124"
+                },
+            }
+
+        }
+    )
 }
 
 
@@ -511,6 +559,10 @@ export const renderUsageByType = (usageOne, hardwareType, role = '',) => {
 }
 
 export const renderBarChartCore = (chartDataList, hardwareType) => {
+
+
+    console.log(`chartDataList==${hardwareType}=>`, chartDataList);
+
     return (
         <Chart
             width={"100%"}
@@ -790,50 +842,11 @@ export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType) => 
             label: cluster_cloudlet_fullLabel.toString().substring(0, 17) + "...",
             value: usageValue,
             favor: usageValue,
-            fullLabel: item.cluster.toString() + ' [' + item.cloudlet.toString().trim().substring(0, 15)+ "]",
+            fullLabel: item.cluster.toString() + ' [' + item.cloudlet.toString().trim().substring(0, 15) + "]",
             cluster_cloudlet: item.cluster.toString() + ' | ' + item.cloudlet.toString(),
         })
     })
 
     return bubbleChartData;
-}
-
-
-export const getCloudletLevelMatric = async (serviceBody: any, pToken: string) => {
-    console.log('token2===>', pToken);
-    let result = await axios({
-        url: '/api/v1/auth/metrics/cloudlet',
-        method: 'post',
-        data: serviceBody['params'],
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + pToken
-        },
-        timeout: 15 * 1000
-    }).then(async response => {
-        return response.data;
-    }).catch(e => {
-        //showToast(e.toString())
-    })
-    return result;
-}
-
-export const getClusterLevelMatric = async (serviceBody: any, pToken: string) => {
-    console.log('token2===>', pToken);
-    let result = await axios({
-        url: '/api/v1/auth/metrics/cluster',
-        method: 'post',
-        data: serviceBody['params'],
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + pToken
-        },
-        timeout: 15 * 1000
-    }).then(async response => {
-        return response.data;
-    }).catch(e => {
-        //showToast(e.toString())
-    })
-    return result;
 }
 

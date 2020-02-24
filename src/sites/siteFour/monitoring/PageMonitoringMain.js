@@ -40,9 +40,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         state = {
             date: '',
         };
+
         constructor(props) {
             super(props);
         }
+
         componentWillMount(): void {
             let store = JSON.parse(localStorage.PROJECT_INIT);
             let token = store ? store.userToken : 'null';
