@@ -1061,8 +1061,6 @@ class SiteFour extends React.Component {
                             (this.state.page === 'pg=PageAdminMonitoring') ? <PageAdminMonitoring/> :
                                 (this.state.page === 'pg=PageDevMonitoring') ? <PageDevMonitoring/> :
                                     (this.state.page === 'pg=PageOperMonitoring') ? <PageOperMonitoring/> :
-                                        (this.state.page === 'pg=PageModalMonitoring') ? <PageModalMonitoring/> :
-
                                             <Grid.Row className='view_contents'>
                                                 <Grid.Column className='contents_body'>
                                                     <Grid.Row className='content_title'>
