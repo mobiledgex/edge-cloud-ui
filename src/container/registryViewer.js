@@ -294,12 +294,14 @@ class RegistryViewer extends React.Component {
         if (mcRequest) {
             if (mcRequest.response) {
                 let response = mcRequest.response;
-                let arr = []
+                let arr = ['Unchecked']
                 response.data.map((item, i) => {
                     arr.push(item.AutoPolicyName)
                 })
                 _self.setState({ provPolicyList: arr });
             }
+        } else {
+            _self.setState({ provPolicyList: ['Unchecked'] });
         }
     }
 
@@ -307,12 +309,14 @@ class RegistryViewer extends React.Component {
         if (mcRequest) {
             if (mcRequest.response) {
                 let response = mcRequest.response;
-                let arr = []
+                let arr = ['Unchecked']
                 response.data.map((item, i) => {
                     arr.push(item.PrivacyPolicyName)
                 })
                 _self.setState({ privacyPolicyList: arr });
             }
+        } else {
+            _self.setState({ privacyPolicyList: ['Unchecked'] });
         }
     }
 
@@ -404,6 +408,8 @@ class RegistryViewer extends React.Component {
                 * ================== update start ===================
                 * make body code by @Smith 
                 */
+               let sValue = nextProps.submitValues.app;
+               let keys = Object.keys(sValue);
                 if(nextProps.editMode) {
                     method = serviceMC.getEP().UPDATE_APP;
                     nextProps.submitValues.app['fields'] = this.updateFields(nextProps.editData, nextProps.submitValues.app)
@@ -424,8 +430,6 @@ class RegistryViewer extends React.Component {
                     nextProps.submitValues.app['key'] = key;
 
                     // concat submitValues with newBodyData
-                    let sValue = nextProps.submitValues.app;
-                    let keys = Object.keys(sValue);
                     keys.map((key) => {
                         if(sValue[key] !== "" && typeof sValue[key] === 'string') {
                             newBodyData.app[key] = sValue[key];
@@ -479,6 +483,11 @@ class RegistryViewer extends React.Component {
                 /**
                  * ======================= update end =====================
                  */
+                keys.map((key) => {
+                    if(newBodyData.app[key] === 'Unchecked') {
+                        newBodyData.app[key] = ""
+                    }
+                })
                 this.setState({toggleSubmit:true,validateError:error});
                 this.props.handleLoadingSpinner(true);
                 let serviceBody = {
