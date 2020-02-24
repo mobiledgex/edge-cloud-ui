@@ -3,9 +3,29 @@ import {WidthProvider, Responsive} from "react-grid-layout";
 import _ from "lodash";
 import {reactLocalStorage} from "reactjs-localstorage";
 import {hot} from "react-hot-loader/root";
+import {isEmpty} from "../../../PageMonitoringCommonService";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
-
+const defaultLayout = [
+    {
+        "i": "0", "x": 0, "y": 0, "w": 1, "h": 1, "add": false
+    },
+    {
+        "i": "1", "x": 1, "y": 0, "w": 1, "h": 1, "add": false
+    },
+    {
+        "i": "2", "x": 2, "y": 0, "w": 1, "h": 1, "add": false
+    },
+    {
+        "i": "3", "x": 0, "y": 1, "w": 1, "h": 1, "add": false
+    },
+    {
+        "i": "4", "x": 1, "y": 1, "w": 1, "h": 1, "add": false
+    },
+    {
+        "i": "5", "x": 2, "y": 1, "w": 1, "h": 1, "add": true
+    }
+]
 type Props = {};
 type State = {
     newCounter: number,
@@ -14,67 +34,40 @@ type State = {
 
 };
 
+
 export default hot(
-    class Test003 extends React.Component<Props, State> {
+    class Test004 extends React.Component<Props, State> {
         static defaultProps = {
             className: "layout",
             cols: {lg: 12, md: 10, sm: 6, xs: 4, xxs: 2},
             rowHeight: 100
         };
 
-        constructor(props) {
+        constructor(props: Props) {
             super(props);
 
-            /* let defaultLayout= [0, 1, 2, 3, 4].map(function (i, key, list) {
-                 return {
-                     i: i.toString(),
-                     x: i * 2,
-                     y: 0,
-                     w: 2,
-                     h: 2,
-                     add: i === (list.length - 1)
-                 };
-             })*/
 
-            let defaultLayout = [
-                {
-                    "i": "0", "x": 0, "y": 0, "w": 1, "h": 1, "add": false
-                },
-                {
-                    "i": "1", "x": 1, "y": 0, "w": 1, "h": 1, "add": false
-                },
-                {
-                    "i": "2", "x": 2, "y": 0, "w": 1, "h": 1, "add": false
-                },
-                {
-                    "i": "3", "x": 0, "y": 1, "w": 1, "h": 1, "add": false
-                },
-                {
-                    "i": "4", "x": 1, "y": 1, "w": 1, "h": 1, "add": false
-                },
-                {
-                    "i": "5", "x": 2, "y": 1, "w": 1, "h": 1, "add": true
-                }
-            ]
+            let savedLayout = reactLocalStorage.getObject('l007')
+
 
             console.log("defaultLayout===>", defaultLayout);
-
-
             this.state = {
-                items: defaultLayout,
+                items: isEmpty(savedLayout) ? defaultLayout : savedLayout,
                 newCounter: 0,
                 cols: 6,
             };
         }
 
         createElement(el) {
-            const i = el.add ? "+" : el.i;
+            const index = el.i;
             return (
-                <div key={i} data-grid={el} style={{margin: 5, backgroundColor: 'green'}}>
-                    <span className="text">{i}</span>
+                <div key={index} data-grid={el} style={{margin: 5, backgroundColor: 'green'}}>
+                    <span className="text">{index}</span>
                     <span
                         className="remove"
-                        onClick={this.onRemoveItem.bind(this, i)}
+                        onClick={() => {
+                            this.removeItem(index)
+                        }}
                         style={{
                             fontSize: 25,
                             width: 50,
@@ -95,25 +88,45 @@ export default hot(
             );
         }
 
-        onAddItem() {
+        makeid(length) {
+            var result = '';
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charactersLength = characters.length;
+            for (var i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+        }
 
+        async onAddItem() {
             let cols = this.state.items.length
-            //alert(cols)
 
-            console.log("adding", "n" + this.state.newCounter);
-            this.setState({
+            console.log("items===>", this.state.items)
+
+            let currentItems = this.state.items;
+
+            let maxY = _.maxBy(currentItems, 'y').y;
+
+            const newIndex = Number(_.maxBy(currentItems, "i").i) + 1;
+
+
+            console.log("newIndex===>", newIndex);
+
+
+            await this.setState({
                 // Add a new item. It must have a unique key!
                 items: this.state.items.concat({
-                    i: "n" + this.state.newCounter,
+                    i: this.makeid(5),
                     //x: (this.state.items.length * 2) % (this.state.cols || 12),
-                    x: cols % 3,
-                    y: Infinity, // puts it at the bottom
+                    x: 0,
+                    y: maxY + 1, //
                     w: 1,
                     h: 1
                 }),
                 // Increment the counter to ensure key is always unique.
                 newCounter: this.state.newCounter + 1
             });
+            reactLocalStorage.setObject('l007', this.state.items)
         }
 
         // We're using the cols coming back from this to calculate where to add new items.
@@ -125,13 +138,13 @@ export default hot(
         }
 
 
-        onRemoveItem(i) {
+        removeItem(i) {
             console.log("removing", i);
 
-            let removedList = _.reject(this.state.items, {i: i});
-
+            let removedLayout = _.reject(this.state.items, {i: i});
+            reactLocalStorage.setObject('l007', removedLayout)
             this.setState({
-                items: removedList,
+                items: removedLayout,
             });
         }
 
@@ -142,12 +155,20 @@ export default hot(
                         this.onAddItem()
                     }} style={{color: 'blue'}}>Add Item
                     </button>
+                    <button onClick={async () => {
+                        reactLocalStorage.remove('l007')
+
+                    }} style={{color: 'blue'}}>delete lo
+                    </button>
                     <ResponsiveReactGridLayout
                         onLayoutChange={(layout) => {
 
-                            reactLocalStorage.setObject('layout007')
+                            reactLocalStorage.setObject('l007', layout)
 
-                            this.setState({layout: layout});
+                            this.setState({
+                                layout: layout,
+                                cols: layout.length,
+                            });
                         }}
                         onBreakpointChange={() => {
                             this.onBreakpointChange();
