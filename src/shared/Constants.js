@@ -1,22 +1,17 @@
+import {convertByteToMegaByte} from "../sites/siteFour/monitoring/PageMonitoringCommonService";
+
 export const API_ENDPOINT_PREFIX = '/api/v1/';
-
-
-//rgb(255,0,10)
-
 export const BORDER_CHART_COLOR_LIST = ["rgb(112,0,28)", "rgb(255,94,29)", "rgb(227,220,57)", "rgb(18,135,2)", "rgb(28,34,255)"]
-
 export const CHART_COLOR_LIST = ['rgb(222,0,0)', 'rgb(255,150,0)', 'rgb(255,246,0)', 'rgb(91,203,0)', 'rgb(0,150,255)']
 //export const CHART_COLOR_LIST = ["rgb(112,0,28)", "rgb(255,94,29)", "rgb(227,220,57)", "rgb(18,135,2)", "rgb(28,34,255)"]
-
 export const CHART_COLOR_LIST2 = ["rgba(112,0,28, 0.25)", "rgba(255,94,29,0.25)", "rgba(227,220,57,0.25)", "rgba(18,135,2,0.25)", "rgba(28,34,255,0.25)"]
-
 export const GRAPH_HEIGHT = 300
-
 export const REGION = {
     ALL: 'ALL',
     US: "US",
     EU: 'EU',
 }
+
 
 export const lineGraphOptions = {
     animation: {
@@ -37,7 +32,7 @@ export const lineGraphOptions = {
             ticks: {
                 beginAtZero: true,
                 min: 0,
-                max: 100,
+                //max: 100,
                 fontColor: 'white',
             },
             gridLines: {
@@ -97,6 +92,7 @@ export const CLASSIFICATION = {
     CloudletName: 'CloudletName',
     cloudlet: 'cloudlet',
     APP_NAME: 'AppName',
+    appName: 'appName',
     APPNAME: 'AppName',
     APPINST: 'AppInst',
     CLUSTER_INST: 'ClusterInst',
@@ -302,22 +298,12 @@ export const HARDWARE_TYPE = {
     FLAVOR: 'FLAVOR',
     CPU: 'CPU',
     VCPU: 'vCPU',
-    VCPU_MAX: 'VCPU_MAX',
     NET_SEND: 'NET_SEND',
     NET_RECV: 'NET_RECV',
-    VCPU_USED: 'VCPU_USED',
-
-    MEM_USED: 'MEM_USED',
-    MEM_MAX: 'MEM_MAX',
-    DISK_USED: 'DISK_USED',
-    DISK_MAX: 'DISK_MAX',
-    FLOATING_IPS_USED: 'FLOATING_IPS_USED',
-    FLOATING_IPS_MAX: 'FLOATING_IPS_MAX',
     FLOATING_IPS: 'FLOATING_IPS',
-    IPV4_USED: 'IPV4_USED',
-    IPV4_MAX: 'IPV4_MAX',
     IPV4: 'IPV4',
 
+    ////////////
     UDP: 'UDP',
     TCP: 'TCP',
     NETWORK: 'NETWORK',
@@ -333,7 +319,6 @@ export const HARDWARE_TYPE = {
     //NETWORK
     SENDBYTES: 'SEND_BYTES',
     RECVBYTES: 'RECV_BYTES',
-
 
     MEM: 'MEM',
     MEM2: 'MEM',
