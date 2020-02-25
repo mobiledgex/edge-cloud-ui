@@ -72,7 +72,7 @@ import {Responsive, WidthProvider} from "react-grid-layout";
 import _ from "lodash";
 import {TabPanel, Tabs} from "react-tabs";
 import PieChartWrapper from "./PieChartWrapper";
-import BigModalGraphForCluster from "./BigModalGraphForCluster";
+import BigModalGraph from "./BigModalGraph";
 
 const {Option} = Select;
 
@@ -1742,7 +1742,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 modalIsOpen={this.state.modalIsOpen}
                                 cluster={''} contents={''}/>
 
-                    <BigModalGraphForCluster
+                    <BigModalGraph
                         lineChartDataForRendering={this.state.lineChartDataForRendering}
                         isShowBigGraph={this.state.isShowBigGraph}
                         parent={this}

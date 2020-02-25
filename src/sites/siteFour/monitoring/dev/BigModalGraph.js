@@ -20,7 +20,7 @@ type State = {
     options: any,
 };
 
-export default class BigModalGraphForCluster extends React.Component<Props, State> {
+export default class BigModalGraph extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props)
         this.state = {
@@ -46,10 +46,7 @@ export default class BigModalGraphForCluster extends React.Component<Props, Stat
             <div style={{flex: 1, display: 'flex'}}>
                 <AModal
                     mask={false}
-                    style={{
-                        //top: 220,
-                        //left: -470,
-                    }} //@fixme :modal popup container location( absoulte)
+                    style={{}}
                     //title={this.props.currentGraphAppInst + " [" + this.props.cluster + "]" + "  " + this.state.hardwareType}
                     visible={this.props.isShowBigGraph}
                     onOk={() => {
@@ -66,12 +63,23 @@ export default class BigModalGraphForCluster extends React.Component<Props, Stat
 
                     }}
                     closable={false}
-                    bodyStyle={{height: window.innerHeight * 0.98, marginTop: -90, backgroundColor: 'black'}}
+                    bodyStyle={{
+                        height: window.innerHeight * 0.98,
+                        marginTop: -90,
+                        backgroundColor: 'black'
+                    }}
                     width={'99%'}
                     footer={null}
                 >
-                    <div style={{display: 'flex',  width: '100%'}}>
-                        <div style={{flex:.025 , backgroundColor:'transparent', width:120, display:'flex', alignSelf:'center', justifyContent:'center'}} onClick={() => {
+                    <div style={{display: 'flex', width: '100%'}}>
+                        <div style={{
+                            flex: .025,
+                            backgroundColor: 'transparent',
+                            width: 120,
+                            display: 'flex',
+                            alignSelf: 'center',
+                            justifyContent: 'center'
+                        }} onClick={() => {
                             this.props.parent.setState({
                                 isShowBigGraph: false,
                             })
@@ -83,8 +91,8 @@ export default class BigModalGraphForCluster extends React.Component<Props, Stat
                         <div style={{
                             color: 'white',
                             fontSize: 35,
-                            flex:.9,
-                            marginLeft:25,
+                            flex: .9,
+                            marginLeft: 25,
                         }}> {this.props.popupGraphHWType} Usage Of Cluster
                         </div>
 
