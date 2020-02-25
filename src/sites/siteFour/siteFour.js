@@ -138,6 +138,7 @@ class SiteFour extends React.Component {
             menuW: 240,
             hideLeftMenu: false,
             animate: false,
+            selectRole: ''
         };
 
         this.headerH = 70;
@@ -540,8 +541,8 @@ class SiteFour extends React.Component {
 
         }
 
-        if (nextProps.viewMode) {
-            this.setState({viewMode: nextProps.viewMode})
+        if (nextProps.viewMode && localStorage.selectRole.indexOf('Developer') === -1) {
+            this.setState({ viewMode: nextProps.viewMode })
         } else {
             this.setState({viewMode: 'listView'})
         }
