@@ -166,6 +166,16 @@ export const defaultHwMapperListForCluster = {
     '5': HARDWARE_TYPE_FOR_GRID.SENDBYTES,
 }*/
 
+export const makeid = (length) => {
+    let result = '';
+    let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
+
 export const console_log = (msg, color = 'green') => {
     color = color || "black";
     let bgc = "White";

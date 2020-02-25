@@ -30,7 +30,7 @@ import {
     renderBubbleChartCoreForDev_Cluster,
     renderGridLayoutForAppInst,
     renderLineChartCoreForDev_AppInst,
-    renderLineChartCoreForDev_Cluster, HARDWARE_TYPE_FOR_GRID, console_log,
+    renderLineChartCoreForDev_Cluster, HARDWARE_TYPE_FOR_GRID, console_log, makeid,
 } from "./PageDevMonitoringService";
 import {
     CLASSIFICATION,
@@ -206,7 +206,7 @@ type State = {
     hwList: [],
     isDraggable: boolean,
     isUpdateEnableForMap: boolean,
-    isStream:boolean,
+    isStream: boolean,
 
 }
 
@@ -335,7 +335,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 diskGridItemOneStyleTranslate: {
                     transform: 'translate(10px, 1540px)',
                 },
-                hwList: [HARDWARE_TYPE.CPU, HARDWARE_TYPE.MEM, HARDWARE_TYPE.DISK, HARDWARE_TYPE.RECVBYTES, HARDWARE_TYPE.SENDBYTES, HARDWARE_TYPE.TCPRETRANS, HARDWARE_TYPE.TCPCONNS, HARDWARE_TYPE.UDPSENT, HARDWARE_TYPE.UDPRECV],
+                hwList: HARDWARE_OPTIONS_FOR_CLUSTER,
                 isDraggable: true,
                 isUpdateEnableForMap: false,
             };
@@ -545,24 +545,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 console.log('filteredAppInstUsageList===222222>', lineChartDataSet)
             }
 
-            console.log(`lineChartDataSet===${hwType}>`, lineChartDataSet);
-            if (hwType === HARDWARE_TYPE.RECVBYTES
-                || hwType === HARDWARE_TYPE.SENDBYTES
-                || hwType === HARDWARE_TYPE.ACTIVE_CONNECTION
-                || hwType === HARDWARE_TYPE.ACCEPTS_CONNECTION
-                || hwType === HARDWARE_TYPE.HANDLED_CONNECTION
-                || hwType === HARDWARE_TYPE.TCPCONNS
-                || hwType === HARDWARE_TYPE.TCPRETRANS
-                || hwType === HARDWARE_TYPE.UDPRECV
-                || hwType === HARDWARE_TYPE.UDPSENT
-
-            ) {
-                return this.renderGraphAreaMultiFor_LineChart(hwType, lineChartDataSet)
-            } else {
-
-                console.log("hwType===>", hwType);
-                return this.renderGraphAreaFoLineChart(hwType, lineChartDataSet)
-            }
+            console.log("hwType===>", hwType);
+            return this.renderGraphAreaFoLineChart(hwType, lineChartDataSet)
         }
 
 
@@ -577,26 +561,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             if (barChartDataSet === undefined) {
                 barChartDataSet = []
             }
-            console.log(`lineChartDataSet===${hwType}>`, []);
-            if (hwType === HARDWARE_TYPE.RECVBYTES
-                || hwType === HARDWARE_TYPE.SENDBYTES
-                || hwType === HARDWARE_TYPE.ACTIVE_CONNECTION
-                || hwType === HARDWARE_TYPE.ACCEPTS_CONNECTION
-                || hwType === HARDWARE_TYPE.HANDLED_CONNECTION
-                || hwType === HARDWARE_TYPE.TCPCONNS
-                || hwType === HARDWARE_TYPE.TCPRETRANS
-                || hwType === HARDWARE_TYPE.UDPRECV
-                || hwType === HARDWARE_TYPE.UDPSENT
 
-            ) {
+            return this.renderGraphAreaForBarChart(hwType, barChartDataSet)
 
-                return this.renderGraphAreaMultiForBarChart(hwType, barChartDataSet)
-
-            } else {
-
-                return this.renderGraphAreaFor__BarChart(hwType, barChartDataSet)
-
-            }
         }
 
 
@@ -686,7 +653,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderGraphAreaFor__BarChart(pHardwareType, barChartDataSet) {
+        renderGraphAreaForBarChart(pHardwareType, barChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
                     {/*@todo:BarChart*/}
@@ -1025,7 +992,29 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             />
                         </div>
                         <div className="page_monitoring_dropdown_label" style={{marginLeft: 10,}}>
-                            Add Line Chart Item
+                            Add Item
+                        </div>
+                        <div style={{marginBottom: 0,}}>
+                            <Select
+                                placeholder="Select Item"
+                                //defaultValue=''
+                                style={{width: 190, marginBottom: 10, marginLeft: 5}}
+                                onChange={async (value) => {
+                                    //alert(value)
+                                    await this.addGridItem(value)
+                                    showToast('added ' + value + " item!!")
+                                }}
+                            >
+                                {[this.state.hwList].map(item => {
+                                    return (
+                                        <Option value={item.value}>{item.text}</Option>
+                                    )
+                                })}
+                            </Select>
+
+                        </div>
+                        <div className="page_monitoring_dropdown_label" style={{marginLeft: 10,}}>
+                            Add LineChart Item
                         </div>
                         <div style={{marginBottom: 0,}}>
                             <Select
@@ -1040,14 +1029,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             >
                                 {this.state.hwList.map(item => {
                                     return (
-                                        <Option value={item}>{item}</Option>
+                                        <Option value={item.value}>{item.text}</Option>
                                     )
                                 })}
                             </Select>
 
                         </div>
                         <div className="page_monitoring_dropdown_label" style={{marginLeft: 25,}}>
-                            Add Bar Chart Item
+                            Add BarChart Item
                         </div>
                         <div style={{marginBottom: 0,}}>
                             <Select
@@ -1062,7 +1051,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             >
                                 {this.state.hwList.map(item => {
                                     return (
-                                        <Option value={item}>{item}</Option>
+                                        <Option value={item.value}>{item.text}</Option>
                                     )
                                 })}
                             </Select>
@@ -1379,17 +1368,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-
-        makeid(length) {
-            let result = '';
-            let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let charactersLength = characters.length;
-            for (let i = 0; i < length; i++) {
-                result += characters.charAt(Math.floor(Math.random() * charactersLength));
-            }
-            return result;
-        }
-
         async addGridItem(hwType, graphType = 'line') {
             console.log("items===>", this.state.layoutForCluster)
             let currentItems = this.state.layoutForCluster;
@@ -1397,8 +1375,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             if (!isEmpty(currentItems)) {
                 maxY = _.maxBy(currentItems, 'y').y
             }
-
-            let uniqueId = this.makeid(5)
+            let uniqueId = makeid(5)
             let _gridLayoutMapperToHwList = this.state.gridLayoutMapperToHwList
 
             let itemOne = {
