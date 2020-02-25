@@ -67,6 +67,7 @@ import {reactLocalStorage} from "reactjs-localstorage";
 import LeafletMapWrapperForDev from "./LeafletMapWrapperForDev";
 import {Responsive, WidthProvider} from "react-grid-layout";
 import _ from "lodash";
+import {TabPanel, Tabs} from "react-tabs";
 
 const {Option} = Select;
 
@@ -220,19 +221,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         constructor(props) {
             super(props);
-            let savedlayoutKeyForCluster = getUserId() + "_layout"
-            let savedlayoutKeyForClusterMapper = getUserId() + "_layout_mapper"
-            let savedlayoutKeyForAppInst = getUserId() + "_layout2"
-
-            console_log('test===> 고경준천재님시입니다sdlkfsdlkflsdkflskdf', 'info')
-
-            //reactLocalStorage.remove(savedlayoutKeyForClusterMapper)
-
+            let clusterLayoutKey = getUserId() + "_layout"
+            let ClusterHwMapperKey = getUserId() + "_layout_mapper"
+            let appInstLayoutKey = getUserId() + "_layout2"
+            //reactLocalStorage.remove(appInstLayoutKey)
 
             this.state = {
-                layoutForCluster: isEmpty(reactLocalStorage.get(savedlayoutKeyForCluster)) ? defaultLayoutForCluster : reactLocalStorage.getObject(savedlayoutKeyForCluster),
-                gridLayoutMapperToHwList: isEmpty(reactLocalStorage.get(savedlayoutKeyForClusterMapper)) ? defaultHwMapperListForCluster : reactLocalStorage.getObject(savedlayoutKeyForClusterMapper),
-                layoutForAppInst: isEmpty(reactLocalStorage.get(savedlayoutKeyForAppInst)) ? defaultLayoutForAppInst : reactLocalStorage.getObject(savedlayoutKeyForAppInst),
+                layoutForCluster: isEmpty(reactLocalStorage.get(clusterLayoutKey)) ? defaultLayoutForCluster : reactLocalStorage.getObject(clusterLayoutKey),
+                gridLayoutMapperToHwList: isEmpty(reactLocalStorage.get(ClusterHwMapperKey)) ? defaultHwMapperListForCluster : reactLocalStorage.getObject(ClusterHwMapperKey),
+                layoutForAppInst: isEmpty(reactLocalStorage.get(appInstLayoutKey)) ? defaultLayoutForAppInst : reactLocalStorage.getObject(appInstLayoutKey),
                 date: '',
                 time: '',
                 dateTime: '',
@@ -997,10 +994,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
                 <div style={{height: '100%'}}>
                     <div className='page_monitoring_title_area' style={{display: 'flex', flexDirection: 'row'}}>
-                        <div className='page_monitoring_title_select' style={{flex:.7}}>
+                        <div className='page_monitoring_title_select' style={{flex: .7}}>
                             Performance status of Cluster hardware
                         </div>
-                        <div className='page_monitoring_title_select' style={{flex:.2, marginLeft:-10}}>
+                        <div className='page_monitoring_title_select' style={{flex: .2, marginLeft: -10}}>
                             <Dropdown
                                 disabled={this.state.bubbleChartLoader}
                                 clearable={this.state.regionSelectBoxClearable}
@@ -1199,7 +1196,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-        renderGridLayoutFor___Cluster() {
+
+        renderGridLayoutForCluster() {
             return (
                 <ResponsiveReactGridLayout
                     isResizable={false}
@@ -1292,6 +1290,62 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
                 </ResponsiveReactGridLayout>
+
+            )
+        }
+
+
+        renderGridLayoutForAppInst = () => {
+            return (
+                <>
+                    <ResponsiveReactGridLayout
+                        isResizable={false}
+                        isDraggable={this.state.isDraggable}
+                        useCSSTransforms={true}
+                        className={'layout'}
+                        cols={{lg: 3, md: 3, sm: 3, xs: 3, xxs: 3}}
+                        layout={this.state.layoutForCluster}
+                        rowHeight={470}
+                        onLayoutChange={async (layout) => {
+                            await this.setState({
+                                layoutForAppInst: layout
+                            });
+                            let layoutUniqueId = getUserId() + "_layout2"
+                            reactLocalStorage.setObject(layoutUniqueId, layout)
+                        }}
+                        style={{overflowY: 'auto',}}
+                    >
+
+                        <div className='page_monitoring_column_kyungjoon1' key="1">
+                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.CPU)}
+                        </div>
+
+                        <div className='page_monitoring_column_kyungjoon1' key="2">
+                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.MEM)}
+                        </div>
+
+
+                        <div className='page_monitoring_column_kyungjoon1' key="3">
+                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.DISK)}
+                        </div>
+
+                        <div className='page_monitoring_column_kyungjoon1' key="4">
+                            <Tabs selectedIndex={this.state.networkTabIndex}
+                                  className='page_monitoring_tab'>
+                                <TabPanel>
+                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.RECVBYTES)}
+                                </TabPanel>
+                                <TabPanel>
+                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.SENDBYTES)}
+                                </TabPanel>
+                            </Tabs>
+                        </div>
+
+                     {/*   <div className='page_monitoring_column_kyungjoon1' key="5">
+                            {this.renderMapArea()}
+                        </div>*/}
+                    </ResponsiveReactGridLayout>
+                </>
 
             )
         }
@@ -1581,7 +1635,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {/*todo:---------------------------------*/}
                             <SemanticToastContainer position={"top-right"}/>
                             {this.renderHeader()}
-                            <div style={{marginTop:30, marginLeft:30}}>
+                            <div style={{marginTop: 30, marginLeft: 30}}>
                                 {this.renderSelectBoxRow()}
                             </div>
                             <Grid.Row className='site_content_body' style={{marginTop: -10, overflowY: 'auto'}}>
@@ -1589,12 +1643,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <div className="page_monitoring"
                                          style={{backgroundColor: 'transparent', height: 3250}}>
 
-                                        <div className='page_monitoring_dashboard_kyungjoon'
-                                             style={{}}>
+                                        <div className='page_monitoring_dashboard_kyungjoon' style={{}}>
                                             {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                                                this.renderGridLayoutFor___Cluster(this)
+                                                this.renderGridLayoutForCluster(this)
                                                 :
-                                                renderGridLayoutForAppInst(this)
+                                                this.renderGridLayoutForAppInst(this)
                                             }
                                         </div>
                                     </div>

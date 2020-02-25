@@ -37,28 +37,28 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const {Option} = Select;
 
 export const defaultLayoutForAppInst = [
-    {i: 'a', x: 0, y: 0, w: 1, h: 3},
-    {i: 'b', x: 1, y: 0, w: 1, h: 3},
-    {i: 'c', x: 2, y: 0, w: 1, h: 3},
+    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},
+    {i: '2', x: 1, y: 0, w: 1, h: 1, "add": false},
+    {i: '3', x: 2, y: 0, w: 1, h: 1, "add": false},
 
-    {i: 'd', x: 0, y: 1, w: 1, h: 3,},
-    {i: 'e', x: 1, y: 1, w: 1, h: 3,},
-    {i: 'f', x: 2, y: 1, w: 1, h: 3,},
+    {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false},
+    {i: '5', x: 1, y: 1, w: 1, h: 1, "add": false},
+    {i: '6', x: 2, y: 1, w: 1, h: 1, "add": false},
 
-    {i: 'g', x: 0, y: 2, w: 1, h: 3,},
-    {i: 'h', x: 1, y: 2, w: 1, h: 3,},
-    {i: 'i', x: 2, y: 2, w: 1, h: 3,},
+    {i: '7', x: 0, y: 2, w: 1, h: 1, "add": false},
+    {i: '8', x: 1, y: 2, w: 1, h: 1, "add": false},
+    {i: '9', x: 2, y: 2, w: 1, h: 1, "add": false},
 
 ];
 
 export const defaultLayoutForCluster = [
-    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false,},
-    {i: '2', x: 1, y: 0, w: 1, h: 1, "add": false,},
-    {i: '3', x: 2, y: 0, w: 1, h: 1, "add": false,},
+    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},
+    {i: '2', x: 1, y: 0, w: 1, h: 1, "add": false},
+    {i: '3', x: 2, y: 0, w: 1, h: 1, "add": false},
 
 
-    {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false,},
-    {i: '5', x: 1, y: 1, w: 1, h: 1, "add": false,},
+    {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false},
+    {i: '5', x: 1, y: 1, w: 1, h: 1, "add": false},
     /*{i: '6', x: 2, y: 1, w: 1, h: 1, "add": false,},
 
     {i: '7', x: 0, y: 2, w: 1, h: 1, "add": false,},
@@ -227,90 +227,6 @@ export const console_log = (msg, color = 'green') => {
 export const getUserId = () => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     return store.email;
-}
-
-
-export const renderGridLayoutForAppInst = (_this: PageDevMonitoring) => {
-    return (
-        <>
-            <ResponsiveReactGridLayout
-                isDraggable={_this.state.gridDraggable}
-                autoSize={true}
-                className="layout"
-                layout={_this.state.layoutForAppInst}
-                cols={{lg: 3, md: 3, sm: 3, xs: 3, xxs: 3}}
-                isDroppable={true}
-                rowHeight={160}
-                width={window.innerWidth * 0.86}
-                onLayoutChange={(layout) => {
-                    _this.setState({
-                        layoutForAppInst: layout
-                    }, () => {
-                        console.log("layoutForAppInst===>", _this.state.layoutForAppInst);
-                    })
-                    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-                    let layoutUniqueId = store.email + "_layout2"
-                    reactLocalStorage.setObject(layoutUniqueId, layout)
-                }}
-                style={{overflowY: 'auto',}}
-            >
-                <div className='page_monitoring_column_kyungjoon1' style={{}}
-                     key="a">
-                    {_this.renderBubbleChartArea()}
-                </div>
-                {/* todo:map(b)*/}
-                {_this.renderMapArea()}
-                <div className='page_monitoring_column_kyungjoon1' key="c">
-                    {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.CPU)}
-
-                </div>
-
-
-                {/*todo:2nd row*/}
-                {/*todo:2nd row*/}
-                {/*todo:2nd row*/}
-                <div className='page_monitoring_column_kyungjoon1' key="d">
-                    {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.MEM)}
-                </div>
-
-
-                <div className='page_monitoring_column_kyungjoon1' key="e">
-                    {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.DISK)}
-                </div>
-
-                <div className='page_monitoring_column_kyungjoon1' key="f">
-                    <Tabs selectedIndex={_this.state.networkTabIndex}
-                          className='page_monitoring_tab'>
-                        <TabPanel>
-                            {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.RECVBYTES)}
-                        </TabPanel>
-                        <TabPanel>
-                            {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.SENDBYTES)}
-                        </TabPanel>
-                    </Tabs>
-                </div>
-
-                {/*todo:3nd row*/}
-                {/*todo:3nd row*/}
-                {/*todo:3nd row*/}
-                <div className='page_monitoring_column_kyungjoon1' key="g">
-                    <Tabs selectedIndex={_this.state.connectionsTabIndex}
-                          className='page_monitoring_tab'>
-                        <TabPanel>
-                            {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.ACTIVE_CONNECTION)}
-                        </TabPanel>
-                        <TabPanel>
-                            {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.HANDLED_CONNECTION)}
-                        </TabPanel>
-                        <TabPanel>
-                            {_this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.ACCEPTS_CONNECTION)}
-                        </TabPanel>
-                    </Tabs>
-                </div>
-            </ResponsiveReactGridLayout>
-        </>
-
-    )
 }
 
 
