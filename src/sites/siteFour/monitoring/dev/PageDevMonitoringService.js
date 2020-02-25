@@ -33,9 +33,6 @@ export const defaultLayoutForAppInst = [
     {i: '3', x: 2, y: 0, w: 1, h: 1, "add": false},
     {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false},
     {i: '5', x: 1, y: 1, w: 1, h: 1, "add": false},
-
-
-
     /*{i: '6', x: 2, y: 1, w: 1, h: 1, "add": false},
     {i: '7', x: 0, y: 2, w: 1, h: 1, "add": false},
     {i: '8', x: 1, y: 2, w: 1, h: 1, "add": false},
@@ -73,6 +70,7 @@ export const defaultLayoutForCluster = [
 
 export const HARDWARE_TYPE_FOR_GRID = {
     MAP: 'MAP',
+    PIE: 'PIE',
     BUBBLE: 'BUBBLE',
     CLOUDLET_LIST: 'CLOUDLET_LIST',
     FLAVOR: 'FLAVOR',
@@ -361,7 +359,7 @@ export const sortByKey = (arrList, key) => {
 }
 
 
-export const makeBarChartDataForCluster = (usageList, hardwareType, _this) => {
+export const makeBarChartDataForCluster = (usageList, hardwareType) => {
 
     console.log(`renderBarGraphForCluster===>${hardwareType}`, usageList);
     usageList = sortUsageListByTypeForCluster(usageList, hardwareType)
@@ -764,7 +762,7 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
  * @param hardwareType
  * @returns {*}
  */
-export const make__LineChartDataForAppInst = (hardwareUsageList: Array, hardwareType: string, _this: PageDevMonitoring) => {
+export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareType: string, _this: PageDevMonitoring) => {
 
     if (hardwareUsageList.length === 0) {
         return (
@@ -873,7 +871,7 @@ export const convertHwTypePhrases = (pHardwareType) => {
 }
 
 
-export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: string, _this) => {
+export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: string) => {
     pUsageList = sortUsageListByTypeForCluster(pUsageList, hardwareType)
 
     if (pUsageList.length === 0) {
@@ -1195,12 +1193,6 @@ export const renderLineChartCoreForDev_Cluster = (_this: PageDevMonitoring, line
                 },
             },//scales
             onClick: function (c, i) {
-                /*let e = i[0];
-                console.log(e._index)
-                var x_value = this.data.labels[e._index];
-                var y_value = this.data.datasets[0].data[e._index];
-                console.log(x_value);
-                console.log(y_value);*/
                 if (i.length > 0) {
                     console.log('onClick===>', i);
                 }

@@ -21,7 +21,7 @@ type State = {
 
 };
 
-export default class ModalGraphForCluster extends React.Component<Props, State> {
+export default class ModalGraph extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)

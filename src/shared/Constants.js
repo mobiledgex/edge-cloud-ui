@@ -230,11 +230,14 @@ export const NETWORK_TYPE = {
 }
 
 export const GRID_ITEM_TYPE = {
-    LINE: 'line',
-    BAR: 'bar',
-    BUBBLE: 'bubble',
-    MAP: 'map',
-    TABLE: 'table',
+    LINE: 'LINE',
+    BAR: 'BAR',
+    COLUMN: 'COLUMN',
+    BUBBLE: 'BUBBLE',
+    MAP: 'MAP',
+    TABLE: 'TABLE',
+    PIE: 'PIE',
+    CLOUDLET_LIST: 'CLOUDLET_LIST',
 }
 
 

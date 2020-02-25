@@ -1,4 +1,4 @@
-import 'react-hot-loader'
+import 'react-hot-loader';
 import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
@@ -22,7 +22,7 @@ import {
     getUserId,
     handleHardwareTabChanges,
     HARDWARE_TYPE_FOR_GRID,
-    make__LineChartDataForAppInst,
+    makeLineChartDataForAppInst,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
     makeid,
@@ -35,10 +35,11 @@ import {
     renderLineChartCoreForDev_Cluster,
 } from "./PageDevMonitoringService";
 import {
+    CHART_COLOR_LIST,
     CLASSIFICATION,
     CONNECTIONS_OPTIONS, GRID_ITEM_TYPE, HARDWARE_OPTIONS_FOR_APPINST,
     HARDWARE_OPTIONS_FOR_CLUSTER,
-    HARDWARE_TYPE,
+    HARDWARE_TYPE, lineGraphOptions,
     NETWORK_OPTIONS,
     NETWORK_TYPE,
     RECENT_DATA_LIMIT_COUNT,
@@ -64,12 +65,14 @@ import {
 import {getAppLevelUsageList} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
-import ModalGraphForCluster from "./ModalGraphForCluster";
+import ModalGraph from "./ModalGraph";
 import {reactLocalStorage} from "reactjs-localstorage";
 import LeafletMapWrapperForDev from "./LeafletMapWrapperForDev";
 import {Responsive, WidthProvider} from "react-grid-layout";
 import _ from "lodash";
 import {TabPanel, Tabs} from "react-tabs";
+import PieChartWrapper from "./PieChartWrapper";
+import BigModalGraphForCluster from "./BigModalGraphForCluster";
 
 const {Option} = Select;
 
@@ -213,6 +216,9 @@ type State = {
     isStream: boolean,
     gridLayoutMapperToHwList: [],
     hwListForAppInst: [],
+    isShowBigGraph: boolean,
+    popupGraphHWType: string,
+    lineChartDataForRendering: any,
 
 }
 
@@ -343,6 +349,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 hwListForAppInst: HARDWARE_OPTIONS_FOR_APPINST,
                 isDraggable: true,
                 isUpdateEnableForMap: false,
+                isShowBigGraph: false,
+                popupGraphHWType: '',
+                lineChartDataForRendering: [],
             };
         }
 
@@ -528,97 +537,44 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-        makeChartDataAndRenderTabBody_LineChart(hwType,) {
+        makeLineChartData(hwType,) {
             let lineChartDataSet: TypeLineChartData = [];
             if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                 lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
             } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
                 console.log('filteredAppInstUsageList===>', this.state.filteredAppInstUsageList)
-                lineChartDataSet = make__LineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
+                lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
                 console.log('filteredAppInstUsageList===222222>', lineChartDataSet)
             }
-
-            console.log("hwType===>", hwType);
-            return this.renderGraphAreaFoLineChart(hwType, lineChartDataSet)
+            return this.renderLineChartArea(hwType, lineChartDataSet)
         }
 
 
-        makeChartDataAndRenderTabBody_BarChart(hwType,) {
+        makeBarChartData(hwType, graphType) {
+
             let barChartDataSet: TypeBarChartData = [];
             if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                 barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
             } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
                 barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
             }
-
             if (barChartDataSet === undefined) {
                 barChartDataSet = []
             }
-
-            return this.renderGraphAreaForBarChart(hwType, barChartDataSet)
-
+            return this.renderBarChartArea(hwType, barChartDataSet, graphType)
         }
 
 
-        convertToClassification(pClassfication) {
-            if (pClassfication === CLASSIFICATION.APPINST) {
+        convertToClassification(pClassification) {
+            if (pClassification === CLASSIFICATION.APPINST) {
                 return "App Instance"
             } else {
-                return pClassfication
+                return pClassification
             }
         }
 
-        renderGraphAreaMultiFor_LineChart(pHardwareType, lineChartDataSet) {
-            return (
-                <div className='page_monitoring_dual_column'>
-                    {/*@todo:LInechart*/}
-                    {/*@todo:LInechart*/}
-                    {/*@todo:LInechart*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title_select'>
-                                {convertHwTypePhrases(pHardwareType) + " [" + pHardwareType + "]"} Usage
-                                of {this.convertToClassification(this.state.currentClassification)}
-                            </div>
-                            {!this.state.loading && this.renderDropDownForMultiTab(pHardwareType)}
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : renderLineChartCoreForDev_Cluster(this, lineChartDataSet)}
-                        </div>
-                    </div>
-                </div>
-            )
-        }
 
-        renderGraphAreaMultiForBarChart(pHardwareType, barChartDataSet) {
-            return (
-                <div className='page_monitoring_dual_column'>
-                    {/*@todo:BarChart*/}
-                    {/*@todo:BarChart*/}
-                    {/*@todo:BarChart*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title_select'>
-                                Top 5 {convertHwTypePhrases(pHardwareType)} usage
-                                of {this.convertToClassification(this.state.currentClassification)}
-                            </div>
-                            {!this.state.loading && this.renderDropDownForMultiTab(pHardwareType)}
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() :
-                                barChartDataSet.length === 0 ?
-                                    noDataArea()
-                                    :
-                                    renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
-                        </div>
-                    </div>
-
-                </div>
-            )
-        }
-
-
-        renderGraphAreaFoLineChart(pHardwareType, lineChartDataSet) {
+        renderLineChartArea(pHardwareType, chartDataSet, graphType = '') {
             return (
                 <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
                     {/*@todo:LInechart*/}
@@ -637,8 +593,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : this.state.currentClassification === CLASSIFICATION.CLUSTER ? renderLineChartCoreForDev_Cluster(this, lineChartDataSet) :
-                                renderLineChartCoreForDev_AppInst(this, lineChartDataSet)
+                            {this.state.loading ? renderPlaceHolderCircular() : this.state.currentClassification === CLASSIFICATION.CLUSTER ? renderLineChartCoreForDev_Cluster(this, chartDataSet) :
+                                renderLineChartCoreForDev_AppInst(this, chartDataSet)
                             }
                         </div>
                     </div>
@@ -646,12 +602,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderGraphAreaForBarChart(pHardwareType, barChartDataSet) {
+        renderBarChartArea(pHardwareType, chartDataSet, graphType) {
+
             return (
                 <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
-                    {/*@todo:BarChart*/}
-                    {/*@todo:BarChart*/}
-                    {/*@todo:BarChart*/}
                     <div className='page_monitoring_dual_container' style={{flex: 1}}>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
@@ -662,10 +616,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <div className='page_monitoring_container'>
                             {this.state.loading ? renderPlaceHolderCircular() :
 
-                                barChartDataSet.length === 0 || barChartDataSet.chartDataList.length === 1 ?
+                                chartDataSet.length === 0 || chartDataSet.chartDataList.length === 1 ?
                                     noDataArea()
                                     :
-                                    renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType, this)
+                                    renderBarChartCore(chartDataSet.chartDataList, chartDataSet.hardwareType, this, graphType)
 
                             }
                         </div>
@@ -1204,31 +1158,98 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         makeGridItemOneByType(hwType, graphType) {
-            if (graphType === 'line') {
+
+            if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                 return (
-                    this.makeChartDataAndRenderTabBody_LineChart(hwType)
+                    this.makeLineChartData(hwType)
                 )
-            } else if (graphType === 'bar') {
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BAR) {
                 return (
-                    this.makeChartDataAndRenderTabBody_BarChart(hwType)
+                    this.makeBarChartData(hwType, graphType)
                 )
-            } else if (graphType === HARDWARE_TYPE_FOR_GRID.BUBBLE) {
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.COLUMN) {
+                return (
+                    this.makeBarChartData(hwType, graphType)
+                )
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BUBBLE) {
                 return (
                     this.renderBubbleChartArea()
                 )
-            } else if (graphType === HARDWARE_TYPE_FOR_GRID.MAP) {
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.MAP) {
                 return (
                     this.renderMapArea()
                 )
-            } else {
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLOUDLET_LIST) {
                 return (
                     renderBottomGridTableList(this, this.state.filteredClusterUsageList)
+                )
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PIE) {
+                return (
+                    <PieChartWrapper/>
                 )
             }
 
         }
 
-        renderGridItemOne(uniqueIndex, hwType, graphType, item,) {
+        showBigModal = (hwType) => {
+            /*todo:lineChartDataForRendering*/
+            let lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType)
+            let levelTypeNameList = lineChartDataSet.levelTypeNameList
+            let usageSetList = lineChartDataSet.usageSetList
+            let newDateTimeList = lineChartDataSet.newDateTimeList
+
+            const lineChartDataForRendering = (canvas) => {
+                let finalSeriesDataSets = [];
+                for (let index in usageSetList) {
+                    //@todo: top5 만을 추린다
+                    if (index < 5) {
+                        let datasetOne = {
+                            label: levelTypeNameList[index],
+                            radius: 0,
+                            borderWidth: 3.5,//todo:라인 두께
+                            fill: false,
+                            lineTension: 0.5,
+                            /*backgroundColor:  gradientList[index],
+                            borderColor: gradientList[index],*/
+                            backgroundColor: CHART_COLOR_LIST[index],
+                            borderColor: CHART_COLOR_LIST[index],
+                            data: usageSetList[index],
+                            borderCapStyle: 'butt',
+                            borderDash: [],
+                            borderDashOffset: 0.0,
+                            borderJoinStyle: 'miter',
+                            pointBorderColor: 'rgba(75,192,192,1)',
+                            pointBackgroundColor: '#fff',
+                            pointBorderWidth: 1,
+                            pointHoverRadius: 5,
+                            pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+                            pointHoverBorderColor: 'rgba(220,220,220,1)',
+                            pointHoverBorderWidth: 2,
+                            pointRadius: 1,
+                            pointHitRadius: 10,
+
+                        }
+
+                        finalSeriesDataSets.push(datasetOne)
+                    }
+
+                }
+                return {
+                    labels: newDateTimeList,
+                    datasets: finalSeriesDataSets,
+                }
+            }
+            this.setState({
+                isShowBigGraph: !this.state.isShowBigGraph,
+                lineChartDataForRendering: lineChartDataForRendering,
+                popupGraphHWType: hwType,
+
+            });
+        }
+
+        __makeGridItemOne(uniqueIndex, hwType, graphType, item,) {
+
+
             return (
                 <div key={uniqueIndex} data-grid={item} style={{margin: 5, backgroundColor: 'black'}}
                      onClick={() => {
@@ -1267,10 +1288,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     >
                         x
                     </div>
+
+                    {/*todo:maxize button*/}
+                    {/*todo:maxize button*/}
+                    {/*todo:maxize button*/}
                     <div className="maxize"
-                         onClick={() => {
-                             alert('sdklfsldkflk')
-                         }}
+                         onClick={this.showBigModal.bind(this, hwType)}
                          style={{
                              fontSize: 29,
                              width: 37,
@@ -1292,7 +1315,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        renderGridLayoutForCluster() {
+        ___renderGridLayoutForCluster() {
 
             return (
                 <ResponsiveReactGridLayout
@@ -1325,7 +1348,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             graphType = this.state.layoutMapperForCluster.find(x => x.id === uniqueIndex).graphType
                         }
                         console.log("hwType===>", hwType);
-                        return this.renderGridItemOne(uniqueIndex, hwType, graphType, item)
+                        return this.__makeGridItemOne(uniqueIndex, hwType, graphType, item)
                     })}
 
 
@@ -1365,13 +1388,31 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }
                             console.log("hwType===>", hwType);
 
-                            return this.renderGridItemOne(uniqueIndex, hwType, graphType, item)
+                            return this.__makeGridItemOne(uniqueIndex, hwType, graphType, item)
 
                         })}
                     </ResponsiveReactGridLayout>
                 </>
 
             )
+        }
+
+        renderAddItemSelectOptions() {
+
+            if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                return this.state.hwListForCluster.map(item => {
+                    return (
+                        <Option value={item.value}>{item.text}</Option>
+                    )
+                });
+            } else {
+                return this.state.hwListForAppInst.map(item => {
+                    return (
+                        <Option value={item.value}>{item.text}</Option>
+                    )
+                });
+            }
+
         }
 
         renderHeader = () => {
@@ -1488,24 +1529,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderAddItemSelectOptions() {
-
-            if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                return this.state.hwListForCluster.map(item => {
-                    return (
-                        <Option value={item.value}>{item.text}</Option>
-                    )
-                });
-            } else {
-                return this.state.hwListForAppInst.map(item => {
-                    return (
-                        <Option value={item.value}>{item.text}</Option>
-                    )
-                });
-            }
-
-        }
-
 
         renderSelectBoxRow() {
             return (
@@ -1557,53 +1580,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                             />
                         </div>
-
-                        <>
-                            <div className="page_monitoring_dropdown_label" style={{marginLeft: 10,}}>
-                                Add Item
-                            </div>
-                            <div style={{marginBottom: 0,}}>
-                                <Select
-                                    placeholder="Select Item"
-                                    //defaultValue=''
-                                    style={{width: 190, marginBottom: 10, marginLeft: 5}}
-                                    onChange={async (value) => {
-                                        //alert(value)
-                                        await this.addGridItem(value, value)
-                                        showToast('added ' + value + " item!!")
-                                    }}
-                                >
-                                    {[HARDWARE_TYPE_FOR_GRID.BUBBLE, HARDWARE_TYPE_FOR_GRID.MAP, HARDWARE_TYPE_FOR_GRID.CLOUDLET_LIST].map(item => {
-                                        return (
-                                            <Option value={item}>{item}</Option>
-                                        )
-                                    })}
-                                </Select>
-
-                            </div>
-                            <div className="page_monitoring_dropdown_label" style={{marginLeft: 25,}}>
-                                Add LineChart Item
-                            </div>
-                            <div style={{marginBottom: 0,}}>
-                                <Select
-                                    placeholder="Select Item"
-                                    //defaultValue=''
-                                    style={{width: 190, marginBottom: 10, marginLeft: 5}}
-                                    onChange={async (value) => {
-                                        //alert(value)
-                                        await this.addGridItem(value, GRID_ITEM_TYPE.LINE)
-                                        showToast('added ' + value + " item!!")
-                                    }}
-                                >
-                                    {this.renderAddItemSelectOptions()}
-                                </Select>
-
-                            </div>
-
-                            {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
+                        {/*todo:---------------------------*/}
+                        {/*todo: App Instance_Dropdown #2     */}
+                        {/*todo:---------------------------*/}
+                        <div className="page_monitoring_dropdown_box"
+                             style={{display: 'flex', marginTop: 15, marginLeft: -10}}>
                             <>
-                                <div className="page_monitoring_dropdown_label" style={{marginLeft: 25,}}>
-                                    Add BarChart Item
+                                <div className="page_monitoring_dropdown_label" style={{marginLeft: 10,}}>
+                                    Add Item
                                 </div>
                                 <div style={{marginBottom: 0,}}>
                                     <Select
@@ -1612,7 +1596,29 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         style={{width: 190, marginBottom: 10, marginLeft: 5}}
                                         onChange={async (value) => {
                                             //alert(value)
-                                            await this.addGridItem(value, GRID_ITEM_TYPE.BAR)
+                                            await this.addGridItem(value, value)
+                                            showToast('added ' + value + " item!!")
+                                        }}
+                                    >
+                                        {[HARDWARE_TYPE_FOR_GRID.BUBBLE, HARDWARE_TYPE_FOR_GRID.MAP, HARDWARE_TYPE_FOR_GRID.CLOUDLET_LIST].map(item => {
+                                            return (
+                                                <Option value={item}>{item}</Option>
+                                            )
+                                        })}
+                                    </Select>
+
+                                </div>
+                                <div className="page_monitoring_dropdown_label" style={{marginLeft: 25,}}>
+                                    Add Line Chart
+                                </div>
+                                <div style={{marginBottom: 0,}}>
+                                    <Select
+                                        placeholder="Select Item"
+                                        //defaultValue=''
+                                        style={{width: 190, marginBottom: 10, marginLeft: 5}}
+                                        onChange={async (value) => {
+                                            //alert(value)
+                                            await this.addGridItem(value, GRID_ITEM_TYPE.LINE)
                                             showToast('added ' + value + " item!!")
                                         }}
                                     >
@@ -1620,9 +1626,75 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     </Select>
 
                                 </div>
+
+                                {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
+                                <>
+                                    <div className="page_monitoring_dropdown_label" style={{marginLeft: 25,}}>
+                                        Add Bar Chart
+                                    </div>
+                                    <div style={{marginBottom: 0,}}>
+                                        <Select
+                                            placeholder="Select Item"
+                                            //defaultValue=''
+                                            style={{width: 190, marginBottom: 10, marginLeft: 5}}
+                                            onChange={async (value) => {
+                                                //alert(value)
+                                                await this.addGridItem(value, GRID_ITEM_TYPE.BAR)
+                                                showToast('added ' + value + " item!!")
+                                            }}
+                                        >
+                                            {this.renderAddItemSelectOptions()}
+                                        </Select>
+
+                                    </div>
+                                </>
+                                }
+                                <>
+                                    <div className="page_monitoring_dropdown_label" style={{marginLeft: 25,}}>
+                                        Add Column Chart
+                                    </div>
+                                    <div style={{marginBottom: 0,}}>
+                                        <Select
+                                            placeholder="Select Item"
+                                            //defaultValue=''
+                                            style={{width: 190, marginBottom: 10, marginLeft: 5}}
+                                            onChange={async (value) => {
+                                                //alert(value)
+                                                await this.addGridItem(value, GRID_ITEM_TYPE.COLUMN)
+                                                showToast('added ' + value + " item!!")
+                                            }}
+                                        >
+                                            {this.renderAddItemSelectOptions()}
+                                        </Select>
+
+                                    </div>
+                                </>
+
+                                {/*todo:Add Pie Chart*/}
+                                {/*todo:Add Pie Chart*/}
+                                {/*todo:Add Pie Chart*/}
+                                <>
+                                    <div className="page_monitoring_dropdown_label" style={{marginLeft: 25,}}>
+                                        Add Pie Chart
+                                    </div>
+                                    <div style={{marginBottom: 0,}}>
+                                        <Select
+                                            placeholder="Select Item"
+                                            //defaultValue=''
+                                            style={{width: 190, marginBottom: 10, marginLeft: 5}}
+                                            onChange={async (value) => {
+                                                //alert(value)
+                                                await this.addGridItem(value, GRID_ITEM_TYPE.PIE)
+                                                showToast('added ' + value + " item!!")
+                                            }}
+                                        >
+                                            {this.renderAddItemSelectOptions()}
+                                        </Select>
+
+                                    </div>
+                                </>
                             </>
-                            }
-                        </>
+                        </div>
                     </div>
 
                 </div>
@@ -1664,11 +1736,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             return (
                 <div style={{width: '100%', height: '100%', overflowY: 'auto'}}>
-                    <ModalGraphForCluster selectedClusterUsageOne={this.state.selectedClusterUsageOne}
-                                          selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
-                                          parent={this}
-                                          modalIsOpen={this.state.modalIsOpen}
-                                          cluster={''} contents={''}/>
+                    <ModalGraph selectedClusterUsageOne={this.state.selectedClusterUsageOne}
+                                selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
+                                parent={this}
+                                modalIsOpen={this.state.modalIsOpen}
+                                cluster={''} contents={''}/>
+
+                    <BigModalGraphForCluster
+                        lineChartDataForRendering={this.state.lineChartDataForRendering}
+                        isShowBigGraph={this.state.isShowBigGraph}
+                        parent={this}
+                        popupGraphHWType={this.state.popupGraphHWType}
+                    />
 
                     <Grid.Row className='view_contents'>
                         <Grid.Column className='contents_body'>
@@ -1684,10 +1763,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 <div style={{overflowY: 'auto'}}>
                                     <div className="page_monitoring"
                                          style={{backgroundColor: 'transparent', height: 3250}}>
-
                                         <div className='page_monitoring_dashboard_kyungjoon' style={{}}>
                                             {this.state.currentClassification === CLASSIFICATION.CLUSTER
-                                                ? this.renderGridLayoutForCluster()
+                                                ? this.___renderGridLayoutForCluster()
                                                 : this.renderGridLayoutForAppInst()
                                             }
                                         </div>
