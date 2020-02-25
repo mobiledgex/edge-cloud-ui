@@ -665,14 +665,17 @@ class SiteFour extends React.Component {
     }
 
     menuItemViewHide = (item, i, activeItem) => (
-        <Popup
-            className="table_actions_tooltip"
-            content={item.label}
-            position='right center'
-            trigger={
-                this.menuItemView(item, i, activeItem)
-            } />
-
+        (this.state.hideLeftMenu)?
+            <Popup
+                className="table_actions_tooltip"
+                content={item.label}
+                position='right center'
+                trigger={
+                    this.menuItemView(item, i, activeItem)
+                }
+            />
+            :
+            this.menuItemView(item, i, activeItem)
     )
 
     //compute page menu view
@@ -1049,8 +1052,7 @@ class SiteFour extends React.Component {
                                         {
                                             this.OrgMenu.map((item, i) => (
                                                 (item.label === 'Accounts' && localStorage.selectRole !== 'AdminManager') ? null
-                                                    : (this.state.hideLeftMenu)? this.menuItemViewHide(item, i, localStorage.selectMenu)
-                                                    : this.menuItemView(item, i, localStorage.selectMenu)
+                                                    : this.menuItemViewHide(item, i, localStorage.selectMenu)
                                             ))
                                         }
                                     </div>
@@ -1059,22 +1061,17 @@ class SiteFour extends React.Component {
                                         {
                                             (localStorage.selectRole === 'AdminManager') ?
                                                 this.menuItemsAll.map((item, i) => (
-                                                    (this.state.hideLeftMenu)? this.menuItemViewHide(item, i, localStorage.selectMenu)
-                                                    : this.menuItemView(item, i, localStorage.selectMenu)
+                                                    this.menuItemViewHide(item, i, localStorage.selectMenu)
                                                 ))
                                                 :
                                                 (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer') ?
                                                     this.menuItems.map((item, i) => (
-
-                                                        (this.state.hideLeftMenu)? this.menuItemViewHide(item, i, localStorage.selectMenu)
-                                                            : this.menuItemView(item, i, localStorage.selectMenu)
+                                                        this.menuItemViewHide(item, i, localStorage.selectMenu)
                                                     ))
                                                     :
                                                     (localStorage.selectRole === 'OperatorManager' || localStorage.selectRole === 'OperatorContributor' || localStorage.selectRole === 'OperatorViewer') ?
                                                         this.auth_three.map((item, i) => (
-
-                                                            (this.state.hideLeftMenu)? this.menuItemViewHide(item, i, localStorage.selectMenu)
-                                                                : this.menuItemView(item, i, localStorage.selectMenu)
+                                                            this.menuItemViewHide(item, i, localStorage.selectMenu)
                                                         ))
                                                         :
                                                         null
