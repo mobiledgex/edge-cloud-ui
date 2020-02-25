@@ -82,12 +82,13 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (this.props.markerList === nextProps.markerList && !this.state.isUpdateEnable) {
-            return false;//don't update
-        } else {
-            showToast('shouldComponentUpdate')
-            return true;
-        }
+        /*  if (this.props.markerList === nextProps.markerList && !this.state.isUpdateEnable) {
+              return false;//don't update
+          } else {
+              showToast('shouldComponentUpdate')
+              return true;
+          }*/
+        return true;
     }
 
     setCloudletLocation(pAppInstanceListGroupByCloudlet) {

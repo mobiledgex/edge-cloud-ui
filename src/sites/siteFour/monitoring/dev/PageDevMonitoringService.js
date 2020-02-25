@@ -22,16 +22,19 @@ import {SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../../services/serviceMC";
 import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
-import {Table} from "semantic-ui-react";
+import {Dropdown, Table} from "semantic-ui-react";
 import Lottie from "react-lottie";
 import type {TypeAppInstanceUsage2, TypeClusterUsageList} from "../../../../shared/Types";
-import {Progress} from "antd";
+import {Progress, Select} from "antd";
 import {TabPanel, Tabs} from "react-tabs";
 import {reactLocalStorage} from "reactjs-localstorage";
 import {Responsive, WidthProvider} from "react-grid-layout";
+import {Button as MButton} from "@material-ui/core";
+import * as reducer from "../../../../utils";
+import RoomIcon from "@material-ui/icons/Room";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
-
+const {Option} = Select;
 
 export const defaultLayoutForAppInst = [
     {i: 'a', x: 0, y: 0, w: 1, h: 3},
@@ -79,6 +82,7 @@ export const defaultLayoutForCluster = [
 export const HARDWARE_TYPE_FOR_GRID = {
     MAP: 'MAP',
     BUBBLE: 'BUBBLE',
+    CLOUDLET_LIST: 'CLOUDLET_LIST',
     FLAVOR: 'FLAVOR',
     CPU: 'CPU',
     VCPU: 'vCPU',
@@ -165,6 +169,7 @@ export const defaultHwMapperListForCluster = {
     '4': HARDWARE_TYPE_FOR_GRID.RECVBYTES,
     '5': HARDWARE_TYPE_FOR_GRID.SENDBYTES,
 }*/
+
 
 export const makeid = (length) => {
     let result = '';
@@ -444,146 +449,166 @@ export const renderBottomGridAreaForCluster = (_this: PageDevMonitoring, pCluste
     pClusterList = sortUsageListByTypeForCluster(pClusterList, HARDWARE_TYPE.CPU)
 
     return (
-        <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing
-               styles={{zIndex: 999999999999}}>
-            <Table.Header className="viewListTableHeader" styles={{zIndex: 99999999999}}>
-                <Table.Row>
-                    <Table.HeaderCell>
-                        Cluster
-                    </Table.HeaderCell>
-                    <Table.HeaderCell>
-                        CPU(%)
-                    </Table.HeaderCell>
-                    <Table.HeaderCell>
-                        MEM
-                    </Table.HeaderCell>
-                    <Table.HeaderCell>
-                        DISK
-                    </Table.HeaderCell>
-                    <Table.HeaderCell>
-                        NETWORK RECV
-                    </Table.HeaderCell>
-                    <Table.HeaderCell>
-                        NETWORK SENT
-                    </Table.HeaderCell>
-                    <Table.HeaderCell>
-                        TCP CONN
-                    </Table.HeaderCell>
-                    <Table.HeaderCell>
-                        TCP RETRANS
-                    </Table.HeaderCell>
-                    <Table.HeaderCell>
-                        UDP REV
-                    </Table.HeaderCell>
-                    <Table.HeaderCell>
-                        UDP SENT
-                    </Table.HeaderCell>
+        <>
+            <div style={{
+                display: 'flex',
+                width: '100%',
+                height: 45
+            }}>
+                <div className='page_monitoring_title' style={{
+                    backgroundColor: 'transparent',
+                    flex: .38,
+                    marginTop: 5,
+                }}>
+                    Usage List for Cluster
+                </div>
+                <div style={{flex: .4, marginRight: 70}}>
+                </div>
 
-                </Table.Row>
-            </Table.Header>
-            <Table.Body className="tbBodyList"
-                        ref={(div) => {
-                            _this.messageList = div;
-                        }}
-            >
-                {/*-----------------------*/}
-                {/*todo:ROW HEADER        */}
-                {/*-----------------------*/}
-                {!_this.state.isReady &&
-                <Table.Row className='page_monitoring_popup_table_empty'>
-                    <Table.Cell>
-                        <Lottie
-                            options={{
-                                loop: true,
-                                autoplay: true,
-                                animationData: require('../../../../lotties/loader001'),
-                                rendererSettings: {
-                                    preserveAspectRatio: 'xMidYMid slice'
-                                }
+            </div>
+            <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing
+                   styles={{zIndex: 999999999999}}>
+                <Table.Header className="viewListTableHeader" styles={{zIndex: 99999999999}}>
+                    <Table.Row>
+                        <Table.HeaderCell>
+                            Cluster
+                        </Table.HeaderCell>
+                        <Table.HeaderCell>
+                            CPU(%)
+                        </Table.HeaderCell>
+                        <Table.HeaderCell>
+                            MEM
+                        </Table.HeaderCell>
+                        <Table.HeaderCell>
+                            DISK
+                        </Table.HeaderCell>
+                        <Table.HeaderCell>
+                            NETWORK RECV
+                        </Table.HeaderCell>
+                        <Table.HeaderCell>
+                            NETWORK SENT
+                        </Table.HeaderCell>
+                        <Table.HeaderCell>
+                            TCP CONN
+                        </Table.HeaderCell>
+                        <Table.HeaderCell>
+                            TCP RETRANS
+                        </Table.HeaderCell>
+                        <Table.HeaderCell>
+                            UDP REV
+                        </Table.HeaderCell>
+                        <Table.HeaderCell>
+                            UDP SENT
+                        </Table.HeaderCell>
+
+                    </Table.Row>
+                </Table.Header>
+                <Table.Body className="tbBodyList"
+                            ref={(div) => {
+                                _this.messageList = div;
                             }}
-                            height={240}
-                            width={240}
-                            isStopped={false}
-                            isPaused={false}
-                        />
-                    </Table.Cell>
-                </Table.Row>}
-                {!_this.state.isRequesting && pClusterList.map((item: TypeClusterUsageList, index) => {
+                >
+                    {/*-----------------------*/}
+                    {/*todo:ROW HEADER        */}
+                    {/*-----------------------*/}
+                    {!_this.state.isReady &&
+                    <Table.Row className='page_monitoring_popup_table_empty'>
+                        <Table.Cell>
+                            <Lottie
+                                options={{
+                                    loop: true,
+                                    autoplay: true,
+                                    animationData: require('../../../../lotties/loader001'),
+                                    rendererSettings: {
+                                        preserveAspectRatio: 'xMidYMid slice'
+                                    }
+                                }}
+                                height={240}
+                                width={240}
+                                isStopped={false}
+                                isPaused={false}
+                            />
+                        </Table.Cell>
+                    </Table.Row>}
+                    {!_this.state.isRequesting && pClusterList.map((item: TypeClusterUsageList, index) => {
 
-                    return (
-                        <Table.Row className='page_monitoring_popup_table_row'
+                        return (
+                            <Table.Row className='page_monitoring_popup_table_row'
 
-                                   onClick={() => {
-                                       try {
-                                           let cluster_cloudlet = item.cluster.toString() + ' | ' + item.cloudlet.toString()
-                                           let lineChartDataSet = makeLineChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this)
-                                           cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
-                                           handleLegendAndBubbleClickedEvent(_this, cluster_cloudlet, lineChartDataSet)
+                                       onClick={() => {
+                                           try {
+                                               let cluster_cloudlet = item.cluster.toString() + ' | ' + item.cloudlet.toString()
+                                               let lineChartDataSet = makeLineChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this)
+                                               cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
+                                               handleLegendAndBubbleClickedEvent(_this, cluster_cloudlet, lineChartDataSet)
 
-                                       } catch (e) {
+                                           } catch (e) {
 
-                                       }
-                                   }}
-                        >
-                            <Table.Cell>
-                                {item.cluster}<br/>[{item.cloudlet}]
-                            </Table.Cell>
-                            <Table.Cell>
-                                <div>
+                                           }
+                                       }}
+                            >
+                                <Table.Cell>
+                                    {item.cluster}<br/>[{item.cloudlet}]
+                                </Table.Cell>
+                                <Table.Cell>
                                     <div>
-                                        {item.sumCpuUsage.toFixed(2) + '%'}
+                                        <div>
+                                            {item.sumCpuUsage.toFixed(2) + '%'}
+                                        </div>
+                                        <div>
+                                            <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10}
+                                                      showInfo={false}
+                                                      percent={(item.sumCpuUsage / _this.state.maxCpu * 100)}
+                                                //percent={(item.sumCpuUsage / _this.state.gridInstanceListCpuMax) * 100}
+                                                      strokeColor={'#29a1ff'} status={'normal'}/>
+                                        </div>
                                     </div>
+                                </Table.Cell>
+                                <Table.Cell>
                                     <div>
-                                        <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10}
-                                                  showInfo={false}
-                                                  percent={(item.sumCpuUsage / _this.state.maxCpu * 100)}
-                                            //percent={(item.sumCpuUsage / _this.state.gridInstanceListCpuMax) * 100}
-                                                  strokeColor={'#29a1ff'} status={'normal'}/>
+                                        <div>
+                                            {numberWithCommas(item.sumMemUsage.toFixed(2)) + ' %'}
+                                        </div>
+                                        <div>
+                                            <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10}
+                                                      showInfo={false}
+                                                      percent={(item.sumMemUsage / _this.state.maxMem * 100)}
+                                                      strokeColor={'#29a1ff'} status={'normal'}/>
+                                        </div>
                                     </div>
-                                </div>
-                            </Table.Cell>
-                            <Table.Cell>
-                                <div>
-                                    <div>
-                                        {numberWithCommas(item.sumMemUsage.toFixed(2)) + ' %'}
-                                    </div>
-                                    <div>
-                                        <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10}
-                                                  showInfo={false}
-                                                  percent={(item.sumMemUsage / _this.state.maxMem * 100)}
-                                                  strokeColor={'#29a1ff'} status={'normal'}/>
-                                    </div>
-                                </div>
-                            </Table.Cell>
-                            <Table.Cell>
-                                {numberWithCommas(item.sumDiskUsage.toFixed(2)) + ' %'}
-                            </Table.Cell>
-                            <Table.Cell>
-                                {numberWithCommas(item.sumRecvBytes.toFixed(2)) + ' '}
-                            </Table.Cell>
-                            <Table.Cell>
-                                {numberWithCommas(item.sumSendBytes.toFixed(2)) + ' '}
-                            </Table.Cell>
+                                </Table.Cell>
+                                <Table.Cell>
+                                    {numberWithCommas(item.sumDiskUsage.toFixed(2)) + ' %'}
+                                </Table.Cell>
+                                <Table.Cell>
+                                    {numberWithCommas(item.sumRecvBytes.toFixed(2)) + ' '}
+                                </Table.Cell>
+                                <Table.Cell>
+                                    {numberWithCommas(item.sumSendBytes.toFixed(2)) + ' '}
+                                </Table.Cell>
 
-                            <Table.Cell>
-                                {numberWithCommas(item.sumTcpConns.toFixed(2)) + ' '}
-                            </Table.Cell>
-                            <Table.Cell>
-                                {numberWithCommas(item.sumTcpRetrans.toFixed(2)) + ' '}
-                            </Table.Cell>
-                            <Table.Cell>
-                                {numberWithCommas(item.sumUdpRecv.toFixed(2)) + ' '}
-                            </Table.Cell>
-                            <Table.Cell>
-                                {numberWithCommas(item.sumUdpSent.toFixed(2)) + ' '}
-                            </Table.Cell>
+                                <Table.Cell>
+                                    {numberWithCommas(item.sumTcpConns.toFixed(2)) + ' '}
+                                </Table.Cell>
+                                <Table.Cell>
+                                    {numberWithCommas(item.sumTcpRetrans.toFixed(2)) + ' '}
+                                </Table.Cell>
+                                <Table.Cell>
+                                    {numberWithCommas(item.sumUdpRecv.toFixed(2)) + ' '}
+                                </Table.Cell>
+                                <Table.Cell>
+                                    {numberWithCommas(item.sumUdpSent.toFixed(2)) + ' '}
+                                </Table.Cell>
 
-                        </Table.Row>
+                            </Table.Row>
 
-                    )
-                })}
-            </Table.Body>
-        </Table>
+                        )
+                    })}
+                </Table.Body>
+            </Table>
+        </>
+
+
     )
 }
 
