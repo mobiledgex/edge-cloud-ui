@@ -8,6 +8,7 @@ import Ripples from "react-ripples";
 import {Circle, Map, Marker, Popup, TileLayer, Tooltip} from "../../../../components/react-leaflet_kj/src/index";
 import PageDevMonitoring from "./PageDevMonitoring";
 import {Icon} from "antd";
+import {showToast} from "../PageMonitoringCommonService";
 
 
 const DEFAULT_VIEWPORT = {
@@ -65,7 +66,7 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
     }
 
     componentDidMount = async () => {
-        console.log('markerList2222===>', this.props.markerList);
+        console.log('componentDidMount===>', this.props.markerList);
         let appInstanceListGroupByCloudlet = this.props.markerList
         this.setCloudletLocation(appInstanceListGroupByCloudlet)
 
@@ -74,7 +75,6 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
 
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
         if (this.props.markerList !== nextProps.markerList) {
-
             console.log('markerList2222 nextProps_markerList===>', nextProps.markerList);
             let appInstanceListGroupByCloudlet = nextProps.markerList;
             this.setCloudletLocation(appInstanceListGroupByCloudlet)
@@ -83,8 +83,9 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
 
     shouldComponentUpdate(nextProps, nextState) {
         if (this.props.markerList === nextProps.markerList && !this.state.isUpdateEnable) {
-            return false;
+            return false;//don't update
         } else {
+            showToast('shouldComponentUpdate')
             return true;
         }
     }
@@ -237,7 +238,7 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                             style={{color: 'black'}}>{item.Cloudlet}</span>
                                 </Tooltip>
 
-                               {/* {item.isShowCircle &&
+                                {/* {item.isShowCircle &&
                                 <Circle
                                     center={[item.CloudletLocation.latitude, item.CloudletLocation.longitude,]}
                                     radius={5000000}

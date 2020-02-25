@@ -1168,7 +1168,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         />
                                                     </div>
                                                     {/*todo:---------------------------------*/}
-                                                    {/*todo: RENDER BUBBLE_CHART          */}
+                                                    {/*todo: RENDER BUBBLE          */}
                                                     {/*todo:---------------------------------*/}
                                                     <div className='page_monitoring_container'>
                                                         {!this.state.isAppInstaceDataReady ? renderPlaceHolder2() : renderBubbleChart(this, this.state.currentHardwareType, this.state.bubbleChartData)}

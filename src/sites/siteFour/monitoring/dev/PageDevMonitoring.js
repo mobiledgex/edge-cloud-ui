@@ -11,13 +11,13 @@ import {Button as MButton, CircularProgress, Icon} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
 import {Checkbox, DatePicker, Select, Button as AButton,} from 'antd';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
-
+import RoomIcon from '@material-ui/icons/Room';
 
 import {
     convertHwTypePhrases,
     defaultLayoutForAppInst,
     defaultLayoutForCluster,
-    defaultHwMapperList,
+    defaultHwMapperListForCluster,
     filterUsageByClassification,
     getUserId,
     handleHardwareTabChanges,
@@ -205,6 +205,8 @@ type State = {
     gridLayoutMapperToHwList: [],
     hwList: [],
     isDraggable: boolean,
+    isUpdateEnableForMap: boolean,
+    isStream:boolean,
 
 }
 
@@ -220,16 +222,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             super(props);
             let savedlayoutKeyForCluster = getUserId() + "_layout"
             let savedlayoutKeyForClusterMapper = getUserId() + "_layout_mapper"
-
             let savedlayoutKeyForAppInst = getUserId() + "_layout2"
 
-
             console_log('test===> 고경준천재님시입니다sdlkfsdlkflsdkflskdf', 'info')
+
+            //reactLocalStorage.remove(savedlayoutKeyForClusterMapper)
 
 
             this.state = {
                 layoutForCluster: isEmpty(reactLocalStorage.get(savedlayoutKeyForCluster)) ? defaultLayoutForCluster : reactLocalStorage.getObject(savedlayoutKeyForCluster),
-                gridLayoutMapperToHwList: isEmpty(reactLocalStorage.get(savedlayoutKeyForClusterMapper)) ? defaultLayoutForCluster : reactLocalStorage.getObject(savedlayoutKeyForClusterMapper),
+                gridLayoutMapperToHwList: isEmpty(reactLocalStorage.get(savedlayoutKeyForClusterMapper)) ? defaultHwMapperListForCluster : reactLocalStorage.getObject(savedlayoutKeyForClusterMapper),
                 layoutForAppInst: isEmpty(reactLocalStorage.get(savedlayoutKeyForAppInst)) ? defaultLayoutForAppInst : reactLocalStorage.getObject(savedlayoutKeyForAppInst),
                 date: '',
                 time: '',
@@ -335,6 +337,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 },
                 hwList: [HARDWARE_TYPE.CPU, HARDWARE_TYPE.MEM, HARDWARE_TYPE.DISK, HARDWARE_TYPE.RECVBYTES, HARDWARE_TYPE.SENDBYTES, HARDWARE_TYPE.TCPRETRANS, HARDWARE_TYPE.TCPCONNS, HARDWARE_TYPE.UDPSENT, HARDWARE_TYPE.UDPRECV],
                 isDraggable: true,
+                isUpdateEnableForMap: false,
             };
         }
 
@@ -847,6 +850,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 await this.setState({
                     layoutForCluster: defaultLayoutForCluster,
                     layoutForAppInst: defaultLayoutForAppInst,
+
                 })
             } catch (e) {
 
@@ -889,12 +893,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             style={{
                                 backgroundColor: !this.state.isDraggable ? 'green' : 'rgba(117,122,133,1)',
                                 color: 'white',
-                                height: 38
+                                height: 36
                             }}
                             onClick={async () => {
-                                this.setState({
+                                await this.setState({
                                     isDraggable: !this.state.isDraggable,
+                                    appInstanceListGroupByCloudlet: [],
                                 })
+                                this.setState({
+                                    appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
+                                });
                             }}
                         >Fix Grid
                         </MButton>
@@ -1288,7 +1296,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         />
                     </div>
                     {/*todo:---------------------------------*/}
-                    {/*todo: RENDER BUBBLE_CHART          */}
+                    {/*todo: RENDER BUBBLE          */}
                     {/*todo:---------------------------------*/}
                     <div className='page_monitoring_container'>
                         {this.state.bubbleChartLoader ? renderPlaceHolderCircular() : renderBubbleChartCoreForDev_Cluster(this, this.state.currentHardwareType, this.state.bubbleChartData)}
@@ -1309,12 +1317,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         }}>
                             <div className='page_monitoring_title' style={{
                                 backgroundColor: 'transparent',
-                                flex: .9
+                                flex: .38
                             }}>
                                 Launch status of
                                 the {this.state.currentClassification}
                             </div>
-                            <div style={{flex: .1, marginRight: -30}}>
+                            <div style={{flex: .4, marginRight: 70}}>
                                 <MButton style={{
                                     height: 30,
                                     backgroundColor: !this.state.gridDraggable ? 'green' : 'grey',
@@ -1331,7 +1339,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                              })
                                          }}>
-                                    drag
+
+                                    {/*@todo:RoomIcon*/}
+                                    {/*@todo:RoomIcon*/}
+                                    {/*@todo:RoomIcon*/}
+                                    <RoomIcon color={'white'}/>
                                 </MButton>
                             </div>
 
@@ -1359,6 +1371,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <LeafletMapWrapperForDev
                             mapPopUploading={this.state.mapPopUploading}
                             parent={this}
+                            isDraggable={this.state.isDraggable}
                             handleAppInstDropdown={this.handleAppInstDropdown}
                             markerList={this.state.appInstanceListGroupByCloudlet}/>
                     </div>
@@ -1435,6 +1448,27 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
+        renderTypedItem(hwType, graphType) {
+            if (graphType === 'line') {
+                return (
+                    this.makeChartDataAndRenderTabBody_LineChart(hwType)
+                )
+            } else if (graphType === 'bar') {
+                return (
+                    this.makeChartDataAndRenderTabBody_BarChart(hwType)
+                )
+            } else if (graphType === HARDWARE_TYPE_FOR_GRID.BUBBLE) {
+                return (
+                    this.renderBubbleChartArea()
+                )
+            } else if (graphType === HARDWARE_TYPE_FOR_GRID.MAP) {
+                return (
+                    this.renderMapArea()
+                )
+            }
+
+        }
+
         renderGridLayoutForCluster() {
             return (
                 <ResponsiveReactGridLayout
@@ -1455,7 +1489,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                         const index = item.i;
                         console.log("gridLayoutMapperToHwList===>", this.state.gridLayoutMapperToHwList);
-                        //console.log("defaultHwMapperList===>", defaultHwMapperList[index]);
+                        //console.log("defaultHwMapperListForCluster===>", defaultHwMapperListForCluster[index]);
 
                         let hwType = 'CPU'
                         let graphType = 'line';
@@ -1470,13 +1504,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                      //alert('sdlkfdslkf')
                                  }}
                                  onDoubleClick={() => {
-                                      this.setState({
-                                          isDraggable: !this.state.isDraggable
-                                      })
+                                     this.setState({
+                                         isDraggable: !this.state.isDraggable
+                                     })
                                  }}
                             >
                                 <div className='page_monitoring_column_kyungjoon1' style={{height: 450}}>
-                                    {graphType === 'line' ? this.makeChartDataAndRenderTabBody_LineChart(hwType) : this.makeChartDataAndRenderTabBody_BarChart(hwType)}
+                                    <div className='page_monitoring_column_kyungjoon1' style={{height: 450}}>
+                                        {/*@todo:#####################*/}
+                                        {/*@todo:renderTypedItem      */}
+                                        {/*@todo:#####################*/}
+                                        {this.renderTypedItem(hwType, graphType)}
+                                    </div>
+
                                 </div>
 
                                 <div className="remove"

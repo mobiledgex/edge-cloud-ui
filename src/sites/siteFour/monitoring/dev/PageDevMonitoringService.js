@@ -75,7 +75,10 @@ export const defaultLayoutForCluster = [
     {i: '18', x: 2, y: 5, w: 1, h: 1, "add": false},*/
 ];
 
+
 export const HARDWARE_TYPE_FOR_GRID = {
+    MAP: 'MAP',
+    BUBBLE: 'BUBBLE',
     FLAVOR: 'FLAVOR',
     CPU: 'CPU',
     VCPU: 'vCPU',
@@ -113,30 +116,41 @@ export const HARDWARE_TYPE_FOR_GRID = {
 
 }
 
+export const defaultHwMapperListForCluster = [
 
-export const defaultHwMapperList = [
     {
         id: '1',
+        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
+        graphType: HARDWARE_TYPE_FOR_GRID.MAP,
+    },
+    {
+        id: '2',
+        hwType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
+        graphType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
+    },
+
+    {
+        id: '3',
         hwType: HARDWARE_TYPE_FOR_GRID.CPU,
         graphType: 'line',
     },
     {
-        id: '2',
+        id: '4',
         hwType: HARDWARE_TYPE_FOR_GRID.MEM,
         graphType: 'line',
     },
     {
-        id: '3',
+        id: '5',
         hwType: HARDWARE_TYPE_FOR_GRID.DISK,
         graphType: 'line',
     },
     {
-        id: '4',
+        id: '6',
         hwType: HARDWARE_TYPE_FOR_GRID.RECVBYTES,
         graphType: 'line',
     },
     {
-        id: '5',
+        id: '7',
         hwType: HARDWARE_TYPE_FOR_GRID.SENDBYTES,
         graphType: 'line',
     },
@@ -144,7 +158,7 @@ export const defaultHwMapperList = [
 
 
 /*
-export const defaultHwMapperList = {
+export const defaultHwMapperListForCluster = {
     '1': HARDWARE_TYPE_FOR_GRID.CPU,
     '2': HARDWARE_TYPE_FOR_GRID.MEM,
     '3': HARDWARE_TYPE_FOR_GRID.DISK,
