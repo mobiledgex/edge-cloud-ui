@@ -249,21 +249,21 @@ class SiteFourPageAppInst extends React.Component {
 
     setRemote = (mcRequest) => {
         this.props.handleLoadingSpinner(false)
-        let url = process.env.REACT_APP_API_ENDPOINT;
-        url  = url.replace('https://', '')
-        url  = url.replace('http://', '')
-        url = (url.substring(0,url.indexOf(':')))
+        let mcurl = process.env.REACT_APP_API_ENDPOINT;
+        mcurl  = mcurl.replace('https://', '')
+        mcurl  = mcurl.replace('http://', '')
+        let ipAddress = (mcurl.substring(0,mcurl.indexOf(':')))
         if (mcRequest && mcRequest.response)
         {
             let response  = mcRequest.response;
             let responseData = response.data
             if(responseData.code === 200)
             {
-                let url = responseData.data;
-                url = url.replace('127.0.0.1', url)
+                let vmURL = responseData.data;
+                vmURL = vmURL.replace('127.0.0.1', ipAddress)
                 _self.setState({ viewMode: 'detailView' })
                 let vm = {}
-                vm.url = url
+                vm.vmURL = vmURL
                 let data = {}
                 data.vm = vm;
                 this.props.childPage(<TerminalViewer data={data} onClose={this.onTermialClose}></TerminalViewer>)  

@@ -46,7 +46,7 @@ const showError = (request, message) => {
 }
 
 const checkExpiry = (self, message) => {
-    let isExpired = message.indexOf('expired jwt') > -1 || message.indexOf('expired token') > -1
+    let isExpired = message.indexOf('expired jwt') > -1 || message.indexOf('expired token') > -1 || message.indexOf('token is expired') > -1
     if (isExpired && self.gotoUrl) {
         localStorage.setItem('userInfo', null)
         localStorage.setItem('sessionData', null)
@@ -87,12 +87,8 @@ export function sendWSRequest(request, callback) {
         let response = {};
         response.data = data;
         switch (request.method) {
-            case getEP().CREATE_CLUSTER_INST:
             case getEP().DELETE_CLUSTER_INST:
-            case getEP().CREATE_CLOUDLET:
             case getEP().DELETE_CLOUDLET:
-            case getEP().CREATE_APP_INST:
-            case getEP().UPDATE_APP_INST:
             case getEP().DELETE_APP_INST:
                 clearSockets(request.uuid);
         }

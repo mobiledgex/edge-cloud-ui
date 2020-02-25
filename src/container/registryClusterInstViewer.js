@@ -8,7 +8,7 @@ import * as reducer from '../utils'
 
 import * as serviceMC from '../services/serviceMC';
 import SiteFourCreateInstForm from "./siteFourCreateInstForm";
-import MexMessageDialog from '../hoc/mexDialogMessage';
+import MexMultiStepper, {updateStepper} from '../hoc/stepper/mexMessageMultiStream'
 
 var layout = [
     { "w": 19, "x": 0, "y": 0, "i": "0", "minW": 8, "moved": false, "static": false, "title": "Developer" }
@@ -29,7 +29,7 @@ class RegistryClusterInstViewer extends React.Component {
         this.wsRequestResponse = [];
         this.state = {
             layout,
-            dialogMessage: [],
+            stepsArray:[],
             open: false,
             dimmer: false,
             dummyData: [],
@@ -137,31 +137,15 @@ class RegistryClusterInstViewer extends React.Component {
     }
 
     receiveSubmit = (mcRequest) => {
-        this.wsRequestCount = this.wsRequestCount - 1;
-        let messageArray = [];
         if (mcRequest) {
-            this.wsRequestResponse.push(mcRequest);
-            if (this.wsRequestCount === 0) {
-                this.props.handleLoadingSpinner(false);
-                let valid = true;
-                this.wsRequestResponse.map(mcRequest => {
-                    let method = mcRequest.request.method;
-                    let data = mcRequest.response.data
-                    messageArray.push(method + ':' + data.data.message)
-                    if (data.code !== 200) {
-                        valid = false;
-                    }
-                })
-                if (valid) {
-                    this.props.gotoUrl();
-                    this.setState({ errorClose: true })
-                }
-                else {
-                    this.setState({
-                        dialogMessage: messageArray
-                    })
-                }
+            let data = undefined;
+            let request = mcRequest.request;
+            let cloudletName = request.data.clusterinst.key.cloudlet_key.name;
+            if(mcRequest.response && mcRequest.response.data)
+            {
+                data  = mcRequest.response.data;
             }
+            this.setState({stepsArray:updateStepper(this.state.stepsArray, cloudletName, data)})
         }
     }
 
@@ -220,12 +204,10 @@ class RegistryClusterInstViewer extends React.Component {
         }
     }
 
-    closeDialog = () => {
+    stepperClose = () => {
         this.setState({
-            dialogMessage: [],
-            errorClose: true
+            stepsArray:[]
         })
-        this.props.handleLoadingSpinner(false);
         this.props.gotoUrl();
     }
 
@@ -243,7 +225,7 @@ class RegistryClusterInstViewer extends React.Component {
                 >
                     {this.generateDOM(open, dimmer, dummyData, this.state.keysData, hiddenKeys, this.props.region)}
                 </div>
-                <MexMessageDialog close={this.closeDialog} message={this.state.dialogMessage} />
+                <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose}/>
             </div>
         );
     }
