@@ -731,7 +731,7 @@ class MapWithListView extends React.Component {
     showMenu = (action) => {
         let visible = true;
         if (action && action.label === 'Terminal') {
-            visible = this.state.selected.Runtime.container_ids //|| this.state.selected.DeploymentType === 'vm'
+            visible = this.state.selected.Runtime.container_ids || this.state.selected.DeploymentType === 'vm'
         } else {
             if(!action) visible = false;
         }
