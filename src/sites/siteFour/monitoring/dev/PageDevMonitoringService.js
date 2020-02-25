@@ -160,6 +160,46 @@ export const defaultHwMapperListForCluster = [
     },
 ]
 
+export const defaultLayoutMapperForAppInst = [
+
+    {
+        id: '1',
+        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
+        graphType: HARDWARE_TYPE_FOR_GRID.MAP,
+    },
+    {
+        id: '2',
+        hwType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
+        graphType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
+    },
+
+    {
+        id: '3',
+        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
+        graphType: 'line',
+    },
+    {
+        id: '4',
+        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
+        graphType: 'line',
+    },
+    {
+        id: '5',
+        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
+        graphType: 'line',
+    },
+    {
+        id: '6',
+        hwType: HARDWARE_TYPE_FOR_GRID.RECVBYTES,
+        graphType: 'line',
+    },
+    {
+        id: '7',
+        hwType: HARDWARE_TYPE_FOR_GRID.SENDBYTES,
+        graphType: 'line',
+    },
+]
+
 
 /*
 export const defaultHwMapperListForCluster = {
@@ -359,7 +399,7 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this) => {
     }
 }
 
-export const renderBottomGridAreaForCluster = (_this: PageDevMonitoring, pClusterList) => {
+export const renderBottomGridTableList = (_this: PageDevMonitoring, pClusterList) => {
 
     //pClusterList
     pClusterList = sortUsageListByTypeForCluster(pClusterList, HARDWARE_TYPE.CPU)

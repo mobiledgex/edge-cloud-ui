@@ -229,6 +229,14 @@ export const NETWORK_TYPE = {
     SEND_BYTES: 'SEND_BYTES',
 }
 
+export const GRID_ITEM_TYPE  ={
+    LINE   : 'line',
+    BAR    : 'bar',
+    BUBBLE : 'bubble',
+    MAP    : 'map',
+    TABLE  : 'table',
+}
+
 
 export const HARDWARE_OPTIONS = [
     {text: 'FLAVOR', value: 'FLAVOR'},

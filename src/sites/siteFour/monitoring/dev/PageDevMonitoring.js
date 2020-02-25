@@ -7,34 +7,36 @@ import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
-import {Button as MButton, CircularProgress, Icon} from '@material-ui/core'
+import {Button as MButton, CircularProgress} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
-import {Checkbox, DatePicker, Select, Button as AButton,} from 'antd';
+import {Checkbox, DatePicker, Select,} from 'antd';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import RoomIcon from '@material-ui/icons/Room';
 
 import {
     convertHwTypePhrases,
-    defaultLayoutForAppInst,
-    defaultLayoutForCluster,
     defaultHwMapperListForCluster,
+    defaultLayoutForAppInst,
+    defaultLayoutForCluster, defaultLayoutMapperForAppInst,
     filterUsageByClassification,
     getUserId,
     handleHardwareTabChanges,
+    HARDWARE_TYPE_FOR_GRID,
     make__LineChartDataForAppInst,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
+    makeid,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
     makeSelectBoxListWithThreeValuePipe,
+    renderBottomGridTableList,
     renderBubbleChartCoreForDev_Cluster,
-    renderGridLayoutForAppInst,
     renderLineChartCoreForDev_AppInst,
-    renderLineChartCoreForDev_Cluster, HARDWARE_TYPE_FOR_GRID, console_log, makeid, renderBottomGridAreaForCluster,
+    renderLineChartCoreForDev_Cluster,
 } from "./PageDevMonitoringService";
 import {
     CLASSIFICATION,
-    CONNECTIONS_OPTIONS,
+    CONNECTIONS_OPTIONS, GRID_ITEM_TYPE, HARDWARE_OPTIONS_FOR_APPINST,
     HARDWARE_OPTIONS_FOR_CLUSTER,
     HARDWARE_TYPE,
     NETWORK_OPTIONS,
@@ -203,11 +205,14 @@ type State = {
     selectedClusterUsageOneIndex: number,
     gridDraggable: boolean,
     diskGridItemOneStyleTranslate: string,
-    gridLayoutMapperToHwList: [],
-    hwList: [],
+    layoutMapperForCluster: [],
+    layoutMapperForAppInst: [],
+    hwListForCluster: [],
     isDraggable: boolean,
     isUpdateEnableForMap: boolean,
     isStream: boolean,
+    gridLayoutMapperToHwList: [],
+    hwListForAppInst: [],
 
 }
 
@@ -224,12 +229,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let clusterLayoutKey = getUserId() + "_layout"
             let ClusterHwMapperKey = getUserId() + "_layout_mapper"
             let appInstLayoutKey = getUserId() + "_layout2"
-            //reactLocalStorage.remove(appInstLayoutKey)
+            let layoutMapperAppInstKey = getUserId() + "_layout2_mapper"
+
 
             this.state = {
                 layoutForCluster: isEmpty(reactLocalStorage.get(clusterLayoutKey)) ? defaultLayoutForCluster : reactLocalStorage.getObject(clusterLayoutKey),
-                gridLayoutMapperToHwList: isEmpty(reactLocalStorage.get(ClusterHwMapperKey)) ? defaultHwMapperListForCluster : reactLocalStorage.getObject(ClusterHwMapperKey),
+                layoutMapperForCluster: isEmpty(reactLocalStorage.get(ClusterHwMapperKey)) ? defaultHwMapperListForCluster : reactLocalStorage.getObject(ClusterHwMapperKey),
                 layoutForAppInst: isEmpty(reactLocalStorage.get(appInstLayoutKey)) ? defaultLayoutForAppInst : reactLocalStorage.getObject(appInstLayoutKey),
+                layoutMapperForAppInst: isEmpty(reactLocalStorage.get(layoutMapperAppInstKey)) ? defaultLayoutMapperForAppInst : reactLocalStorage.getObject(layoutMapperAppInstKey),
                 date: '',
                 time: '',
                 dateTime: '',
@@ -332,7 +339,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 diskGridItemOneStyleTranslate: {
                     transform: 'translate(10px, 1540px)',
                 },
-                hwList: HARDWARE_OPTIONS_FOR_CLUSTER,
+                hwListForCluster: HARDWARE_OPTIONS_FOR_CLUSTER,
+                hwListForAppInst: HARDWARE_OPTIONS_FOR_APPINST,
                 isDraggable: true,
                 isUpdateEnableForMap: false,
             };
@@ -477,24 +485,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentAppInst: '',
                 //currentTabIndex: 1,
             })
-
-            /* let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-             let savedlayoutKeyForCluster = store.email + "_layout"
-
-             alert(JSON.stringify(reactLocalStorage.get(savedlayoutKeyForCluster)))
-             await this.setState({
-                 layoutForCluster: reactLocalStorage.get(savedlayoutKeyForCluster),
-             })*/
-
-            /*   if (this.udpRef !== null) {
-                   this.udpRef.style.height = '500px';
-               }*/
-
-            /* setTimeout(() => {
-                 this.setState({
-                     currentTabIndex: 0,
-                 })
-             }, 3500)*/
         }
 
         async refreshAllData() {
@@ -807,12 +797,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             try {
                 reactLocalStorage.remove(getUserId() + "_layout")
                 reactLocalStorage.remove(getUserId() + "_layout2")
+                reactLocalStorage.remove(getUserId() + "_layout_mapper")
                 await this.setState({
                     layoutForCluster: [],
+                    layoutMapperForCluster: [],
                     layoutForAppInst: [],
                 });
+
                 await this.setState({
                     layoutForCluster: defaultLayoutForCluster,
+                    layoutMapperForCluster: defaultHwMapperListForCluster,
                     layoutForAppInst: defaultLayoutForAppInst,
 
                 })
@@ -1115,63 +1109,94 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         async addGridItem(hwType, graphType = 'line') {
-            console.log("items===>", this.state.layoutForCluster)
-            let currentItems = this.state.layoutForCluster;
-            let maxY = -1;
-            if (!isEmpty(currentItems)) {
-                maxY = _.maxBy(currentItems, 'y').y
+
+            if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+
+                let currentItems = this.state.layoutForCluster;
+                let maxY = -1;
+                if (!isEmpty(currentItems)) {
+                    maxY = _.maxBy(currentItems, 'y').y
+                }
+                let uniqueId = makeid(5)
+                let mapperList = this.state.layoutMapperForCluster
+
+                let itemOne = {
+                    id: uniqueId,
+                    hwType: hwType,
+                    graphType: graphType,
+                }
+
+                await this.setState({
+                    layoutForCluster: this.state.layoutForCluster.concat({
+                        i: uniqueId,
+                        x: 0,
+                        y: maxY + 1,
+                        w: 1,
+                        h: 1,
+                    }),
+                    layoutMapperForCluster: mapperList.concat(itemOne),
+                });
+
+                console.log("layoutMapperForCluster===>", this.state.layoutMapperForCluster)
+
+                reactLocalStorage.setObject(getUserId() + "_layout", this.state.layoutForCluster)
+                reactLocalStorage.setObject(getUserId() + "_layout_mapper", this.state.layoutMapperForCluster)
+            } else {//@TODO: APPINST LEVEL
+
+                let currentItems = this.state.layoutForAppInst;
+                let maxY = -1;
+                if (!isEmpty(currentItems)) {
+                    maxY = _.maxBy(currentItems, 'y').y
+                }
+                let uniqueId = makeid(5)
+                let mapperList = this.state.layoutMapperForAppInst
+
+                let itemOne = {
+                    id: uniqueId,
+                    hwType: hwType,
+                    graphType: graphType,
+                }
+
+                await this.setState({
+                    layoutForAppInst: this.state.layoutForAppInst.concat({
+                        i: uniqueId,
+                        x: 0,
+                        y: maxY + 1,
+                        w: 1,
+                        h: 1,
+                    }),
+                    layoutMapperForAppInst: mapperList.concat(itemOne),
+                });
+                reactLocalStorage.setObject(getUserId() + "_layout2", this.state.layoutForAppInst)
+                reactLocalStorage.setObject(getUserId() + "_layout2_mapper", this.state.layoutMapperForAppInst)
+
             }
-            let uniqueId = makeid(5)
-            let _gridLayoutMapperToHwList = this.state.gridLayoutMapperToHwList
 
-            let itemOne = {
-                id: uniqueId,
-                hwType: hwType,
-                graphType: graphType,
-            }
 
-            await this.setState({
-                layoutForCluster: this.state.layoutForCluster.concat({
-                    i: uniqueId,
-                    x: 0,
-                    y: maxY + 1,
-                    w: 1,
-                    h: 1,
-                }),
-                gridLayoutMapperToHwList: _gridLayoutMapperToHwList.concat(itemOne),
-            });
-
-            console.log("gridLayoutMapperToHwList===>", this.state.gridLayoutMapperToHwList)
-
-            reactLocalStorage.setObject(getUserId() + "_layout", this.state.layoutForCluster)
-            reactLocalStorage.setObject(getUserId() + "_layout_mapper", this.state.gridLayoutMapperToHwList)
         }
 
         removeGridItem(i) {
-            console.log("removing", i);
 
-            let removedLayout = _.reject(this.state.layoutForCluster, {i: i});
-            reactLocalStorage.setObject(getUserId() + "_layout", removedLayout)
-            //reactLocalStorage.setObject(getUserId() + "_layout_mapper", removedLayout)
+            if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                let removedLayout = _.reject(this.state.layoutForCluster, {i: i});
+                reactLocalStorage.setObject(getUserId() + "_layout", removedLayout)
+                //reactLocalStorage.setObject(getUserId() + "_layout_mapper", removedLayout)
 
-            this.setState({
-                layoutForCluster: removedLayout,
-            });
-        }
+                this.setState({
+                    layoutForCluster: removedLayout,
+                });
+            } else {//@todo: AppInst Level
+                let removedLayout = _.reject(this.state.layoutForAppInst, {i: i});
+                reactLocalStorage.setObject(getUserId() + "_layout2", removedLayout)
+                this.setState({
+                    layoutForAppInst: removedLayout,
+                });
+            }
 
-        handleLayoutChangeForCluster(layout) {
-            this.setState({
-                layoutForCluster: layout,
-            }, () => {
-                console.log("layoutForCluster===>", this.state.layoutForCluster);
-            })
-
-            reactLocalStorage.setObject(getUserId() + "_layout", layout)
-            //reactLocalStorage.setObject(getUserId() + "_layout_mapper", layout)
         }
 
 
-        renderGridItemOneByType(hwType, graphType) {
+        makeGridItemOneByType(hwType, graphType) {
             if (graphType === 'line') {
                 return (
                     this.makeChartDataAndRenderTabBody_LineChart(hwType)
@@ -1190,14 +1215,78 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 )
             } else {
                 return (
-                    renderBottomGridAreaForCluster(this, this.state.filteredClusterUsageList)
+                    renderBottomGridTableList(this, this.state.filteredClusterUsageList)
                 )
             }
 
         }
 
+        renderGridItemOne(uniqueIndex, hwType, graphType, item,) {
+            return (
+                <div key={uniqueIndex} data-grid={item} style={{margin: 5, backgroundColor: 'black'}}
+                     onClick={() => {
+                         //alert('sdlkfdslkf')
+                     }}
+                     onDoubleClick={() => {
+                         this.setState({
+                             isDraggable: !this.state.isDraggable
+                         })
+                     }}
+                >
+                    <div className='page_monitoring_column_kyungjoon1' style={{height: 450}}>
+                        {/*@todo:makeGridItemOneByType      */}
+                        {/*@todo:makeGridItemOneByType      */}
+                        {this.makeGridItemOneByType(hwType, graphType)}
+                    </div>
+
+                    <div className="remove"
+                         onClick={() => {
+                             this.removeGridItem(uniqueIndex)
+                         }}
+                         style={{
+                             fontSize: 25,
+                             width: 37,
+                             display: 'flex',
+                             alignItems: 'center',
+                             justifyContent: 'center',
+                             //backgroundColor: 'red',
+                             position: "absolute",
+                             right: "38px",
+                             top: 0,
+                             fontWeight: 'bold',
+                             cursor: "pointer",
+                             color: 'white'
+                         }}
+                    >
+                        x
+                    </div>
+                    <div className="maxize"
+                         onClick={() => {
+                             alert('sdklfsldkflk')
+                         }}
+                         style={{
+                             fontSize: 29,
+                             width: 37,
+                             display: 'flex',
+                             alignItems: 'center',
+                             justifyContent: 'center',
+                             //backgroundColor: 'red',
+                             position: "absolute",
+                             right: "0px",
+                             top: 7,
+                             fontWeight: 'bold',
+                             cursor: "pointer"
+                         }}
+                    >
+                        <FullscreenIcon color="primary" style={{color: 'white', fontSize: 25}}/>
+                    </div>
+                </div>
+            )
+        }
+
 
         renderGridLayoutForCluster() {
+
             return (
                 <ResponsiveReactGridLayout
                     isResizable={false}
@@ -1208,84 +1297,28 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     layout={this.state.layoutForCluster}
                     rowHeight={470}
                     onLayoutChange={(layout) => {
-                        this.handleLayoutChangeForCluster(layout)
+                        this.setState({
+                            layoutForCluster: layout,
+                        }, () => {
+                            console.log("layoutForCluster===>", this.state.layoutForCluster);
+                        })
+
+                        reactLocalStorage.setObject(getUserId() + "_layout", layout)
 
                     }}
                     style={{backgroundColor: 'black'}}
                 >
                     {this.state.layoutForCluster.map((item, loopIndex) => {
 
-                        const index = item.i;
-                        console.log("gridLayoutMapperToHwList===>", this.state.gridLayoutMapperToHwList);
-                        //console.log("defaultHwMapperListForCluster===>", defaultHwMapperListForCluster[index]);
-
-                        let hwType = 'CPU'
-                        let graphType = 'line';
-                        if (!isEmpty(this.state.gridLayoutMapperToHwList.find(x => x.id === index))) {
-                            hwType = this.state.gridLayoutMapperToHwList.find(x => x.id === index).hwType
-                            graphType = this.state.gridLayoutMapperToHwList.find(x => x.id === index).graphType
+                        const uniqueIndex = item.i;
+                        let hwType = HARDWARE_TYPE.CPU
+                        let graphType = GRID_ITEM_TYPE.LINE;
+                        if (!isEmpty(this.state.layoutMapperForCluster.find(x => x.id === uniqueIndex))) {
+                            hwType = this.state.layoutMapperForCluster.find(x => x.id === uniqueIndex).hwType
+                            graphType = this.state.layoutMapperForCluster.find(x => x.id === uniqueIndex).graphType
                         }
                         console.log("hwType===>", hwType);
-                        return (
-                            <div key={index} data-grid={item} style={{margin: 5, backgroundColor: 'black'}}
-                                 onClick={() => {
-                                     //alert('sdlkfdslkf')
-                                 }}
-                                 onDoubleClick={() => {
-                                     this.setState({
-                                         isDraggable: !this.state.isDraggable
-                                     })
-                                 }}
-                            >
-                                <div className='page_monitoring_column_kyungjoon1' style={{height: 450}}>
-                                    {/*@todo:renderGridItemOneByType      */}
-                                    {/*@todo:renderGridItemOneByType      */}
-                                    {this.renderGridItemOneByType(hwType, graphType)}
-                                </div>
-
-                                <div className="remove"
-                                     onClick={() => {
-                                         this.removeGridItem(index)
-                                     }}
-                                     style={{
-                                         fontSize: 25,
-                                         width: 37,
-                                         display: 'flex',
-                                         alignItems: 'center',
-                                         justifyContent: 'center',
-                                         //backgroundColor: 'red',
-                                         position: "absolute",
-                                         right: "38px",
-                                         top: 0,
-                                         fontWeight: 'bold',
-                                         cursor: "pointer",
-                                         color: 'white'
-                                     }}
-                                >
-                                    x
-                                </div>
-                                <div className="maxize"
-                                     onClick={() => {
-                                         alert('sdklfsldkflk')
-                                     }}
-                                     style={{
-                                         fontSize: 29,
-                                         width: 37,
-                                         display: 'flex',
-                                         alignItems: 'center',
-                                         justifyContent: 'center',
-                                         //backgroundColor: 'red',
-                                         position: "absolute",
-                                         right: "0px",
-                                         top: 7,
-                                         fontWeight: 'bold',
-                                         cursor: "pointer"
-                                     }}
-                                >
-                                    <FullscreenIcon color="primary" style={{color: 'white', fontSize: 25}}/>
-                                </div>
-                            </div>
-                        );
+                        return this.renderGridItemOne(uniqueIndex, hwType, graphType, item)
                     })}
 
 
@@ -1299,51 +1332,35 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
                 <>
                     <ResponsiveReactGridLayout
-                        isResizable={false}
                         isDraggable={this.state.isDraggable}
-                        useCSSTransforms={true}
                         className={'layout'}
                         cols={{lg: 3, md: 3, sm: 3, xs: 3, xxs: 3}}
-                        layout={this.state.layoutForCluster}
+                        layout={this.state.layoutForAppInst}
                         rowHeight={470}
                         onLayoutChange={async (layout) => {
                             await this.setState({
                                 layoutForAppInst: layout
                             });
                             let layoutUniqueId = getUserId() + "_layout2"
-                            reactLocalStorage.setObject(layoutUniqueId, layout)
+                            reactLocalStorage.setObject(layoutUniqueId, this.state.layoutForAppInst)
                         }}
                         style={{overflowY: 'auto',}}
                     >
+                        {this.state.layoutForAppInst.map((item, loopIndex) => {
 
-                        <div className='page_monitoring_column_kyungjoon1' key="1">
-                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.CPU)}
-                        </div>
+                            const uniqueIndex = item.i;
+                            let hwType = HARDWARE_TYPE.CPU
+                            let graphType = GRID_ITEM_TYPE.LINE;
 
-                        <div className='page_monitoring_column_kyungjoon1' key="2">
-                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.MEM)}
-                        </div>
+                            if (!isEmpty(this.state.layoutMapperForAppInst.find(x => x.id === uniqueIndex))) {
+                                hwType = this.state.layoutMapperForAppInst.find(x => x.id === uniqueIndex).hwType
+                                graphType = this.state.layoutMapperForAppInst.find(x => x.id === uniqueIndex).graphType
+                            }
+                            console.log("hwType===>", hwType);
 
+                            return this.renderGridItemOne(uniqueIndex, hwType, graphType, item)
 
-                        <div className='page_monitoring_column_kyungjoon1' key="3">
-                            {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.DISK)}
-                        </div>
-
-                        <div className='page_monitoring_column_kyungjoon1' key="4">
-                            <Tabs selectedIndex={this.state.networkTabIndex}
-                                  className='page_monitoring_tab'>
-                                <TabPanel>
-                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.RECVBYTES)}
-                                </TabPanel>
-                                <TabPanel>
-                                    {this.makeChartDataAndRenderTabBody_LineChart(HARDWARE_TYPE.SENDBYTES)}
-                                </TabPanel>
-                            </Tabs>
-                        </div>
-
-                     {/*   <div className='page_monitoring_column_kyungjoon1' key="5">
-                            {this.renderMapArea()}
-                        </div>*/}
+                        })}
                     </ResponsiveReactGridLayout>
                 </>
 
@@ -1464,6 +1481,24 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+        renderAddItemSelectOptions() {
+
+            if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                return this.state.hwListForCluster.map(item => {
+                    return (
+                        <Option value={item.value}>{item.text}</Option>
+                    )
+                });
+            } else {
+                return this.state.hwListForAppInst.map(item => {
+                    return (
+                        <Option value={item.value}>{item.text}</Option>
+                    )
+                });
+            }
+
+        }
+
 
         renderSelectBoxRow() {
             return (
@@ -1515,72 +1550,67 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                             />
                         </div>
-                        <div className="page_monitoring_dropdown_label" style={{marginLeft: 10,}}>
-                            Add Item
-                        </div>
-                        <div style={{marginBottom: 0,}}>
-                            <Select
-                                placeholder="Select Item"
-                                //defaultValue=''
-                                style={{width: 190, marginBottom: 10, marginLeft: 5}}
-                                onChange={async (value) => {
-                                    //alert(value)
-                                    await this.addGridItem(value, value)
-                                    showToast('added ' + value + " item!!")
-                                }}
-                            >
-                                {[HARDWARE_TYPE_FOR_GRID.BUBBLE, HARDWARE_TYPE_FOR_GRID.MAP, HARDWARE_TYPE_FOR_GRID.CLOUDLET_LIST].map(item => {
-                                    return (
-                                        <Option value={item}>{item}</Option>
-                                    )
-                                })}
-                            </Select>
 
-                        </div>
-                        <div className="page_monitoring_dropdown_label" style={{marginLeft: 25,}}>
-                            Add LineChart Item
-                        </div>
-                        <div style={{marginBottom: 0,}}>
-                            <Select
-                                placeholder="Select Item"
-                                //defaultValue=''
-                                style={{width: 190, marginBottom: 10, marginLeft: 5}}
-                                onChange={async (value) => {
-                                    //alert(value)
-                                    await this.addGridItem(value)
-                                    showToast('added ' + value + " item!!")
-                                }}
-                            >
-                                {this.state.hwList.map(item => {
-                                    return (
-                                        <Option value={item.value}>{item.text}</Option>
-                                    )
-                                })}
-                            </Select>
+                        <>
+                            <div className="page_monitoring_dropdown_label" style={{marginLeft: 10,}}>
+                                Add Item
+                            </div>
+                            <div style={{marginBottom: 0,}}>
+                                <Select
+                                    placeholder="Select Item"
+                                    //defaultValue=''
+                                    style={{width: 190, marginBottom: 10, marginLeft: 5}}
+                                    onChange={async (value) => {
+                                        //alert(value)
+                                        await this.addGridItem(value, value)
+                                        showToast('added ' + value + " item!!")
+                                    }}
+                                >
+                                    {[HARDWARE_TYPE_FOR_GRID.BUBBLE, HARDWARE_TYPE_FOR_GRID.MAP, HARDWARE_TYPE_FOR_GRID.CLOUDLET_LIST].map(item => {
+                                        return (
+                                            <Option value={item}>{item}</Option>
+                                        )
+                                    })}
+                                </Select>
 
-                        </div>
-                        <div className="page_monitoring_dropdown_label" style={{marginLeft: 25,}}>
-                            Add BarChart Item
-                        </div>
-                        <div style={{marginBottom: 0,}}>
-                            <Select
-                                placeholder="Select Item"
-                                //defaultValue=''
-                                style={{width: 190, marginBottom: 10, marginLeft: 5}}
-                                onChange={async (value) => {
-                                    //alert(value)
-                                    await this.addGridItem(value, 'bar')
-                                    showToast('added ' + value + " item!!")
-                                }}
-                            >
-                                {this.state.hwList.map(item => {
-                                    return (
-                                        <Option value={item.value}>{item.text}</Option>
-                                    )
-                                })}
-                            </Select>
+                            </div>
+                            <div className="page_monitoring_dropdown_label" style={{marginLeft: 25,}}>
+                                Add LineChart Item
+                            </div>
+                            <div style={{marginBottom: 0,}}>
+                                <Select
+                                    placeholder="Select Item"
+                                    //defaultValue=''
+                                    style={{width: 190, marginBottom: 10, marginLeft: 5}}
+                                    onChange={async (value) => {
+                                        //alert(value)
+                                        await this.addGridItem(value, GRID_ITEM_TYPE.LINE)
+                                        showToast('added ' + value + " item!!")
+                                    }}
+                                >
+                                    {this.renderAddItemSelectOptions()}
+                                </Select>
 
-                        </div>
+                            </div>
+                            <div className="page_monitoring_dropdown_label" style={{marginLeft: 25,}}>
+                                Add BarChart Item
+                            </div>
+                            <div style={{marginBottom: 0,}}>
+                                <Select
+                                    placeholder="Select Item"
+                                    //defaultValue=''
+                                    style={{width: 190, marginBottom: 10, marginLeft: 5}}
+                                    onChange={async (value) => {
+                                        //alert(value)
+                                        await this.addGridItem(value, GRID_ITEM_TYPE.BAR)
+                                        showToast('added ' + value + " item!!")
+                                    }}
+                                >
+                                    {this.renderAddItemSelectOptions()}
+                                </Select>
+
+                            </div>
+                        </>
                     </div>
 
                 </div>
@@ -1644,10 +1674,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                          style={{backgroundColor: 'transparent', height: 3250}}>
 
                                         <div className='page_monitoring_dashboard_kyungjoon' style={{}}>
-                                            {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                                                this.renderGridLayoutForCluster(this)
-                                                :
-                                                this.renderGridLayoutForAppInst(this)
+                                            {this.state.currentClassification === CLASSIFICATION.CLUSTER
+                                                ? this.renderGridLayoutForCluster()
+                                                : this.renderGridLayoutForAppInst()
                                             }
                                         </div>
                                     </div>
