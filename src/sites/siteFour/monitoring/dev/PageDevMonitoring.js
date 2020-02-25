@@ -815,6 +815,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     layoutMapperForCluster: defaultHwMapperListForCluster,
                     layoutForAppInst: defaultLayoutForAppInst,
 
+
                 })
             } catch (e) {
 

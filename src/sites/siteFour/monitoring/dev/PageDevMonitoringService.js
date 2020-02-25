@@ -6,7 +6,6 @@ import {
     CLASSIFICATION,
     HARDWARE_TYPE,
     RECENT_DATA_LIMIT_COUNT,
-    REGION,
     USAGE_INDEX_FOR_CLUSTER
 } from "../../../../shared/Constants";
 import BubbleChart from "../../../../components/BubbleChart";
@@ -15,23 +14,15 @@ import {
     convertByteToMegaByte,
     numberWithCommas,
     PageMonitoringStyles,
-    renderUsageByType,
-    showToast
+    renderUsageByType
 } from "../PageMonitoringCommonService";
-import {SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
-import {sendSyncRequest} from "../../../../services/serviceMC";
 import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
-import {Dropdown, Table} from "semantic-ui-react";
+import {Table} from "semantic-ui-react";
 import Lottie from "react-lottie";
 import type {TypeAppInstanceUsage2, TypeClusterUsageList} from "../../../../shared/Types";
 import {Progress, Select} from "antd";
-import {TabPanel, Tabs} from "react-tabs";
-import {reactLocalStorage} from "reactjs-localstorage";
 import {Responsive, WidthProvider} from "react-grid-layout";
-import {Button as MButton} from "@material-ui/core";
-import * as reducer from "../../../../utils";
-import RoomIcon from "@material-ui/icons/Room";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const {Option} = Select;
@@ -40,14 +31,15 @@ export const defaultLayoutForAppInst = [
     {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},
     {i: '2', x: 1, y: 0, w: 1, h: 1, "add": false},
     {i: '3', x: 2, y: 0, w: 1, h: 1, "add": false},
-
     {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false},
     {i: '5', x: 1, y: 1, w: 1, h: 1, "add": false},
-    {i: '6', x: 2, y: 1, w: 1, h: 1, "add": false},
 
+
+
+    /*{i: '6', x: 2, y: 1, w: 1, h: 1, "add": false},
     {i: '7', x: 0, y: 2, w: 1, h: 1, "add": false},
     {i: '8', x: 1, y: 2, w: 1, h: 1, "add": false},
-    {i: '9', x: 2, y: 2, w: 1, h: 1, "add": false},
+    {i: '9', x: 2, y: 2, w: 1, h: 1, "add": false},*/
 
 ];
 
