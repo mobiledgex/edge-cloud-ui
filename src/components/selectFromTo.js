@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {Dropdown, Grid} from 'semantic-ui-react';
 
 
