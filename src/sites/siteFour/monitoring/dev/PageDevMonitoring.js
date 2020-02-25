@@ -1592,24 +1592,29 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 </Select>
 
                             </div>
-                            <div className="page_monitoring_dropdown_label" style={{marginLeft: 25,}}>
-                                Add BarChart Item
-                            </div>
-                            <div style={{marginBottom: 0,}}>
-                                <Select
-                                    placeholder="Select Item"
-                                    //defaultValue=''
-                                    style={{width: 190, marginBottom: 10, marginLeft: 5}}
-                                    onChange={async (value) => {
-                                        //alert(value)
-                                        await this.addGridItem(value, GRID_ITEM_TYPE.BAR)
-                                        showToast('added ' + value + " item!!")
-                                    }}
-                                >
-                                    {this.renderAddItemSelectOptions()}
-                                </Select>
 
-                            </div>
+                            {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
+                            <>
+                                <div className="page_monitoring_dropdown_label" style={{marginLeft: 25,}}>
+                                    Add BarChart Item
+                                </div>
+                                <div style={{marginBottom: 0,}}>
+                                    <Select
+                                        placeholder="Select Item"
+                                        //defaultValue=''
+                                        style={{width: 190, marginBottom: 10, marginLeft: 5}}
+                                        onChange={async (value) => {
+                                            //alert(value)
+                                            await this.addGridItem(value, GRID_ITEM_TYPE.BAR)
+                                            showToast('added ' + value + " item!!")
+                                        }}
+                                    >
+                                        {this.renderAddItemSelectOptions()}
+                                    </Select>
+
+                                </div>
+                            </>
+                            }
                         </>
                     </div>
 

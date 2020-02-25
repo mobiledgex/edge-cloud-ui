@@ -229,12 +229,12 @@ export const NETWORK_TYPE = {
     SEND_BYTES: 'SEND_BYTES',
 }
 
-export const GRID_ITEM_TYPE  ={
-    LINE   : 'line',
-    BAR    : 'bar',
-    BUBBLE : 'bubble',
-    MAP    : 'map',
-    TABLE  : 'table',
+export const GRID_ITEM_TYPE = {
+    LINE: 'line',
+    BAR: 'bar',
+    BUBBLE: 'bubble',
+    MAP: 'map',
+    TABLE: 'table',
 }
 
 
@@ -251,9 +251,11 @@ export const HARDWARE_OPTIONS_FOR_APPINST = [
     {text: 'CPU', value: 'CPU'},
     {text: 'MEM', value: 'MEM'},
     {text: 'DISK', value: 'DISK'},
-    {text: 'CONNECTION', value: 'CONNECTION'},
-    {text: 'RECV_BYTES', value: 'RECV_BYTES'},
-    {text: 'SEND_BYTES', value: 'SEND_BYTES'},
+    {text: 'RECV BYTES', value: 'RECV_BYTES'},
+    {text: 'SEND BYTES', value: 'SEND_BYTES'},
+    {text: 'ACTIVE CONNECTION', value: 'ACTIVE_CONNECTION'},
+    {text: 'HANDLED CONNECTION', value: 'HANDLED_CONNECTION'},
+    {text: 'ACCEPTS CONNECTION', value: 'ACCEPTS_CONNECTION'},
 ]
 
 
