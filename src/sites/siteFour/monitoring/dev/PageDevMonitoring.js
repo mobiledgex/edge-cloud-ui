@@ -387,6 +387,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             //fixme: fakeData
             //fixme: fakeData
+            //fixme: fakeData
+            //fixme: fakeData
+            //fixme: fakeData//fixme: fakeData
+            //fixme: fakeData
+            //fixme: fakeData
+            //fixme: fakeData
+            //fixme: fakeData
+            //fixme: fakeData
+
+            //fixme: fakeData
             let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
             let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
             let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
