@@ -421,7 +421,7 @@ class InsideListView extends React.Component {
         </div>
     )
     makeEditMenu = (item, value, i, j) => (
-        <Table.Cell key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'} }>
+        <Table.Cell key={j} textAlign='center' style={{whiteSpace:'nowrap'} }>
             <Button disabled style={{display:'none'}} key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}><Icon name={'edit'}/></Button>
             {(this.props.siteId == 'App')?
                 <Button className='launchButton' color='teal' disabled={this.props.dimmInfo.onlyView} onClick={() => this.appLaunch(item)}>
@@ -447,12 +447,12 @@ class InsideListView extends React.Component {
                             {Object.keys(item).map((value, j) => (
                                 (value === 'Edit')?
                                     String(item[value]) === 'null' ? <Table.Cell /> :
-                                        <Table.Cell className="table_actions" key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444', overflow:'visible'} :{whiteSpace:'nowrap', overflow:'visible'} }>
+                                        <Table.Cell className="table_actions" key={j} textAlign='center' style={{whiteSpace:'nowrap', overflow:'visible'} }>
                                             {this.makeEditButtonGroup(item, value, j, i, item['NumOfOrganizations'] && item['NumOfOrganizations'])}
                                         </Table.Cell>
                                 :
                                 (value === 'Type')?
-                                    <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'}} >
+                                    <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={{whiteSpace:'nowrap'}} >
                                         {/*<div className="markBox">{this.typeMark(item[value])}</div>*/}
                                         <span style={(item[value] == 'developer')?{color:'#9b9979'}:{color:'#7d969b'}}>{item[value]}</span>
                                     </Table.Cell>
@@ -494,7 +494,7 @@ class InsideListView extends React.Component {
                                     </Table.Cell>
                                 :
                                 (!( String(hideHeader).indexOf(value) > -1 )) ?
-                                    <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{cursor:'pointer',background:'#444'} :{cursor:'pointer'} }>
+                                    <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} onClick={() => this.detailView(item)} >
                                         <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace' style={{wordBreak:'break-all'}}>
                                             {String(item[value])}
                                         </div>
