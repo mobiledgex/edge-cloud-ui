@@ -14,18 +14,18 @@ import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import RoomIcon from '@material-ui/icons/Room';
 
 import {
-    convertHwTypePhrases,
     defaultHwMapperListForCluster,
     defaultLayoutForAppInst,
-    defaultLayoutForCluster, defaultLayoutMapperForAppInst,
+    defaultLayoutForCluster,
+    defaultLayoutMapperForAppInst,
     filterUsageByClassification,
     getUserId,
     handleHardwareTabChanges,
     HARDWARE_TYPE_FOR_GRID,
-    makeLineChartDataForAppInst,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
     makeid,
+    makeLineChartDataForAppInst,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
     makeSelectBoxListWithThreeValuePipe,
@@ -37,9 +37,11 @@ import {
 import {
     CHART_COLOR_LIST,
     CLASSIFICATION,
-    CONNECTIONS_OPTIONS, GRID_ITEM_TYPE, HARDWARE_OPTIONS_FOR_APPINST,
+    CONNECTIONS_OPTIONS,
+    GRID_ITEM_TYPE,
+    HARDWARE_OPTIONS_FOR_APPINST,
     HARDWARE_OPTIONS_FOR_CLUSTER,
-    HARDWARE_TYPE, lineGraphOptions,
+    HARDWARE_TYPE,
     NETWORK_OPTIONS,
     NETWORK_TYPE,
     RECENT_DATA_LIMIT_COUNT,
@@ -70,7 +72,6 @@ import {reactLocalStorage} from "reactjs-localstorage";
 import LeafletMapWrapperForDev from "./LeafletMapWrapperForDev";
 import {Responsive, WidthProvider} from "react-grid-layout";
 import _ from "lodash";
-import {TabPanel, Tabs} from "react-tabs";
 import PieChartWrapper from "./PieChartWrapper";
 import BigModalGraph from "./BigModalGraph";
 
@@ -218,7 +219,8 @@ type State = {
     hwListForAppInst: [],
     isShowBigGraph: boolean,
     popupGraphHWType: string,
-    lineChartDataForRendering: any,
+    chartDataForRendering: any,
+    popupGraphType: string,
 
 }
 
@@ -351,7 +353,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isUpdateEnableForMap: false,
                 isShowBigGraph: false,
                 popupGraphHWType: '',
-                lineChartDataForRendering: [],
+                chartDataForRendering: [],
+                popupGraphType: '',
             };
         }
 
@@ -1191,14 +1194,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-        showBigModal = (hwType) => {
-            /*todo:lineChartDataForRendering*/
-            let lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType)
+        makeLineChartDataForBigModal(lineChartDataSet) {
             let levelTypeNameList = lineChartDataSet.levelTypeNameList
             let usageSetList = lineChartDataSet.usageSetList
             let newDateTimeList = lineChartDataSet.newDateTimeList
 
-            const lineChartDataForRendering = (canvas) => {
+            const chartDataForRendering = (canvas) => {
                 let finalSeriesDataSets = [];
                 for (let index in usageSetList) {
                     //@todo: top5 만을 추린다
@@ -1239,10 +1240,29 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     datasets: finalSeriesDataSets,
                 }
             }
+
+            return chartDataForRendering;
+        }
+
+        showBigModal = (hwType, graphType) => {
+            /*todo:chartDataForRendering*/
+
+            console.log("graphType===>", graphType);
+            let chartDataForRendering = []
+            if (graphType == GRID_ITEM_TYPE.LINE) {
+                let lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType)
+                chartDataForRendering = this.makeLineChartDataForBigModal(lineChartDataSet)
+            } else if (graphType == GRID_ITEM_TYPE.BAR || graphType == GRID_ITEM_TYPE.COLUMN) {
+
+                let barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, hwType)
+                chartDataForRendering = barChartDataSet.chartDataList;
+            }
+
             this.setState({
                 isShowBigGraph: !this.state.isShowBigGraph,
-                lineChartDataForRendering: lineChartDataForRendering,
+                chartDataForRendering: chartDataForRendering,
                 popupGraphHWType: hwType,
+                popupGraphType: graphType,
 
             });
         }
@@ -1293,7 +1313,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*todo:maxize button*/}
                     {/*todo:maxize button*/}
                     <div className="maxize"
-                         onClick={this.showBigModal.bind(this, hwType)}
+                         onClick={this.showBigModal.bind(this, hwType, graphType)}
                          style={{
                              fontSize: 29,
                              width: 37,
@@ -1315,7 +1335,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        ___renderGridLayoutForCluster() {
+        renderGridLayoutForCluster() {
 
             return (
                 <ResponsiveReactGridLayout
@@ -1743,10 +1763,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 cluster={''} contents={''}/>
 
                     <BigModalGraph
-                        lineChartDataForRendering={this.state.lineChartDataForRendering}
+                        chartDataForRendering={this.state.chartDataForRendering}
                         isShowBigGraph={this.state.isShowBigGraph}
                         parent={this}
                         popupGraphHWType={this.state.popupGraphHWType}
+                        graphType={this.state.popupGraphType}
                     />
 
                     <Grid.Row className='view_contents'>
@@ -1765,7 +1786,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                          style={{backgroundColor: 'transparent', height: 3250}}>
                                         <div className='page_monitoring_dashboard_kyungjoon' style={{}}>
                                             {this.state.currentClassification === CLASSIFICATION.CLUSTER
-                                                ? this.___renderGridLayoutForCluster()
+                                                ? this.renderGridLayoutForCluster()
                                                 : this.renderGridLayoutForAppInst()
                                             }
                                         </div>

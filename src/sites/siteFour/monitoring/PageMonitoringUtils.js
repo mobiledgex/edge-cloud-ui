@@ -42,8 +42,10 @@ export const barChartOption = (hwType) => {
             },
             //titlePosition: 'out',
             chartArea: {
-                // left: 20, right: 150, top: 50, bottom: 25,
-                width: "60%", height: "80%",
+                left: 120,
+                // right: 150, top: 50, bottom: 25,
+                width: "80%",
+                height: "90%",
             },
             legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
             //xAxis

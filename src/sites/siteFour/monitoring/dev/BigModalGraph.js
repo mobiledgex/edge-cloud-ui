@@ -1,30 +1,32 @@
 // @flow
 import * as React from 'react';
-import {Icon, Modal as AModal} from "antd";
-import ArrowBack from '@material-ui/icons/ArrowBack'
-import {makeBarChartDataForCluster, makeGradientColor, makeLineChartDataForCluster} from "./PageDevMonitoringService";
-import type {TypeLineChartData2} from "../../../../shared/Types";
-import {CHART_COLOR_LIST, HARDWARE_TYPE, lineGraphOptions} from "../../../../shared/Constants";
+import {Modal as AModal} from "antd";
+import {GRID_ITEM_TYPE, lineGraphOptions} from "../../../../shared/Constants";
 import {Line} from "react-chartjs-2";
-import {isEmpty} from "../PageMonitoringCommonService";
+import {Chart as Bar_Column_Chart} from "react-google-charts";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import {barChartOption, columnChartOption} from "../PageMonitoringUtils";
 
 const FA = require('react-fontawesome')
 type Props = {
-    lineChartDataForRendering: any,
+    chartDataForRendering: any,
     isShowBigGraph: boolean,
     popupGraphHWType: string,
+    graphType: string,
 
 };
 type State = {
-    lineChartDataForRendering: any,
+    chartDataForRendering: any,
     options: any,
+    graphType: string,
+    popupGraphHWType: string,
 };
 
 export default class BigModalGraph extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props)
         this.state = {
-            lineChartDataForRendering: [],
+            chartDataForRendering: [],
         }
     }
 
@@ -33,9 +35,17 @@ export default class BigModalGraph extends React.Component<Props, State> {
 
 
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
-        if (this.props.lineChartDataForRendering !== nextProps.lineChartDataForRendering) {
+        if (this.props.chartDataForRendering !== nextProps.chartDataForRendering) {
+
+            console.log("chartDataForRendering===>", nextProps.chartDataForRendering);
+
             this.setState({
-                lineChartDataForRendering: nextProps.lineChartDataForRendering,
+                chartDataForRendering: nextProps.chartDataForRendering,
+                graphType: nextProps.graphType,
+                popupGraphHWType: nextProps.popupGraphHWType
+            },()=>{
+
+                //alert(this.state.graphType + "--->"+ this.state.popupGraphHWType)
             })
 
         }
@@ -55,14 +65,14 @@ export default class BigModalGraph extends React.Component<Props, State> {
                         })
 
                     }}
-                    //maskClosable={false}
+                    //maskClosable={true}
                     onCancel={() => {
                         this.props.parent.setState({
                             isShowBigGraph: false,
                         })
 
                     }}
-                    closable={false}
+                    closable={true}
                     bodyStyle={{
                         height: window.innerHeight * 0.98,
                         marginTop: -90,
@@ -97,16 +107,34 @@ export default class BigModalGraph extends React.Component<Props, State> {
                         </div>
 
                     </div>
-                    <div style={{marginTop: 50,}}>
-                        <Line
-                            width={window.innerWidth * 0.9}
-                            ref="chart"
-                            height={window.innerHeight * 0.8}
-                            data={this.state.lineChartDataForRendering}
-                            options={lineGraphOptions}
-                            //data={data222}
-                        />
-                    </div>
+
+                    {this.state.graphType === GRID_ITEM_TYPE.LINE ?
+                        <div style={{marginTop: 50}}>
+                            <Line
+                                width={window.innerWidth * 0.9}
+                                ref="chart"
+                                height={window.innerHeight * 0.8}
+                                data={this.state.chartDataForRendering}
+                                options={lineGraphOptions}
+                                //data={data222}
+                            />
+                        </div>
+                        :
+                        <div style={{marginTop: 50, height: '90%'}}>
+                            <Bar_Column_Chart
+                                width={"100%"}
+                                //height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
+                                height={'100%'}
+                                chartType={this.state.graphType === GRID_ITEM_TYPE.BAR ? 'BarChart' : 'ColumnChart'}
+                                //chartType={'ColumnChart'}
+                                loader={<div><CircularProgress style={{color: '#1cecff', zIndex: 999999}}/></div>}
+                                data={this.state.chartDataForRendering}
+                                options={this.state.graphType === GRID_ITEM_TYPE.BAR ? barChartOption(this.state.popupGraphHWType) : columnChartOption(this.state.popupGraphHWType)}
+                            />
+                        </div>
+
+                    }
+
                 </AModal>
 
             </div>
