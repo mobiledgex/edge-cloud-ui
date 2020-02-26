@@ -32,7 +32,7 @@ import {
     renderBottomGridTableList,
     renderBubbleChartCoreForDev_Cluster,
     renderLineChartCoreForDev_AppInst,
-    renderLineChartCoreForDev_Cluster,
+    renderLineChartCoreForDev,
 } from "./PageDevMonitoringService";
 import {
     ADD_ITEM_LIST,
@@ -620,11 +620,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() :
-                                this.state.currentClassification === CLASSIFICATION.CLUSTER
-                                    ? renderLineChartCoreForDev_Cluster(this, chartDataSet)
-                                    : renderLineChartCoreForDev_AppInst(this, chartDataSet)
-                            }
+                            {this.state.loading ? renderPlaceHolderCircular() : renderLineChartCoreForDev(this, chartDataSet)}
                         </div>
                     </div>
                 </div>
@@ -645,10 +641,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <div className='page_monitoring_container'>
                             {this.state.loading ? renderPlaceHolderCircular() :
 
-                                chartDataSet.length === 0 || chartDataSet.chartDataList.length === 1 ?
-                                    noDataArea()
-                                    :
-                                    renderBarChartCore(chartDataSet.chartDataList, chartDataSet.hardwareType, this, graphType)
+                                chartDataSet.length === 0 || chartDataSet.chartDataList.length === 1
+                                    ? noDataArea()
+                                    : renderBarChartCore(chartDataSet.chartDataList, chartDataSet.hardwareType, this, graphType)
+
 
                             }
                         </div>
@@ -1596,27 +1592,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     chartColorList: CHART_COLOR_LIST4
                 })
             }
-
-            /* if (value === 'theme5') {
-                 this.setState({
-                     chartColorList: CHART_COLOR_LIST5
-                 })
-             }
-
-             if (value === 'theme6') {
-                 this.setState({
-                     chartColorList: CHART_COLOR_LIST6
-                 })
-             }
-
-
-             if (value === 'theme7') {
-                 this.setState({
-                     chartColorList: CHART_COLOR_LIST7
-                 })
-             }*/
         }
-
 
         renderSelectBoxRow() {
             return (

@@ -1191,7 +1191,7 @@ export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTi
 
 
 
-export const renderLineChartCoreForDev_Cluster = (_this: PageDevMonitoring, lineChartDataSet) => {
+export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDataSet) => {
     try {
         let levelTypeNameList = lineChartDataSet.levelTypeNameList;
         let usageSetList = lineChartDataSet.usageSetList;
