@@ -1811,7 +1811,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         </Select>
                                     </div>
                                 </>
-                                <div style={{marginLeft: 50}}>
+                              {/*  <div style={{marginLeft: 50}}>
                                     <MButton
                                         title={'sdflk'} style={{backgroundColor: 'green', color: 'white'}}
                                         onClick={() => {
@@ -1823,7 +1823,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                     {this.context.loading && <CircularProgress color={'red'} style={{color: 'red'}}/>}
 
-                                </div>
+                                </div>*/}
                             </>
                         </div>
                     </div>

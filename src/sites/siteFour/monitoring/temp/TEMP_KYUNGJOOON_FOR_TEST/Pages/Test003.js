@@ -22,9 +22,6 @@ export default hot(
                     <Button type="warning">Primary</Button>
                     <Button type="danger">Primary</Button>
 
-                    <div>sdlkf</div>
-                    <div>sdlkf</div>
-                    <div>sdlkf</div>
                     <Button type="danger">Primary</Button>
                     <Button type="danger">Primary</Button>
 
