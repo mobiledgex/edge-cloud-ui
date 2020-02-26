@@ -6,6 +6,7 @@ import {Line} from "react-chartjs-2";
 import {Chart as Bar_Column_Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {barChartOption, columnChartOption} from "../PageMonitoringUtils";
+import LeafletMapWrapperForDev from "./LeafletMapWrapperForDev";
 
 const FA = require('react-fontawesome')
 type Props = {
@@ -13,6 +14,7 @@ type Props = {
     isShowBigGraph: boolean,
     popupGraphHWType: string,
     graphType: string,
+    appInstanceListGroupByCloudlet: any,
 
 };
 type State = {
@@ -20,6 +22,7 @@ type State = {
     options: any,
     graphType: string,
     popupGraphHWType: string,
+    appInstanceListGroupByCloudlet: any,
 };
 
 export default class BigModalGraph extends React.Component<Props, State> {
@@ -36,16 +39,23 @@ export default class BigModalGraph extends React.Component<Props, State> {
 
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
         if (this.props.chartDataForRendering !== nextProps.chartDataForRendering) {
-
-            console.log("chartDataForRendering===>", nextProps.chartDataForRendering);
-
             this.setState({
                 chartDataForRendering: nextProps.chartDataForRendering,
                 graphType: nextProps.graphType,
-                popupGraphHWType: nextProps.popupGraphHWType
-            },()=>{
+                popupGraphHWType: nextProps.popupGraphHWType,
+                appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
+            }, () => {
 
                 //alert(this.state.graphType + "--->"+ this.state.popupGraphHWType)
+            })
+
+        }
+
+        if (this.props.isShowBigGraph) {
+            this.setState({
+                appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
+            }, () => {
+                //alert(JSON.stringify(this.state.appInstanceListGroupByCloudlet))
             })
 
         }
@@ -98,13 +108,24 @@ export default class BigModalGraph extends React.Component<Props, State> {
                             <FA name="arrow-circle-left" style={{fontSize: 40, color: 'white'}}/>
 
                         </div>
-                        <div style={{
-                            color: 'white',
-                            fontSize: 35,
-                            flex: .9,
-                            marginLeft: 25,
-                        }}> {this.props.popupGraphHWType} Usage Of Cluster
-                        </div>
+                        {this.state.graphType === GRID_ITEM_TYPE.MAP ?
+                            <div style={{
+                                color: 'white',
+                                fontSize: 35,
+                                flex: .9,
+                                marginLeft: 25,
+                            }}> Launch status of the Cluster
+                            </div>
+                            :
+                            <div style={{
+                                color: 'white',
+                                fontSize: 35,
+                                flex: .9,
+                                marginLeft: 25,
+                            }}> {this.props.popupGraphHWType} Usage Of Cluster
+                            </div>
+                        }
+
 
                     </div>
 
@@ -119,19 +140,30 @@ export default class BigModalGraph extends React.Component<Props, State> {
                                 //data={data222}
                             />
                         </div>
-                        :
-                        <div style={{marginTop: 50, height: '90%'}}>
-                            <Bar_Column_Chart
-                                width={"100%"}
-                                //height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
-                                height={'100%'}
-                                chartType={this.state.graphType === GRID_ITEM_TYPE.BAR ? 'BarChart' : 'ColumnChart'}
-                                //chartType={'ColumnChart'}
-                                loader={<div><CircularProgress style={{color: '#1cecff', zIndex: 999999}}/></div>}
-                                data={this.state.chartDataForRendering}
-                                options={this.state.graphType === GRID_ITEM_TYPE.BAR ? barChartOption(this.state.popupGraphHWType) : columnChartOption(this.state.popupGraphHWType)}
-                            />
-                        </div>
+                        : this.state.graphType === GRID_ITEM_TYPE.BAR || this.state.graphType === GRID_ITEM_TYPE.COLUMN ?
+                            <div style={{marginTop: 50, height: '90%'}}>
+                                <Bar_Column_Chart
+                                    width={"100%"}
+                                    //height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
+                                    height={'100%'}
+                                    chartType={this.state.graphType === GRID_ITEM_TYPE.BAR ? 'BarChart' : 'ColumnChart'}
+                                    //chartType={'ColumnChart'}
+                                    loader={<div><CircularProgress style={{color: '#1cecff', zIndex: 999999}}/></div>}
+                                    data={this.state.chartDataForRendering}
+                                    options={this.state.graphType === GRID_ITEM_TYPE.BAR ? barChartOption(this.state.popupGraphHWType) : columnChartOption(this.state.popupGraphHWType)}
+                                />
+                            </div>
+                            : this.state.graphType === GRID_ITEM_TYPE.MAP ?
+                                <div style={{height: window.innerHeight * 0.92}}>
+                                    <LeafletMapWrapperForDev
+                                        mapPopUploading={false}
+                                        parent={this}
+                                        isDraggable={true}
+                                        handleAppInstDropdown={this.props.parent.handleAppInstDropdown}
+                                        markerList={this.state.appInstanceListGroupByCloudlet}/>
+                                </div>
+                                : <div></div>
+
 
                     }
 

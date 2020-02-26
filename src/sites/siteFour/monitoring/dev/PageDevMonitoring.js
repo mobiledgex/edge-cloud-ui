@@ -221,6 +221,7 @@ type State = {
     popupGraphHWType: string,
     chartDataForRendering: any,
     popupGraphType: string,
+    isPopupMap:boolean,
 
 }
 
@@ -355,6 +356,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 popupGraphHWType: '',
                 chartDataForRendering: [],
                 popupGraphType: '',
+                isPopupMap: false,
             };
         }
 
@@ -814,6 +816,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         handleAppInstDropdown = async (pCurrentAppInst) => {
             clearInterval(this.intervalForAppInst)
+
+            await this.setState({
+                isShowBigGraph: false,
+            })
             await this.setState({
                 currentAppInst: pCurrentAppInst,
                 loading: true,
@@ -1263,13 +1269,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 chartDataForRendering: chartDataForRendering,
                 popupGraphHWType: hwType,
                 popupGraphType: graphType,
-
+                isPopupMap: !this.state.isPopupMap,
             });
         }
 
         __makeGridItemOne(uniqueIndex, hwType, graphType, item,) {
-
-
             return (
                 <div key={uniqueIndex} data-grid={item} style={{margin: 5, backgroundColor: 'black'}}
                      onClick={() => {
@@ -1768,6 +1772,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         parent={this}
                         popupGraphHWType={this.state.popupGraphHWType}
                         graphType={this.state.popupGraphType}
+                        isPopupMap={this.state.isPopupMap}
+                        appInstanceListGroupByCloudlet={this.state.appInstanceListGroupByCloudlet}
                     />
 
                     <Grid.Row className='view_contents'>
