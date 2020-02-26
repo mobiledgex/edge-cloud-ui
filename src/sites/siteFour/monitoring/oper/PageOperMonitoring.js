@@ -1094,7 +1094,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         {/*todo:SELECTBOX_ROW        */}
                                         {/*todo:---------------------------------*/}
                                         {this.renderDropdownAreaOper()}
-
                                         <div className='page_monitoring_dashboard'>
                                             {/*_____row____1*/}
                                             {/*_____row____1*/}

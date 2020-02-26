@@ -67,9 +67,10 @@ module.exports = {
         ],
     },
     plugins: [
-        {
+        /*{
             plugin: reactHotReloadPlugin
-        },
+        },*/
+
         {
             plugin: {
                 overrideWebpackConfig: ({webpackConfig}) => {
@@ -198,6 +199,7 @@ module.exports = {
                     return webpackConfig;
                 }
             }
-        }
+        },
+
     ]
 };

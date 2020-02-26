@@ -91,7 +91,18 @@ const {RangePicker} = DatePicker;
 const {Column, Row} = Grid;
 const {Pane} = Tab
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
-
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.LoadingReducer.isLoading,
+    }
+};
+const mapDispatchProps = (dispatch) => {
+    return {
+        toggleLoading: (data) => {
+            dispatch(actions.toggleLoading(data))
+        }
+    };
+};
 type Props = {
     handleLoadingSpinner: Function,
     toggleLoading: Function,
@@ -223,7 +234,7 @@ type State = {
 
 }
 
-export default hot(
+export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class PageDevMonitoring extends Component<Props, State> {
         intervalForAppInst = null;
 
@@ -1800,29 +1811,27 @@ export default hot(
                                         </Select>
                                     </div>
                                 </>
-                               {/* <React.Fragment>
-                                    <div style={{marginLeft: 50}}>
-                                        <MButton
-                                            title={'sdflk'} style={{backgroundColor: 'green', color: 'white'}}
-                                            onClick={() => {
-                                                this.context.toggleLoading()
-                                            }}
-                                        >
-                                            toggleLoading123123123
-                                        </MButton>
-                                        <MButton
-                                            title={'sdflk'} style={{backgroundColor: 'green', color: 'white'}}
-                                            onClick={() => {
-                                                this.context.setClickedCount(100)
-                                            }}
-                                        >
-                                            setCount
-                                        </MButton>
-                                        {this.context.loading &&
-                                        <CircularProgress color={'red'} style={{color: 'red'}}/>}
-                                       asdasdasdasd
-                                    </div>
-                                </React.Fragment>*/}
+                                {/*<div style={{marginLeft: 50}}>
+                                    <MButton
+                                        title={'sdflk'} style={{backgroundColor: 'green', color: 'white'}}
+                                        onClick={() => {
+                                            this.context.toggleLoading()
+                                        }}
+                                    >
+                                        toggleLoading123123123
+                                    </MButton>
+                                    <MButton
+                                        title={'sdflk'} style={{backgroundColor: 'green', color: 'white'}}
+                                        onClick={() => {
+                                            this.context.setClickedCount(100)
+                                        }}
+                                    >
+                                        setCountasdasdasdasdasd
+                                    </MButton>
+                                    {this.context.loading &&
+                                    <CircularProgress color={'red'} style={{color: 'red'}}/>}
+                                    asdasdasdaasdasd
+                                </div>*/}
                             </>
                         </div>
                     </div>
@@ -1929,7 +1938,6 @@ export default hot(
         }
 
     }
-)
-;
+))));
 
 

@@ -25,6 +25,7 @@ import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
 import PageModalMonitoring from "./sites/siteFour/monitoring/child_comp/PageModalMonitoring";
 import Test004 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/Test004";
+import Test003 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/Test003";
 // API
 
 let self = null;
@@ -334,6 +335,7 @@ class App extends Component {
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
                     <Route exact path='/PageModalMonitoring' component={PageModalMonitoring} />
                     <Route exact path='/Test004' component={Test004} />
+                    <Route exact path='/Test003' component={Test003} />
 
                 </div>
             </Router>
