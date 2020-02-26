@@ -1818,7 +1818,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             this.context.toggleLoading()
                                         }}
                                     >
-                                        toggleLoading!!
+                                        toggleLoading!!123123123
                                     </MButton>
 
                                     {this.context.loading && <CircularProgress color={'red'} style={{color: 'red'}}/>}
