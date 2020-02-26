@@ -894,10 +894,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 currentTabIndex: 0,
             })
-            /*if (this.clusterListGridItemRef!==null){
-                this.clusterListGridItemRef.style.transform = 'translate(10px, 1540px)';
-            }*/
-
 
             if (this.state.isStream) {
                 this.setAppInstInterval(filteredAppList)
@@ -1640,10 +1636,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             />
                         </div>
                         {/*todo:---------------------------*/}
-                        {/*todo: App Instance_Dropdown #2     */}
+                        {/*todo:Dropdown #2row             */}
                         {/*todo:---------------------------*/}
-                        <div className="page_monitoring_dropdown_box"
-                             style={{display: 'flex', marginTop: 15, marginLeft: -10}}>
+                        <div className="page_monitoring_dropdown_box" style={{display: 'flex', marginTop: 15, marginLeft: -10, backgroundColor:'transparent', width:'100%'}}>
+
                             <>
                                 <div className="page_monitoring_dropdown_label" style={{marginLeft: 10,}}>
                                     Add Item
@@ -1707,6 +1703,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     </div>
                                 </>
                                 }
+                                {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
                                 <>
                                     <div className="page_monitoring_dropdown_label" style={{marginLeft: 25,}}>
                                         Add Column Chart
@@ -1727,6 +1724,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                     </div>
                                 </>
+                                }
 
                                 <>
                                     <div className="page_monitoring_dropdown_label" style={{marginLeft: 25,}}>

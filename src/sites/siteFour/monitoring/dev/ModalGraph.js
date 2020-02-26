@@ -56,8 +56,8 @@ export default class ModalGraph extends React.Component<Props, State> {
             let arrayDatasetsList = []
             let datasetsOne = {
                 label: currentClusterName,
-                backgroundColor: CHART_COLOR_LIST[index],
-                borderColor: CHART_COLOR_LIST[index],
+                backgroundColor: this.props.parent.state.chartColorList[index],
+                borderColor: this.props.parent.state.chartColorList[index],
                 borderCapStyle: 'butt',
                 fill: false,//todo: 라인차트 area fill True/false
                 //backgroundColor: '',
@@ -112,6 +112,8 @@ export default class ModalGraph extends React.Component<Props, State> {
                         })
 
                     }}
+                    maskStyle={{color:'white'}}
+                    bodyStyle={{backgroundColor:'black'}}
                     width={'30%'}
                     height={'85%'}
                     footer={null}
@@ -121,7 +123,7 @@ export default class ModalGraph extends React.Component<Props, State> {
                             flex: .85,
                             display: 'flex',
                             color: '#FFF',
-                            fontFamily: 'Kanit',
+                            fontFamily: 'Roboto',
                             fontSize: 28,
                             fontWeight: 'bold',
                             marginLeft: 3,
@@ -132,7 +134,7 @@ export default class ModalGraph extends React.Component<Props, State> {
                             style={{
                                 flex: .15,
                                 color: 'white',
-                                fontFamily: 'Kanit',
+                                fontFamily: 'Roboto Condensed',
                                 fontSize: 30,
                                 fontWeight: 'bold',
                                 textAlign: 'right',
