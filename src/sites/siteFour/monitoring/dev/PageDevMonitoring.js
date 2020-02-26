@@ -249,12 +249,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let appInstLayoutKey = getUserId() + "_layout2"
             let layoutMapperAppInstKey = getUserId() + "_layout2_mapper"
 
-
             let themeKey = getUserId() + "_mon_theme";
             let themeTitle = getUserId() + "_mon_theme_title";
 
-
-            //reactLocalStorage.setObject(getUserId() + "_mon_theme_title", value)
+            //@TODO: DELETE THEME COLOR
             /*reactLocalStorage.remove(themeTitle)
             reactLocalStorage.remove(themeKey)*/
 
@@ -377,7 +375,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isPopupMap: false,
                 //reactLocalStorage.setObject(getUserId() + "_mon_theme")
                 chartColorList: isEmpty(reactLocalStorage.get(themeKey)) ? CHART_COLOR_LIST : reactLocalStorage.getObject(themeKey),
-                themeTitle: isEmpty(reactLocalStorage.get(themeTitle)) ? 'eundew' : reactLocalStorage.get(themeTitle),
+                themeTitle: isEmpty(reactLocalStorage.get(themeTitle)) ? 'EUNDEW' : reactLocalStorage.get(themeTitle),
             };
         }
 
@@ -1585,7 +1583,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     chartColorList: CHART_COLOR_LIST2
                 })
             }
-            if (value === THEME_OPTIONS.YELLOW) {
+            if (value === THEME_OPTIONS.GREEN) {
                 this.setState({
                     chartColorList: CHART_COLOR_LIST3
                 })
@@ -1779,7 +1777,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 if (value === THEME_OPTIONS.BLUE) {
                                                     selectedChartColorList = CHART_COLOR_LIST2;
                                                 }
-                                                if (value === THEME_OPTIONS.YELLOW) {
+                                                if (value === THEME_OPTIONS.GREEN) {
                                                     selectedChartColorList = CHART_COLOR_LIST3;
                                                 }
                                                 if (value === THEME_OPTIONS.RED) {
@@ -1794,7 +1792,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         >
                                             <Option value='EUNDEW'>EUNDEW</Option>
                                             <Option value='BLUE'>BLUE</Option>
-                                            <Option value='YELLOW'>YELLOW</Option>
+                                            <Option value='GREEN'>GREEN</Option>
                                             <Option value='RED'>RED</Option>
 
                                             {/*<Option value='theme5'>theme5</Option>
