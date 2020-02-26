@@ -1800,7 +1800,7 @@ export default hot(
                                         </Select>
                                     </div>
                                 </>
-                                <React.Fragment>
+                               {/* <React.Fragment>
                                     <div style={{marginLeft: 50}}>
                                         <MButton
                                             title={'sdflk'} style={{backgroundColor: 'green', color: 'white'}}
@@ -1808,7 +1808,7 @@ export default hot(
                                                 this.context.toggleLoading()
                                             }}
                                         >
-                                            toggleLoading
+                                            toggleLoading123123123
                                         </MButton>
                                         <MButton
                                             title={'sdflk'} style={{backgroundColor: 'green', color: 'white'}}
@@ -1820,9 +1820,9 @@ export default hot(
                                         </MButton>
                                         {this.context.loading &&
                                         <CircularProgress color={'red'} style={{color: 'red'}}/>}
-                                        sdlkfsldkflskds
+                                       asdasdasdasd
                                     </div>
-                                </React.Fragment>
+                                </React.Fragment>*/}
                             </>
                         </div>
                     </div>
