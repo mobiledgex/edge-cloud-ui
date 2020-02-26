@@ -253,7 +253,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             /*reactLocalStorage.remove(themeTitle)
             reactLocalStorage.remove(themeKey)*/
 
-
             this.state = {
                 layoutForCluster: isEmpty(reactLocalStorage.get(clusterLayoutKey)) ? defaultLayoutForCluster : reactLocalStorage.getObject(clusterLayoutKey),
                 layoutMapperForCluster: isEmpty(reactLocalStorage.get(ClusterHwMapperKey)) ? defaultHwMapperListForCluster : reactLocalStorage.getObject(ClusterHwMapperKey),
@@ -420,9 +419,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //fixme: fakeData22222222222
             //fixme: fakeData22222222222
             //fixme: fakeData22222222222
-            //fixme: fakeData22222222222
-            //fixme: fakeData22222222222
-            //fixme: fakeData22222222222
             //fixme: fakeData
             let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
             let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
@@ -466,8 +462,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             } catch (e) {
 
             }*/
-            //fixme: fakeData
-            //fixme: fakeData
+
+            //fixme: fakeData22222222222
+            //fixme: fakeData22222222222
+            //fixme: fakeData22222222222
+            //fixme: fakeData22222222222
+            //fixme: fakeData22222222222
             allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
             console.log('filteredAppInstanceList===>', appInstanceList)
 
