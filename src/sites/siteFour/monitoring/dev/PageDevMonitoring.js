@@ -21,17 +21,15 @@ import {
     filterUsageByClassification,
     getUserId,
     handleHardwareTabChanges,
-    HARDWARE_TYPE_FOR_GRID,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
     makeid,
     makeLineChartDataForAppInst,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
-    makeSelectBoxListWithThreeValuePipe, makeTop5LineChartData,
+    makeSelectBoxListWithThreeValuePipe,
     renderBottomGridTableList,
     renderBubbleChartCoreForDev_Cluster,
-    renderLineChartCoreForDev_AppInst,
     renderLineChartCoreForDev,
 } from "./PageDevMonitoringService";
 import {
@@ -40,9 +38,6 @@ import {
     CHART_COLOR_LIST2,
     CHART_COLOR_LIST3,
     CHART_COLOR_LIST4,
-    CHART_COLOR_LIST5,
-    CHART_COLOR_LIST6,
-    CHART_COLOR_LIST7,
     CLASSIFICATION,
     CONNECTIONS_OPTIONS,
     GRID_ITEM_TYPE,
@@ -52,7 +47,8 @@ import {
     NETWORK_OPTIONS,
     NETWORK_TYPE,
     RECENT_DATA_LIMIT_COUNT,
-    TCP_OPTIONS, THEME_OPTIONS,
+    TCP_OPTIONS,
+    THEME_OPTIONS,
     UDP_OPTIONS
 } from "../../../../shared/Constants";
 import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData} from "../../../../shared/Types";
@@ -61,7 +57,6 @@ import moment from "moment";
 import '../PageMonitoring.css'
 
 import {
-    arraysEqual,
     getOneYearStartEndDatetime,
     isEmpty,
     makeBubbleChartDataForCluster,
