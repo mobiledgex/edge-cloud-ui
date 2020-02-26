@@ -21,6 +21,13 @@ export const REGION = {
     EU: 'EU',
 }
 
+export const THEME_OPTIONS ={
+    EUNDEW: 'EUNDEW',
+    BLUE: "BLUE",
+    YELLOW: 'YELLOW',
+    RED: 'RED',
+}
+
 
 export const lineGraphOptions = {
     animation: {

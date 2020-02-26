@@ -51,7 +51,7 @@ import {
     NETWORK_OPTIONS,
     NETWORK_TYPE,
     RECENT_DATA_LIMIT_COUNT,
-    TCP_OPTIONS,
+    TCP_OPTIONS, THEME_OPTIONS,
     UDP_OPTIONS
 } from "../../../../shared/Constants";
 import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData} from "../../../../shared/Types";
@@ -1577,22 +1577,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         handleThemeChanges = (value) => {
-            if (value === 'eundew') {
+            if (value === THEME_OPTIONS.EUNDEW) {
                 this.setState({
                     chartColorList: CHART_COLOR_LIST
                 })
             }
-            if (value === 'blue') {
+            if (value === THEME_OPTIONS.BLUE) {
                 this.setState({
                     chartColorList: CHART_COLOR_LIST2
                 })
             }
-            if (value === 'yellow') {
+            if (value === THEME_OPTIONS.YELLOW) {
                 this.setState({
                     chartColorList: CHART_COLOR_LIST3
                 })
             }
-            if (value === 'red') {
+            if (value === THEME_OPTIONS.RED) {
                 this.setState({
                     chartColorList: CHART_COLOR_LIST4
                 })
@@ -1616,25 +1616,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                      chartColorList: CHART_COLOR_LIST7
                  })
              }*/
-        }
-
-
-        handleDefaultValueForTheme() {
-            let defaultValue = '';
-            if (arraysEqual(this.state.chartColorList) === arraysEqual(CHART_COLOR_LIST)) {
-                defaultValue = 'eundew';
-            }
-            if (arraysEqual(this.state.chartColorList) === arraysEqual(CHART_COLOR_LIST2)) {
-                defaultValue = 'blue';
-            }
-            if (arraysEqual(this.state.chartColorList) === arraysEqual(CHART_COLOR_LIST3)) {
-                defaultValue = 'yellow';
-            }
-            if (arraysEqual(this.state.chartColorList) === arraysEqual(CHART_COLOR_LIST4)) {
-                defaultValue = 'red';
-            }
-
-            return defaultValue;
         }
 
 
@@ -1794,16 +1775,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 })
                                                 this.handleThemeChanges(value)
                                                 let selectedChartColorList = [];
-                                                if (value === 'eundew') {
+                                                if (value === THEME_OPTIONS.EUNDEW) {
                                                     selectedChartColorList = CHART_COLOR_LIST;
                                                 }
-                                                if (value === 'blue') {
+                                                if (value === THEME_OPTIONS.BLUE) {
                                                     selectedChartColorList = CHART_COLOR_LIST2;
                                                 }
-                                                if (value === 'yellow') {
+                                                if (value === THEME_OPTIONS.YELLOW) {
                                                     selectedChartColorList = CHART_COLOR_LIST3;
                                                 }
-                                                if (value === 'red') {
+                                                if (value === THEME_OPTIONS.RED) {
                                                     selectedChartColorList = CHART_COLOR_LIST4;
                                                 }
 
@@ -1813,10 +1794,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 //alert(reactLocalStorage.getObject(getUserId() + "_mon_theme"))
                                             }}
                                         >
-                                            <Option value='eundew'>eundew</Option>
-                                            <Option value='blue'>blue</Option>
-                                            <Option value='yellow'>yellow</Option>
-                                            <Option value='red'>red</Option>
+                                            <Option value='EUNDEW'>EUNDEW</Option>
+                                            <Option value='BLUE'>BLUE</Option>
+                                            <Option value='YELLOW'>YELLOW</Option>
+                                            <Option value='RED'>RED</Option>
 
                                             {/*<Option value='theme5'>theme5</Option>
                                             <Option value='theme6'>theme6</Option>
