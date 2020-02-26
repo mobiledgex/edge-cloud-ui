@@ -1048,7 +1048,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.renderHeader()}
                             <div style={{position: 'absolute', top: '37%', left: '48%'}}>
                                 <div style={{marginLeft: -450, display: 'flex', flexDirection: 'row', fontSize: 30, opacity: 1, color: 'white'}}>
-                                    No data to express ( There is no cloudlet you can access ) 😅
+                                    No data to express ( There is no cloudlet you can access )
                                 </div>
                             </div>
                         </Grid.Column>

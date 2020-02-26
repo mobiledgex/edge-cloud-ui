@@ -1836,7 +1836,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     opacity: 1,
                                     color: 'white'
                                 }}>
-                                    There is no app instance you can access.. 😅😅😅
+                                    There is no app instance you can access..
                                 </div>
                             </div>
                         </Grid.Column>
