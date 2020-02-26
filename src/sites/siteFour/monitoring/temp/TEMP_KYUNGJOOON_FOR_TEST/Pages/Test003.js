@@ -17,23 +17,16 @@ export default hot(
             return (
                 <div style={{flex: 1, margin: 100}}>
                     <Button type="primary">Primary</Button>
-                    <Button type="primary">Primary</Button>
-                    <Button type="primary">Primary</Button>
-                    <Button type="primary">Primary</Button>
-                    <Button type="primary">Primary</Button>
 
-                    <Button type="primary">Primary</Button>
-                    <Button type="primary">Primary</Button>
-                    <Button type="primary">Primary</Button>
-                    <Button type="primary">Primary</Button>
-                    <Button type="primary">Primary</Button>
-                    <Button type="primary">Primary</Button>
+
+                    <Button type="warning">Primary</Button>
+                    <Button type="danger">Primary</Button>
 
                     <div>sdlkf</div>
-                    <div>sdlkf333333333</div>
                     <div>sdlkf</div>
                     <div>sdlkf</div>
-                    <div>sdlkf</div>
+                    <Button type="danger">Primary</Button>
+                    <Button type="danger">Primary</Button>
 
 
 
