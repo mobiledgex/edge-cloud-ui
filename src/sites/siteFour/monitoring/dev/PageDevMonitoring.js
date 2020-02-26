@@ -28,7 +28,7 @@ import {
     makeLineChartDataForAppInst,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
-    makeSelectBoxListWithThreeValuePipe,
+    makeSelectBoxListWithThreeValuePipe, makeTop5LineChartData,
     renderBottomGridTableList,
     renderBubbleChartCoreForDev_Cluster,
     renderLineChartCoreForDev_AppInst,
@@ -1228,62 +1228,59 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let usageSetList = lineChartDataSet.usageSetList
             let newDateTimeList = lineChartDataSet.newDateTimeList
 
-            const chartDataForRendering = (canvas) => {
-                let finalSeriesDataSets = [];
-                for (let index in usageSetList) {
-                    //@todo: top5 만을 추린다
-                    if (index < 5) {
-                        let datasetOne = {
-                            label: levelTypeNameList[index],
-                            radius: 0,
-                            borderWidth: 3.5,//todo:라인 두께
-                            fill: false,
-                            lineTension: 0.5,
-                            /*backgroundColor:  gradientList[index],
-                            borderColor: gradientList[index],*/
-                            backgroundColor: CHART_COLOR_LIST[index],
-                            borderColor: CHART_COLOR_LIST[index],
-                            data: usageSetList[index],
-                            borderCapStyle: 'butt',
-                            borderDash: [],
-                            borderDashOffset: 0.0,
-                            borderJoinStyle: 'miter',
-                            pointBorderColor: 'rgba(75,192,192,1)',
-                            pointBackgroundColor: '#fff',
-                            pointBorderWidth: 1,
-                            pointHoverRadius: 5,
-                            pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-                            pointHoverBorderColor: 'rgba(220,220,220,1)',
-                            pointHoverBorderWidth: 2,
-                            pointRadius: 1,
-                            pointHitRadius: 10,
+            let finalSeriesDataSets = [];
+            for (let index in usageSetList) {
+                //@todo: top5 만을 추린다
+                if (index < 5) {
+                    let datasetOne = {
+                        label: levelTypeNameList[index],
+                        radius: 0,
+                        borderWidth: 3.5,//todo:라인 두께
+                        fill: false,
+                        lineTension: 0.5,
+                        /*backgroundColor:  gradientList[index],
+                        borderColor: gradientList[index],*/
+                        backgroundColor: this.state.chartColorList[index],
+                        borderColor: this.state.chartColorList[index],
+                        data: usageSetList[index],
+                        borderCapStyle: 'butt',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: 'rgba(75,192,192,1)',
+                        pointBackgroundColor: '#fff',
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+                        pointHoverBorderColor: 'rgba(220,220,220,1)',
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 10,
 
-                        }
-
-                        finalSeriesDataSets.push(datasetOne)
                     }
 
+                    finalSeriesDataSets.push(datasetOne)
                 }
-                return {
-                    labels: newDateTimeList,
-                    datasets: finalSeriesDataSets,
-                }
-            }
 
-            return chartDataForRendering;
+            }
+            return {
+                labels: newDateTimeList,
+                datasets: finalSeriesDataSets,
+            }
         }
 
-        showBigModal = (hwType, graphType) => {
+        showBigModal = (hwType, graphType,) => {
             /*todo:chartDataForRendering*/
 
-            console.log("graphType===>", graphType);
             let chartDataForRendering = []
-            if (graphType == GRID_ITEM_TYPE.LINE) {
-                let lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType)
+            if (graphType.toUpperCase() == GRID_ITEM_TYPE.LINE) {
+                let lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
                 chartDataForRendering = this.makeLineChartDataForBigModal(lineChartDataSet)
-            } else if (graphType == GRID_ITEM_TYPE.BAR || graphType == GRID_ITEM_TYPE.COLUMN) {
+                console.log("chartDataForRendering===>", chartDataForRendering);
 
-                let barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, hwType)
+            } else if (graphType.toUpperCase() == GRID_ITEM_TYPE.BAR || graphType.toUpperCase() == GRID_ITEM_TYPE.COLUMN) {
+
+                let barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
                 chartDataForRendering = barChartDataSet.chartDataList;
             }
 
@@ -1311,7 +1308,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_column_kyungjoon1' style={{height: 450}}>
                         {/*@todo:makeGridItemOneByType      */}
                         {/*@todo:makeGridItemOneByType      */}
-                        {this.makeGridItemOneByType(hwType, graphType)}
+                        {this.makeGridItemOneByType(hwType, graphType.toUpperCase())}
                     </div>
 
                     <div className="remove"
@@ -1393,6 +1390,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         if (!isEmpty(this.state.layoutMapperForCluster.find(x => x.id === uniqueIndex))) {
                             hwType = this.state.layoutMapperForCluster.find(x => x.id === uniqueIndex).hwType
                             graphType = this.state.layoutMapperForCluster.find(x => x.id === uniqueIndex).graphType
+                            graphType = graphType.toUpperCase()
                         }
                         console.log("hwType===>", hwType);
                         return this.__makeGridItemOne(uniqueIndex, hwType, graphType, item)

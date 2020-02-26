@@ -871,7 +871,7 @@ export const convertHwTypePhrases = (pHardwareType) => {
 }
 
 
-export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: string) => {
+export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: string, _this) => {
     pUsageList = sortUsageListByTypeForCluster(pUsageList, hardwareType)
 
     if (pUsageList.length === 0) {
@@ -1199,7 +1199,6 @@ export const renderLineChartCoreForDev_Cluster = (_this: PageDevMonitoring, line
         let hardwareType = lineChartDataSet.hardwareType;
 
         const lineChartDataForRendering = makeTop5LineChartData(levelTypeNameList, usageSetList, newDateTimeList, _this)
-
         return (
             <div style={{
                 position: 'relative',
