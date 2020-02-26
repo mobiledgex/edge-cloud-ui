@@ -45,8 +45,6 @@ export default class BigModalGraph extends React.Component<Props, State> {
                 popupGraphHWType: nextProps.popupGraphHWType,
                 appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
             }, () => {
-                //alert(this.state.graphType + "--->"+ JSON.stringify( this.state.chartDataForRendering))
-                alert(this.state.graphType);
                 console.log("chartDataForRendering===>", this.state.chartDataForRendering);
             })
 
