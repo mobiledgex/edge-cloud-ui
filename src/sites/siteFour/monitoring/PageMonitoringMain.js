@@ -11,6 +11,7 @@ import PageMonitoringForOperator from "./oper/PageOperMonitoring";
 import {Grid} from "semantic-ui-react";
 import PageMonitoringForDeveloper from "./dev/PageDevMonitoring";
 import PageMonitoringForAdmin from "./admin/PageAdminMonitoring";
+import {AppProvider} from "./PageMonitoringGlobalState";
 
 const mapStateToProps = (state) => {
     return {
@@ -75,9 +76,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         render() {
             return (
-                <Grid.Row className='view_contents'>
-                    {this.renderMainPage()}
-                </Grid.Row>
+                <AppProvider>
+                    <Grid.Row className='view_contents'>
+                        {this.renderMainPage()}
+                    </Grid.Row>
+                </AppProvider>
 
             );
         }

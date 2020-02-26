@@ -33,11 +33,13 @@ import {
     renderLineChartCoreForDev,
 } from "./PageDevMonitoringService";
 import {
-    ADD_ITEM_LIST, CHART_COLOR_APPLE,
+    ADD_ITEM_LIST,
+    CHART_COLOR_APPLE,
     CHART_COLOR_LIST,
     CHART_COLOR_LIST2,
     CHART_COLOR_LIST3,
-    CHART_COLOR_LIST4, CHART_COLOR_MONOKAI,
+    CHART_COLOR_LIST4,
+    CHART_COLOR_MONOKAI,
     CLASSIFICATION,
     CONNECTIONS_OPTIONS,
     GRID_ITEM_TYPE,
@@ -48,7 +50,8 @@ import {
     NETWORK_TYPE,
     RECENT_DATA_LIMIT_COUNT,
     TCP_OPTIONS,
-    THEME_OPTIONS, THEME_OPTIONS_LIST,
+    THEME_OPTIONS,
+    THEME_OPTIONS_LIST,
     UDP_OPTIONS
 } from "../../../../shared/Constants";
 import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData} from "../../../../shared/Types";
@@ -77,6 +80,8 @@ import {Responsive, WidthProvider} from "react-grid-layout";
 import _ from "lodash";
 import PieChartWrapper from "./PieChartWrapper";
 import BigModalGraph from "./BigModalGraph";
+import type {AppContextInterface, MonitoringContextInterface,} from "../PageMonitoringGlobalState";
+import {AppConsumer, MonitoringConsumer} from "../PageMonitoringGlobalState";
 
 const {Option} = Select;
 
@@ -86,20 +91,6 @@ const {RangePicker} = DatePicker;
 const {Column, Row} = Grid;
 const {Pane} = Tab
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
-
-
-const mapStateToProps = (state) => {
-    return {
-        isLoading: state.LoadingReducer.isLoading,
-    }
-};
-const mapDispatchProps = (dispatch) => {
-    return {
-        toggleLoading: (data) => {
-            dispatch(actions.toggleLoading(data))
-        }
-    };
-};
 
 type Props = {
     handleLoadingSpinner: Function,
@@ -232,13 +223,11 @@ type State = {
 
 }
 
-
-export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
+export default hot(
     class PageDevMonitoring extends Component<Props, State> {
-
-
         intervalForAppInst = null;
 
+        context: MonitoringContextInterface;
 
         constructor(props) {
             super(props);
@@ -1811,6 +1800,29 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         </Select>
                                     </div>
                                 </>
+                                <React.Fragment>
+                                    <div style={{marginLeft: 50}}>
+                                        <MButton
+                                            title={'sdflk'} style={{backgroundColor: 'green', color: 'white'}}
+                                            onClick={() => {
+                                                this.context.toggleLoading()
+                                            }}
+                                        >
+                                            toggleLoading
+                                        </MButton>
+                                        <MButton
+                                            title={'sdflk'} style={{backgroundColor: 'green', color: 'white'}}
+                                            onClick={() => {
+                                                this.context.setClickedCount(100)
+                                            }}
+                                        >
+                                            setCount
+                                        </MButton>
+                                        {this.context.loading &&
+                                        <CircularProgress color={'red'} style={{color: 'red'}}/>}
+                                        sdlkfsldkflskds
+                                    </div>
+                                </React.Fragment>
                             </>
                         </div>
                     </div>
@@ -1851,57 +1863,65 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 )
             }
 
-
             return (
-                <div style={{width: '100%', height: '100%', overflowY: 'auto'}}>
-                    <ModalGraph selectedClusterUsageOne={this.state.selectedClusterUsageOne}
-                                selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
+                <MonitoringConsumer>
+                    {(context: MonitoringContextInterface) => (
+                        <div
+                            style={{width: '100%', height: '100%', overflowY: 'auto'}}
+                            ref={() => this.context = context}
+                        >
+                            <ModalGraph selectedClusterUsageOne={this.state.selectedClusterUsageOne}
+                                        selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
+                                        parent={this}
+                                        modalIsOpen={this.state.modalIsOpen}
+                                        cluster={''} contents={''}/>
+
+                            <BigModalGraph
+                                chartDataForRendering={this.state.chartDataForRendering}
+                                isShowBigGraph={this.state.isShowBigGraph}
                                 parent={this}
-                                modalIsOpen={this.state.modalIsOpen}
-                                cluster={''} contents={''}/>
+                                popupGraphHWType={this.state.popupGraphHWType}
+                                graphType={this.state.popupGraphType}
+                                isPopupMap={this.state.isPopupMap}
+                                appInstanceListGroupByCloudlet={this.state.appInstanceListGroupByCloudlet}
+                            />
 
-                    <BigModalGraph
-                        chartDataForRendering={this.state.chartDataForRendering}
-                        isShowBigGraph={this.state.isShowBigGraph}
-                        parent={this}
-                        popupGraphHWType={this.state.popupGraphHWType}
-                        graphType={this.state.popupGraphType}
-                        isPopupMap={this.state.isPopupMap}
-                        appInstanceListGroupByCloudlet={this.state.appInstanceListGroupByCloudlet}
-                    />
-
-                    <Grid.Row className='view_contents'>
-                        <Grid.Column className='contents_body'>
-                            {/*todo:---------------------------------*/}
-                            {/*todo:Content Header                   */}
-                            {/*todo:---------------------------------*/}
-                            <SemanticToastContainer position={"top-right"}/>
-                            {this.renderHeader()}
-                            <div style={{marginTop: 30, marginLeft: 30}}>
-                                {this.renderSelectBoxRow()}
-                            </div>
-                            <Grid.Row className='site_content_body' style={{marginTop: -10, overflowY: 'auto'}}>
-                                <div style={{overflowY: 'auto'}}>
-                                    <div className="page_monitoring"
-                                         style={{backgroundColor: 'transparent', height: 3250}}>
-                                        <div className='page_monitoring_dashboard_kyungjoon' style={{}}>
-                                            {this.state.currentClassification === CLASSIFICATION.CLUSTER
-                                                ? this.renderGridLayoutForCluster()
-                                                : this.renderGridLayoutForAppInst()
-                                            }
-                                        </div>
+                            <Grid.Row className='view_contents'>
+                                <Grid.Column className='contents_body'>
+                                    {/*todo:---------------------------------*/}
+                                    {/*todo:Content Header                   */}
+                                    {/*todo:---------------------------------*/}
+                                    <SemanticToastContainer position={"top-right"}/>
+                                    {this.renderHeader()}
+                                    <div style={{marginTop: 30, marginLeft: 30}}>
+                                        {this.renderSelectBoxRow()}
                                     </div>
-                                </div>
+                                    <Grid.Row className='site_content_body' style={{marginTop: -10, overflowY: 'auto'}}>
+                                        <div style={{overflowY: 'auto'}}>
+                                            <div className="page_monitoring"
+                                                 style={{backgroundColor: 'transparent', height: 3250}}>
+                                                <div className='page_monitoring_dashboard_kyungjoon' style={{}}>
+                                                    {this.state.currentClassification === CLASSIFICATION.CLUSTER
+                                                        ? this.renderGridLayoutForCluster()
+                                                        : this.renderGridLayoutForAppInst()
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
 
+                                    </Grid.Row>
+                                </Grid.Column>
                             </Grid.Row>
-                        </Grid.Column>
-                    </Grid.Row>
-                    <Modal style={{width: '100%', height: '100%'}} open={this.state.openTerminal}>
-                        <TerminalViewer data={this.state.terminalData} onClose={() => {
-                            this.setState({openTerminal: false})
-                        }}/>
-                    </Modal>
-                </div>
+                            <Modal style={{width: '100%', height: '100%'}} open={this.state.openTerminal}>
+                                <TerminalViewer data={this.state.terminalData} onClose={() => {
+                                    this.setState({openTerminal: false})
+                                }}/>
+                            </Modal>
+                        </div>
+
+                    )}
+                </MonitoringConsumer>
+
 
             )//return End
 
@@ -1909,7 +1929,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
     }
-))))
+)
 ;
 
 

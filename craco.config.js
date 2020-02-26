@@ -1,5 +1,5 @@
 /*craco.config.js*/
-
+reactHotReloadPlugin = require('craco-plugin-react-hot-reload');
 const path = require('path');
 
 const loaderNameMatches = function (rule, loaderName) {
@@ -47,6 +47,8 @@ module.exports = {
                 'jsx-a11y/alt-text': 'off',
                 'react/style-prop-object': 'off',
                 'jsx-a11y/accessible-emoji': 'off',
+                'react/jsx-pascal-case': 'off',
+
             }
         }
     },
@@ -65,6 +67,9 @@ module.exports = {
         ],
     },
     plugins: [
+        {
+            plugin: reactHotReloadPlugin
+        },
         {
             plugin: {
                 overrideWebpackConfig: ({webpackConfig}) => {
