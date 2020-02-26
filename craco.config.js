@@ -1,5 +1,4 @@
 /*craco.config.js*/
-reactHotReloadPlugin = require('craco-plugin-react-hot-reload');
 const path = require('path');
 
 const loaderNameMatches = function (rule, loaderName) {
