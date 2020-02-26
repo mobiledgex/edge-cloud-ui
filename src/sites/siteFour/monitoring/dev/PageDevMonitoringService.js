@@ -359,7 +359,7 @@ export const sortByKey = (arrList, key) => {
 }
 
 
-export const makeBarChartDataForCluster = (usageList, hardwareType) => {
+export const makeBarChartDataForCluster = (usageList, hardwareType, _this:PageDevMonitoring) => {
 
     console.log(`renderBarGraphForCluster===>${hardwareType}`, usageList);
     usageList = sortUsageListByTypeForCluster(usageList, hardwareType)
@@ -374,7 +374,7 @@ export const makeBarChartDataForCluster = (usageList, hardwareType) => {
                 let barDataOne = [
                     usageList[index].cluster.toString() + "\n[" + usageList[index].cloudlet + "]",//clusterName
                     renderUsageByType(usageList[index], hardwareType),
-                    CHART_COLOR_LIST[index],
+                    _this.state.chartColorList[index],
                     renderUsageLabelByTypeForCluster(usageList[index], hardwareType)
                 ]
                 chartDataList.push(barDataOne);
@@ -1050,12 +1050,147 @@ export const handleLegendAndBubbleClickedEvent = (_this: PageDevMonitoring, clic
 }
 
 
-/**
- * @todo: renderLineChartCoreForDev_Cluster
- * @param _this
- * @param lineChartDataSet
- * @returns {*|string|undefined}
- */
+export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this) => {
+    let options = {
+        animation: {
+            duration: 500
+        },
+        maintainAspectRatio: false,//@todo
+        responsive: true,//@todo
+        datasetStrokeWidth: 3,
+        pointDotStrokeWidth: 4,
+        layout: {
+            padding: {
+                left: 0,
+                right: 10,
+                top: 0,
+                bottom: 0
+            }
+        },
+        legend: {
+            position: 'top',
+            labels: {
+                boxWidth: 10,
+                fontColor: 'white'
+            },//@todo: lineChart 리전드 클릭 이벤트.
+            onClick: (e, clickedItem) => {
+
+                let selectedClusterOne = clickedItem.text.toString().replace('\n', "|");
+                handleLegendAndBubbleClickedEvent(_this, selectedClusterOne, lineChartDataSet)
+
+            },
+            onHover: (e, item) => {
+                //alert(`Item with text ${item.text} and index ${item.index} hovered`)
+            },
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                    min: 0,
+                    //max: 100,//todo max value
+                    fontColor: 'white',
+                    callback(value, index, label) {
+                        return convertByteToMegaByte(value, hardwareType)
+
+                    },
+                },
+                gridLines: {
+                    color: "#505050",
+                },
+                //stacked: true
+
+            }],
+            xAxes: [{
+                /*ticks: {
+                    fontColor: 'white'
+                },*/
+                gridLines: {
+                    color: "#505050",
+                },
+                ticks: {
+                    fontSize: 14,
+                    fontColor: 'white',
+                    //maxRotation: 0.05,
+                    //autoSkip: true,
+                    maxRotation: 45,
+                    minRotation: 45,
+                    padding: 10,
+                    labelOffset: 0,
+                    callback(value, index, label) {
+                        return value;
+
+                    },
+                },
+                beginAtZero: false,
+                /* gridLines: {
+                     drawTicks: true,
+                 },*/
+            }],
+            backgroundColor: {
+                fill: "#1e2124"
+            },
+        },//scales
+        onClick: function (c, i) {
+            if (i.length > 0) {
+                console.log('onClick===>', i);
+            }
+
+        }
+    }//options
+
+    return options;
+}
+
+
+export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this:PageDevMonitoring) => {
+    const lineChartData = (canvas) => {
+        let finalSeriesDataSets = [];
+        for (let index in usageSetList) {
+            //@todo: top5 만을 추린다
+            if (index < 5) {
+                let datasetsOne = {
+                    label: levelTypeNameList[index],
+                    radius: 0,
+                    borderWidth: 3.5,//todo:라인 두께
+                    fill: false,
+                    lineTension: 0.5,
+                    /*backgroundColor:  gradientList[index],
+                    borderColor: gradientList[index],*/
+                    backgroundColor: _this.state.chartColorList[index],
+                    borderColor: _this.state.chartColorList[index],
+                    data: usageSetList[index],
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: 'rgba(75,192,192,1)',
+                    pointBackgroundColor: '#fff',
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+                    pointHoverBorderColor: 'rgba(220,220,220,1)',
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+
+                }
+
+                finalSeriesDataSets.push(datasetsOne)
+            }
+
+        }
+        return {
+            labels: newDateTimeList,
+            datasets: finalSeriesDataSets,
+        }
+    }
+
+    return lineChartData;
+}
+
+
+
 export const renderLineChartCoreForDev_Cluster = (_this: PageDevMonitoring, lineChartDataSet) => {
     try {
         let levelTypeNameList = lineChartDataSet.levelTypeNameList;
@@ -1063,147 +1198,8 @@ export const renderLineChartCoreForDev_Cluster = (_this: PageDevMonitoring, line
         let newDateTimeList = lineChartDataSet.newDateTimeList;
         let hardwareType = lineChartDataSet.hardwareType;
 
-        console.log('lineChartDataSet==77777=>', lineChartDataSet);
+        const lineChartDataForRendering = makeTop5LineChartData(levelTypeNameList, usageSetList, newDateTimeList, _this)
 
-
-        const lineChartData = (canvas) => {
-
-            let gradientList = makeGradientColor(canvas, height);
-            let finalSeriesDataSets = [];
-            for (let index in usageSetList) {
-                //@todo: top5 만을 추린다
-                if (index < 5) {
-                    let datasetsOne = {
-                        label: levelTypeNameList[index],
-                        radius: 0,
-                        borderWidth: 3.5,//todo:라인 두께
-                        fill: false,
-                        lineTension: 0.5,
-                        /*backgroundColor:  gradientList[index],
-                        borderColor: gradientList[index],*/
-                        backgroundColor: CHART_COLOR_LIST[index],
-                        borderColor: CHART_COLOR_LIST[index],
-                        data: usageSetList[index],
-                        borderCapStyle: 'butt',
-                        borderDash: [],
-                        borderDashOffset: 0.0,
-                        borderJoinStyle: 'miter',
-                        pointBorderColor: 'rgba(75,192,192,1)',
-                        pointBackgroundColor: '#fff',
-                        pointBorderWidth: 1,
-                        pointHoverRadius: 5,
-                        pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-                        pointHoverBorderColor: 'rgba(220,220,220,1)',
-                        pointHoverBorderWidth: 2,
-                        pointRadius: 1,
-                        pointHitRadius: 10,
-
-                    }
-
-                    finalSeriesDataSets.push(datasetsOne)
-                }
-
-            }
-            return {
-                labels: newDateTimeList,
-                datasets: finalSeriesDataSets,
-            }
-        }
-
-        let height = 500 + 100;
-        let options = {
-            animation: {
-                duration: 500
-            },
-            maintainAspectRatio: false,//@todo
-            responsive: true,//@todo
-            datasetStrokeWidth: 3,
-            pointDotStrokeWidth: 4,
-            layout: {
-                padding: {
-                    left: 0,
-                    right: 10,
-                    top: 0,
-                    bottom: 0
-                }
-            },
-            legend: {
-                position: 'top',
-                labels: {
-                    boxWidth: 10,
-                    fontColor: 'white'
-                },//@todo: lineChart 리전드 클릭 이벤트.
-                onClick: (e, clickedItem) => {
-
-                    let selectedClusterOne = clickedItem.text.toString().replace('\n', "|");
-
-                    handleLegendAndBubbleClickedEvent(_this, selectedClusterOne, lineChartDataSet)
-
-                },
-                onHover: (e, item) => {
-                    //alert(`Item with text ${item.text} and index ${item.index} hovered`)
-                },
-            },
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                        min: 0,
-                        //max: 100,//todo max value
-                        fontColor: 'white',
-                        callback(value, index, label) {
-                            return convertByteToMegaByte(value, hardwareType)
-
-                        },
-                    },
-                    gridLines: {
-                        color: "#505050",
-                    },
-                    //stacked: true
-
-                }],
-                xAxes: [{
-                    /*ticks: {
-                        fontColor: 'white'
-                    },*/
-                    gridLines: {
-                        color: "#505050",
-                    },
-                    ticks: {
-                        fontSize: 14,
-                        fontColor: 'white',
-                        //maxRotation: 0.05,
-                        //autoSkip: true,
-                        maxRotation: 45,
-                        minRotation: 45,
-                        padding: 10,
-                        labelOffset: 0,
-                        callback(value, index, label) {
-                            return value;
-
-                        },
-                    },
-                    beginAtZero: false,
-                    /* gridLines: {
-                         drawTicks: true,
-                     },*/
-                }],
-                backgroundColor: {
-                    fill: "#1e2124"
-                },
-            },//scales
-            onClick: function (c, i) {
-                if (i.length > 0) {
-                    console.log('onClick===>', i);
-                }
-
-            }
-        }//options
-
-
-        //todo :#######################
-        //todo : chart rendering part
-        //todo :#######################
         return (
             <div style={{
                 position: 'relative',
@@ -1211,20 +1207,13 @@ export const renderLineChartCoreForDev_Cluster = (_this: PageDevMonitoring, line
                 height: '96%'
             }}>
                 <ReactChartJsLine
-                    //width={'100%'}
-                    //height={hardwareType === "recv_bytes" || hardwareType === "send_bytes" ? chartHeight + 20 : chartHeight}
-                    //height={'100%'}
-                    data={lineChartData}
-                    options={options}
-                    /* getDatasetAtEvent={dataset => {
-                         alert(dataset)
-                     }}*/
-
+                    data={lineChartDataForRendering}
+                    options={makeLineChartOptions(hardwareType, lineChartDataSet, _this)}
                 />
             </div>
         );
     } catch (e) {
-        // showToast(e.toString())
+
     }
 }
 
@@ -1240,8 +1229,6 @@ export const renderLineChartCoreForDev_AppInst = (_this: PageDevMonitoring, line
         let hardwareType = lineChartDataSet.hardwareType;
 
         console.log('lineChartDataSet==77777=>', lineChartDataSet);
-
-
         const lineChartData = (canvas) => {
 
             let gradientList = makeGradientColor(canvas, height);

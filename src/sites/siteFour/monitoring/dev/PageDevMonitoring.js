@@ -36,6 +36,12 @@ import {
 } from "./PageDevMonitoringService";
 import {
     CHART_COLOR_LIST,
+    CHART_COLOR_LIST2,
+    CHART_COLOR_LIST3,
+    CHART_COLOR_LIST4,
+    CHART_COLOR_LIST5,
+    CHART_COLOR_LIST6,
+    CHART_COLOR_LIST7,
     CLASSIFICATION,
     CONNECTIONS_OPTIONS,
     GRID_ITEM_TYPE,
@@ -221,7 +227,8 @@ type State = {
     popupGraphHWType: string,
     chartDataForRendering: any,
     popupGraphType: string,
-    isPopupMap:boolean,
+    isPopupMap: boolean,
+    chartColorList: Array,
 
 }
 
@@ -239,6 +246,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let ClusterHwMapperKey = getUserId() + "_layout_mapper"
             let appInstLayoutKey = getUserId() + "_layout2"
             let layoutMapperAppInstKey = getUserId() + "_layout2_mapper"
+
+            let themeKey = getUserId() + "_mon_theme";
+            //reactLocalStorage.remove(themeKey)
 
 
             this.state = {
@@ -357,6 +367,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 chartDataForRendering: [],
                 popupGraphType: '',
                 isPopupMap: false,
+                //reactLocalStorage.setObject(getUserId() + "_mon_theme")
+                chartColorList: isEmpty(reactLocalStorage.get(themeKey)) ? CHART_COLOR_LIST : reactLocalStorage.getObject(themeKey),
             };
         }
 
@@ -598,8 +610,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : this.state.currentClassification === CLASSIFICATION.CLUSTER ? renderLineChartCoreForDev_Cluster(this, chartDataSet) :
-                                renderLineChartCoreForDev_AppInst(this, chartDataSet)
+                            {this.state.loading ? renderPlaceHolderCircular() :
+                                this.state.currentClassification === CLASSIFICATION.CLUSTER
+                                    ? renderLineChartCoreForDev_Cluster(this, chartDataSet)
+                                    : renderLineChartCoreForDev_AppInst(this, chartDataSet)
                             }
                         </div>
                     </div>
@@ -1553,6 +1567,48 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+        handleThemeChanges = (value) => {
+            if (value === 'eundew') {
+                this.setState({
+                    chartColorList: CHART_COLOR_LIST
+                })
+            }
+            if (value === 'theme2') {
+                this.setState({
+                    chartColorList: CHART_COLOR_LIST2
+                })
+            }
+            if (value === 'theme3') {
+                this.setState({
+                    chartColorList: CHART_COLOR_LIST3
+                })
+            }
+            if (value === 'theme4') {
+                this.setState({
+                    chartColorList: CHART_COLOR_LIST4
+                })
+            }
+
+            if (value === 'theme5') {
+                this.setState({
+                    chartColorList: CHART_COLOR_LIST5
+                })
+            }
+
+            if (value === 'theme6') {
+                this.setState({
+                    chartColorList: CHART_COLOR_LIST6
+                })
+            }
+
+
+            if (value === 'theme7') {
+                this.setState({
+                    chartColorList: CHART_COLOR_LIST7
+                })
+            }
+        }
+
 
         renderSelectBoxRow() {
             return (
@@ -1694,27 +1750,46 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     </div>
                                 </>
 
-                                {/*todo:Add Pie Chart*/}
-                                {/*todo:Add Pie Chart*/}
-                                {/*todo:Add Pie Chart*/}
                                 <>
                                     <div className="page_monitoring_dropdown_label" style={{marginLeft: 25,}}>
-                                        Add Pie Chart
+                                        Theme
                                     </div>
                                     <div style={{marginBottom: 0,}}>
                                         <Select
-                                            placeholder="Select Item"
-                                            //defaultValue=''
+                                            placeholder="Select Theme"
+                                            defaultValue='eundew'
                                             style={{width: 190, marginBottom: 10, marginLeft: 5}}
                                             onChange={async (value) => {
-                                                //alert(value)
-                                                await this.addGridItem(value, GRID_ITEM_TYPE.PIE)
-                                                showToast('added ' + value + " item!!")
+                                                this.handleThemeChanges(value)
+                                                let selectedChartColorList=[];
+                                                if (value === 'eundew') {
+                                                    selectedChartColorList= CHART_COLOR_LIST;
+                                                }
+                                                if (value === 'theme2') {
+                                                    selectedChartColorList= CHART_COLOR_LIST2;
+                                                }
+                                                if (value === 'theme3') {
+                                                    selectedChartColorList= CHART_COLOR_LIST3;
+                                                }
+                                                if (value === 'theme4') {
+                                                    selectedChartColorList= CHART_COLOR_LIST4;
+                                                }
+
+                                                reactLocalStorage.setObject(getUserId() + "_mon_theme",selectedChartColorList )
+
+                                                //alert(reactLocalStorage.getObject(getUserId() + "_mon_theme"))
                                             }}
                                         >
-                                            {this.renderAddItemSelectOptions()}
-                                        </Select>
+                                            <Option value='eundew'>eundew</Option>
+                                            <Option value='theme2'>blue</Option>
+                                            <Option value='theme3'>yellow</Option>
+                                            <Option value='theme4'>red</Option>
 
+                                            {/*<Option value='theme5'>theme5</Option>
+                                            <Option value='theme6'>theme6</Option>
+                                            <Option value='theme7'>theme7</Option>*/}
+
+                                        </Select>
                                     </div>
                                 </>
                             </>
