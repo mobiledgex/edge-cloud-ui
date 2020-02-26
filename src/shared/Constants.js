@@ -255,6 +255,12 @@ export const GRID_ITEM_TYPE = {
     CLOUDLET_LIST: 'CLOUDLET_LIST',
 }
 
+export const ADD_ITEM_LIST = [
+    {text: 'BUBBLE', value: 'BUBBLE'},
+    {text: 'MAP', value: 'MAP'},
+    {text: 'CLOUDLET LIST', value: 'CLOUDLET_LIST'},
+]
+
 
 export const HARDWARE_OPTIONS = [
     {text: 'FLAVOR', value: 'FLAVOR'},

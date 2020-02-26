@@ -35,6 +35,7 @@ import {
     renderLineChartCoreForDev_Cluster,
 } from "./PageDevMonitoringService";
 import {
+    ADD_ITEM_LIST,
     CHART_COLOR_LIST,
     CHART_COLOR_LIST2,
     CHART_COLOR_LIST3,
@@ -231,6 +232,7 @@ type State = {
     isPopupMap: boolean,
     chartColorList: Array,
     themeTitle: string,
+    addItemList: any,
 
 }
 
@@ -376,6 +378,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //reactLocalStorage.setObject(getUserId() + "_mon_theme")
                 chartColorList: isEmpty(reactLocalStorage.get(themeKey)) ? CHART_COLOR_LIST : reactLocalStorage.getObject(themeKey),
                 themeTitle: isEmpty(reactLocalStorage.get(themeTitle)) ? 'EUNDEW' : reactLocalStorage.get(themeTitle),
+                addItemList: ADD_ITEM_LIST,
             };
         }
 
@@ -1679,15 +1682,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         placeholder="Select Item"
                                         //defaultValue=''
                                         style={{width: 190, marginBottom: 10, marginLeft: 5}}
-                                        onChange={async (value) => {
-                                            //alert(value)
+                                        onSelect={async (value) => {
                                             await this.addGridItem(value, value)
                                             showToast('added ' + value + " item!!")
                                         }}
                                     >
-                                        {[HARDWARE_TYPE_FOR_GRID.BUBBLE, HARDWARE_TYPE_FOR_GRID.MAP, HARDWARE_TYPE_FOR_GRID.CLOUDLET_LIST].map(item => {
+                                        {ADD_ITEM_LIST.map(item => {
                                             return (
-                                                <Option value={item}>{item}</Option>
+                                                <Option value={item.value}>{item.text}</Option>
                                             )
                                         })}
                                     </Select>
@@ -1701,7 +1703,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         placeholder="Select Item"
                                         //defaultValue=''
                                         style={{width: 190, marginBottom: 10, marginLeft: 5}}
-                                        onChange={async (value) => {
+                                        onSelect={async (value) => {
                                             //alert(value)
                                             await this.addGridItem(value, GRID_ITEM_TYPE.LINE)
                                             showToast('added ' + value + " item!!")
@@ -1722,7 +1724,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             placeholder="Select Item"
                                             //defaultValue=''
                                             style={{width: 190, marginBottom: 10, marginLeft: 5}}
-                                            onChange={async (value) => {
+                                            onSelect={async (value) => {
                                                 //alert(value)
                                                 await this.addGridItem(value, GRID_ITEM_TYPE.BAR)
                                                 showToast('added ' + value + " item!!")
@@ -1743,7 +1745,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             placeholder="Select Item"
                                             //defaultValue=''
                                             style={{width: 190, marginBottom: 10, marginLeft: 5}}
-                                            onChange={async (value) => {
+                                            onSelect={async (value) => {
                                                 //alert(value)
                                                 await this.addGridItem(value, GRID_ITEM_TYPE.COLUMN)
                                                 showToast('added ' + value + " item!!")
@@ -1764,7 +1766,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             placeholder="Select Theme"
                                             defaultValue={this.state.themeTitle}
                                             style={{width: 190, marginBottom: 10, marginLeft: 5}}
-                                            onChange={async (value) => {
+                                            onSelect={async (value) => {
 
                                                 await this.setState({
                                                     themeTitle: value,
