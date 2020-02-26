@@ -33,11 +33,11 @@ import {
     renderLineChartCoreForDev,
 } from "./PageDevMonitoringService";
 import {
-    ADD_ITEM_LIST,
+    ADD_ITEM_LIST, CHART_COLOR_APPLE,
     CHART_COLOR_LIST,
     CHART_COLOR_LIST2,
     CHART_COLOR_LIST3,
-    CHART_COLOR_LIST4,
+    CHART_COLOR_LIST4, CHART_COLOR_MONOKAI,
     CLASSIFICATION,
     CONNECTIONS_OPTIONS,
     GRID_ITEM_TYPE,
@@ -48,7 +48,7 @@ import {
     NETWORK_TYPE,
     RECENT_DATA_LIMIT_COUNT,
     TCP_OPTIONS,
-    THEME_OPTIONS,
+    THEME_OPTIONS, THEME_OPTIONS_LIST,
     UDP_OPTIONS
 } from "../../../../shared/Constants";
 import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData} from "../../../../shared/Types";
@@ -228,6 +228,7 @@ type State = {
     chartColorList: Array,
     themeTitle: string,
     addItemList: any,
+    themeOptions: any,
 
 }
 
@@ -373,6 +374,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 chartColorList: isEmpty(reactLocalStorage.get(themeKey)) ? CHART_COLOR_LIST : reactLocalStorage.getObject(themeKey),
                 themeTitle: isEmpty(reactLocalStorage.get(themeTitle)) ? 'EUNDEW' : reactLocalStorage.get(themeTitle),
                 addItemList: ADD_ITEM_LIST,
+                themeOptions: THEME_OPTIONS_LIST,
             };
         }
 
@@ -1590,6 +1592,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     chartColorList: CHART_COLOR_LIST4
                 })
             }
+
+            if (value === THEME_OPTIONS.MONOKAI) {
+                this.setState({
+                    chartColorList: CHART_COLOR_MONOKAI
+                })
+            }
+
+            if (value === THEME_OPTIONS.APPLE) {
+                this.setState({
+                    chartColorList: CHART_COLOR_APPLE
+                })
+            }
         }
 
         renderSelectBoxRow() {
@@ -1645,7 +1659,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:---------------------------*/}
                         {/*todo:Dropdown #2row             */}
                         {/*todo:---------------------------*/}
-                        <div className="page_monitoring_dropdown_box" style={{display: 'flex', marginTop: 15, marginLeft: -10, backgroundColor:'transparent', width:'100%'}}>
+                        <div className="page_monitoring_dropdown_box" style={{
+                            display: 'flex',
+                            marginTop: 15,
+                            marginLeft: -10,
+                            backgroundColor: 'transparent',
+                            width: '100%'
+                        }}>
 
                             <>
                                 <div className="page_monitoring_dropdown_label" style={{marginLeft: 10,}}>
@@ -1762,6 +1782,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     selectedChartColorList = CHART_COLOR_LIST4;
                                                 }
 
+                                                if (value === THEME_OPTIONS.MONOKAI) {
+                                                    selectedChartColorList = CHART_COLOR_MONOKAI;
+                                                }
+
+                                                if (value === THEME_OPTIONS.APPLE) {
+                                                    selectedChartColorList = CHART_COLOR_APPLE;
+                                                }
+
                                                 reactLocalStorage.setObject(getUserId() + "_mon_theme", selectedChartColorList)
                                                 reactLocalStorage.set(getUserId() + "_mon_theme_title", value)
 
@@ -1769,10 +1797,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 //alert(reactLocalStorage.getObject(getUserId() + "_mon_theme"))
                                             }}
                                         >
-                                            <Option value='EUNDEW'>EUNDEW</Option>
-                                            <Option value='BLUE'>BLUE</Option>
-                                            <Option value='GREEN'>GREEN</Option>
-                                            <Option value='RED'>RED</Option>
+
+                                            {this.state.themeOptions.map((item, index) => {
+                                                return (
+                                                    <Option key={index} value={item.value}>{item.text}</Option>
+                                                )
+                                            })}
 
                                             {/*<Option value='theme5'>theme5</Option>
                                             <Option value='theme6'>theme6</Option>

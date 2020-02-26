@@ -102,6 +102,20 @@ export default class BubbleChart extends Component {
             colorCodes = redColorCodes;
         }
 
+        if (this.props.themeTitle === THEME_OPTIONS.MONOKAI) {
+            let monokaiColor = 'F92672FD971FA6E22EE6DB74A6E22E'
+            colorCodes = monokaiColor;
+        }
+
+        if (this.props.themeTitle === THEME_OPTIONS.APPLE) {
+            let appleColors = '0A84FF30D158FF453AFF9F0AFF375F'
+            colorCodes = appleColors;
+        }
+
+        //'#0A84FF', '#30D158', '#5E5CE6', '#FF9F0A', '#FF375F'
+
+        //'#AE81FF', '#FD971F', '#E69F66', '#E6DB74', '#A6E22E'
+
 
         const color = d3.scaleOrdinal(colors(colorCodes));//green
 

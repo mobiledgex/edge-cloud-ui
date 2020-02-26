@@ -9,7 +9,9 @@ export const CHART_COLOR_LIST3 = ['#008000', '#d7fff1', '#556B2F', '#32CD32', '#
 
 export const CHART_COLOR_LIST4 = ['#FF0000', '#FFBDAA', '#D4826A', '#802D15', '#551300']
 
+export const CHART_COLOR_MONOKAI = ['#F92672', '#FD971F', '#A6E22E', '#E6DB74', '#A6E22E',]
 
+export const CHART_COLOR_APPLE = ['#0A84FF', '#30D158', '#FF453A', '#FF9F0A', '#FF375F',]
 
 export const CHART_COLOR_LIST5 = ['#609732', '#6EDC12', '#69BA27', '#527536', '#405330']
 export const CHART_COLOR_LIST6 = ['#AA5939', '#F75514', '#D15A2B', '#83513C', '#5D4136']
@@ -28,7 +30,19 @@ export const THEME_OPTIONS = {
     BLUE: "BLUE",
     GREEN: 'GREEN',
     RED: 'RED',
+    MONOKAI: 'MONOKAI',
+    APPLE: 'APPLE',
 }
+
+export const THEME_OPTIONS_LIST = [
+    {value: 'EUNDEW', text: 'EUNDEW'},
+    {value: 'BLUE', text: 'BLUE'},
+    {value: 'GREEN', text: 'GREEN'},
+    {value: 'RED', text: 'RED'},
+    {value: 'MONOKAI', text: 'MONOKAI'},
+    {value: 'APPLE', text: 'APPLE'},
+    //CHART_COLOR_APPLE
+]
 
 
 export const lineGraphOptions = {
