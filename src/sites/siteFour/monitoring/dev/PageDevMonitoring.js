@@ -471,6 +471,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
             console.log('filteredAppInstanceList===>', appInstanceList)
 
+
             let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
             await this.setState({
                 bubbleChartData: bubbleChartData,
@@ -1009,11 +1010,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*todo: RENDER BUBBLE          */}
                     {/*todo:---------------------------------*/}
                     <div className='page_monitoring_container'>
-                        {this.state.bubbleChartLoader ? renderPlaceHolderCircular() : renderBubbleChartCoreForDev_Cluster(this, this.state.currentHardwareType, this.state.bubbleChartData)}
+                        {this.state.bubbleChartLoader ? renderPlaceHolderCircular() : renderBubbleChartCoreForDev_Cluster(this, this.state.currentHardwareType, this.state.bubbleChartData, this.state.themeTitle)}
                     </div>
                 </div>
             )
         }
+
 
         renderMapArea() {
             return (
@@ -1757,6 +1759,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                                 reactLocalStorage.setObject(getUserId() + "_mon_theme", selectedChartColorList)
                                                 reactLocalStorage.set(getUserId() + "_mon_theme_title", value)
+
 
                                                 //alert(reactLocalStorage.getObject(getUserId() + "_mon_theme"))
                                             }}

@@ -359,7 +359,7 @@ export const sortByKey = (arrList, key) => {
 }
 
 
-export const makeBarChartDataForCluster = (usageList, hardwareType, _this:PageDevMonitoring) => {
+export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageDevMonitoring) => {
 
     console.log(`renderBarGraphForCluster===>${hardwareType}`, usageList);
     usageList = sortUsageListByTypeForCluster(usageList, hardwareType)
@@ -645,10 +645,16 @@ export const handleHardwareTabChanges = async (_this: PageDevMonitoring, selecte
 }
 
 
-export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, hardwareType: string, pBubbleChartData: any) => {
+/**
+ *
+ * @param _this
+ * @param hardwareType
+ * @param pBubbleChartData
+ * @returns {*}
+ */
+export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, hardwareType: string, pBubbleChartData: any, themeTitle: string,) => {
 
     console.log('pBubbleChartData===>', pBubbleChartData);
-
 
     if (pBubbleChartData.length === 0 && _this.loading === false) {
         return (
@@ -699,6 +705,7 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
                             offsetX: 0.15,
                             offsetY: renderOffsetY(appInstanceList.length)
                         }}
+                        themeTitle={themeTitle}
                         width={boxWidth}
                         height={'100%'}
                         padding={0} // optional value, number that set the padding between bubbles
@@ -1143,7 +1150,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this) => {
 }
 
 
-export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this:PageDevMonitoring) => {
+export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring) => {
     const lineChartData = (canvas) => {
         let finalSeriesDataSets = [];
         for (let index in usageSetList) {
@@ -1188,7 +1195,6 @@ export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTi
 
     return lineChartData;
 }
-
 
 
 export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDataSet) => {
