@@ -60,6 +60,7 @@ import moment from "moment";
 import '../PageMonitoring.css'
 
 import {
+    arraysEqual,
     getOneYearStartEndDatetime,
     isEmpty,
     makeBubbleChartDataForCluster,
@@ -229,6 +230,7 @@ type State = {
     popupGraphType: string,
     isPopupMap: boolean,
     chartColorList: Array,
+    themeTitle: string,
 
 }
 
@@ -247,8 +249,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let appInstLayoutKey = getUserId() + "_layout2"
             let layoutMapperAppInstKey = getUserId() + "_layout2_mapper"
 
+
             let themeKey = getUserId() + "_mon_theme";
-            //reactLocalStorage.remove(themeKey)
+            let themeTitle = getUserId() + "_mon_theme_title";
+
+
+            //reactLocalStorage.setObject(getUserId() + "_mon_theme_title", value)
+            /*reactLocalStorage.remove(themeTitle)
+            reactLocalStorage.remove(themeKey)*/
 
 
             this.state = {
@@ -369,6 +377,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isPopupMap: false,
                 //reactLocalStorage.setObject(getUserId() + "_mon_theme")
                 chartColorList: isEmpty(reactLocalStorage.get(themeKey)) ? CHART_COLOR_LIST : reactLocalStorage.getObject(themeKey),
+                themeTitle: isEmpty(reactLocalStorage.get(themeTitle)) ? 'eundew' : reactLocalStorage.get(themeTitle),
             };
         }
 
@@ -1573,40 +1582,59 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     chartColorList: CHART_COLOR_LIST
                 })
             }
-            if (value === 'theme2') {
+            if (value === 'blue') {
                 this.setState({
                     chartColorList: CHART_COLOR_LIST2
                 })
             }
-            if (value === 'theme3') {
+            if (value === 'yellow') {
                 this.setState({
                     chartColorList: CHART_COLOR_LIST3
                 })
             }
-            if (value === 'theme4') {
+            if (value === 'red') {
                 this.setState({
                     chartColorList: CHART_COLOR_LIST4
                 })
             }
 
-            if (value === 'theme5') {
-                this.setState({
-                    chartColorList: CHART_COLOR_LIST5
-                })
+            /* if (value === 'theme5') {
+                 this.setState({
+                     chartColorList: CHART_COLOR_LIST5
+                 })
+             }
+
+             if (value === 'theme6') {
+                 this.setState({
+                     chartColorList: CHART_COLOR_LIST6
+                 })
+             }
+
+
+             if (value === 'theme7') {
+                 this.setState({
+                     chartColorList: CHART_COLOR_LIST7
+                 })
+             }*/
+        }
+
+
+        handleDefaultValueForTheme() {
+            let defaultValue = '';
+            if (arraysEqual(this.state.chartColorList) === arraysEqual(CHART_COLOR_LIST)) {
+                defaultValue = 'eundew';
+            }
+            if (arraysEqual(this.state.chartColorList) === arraysEqual(CHART_COLOR_LIST2)) {
+                defaultValue = 'blue';
+            }
+            if (arraysEqual(this.state.chartColorList) === arraysEqual(CHART_COLOR_LIST3)) {
+                defaultValue = 'yellow';
+            }
+            if (arraysEqual(this.state.chartColorList) === arraysEqual(CHART_COLOR_LIST4)) {
+                defaultValue = 'red';
             }
 
-            if (value === 'theme6') {
-                this.setState({
-                    chartColorList: CHART_COLOR_LIST6
-                })
-            }
-
-
-            if (value === 'theme7') {
-                this.setState({
-                    chartColorList: CHART_COLOR_LIST7
-                })
-            }
+            return defaultValue;
         }
 
 
@@ -1757,33 +1785,38 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <div style={{marginBottom: 0,}}>
                                         <Select
                                             placeholder="Select Theme"
-                                            defaultValue='eundew'
+                                            defaultValue={this.state.themeTitle}
                                             style={{width: 190, marginBottom: 10, marginLeft: 5}}
                                             onChange={async (value) => {
+
+                                                await this.setState({
+                                                    themeTitle: value,
+                                                })
                                                 this.handleThemeChanges(value)
-                                                let selectedChartColorList=[];
+                                                let selectedChartColorList = [];
                                                 if (value === 'eundew') {
-                                                    selectedChartColorList= CHART_COLOR_LIST;
+                                                    selectedChartColorList = CHART_COLOR_LIST;
                                                 }
-                                                if (value === 'theme2') {
-                                                    selectedChartColorList= CHART_COLOR_LIST2;
+                                                if (value === 'blue') {
+                                                    selectedChartColorList = CHART_COLOR_LIST2;
                                                 }
-                                                if (value === 'theme3') {
-                                                    selectedChartColorList= CHART_COLOR_LIST3;
+                                                if (value === 'yellow') {
+                                                    selectedChartColorList = CHART_COLOR_LIST3;
                                                 }
-                                                if (value === 'theme4') {
-                                                    selectedChartColorList= CHART_COLOR_LIST4;
+                                                if (value === 'red') {
+                                                    selectedChartColorList = CHART_COLOR_LIST4;
                                                 }
 
-                                                reactLocalStorage.setObject(getUserId() + "_mon_theme",selectedChartColorList )
+                                                reactLocalStorage.setObject(getUserId() + "_mon_theme", selectedChartColorList)
+                                                reactLocalStorage.set(getUserId() + "_mon_theme_title", value)
 
                                                 //alert(reactLocalStorage.getObject(getUserId() + "_mon_theme"))
                                             }}
                                         >
                                             <Option value='eundew'>eundew</Option>
-                                            <Option value='theme2'>blue</Option>
-                                            <Option value='theme3'>yellow</Option>
-                                            <Option value='theme4'>red</Option>
+                                            <Option value='blue'>blue</Option>
+                                            <Option value='yellow'>yellow</Option>
+                                            <Option value='red'>red</Option>
 
                                             {/*<Option value='theme5'>theme5</Option>
                                             <Option value='theme6'>theme6</Option>
