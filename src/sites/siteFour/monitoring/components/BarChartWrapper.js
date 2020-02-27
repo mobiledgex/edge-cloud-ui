@@ -3,7 +3,8 @@ import * as React from 'react';
 import {renderBarChartCore, renderPlaceHolderCircular} from "../PageMonitoringCommonService";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import type {MonitoringContextInterface} from "../PageMonitoringGlobalState";
-import {MonitoringConsumer} from "../PageMonitoringGlobalState";
+import {MonitoringConsumer, PageMonitoringProvider} from "../PageMonitoringGlobalState";
+import {Grid} from "semantic-ui-react";
 
 type Props = {
     parent: PageDevMonitoring,
@@ -19,6 +20,7 @@ type State = {
 };
 
 export default class BarChartWrapper extends React.Component<Props, State> {
+    context = React.createRef();
 
     constructor(props: Props) {
         super(props)
@@ -51,9 +53,12 @@ export default class BarChartWrapper extends React.Component<Props, State> {
 
     render() {
         return (
+
             <MonitoringConsumer>
                 {(context: MonitoringContextInterface) => (
-                    <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
+                    <div className='page_monitoring_dual_column' style={{display: 'flex'}} ref={() => {
+                        this.context = context;
+                    }}>
                         <div className='page_monitoring_dual_container' style={{flex: 1}}>
                             <div className='page_monitoring_title_area'>
                                 <div className='page_monitoring_title'>
@@ -71,3 +76,12 @@ export default class BarChartWrapper extends React.Component<Props, State> {
         )
     };
 };
+
+
+/*
+<MonitoringConsumer>
+    {(context: MonitoringContextInterface) => (
+
+    )}
+</MonitoringConsumer>
+*/

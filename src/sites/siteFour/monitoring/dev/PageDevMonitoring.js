@@ -30,7 +30,7 @@ import {
     makeSelectBoxListWithThreeValuePipe,
     renderPerformanceSummaryTable,
     renderBubbleChartCoreForDev_Cluster,
-    renderLineChartCoreForDev,
+    renderLineChartCoreForDev, makeLineChartDataForAppInstAll, makeAllLineChartData,
 } from "./PageDevMonitoringService";
 import {
     ADD_ITEM_LIST,
@@ -576,15 +576,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                 lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
             } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
-                console.log('filteredAppInstUsageList===>', this.state.filteredAppInstUsageList)
-                lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
-                console.log('filteredAppInstUsageList===222222>', lineChartDataSet)
+                if (hwType === HARDWARE_TYPE.ALL) {
+                    lineChartDataSet = makeAllLineChartData(this);
+                } else {
+                    lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
+                    console.log("lineChartDataSet===>", lineChartDataSet);
+                }
             }
+
             return (
-                <LineChartWrapper loading={this.state.loading} currentClassification={this.state.currentClassification}
+                <LineChartWrapper context={this.context} loading={this.state.loading}
+                                  currentClassification={this.state.currentClassification}
                                   parent={this}
                                   pHardwareType={hwType} chartDataSet={lineChartDataSet}/>
             )
+
         }
 
 
@@ -1564,7 +1570,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
         }
 
-        renderSelectBoxRow() {
+        renderSelectBoxRow(context) {
             return (
                 <div className='page_monitoring_select_row'>
                     <div className='page_monitoring_select_area'>
@@ -1615,7 +1621,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             />
                         </div>
                         {/*todo:---------------------------*/}
-                        {/*todo:Dropdown #2row             */}
+                        {/*todo:Dropdown #2nd row          */}
                         {/*todo:---------------------------*/}
                         <div className="page_monitoring_dropdown_box" style={{
                             display: 'flex',
@@ -1840,7 +1846,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <SemanticToastContainer position={"top-right"}/>
                                     {this.renderHeader()}
                                     <div style={{marginTop: 30, marginLeft: 30}}>
-                                        {this.renderSelectBoxRow()}
+                                        {this.renderSelectBoxRow(context)}
                                     </div>
                                     <Grid.Row className='site_content_body' style={{marginTop: -10, overflowY: 'auto'}}>
                                         <div style={{}}>
@@ -1848,7 +1854,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                  style={{backgroundColor: 'transparent', height: 3250}}>
                                                 <div className='page_monitoring_dashboard_kyungjoon' style={{}}>
                                                     {this.state.currentClassification === CLASSIFICATION.CLUSTER
-                                                        ? this.renderGridLayoutForCluster()
+                                                        ? this.renderGridLayoutForCluster(context)
                                                         : this.renderGridLayoutForAppInst()
                                                     }
                                                 </div>

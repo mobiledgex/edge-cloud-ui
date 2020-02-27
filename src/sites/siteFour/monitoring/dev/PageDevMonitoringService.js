@@ -25,6 +25,7 @@ import Lottie from "react-lottie";
 import type {TypeAppInstanceUsage2, TypeClusterUsageList} from "../../../../shared/Types";
 import {Progress, Select} from "antd";
 import {Responsive, WidthProvider} from "react-grid-layout";
+import type {MonitoringContextInterface} from "../PageMonitoringGlobalState";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const {Option} = Select;
@@ -766,14 +767,10 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
 
 }
 
-/**
- *
- * @param _this
- * @param hardwareUsageList
- * @param hardwareType
- * @returns {*}
- */
-export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareType: string, _this: PageDevMonitoring) => {
+export const makeLineChartDataForAppInstAll = (hardwareUsageList: Array, hardwareType: string = 'all', _this: PageDevMonitoring) => {
+    console.log("hardwareType===>", hardwareType);
+
+    //alert(hardwareType)
 
     if (hardwareUsageList.length === 0) {
         return (
@@ -788,20 +785,19 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
         let instanceNameList = [];
         let usageSetList = []
         let dateTimeList = []
+
         hardwareUsageList.map((item: TypeAppInstanceUsage2, index) => {
 
             let seriesValues = []
-            if (hardwareType === HARDWARE_TYPE.CPU) {
-                seriesValues = item.cpuSeriesValue
-            } else if (hardwareType === HARDWARE_TYPE.MEM) {
-                seriesValues = item.memSeriesValue
-            } else if (hardwareType === HARDWARE_TYPE.DISK) {
-                seriesValues = item.diskSeriesValue
-            } else if (hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
-                seriesValues = item.networkSeriesValue
-            } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-                seriesValues = item.connectionsSeriesValue
-            }
+            let seriesValues2 = []
+            let seriesValues3 = []
+            let seriesValues4 = []
+            let seriesValues5 = []
+            seriesValues = item.cpuSeriesValue
+            seriesValues2 = item.memSeriesValue
+            seriesValues3 = item.diskSeriesValue
+            seriesValues4 = item.networkSeriesValue
+            seriesValues5 = item.connectionsSeriesValue
 
             console.log(`seriesValues===${hardwareType}>`, seriesValues);
 
@@ -809,36 +805,40 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
             let usageList = [];
 
             for (let j in seriesValues) {
+
                 let usageOne = 0;
-                if (hardwareType === HARDWARE_TYPE.CPU) {
-                    usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.CPU];
-                } else if (hardwareType === HARDWARE_TYPE.MEM) {
-                    usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.MEM]; //mem usage
-                } else if (hardwareType === HARDWARE_TYPE.DISK) {
-                    usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.DISK];
-                } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-                    usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.SENDBYTES];
-                } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-                    usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.RECVBYTES];
-                } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-                    usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE.toString()];
-                } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
-                    usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.HANDLED.toString()];
-                } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-                    usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACCEPTS.toString()];
-                }
+                let usageOne2 = 0;
+                let usageOne3 = 0;
+                let usageOne4 = 0;
+                let usageOne5 = 0;
+                let usageOne6 = 0;
+                let usageOne7 = 0;
+                let usageOne8 = 0;
+                usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.CPU];
+                usageOne2 = seriesValues2[j][APP_INST_MATRIX_HW_USAGE_INDEX.MEM]; //mem usage
+                usageOne3 = seriesValues3[j][APP_INST_MATRIX_HW_USAGE_INDEX.DISK];
+                usageOne4 = seriesValues4[j][APP_INST_MATRIX_HW_USAGE_INDEX.SENDBYTES];
+                usageOne5 = seriesValues4[j][APP_INST_MATRIX_HW_USAGE_INDEX.RECVBYTES];
+                /*usageOne6 = seriesValues5[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE.toString()];
+                usageOne7 = seriesValues5[j][APP_INST_MATRIX_HW_USAGE_INDEX.HANDLED.toString()];
+                usageOne8 = seriesValues5[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACCEPTS.toString()];*/
 
                 usageList.push(usageOne);
-                let dateOne = seriesValues[j]["0"];
-                dateOne = dateOne.toString().split("T")
-
-                dateTimeList.push(dateOne[1]);
+                usageList.push(usageOne2);
+                usageList.push(usageOne3);
+                usageList.push(usageOne4);
+                usageList.push(usageOne5);
+                dateTimeList.push(seriesValues[j]["0"].toString().split("T")[1]);
             }
 
             instanceNameList.push(instanceAppName)
             usageSetList.push(usageList);
 
         })
+
+
+        console_log(hardwareType)
+        console.log(`usageSetList===${hardwareType}>`, usageSetList);
 
 
         //@todo: CUT LIST INTO RECENT_DATA_LIMIT_COUNT
@@ -860,6 +860,149 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
     }
 
 }
+
+
+export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareType: string = 'all', _this: PageDevMonitoring) => {
+    console.log("hardwareType===>", hardwareType);
+
+    if (hardwareUsageList.length === 0) {
+        return (
+            <div style={PageMonitoringStyles.noData}>
+                NO DATA
+            </div>
+        )
+    } else {
+
+
+        let instanceAppName = ''
+        let instanceNameList = [];
+        let usageSetList = []
+        let dateTimeList = []
+
+        if (hardwareType === 'all') {
+
+        } else {
+            hardwareUsageList.map((item: TypeAppInstanceUsage2, index) => {
+
+                let seriesValues = []
+                if (hardwareType === HARDWARE_TYPE.CPU) {
+                    seriesValues = item.cpuSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.MEM) {
+                    seriesValues = item.memSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.DISK) {
+                    seriesValues = item.diskSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
+                    seriesValues = item.networkSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+                    seriesValues = item.connectionsSeriesValue
+                }
+
+                console.log(`seriesValues===${hardwareType}>`, seriesValues);
+
+                instanceAppName = item.instance.AppName
+                let usageList = [];
+
+                for (let j in seriesValues) {
+                    let usageOne = 0;
+                    if (hardwareType === HARDWARE_TYPE.CPU) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.CPU];
+                    } else if (hardwareType === HARDWARE_TYPE.MEM) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.MEM]; //mem usage
+                    } else if (hardwareType === HARDWARE_TYPE.DISK) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.DISK];
+                    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.SENDBYTES];
+                    } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.RECVBYTES];
+                    } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE.toString()];
+                    } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.HANDLED.toString()];
+                    } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACCEPTS.toString()];
+                    }
+
+                    usageList.push(usageOne);
+                    let dateOne = seriesValues[j]["0"];
+                    dateOne = dateOne.toString().split("T")
+
+                    dateTimeList.push(dateOne[1]);
+                }
+
+                instanceNameList.push(instanceAppName)
+                usageSetList.push(usageList);
+
+            })
+        }
+
+
+        console.log("usageSetList===>", usageSetList);
+
+
+        //@todo: CUT LIST INTO RECENT_DATA_LIMIT_COUNT
+        let newDateTimeList = []
+        for (let i in dateTimeList) {
+            if (i < RECENT_DATA_LIMIT_COUNT) {
+                let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
+                let timeOne = splitDateTimeArrayList[0].replace("T", "T");
+                newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
+            }
+
+        }
+        return {
+            levelTypeNameList: instanceNameList,
+            usageSetList,
+            newDateTimeList,
+            hardwareType
+        }
+    }
+
+}
+
+export const makeAllLineChartData = (_this) => {
+    let completedLineCharDataSetList = []
+    let lineChartDataSet = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.CPU, _this)
+    let lineChartDataSet2 = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.MEM, _this)
+    let lineChartDataSet3 = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.DISK, _this)
+    let lineChartDataSet4 = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.RECVBYTES, _this)
+    let lineChartDataSet5 = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.SENDBYTES, _this)
+    /*let lineChartDataSet6 = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, HARDWARE_TYPE.ACTIVE_CONNECTION, this)
+    let lineChartDataSet7 = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, HARDWARE_TYPE.ACCEPTS_CONNECTION, this)
+    let lineChartDataSet8 = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, HARDWARE_TYPE.HANDLED_CONNECTION, this)*/
+
+    completedLineCharDataSetList.push(lineChartDataSet)
+    completedLineCharDataSetList.push(lineChartDataSet2)
+    completedLineCharDataSetList.push(lineChartDataSet3)
+    completedLineCharDataSetList.push(lineChartDataSet4)
+    completedLineCharDataSetList.push(lineChartDataSet5)
+    /*completedLineCharDataSetList.push(lineChartDataSet6)
+    completedLineCharDataSetList.push(lineChartDataSet7)
+    completedLineCharDataSetList.push(lineChartDataSet8)*/
+
+    let newLevelTypeNameList = []
+    let newDateTimeList = []
+    let newUsageSetList = []
+    let newHWTypeList = []
+    completedLineCharDataSetList.map(item => {
+        let newLevelTypeNameOne = item.levelTypeNameList["0"] + "[" + item.hardwareType + "]"
+        let usageSetListOne = item.usageSetList
+        newLevelTypeNameList.push(newLevelTypeNameOne)
+        newUsageSetList.push(usageSetListOne[0]);
+        newDateTimeList = item.newDateTimeList;
+        newHWTypeList.push(item.hardwareType);
+
+    })
+
+    lineChartDataSet = {
+        hardwareType: 'ALL',
+        levelTypeNameList: newLevelTypeNameList,
+        usageSetList: newUsageSetList,
+        newDateTimeList: newDateTimeList,
+    }
+
+    return lineChartDataSet;
+}
+
 
 export const convertHwTypePhrases = (pHardwareType) => {
 
@@ -1061,8 +1204,10 @@ export const handleLegendAndBubbleClickedEvent = (_this: PageDevMonitoring, clic
 }
 
 
-export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this) => {
+export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, context: MonitoringContextInterface) => {
+
     let options = {
+        stacked: true,
         animation: {
             duration: 500
         },
@@ -1102,14 +1247,20 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this) => {
                     //max: 100,//todo max value
                     fontColor: 'white',
                     callback(value, index, label) {
-                        return convertByteToMegaByte(value, hardwareType)
+
+                        if (hardwareType === 'ALL') {
+                            return value;
+                        } else {
+                            return convertByteToMegaByte(value, hardwareType)
+                        }
+
 
                     },
                 },
                 gridLines: {
                     color: "#505050",
                 },
-                //stacked: true
+                stacked: true,
 
             }],
             xAxes: [{
@@ -1155,40 +1306,40 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this) => {
 
 
 export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring) => {
+
+
     const lineChartData = (canvas) => {
         let finalSeriesDataSets = [];
         for (let index in usageSetList) {
             //@todo: top5 만을 추린다
-            if (index < 5) {
-                let datasetsOne = {
-                    label: levelTypeNameList[index],
-                    radius: 0,
-                    borderWidth: 3.5,//todo:라인 두께
-                    fill: false,
-                    lineTension: 0.5,
-                    /*backgroundColor:  gradientList[index],
-                    borderColor: gradientList[index],*/
-                    backgroundColor: _this.state.chartColorList[index],
-                    borderColor: _this.state.chartColorList[index],
-                    data: usageSetList[index],
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    borderDashOffset: 0.0,
-                    borderJoinStyle: 'miter',
-                    pointBorderColor: 'rgba(75,192,192,1)',
-                    pointBackgroundColor: '#fff',
-                    pointBorderWidth: 1,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-                    pointHoverBorderColor: 'rgba(220,220,220,1)',
-                    pointHoverBorderWidth: 2,
-                    pointRadius: 1,
-                    pointHitRadius: 10,
+            let datasetsOne = {
+                label: levelTypeNameList[index],
+                radius: 0,
+                borderWidth: 3.5,//todo:라인 두께
+                fill: false,
+                lineTension: 0.5,
+                /*backgroundColor:  gradientList[index],
+                borderColor: gradientList[index],*/
+                backgroundColor: _this.state.chartColorList[index],
+                borderColor: _this.state.chartColorList[index],
+                data: usageSetList[index],
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: 'rgba(75,192,192,1)',
+                pointBackgroundColor: '#fff',
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+                pointHoverBorderColor: 'rgba(220,220,220,1)',
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
 
-                }
-
-                finalSeriesDataSets.push(datasetsOne)
             }
+
+            finalSeriesDataSets.push(datasetsOne)
 
         }
         return {
@@ -1209,7 +1360,7 @@ export const convertToClassification = (pClassification) => {
 }
 
 
-export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDataSet) => {
+export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDataSet, context) => {
     try {
         let levelTypeNameList = lineChartDataSet.levelTypeNameList;
         let usageSetList = lineChartDataSet.usageSetList;
@@ -1217,8 +1368,7 @@ export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDat
         let hardwareType = lineChartDataSet.hardwareType;
 
 
-
-        const lineChartDataForRendering = makeTop5LineChartData(levelTypeNameList, usageSetList, newDateTimeList, _this)
+        const lineChartDataForRendering = makeTop5LineChartData(levelTypeNameList, usageSetList, newDateTimeList, _this, context)
         return (
             <div style={{
                 position: 'relative',
@@ -1227,7 +1377,7 @@ export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDat
             }}>
                 <ReactChartJsLine
                     data={lineChartDataForRendering}
-                    options={makeLineChartOptions(hardwareType, lineChartDataSet, _this)}
+                    options={makeLineChartOptions(hardwareType, lineChartDataSet, _this, context)}
                 />
             </div>
         );

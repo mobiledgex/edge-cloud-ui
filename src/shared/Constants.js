@@ -1,17 +1,20 @@
 import {convertByteToMegaByte} from "../sites/siteFour/monitoring/PageMonitoringCommonService";
 
 export const API_ENDPOINT_PREFIX = '/api/v1/';
-export const BORDER_CHART_COLOR_LIST = ["#70001C", "#FF5E1D", "#E3DC39", "#128702", "#1C22FF"]
-export const CHART_COLOR_LIST = ['#DE0000', '#FF9600', '#FFF600', '#5BCB00', '#0096FF']
-export const CHART_COLOR_LIST2 = ['#65DEF1', '#A8DCD1', '#DCE2C8', '#F96900', '#F17F29']
+export const BORDER_CHART_COLOR_LIST = ["#70001C", "#FF5E1D", "#E3DC39", "#128702", "#1C22FF",'#66D9EF', '#272822', '#75715E',]
+export const CHART_COLOR_LIST = ['#DE0000', '#FF9600', '#FFF600', '#5BCB00', '#0096FF','#66D9EF', '#272822', '#75715E',]
+export const CHART_COLOR_LIST2 = ['#65DEF1', '#A8DCD1', '#DCE2C8', '#F96900', '#F17F29','#66D9EF', '#272822', '#75715E',]
 
-export const CHART_COLOR_LIST3 = ['#008000', '#d7fff1', '#556B2F', '#32CD32', '#8cd790',]
+export const CHART_COLOR_LIST3 = ['#008000', '#d7fff1', '#556B2F', '#32CD32', '#8cd790','#66D9EF', '#272822', '#75715E',]
 
-export const CHART_COLOR_LIST4 = ['#FF0000', '#FFBDAA', '#D4826A', '#802D15', '#551300']
+export const CHART_COLOR_LIST4 = ['#FF0000', '#FFBDAA', '#D4826A', '#802D15', '#551300','#66D9EF', '#272822', '#75715E',]
 
-export const CHART_COLOR_MONOKAI = ['#F92672', '#FD971F', '#A6E22E', '#E6DB74', '#A6E22E',]
+export const CHART_COLOR_MONOKAI = ['#F92672', '#FD971F', '#A6E22E', '#E6DB74', '#A6E22E','#66D9EF', '#272822', '#75715E',]
 
-export const CHART_COLOR_APPLE = ['#0A84FF', '#30D158', '#FF453A', '#FF9F0A', '#FF375F',]
+
+
+
+export const CHART_COLOR_APPLE = ['#0A84FF', '#30D158', '#FF453A', '#FF9F0A', '#FF375F','#66D9EF', '#272822', '#75715E',]
 
 export const CHART_COLOR_LIST5 = ['#609732', '#6EDC12', '#69BA27', '#527536', '#405330']
 export const CHART_COLOR_LIST6 = ['#AA5939', '#F75514', '#D15A2B', '#83513C', '#5D4136']
@@ -289,6 +292,7 @@ export const HARDWARE_OPTIONS = [
 ]
 
 export const HARDWARE_OPTIONS_FOR_APPINST = [
+    {text: 'ALL', value: 'ALL'},
     {text: 'CPU', value: 'CPU'},
     {text: 'MEM', value: 'MEM'},
     {text: 'DISK', value: 'DISK'},
@@ -346,6 +350,8 @@ export const HARDWARE_TYPE_FOR_CLOUDLET = {
 }
 
 export const HARDWARE_TYPE = {
+    ALL:'ALL',
+
     FLAVOR: 'FLAVOR',
     CPU: 'CPU',
     VCPU: 'vCPU',
