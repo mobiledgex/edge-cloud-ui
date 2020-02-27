@@ -3,15 +3,9 @@ import React, {Component} from 'react'
 
 export interface MonitoringContextInterface {
     loading: boolean,
-    clickedCount: string,
-
-    setClickedCount(value: number): any,
 
     toggleLoading(): any,
 
-    addClickedCount(): any,
-
-    decrementClickedCount(): any,
 }
 
 export const MonitoringContext = React.createContext<MonitoringContextInterface>();
@@ -26,7 +20,7 @@ interface State {
 
 }
 
-export class AppProvider extends Component<Props, State> {
+export class PageMonitoringProvider extends Component<Props, State> {
     constructor(props: Props) {
         super(props)
 
@@ -35,24 +29,6 @@ export class AppProvider extends Component<Props, State> {
             clickedCount: 0,
         }
 
-    }
-
-    setClickedCount = (value: number) => {
-        this.setState({
-            clickedCount: value,
-        })
-    }
-
-    decrementClickedCount = () => {
-        this.setState({
-            clickedCount: this.state.clickedCount - 1,
-        })
-    }
-
-    addClickedCount = () => {
-        this.setState({
-            clickedCount: this.state.clickedCount + 1,
-        })
     }
 
     toggleLoading = () => {
@@ -66,12 +42,8 @@ export class AppProvider extends Component<Props, State> {
 
         return (
             <MonitoringContext.Provider value={{
-                clickedCount: this.state.clickedCount,
                 loading: this.state.loading,
-                setClickedCount: this.setClickedCount,
                 toggleLoading: this.toggleLoading,
-                addClickedCount: this.addClickedCount,
-                decrementClickedCount: this.decrementClickedCount,
             }}>
                 {this.props.children}
             </MonitoringContext.Provider>

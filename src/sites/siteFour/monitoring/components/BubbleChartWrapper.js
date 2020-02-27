@@ -2,7 +2,7 @@
 import * as React from 'react';
 import BubbleChart from "../../../../components/BubbleChart";
 import {handleLegendAndBubbleClickedEvent, makeLineChartDataForCluster} from "../dev/PageDevMonitoringService";
-import {PageMonitoringStyles} from "../PageMonitoringCommonService";
+import {PageMonitoringStyles, renderPlaceHolderCircular} from "../PageMonitoringCommonService";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 
 type Props = {
@@ -92,70 +92,72 @@ export default class BubbleChartWrapper extends React.Component<Props, State> {
 
             return (
                 <>
-                    <div style={{
-                        //backgroundColor: 'blue',
-                        backgroundColor: '#1e2124',
-                        height: 450,
-                        // marginLeft: 0, marginRight: 0, marginBottom: 10,
-                    }}>
-                        <BubbleChart
-                            className='bubbleChart'
-                            style={{height: 300,}}
-                            graph={{
-                                zoom: renderZoomLevel(appInstanceList.length),
-                                //zoom: 0.70,
-                                offsetX: 0.15,
-                                offsetY: renderOffsetY(appInstanceList.length)
-                            }}
-                            themeTitle={themeTitle}
-                            width={boxWidth}
-                            height={350}
-                            padding={0} // optional value, number that set the padding between bubbles
-                            showLegend={true} // optional value, pass false to disable the legend.
-                            legendPercentage={20} // number that represent the % of with that legend going to use.
-                            legendFont={{
-                                //family: 'Candal',
-                                size: 9,
-                                color: 'black',
-                                weight: 'bold',
-                            }}
-                            valueFont={{
-                                //family: 'Righteous',
-                                size: 12,
-                                color: 'black',
-                                //weight: 'bold',
-                                fontStyle: 'italic',
-                            }}
-                            labelFont={{
-                                //family: 'Righteous',
-                                size: 14,
-                                color: 'black',
-                                weight: 'bold',
-                            }}
-                            bubbleClickFun={async (cluster_cloudlet, index) => {
-                                try {
-                                    let lineChartDataSet = makeLineChartDataForCluster(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
-                                    cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
-                                    handleLegendAndBubbleClickedEvent(this.props.parent, cluster_cloudlet, lineChartDataSet)
-                                } catch (e) {
+                    {this.props.loading ?
+                        renderPlaceHolderCircular()
+                        : <div style={{
+                            //backgroundColor: 'blue',
+                            backgroundColor: '#1e2124',
+                            height: 450,
+                            // marginLeft: 0, marginRight: 0, marginBottom: 10,
+                        }}>
+                            <BubbleChart
+                                className='bubbleChart'
+                                style={{height: 300,}}
+                                graph={{
+                                    zoom: renderZoomLevel(appInstanceList.length),
+                                    //zoom: 0.70,
+                                    offsetX: 0.15,
+                                    offsetY: renderOffsetY(appInstanceList.length)
+                                }}
+                                themeTitle={themeTitle}
+                                width={boxWidth}
+                                height={350}
+                                padding={0} // optional value, number that set the padding between bubbles
+                                showLegend={true} // optional value, pass false to disable the legend.
+                                legendPercentage={20} // number that represent the % of with that legend going to use.
+                                legendFont={{
+                                    //family: 'Candal',
+                                    size: 9,
+                                    color: 'black',
+                                    weight: 'bold',
+                                }}
+                                valueFont={{
+                                    //family: 'Righteous',
+                                    size: 12,
+                                    color: 'black',
+                                    //weight: 'bold',
+                                    fontStyle: 'italic',
+                                }}
+                                labelFont={{
+                                    //family: 'Righteous',
+                                    size: 14,
+                                    color: 'black',
+                                    weight: 'bold',
+                                }}
+                                bubbleClickFun={async (cluster_cloudlet, index) => {
+                                    try {
+                                        let lineChartDataSet = makeLineChartDataForCluster(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
+                                        cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
+                                        handleLegendAndBubbleClickedEvent(this.props.parent, cluster_cloudlet, lineChartDataSet)
+                                    } catch (e) {
 
-                                }
+                                    }
 
 
-                            }}
-                            legendClickFun={async (cluster_cloudlet, index) => {
-                                try {
-                                    let lineChartDataSet = makeLineChartDataForCluster(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
-                                    cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
-                                    handleLegendAndBubbleClickedEvent(this.props.parent, cluster_cloudlet, lineChartDataSet)
-                                } catch (e) {
+                                }}
+                                legendClickFun={async (cluster_cloudlet, index) => {
+                                    try {
+                                        let lineChartDataSet = makeLineChartDataForCluster(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
+                                        cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
+                                        handleLegendAndBubbleClickedEvent(this.props.parent, cluster_cloudlet, lineChartDataSet)
+                                    } catch (e) {
 
-                                }
-                            }}
-                            data={pBubbleChartData}
-                        />
+                                    }
+                                }}
+                                data={pBubbleChartData}
+                            />
 
-                    </div>
+                        </div>}
 
                 </>
             )

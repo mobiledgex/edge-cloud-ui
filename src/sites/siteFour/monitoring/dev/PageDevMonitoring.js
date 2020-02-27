@@ -70,7 +70,13 @@ import {
     renderPlaceHolderCircular,
     showToast
 } from "../PageMonitoringCommonService";
-import {getAppLevelUsageList} from "../PageMonitoringMetricService";
+import {
+    getAppInstList,
+    getAppLevelUsageList,
+    getCloudletList,
+    getClusterLevelUsageList,
+    getClusterList
+} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraph from "../components/ModalGraph";
@@ -414,18 +420,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         async loadInitDataForCluster(isInterval: boolean = false) {
             clearInterval(this.intervalForAppInst)
             this.setState({dropdownRequestLoading: true})
-            /*let clusterList = await getClusterList();
-            let cloudletList = await getCloudletList()
-            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
-            if (appInstanceList.length === 0) {
-                this.setState({
-                    isNoData: true,
-                })
-            }*/
+            /*  let clusterList = await getClusterList();
+              let cloudletList = await getCloudletList()
+              let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
+              if (appInstanceList.length === 0) {
+                  this.setState({
+                      isNoData: true,
+                  })
+              }*/
 
-            //fixme: fakeData22222222222
-            //fixme: fakeData22222222222
-            //fixme: fakeData22222222222
             //fixme: fakeData22222222222
             //fixme: fakeData
             let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
@@ -465,17 +468,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             }
             let allClusterUsageList = []
-            /*try {
-                allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
-            } catch (e) {
+            /* try {
+                 allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
+             } catch (e) {
 
-            }*/
+             }*/
 
-            //fixme: fakeData22222222222
-            //fixme: fakeData22222222222
-            //fixme: fakeData22222222222
-            //fixme: fakeData22222222222
-            //fixme: fakeData22222222222
             //fixme: fakeData22222222222
             //fixme: fakeData22222222222
             //fixme: fakeData22222222222
@@ -981,6 +979,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*todo:---------------------------------*/}
                     <div className='page_monitoring_container' style={{height: '400px'}}>
                         <BubbleChartWrapper
+                            loading={this.state.loading}
                             parent={this}
                             currentHardwareType={this.state.currentHardwareType}
                             bubbleChartData={this.state.bubbleChartData}
@@ -1513,16 +1512,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {this.state.intervalLoading &&
                         <div>
                             <div style={{marginLeft: 15}}>
-                                <CircularProgress style={{
-                                    color: this.state.currentClassification === CLASSIFICATION.APPINST ? 'grey' : 'green',
-                                    zIndex: 9999999,
-                                    fontSize: 10
-                                }}
-                                                  size={20}/>
+                                <CircularProgress
+                                    style={{
+                                        color: this.state.currentClassification === CLASSIFICATION.APPINST ? 'grey' : 'green',
+                                        zIndex: 9999999,
+                                        fontSize: 10
+                                    }}
+                                    size={20}
+                                />
                             </div>
                         </div>
                         }
-
 
                     </div>
                 </Grid.Row>
@@ -1769,19 +1769,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         </Select>
                                     </div>
                                 </>
-                                {/* <div style={{marginLeft: 50}}>
-                                    <MButton
-                                        title={'sdflk'} style={{backgroundColor: 'green', color: 'white'}}
-                                        onClick={() => {
-                                            this.context.Loading()
-                                        }}
-                                    >
-                                        toggleLoading!!!!58695886
-                                    </MButton>
-
-                                    {this.context.loading && <CircularProgress color={'red'} style={{color: 'red'}}/>}
-
-                                </div>*/}
                             </>
                         </div>
                     </div>
