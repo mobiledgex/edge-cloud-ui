@@ -1570,7 +1570,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
         }
 
-        renderSelectBoxRow(context) {
+        renderSelectBoxRow() {
             return (
                 <div className='page_monitoring_select_row'>
                     <div className='page_monitoring_select_area'>
@@ -1623,163 +1623,153 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:---------------------------*/}
                         {/*todo:Dropdown #2nd row          */}
                         {/*todo:---------------------------*/}
-                        <div className="page_monitoring_dropdown_box" style={{
-                            display: 'flex',
-                            marginTop: 15,
-                            marginLeft: -10,
-                            backgroundColor: 'transparent',
-                            width: '100%'
-                        }}>
 
-                            <>
-                                <div className="page_monitoring_dropdown_label" style={{marginLeft: 10,}}>
-                                    Add Item
-                                </div>
-                                <div style={{marginBottom: 0,}}>
-                                    <Select
-                                        placeholder="Select Item"
-                                        //defaultValue=''
-                                        style={{width: 190, marginBottom: 10, marginLeft: 5}}
-                                        onSelect={async (value) => {
-                                            await this.addGridItem(value, value)
-                                            showToast('added ' + value + " item!!")
-                                        }}
-                                    >
-                                        {ADD_ITEM_LIST.map(item => {
-                                            return (
-                                                <Option value={item.value}>{item.text}</Option>
-                                            )
-                                        })}
-                                    </Select>
-
-                                </div>
-                                <div className="page_monitoring_dropdown_label" style={{marginLeft: 25,}}>
-                                    Add Line Chart
-                                </div>
-                                <div style={{marginBottom: 0,}}>
-                                    <Select
-                                        placeholder="Select Item"
-                                        //defaultValue=''
-                                        style={{width: 190, marginBottom: 10, marginLeft: 5}}
-                                        onSelect={async (value) => {
-                                            //alert(value)
-                                            await this.addGridItem(value, GRID_ITEM_TYPE.LINE)
-                                            showToast('added ' + value + " item!!")
-                                        }}
-                                    >
-                                        {this.renderAddItemSelectOptions()}
-                                    </Select>
-
-                                </div>
-
-                                {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
-                                <>
-                                    <div className="page_monitoring_dropdown_label" style={{marginLeft: 25,}}>
-                                        Add Bar Chart
-                                    </div>
-                                    <div style={{marginBottom: 0,}}>
-                                        <Select
-                                            placeholder="Select Item"
-                                            //defaultValue=''
-                                            style={{width: 190, marginBottom: 10, marginLeft: 5}}
-                                            onSelect={async (value) => {
-                                                //alert(value)
-                                                await this.addGridItem(value, GRID_ITEM_TYPE.BAR)
-                                                showToast('added ' + value + " item!!")
-                                            }}
-                                        >
-                                            {this.renderAddItemSelectOptions()}
-                                        </Select>
-
-                                    </div>
-                                </>
-                                }
-                                {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
-                                <>
-                                    <div className="page_monitoring_dropdown_label" style={{marginLeft: 25,}}>
-                                        Add Column Chart
-                                    </div>
-                                    <div style={{marginBottom: 0,}}>
-                                        <Select
-                                            placeholder="Select Item"
-                                            //defaultValue=''
-                                            style={{width: 190, marginBottom: 10, marginLeft: 5}}
-                                            onSelect={async (value) => {
-                                                //alert(value)
-                                                await this.addGridItem(value, GRID_ITEM_TYPE.COLUMN)
-                                                showToast('added ' + value + " item!!")
-                                            }}
-                                        >
-                                            {this.renderAddItemSelectOptions()}
-                                        </Select>
-
-                                    </div>
-                                </>
-                                }
-
-                                <>
-                                    <div className="page_monitoring_dropdown_label" style={{marginLeft: 25,}}>
-                                        Theme
-                                    </div>
-                                    <div style={{marginBottom: 0,}}>
-                                        <Select
-                                            placeholder="Select Theme"
-                                            defaultValue={this.state.themeTitle}
-                                            style={{width: 190, marginBottom: 10, marginLeft: 5}}
-                                            onSelect={async (value) => {
-
-                                                await this.setState({
-                                                    themeTitle: value,
-                                                })
-                                                this.handleThemeChanges(value)
-                                                let selectedChartColorList = [];
-                                                if (value === THEME_OPTIONS.EUNDEW) {
-                                                    selectedChartColorList = CHART_COLOR_LIST;
-                                                }
-                                                if (value === THEME_OPTIONS.BLUE) {
-                                                    selectedChartColorList = CHART_COLOR_LIST2;
-                                                }
-                                                if (value === THEME_OPTIONS.GREEN) {
-                                                    selectedChartColorList = CHART_COLOR_LIST3;
-                                                }
-                                                if (value === THEME_OPTIONS.RED) {
-                                                    selectedChartColorList = CHART_COLOR_LIST4;
-                                                }
-
-                                                if (value === THEME_OPTIONS.MONOKAI) {
-                                                    selectedChartColorList = CHART_COLOR_MONOKAI;
-                                                }
-
-                                                if (value === THEME_OPTIONS.APPLE) {
-                                                    selectedChartColorList = CHART_COLOR_APPLE;
-                                                }
-
-                                                reactLocalStorage.setObject(getUserId() + "_mon_theme", selectedChartColorList)
-                                                reactLocalStorage.set(getUserId() + "_mon_theme_title", value)
-
-
-                                                //alert(reactLocalStorage.getObject(getUserId() + "_mon_theme"))
-                                            }}
-                                        >
-
-                                            {this.state.themeOptions.map((item, index) => {
-                                                return (
-                                                    <Option key={index} value={item.value}>{item.text}</Option>
-                                                )
-                                            })}
-
-                                            {/*<Option value='theme5'>theme5</Option>
-                                            <Option value='theme6'>theme6</Option>
-                                            <Option value='theme7'>theme7</Option>*/}
-
-                                        </Select>
-                                    </div>
-                                </>
-                            </>
-                        </div>
                     </div>
 
                 </div>
+
+            )
+        }
+
+        renderSelectBoxRow2nd() {
+            return (
+                <div className='page_monitoring_select_row'>
+                    <div className='page_monitoring_select_area'>
+                        <>
+                            <div className="page_monitoring_dropdown_box">
+                                <div className="page_monitoring_dropdown_label">
+                                    Add Item
+                                </div>
+                                <Dropdown
+                                    placeholder="Select Item"
+                                    selection
+                                    loading={this.state.loading}
+                                    onChange={async (e, {value}) => {
+                                        await this.addGridItem(value, value)
+                                        showToast('added ' + value + " item!!")
+                                    }}
+                                    style={PageMonitoringStyles.dropDown2}
+
+                                    options={ADD_ITEM_LIST}
+                                />
+                            </div>
+                            <div className="page_monitoring_dropdown_label" style={{marginLeft: 0,}}>
+                                Add Line Chart
+                            </div>
+                            <div style={{marginBottom: 0,}}>
+                                <Dropdown
+                                    placeholder="Select Item"
+                                    selection
+                                    loading={this.state.loading}
+                                    onChange={async (e, {value}) => {
+                                        //alert(value)
+                                        await this.addGridItem(value, GRID_ITEM_TYPE.LINE)
+                                        showToast('added ' + value + " item!!")
+                                    }}
+                                    options={this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.state.hwListForCluster : this.state.hwListForAppInst}
+                                />
+                            </div>
+
+                            {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
+                            <>
+                                <div className="page_monitoring_dropdown_label" style={{marginLeft: 0,}}>
+                                    Add Bar Chart
+                                </div>
+                                <Dropdown
+                                    placeholder="Select Item"
+                                    selection
+                                    loading={this.state.loading}
+                                    onChange={async (e, {value}) => {
+                                        //alert(value)
+                                        await this.addGridItem(value, GRID_ITEM_TYPE.BAR)
+                                        showToast('added ' + value + " item!!")
+                                    }}
+                                    options={this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.state.hwListForCluster : this.state.hwListForAppInst}
+                                />
+                            </>
+                            }
+                            {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
+                            <>
+                                <div className="page_monitoring_dropdown_label" style={{marginLeft: 0,}}>
+                                    Add Column Chart
+                                </div>
+                                <Dropdown
+                                    placeholder="Select Item"
+                                    selection
+                                    loading={this.state.loading}
+                                    onChange={async (e, {value}) => {
+                                        //alert(value)
+                                        await this.addGridItem(value, GRID_ITEM_TYPE.COLUMN)
+                                        showToast('added ' + value + " item!!")
+                                    }}
+                                    options={this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.state.hwListForCluster : this.state.hwListForAppInst}
+                                />
+
+                            </>
+                            }
+
+                            <>
+                                <div className="page_monitoring_dropdown_label" style={{marginLeft: 0,}}>
+                                    Theme
+                                </div>
+                                <div style={{marginBottom: 0,}}>
+                                    <Select
+                                        placeholder="Select Theme"
+                                        defaultValue={this.state.themeTitle}
+                                        style={{width: 190, marginBottom: 10, marginLeft: 5}}
+                                        onSelect={async (value) => {
+
+                                            await this.setState({
+                                                themeTitle: value,
+                                            })
+                                            this.handleThemeChanges(value)
+                                            let selectedChartColorList = [];
+                                            if (value === THEME_OPTIONS.EUNDEW) {
+                                                selectedChartColorList = CHART_COLOR_LIST;
+                                            }
+                                            if (value === THEME_OPTIONS.BLUE) {
+                                                selectedChartColorList = CHART_COLOR_LIST2;
+                                            }
+                                            if (value === THEME_OPTIONS.GREEN) {
+                                                selectedChartColorList = CHART_COLOR_LIST3;
+                                            }
+                                            if (value === THEME_OPTIONS.RED) {
+                                                selectedChartColorList = CHART_COLOR_LIST4;
+                                            }
+
+                                            if (value === THEME_OPTIONS.MONOKAI) {
+                                                selectedChartColorList = CHART_COLOR_MONOKAI;
+                                            }
+
+                                            if (value === THEME_OPTIONS.APPLE) {
+                                                selectedChartColorList = CHART_COLOR_APPLE;
+                                            }
+
+                                            reactLocalStorage.setObject(getUserId() + "_mon_theme", selectedChartColorList)
+                                            reactLocalStorage.set(getUserId() + "_mon_theme_title", value)
+
+
+                                            //alert(reactLocalStorage.getObject(getUserId() + "_mon_theme"))
+                                        }}
+                                    >
+
+                                        {this.state.themeOptions.map((item, index) => {
+                                            return (
+                                                <Option key={index} value={item.value}>{item.text}</Option>
+                                            )
+                                        })}
+
+                                        {/*<Option value='theme5'>theme5</Option>
+                                            <Option value='theme6'>theme6</Option>
+                                            <Option value='theme7'>theme7</Option>*/}
+
+                                    </Select>
+                                </div>
+                            </>
+                        </>
+                    </div>
+                </div>
+
 
             )
         }
@@ -1846,7 +1836,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <SemanticToastContainer position={"top-right"}/>
                                     {this.renderHeader()}
                                     <div style={{marginTop: 30, marginLeft: 30}}>
-                                        {this.renderSelectBoxRow(context)}
+                                        {this.renderSelectBoxRow()}
+                                        {this.renderSelectBoxRow2nd()}
                                     </div>
                                     <Grid.Row className='site_content_body' style={{marginTop: -10, overflowY: 'auto'}}>
                                         <div style={{}}>
