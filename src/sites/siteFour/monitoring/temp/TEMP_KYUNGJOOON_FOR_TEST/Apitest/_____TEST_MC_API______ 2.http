@@ -114,8 +114,7 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODI4NTU2O
                     "name": "MobiledgeX"
                 },
                 "name": "MobiledgeX SDK Demo",
-                "version": "1
-                .0"
+                "version": "2.0"
             },
             "cluster_inst_key": {
                 "cluster_key": {

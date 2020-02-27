@@ -82,6 +82,7 @@ import PieChartWrapper from "./PieChartWrapper";
 import BigModalGraph from "./BigModalGraph";
 import type {AppContextInterface, MonitoringContextInterface,} from "../PageMonitoringGlobalState";
 import {AppConsumer, MonitoringConsumer} from "../PageMonitoringGlobalState";
+import BubbleChartWrapper from "./BubbleChartWrapper";
 
 const {Option} = Select;
 
@@ -231,15 +232,16 @@ type State = {
     themeTitle: string,
     addItemList: any,
     themeOptions: any,
-    isNoData:boolean,
+    isNoData: boolean,
+    isBubbleChartMaked: boolean,
 
 }
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class PageDevMonitoring extends Component<Props, State> {
         intervalForAppInst = null;
-
         context: MonitoringContextInterface;
+        gridItemHeight = 420;
 
         constructor(props) {
             super(props);
@@ -376,6 +378,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 themeTitle: isEmpty(reactLocalStorage.get(themeTitle)) ? 'EUNDEW' : reactLocalStorage.get(themeTitle),
                 addItemList: ADD_ITEM_LIST,
                 themeOptions: THEME_OPTIONS_LIST,
+                isBubbleChartMaked: false,
             };
         }
 
@@ -1017,8 +1020,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*todo:---------------------------------*/}
                     {/*todo: RENDER BUBBLE          */}
                     {/*todo:---------------------------------*/}
-                    <div className='page_monitoring_container'>
-                        {this.state.bubbleChartLoader ? renderPlaceHolderCircular() : renderBubbleChartCoreForDev_Cluster(this, this.state.currentHardwareType, this.state.bubbleChartData, this.state.themeTitle)}
+                    <div className='page_monitoring_container' style={{height: '400px'}}>
+                        <BubbleChartWrapper
+                                            parent={this}
+                                            currentHardwareType={this.state.currentHardwareType}
+                                            bubbleChartData={this.state.bubbleChartData}
+                                            themeTitle={this.state.themeTitle}/>
                     </div>
                 </div>
             )
@@ -1291,7 +1298,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             });
         }
 
-        gridItemHeight= 360;
 
         __makeGridItemOne(uniqueIndex, hwType, graphType, item,) {
             return (
@@ -1814,7 +1820,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         </Select>
                                     </div>
                                 </>
-                               {/* <div style={{marginLeft: 50}}>
+                                {/* <div style={{marginLeft: 50}}>
                                     <MButton
                                         title={'sdflk'} style={{backgroundColor: 'green', color: 'white'}}
                                         onClick={() => {
@@ -1871,7 +1877,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 <MonitoringConsumer>
                     {(context: MonitoringContextInterface) => (
                         <div
-                            style={{width: '100%', height: '100%', }}
+                            style={{width: '100%', height: '100%',}}
                             ref={() => this.context = context}
                         >
                             <ModalGraph selectedClusterUsageOne={this.state.selectedClusterUsageOne}
@@ -1900,7 +1906,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <div style={{marginTop: 30, marginLeft: 30}}>
                                         {this.renderSelectBoxRow()}
                                     </div>
-                                    <Grid.Row className='site_content_body' style={{marginTop: -10,overflowY:'auto'}}>
+                                    <Grid.Row className='site_content_body' style={{marginTop: -10, overflowY: 'auto'}}>
                                         <div style={{}}>
                                             <div className="page_monitoring"
                                                  style={{backgroundColor: 'transparent', height: 3250}}>

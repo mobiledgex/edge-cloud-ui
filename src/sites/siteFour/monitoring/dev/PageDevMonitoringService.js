@@ -674,7 +674,7 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
             if (appInstanceListLength <= 4) {
                 return 0.5;
             } else {
-                return 0.70;
+                return 0.6;
             }
         }
 
@@ -693,14 +693,16 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
 
 
         return (
-            <div style={{display: 'flex', flexDirection: 'row'}}>
+            <>
                 <div style={{
                     //backgroundColor: 'blue',
                     backgroundColor: '#1e2124',
+                    height:450,
                     // marginLeft: 0, marginRight: 0, marginBottom: 10,
                 }}>
                     <BubbleChart
                         className='bubbleChart'
+                        style={{height:300,}}
                         graph={{
                             zoom: renderZoomLevel(appInstanceList.length),
                             //zoom: 0.70,
@@ -709,7 +711,7 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
                         }}
                         themeTitle={themeTitle}
                         width={boxWidth}
-                        height={'100%'}
+                        height={350}
                         padding={0} // optional value, number that set the padding between bubbles
                         showLegend={true} // optional value, pass false to disable the legend.
                         legendPercentage={20} // number that represent the % of with that legend going to use.
@@ -757,7 +759,7 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
 
                 </div>
 
-            </div>
+            </>
         )
     }
 
