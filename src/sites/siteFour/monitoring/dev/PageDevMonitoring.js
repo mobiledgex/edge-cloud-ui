@@ -9,9 +9,8 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {Button as MButton, CircularProgress} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
-import {Checkbox, DatePicker, Select,} from 'antd';
+import {Checkbox, DatePicker, Popover, Select,} from 'antd';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
-import RoomIcon from '@material-ui/icons/Room';
 
 import {
     defaultHwMapperListForCluster,
@@ -21,6 +20,7 @@ import {
     filterUsageByClassification,
     getUserId,
     handleHardwareTabChanges,
+    makeAllLineChartData,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
     makeid,
@@ -29,8 +29,6 @@ import {
     makeSelectBoxListWithKeyValuePipe,
     makeSelectBoxListWithThreeValuePipe,
     renderPerformanceSummaryTable,
-    renderBubbleChartCoreForDev_Cluster,
-    renderLineChartCoreForDev, makeLineChartDataForAppInstAll, makeAllLineChartData,
 } from "./PageDevMonitoringService";
 import {
     ADD_ITEM_LIST,
@@ -59,24 +57,8 @@ import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import '../PageMonitoring.css'
 
-import {
-    getOneYearStartEndDatetime,
-    isEmpty,
-    makeBubbleChartDataForCluster,
-    noDataArea,
-    PageMonitoringStyles,
-    renderBarChartCore,
-    renderLoaderArea,
-    renderPlaceHolderCircular,
-    showToast
-} from "../PageMonitoringCommonService";
-import {
-    getAppInstList,
-    getAppLevelUsageList,
-    getCloudletList,
-    getClusterLevelUsageList,
-    getClusterList
-} from "../PageMonitoringMetricService";
+import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, PageMonitoringStyles, renderLoaderArea, showToast} from "../PageMonitoringCommonService";
+import {getAppLevelUsageList} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraph from "../components/ModalGraph";
@@ -86,11 +68,12 @@ import {Responsive, WidthProvider} from "react-grid-layout";
 import _ from "lodash";
 import PieChartWrapper from "../components/PieChartWrapper";
 import BigModalGraph from "../components/BigModalGraph";
-import type {AppContextInterface, MonitoringContextInterface,} from "../PageMonitoringGlobalState";
-import {AppConsumer, MonitoringConsumer} from "../PageMonitoringGlobalState";
+import type {MonitoringContextInterface,} from "../PageMonitoringGlobalState";
+import {MonitoringConsumer} from "../PageMonitoringGlobalState";
 import BubbleChartWrapper from "../components/BubbleChartWrapper";
 import BarChartWrapper from "../components/BarChartWrapper";
 import LineChartWrapper from "../components/LineChartWrapper";
+import {notification, Button as AButton} from "antd";
 
 const {Option} = Select;
 
@@ -390,8 +373,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             };
         }
 
-        componentDidMount = async () => {
 
+        componentDidMount = async () => {
+            /*  notification.info({
+                  message: 'To release or freeze a grid item,, double click the item!',
+                  placement: 'topLeft',
+                  top:100,
+              });*/
             this.setState({
                 loading: true,
                 bubbleChartLoader: true,
@@ -1268,10 +1256,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                      onClick={() => {
                          //alert('sdlkfdslkf')
                      }}
-                     onDoubleClick={() => {
-                         /*this.setState({
-                             isDraggable: !this.state.isDraggable
-                         })*/
+                     onDoubleClick={async () => {
+                         await this.setState({
+                             isDraggable: !this.state.isDraggable,
+                             appInstanceListGroupByCloudlet: [],
+                         })
+                         this.setState({
+                             appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
+                         });
                      }}
                 >
                     <div className='page_monitoring_column_kyungjoon1' style={{height: this.gridItemHeight}}>
@@ -1461,23 +1453,33 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }}
                         >Reset
                         </Button>
-                        <MButton
-                            style={{
-                                backgroundColor: !this.state.isDraggable ? 'green' : 'rgba(117,122,133,1)',
-                                color: 'white',
-                                height: 36
-                            }}
-                            onClick={async () => {
-                                await this.setState({
-                                    isDraggable: !this.state.isDraggable,
-                                    appInstanceListGroupByCloudlet: [],
-                                })
-                                this.setState({
-                                    appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
-                                });
-                            }}
-                        >Fix Grid
-                        </MButton>
+                        <Popover
+                            title={
+                                <div>
+                                    <p>To release or freeze a grid item, double click grid item!</p>
+                                </div>
+                            }
+                        >
+                            <AButton
+                                style={{
+                                    borderColor: !this.state.isDraggable ? 'green' : 'rgba(117,122,133,1)',
+                                    backgroundColor: !this.state.isDraggable ? 'green' : 'rgba(117,122,133,1)',
+                                    color: 'white',
+                                    height: 35,
+                                }}
+                                onClick={async () => {
+                                    await this.setState({
+                                        isDraggable: !this.state.isDraggable,
+                                        appInstanceListGroupByCloudlet: [],
+                                    })
+                                    this.setState({
+                                        appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
+                                    });
+                                }}
+                                type="primary">
+                                Fix Grid
+                            </AButton>
+                        </Popover>
                         <Button
                             onClick={async () => {
                                 this.resetGridPosition();
