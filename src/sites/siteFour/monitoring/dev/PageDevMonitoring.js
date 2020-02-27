@@ -1018,7 +1018,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </div>
                     </div>
                     {/*todo:---------------------------------*/}
-                    {/*todo: RENDER BUBBLE          */}
+                    {/*todo: BubbleChartWrapper              */}
                     {/*todo:---------------------------------*/}
                     <div className='page_monitoring_container' style={{height: '400px'}}>
                         <BubbleChartWrapper
