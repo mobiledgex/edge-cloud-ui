@@ -1871,7 +1871,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 <MonitoringConsumer>
                     {(context: MonitoringContextInterface) => (
                         <div
-                            style={{width: '100%', height: '100%', overflowY: 'auto'}}
+                            style={{width: '100%', height: '100%', }}
                             ref={() => this.context = context}
                         >
                             <ModalGraph selectedClusterUsageOne={this.state.selectedClusterUsageOne}
@@ -1900,8 +1900,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <div style={{marginTop: 30, marginLeft: 30}}>
                                         {this.renderSelectBoxRow()}
                                     </div>
-                                    <Grid.Row className='site_content_body' style={{marginTop: -10,}}>
-                                        <div style={{overflowY: 'auto'}}>
+                                    <Grid.Row className='site_content_body' style={{marginTop: -10,overflowY:'auto'}}>
+                                        <div style={{}}>
                                             <div className="page_monitoring"
                                                  style={{backgroundColor: 'transparent', height: 3250}}>
                                                 <div className='page_monitoring_dashboard_kyungjoon' style={{}}>
