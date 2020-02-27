@@ -292,7 +292,7 @@ export const HARDWARE_OPTIONS = [
 ]
 
 export const HARDWARE_OPTIONS_FOR_APPINST = [
-    {text: 'ALL', value: 'ALL'},
+    //{text: 'ALL', value: 'ALL'},
     {text: 'CPU', value: 'CPU'},
     {text: 'MEM', value: 'MEM'},
     {text: 'DISK', value: 'DISK'},

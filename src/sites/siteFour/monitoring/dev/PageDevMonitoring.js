@@ -1835,23 +1835,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     {/*todo:---------------------------------*/}
                                     <SemanticToastContainer position={"top-right"}/>
                                     {this.renderHeader()}
-                                    <div style={{marginTop: 30, marginLeft: 30}}>
+                                    <div style={{marginTop: 30, marginLeft: 30, marginBottom: 0}}>
                                         {this.renderSelectBoxRow()}
                                         {this.renderSelectBoxRow2nd()}
                                     </div>
-                                    <Grid.Row className='site_content_body' style={{marginTop: -10, overflowY: 'auto'}}>
-                                        <div style={{}}>
-                                            <div className="page_monitoring"
-                                                 style={{backgroundColor: 'transparent', height: 3250}}>
-                                                <div className='page_monitoring_dashboard_kyungjoon' style={{}}>
-                                                    {this.state.currentClassification === CLASSIFICATION.CLUSTER
-                                                        ? this.renderGridLayoutForCluster(context)
-                                                        : this.renderGridLayoutForAppInst()
-                                                    }
-                                                </div>
+                                    <Grid.Row className='site_content_body' style={{overflowY: 'auto', marginTop: -20}}>
+                                        <div className="page_monitoring" style={{backgroundColor: 'transparent', height: 3250}}>
+                                            <div className='page_monitoring_dashboard_kyungjoon' style={{}}>
+                                                {this.state.currentClassification === CLASSIFICATION.CLUSTER
+                                                    ? this.renderGridLayoutForCluster(context)
+                                                    : this.renderGridLayoutForAppInst()
+                                                }
                                             </div>
                                         </div>
-
                                     </Grid.Row>
                                 </Grid.Column>
                             </Grid.Row>
