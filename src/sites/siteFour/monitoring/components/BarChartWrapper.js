@@ -61,7 +61,7 @@ export default class BarChartWrapper extends React.Component<Props, State> {
                         </div>
                     </div>
                     <div className='page_monitoring_container'>
-                        {renderBarChartCore(this.state.chartDataSet.chartDataList, this.state.chartDataSet.hardwareType, this, this.state.graphType)}
+                        {this.props.loading ? renderPlaceHolderCircular() :renderBarChartCore(this.state.chartDataSet.chartDataList, this.state.chartDataSet.hardwareType, this, this.state.graphType)}
                     </div>
                 </div>
             </div>

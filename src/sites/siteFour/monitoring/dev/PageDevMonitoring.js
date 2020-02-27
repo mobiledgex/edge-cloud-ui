@@ -583,7 +583,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 console.log('filteredAppInstUsageList===222222>', lineChartDataSet)
             }
             return (
-                <LineChartWrapper currentClassification={this.state.currentClassification} parent={this}
+                <LineChartWrapper loading={this.state.loading} currentClassification={this.state.currentClassification} parent={this}
                                   pHardwareType={hwType} chartDataSet={lineChartDataSet}/>
             )
         }
@@ -602,7 +602,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
 
             return (
-                <BarChartWrapper parent={this} chartDataSet={barChartDataSet} pHardwareType={hwType} graphType={graphType}/>
+                <BarChartWrapper parent={this} loading={this.state.loading} chartDataSet={barChartDataSet} pHardwareType={hwType} graphType={graphType}/>
             )
         }
 
@@ -850,7 +850,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredAppInstUsageList: allAppInstUsageList,
                 loading: false,
                 currentAppInst: pCurrentAppInst,
-                currentCluster: currentCluster,
+                //currentCluster: currentCluster,
+                currentCluster: '',
+                clusterSelectBoxPlaceholder:'Select cluster'
                 //clusterSelectBoxPlaceholder: 'Select Cluster'
             }, () => {
                 //alert(this.state.currentClassification)
@@ -1003,7 +1005,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }}>
                                 Deployed Instance
                             </div>
-                            <div style={{flex: .4, marginRight: 70}}>
+                           {/* <div style={{flex: .4, marginRight: 70}}>
                                 <MButton style={{
                                     height: 30,
                                     backgroundColor: !this.state.gridDraggable ? 'green' : 'grey',
@@ -1021,12 +1023,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                              })
                                          }}>
 
-                                    {/*@todo:RoomIcon*/}
-                                    {/*@todo:RoomIcon*/}
-                                    {/*@todo:RoomIcon*/}
+                                    @todo:RoomIcon
+                                    @todo:RoomIcon
+                                    @todo:RoomIcon
                                     <RoomIcon color={'white'}/>
                                 </MButton>
-                            </div>
+                            </div>*/}
 
                         </div>
 
@@ -1471,17 +1473,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }}
                         >Restore to Default Grid View
                         </Button>
-                        {/*
-                        <Button
-                            onClick={async () => {
-                                let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-                                let savedlayoutKey = store.email + "_layout"
-                                reactLocalStorage.remove(savedlayoutKey)
-                            }}
-                        >remove
-                        </Button>*/}
-
-
                         {this.state.currentClassification === CLASSIFICATION.APPINST &&
                         <div>
                             <MButton

@@ -51,7 +51,6 @@ export default class LineChartWrapper extends React.Component<Props, State> {
     }
 
 
-
     render() {
         return (
             <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
@@ -66,7 +65,7 @@ export default class LineChartWrapper extends React.Component<Props, State> {
                         </div>
                     </div>
                     <div className='page_monitoring_container'>
-                        {renderLineChartCoreForDev(this.props.parent, this.state.chartDataSet)}
+                        {this.props.loading ? renderPlaceHolderCircular() : renderLineChartCoreForDev(this.props.parent, this.state.chartDataSet)}
                     </div>
                 </div>
             </div>
