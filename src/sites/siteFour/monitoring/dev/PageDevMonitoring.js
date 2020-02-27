@@ -1152,7 +1152,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        makeGridItemOneByType(hwType, graphType) {
+        __makeGridItemOneByType(hwType, graphType) {
 
             if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                 return (
@@ -1264,15 +1264,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                          //alert('sdlkfdslkf')
                      }}
                      onDoubleClick={() => {
-                         this.setState({
+                         /*this.setState({
                              isDraggable: !this.state.isDraggable
-                         })
+                         })*/
                      }}
                 >
                     <div className='page_monitoring_column_kyungjoon1' style={{height: this.gridItemHeight}}>
-                        {/*@todo:makeGridItemOneByType      */}
-                        {/*@todo:makeGridItemOneByType      */}
-                        {this.makeGridItemOneByType(hwType, graphType.toUpperCase())}
+                        {/*@todo:__makeGridItemOneByType      */}
+                        {/*@todo:__makeGridItemOneByType      */}
+                        {this.__makeGridItemOneByType(hwType, graphType.toUpperCase())}
                     </div>
 
                     <div className="remove"
