@@ -1291,6 +1291,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             });
         }
 
+        gridItemHeight= 360;
+
         __makeGridItemOne(uniqueIndex, hwType, graphType, item,) {
             return (
                 <div key={uniqueIndex} data-grid={item} style={{margin: 5, backgroundColor: 'black'}}
@@ -1303,7 +1305,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                          })
                      }}
                 >
-                    <div className='page_monitoring_column_kyungjoon1' style={{height: 450}}>
+                    <div className='page_monitoring_column_kyungjoon1' style={{height: this.gridItemHeight}}>
                         {/*@todo:makeGridItemOneByType      */}
                         {/*@todo:makeGridItemOneByType      */}
                         {this.makeGridItemOneByType(hwType, graphType.toUpperCase())}
@@ -1367,7 +1369,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     className={'layout'}
                     cols={{lg: 3, md: 3, sm: 3, xs: 3, xxs: 3}}
                     layout={this.state.layoutForCluster}
-                    rowHeight={470}
+                    rowHeight={this.gridItemHeight}
                     onLayoutChange={(layout) => {
                         this.setState({
                             layoutForCluster: layout,
@@ -1409,7 +1411,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         className={'layout'}
                         cols={{lg: 3, md: 3, sm: 3, xs: 3, xxs: 3}}
                         layout={this.state.layoutForAppInst}
-                        rowHeight={470}
+                        rowHeight={this.gridItemHeight}
                         onLayoutChange={async (layout) => {
                             await this.setState({
                                 layoutForAppInst: layout
@@ -1812,14 +1814,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         </Select>
                                     </div>
                                 </>
-                              {/*  <div style={{marginLeft: 50}}>
+                               {/* <div style={{marginLeft: 50}}>
                                     <MButton
                                         title={'sdflk'} style={{backgroundColor: 'green', color: 'white'}}
                                         onClick={() => {
-                                            this.context.toggleLoading()
+                                            this.context.Loading()
                                         }}
                                     >
-                                        toggleLoading!aasd고경준천재님이십니sdflksdlk
+                                        toggleLoading!!!!58695886
                                     </MButton>
 
                                     {this.context.loading && <CircularProgress color={'red'} style={{color: 'red'}}/>}
@@ -1898,7 +1900,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <div style={{marginTop: 30, marginLeft: 30}}>
                                         {this.renderSelectBoxRow()}
                                     </div>
-                                    <Grid.Row className='site_content_body' style={{marginTop: -10, overflowY: 'auto'}}>
+                                    <Grid.Row className='site_content_body' style={{marginTop: -10,}}>
                                         <div style={{overflowY: 'auto'}}>
                                             <div className="page_monitoring"
                                                  style={{backgroundColor: 'transparent', height: 3250}}>
