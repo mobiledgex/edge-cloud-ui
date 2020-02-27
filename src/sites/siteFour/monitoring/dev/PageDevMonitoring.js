@@ -583,7 +583,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 console.log('filteredAppInstUsageList===222222>', lineChartDataSet)
             }
             return (
-                <LineChartWrapper loading={this.state.loading} currentClassification={this.state.currentClassification} parent={this}
+                <LineChartWrapper loading={this.state.loading} currentClassification={this.state.currentClassification}
+                                  parent={this}
                                   pHardwareType={hwType} chartDataSet={lineChartDataSet}/>
             )
         }
@@ -602,7 +603,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
 
             return (
-                <BarChartWrapper parent={this} loading={this.state.loading} chartDataSet={barChartDataSet} pHardwareType={hwType} graphType={graphType}/>
+                <BarChartWrapper parent={this} loading={this.state.loading} chartDataSet={barChartDataSet}
+                                 pHardwareType={hwType} graphType={graphType}/>
             )
         }
 
@@ -852,7 +854,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentAppInst: pCurrentAppInst,
                 //currentCluster: currentCluster,
                 currentCluster: '',
-                clusterSelectBoxPlaceholder:'Select cluster'
+                clusterSelectBoxPlaceholder: 'Select cluster'
                 //clusterSelectBoxPlaceholder: 'Select Cluster'
             }, () => {
                 //alert(this.state.currentClassification)
@@ -946,7 +948,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 disabled={this.state.bubbleChartLoader}
                                 clearable={this.state.regionSelectBoxClearable}
                                 placeholder='SELECT HARDWARE'
-                                 selection
+                                selection
                                 loading={this.state.bubbleChartLoader}
                                 options={HARDWARE_OPTIONS_FOR_CLUSTER}
                                 defaultValue={HARDWARE_OPTIONS_FOR_CLUSTER[0].value}
@@ -1005,7 +1007,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }}>
                                 Deployed Instance
                             </div>
-                           {/* <div style={{flex: .4, marginRight: 70}}>
+                            {/* <div style={{flex: .4, marginRight: 70}}>
                                 <MButton style={{
                                     height: 30,
                                     backgroundColor: !this.state.gridDraggable ? 'green' : 'grey',
@@ -1296,6 +1298,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     </div>
 
                     {/*todo:maxize button*/}
+                    {graphType.toUpperCase() !== GRID_ITEM_TYPE.BUBBLE &&
                     <div className="maxize"
                          onClick={this.showBigModal.bind(this, hwType, graphType)}
                          style={{
@@ -1314,6 +1317,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     >
                         <FullscreenIcon color="primary" style={{color: 'white', fontSize: 25}}/>
                     </div>
+
+                    }
+
                 </div>
             )
         }
