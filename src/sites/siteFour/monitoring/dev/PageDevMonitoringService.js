@@ -391,7 +391,7 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageD
     }
 }
 
-export const renderBottomGridTableList = (_this: PageDevMonitoring, pClusterList) => {
+export const renderPerformanceSummaryTable = (_this: PageDevMonitoring, pClusterList) => {
 
     //pClusterList
     pClusterList = sortUsageListByTypeForCluster(pClusterList, HARDWARE_TYPE.CPU)
@@ -408,7 +408,7 @@ export const renderBottomGridTableList = (_this: PageDevMonitoring, pClusterList
                     flex: .38,
                     marginTop: 5,
                 }}>
-                    Usage List for Cluster
+                    Performance Summary
                 </div>
                 <div style={{flex: .4, marginRight: 70}}>
                 </div>

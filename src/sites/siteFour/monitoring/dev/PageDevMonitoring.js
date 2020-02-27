@@ -28,7 +28,7 @@ import {
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
     makeSelectBoxListWithThreeValuePipe,
-    renderBottomGridTableList,
+    renderPerformanceSummaryTable,
     renderBubbleChartCoreForDev_Cluster,
     renderLineChartCoreForDev,
 } from "./PageDevMonitoringService";
@@ -937,14 +937,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 <div style={{height: '100%'}}>
                     <div className='page_monitoring_title_area' style={{display: 'flex', flexDirection: 'row'}}>
                         <div className='page_monitoring_title_select' style={{flex: .7}}>
-                            Performance status of Cluster hardware
+                            Bubble Chart
                         </div>
                         <div className='page_monitoring_title_select' style={{flex: .2, marginLeft: -10}}>
                             <Dropdown
                                 disabled={this.state.bubbleChartLoader}
                                 clearable={this.state.regionSelectBoxClearable}
                                 placeholder='SELECT HARDWARE'
-                                selection
+                                 selection
                                 loading={this.state.bubbleChartLoader}
                                 options={HARDWARE_OPTIONS_FOR_CLUSTER}
                                 defaultValue={HARDWARE_OPTIONS_FOR_CLUSTER[0].value}
@@ -1001,8 +1001,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 backgroundColor: 'transparent',
                                 flex: .38
                             }}>
-                                Launch status of
-                                the {this.state.currentClassification}
+                                Deployed Instance
                             </div>
                             <div style={{flex: .4, marginRight: 70}}>
                                 <MButton style={{
@@ -1171,9 +1170,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 return (
                     this.renderMapArea()
                 )
-            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLOUDLET_LIST) {
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_LIST) {
                 return (
-                    renderBottomGridTableList(this, this.state.filteredClusterUsageList)
+                    renderPerformanceSummaryTable(this, this.state.filteredClusterUsageList)
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PIE) {
                 return (
@@ -1425,7 +1424,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 <Grid.Row className='content_title'>
                     <div className='content_title_wrap'>
-                        <div className='content_title_label'>Monitoring For Dev</div>
+                        <div className='content_title_label'>Monitoring</div>
                         {/*todo:---------------------------*/}
                         {/*todo:REFRESH, RESET BUTTON DIV  */}
                         {/*todo:---------------------------*/}
@@ -1470,7 +1469,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             onClick={async () => {
                                 this.resetGridPosition();
                             }}
-                        >Reset Grid Position
+                        >Restore to Default Grid View
                         </Button>
                         {/*
                         <Button

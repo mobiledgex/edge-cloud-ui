@@ -113,7 +113,7 @@ export default class BigModalGraph extends React.Component<Props, State> {
                                 fontSize: 35,
                                 flex: .9,
                                 marginLeft: 25,
-                            }}> Launch status of the Cluster
+                            }}> Deployed Instance
                             </div>
                             :
                             <div style={{
@@ -121,7 +121,7 @@ export default class BigModalGraph extends React.Component<Props, State> {
                                 fontSize: 35,
                                 flex: .9,
                                 marginLeft: 25,
-                            }}> {this.props.popupGraphHWType} Usage Of Cluster
+                            }}> Cluster {this.props.popupGraphHWType}
                             </div>
                         }
 

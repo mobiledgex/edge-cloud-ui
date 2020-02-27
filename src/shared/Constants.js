@@ -269,13 +269,13 @@ export const GRID_ITEM_TYPE = {
     MAP: 'MAP',
     TABLE: 'TABLE',
     PIE: 'PIE',
-    CLOUDLET_LIST: 'CLOUDLET_LIST',
+    CLUSTER_LIST: 'CLUSTER_LIST',
 }
 
 export const ADD_ITEM_LIST = [
     {text: 'BUBBLE', value: 'BUBBLE'},
     {text: 'MAP', value: 'MAP'},
-    {text: 'CLOUDLET LIST', value: 'CLOUDLET_LIST'},
+    {text: 'CLUSTER LIST', value: 'CLUSTER_LIST'},
 ]
 
 

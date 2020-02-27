@@ -61,8 +61,7 @@ export default class LineChartWrapper extends React.Component<Props, State> {
                 <div className='page_monitoring_dual_container' style={{flex: 1}}>
                     <div className='page_monitoring_title_area'>
                         <div className='page_monitoring_title'>
-                            {this.state.pHardwareType} Usage
-                            of {convertToClassification(this.props.currentClassification)}}
+                            {convertToClassification(this.props.currentClassification)} {this.state.pHardwareType} Usage
 
                         </div>
                     </div>
