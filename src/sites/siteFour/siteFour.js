@@ -54,7 +54,7 @@ import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
 import PageDevMonitoring from "./monitoring/dev/PageDevMonitoring";
 import PageOperMonitoring from "./monitoring/oper/PageOperMonitoring";
-import PageModalMonitoring from "./monitoring/child_comp/PageModalMonitoring";
+import PageModalMonitoring from "./monitoring/components/PageModalMonitoring";
 import PageAdminMonitoring from "./monitoring/admin/PageAdminMonitoring";
 
 let defaultMotion = {left: window.innerWidth / 2, top: window.innerHeight / 2, opacity: 1}

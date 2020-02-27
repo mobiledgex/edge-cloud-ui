@@ -73,16 +73,18 @@ import {
 import {getAppLevelUsageList} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
-import ModalGraph from "./ModalGraph";
+import ModalGraph from "../components/ModalGraph";
 import {reactLocalStorage} from "reactjs-localstorage";
-import LeafletMapWrapperForDev from "./LeafletMapWrapperForDev";
+import LeafletMapWrapperForDev from "../components/LeafletMapWrapperForDev";
 import {Responsive, WidthProvider} from "react-grid-layout";
 import _ from "lodash";
-import PieChartWrapper from "./PieChartWrapper";
-import BigModalGraph from "./BigModalGraph";
+import PieChartWrapper from "../components/PieChartWrapper";
+import BigModalGraph from "../components/BigModalGraph";
 import type {AppContextInterface, MonitoringContextInterface,} from "../PageMonitoringGlobalState";
 import {AppConsumer, MonitoringConsumer} from "../PageMonitoringGlobalState";
-import BubbleChartWrapper from "./BubbleChartWrapper";
+import BubbleChartWrapper from "../components/BubbleChartWrapper";
+import BarChartWrapper from "../components/BarChartWrapper";
+import LineChartWrapper from "../components/LineChartWrapper";
 
 const {Option} = Select;
 
@@ -571,7 +573,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-        makeLineChartData(hwType,) {
+        makeLineChartData(hwType) {
             let lineChartDataSet: TypeLineChartData = [];
             if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                 lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
@@ -580,7 +582,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
                 console.log('filteredAppInstUsageList===222222>', lineChartDataSet)
             }
-            return this.renderLineChartArea(hwType, lineChartDataSet)
+            return (
+                <LineChartWrapper currentClassification={this.state.currentClassification} parent={this}
+                                  pHardwareType={hwType} chartDataSet={lineChartDataSet}/>
+            )
         }
 
 
@@ -595,7 +600,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             if (barChartDataSet === undefined) {
                 barChartDataSet = []
             }
-            return this.renderBarChartArea(hwType, barChartDataSet, graphType)
+
+            return (
+                <BarChartWrapper parent={this} chartDataSet={barChartDataSet} pHardwareType={hwType} graphType={graphType}/>
+            )
         }
 
 
@@ -605,59 +613,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             } else {
                 return pClassification
             }
-        }
-
-
-        renderLineChartArea(pHardwareType, chartDataSet, graphType = '') {
-            return (
-                <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
-                    {/*@todo:LInechart*/}
-                    {/*@todo:LInechart*/}
-                    {/*@todo:LInechart*/}
-                    <div className='page_monitoring_dual_container' style={{flex: 1}}>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                {pHardwareType} Usage of {this.state.loading ?
-                                <CircularProgress size={9} style={{
-                                    fontSize: 9,
-                                    color: '#77BD25',
-                                    marginLeft: 5,
-                                    marginBottom: 1,
-                                }}/> : this.convertToClassification(this.state.currentClassification)}
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : renderLineChartCoreForDev(this, chartDataSet)}
-                        </div>
-                    </div>
-                </div>
-            )
-        }
-
-        renderBarChartArea(pHardwareType, chartDataSet, graphType) {
-
-            return (
-                <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
-                    <div className='page_monitoring_dual_container' style={{flex: 1}}>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                Top 5 {pHardwareType} usage
-                                of {this.convertToClassification(this.state.currentClassification)}
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() :
-
-                                chartDataSet.length === 0 || chartDataSet.chartDataList.length === 1
-                                    ? noDataArea()
-                                    : renderBarChartCore(chartDataSet.chartDataList, chartDataSet.hardwareType, this, graphType)
-
-
-                            }
-                        </div>
-                    </div>
-                </div>
-            )
         }
 
 
@@ -1022,10 +977,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*todo:---------------------------------*/}
                     <div className='page_monitoring_container' style={{height: '400px'}}>
                         <BubbleChartWrapper
-                                            parent={this}
-                                            currentHardwareType={this.state.currentHardwareType}
-                                            bubbleChartData={this.state.bubbleChartData}
-                                            themeTitle={this.state.themeTitle}/>
+                            parent={this}
+                            currentHardwareType={this.state.currentHardwareType}
+                            bubbleChartData={this.state.bubbleChartData}
+                            themeTitle={this.state.themeTitle}/>
                     </div>
                 </div>
             )
@@ -1299,7 +1254,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        __makeGridItemOne(uniqueIndex, hwType, graphType, item,) {
+        _makeGridItemOne(uniqueIndex, hwType, graphType, item,) {
             return (
                 <div key={uniqueIndex} data-grid={item} style={{margin: 5, backgroundColor: 'black'}}
                      onClick={() => {
@@ -1339,8 +1294,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         x
                     </div>
 
-                    {/*todo:maxize button*/}
-                    {/*todo:maxize button*/}
                     {/*todo:maxize button*/}
                     <div className="maxize"
                          onClick={this.showBigModal.bind(this, hwType, graphType)}
@@ -1399,7 +1352,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             graphType = graphType.toUpperCase()
                         }
                         console.log("hwType===>", hwType);
-                        return this.__makeGridItemOne(uniqueIndex, hwType, graphType, item)
+                        return this._makeGridItemOne(uniqueIndex, hwType, graphType, item)
                     })}
 
 
@@ -1439,7 +1392,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }
                             console.log("hwType===>", hwType);
 
-                            return this.__makeGridItemOne(uniqueIndex, hwType, graphType, item)
+                            return this._makeGridItemOne(uniqueIndex, hwType, graphType, item)
 
                         })}
                     </ResponsiveReactGridLayout>

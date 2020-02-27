@@ -6,7 +6,7 @@ import type {TypeAppInstance} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 
 import {Circle, Map, Marker, Popup, TileLayer, Tooltip} from "../../../../components/react-leaflet_kj/src/index";
-import PageDevMonitoring from "./PageDevMonitoring";
+import PageDevMonitoring from "../dev/PageDevMonitoring";
 import {Icon} from "antd";
 import {showToast} from "../PageMonitoringCommonService";
 

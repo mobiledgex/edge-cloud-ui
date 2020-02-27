@@ -16,7 +16,7 @@ import {
     convertByteToMegaByte,
     numberWithCommas,
     PageMonitoringStyles,
-    renderUsageByType
+    renderUsageByType, showToast
 } from "../PageMonitoringCommonService";
 import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
@@ -697,12 +697,12 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
                 <div style={{
                     //backgroundColor: 'blue',
                     backgroundColor: '#1e2124',
-                    height:450,
+                    height: 450,
                     // marginLeft: 0, marginRight: 0, marginBottom: 10,
                 }}>
                     <BubbleChart
                         className='bubbleChart'
-                        style={{height:300,}}
+                        style={{height: 300,}}
                         graph={{
                             zoom: renderZoomLevel(appInstanceList.length),
                             //zoom: 0.70,
@@ -1200,6 +1200,14 @@ export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTi
     return lineChartData;
 }
 
+export const convertToClassification = (pClassification) => {
+    if (pClassification === CLASSIFICATION.APPINST) {
+        return "App Instance"
+    } else {
+        return pClassification
+    }
+}
+
 
 export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDataSet) => {
     try {
@@ -1207,6 +1215,8 @@ export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDat
         let usageSetList = lineChartDataSet.usageSetList;
         let newDateTimeList = lineChartDataSet.newDateTimeList;
         let hardwareType = lineChartDataSet.hardwareType;
+
+
 
         const lineChartDataForRendering = makeTop5LineChartData(levelTypeNameList, usageSetList, newDateTimeList, _this)
         return (
@@ -1223,6 +1233,7 @@ export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDat
         );
     } catch (e) {
 
+        showToast(e.toString())
     }
 }
 

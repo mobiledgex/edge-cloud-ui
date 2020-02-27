@@ -1,9 +1,9 @@
 // @flow
 import * as React from 'react';
 import BubbleChart from "../../../../components/BubbleChart";
-import {handleLegendAndBubbleClickedEvent, makeLineChartDataForCluster} from "./PageDevMonitoringService";
+import {handleLegendAndBubbleClickedEvent, makeLineChartDataForCluster} from "../dev/PageDevMonitoringService";
 import {PageMonitoringStyles} from "../PageMonitoringCommonService";
-import PageDevMonitoring from "./PageDevMonitoring";
+import PageDevMonitoring from "../dev/PageDevMonitoring";
 
 type Props = {
     bubbleChartData: any,

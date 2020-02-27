@@ -3,7 +3,7 @@ import * as React from 'react';
 import {Chart} from "react-google-charts";
 import {Dropdown} from "semantic-ui-react";
 import {HARDWARE_OPTIONS_FOR_CLUSTER} from "../../../../shared/Constants";
-import {handleHardwareTabChanges, renderBubbleChartCoreForDev_Cluster} from "./PageDevMonitoringService";
+import {handleHardwareTabChanges, renderBubbleChartCoreForDev_Cluster} from "../dev/PageDevMonitoringService";
 import {makeBubbleChartDataForCluster, renderPlaceHolderCircular, showToast} from "../PageMonitoringCommonService";
 
 type Props = {};
