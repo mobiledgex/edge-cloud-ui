@@ -231,6 +231,7 @@ type State = {
     themeTitle: string,
     addItemList: any,
     themeOptions: any,
+    isNoData:boolean,
 
 }
 
@@ -1483,7 +1484,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </Button>
                         <Button
                             onClick={async () => {
-                                this.resetAllDataForDev();
+                                await this.resetAllDataForDev();
                             }}
                         >Reset
                         </Button>
@@ -1628,7 +1629,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 options={this.state.clusterDropdownList}
                                 style={PageMonitoringStyles.dropDown}
                                 onChange={async (e, {value}) => {
-                                    this.handleClusterDropdown(value.trim())
+                                    await this.handleClusterDropdown(value.trim())
                                 }}
 
                             />
@@ -1652,7 +1653,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 //style={Styles.dropDown}
 
                                 onChange={async (e, {value}) => {
-                                    this.handleAppInstDropdown(value.trim())
+                                    await this.handleAppInstDropdown(value.trim())
                                 }}
                             />
                         </div>
