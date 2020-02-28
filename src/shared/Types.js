@@ -82,25 +82,6 @@ export type TypeAppInstanceUsage2 = {
     connectionsSeriesValue: any,
 }
 
-export type TypeAppInstanceUsage2 = {
-    instance: any,
-    columns: any,
-    appName: string,
-    sumCpuUsage: number,
-    sumMemUsage: number,
-    sumDiskUsage: number,
-    sumRecvBytes: number,
-    sumSendBytes: number,
-    sumActiveConnection: number,
-    sumHandledConnection: number,
-    sumAcceptsConnection: number,
-    cpuSeriesValue: any,
-    memSeriesValue: any,
-    diskSeriesValue: any,
-    networkSeriesValue: any,
-    connectionsSeriesValue: any,
-}
-
 export type TypeCloudletUsageList = {
     avgVCpuUsed: number,
     avgVCpuMax: number,
