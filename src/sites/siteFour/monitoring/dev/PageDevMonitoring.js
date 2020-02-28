@@ -931,54 +931,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         renderBubbleChartArea() {
             return (
                 <div style={{height: '100%'}}>
-                    <div className='page_monitoring_title_area' style={{display: 'flex', flexDirection: 'row'}}>
-                        <div className='page_monitoring_title_select' style={{flex: .7}}>
-                            Bubble Chart
-                        </div>
-                        <div className='page_monitoring_title_select' style={{flex: .2, marginLeft: -10}}>
-                            <Dropdown
-                                disabled={this.state.bubbleChartLoader}
-                                clearable={this.state.regionSelectBoxClearable}
-                                placeholder='SELECT HARDWARE'
-                                selection
-                                loading={this.state.bubbleChartLoader}
-                                options={HARDWARE_OPTIONS_FOR_CLUSTER}
-                                defaultValue={HARDWARE_OPTIONS_FOR_CLUSTER[0].value}
-                                onChange={async (e, {value}) => {
-
-                                    await handleHardwareTabChanges(this, value)
-
-                                    try {
-                                        let bubbleChartData = makeBubbleChartDataForCluster(this.state.filteredClusterUsageList, value);
-                                        this.setState({
-                                            bubbleChartData: bubbleChartData,
-                                            currentHardwareType: value,
-                                        })
-
-                                    } catch (e) {
-                                        showToast(e.toString())
-                                        this.setState({
-                                            bubbleChartLoader: false,
-                                        })
-                                    }
-
-
-                                }}
-                                value={this.state.currentHardwareType}
-                            />
-                        </div>
-                    </div>
-                    {/*todo:---------------------------------*/}
-                    {/*todo: BubbleChartWrapper              */}
-                    {/*todo:---------------------------------*/}
-                    <div className='page_monitoring_container' style={{height: '400px'}}>
-                        <BubbleChartWrapper
-                            loading={this.state.loading}
-                            parent={this}
-                            currentHardwareType={this.state.currentHardwareType}
-                            bubbleChartData={this.state.bubbleChartData}
-                            themeTitle={this.state.themeTitle}/>
-                    </div>
+                    <BubbleChartWrapper
+                        loading={this.state.loading}
+                        parent={this}
+                        currentHardwareType={this.state.currentHardwareType}
+                        bubbleChartData={this.state.bubbleChartData}
+                        themeTitle={this.state.themeTitle}/>
                 </div>
             )
         }
@@ -1000,31 +958,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }}>
                                 Deployed Instance
                             </div>
-                            {/* <div style={{flex: .4, marginRight: 70}}>
-                                <MButton style={{
-                                    height: 30,
-                                    backgroundColor: !this.state.gridDraggable ? 'green' : 'grey',
-                                    color: 'white'
-                                }}
-                                         onClick={() => {
-                                             this.setState({
-                                                 gridDraggable: !this.state.gridDraggable,
-                                                 appInstanceListGroupByCloudlet: [],
-                                             }, () => {
-                                                 this.setState({
-                                                     appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
-                                                 });
-
-                                             })
-                                         }}>
-
-                                    @todo:RoomIcon
-                                    @todo:RoomIcon
-                                    @todo:RoomIcon
-                                    <RoomIcon color={'white'}/>
-                                </MButton>
-                            </div>*/}
-
                         </div>
 
                         <div className='page_monitoring_title' style={{
@@ -1321,7 +1254,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     >
                         <FullscreenIcon color="primary" style={{color: 'white', fontSize: 25}}/>
                     </div>
-
                     }
 
                 </div>

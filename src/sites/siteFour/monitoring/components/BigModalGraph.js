@@ -7,6 +7,7 @@ import {Chart as Bar_Column_Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {barChartOption, columnChartOption} from "../PageMonitoringUtils";
 import LeafletMapWrapperForDev from "./LeafletMapWrapperForDev";
+import BubbleChartWrapper from "./BubbleChartWrapper";
 
 const FA = require('react-fontawesome')
 type Props = {
@@ -128,13 +129,23 @@ export default class BigModalGraph extends React.Component<Props, State> {
                                     marginLeft: 25,
                                 }}> Cluster {this.props.popupGraphHWType} Usage
                                 </div>
-                                :
+                                : this.state.graphType === GRID_ITEM_TYPE.BUBBLE ?
+
+                                    <div style={{
+                                        color: 'white',
+                                        fontSize: 35,
+                                        flex: .9,
+                                        marginLeft: 25,
+                                    }}> Bubble Chart
+                                    </div>
+
+                                    :
                                 <div style={{
                                     color: 'white',
                                     fontSize: 35,
                                     flex: .9,
                                     marginLeft: 25,
-                                }}> Top 5  {this.props.popupGraphHWType} Usage of {this.props.parent.state.currentClassification}
+                                }}> Top 5 {this.props.popupGraphHWType} Usage of {this.props.parent.state.currentClassification}
                                 </div>
                         }
 
@@ -174,7 +185,8 @@ export default class BigModalGraph extends React.Component<Props, State> {
                                         handleAppInstDropdown={this.props.parent.handleAppInstDropdown}
                                         markerList={this.state.appInstanceListGroupByCloudlet}/>
                                 </div>
-                                : <div></div>
+                                    :
+                                    <div></div>
 
 
                     }
