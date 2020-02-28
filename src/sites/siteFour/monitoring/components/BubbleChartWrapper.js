@@ -6,8 +6,6 @@ import {makeBubbleChartDataForCluster, PageMonitoringStyles, renderPlaceHolderCi
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import {Dropdown} from "semantic-ui-react";
 import {HARDWARE_OPTIONS_FOR_CLUSTER} from "../../../../shared/Constants";
-import {CircularProgress} from "@material-ui/core";
-import LeafletMapWrapperForDev from "./LeafletMapWrapperForDev";
 
 type Props = {
     bubbleChartData: any,

@@ -1,10 +1,8 @@
 // @flow
 import * as React from 'react';
-import {CircularProgress} from "@material-ui/core";
-import {renderBarChartCore, renderPlaceHolderCircular} from "../PageMonitoringCommonService";
+import {renderPlaceHolderCircular} from "../PageMonitoringCommonService";
 import {convertToClassification, renderLineChartCoreForDev} from "../dev/PageDevMonitoringService";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
-import {CLASSIFICATION} from "../../../../shared/Constants";
 import type {MonitoringContextInterface} from "../PageMonitoringGlobalState";
 import {MonitoringConsumer, PageMonitoringProvider} from "../PageMonitoringGlobalState";
 

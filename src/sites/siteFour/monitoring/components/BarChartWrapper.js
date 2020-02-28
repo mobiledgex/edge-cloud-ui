@@ -3,8 +3,7 @@ import * as React from 'react';
 import {renderBarChartCore, renderPlaceHolderCircular} from "../PageMonitoringCommonService";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import type {MonitoringContextInterface} from "../PageMonitoringGlobalState";
-import {MonitoringConsumer, PageMonitoringProvider} from "../PageMonitoringGlobalState";
-import {Grid} from "semantic-ui-react";
+import {MonitoringConsumer} from "../PageMonitoringGlobalState";
 
 type Props = {
     parent: PageDevMonitoring,

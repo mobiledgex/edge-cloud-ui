@@ -9,7 +9,7 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {Button as MButton, CircularProgress} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
-import {Checkbox, DatePicker, Popover, Select, Tooltip} from 'antd';
+import {Button as AButton, Checkbox, DatePicker, Select, Tooltip} from 'antd';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 
 import {
@@ -19,7 +19,6 @@ import {
     defaultLayoutMapperForAppInst,
     filterUsageByClassification,
     getUserId,
-    handleHardwareTabChanges,
     makeAllLineChartData,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
@@ -73,7 +72,6 @@ import {MonitoringConsumer} from "../PageMonitoringGlobalState";
 import BubbleChartWrapper from "../components/BubbleChartWrapper";
 import BarChartWrapper from "../components/BarChartWrapper";
 import LineChartWrapper from "../components/LineChartWrapper";
-import {notification, Button as AButton} from "antd";
 
 const {Option} = Select;
 
