@@ -23,7 +23,7 @@ import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {Table} from "semantic-ui-react";
 import Lottie from "react-lottie";
 import type {TypeAppInstanceUsage2, TypeClusterUsageList} from "../../../../shared/Types";
-import {Progress, Select} from "antd";
+import {Progress, Select, Tooltip} from "antd";
 import {Responsive, WidthProvider} from "react-grid-layout";
 import type {MonitoringContextInterface} from "../PageMonitoringGlobalState";
 
@@ -430,12 +430,32 @@ export const renderPerformanceSummaryTable = (_this: PageDevMonitoring, pCluster
                         <Table.HeaderCell>
                             DISK
                         </Table.HeaderCell>
-                        <Table.HeaderCell>
-                            NETWORK RECV
-                        </Table.HeaderCell>
-                        <Table.HeaderCell>
-                            NETWORK SENT
-                        </Table.HeaderCell>
+                        <Tooltip
+                            placement="topLeft"
+                            title={
+                                <div>
+                                    <p>NETWORK RECV</p>
+                                </div>
+                            }
+                        >
+                            <Table.HeaderCell>
+                                NETWORK RECV
+                            </Table.HeaderCell>
+                        </Tooltip>
+
+                        <Tooltip
+                            placement="topLeft"
+                            title={
+                                <div>
+                                    <p>NETWORK SENT</p>
+                                </div>
+                            }
+                        >
+                            <Table.HeaderCell>
+                                NETWORK SENT
+                            </Table.HeaderCell>
+                        </Tooltip>
+
                         <Table.HeaderCell>
                             TCP CONN
                         </Table.HeaderCell>
