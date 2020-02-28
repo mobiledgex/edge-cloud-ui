@@ -18,14 +18,11 @@ import CreateAccount from './components/login/CreateAccont';
 import history from './history';
 import VerifyContent from './container/verifyContent';
 import './css/index.css';
-import SiteFour from "./sites//siteFour/siteFour";
+import SiteFour from "./sites/siteFour/siteFour";
 import './css/pages/audit.css';
 import './css/pages/cloudletPool.css';
 import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
-import PageModalMonitoring from "./sites/siteFour/monitoring/components/PageModalMonitoring";
-import Test004 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/Test004";
-import Test003 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/Test003";
 // API
 
 let self = null;
