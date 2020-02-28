@@ -1656,11 +1656,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     Theme
                                 </div>
                                 <div style={{marginBottom: 0,}}>
-                                    <Select
+                                    <Dropdown
                                         placeholder="Select Theme"
-                                        defaultValue={this.state.themeTitle}
-                                        style={{width: 190, marginBottom: 10, marginLeft: 5}}
-                                        onSelect={async (value) => {
+                                        selection
+                                        loading={this.state.loading}
+                                        value={this.state.themeTitle}
+                                        //style={{width: 190, marginBottom: 10, marginLeft: 5}}
+                                        onChange={async (e, {value}) => {
 
                                             await this.setState({
                                                 themeTitle: value,
@@ -1690,23 +1692,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                             reactLocalStorage.setObject(getUserId() + "_mon_theme", selectedChartColorList)
                                             reactLocalStorage.set(getUserId() + "_mon_theme_title", value)
-
-
-                                            //alert(reactLocalStorage.getObject(getUserId() + "_mon_theme"))
                                         }}
-                                    >
-
-                                        {this.state.themeOptions.map((item, index) => {
-                                            return (
-                                                <Option key={index} value={item.value}>{item.text}</Option>
-                                            )
-                                        })}
-
-                                        {/*<Option value='theme5'>theme5</Option>
-                                            <Option value='theme6'>theme6</Option>
-                                            <Option value='theme7'>theme7</Option>*/}
-
-                                    </Select>
+                                        options={this.state.themeOptions}
+                                    />
                                 </div>
                             </>
                         </>
