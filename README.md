@@ -1,13 +1,11 @@
-# World map dashboard
+# MobiledgeX UI Console
 
-### Run 
+### Run
 ```
-$ cd ..
 $ npm install
-$ HTTPS=true npm start
-$ 
+$ npm start
 ```
-### Style Guid
+### Style Guide
 
 | page Name | component  | css           | Description                  |
 |-----------|------------|---------------|------------------------------|
@@ -20,7 +18,7 @@ $
 
     * map
     : react simpleMap
-    
+
     * calendar
      http://adphorus.github.io/react-date-range/
 

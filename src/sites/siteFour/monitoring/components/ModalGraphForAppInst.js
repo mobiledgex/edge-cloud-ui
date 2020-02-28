@@ -2,10 +2,10 @@
 import * as React from 'react';
 import {Modal as AModal} from "antd";
 import {Line} from 'react-chartjs-2';
-import PageDevMonitoring from "./PageDevMonitoring";
+import PageDevMonitoring from "../dev/PageDevMonitoring";
 import type {TypeLineChartData2} from "../../../../shared/Types";
 import {convertByteToMegaByte} from "../PageMonitoringCommonService";
-import {makeGradientColorOne} from "./PageDevMonitoringService";
+import {makeGradientColorOne} from "../dev/PageDevMonitoringService";
 import {Dropdown} from "semantic-ui-react";
 import {HARDWARE_OPTIONS_FOR_APPINST} from "../../../../shared/Constants";
 

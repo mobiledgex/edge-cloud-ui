@@ -53,5 +53,4 @@ export const button = {
   borderRadius: 2,
   backgroundColor: 'transparent',
   borderColor: 'white',
-  height: 30
 }

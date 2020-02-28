@@ -30,6 +30,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             super(props)
         }
 
+
         render() {
             return (
                 <div style={{display: 'flex', flex: 1, margin: 100}}>
@@ -40,7 +41,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         goBack
                     </Button>
                     <div>
-                        {/*고경준 천재님임fsdlkflsdkflsdk*/}
+                       ㄴㅁ이ㅏ린아ㅣ라니아리ㅏㄴㅁ이란이라니ㅏ리ㅏ니ㅏ리남ㄹ미니라sdfklsdkflskf
                     </div>
                 </div>
             );
