@@ -56,7 +56,7 @@ import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import '../PageMonitoring.css'
 
-import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, PageMonitoringStyles, renderLoaderArea, showToast} from "../PageMonitoringCommonService";
+import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, PageMonitoringStyles, renderLoaderArea, renderPlaceHolderCircular, showToast} from "../PageMonitoringCommonService";
 import {getAppInstList, getAppLevelUsageList, getCloudletList, getClusterEventLogList, getClusterLevelUsageList, getClusterList} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
@@ -404,7 +404,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         async loadInitDataForCluster(isInterval: boolean = false) {
-            try{
+            try {
                 clearInterval(this.intervalForAppInst)
 
                 this.setState({dropdownRequestLoading: true})
@@ -502,7 +502,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     isRequesting: false,
                     currentCluster: '',
                 })
-            }catch (e) {
+            } catch (e) {
 
             }
 
@@ -1111,7 +1111,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_LIST) {
                 return (
-                    renderPerformanceSummaryTable(this, this.state.filteredClusterUsageList)
+                    this.state.loading ? renderPlaceHolderCircular() : renderPerformanceSummaryTable(this, this.state.filteredClusterUsageList)
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PIE) {
                 return (
@@ -1244,7 +1244,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                     {/*todo:maximize button*/}
                     {/*todo:maximize button*/}
-                    {graphType.toUpperCase() !== GRID_ITEM_TYPE.BUBBLE  &&
+                    {graphType.toUpperCase() !== GRID_ITEM_TYPE.BUBBLE &&
                     <div className="maxize"
                          onClick={this.showBigModal.bind(this, hwType, graphType)}
                          style={{

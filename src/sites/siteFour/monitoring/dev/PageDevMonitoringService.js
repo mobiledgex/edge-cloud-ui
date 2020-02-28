@@ -396,7 +396,6 @@ export const renderPerformanceSummaryTable = (_this: PageDevMonitoring, pCluster
 
     //pClusterList
     pClusterList = sortUsageListByTypeForCluster(pClusterList, HARDWARE_TYPE.CPU)
-
     return (
         <>
             <div style={{
