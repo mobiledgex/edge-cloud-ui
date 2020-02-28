@@ -1022,7 +1022,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         i: uniqueId,
                         x: 0,
                         y: maxY + 1,
-                        w: graphType === GRID_ITEM_TYPE.CLUSTER_LIST ? 2 : 1,
+                        w: graphType === GRID_ITEM_TYPE.CLUSTER_LIST ? 3 : 1,
                         h: 1,
                     }),
                     layoutMapperForCluster: mapperList.concat(itemOne),
