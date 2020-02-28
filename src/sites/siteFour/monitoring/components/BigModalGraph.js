@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import {Modal as AModal} from "antd";
-import {GRID_ITEM_TYPE, lineGraphOptions} from "../../../../shared/Constants";
+import {CLASSIFICATION, GRID_ITEM_TYPE, lineGraphOptions} from "../../../../shared/Constants";
 import {Line} from "react-chartjs-2";
 import {Chart as Bar_Column_Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -120,7 +120,7 @@ export default class BigModalGraph extends React.Component<Props, State> {
                                 marginLeft: 25,
                             }}> Deployed Instance
                             </div>
-                            : this.state.graphType === GRID_ITEM_TYPE.LINE ?
+                            : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER?
                                 <div style={{
                                     color: 'white',
                                     fontSize: 35,
@@ -128,24 +128,32 @@ export default class BigModalGraph extends React.Component<Props, State> {
                                     marginLeft: 25,
                                 }}> Cluster {this.props.popupGraphHWType} Usage
                                 </div>
-                                : this.state.graphType === GRID_ITEM_TYPE.BUBBLE ?
-
+                                : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.APPINST?
                                     <div style={{
                                         color: 'white',
                                         fontSize: 35,
                                         flex: .9,
                                         marginLeft: 25,
-                                    }}> Bubble Chart
+                                    }}> App Instance {this.props.popupGraphHWType} Usage
                                     </div>
+                                    : this.state.graphType === GRID_ITEM_TYPE.BUBBLE ?
 
-                                    :
-                                <div style={{
-                                    color: 'white',
-                                    fontSize: 35,
-                                    flex: .9,
-                                    marginLeft: 25,
-                                }}> Top 5 {this.props.popupGraphHWType} Usage of {this.props.parent.state.currentClassification}
-                                </div>
+                                        <div style={{
+                                            color: 'white',
+                                            fontSize: 35,
+                                            flex: .9,
+                                            marginLeft: 25,
+                                        }}> Bubble Chart
+                                        </div>
+
+                                        :
+                                        <div style={{
+                                            color: 'white',
+                                            fontSize: 35,
+                                            flex: .9,
+                                            marginLeft: 25,
+                                        }}> Top 5 {this.props.popupGraphHWType} Usage of {this.props.parent.state.currentClassification}
+                                        </div>
                         }
 
 
@@ -184,8 +192,8 @@ export default class BigModalGraph extends React.Component<Props, State> {
                                         handleAppInstDropdown={this.props.parent.handleAppInstDropdown}
                                         markerList={this.state.appInstanceListGroupByCloudlet}/>
                                 </div>
-                                    :
-                                    <div></div>
+                                :
+                                <div></div>
 
 
                     }
