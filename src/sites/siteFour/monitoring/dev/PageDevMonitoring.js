@@ -436,7 +436,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 /*let clusterEventLogList = await getClusterEventLogList(clusterList);
                 //alert(JSON.stringify(clusterEventLogList))*/
 
-
                 let appInstanceListGroupByCloudlet = []
                 try {
                     appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
