@@ -18,21 +18,13 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {renderGridLoader2, renderLoaderArea, renderPlaceHolderCircular, showToast, PageMonitoringStyles} from "../PageMonitoringCommonService";
-import {Button as MButton, CircularProgress} from "@material-ui/core";
-import {
-    handleBubbleChartDropDownForCloudlet,
-    makeBarChartDataForCloudlet,
-    makeLineChartForCloudlet,
-    renderBottomGridAreaForCloudlet
-} from "./PageOperMonitoringService";
-import LeafletMap from "./LeafletMapWrapperForOper";
+import {PageMonitoringStyles, renderLoaderArea, renderPlaceHolderCircular, showToast} from "../PageMonitoringCommonService";
+import {CircularProgress} from "@material-ui/core";
+import {handleBubbleChartDropDownForCloudlet, makeBarChartDataForCloudlet, makeLineChartForCloudlet, renderBottomGridAreaForCloudlet} from "./PageOperMonitoringService";
+import LeafletMap from "../components/LeafletMapWrapperForOper";
 import {filterUsageByClassification, makeSelectBoxListWithKey, sortByKey} from "../dev/PageDevMonitoringService";
 
-import {
-    getAllCloudletEventLogs,
-    getCloudletEventLog, getCloudletList, getCloudletLevelUsageList,
-} from '../PageMonitoringMetricService'
+import {getAllCloudletEventLogs, getCloudletEventLog, getCloudletLevelUsageList, getCloudletList,} from '../PageMonitoringMetricService'
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
