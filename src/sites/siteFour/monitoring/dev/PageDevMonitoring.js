@@ -409,10 +409,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             clearInterval(this.intervalForAppInst)
 
 
-            //클러스터 레벨 이벤트로그 호출...
-            let clusterEventLogList =await  getClusterEventLogList();
 
-            //alert(JSON.stringify(clusterEventLogList))
+
 
 
             this.setState({dropdownRequestLoading: true})
@@ -435,6 +433,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             console.log('clusterList===>', clusterList);
 
             let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
+
+
+            console.log("clusterDropdownList===>", clusterDropdownList);
+
+            //@fixme: 클러스터 레벨 이벤트로그 호출...
+            //@fixme: 클러스터 레벨 이벤트로그 호출...
+            //@fixme: 클러스터 레벨 이벤트로그 호출...
+            let clusterEventLogList =await  getClusterEventLogList(clusterList);
+            alert(JSON.stringify(clusterEventLogList))
+
 
             let appInstanceListGroupByCloudlet = []
             try {
@@ -470,11 +478,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             }
 
-            //fixme: fakeData22222222222
-            //fixme: fakeData22222222222
-            //fixme: fakeData22222222222
-            //fixme: fakeData22222222222
-            //fixme: fakeData22222222222
+            //todo: fakeData22222222222
+            //todo: fakeData22222222222
+            //todo: fakeData22222222222
+            //todo: fakeData22222222222
+            //todo: fakeData22222222222
             /*allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
             console.log('filteredAppInstanceList===>', appInstanceList)*/
 
