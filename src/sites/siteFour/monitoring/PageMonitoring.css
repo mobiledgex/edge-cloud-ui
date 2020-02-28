@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Bungee|Candal|Righteous&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Acme|Roboto|Bungee|Barlow+Semi+Condensed|Candal|Encode+Sans+Condensed|Righteous|Karla|Roboto+Condensed&display=swap');
+
 #button-wrapper {
     position: absolute;
     bottom: 0px;
@@ -249,6 +250,13 @@ tbody {
     background-color: rgb(30, 33, 36);
     height: 360px;
     min-height: 350px;
+}
+
+.react-grid-layout {
+    position: relative;
+    -webkit-transition: height 200ms ease;
+    transition: height 200ms ease;
+    background-color: black;
 }
 
 

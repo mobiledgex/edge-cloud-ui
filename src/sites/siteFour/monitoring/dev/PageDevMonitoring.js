@@ -1333,6 +1333,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             return (
                 <ResponsiveReactGridLayout
+                    style={{backgroundColor: 'black'}}
                     isResizable={false}
                     isDraggable={this.state.isDraggable}
                     useCSSTransforms={true}
@@ -1350,7 +1351,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         reactLocalStorage.setObject(getUserId() + "_layout", layout)
 
                     }}
-                    style={{backgroundColor: 'black'}}
+
                 >
                     {this.state.layoutForCluster.map((item, loopIndex) => {
 
@@ -1375,39 +1376,39 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderGridLayoutForAppInst = () => {
             return (
-                <>
-                    <ResponsiveReactGridLayout
-                        isDraggable={this.state.isDraggable}
-                        className={'layout'}
-                        cols={{lg: 3, md: 3, sm: 3, xs: 3, xxs: 3}}
-                        layout={this.state.layoutForAppInst}
-                        rowHeight={this.gridItemHeight}
-                        onLayoutChange={async (layout) => {
-                            await this.setState({
-                                layoutForAppInst: layout
-                            });
-                            let layoutUniqueId = getUserId() + "_layout2"
-                            reactLocalStorage.setObject(layoutUniqueId, this.state.layoutForAppInst)
-                        }}
-                        style={{overflowY: 'auto',}}
-                    >
-                        {this.state.layoutForAppInst.map((item, loopIndex) => {
+                <ResponsiveReactGridLayout
+                    style={{backgroundColor: 'black'}}
+                    isResizable={false}
+                    isDraggable={this.state.isDraggable}
+                    useCSSTransforms={true}
+                    className={'layout'}
+                    cols={{lg: 3, md: 3, sm: 3, xs: 3, xxs: 3}}
+                    layout={this.state.layoutForAppInst}
+                    rowHeight={this.gridItemHeight}
+                    onLayoutChange={async (layout) => {
+                        await this.setState({
+                            layoutForAppInst: layout
+                        });
+                        let layoutUniqueId = getUserId() + "_layout2"
+                        reactLocalStorage.setObject(layoutUniqueId, this.state.layoutForAppInst)
+                    }}
+                >
+                    {this.state.layoutForAppInst.map((item, loopIndex) => {
 
-                            const uniqueIndex = item.i;
-                            let hwType = HARDWARE_TYPE.CPU
-                            let graphType = GRID_ITEM_TYPE.LINE;
+                        const uniqueIndex = item.i;
+                        let hwType = HARDWARE_TYPE.CPU
+                        let graphType = GRID_ITEM_TYPE.LINE;
 
-                            if (!isEmpty(this.state.layoutMapperForAppInst.find(x => x.id === uniqueIndex))) {
-                                hwType = this.state.layoutMapperForAppInst.find(x => x.id === uniqueIndex).hwType
-                                graphType = this.state.layoutMapperForAppInst.find(x => x.id === uniqueIndex).graphType
-                            }
-                            console.log("hwType===>", hwType);
+                        if (!isEmpty(this.state.layoutMapperForAppInst.find(x => x.id === uniqueIndex))) {
+                            hwType = this.state.layoutMapperForAppInst.find(x => x.id === uniqueIndex).hwType
+                            graphType = this.state.layoutMapperForAppInst.find(x => x.id === uniqueIndex).graphType
+                        }
+                        console.log("hwType===>", hwType);
 
-                            return this._makeGridItemOne(uniqueIndex, hwType, graphType, item)
+                        return this._makeGridItemOne(uniqueIndex, hwType, graphType, item)
 
-                        })}
-                    </ResponsiveReactGridLayout>
-                </>
+                    })}
+                </ResponsiveReactGridLayout>
 
             )
         }
@@ -1643,7 +1644,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderSelectBoxRow2nd() {
             return (
-                <div className='page_monitoring_select_row'>
+                <div className='page_monitoring_select_row' style={{borderWidth: 1, borderColor: 'grey', marginBottom: 5, marginTop: 6}}>
                     <div className='page_monitoring_select_area'>
                         <>
                             <div className="page_monitoring_dropdown_box">
@@ -1853,7 +1854,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         <div className="page_monitoring" style={{backgroundColor: 'transparent', height: 3250}}>
                                             <div className='page_monitoring_dashboard_kyungjoon' style={{}}>
                                                 {this.state.currentClassification === CLASSIFICATION.CLUSTER
-                                                    ? this.renderGridLayoutForCluster(context)
+                                                    ? this.renderGridLayoutForCluster()
                                                     : this.renderGridLayoutForAppInst()
                                                 }
                                             </div>

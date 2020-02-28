@@ -276,9 +276,9 @@ export const GRID_ITEM_TYPE = {
 }
 
 export const ADD_ITEM_LIST = [
-    {text: 'BUBBLE', value: 'BUBBLE'},
     {text: 'MAP', value: 'MAP'},
-    {text: 'CLUSTER LIST', value: 'CLUSTER_LIST'},
+    {text: 'BUBBLE', value: 'BUBBLE'},
+    {text: 'PERFORMANCE SUM', value: 'CLUSTER_LIST'},
 ]
 
 
