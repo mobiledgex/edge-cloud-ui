@@ -16,6 +16,8 @@
 
 
 .page_monitoring_select_row {
+
+    /*border: 1px solid grey*/
 }
 
 
@@ -120,7 +122,6 @@
     padding: 0 0px 10px 10px;
     margin-right: 20px;
     max-height: 475px;
-    flex-grow: inherit;
 }
 
 

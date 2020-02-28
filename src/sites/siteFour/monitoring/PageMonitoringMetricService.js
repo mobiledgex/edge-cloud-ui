@@ -1,11 +1,14 @@
 import axios from "axios";
-import type {TypeCloudlet} from "../../../shared/Types";
+import type {TypeCloudlet, TypeCluster} from "../../../shared/Types";
 import {SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET} from "../../../services/endPointTypes";
 import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../shared/Constants";
 import {sendSyncRequest} from "../../../services/serviceMC";
 import {makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
 import {formatData} from "../../../services/formatter/formatComputeInstance";
 import {makeFormForAppInstance} from "./admin/PageAdminMonitoringService";
+
+
+
 
 
 export const getAppInstList = async (pArrayRegion = ['EU', 'US']) => {
@@ -706,6 +709,69 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
     } catch (e) {
         throw new Error(e)
     }
+}
+
+
+/**
+ * fixme : asdlkflsdkflk
+ * @returns {Promise<AxiosResponse<any>>}
+ */
+export const getClusterEventLogList = async (clusterList) => {
+
+    let selectOrg = localStorage.getItem('selectOrg')
+    /*
+        Cloudlet: "berlin-staging"
+        CloudletLocation: "-"
+        ClusterName: "RahDemo123"
+        Deployment: "docker"
+        Edit: Array(10) [ "Region", "ClusterName", "OrganizationName", … ]
+        Flavor: "x1.medium"
+        IpAccess: 1
+        Operator: "TDG"
+    */
+
+    clusterList.map((item : TypeCluster,index)=>{
+
+        console.log("getClusterEventLogList===Cloudlet>", item.Cloudlet);
+        console.log("getClusterEventLogList===ClusterName>", item.ClusterName);
+
+    })
+
+
+    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+
+
+    let result = await axios({
+        url: '/api/v1/auth/events/cluster',
+        method: 'post',
+        data: {
+            "region": "EU",
+            "clusterinst": {
+                "cluster_key": {
+                    "name": "venky-test"
+                },
+                "cloudlet_key": {
+                    "operator_key": {
+                        "name": "TDG"
+                    },
+                    "name": "hamburg-stage"
+                },
+                "developer": selectOrg
+            },
+            "last": 10
+        },
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + store.userToken
+        },
+        timeout: 30 * 1000
+    }).then(async response => {
+        return response.data;
+    }).catch(e => {
+        //throw new Error(e)
+        //showToast(e.toString())
+    })
+    return result;
 }
 
 

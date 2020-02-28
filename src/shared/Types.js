@@ -43,7 +43,24 @@ export type TypeCloudlet = {
     Platform_type: number,
     State: number,
     Progress: string,
+}
 
+export type TypeCluster = {
+    Cloudlet: string,
+    CloudletLocation: string,
+    ClusterName: string,
+    Deployment: string,
+    Edit: any,
+    Flavor: string,
+    IpAccess: number,
+    Operator: string,
+    OrganizationName: string,
+    Progress: string,
+    Region: string,
+    Reservable: string,
+    State: number,
+    Status: any,
+    uuid: string,
 }
 
 export type TypeAppInstanceUsage2 = {

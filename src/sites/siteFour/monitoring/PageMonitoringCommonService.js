@@ -1,7 +1,7 @@
 import React from 'react';
 import './PageMonitoring.css';
 import {toast} from "react-semantic-toasts";
-import {HARDWARE_TYPE, USAGE_TYPE,} from "../../../shared/Constants";
+import {GRID_ITEM_TYPE, HARDWARE_TYPE, THEME_OPTIONS, USAGE_TYPE,} from "../../../shared/Constants";
 import Lottie from "react-lottie";
 import {makeGradientColor} from "./dev/PageDevMonitoringService";
 import {Chart} from "react-google-charts";
@@ -11,6 +11,7 @@ import moment from "moment";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {GridLoader} from "react-spinners";
 import {Grid} from "semantic-ui-react";
+import {barChartOption, columnChartOption} from "./PageMonitoringUtils";
 
 export const PageMonitoringStyles = {
     selectBoxRow: {
@@ -44,7 +45,23 @@ export const PageMonitoringStyles = {
         minWidth: '350px',
         //fontSize: '12px',
         minHeight: '40px',
-        zIndex: 9999999,
+        zIndex: 9999,
+        //height: '50px',
+    },
+    dropDown2: {
+        //minWidth: 150,
+        minWidth: '180px',
+        //fontSize: '12px',
+        minHeight: '40px',
+        zIndex: 1,
+        //height: '50px',
+    },
+    dropDown3: {
+        //minWidth: 150,
+        minWidth: '350px',
+        //fontSize: '12px',
+        minHeight: '40px',
+        zIndex: 1,
         //height: '50px',
     },
     cell000: {
@@ -111,24 +128,6 @@ export const PageMonitoringStyles = {
     }
 
 }
-
-{/*<Lottie
-            options={{
-                loop: true,
-                autoplay: true,
-                animationData: require('../../../lotties/10910-loade_dots.json'),
-                rendererSettings: {
-                    preserveAspectRatio: 'xMidYMid slice'
-                }
-            }}
-            height={height}
-            width={width}
-            isStopped={false}
-            isPaused={false}
-            speed={3.0}
-        />*/
-}
-
 export const noDataArea = () => (
     <div style={PageMonitoringStyles.center3}>
         There is no data to represent.
@@ -558,112 +557,32 @@ export const renderUsageByType = (usageOne, hardwareType, role = '',) => {
     }
 }
 
-export const renderBarChartCore = (chartDataList, hardwareType) => {
+export const arraysEqual = (a, b) => {
+    if (a instanceof Array && b instanceof Array) {
+        if (a.length != b.length)  // assert same length
+            return false;
+        for (var i = 0; i < a.length; i++)  // assert each element equal
+            if (!arraysEqual(a[i], b[i]))
+                return false;
+        return true;
+    } else {
+        return a == b;  // if not both arrays, should be the same
+    }
+}
 
+export const renderBarChartCore = (chartDataList, hardwareType, _this, graphType) => {
 
-    console.log(`chartDataList==${hardwareType}=>`, chartDataList);
 
     return (
         <Chart
             width={"100%"}
             //height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
             height={'100%'}
-            chartType="BarChart"
+            chartType={graphType === GRID_ITEM_TYPE.BAR ? 'BarChart' : 'ColumnChart'}
+            //chartType={'ColumnChart'}
             loader={<div><CircularProgress style={{color: '#1cecff', zIndex: 999999}}/></div>}
             data={chartDataList}
-            options={{
-                annotations: {
-                    style: 'line',
-                    textStyle: {
-                        //fontName: 'Righteous',
-                        fontSize: 12,
-                        //bold: true,
-                        //italic: true,
-                        // The color of the text.
-                        color: '#fff',
-                        // The color of the text outline.
-                        //auraColor: 'black',
-                        // The transparency of the text.
-                        opacity: 1.0
-                    },
-                    boxStyle: {
-                        // Color of the box outline.
-                        stroke: '#ffffff',
-                        // Thickness of the box outline.
-                        strokeWidth: 1,
-                        // x-radius of the corner curvature.
-                        rx: 10,
-                        // y-radius of the corner curvature.
-                        ry: 10,
-                    }
-                },
-
-                is3D: true,
-                title: '',
-                titleTextStyle: {
-                    color: '#fff',
-                    fontSize: 12,
-                    /*fontName: <string>, // i.e. 'Times New Roman'
-                    fontSize: <number>, // 12, 18 whatever you want (don't specify px)
-                     bold: <boolean>,    // true or false
-                      // true of false*/
-                },
-                //titlePosition: 'out',
-                chartArea: {
-                    // left: 20, right: 150, top: 50, bottom: 25,
-                    width: "60%", height: "80%",
-                },
-                legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
-                //xAxis
-                hAxis: {
-                    textPosition: 'none',//HIDE xAxis
-                    title: '',
-                    titleTextStyle: {
-                        //fontName: "Times",
-                        fontSize: 12,
-                        fontStyle: "italic",
-                        color: 'white'
-                    },
-                    minValue: 0,
-                    textStyle: {
-                        color: "white"
-                    },
-                    gridlines: {
-                        color: "grey"
-                    },
-                    format: hardwareType === HARDWARE_TYPE.CPU ? '#\'%\'' : '0.##\' byte\'',
-                    baselineColor: "grey",
-                    //out', 'in', 'none'.
-                },
-                //Y축
-                vAxis: {
-                    title: '',
-                    titleTextStyle: {
-                        fontSize: 20,
-                        fontStyle: "normal",
-                        color: 'white'
-                    },
-                    textStyle: {
-                        color: "white",
-                        fontSize: 12,
-                    },
-                    stacked: true,
-                },
-                //colors: ['#FB7A21'],
-                fontColor: 'white',
-                backgroundColor: {
-                    fill: '#1e2124'
-                },
-                /*  animation: {
-                      duration: 300,
-                      easing: 'out',
-                      startup: true
-                  }*/
-                //colors: ['green']
-            }}
-
-            // For tests
-            rootProps={{'data-testid': '1'}}
+            options={graphType === GRID_ITEM_TYPE.BAR ? barChartOption(hardwareType) : columnChartOption(hardwareType)}
         />
     );
 }
@@ -826,7 +745,15 @@ export const hardwareTypeToUsageKey = (hwType: string) => {
 
 }
 
-export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType) => {
+
+/**
+ *
+ * @param usageList
+ * @param pHardwareType
+ * @param themeTitle
+ * @returns {[]}
+ */
+export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType, ) => {
 
     console.log('makeBubbleChartDataForCluster===>', usageList)
 
