@@ -1245,7 +1245,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                     {/*todo:maximize button*/}
                     {/*todo:maximize button*/}
-                    {graphType.toUpperCase() !== GRID_ITEM_TYPE.BUBBLE &&
+                    {graphType.toUpperCase() !== GRID_ITEM_TYPE.BUBBLE || graphType.toUpperCase() !== GRID_ITEM_TYPE.CLUSTER_LIST &&
                     <div className="maxize"
                          onClick={this.showBigModal.bind(this, hwType, graphType)}
                          style={{
