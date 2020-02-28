@@ -8,6 +8,9 @@ import {formatData} from "../../../services/formatter/formatComputeInstance";
 import {makeFormForAppInstance} from "./admin/PageAdminMonitoringService";
 
 
+
+
+
 export const getAppInstList = async (pArrayRegion = ['EU', 'US']) => {
     try {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -706,6 +709,43 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
     } catch (e) {
         throw new Error(e)
     }
+}
+
+
+export const getClusterEventLogList = async () => {
+
+    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+    let result = await axios({
+        url: '/api/v1/auth/events/cluster',
+        method: 'post',
+        data: {
+            "region": "EU",
+            "clusterinst": {
+                "cluster_key": {
+                    "name": "venky-test"
+                },
+                "cloudlet_key": {
+                    "operator_key": {
+                        "name": "TDG"
+                    },
+                    "name": "hamburg-stage"
+                },
+                "developer": "MobiledgeX"
+            },
+            "last": 10
+        },
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + store.userToken
+        },
+        timeout: 30 * 1000
+    }).then(async response => {
+        return response.data;
+    }).catch(e => {
+        //throw new Error(e)
+        //showToast(e.toString())
+    })
+    return result;
 }
 
 

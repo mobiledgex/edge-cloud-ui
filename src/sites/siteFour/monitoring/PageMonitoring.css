@@ -259,6 +259,20 @@ tbody {
     background-color: black;
 }
 
+.leaflet-popup-content {
+    width: 700px;
+    min-width: 400px;
+}
+
+.leaflet-popup-content-wrapper {
+    background-color: rgba(0, 0, 0, 0.65);
+    /*font-weight: bold;*/
+    color: white;
+    border: solid 1px;
+    /*font-family: "Roboto Light";*/
+    font-size: 20px;
+}
+
 
 
 

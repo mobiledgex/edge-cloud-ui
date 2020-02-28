@@ -58,7 +58,7 @@ import moment from "moment";
 import '../PageMonitoring.css'
 
 import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, PageMonitoringStyles, renderLoaderArea, showToast} from "../PageMonitoringCommonService";
-import {getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList} from "../PageMonitoringMetricService";
+import {getAppInstList, getAppLevelUsageList, getCloudletList, getClusterEventLogList, getClusterLevelUsageList, getClusterList} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraph from "../components/ModalGraph";
@@ -407,6 +407,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         async loadInitDataForCluster(isInterval: boolean = false) {
             clearInterval(this.intervalForAppInst)
+
+
+            //클러스터 레벨 이벤트로그 호출...
+            let clusterEventLogList =await  getClusterEventLogList();
+
+            //alert(JSON.stringify(clusterEventLogList))
+
+
             this.setState({dropdownRequestLoading: true})
             let clusterList = await getClusterList();
             let cloudletList = await getCloudletList()
@@ -419,10 +427,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             //fixme: fakeData22222222222
             //fixme: fakeData
-            /*   let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
-               let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-               let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')*/
-            console.log('appInstanceList====>', appInstanceList);
+        /*    let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+            let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
+            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
+            console.log('appInstanceList====>', appInstanceList);*/
 
             console.log('clusterList===>', clusterList);
 
@@ -467,8 +475,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //fixme: fakeData22222222222
             //fixme: fakeData22222222222
             //fixme: fakeData22222222222
-            //allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
-            console.log('filteredAppInstanceList===>', appInstanceList)
+            /*allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+            console.log('filteredAppInstanceList===>', appInstanceList)*/
 
 
             let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);

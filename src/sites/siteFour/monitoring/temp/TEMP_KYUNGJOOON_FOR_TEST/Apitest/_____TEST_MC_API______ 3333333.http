@@ -154,5 +154,53 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODI5NTYzM
     "last": 10
 }
 
+###events/cluster
+
+POST https://console-stage.mobiledgex.net:443/api/v1/auth/events/cluster
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODI5NTYzMjEsImlhdCI6MTU4Mjg2OTkyMSwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.PZLZ13YwX9SAmEPzaSm9v6lw2azNHTcK8JlCE1fswj_xBfefyoYt9RJLodKu6qYIGL3Z23Zo3WTZ5baCza4Cxw
+
+{
+    "region": "EU",
+    "clusterinst": {
+        "cluster_key": {
+            "name": "venky-test"
+        },
+        "cloudlet_key": {
+            "operator_key": {
+                "name": "TDG"
+            },
+            "name": "hamburg-stage"
+        },
+        "developer": "MobiledgeX"
+    },
+    "last": 10
+}
+
+###
+
+POST https://console-stage.mobiledgex.net:443/api/v1/auth/events/app
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODI5NTYzMjEsImlhdCI6MTU4Mjg2OTkyMSwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.PZLZ13YwX9SAmEPzaSm9v6lw2azNHTcK8JlCE1fswj_xBfefyoYt9RJLodKu6qYIGL3Z23Zo3WTZ5baCza4Cxw
+
+{
+    "region": "EU",
+    "appinst": {
+        "app_key": {
+            "developer_key": {
+                "name": "MobiledgeX"
+            },
+            "name": "MobiledgeX SDK Demo",
+            "version": "1.0"
+        },
+        "cluster_inst_key": {
+            "cluster_key": {
+                "name": "venky-test"
+            }
+        }
+    },
+    "last": 10
+}
+
 ###
 
