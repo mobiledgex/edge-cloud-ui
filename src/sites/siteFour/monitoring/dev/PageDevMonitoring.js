@@ -9,7 +9,7 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {Button as MButton, CircularProgress} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
-import {Checkbox, DatePicker, Popover, Select,} from 'antd';
+import {Checkbox, DatePicker, Popover, Select, Tooltip} from 'antd';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 
 import {
@@ -1145,7 +1145,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        __makeGridItemOneByType(hwType, graphType) {
+        _makeGridItemOneByType(hwType, graphType) {
 
             if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                 return (
@@ -1226,13 +1226,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         showBigModal = (hwType, graphType,) => {
-            /*todo:chartDataForRendering*/
+
+            //alert(this.state.currentClassification)
 
             let chartDataForRendering = []
             if (graphType.toUpperCase() == GRID_ITEM_TYPE.LINE) {
-                let lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
-                chartDataForRendering = this.makeLineChartDataForBigModal(lineChartDataSet)
-                console.log("chartDataForRendering===>", chartDataForRendering);
+
+                if (this.state.currentClassification === CLASSIFICATION.APPINST) {
+                    let lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
+                    chartDataForRendering = this.makeLineChartDataForBigModal(lineChartDataSet)
+                } else {
+                    let lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
+                    chartDataForRendering = this.makeLineChartDataForBigModal(lineChartDataSet)
+                }
 
             } else if (graphType.toUpperCase() == GRID_ITEM_TYPE.BAR || graphType.toUpperCase() == GRID_ITEM_TYPE.COLUMN) {
 
@@ -1267,9 +1273,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                      }}
                 >
                     <div className='page_monitoring_column_kyungjoon1' style={{height: this.gridItemHeight}}>
-                        {/*@todo:__makeGridItemOneByType      */}
-                        {/*@todo:__makeGridItemOneByType      */}
-                        {this.__makeGridItemOneByType(hwType, graphType.toUpperCase())}
+                        {/*@todo:_makeGridItemOneByType      */}
+                        {/*@todo:_makeGridItemOneByType      */}
+                        {this._makeGridItemOneByType(hwType, graphType.toUpperCase())}
                     </div>
 
                     <div className="remove"
@@ -1294,7 +1300,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         x
                     </div>
 
-                    {/*todo:maxize button*/}
+                    {/*todo:maximize button*/}
+                    {/*todo:maximize button*/}
                     {graphType.toUpperCase() !== GRID_ITEM_TYPE.BUBBLE &&
                     <div className="maxize"
                          onClick={this.showBigModal.bind(this, hwType, graphType)}
@@ -1405,23 +1412,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderAddItemSelectOptions() {
+        /* renderAddItemSelectOptions() {
 
-            if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                return this.state.hwListForCluster.map(item => {
-                    return (
-                        <Option value={item.value}>{item.text}</Option>
-                    )
-                });
-            } else {
-                return this.state.hwListForAppInst.map(item => {
-                    return (
-                        <Option value={item.value}>{item.text}</Option>
-                    )
-                });
-            }
+             if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                 return this.state.hwListForCluster.map(item => {
+                     return (
+                         <Option value={item.value}>{item.text}</Option>
+                     )
+                 });
+             } else {
+                 return this.state.hwListForAppInst.map(item => {
+                     return (
+                         <Option value={item.value}>{item.text}</Option>
+                     )
+                 });
+             }
 
-        }
+         }*/
 
         renderHeader = () => {
 
@@ -1453,7 +1460,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }}
                         >Reset
                         </Button>
-                        <Popover
+                        <Tooltip
+                            placement="topLeft"
                             title={
                                 <div>
                                     <p>To release or freeze a grid item, double click grid item!</p>
@@ -1479,7 +1487,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 type="primary">
                                 Fix Grid
                             </AButton>
-                        </Popover>
+                        </Tooltip>
                         <Button
                             onClick={async () => {
                                 this.resetGridPosition();

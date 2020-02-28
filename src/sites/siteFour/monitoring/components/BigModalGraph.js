@@ -39,13 +39,18 @@ export default class BigModalGraph extends React.Component<Props, State> {
 
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
         if (this.props.chartDataForRendering !== nextProps.chartDataForRendering) {
+
+            console.log("chartDataForRendering===>", nextProps.chartDataForRendering);
+
             this.setState({
                 chartDataForRendering: nextProps.chartDataForRendering,
-                graphType: nextProps.graphType,
+                graphType: nextProps.graphType.toUpperCase(),
                 popupGraphHWType: nextProps.popupGraphHWType,
                 appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
             }, () => {
                 console.log("chartDataForRendering===>", this.state.chartDataForRendering);
+
+                //alert(this.state.graphType)
             })
 
         }
@@ -115,14 +120,22 @@ export default class BigModalGraph extends React.Component<Props, State> {
                                 marginLeft: 25,
                             }}> Deployed Instance
                             </div>
-                            :
-                            <div style={{
-                                color: 'white',
-                                fontSize: 35,
-                                flex: .9,
-                                marginLeft: 25,
-                            }}> Cluster {this.props.popupGraphHWType}
-                            </div>
+                            : this.state.graphType === GRID_ITEM_TYPE.LINE ?
+                                <div style={{
+                                    color: 'white',
+                                    fontSize: 35,
+                                    flex: .9,
+                                    marginLeft: 25,
+                                }}> Cluster {this.props.popupGraphHWType} Usage
+                                </div>
+                                :
+                                <div style={{
+                                    color: 'white',
+                                    fontSize: 35,
+                                    flex: .9,
+                                    marginLeft: 25,
+                                }}> Top 5  {this.props.popupGraphHWType} Usage of {this.props.parent.state.currentClassification}
+                                </div>
                         }
 
 
