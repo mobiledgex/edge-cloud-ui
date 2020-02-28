@@ -404,104 +404,108 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         async loadInitDataForCluster(isInterval: boolean = false) {
-            clearInterval(this.intervalForAppInst)
+            try{
+                clearInterval(this.intervalForAppInst)
 
-            this.setState({dropdownRequestLoading: true})
-            let clusterList = await getClusterList();
-            let cloudletList = await getCloudletList()
-            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
-            if (appInstanceList.length === 0) {
-                this.setState({
-                    isNoData: true,
+                this.setState({dropdownRequestLoading: true})
+                let clusterList = await getClusterList();
+                let cloudletList = await getCloudletList()
+                let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
+                if (appInstanceList.length === 0) {
+                    this.setState({
+                        isNoData: true,
+                    })
+                }
+
+                //fixme: fakeData22222222222
+                //fixme: fakeData
+                /*    let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+                    let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
+                    let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
+                    console.log('appInstanceList====>', appInstanceList);*/
+
+                console.log('clusterList===>', clusterList);
+
+                let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
+
+
+                console.log("clusterDropdownList===>", clusterDropdownList);
+
+                //@fixme: 클러스터 레벨 이벤트로그 호출...
+                //@fixme: 클러스터 레벨 이벤트로그 호출...
+                /*let clusterEventLogList = await getClusterEventLogList(clusterList);
+                //alert(JSON.stringify(clusterEventLogList))*/
+
+
+                let appInstanceListGroupByCloudlet = []
+                try {
+                    appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
+                } catch (e) {
+                    showToast(e.toString())
+                }
+
+
+                console.log('appInstanceListGroupByCloudlet===>', appInstanceListGroupByCloudlet);
+
+                await this.setState({
+                    isReady: true,
+                    clusterDropdownList: clusterDropdownList,
+                    dropDownCloudletList: cloudletList,
+                    clusterList: clusterList,
+                    isAppInstaceDataReady: true,
+                    appInstanceList: appInstanceList,
+                    filteredAppInstanceList: appInstanceList,
+                    dropdownRequestLoading: false,
+
+                });
+
+                if (!isInterval) {
+                    this.setState({
+                        appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
+                    })
+                }
+                let allClusterUsageList = []
+                try {
+                    allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
+                } catch (e) {
+
+                }
+
+                //fixme: fakeData22222222222
+                //fixme: fakeData22222222222
+                //fixme: fakeData22222222222
+                /*allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+                console.log('filteredAppInstanceList===>', appInstanceList)*/
+
+
+                let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
+                await this.setState({
+                    bubbleChartData: bubbleChartData,
                 })
-            }
 
-            //fixme: fakeData22222222222
-            //fixme: fakeData
-        /*    let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
-            let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
-            console.log('appInstanceList====>', appInstanceList);*/
+                let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
+                    return o.sumCpuUsage;
+                }));
 
-            console.log('clusterList===>', clusterList);
+                let maxMem = Math.max.apply(Math, allClusterUsageList.map(function (o) {
+                    return o.sumMemUsage;
+                }));
 
-            let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
+                console.log('allClusterUsageList333====>', allClusterUsageList);
 
-
-            console.log("clusterDropdownList===>", clusterDropdownList);
-
-            //@fixme: 클러스터 레벨 이벤트로그 호출...
-            //@fixme: 클러스터 레벨 이벤트로그 호출...
-            let clusterEventLogList =await  getClusterEventLogList(clusterList);
-            alert(JSON.stringify(clusterEventLogList))
-
-
-            let appInstanceListGroupByCloudlet = []
-            try {
-                appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
-            } catch (e) {
-                showToast(e.toString())
-            }
-
-
-            console.log('appInstanceListGroupByCloudlet===>', appInstanceListGroupByCloudlet);
-
-            await this.setState({
-                isReady: true,
-                clusterDropdownList: clusterDropdownList,
-                dropDownCloudletList: cloudletList,
-                clusterList: clusterList,
-                isAppInstaceDataReady: true,
-                appInstanceList: appInstanceList,
-                filteredAppInstanceList: appInstanceList,
-                dropdownRequestLoading: false,
-
-            });
-
-            if (!isInterval) {
-                this.setState({
-                    appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
+                await this.setState({
+                    clusterListLoading: false,
+                    allCloudletUsageList: allClusterUsageList,
+                    allClusterUsageList: allClusterUsageList,
+                    filteredClusterUsageList: allClusterUsageList,
+                    maxCpu: maxCpu,
+                    maxMem: maxMem,
+                    isRequesting: false,
+                    currentCluster: '',
                 })
-            }
-            let allClusterUsageList = []
-            try {
-                allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
-            } catch (e) {
+            }catch (e) {
 
             }
-
-            //fixme: fakeData22222222222
-            //fixme: fakeData22222222222
-            //fixme: fakeData22222222222
-            /*allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
-            console.log('filteredAppInstanceList===>', appInstanceList)*/
-
-
-            let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
-            await this.setState({
-                bubbleChartData: bubbleChartData,
-            })
-
-            let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
-                return o.sumCpuUsage;
-            }));
-
-            let maxMem = Math.max.apply(Math, allClusterUsageList.map(function (o) {
-                return o.sumMemUsage;
-            }));
-
-            console.log('allClusterUsageList333====>', allClusterUsageList);
-
-            await this.setState({
-                clusterListLoading: false,
-                allCloudletUsageList: allClusterUsageList,
-                allClusterUsageList: allClusterUsageList,
-                filteredClusterUsageList: allClusterUsageList,
-                maxCpu: maxCpu,
-                maxMem: maxMem,
-                isRequesting: false,
-                currentCluster: '',
-            })
 
         }
 
@@ -1019,7 +1023,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         i: uniqueId,
                         x: 0,
                         y: maxY + 1,
-                        w: 1,
+                        w: graphType === GRID_ITEM_TYPE.CLUSTER_LIST ? 2 : 1,
                         h: 1,
                     }),
                     layoutMapperForCluster: mapperList.concat(itemOne),
