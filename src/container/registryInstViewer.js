@@ -12,7 +12,7 @@ import * as reducer from '../utils'
 import * as serviceMC from '../services/serviceMC';
 import SiteFourCreateFormAppInstDefault from "./siteFourCreateFormAppInstDefault";
 import { withRouter } from "react-router-dom";
-import MexMessageDialog from '../hoc/mexDialogMessage';
+import MexMultiStepper, {updateStepper} from '../hoc/stepper/mexMessageMultiStream'
 
 
 var layout = [
@@ -28,10 +28,7 @@ class RegistryInstViewer extends React.Component {
         super(props);
         _self = this;
         const layout = this.generateLayout();
-        this.wsRequestCount = 0;
-        this.wsRequestResponse = [];
         this.state = {
-            dialogMessage: [],
             layout,
             open: false,
             openAdd: false,
@@ -54,6 +51,7 @@ class RegistryInstViewer extends React.Component {
             validateError: [],
             regSuccess: true,
             autoClusterDisable: false,
+            stepsArray:[],
             keysData: [
                 {
                     'Region': { label: 'Region', type: 'RenderSelect', necessary: true, tip: 'Select region where you want to deploy.', disable: (Object.keys(this.props.appLaunch).length == 0) ? true : false, active: true, items: [] },
@@ -318,8 +316,6 @@ class RegistryInstViewer extends React.Component {
         data.appinst.key.cluster_inst_key.developer = data.appinst.key.app_key.developer_key.name;
         serviceBody.uuid = serviceMC.generateUniqueId()
         serviceBody.data = data;
-
-        this.wsRequestCount = this.wsRequestCount + 1;
         this.props.handleLoadingSpinner(true);
         serviceMC.sendWSRequest(serviceBody, _self.receiveResult)
     }
@@ -368,8 +364,6 @@ class RegistryInstViewer extends React.Component {
                 let filterData = this.state.cloudlets;
                 let vmCheck = this.state.autoClusterDisable;
 
-                this.wsRequestCount = 0;
-                this.wsRequestResponse = [];
                 multiData.Cloudlet.map((itemCloudlet) => {
                     if (vmCheck) multiData.ClusterInst = ['']
                     if (multiData.AutoClusterInst) {
@@ -499,39 +493,22 @@ class RegistryInstViewer extends React.Component {
     }
 
     receiveResult = (mcRequest) => {
-        this.wsRequestCount = this.wsRequestCount - 1;
-        let messageArray = [];
         if (mcRequest) {
-            this.wsRequestResponse.push(mcRequest);
-            if (this.wsRequestCount === 0) {
-                this.props.handleLoadingSpinner(false);
-                let valid = true;
-                this.wsRequestResponse.map(mcRequest => {
-                    if (mcRequest.response && mcRequest.response.data) {
-                        let data = mcRequest.response.data
-                        messageArray.push(data.data.message)
-                        if (data.code !== 200) {
-                            valid = false;
-                        }
-                    }
-                })
-                if (valid) {
-                    this.gotoUrl('submit');
-                }
-                else {
-                    this.setState({
-                        dialogMessage: messageArray
-                    })
-                }
+            let data = undefined;
+            let request = mcRequest.request;
+            let cloudletName = request.data.appinst.key.cluster_inst_key.cloudlet_key.name;
+            if(mcRequest.response && mcRequest.response.data)
+            {
+                data  = mcRequest.response.data;
             }
+            this.setState({stepsArray:updateStepper(this.state.stepsArray, cloudletName, data)})
         }
     }
 
-    closeDialog = () => {
+    stepperClose = () => {
         this.setState({
-            dialogMessage: []
+            stepsArray:[]
         })
-        this.props.handleLoadingSpinner(false);
         this.gotoUrl('submit');
     }
 
@@ -556,7 +533,7 @@ class RegistryInstViewer extends React.Component {
                 <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
                 <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
                 <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>
-                <MexMessageDialog close={this.closeDialog} message={this.state.dialogMessage} />
+                <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose}/>
             </div>
 
         );

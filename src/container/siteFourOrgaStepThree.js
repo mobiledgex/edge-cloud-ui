@@ -198,7 +198,7 @@ class SiteFourOrgaThree extends React.Component {
                                                     </div>
                                                     <br />
                                                     <div>
-                                                        {`$ curl -u<username> -T <path_to_file> "https://artifactory.mobiledgex.net/artifactory/repo-` + org + `/<target_file_path>" --progress-bar -o`}
+                                                        {`$ curl -u<username> -T <path_to_file> "https://artifactory.mobiledgex.net/artifactory/repo-` + org + `/<target_file_path>" --progress-bar -o <upload status filename>`}
                                                     </div>
                                                 </div>
                                             </Grid.Column>
