@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
+import {THEME_OPTIONS} from "../shared/Constants";
 
 export default class BubbleChart extends Component {
     constructor(props) {
@@ -37,6 +38,7 @@ export default class BubbleChart extends Component {
         )
     }
 
+
     renderChart() {
         const {
             graph,
@@ -52,7 +54,72 @@ export default class BubbleChart extends Component {
 
         const bubblesWidth = showLegend ? width * (1 - (legendPercentage / 100)) : width;
         const legendWidth = width - bubblesWidth;
-        const color = d3.scaleOrdinal(d3.schemeCategory20c);
+
+
+        var categorical = [
+            {"name": "schemeAccent", "n": 8},
+            {"name": "schemeDark2", "n": 8},
+            {"name": "schemePastel2", "n": 8},
+            {"name": "schemeSet2", "n": 8},
+            {"name": "schemeSet1", "n": 9},
+            {"name": "schemePastel1", "n": 9},
+            {"name": "schemeCategory10", "n": 10},
+            {"name": "schemeSet3", "n": 12},
+            {"name": "schemePaired", "n": 12},
+            {"name": "schemeCategory20", "n": 20},
+            {"name": "schemeCategory20b", "n": 20},
+            {"name": "schemeCategory20c", "n": 20}
+        ]
+
+        let colors = function (s) {
+            return s.match(/.{6}/g).map(function (x) {
+                return "#" + x;
+            });
+        };
+
+        //const color = d3.scaleOrdinal(d3.schemeCategory20c);
+        //'#609732', '#6EDC12', '#69BA27', '#527536', '#405330'
+
+        //const color = d3.scaleOrdinal(colors("1f77b4ff7f0e2ca02cd627289467bd8c564be377c27f7f7fbcbd2217becf"));
+
+        //6097326EDC1269BA27527536405330
+        let colorCodes = 'DE0000FF9600FFF6005BCB000096FF'
+        if (this.props.themeTitle === THEME_OPTIONS.EUNDEW) {
+            let eundewColorCodes = 'DE0000FF9600FFF6005BCB000096FF'
+            colorCodes = eundewColorCodes;
+        }
+        if (this.props.themeTitle === THEME_OPTIONS.BLUE) {
+            let blueColorCodes = '65DEF1A8DCD1DCE2C8F96900F17F29'
+            colorCodes = blueColorCodes;
+        }
+        if (this.props.themeTitle === THEME_OPTIONS.GREEN) {
+            let greenColorCodes = "008000d7fff1556B2F32CD328cd790"
+            colorCodes = greenColorCodes;
+        }
+
+        if (this.props.themeTitle === THEME_OPTIONS.RED) {
+            let redColorCodes = 'FF0000FFBDAAD4826A802D15551300'
+            colorCodes = redColorCodes;
+        }
+
+        if (this.props.themeTitle === THEME_OPTIONS.MONOKAI) {
+            let monokaiColor = 'F92672FD971FA6E22EE6DB74A6E22E'
+            colorCodes = monokaiColor;
+        }
+
+        if (this.props.themeTitle === THEME_OPTIONS.APPLE) {
+            let appleColors = '0A84FF30D158FF453AFF9F0AFF375F'
+            colorCodes = appleColors;
+        }
+
+        //'#0A84FF', '#30D158', '#5E5CE6', '#FF9F0A', '#FF375F'
+
+        //'#AE81FF', '#FD971F', '#E69F66', '#E6DB74', '#A6E22E'
+
+
+        const color = d3.scaleOrdinal(colors(colorCodes));//green
+
+        //const color = d3.scaleOrdinal(colors("6097326EDC1269BA27527536405330"));//green
 
         const pack = d3.pack()
             .size([bubblesWidth * graph.zoom, bubblesWidth * graph.zoom])
@@ -123,9 +190,9 @@ export default class BubbleChart extends Component {
                 return "translate(" + d.x + "," + d.y + ")";
             })
             .on("click", function (d) {
-                try{
+                try {
                     bubbleClickFun(d.cluster_cloudlet, d.index);
-                }catch (e) {
+                } catch (e) {
                 }
             })
 
@@ -323,7 +390,7 @@ export default class BubbleChart extends Component {
             });
 
         texts.append("text")
-        //.style("font-size", `${legendFont.size}px`)
+            //.style("font-size", `${legendFont.size}px`)
             .style("font-size", `12px`)
             /*.style("font-weight", (d) => {
                 return legendFont.weight ? legendFont.weight : 50;
@@ -381,6 +448,7 @@ BubbleChart.propTypes = {
         color: PropTypes.string,
         weight: PropTypes.string,
     }),
+    themeTitle: PropTypes.string,
 }
 BubbleChart.defaultProps = {
     graph: {
@@ -416,5 +484,6 @@ BubbleChart.defaultProps = {
     },
     legendClickFun: (label, index) => {
         console.log(`Legend ${label} is clicked ...`)
-    }
+    },
+    themeTitle: 'EUNDEW'
 }

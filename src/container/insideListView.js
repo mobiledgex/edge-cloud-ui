@@ -228,6 +228,28 @@ class InsideListView extends React.Component {
 
         setTimeout(() => this.sorting = false, 1000)
     }
+
+   returnReWord = (key) => {
+        let newName = '';
+        switch (key) {
+            case 'FlavorName' : newName = 'Flavor Name'; break;
+            case 'RAM' : newName = 'RAM Size'; break;
+            case 'vCPUs' : newName = 'Number of vCPUs'; break;
+            case 'Disk' : newName = 'Disk Space'; break;
+            case 'OrganizationName' : newName = 'Organization Name'; break;
+            case 'AppName' : newName = 'App Name'; break;
+            case 'DeploymentType' : newName = 'Deployment Type'; break;
+            case 'DefaultFlavor' : newName = 'Default Flavor'; break;
+            case 'PoolName' : newName = 'Pool Name'; break;
+            case 'NumOfCloudlets' : newName = 'Number of Cloudlets'; break;
+            case 'NumOfOrganizations' : newName = 'Number of Organizations'; break;
+            default: newName = key; break;
+        }
+        return newName;
+
+    }
+
+
     makeHeader(_keys, headL, visibles) {
         const { column, direction } = this.state
         let keys = Object.keys(_keys);
@@ -244,15 +266,7 @@ class InsideListView extends React.Component {
                 </Table.HeaderCell>
                 :
                 <Table.HeaderCell key={i} className={(key === 'Phone' || key === 'Address' || key === 'Ports')?'unsortable':''} textAlign='center'  sorted={column === key ? direction : null} onClick={(key !== 'Phone' && key !== 'Address' && key !== 'Ports')?this.handleSort(key):null}>
-                    {(key === 'FlavorName')? 'Flavor Name'
-                        : (key === 'RAM')? 'RAM Size'
-                            : (key === 'vCPUs')? 'Number of vCPUs'
-                                : (key === 'Disk')? 'Disk Space'
-                                    : (key === 'OrganizationName')? 'Organization Name'
-                                        : (key === 'AppName')? 'App Name'
-                                            : (key === 'DeploymentType')? 'Deployment Type'
-                                                : (key === 'DefaultFlavor')? 'Default Flavor'
-                                                    : key}
+                    {this.returnReWord(key)}
                 </Table.HeaderCell>
         ));
     }

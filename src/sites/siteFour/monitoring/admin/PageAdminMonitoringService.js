@@ -5,7 +5,15 @@ import Lottie from "react-lottie";
 import BubbleChart from "../../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../../shared/Types";
 import PageAdminMonitoring from "./PageAdminMonitoring";
-import {convertByteToMegaByte, numberWithCommas, renderBarChartCore, renderLineChartCore, renderUsageByType2, PageMonitoringStyles} from "../PageMonitoringCommonService";
+import {
+    convertByteToMegaByte,
+    numberWithCommas,
+    renderBarChartCore,
+    renderLineChartCore,
+    renderUsageByType2,
+    PageMonitoringStyles,
+    showToast
+} from "../PageMonitoringCommonService";
 import {TabPanel, Tabs} from "react-tabs";
 import {Table} from "semantic-ui-react";
 import type {TypeAppInstanceUsage2, TypeGridInstanceList} from "../../../../shared/Types";
@@ -753,11 +761,11 @@ export const handleBubbleChartDropDown = async (_this, value) => {
             currentHardwareType: value,
         });
 
+        console.log("allAppInstUsageList===>", _this.state.allAppInstUsageList);
+
         let appInstanceList = _this.state.appInstanceList;
-        let allCpuUsageList = _this.state.filteredCpuUsageList;
-        let allMemUsageList = _this.state.filteredMemUsageList;
-        let allDiskUsageList = _this.state.filteredDiskUsageList;
-        let allNetworkUsageList = _this.state.filteredNetworkUsageList;
+        let allUsageList = _this.state.allAppInstUsageList;
+
         let chartData = [];
 
         if (value === HARDWARE_TYPE.FLAVOR) {
@@ -772,7 +780,7 @@ export const handleBubbleChartDropDown = async (_this, value) => {
                 })
             })
         } else if (value === HARDWARE_TYPE.CPU) {
-            allCpuUsageList.map((item, index) => {
+            allUsageList.map((item, index) => {
                 chartData.push({
                     //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
                     index: index,
@@ -783,7 +791,7 @@ export const handleBubbleChartDropDown = async (_this, value) => {
                 })
             })
         } else if (value === HARDWARE_TYPE.MEM) {
-            allMemUsageList.map((item, index) => {
+            allUsageList.map((item, index) => {
                 chartData.push({
                     //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
                     index: index,
@@ -794,7 +802,7 @@ export const handleBubbleChartDropDown = async (_this, value) => {
                 })
             })
         } else if (value === HARDWARE_TYPE.DISK) {
-            allDiskUsageList.map((item, index) => {
+            allUsageList.map((item, index) => {
                 chartData.push({
                     //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
                     index: index,
@@ -805,7 +813,7 @@ export const handleBubbleChartDropDown = async (_this, value) => {
                 })
             })
         } else if (value === NETWORK_TYPE.RECV_BYTES) {
-            allNetworkUsageList.map((item, index) => {
+            allUsageList.map((item, index) => {
                 chartData.push({
                     index: index,
                     label: item.instance.AppName.toString().substring(0, 10) + "...",
@@ -815,7 +823,7 @@ export const handleBubbleChartDropDown = async (_this, value) => {
                 })
             })
         } else if (value === HARDWARE_TYPE.SEND_BYTES) {
-            allNetworkUsageList.map((item, index) => {
+            allUsageList.map((item, index) => {
                 chartData.push({
                     index: index,
                     label: item.instance.AppName.toString().substring(0, 10) + "...",
@@ -833,6 +841,7 @@ export const handleBubbleChartDropDown = async (_this, value) => {
         });
     } catch (e) {
 
+        showToast(e.toString())
     }
 }
 

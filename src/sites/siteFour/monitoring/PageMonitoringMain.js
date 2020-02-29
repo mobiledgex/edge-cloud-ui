@@ -11,6 +11,7 @@ import PageMonitoringForOperator from "./oper/PageOperMonitoring";
 import {Grid} from "semantic-ui-react";
 import PageMonitoringForDeveloper from "./dev/PageDevMonitoring";
 import PageMonitoringForAdmin from "./admin/PageAdminMonitoring";
+import {PageMonitoringProvider} from "./PageMonitoringGlobalState";
 
 const mapStateToProps = (state) => {
     return {
@@ -57,6 +58,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
         }
 
+
         renderMainPage() {
             if (this.state.userRole.includes('Admin')) {
                 return (
@@ -75,9 +77,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         render() {
             return (
-                <Grid.Row className='view_contents'>
-                    {this.renderMainPage()}
-                </Grid.Row>
+                <PageMonitoringProvider>
+                    <Grid.Row className='view_contents'>
+                        {this.renderMainPage()}
+                    </Grid.Row>
+                </PageMonitoringProvider>
 
             );
         }
