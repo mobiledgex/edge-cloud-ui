@@ -261,7 +261,7 @@ class SiteFourPageAppInst extends React.Component {
                 vmURL = mcurl+'/'+vmURLs[vmURLs.length-1];
                 _self.setState({ viewMode: 'detailView' })
                 let vm = {}
-                vm.vmURL = vmURL
+                vm.url = vmURL
                 let data = {}
                 data.vm = vm;
                 this.props.childPage(<TerminalViewer data={data} onClose={this.onTermialClose}></TerminalViewer>)  
