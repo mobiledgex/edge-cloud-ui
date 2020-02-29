@@ -6,8 +6,8 @@ import MexForms from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import * as serviceMC from '../../../services/serviceMC';
-import * as serverData from '../../../services/ServerData';
+import * as serviceMC from '../../../services/model/serviceMC';
+import * as serverData from '../../../services/model/serverData';
 
 
 

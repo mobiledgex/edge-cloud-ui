@@ -249,10 +249,7 @@ class SiteFourPageAppInst extends React.Component {
 
     setRemote = (mcRequest) => {
         this.props.handleLoadingSpinner(false)
-        let mcurl = process.env.REACT_APP_API_ENDPOINT;
-        mcurl  = mcurl.replace('https://', '')
-        mcurl  = mcurl.replace('http://', '')
-        let ipAddress = (mcurl.substring(0,mcurl.indexOf(':')))
+        let mcurl = process.env.REACT_APP_API_VM_ENDPOINT;
         if (mcRequest && mcRequest.response)
         {
             let response  = mcRequest.response;
@@ -260,7 +257,8 @@ class SiteFourPageAppInst extends React.Component {
             if(responseData.code === 200)
             {
                 let vmURL = responseData.data;
-                vmURL = vmURL.replace('127.0.0.1', ipAddress)
+                let vmURLs = vmURL.split('/')
+                vmURL = mcurl+'/'+vmURLs[vmURLs.length-1];
                 _self.setState({ viewMode: 'detailView' })
                 let vm = {}
                 vm.vmURL = vmURL

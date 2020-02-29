@@ -6,7 +6,7 @@ import MexForms from '../../../hoc/forms/MexForms';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import uuid from 'uuid';
-import * as serverData from '../../../services/ServerData';
+import * as serverData from '../../../services/model/serverData';
 
 class AutoProvPolicyReg extends React.Component {
     constructor(props) {
@@ -188,33 +188,6 @@ class AutoProvPolicyReg extends React.Component {
         return JSON.parse(JSON.stringify(data))
     }
     
-    // convertServerFieldtoJson=(form, data)=>
-    // {
-    //     if (form.serverField && form.value) {
-    //         let serverField = this.getNewJsonObject(form.serverField);
-    //         if (serverField.includes('#OS#')) {
-    //             let objects = serverField.split('#OS#');
-    //             let currentObject = data;
-    //             for (let j = 0; j < objects.length; j++) {
-    //                 let object = objects[j];
-    //                 if (j < objects.length - 1) {
-    //                     if (currentObject[object] === undefined) {
-    //                         currentObject[object] = {};
-    //                     }
-    //                     currentObject = currentObject[object];
-    //                 }
-    //                 else {
-    //                     currentObject[object] = form.value;
-    //                 }
-    //             }
-    //         }
-    //         else {
-    //             data[form.serverField] = form.value;
-    //         }
-    //     }
-    // }
-
-
     /***
      * Map values from form to field
      * ***/

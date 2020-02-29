@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table } from 'semantic-ui-react'
+import { Table } from 'semantic-ui-react'
 import ReactJson from 'react-json-view';
 
 const jsonViewProps = {
@@ -16,14 +16,13 @@ const jsonViewProps = {
     displayDataTypes: false,
     iconStyle: "triangle"
 }
-const subView = (layouts, dataList) => {
+const subView = (keys, dataList) => {
     return (
-        dataList && dataList.length>0 ?
         <Table celled>
             <Table.Header>
                 <Table.Row>
-                    {layouts.map((layout, i) => {
-                        return <Table.HeaderCell key={i}>{layout.label}</Table.HeaderCell>
+                    {keys.map((item, i) => {
+                        return <Table.HeaderCell key={i}>{item.label}</Table.HeaderCell>
                     })}
                 </Table.Row>
             </Table.Header>
@@ -31,20 +30,30 @@ const subView = (layouts, dataList) => {
                 {dataList.map((data, i) => {
                     return (
                         <Table.Row key={i}>{(
-                            layouts.map((layout, j) => {
+                            keys.map((item, j) => {
                                 return (
                                     <Table.Cell key={j}>
-                                        {layout.type === 'JSON' ? 
-                                            <ReactJson src={data[layout.key]} {...jsonViewProps} /> : 
-                                            data[layout.key]}
+                                        {item.dataType === 'JSON' ?
+                                            <ReactJson src={data[item.field]} {...jsonViewProps} /> :
+                                            data[item.field]}
                                     </Table.Cell>)
                             }))
                         }
                         </Table.Row>)
                 })}
             </Table.Body>
-        </Table> : 
-        'None'
+        </Table>
+    )
+}
+
+const getRow = (id, label, data) => {
+    return (
+        <Table.Row key={id}>
+            <Table.Cell>{label}</Table.Cell>
+            <Table.Cell>
+                {data}
+            </Table.Cell>
+        </Table.Row>
     )
 }
 const MexDetailViewer = (props) => {
@@ -58,17 +67,19 @@ const MexDetailViewer = (props) => {
                 </Table.Row>
             </Table.Header>
             <Table.Body>
-                {props.layouts.map((layout, i) => {
-                    return(
-                        detailData[layout.key]!== undefined ?
-                        <Table.Row key={i}>
-                            <Table.Cell>{layout.label}</Table.Cell>
-                            <Table.Cell>
-                                {layout.layouts ? subView(layout.layouts, detailData[layout.key]) : detailData[layout.key]}
-                            </Table.Cell>
-                        </Table.Row> : 
-                        null
-                        
+                {props.keys.map((item, i) => {
+                    let data = detailData[item.field]
+                    console.log('Rahul1234', data)
+                    console.log('Rahul1234', item.label)
+                    return (
+                        data !== undefined ?
+                            item.keys ?
+                                data.length > 0 ?
+                                    getRow(i, item.label, subView(item.keys, data)) : null
+                                :
+                                getRow(i, item.label, data) :
+                            null
+
                     )
                 })}
             </Table.Body>

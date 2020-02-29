@@ -5,11 +5,11 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import * as serverData from '../../../services/ServerData';
+import * as serverData from '../../../services/model/serverData';
 import SiteFourAutoProvPolicyReg from './autoProvPolicyReg'
-import {layouts} from '../../../services/formatter/formatAutoProvPolicy';
 import MexDetailViewer from '../../../hoc/dataViewer/DetailViewer';
-
+import {keys, actionMenu} from '../../../services/model/autoProvisioningPolicy';
+import {fields} from '../../../services/model/format';
 
 const LIST_VIEW = 'ListView'
 const DETAIL_VIEW = 'DetailView'
@@ -23,23 +23,6 @@ class SiteFourPageFlavor extends React.Component {
         };
         this.action = '';
         this.data = {}
-
-        this.headerInfo = [
-            { field: 'Region', label: 'Region', sortable: true, visible: true },
-            { field: 'OrganizationName', label: 'Organization Name', sortable: true, visible: true },
-            { field: 'AutoPolicyName', label: 'Auto Policy Name', sortable: true, visible: true },
-            { field: 'DeployClientCount', label: 'Deploy Client Count', sortable: false, visible: true },
-            { field: 'DeployIntervalCount', label: 'Deploy Interval Count', sortable: true, visible: true },
-            { field: 'CloudletCount', label: 'Cloudlet Count', sortable: false, visible: true },
-            { field: 'Actions', label: 'Actions', sortable: false, visible: true }
-        ]
-
-        this.actionMenu = [
-            { label: 'View', onClick: this.onView },
-            { label: 'Add Cloudlet', onClick: this.onAddCloudlet },
-            { label: 'Delete Cloudlet', onClick: this.onDeleteCloudlet },
-            { label: 'Delete', onClick: this.onDelete }
-        ]
     }
 
     getToken = () => {
@@ -70,16 +53,16 @@ class SiteFourPageFlavor extends React.Component {
 
     onDelete = async (data) => {
         let AutoProvPolicy = {
-            key: { developer: data.OrganizationName, name: data.AutoPolicyName }
+            key: { developer: data[fields.organizationName], name: data[fields.autoPolicyName] }
         }
 
         let requestData = {
-            Region: data.Region,
+            Region: data[fields.region],
             AutoProvPolicy: AutoProvPolicy
         }
         let mcRequest = await serverData.deleteAutoProvPolicy(this, requestData)
         if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-            this.props.handleAlertInfo('success', `Auto Provisioning Policy ${data.AutoPolicyName} deleted successfully`)
+            this.props.handleAlertInfo('success', `Auto Provisioning Policy ${data[fields.autoPolicyName]} deleted successfully`)
         }
         this.props.handleComputeRefresh(true);
     }
@@ -139,8 +122,9 @@ class SiteFourPageFlavor extends React.Component {
                     multiRequestData = [...multiRequestData, ...dataList]
                 }
             }
+
             if (multiRequestData.length > 0) {
-                let sortedData = _.orderBy(multiRequestData, ['Region', 'AutoPolicyName'])
+                let sortedData = _.orderBy(multiRequestData, ['region', 'autoPolicyName'])
                 this.setState({
                     devData: sortedData
                 })
@@ -153,8 +137,8 @@ class SiteFourPageFlavor extends React.Component {
     render() {
         return (
             this.state.viewMode === LIST_VIEW ?
-                <MexListView devData={this.state.devData} headerInfo={this.headerInfo} actionMenu={this.actionMenu} onSelect = {this.onView}/> :
-                <MexDetailViewer detailData={this.state.detailData} layouts={layouts}/>
+                <MexListView devData={this.state.devData} headerInfo={keys} actionMenu={actionMenu(this)} onSelect = {this.onView}/> :
+                <MexDetailViewer detailData={this.state.detailData} keys={keys}/>
         )
     }
 };

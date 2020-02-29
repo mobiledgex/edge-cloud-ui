@@ -81,7 +81,7 @@ class MexListView extends React.Component {
 
     getCellClick = (field, item) => {
         this.selectedRow = item
-        if(field !== 'Actions' && this.props.onSelect)
+        if(field !== 'actions' && this.props.onSelect)
         {
             this.props.onSelect(item)
         }
@@ -110,7 +110,7 @@ class MexListView extends React.Component {
                 let field = header.field;
                 return <Table.Cell key={j} className="table_actions" textAlign='center' onClick={() => this.getCellClick(field, item)} style={(this.state.selectedItem == i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }}>
                     {
-                        field === 'Actions' ? this.getAction(item)
+                        field === 'actions' ? this.getAction(item)
                         :
                         <div>
                             {String(item[field])}

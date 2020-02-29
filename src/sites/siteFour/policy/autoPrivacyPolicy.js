@@ -8,8 +8,8 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 
-import * as serverData from '../../../services/ServerData';
-import {layouts} from '../../../services/formatter/formatPrivacyPolicy';
+import * as serverData from '../../../services/model/serverData';
+import {keys, actionMenu} from '../../../services/model/privacyPolicy';
 import PrivacyPolicyReg from './autoPrivacyPolicyReg'
 
 const LIST_VIEW = 'ListView'
@@ -26,25 +26,6 @@ class SiteFourPageFlavor extends React.Component {
         this.requestCount = 0;
         this.multiRequestData = [];
         this.data={}
-
-        this.headerInfo = [
-            { field: 'Region', label: 'Region', sortable: true, visible: true },
-            { field: 'OrganizationName', label: 'Organization Name', sortable: true, visible: true },
-            { field: 'PrivacyPolicyName', label: 'Privacy Policy Name', sortable: true, visible: true },
-            { field: 'OutboundSecurityRulesCount', label: 'Rules Count', sortable: true, visible: true },
-            { field: 'Actions', label: 'Actions', sortable: false, visible: true }
-        ]
-
-        this.actionMenu = [
-            { label: 'View', onClick: this.onView },
-            { label: 'Update', onClick: this.onAddPolicy },
-            { label: 'Delete', onClick: this.onDelete }
-        ]
-    }
-
-    getToken = () => {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        return store.userToken
     }
 
     onAddPolicy = (data) => {
@@ -146,7 +127,7 @@ class SiteFourPageFlavor extends React.Component {
                 }
             }
             if (multiRequestData.length > 0) {
-                let sortedData = _.orderBy(multiRequestData, ['Region', 'PrivacyPolicyName'])
+                let sortedData = _.orderBy(multiRequestData, ['region', 'privacyPolicyName'])
                 this.setState({
                     devData: sortedData
                 })
@@ -160,8 +141,8 @@ class SiteFourPageFlavor extends React.Component {
     render() {
         return (
             this.state.viewMode === LIST_VIEW ?
-                <MexListView devData={this.state.devData} headerInfo={this.headerInfo} actionMenu={this.actionMenu} onSelect = {this.onView}/> :
-                <MexDetailViewer detailData={this.state.detailData} layouts={layouts}/>
+                <MexListView devData={this.state.devData} headerInfo={keys} actionMenu={actionMenu(this)} onSelect = {this.onView}/> :
+                <MexDetailViewer detailData={this.state.detailData} keys={keys}/>
         )
     }
 };

@@ -1,24 +1,16 @@
 
-import * as FormatComputeOrganization from './formatter/formatComputeOrganization';
-import * as FormatComputeUsers from './formatter/formatComputeUsers';
-import * as FormatComputeAccounts from './formatter/formatComputeAccounts';
-import * as FormatComputeCloudlet from './formatter/formatComputeCloudlet';
-import * as FormatComputeCloudletInfo from './formatter/formatComputeCloudletInfo';
-import * as FormatComputeClstInst from './formatter/formatComputeClstInstance';
-import * as FormatComputeFlavor from './formatter/formatComputeFlavor';
-import * as FormatComputeApp from './formatter/formatComputeApp';
-import * as FormatComputeInst from './formatter/formatComputeInstance';
-import * as FormatMonitorCloudlet from "./formatter/formatMonitorCloudlet";
-import * as FormatMonitorCluster from "./formatter/formatMonitorCluster";
-import * as FormatMonitorApp from "./formatter/formatMonitorApp";
-import * as FormatComputeCloudletPool from './formatter/formatComputeCloudletPool';
-import * as FormatComputeCloudletPoolDelete from './formatter/formatComputeCloudletPoolDelete';
-import * as FormatComputeCloudletPoolMember from './formatter/formatComputeCloudletPoolMember';
-import * as FormatComputeCloudletPoolMemberDelete from './formatter/formatComputeCloudletPoolMemberDelete';
-import * as FormatComputeOrgCloudlet from './formatter/formatComputeOrgCloudlet';
-import * as FormatComputeLinkPoolOrgDelete from './formatter/formatComputeLinkPoolOrgDelete';
-import * as FormatAutoProvPolicy from './formatter/formatAutoProvPolicy';
-import * as FormatPrivacyPolicy from './formatter/formatPrivacyPolicy';
+import * as Organization from './organization';
+import * as Users from './users';
+import * as Accounts from './accounts';
+import * as App from './app';
+import * as Cloudlet from './cloudlet';
+import * as CloudletInfo from './cloudletInfo';
+import * as ClusterInstance from './clusterInstance';
+import * as Flavor from './flavor';
+import * as AppInstance from './appInstance';
+import * as OrgCloudlet from './orgCloudlet';
+import * as AutoProvPolicy from './autoProvisioningPolicy';
+import * as PrivacyPolicy from './privacyPolicy';
 
 
 export const SHOW_ORG = "showOrg";
@@ -187,55 +179,40 @@ export function formatData(request, response) {
     let data = undefined;
     switch (request.method) {
         case SHOW_ORG:
-            data = FormatComputeOrganization.formatData(response, request.data)
+            data = Organization.getData(response, request.data)
             break;
         case SHOW_USERS:
-            data = FormatComputeUsers.formatData(response, request.data)
+            data = Users.getData(response, request.data)
             break;
         case SHOW_ACCOUNTS:
-            data = FormatComputeAccounts.formatData(response, request.data)
+            data = Accounts.getData(response, request.data)
             break;
         case SHOW_CLOUDLET:
-            data = FormatComputeCloudlet.formatData(response, request.data)
+            data = Cloudlet.getData(response, request.data)
             break;
         case SHOW_CLOUDLET_INFO:
-            data = FormatComputeCloudletInfo.formatData(response, request.data)
+            data = CloudletInfo.getData(response, request.data)
             break;
         case SHOW_CLUSTER_INST:
-            data = FormatComputeClstInst.formatData(response, request.data)
+            data = ClusterInstance.getData(response, request.data)
             break;
         case SHOW_FLAVOR:
-            data = FormatComputeFlavor.formatData(response, request.data)
+            data = Flavor.getData(response, request.data)
             break;
         case SHOW_APP:
-            data = FormatComputeApp.formatData(response, request.data)
+            data = App.getData(response, request.data)
             break;
         case SHOW_APP_INST:
-            data = FormatComputeInst.formatData(response, request.data)
-            break;
-        case CLOUDLET_METRICS_APP:
-            data = FormatMonitorCloudlet.formatData(response, request.data)
-            break;
-        case CLUSTER_INST_METRICS_APP:
-            data = FormatMonitorCluster.formatData(response, request.data)
-            break;
-        case APP_INST_METRICS_APP:
-            data = FormatMonitorApp.formatData(response, request.data)
-            break;
-        case SHOW_CLOUDLET_POOL:
-            data = FormatComputeCloudletPool.formatData(response, request.data)
-            break;
-        case SHOW_CLOUDLET_MEMBER:
-            data = FormatComputeCloudletPoolMember.formatData(response, request.data)
+            data = AppInstance.getData(response, request.data)
             break;
         case SHOW_ORG_CLOUDLET:
-            data = FormatComputeOrgCloudlet.formatData(response, request.data)
+            data = OrgCloudlet.getData(response, request.data)
             break;
         case SHOW_AUTO_PROV_POLICY:
-            data = FormatAutoProvPolicy.formatData(response, request.data)
+            data = AutoProvPolicy.getData(response, request.data)
             break;
         case SHOW_PRIVACY_POLICY:
-            data = FormatPrivacyPolicy.formatData(response, request.data)
+            data = PrivacyPolicy.getData(response, request.data)
             break;
         default:
             data = undefined;
@@ -249,27 +226,21 @@ export function formatData(request, response) {
 export function getKey(keyId, data) {
     switch (keyId) {
         case 'Cloudlet':
-            return FormatComputeCloudlet.getKey(data)
+            return Cloudlet.getKey(data)
         case 'ClusterInst':
-            return FormatComputeClstInst.getKey(data)
+            return ClusterInstance.getKey(data)
         case 'appinst':
-            return FormatComputeInst.getKey(data)
+            return AppInstance.getKey(data)
         case 'Organization':
-            return FormatComputeOrganization.getKey(data)
+            return Organization.getKey(data)
         case 'Flavors':
-            return FormatComputeFlavor.getKey(data)
+            return Flavor.getKey(data)
         case 'App':
-            return FormatComputeApp.getKey(data)
+            return App.getKey(data)
         case 'User':
-            return FormatComputeUsers.getKey(data)
+            return Users.getKey(data)
         case 'Account':
-            return FormatComputeAccounts.getKey(data)
-        case 'Cloudlet Pools':
-            return FormatComputeCloudletPoolDelete.getKey(data)
-        case 'delete member':
-            return FormatComputeCloudletPoolMemberDelete.getKey(data)
-        case 'delete link':
-            return FormatComputeLinkPoolOrgDelete.getKey(data)
+            return Accounts.getKey(data)
         default:
             return null;
     }
