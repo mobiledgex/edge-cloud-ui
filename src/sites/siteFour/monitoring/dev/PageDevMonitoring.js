@@ -56,8 +56,8 @@ import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import '../PageMonitoring.css'
 
-import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, PageMonitoringStyles, renderLoaderArea, showToast} from "../PageMonitoringCommonService";
-import {getAppInstList, getAppLevelUsageList, getCloudletList, getClusterEventLogList, getClusterLevelUsageList, getClusterList} from "../PageMonitoringMetricService";
+import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, PageMonitoringStyles, renderLoaderArea, renderPlaceHolderCircular, showToast} from "../PageMonitoringCommonService";
+import {getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraph from "../components/ModalGraph";
@@ -404,104 +404,107 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         async loadInitDataForCluster(isInterval: boolean = false) {
-            clearInterval(this.intervalForAppInst)
-
-            this.setState({dropdownRequestLoading: true})
-            let clusterList = await getClusterList();
-            let cloudletList = await getCloudletList()
-            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
-            if (appInstanceList.length === 0) {
-                this.setState({
-                    isNoData: true,
-                })
-            }
-
-            //fixme: fakeData22222222222
-            //fixme: fakeData
-        /*    let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
-            let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-            let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
-            console.log('appInstanceList====>', appInstanceList);*/
-
-            console.log('clusterList===>', clusterList);
-
-            let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
-
-
-            console.log("clusterDropdownList===>", clusterDropdownList);
-
-            //@fixme: 클러스터 레벨 이벤트로그 호출...
-            //@fixme: 클러스터 레벨 이벤트로그 호출...
-            let clusterEventLogList =await  getClusterEventLogList(clusterList);
-            alert(JSON.stringify(clusterEventLogList))
-
-
-            let appInstanceListGroupByCloudlet = []
             try {
-                appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
-            } catch (e) {
-                showToast(e.toString())
-            }
+                clearInterval(this.intervalForAppInst)
+
+                this.setState({dropdownRequestLoading: true})
+                let clusterList = await getClusterList();
+                let cloudletList = await getCloudletList()
+                let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
+                if (appInstanceList.length === 0) {
+                    this.setState({
+                        isNoData: true,
+                    })
+                }
+
+                //fixme: fakeData22222222222
+                //fixme: fakeData
+                /*    let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+                    let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
+                    let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
+                    console.log('appInstanceList====>', appInstanceList);*/
+
+                console.log('clusterList===>', clusterList);
+
+                let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
 
 
-            console.log('appInstanceListGroupByCloudlet===>', appInstanceListGroupByCloudlet);
+                console.log("clusterDropdownList===>", clusterDropdownList);
 
-            await this.setState({
-                isReady: true,
-                clusterDropdownList: clusterDropdownList,
-                dropDownCloudletList: cloudletList,
-                clusterList: clusterList,
-                isAppInstaceDataReady: true,
-                appInstanceList: appInstanceList,
-                filteredAppInstanceList: appInstanceList,
-                dropdownRequestLoading: false,
+                //@fixme: 클러스터 레벨 이벤트로그 호출...
+                //@fixme: 클러스터 레벨 이벤트로그 호출...
+                /*let clusterEventLogList = await getClusterEventLogList(clusterList);
+                //alert(JSON.stringify(clusterEventLogList))*/
 
-            });
+                let appInstanceListGroupByCloudlet = []
+                try {
+                    appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
+                } catch (e) {
+                    showToast(e.toString())
+                }
 
-            if (!isInterval) {
-                this.setState({
-                    appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
+
+                console.log('appInstanceListGroupByCloudlet===>', appInstanceListGroupByCloudlet);
+
+                await this.setState({
+                    isReady: true,
+                    clusterDropdownList: clusterDropdownList,
+                    dropDownCloudletList: cloudletList,
+                    clusterList: clusterList,
+                    isAppInstaceDataReady: true,
+                    appInstanceList: appInstanceList,
+                    filteredAppInstanceList: appInstanceList,
+                    dropdownRequestLoading: false,
+
+                });
+
+                if (!isInterval) {
+                    this.setState({
+                        appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
+                    })
+                }
+                let allClusterUsageList = []
+                try {
+                    allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
+                } catch (e) {
+
+                }
+
+                //fixme: fakeData22222222222
+                //fixme: fakeData22222222222
+                //fixme: fakeData22222222222
+                /*allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+                console.log('filteredAppInstanceList===>', appInstanceList)*/
+
+
+                let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
+                await this.setState({
+                    bubbleChartData: bubbleChartData,
                 })
-            }
-            let allClusterUsageList = []
-            try {
-                allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
+
+                let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
+                    return o.sumCpuUsage;
+                }));
+
+                let maxMem = Math.max.apply(Math, allClusterUsageList.map(function (o) {
+                    return o.sumMemUsage;
+                }));
+
+                console.log('allClusterUsageList333====>', allClusterUsageList);
+
+                await this.setState({
+                    clusterListLoading: false,
+                    allCloudletUsageList: allClusterUsageList,
+                    allClusterUsageList: allClusterUsageList,
+                    filteredClusterUsageList: allClusterUsageList,
+                    maxCpu: maxCpu,
+                    maxMem: maxMem,
+                    isRequesting: false,
+                    currentCluster: '',
+                })
             } catch (e) {
 
             }
-
-            //fixme: fakeData22222222222
-            //fixme: fakeData22222222222
-            //fixme: fakeData22222222222
-            /*allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
-            console.log('filteredAppInstanceList===>', appInstanceList)*/
-
-
-            let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
-            await this.setState({
-                bubbleChartData: bubbleChartData,
-            })
-
-            let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
-                return o.sumCpuUsage;
-            }));
-
-            let maxMem = Math.max.apply(Math, allClusterUsageList.map(function (o) {
-                return o.sumMemUsage;
-            }));
-
-            console.log('allClusterUsageList333====>', allClusterUsageList);
-
-            await this.setState({
-                clusterListLoading: false,
-                allCloudletUsageList: allClusterUsageList,
-                allClusterUsageList: allClusterUsageList,
-                filteredClusterUsageList: allClusterUsageList,
-                maxCpu: maxCpu,
-                maxMem: maxMem,
-                isRequesting: false,
-                currentCluster: '',
-            })
 
         }
 
@@ -1019,7 +1022,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         i: uniqueId,
                         x: 0,
                         y: maxY + 1,
-                        w: 1,
+                        w: graphType === GRID_ITEM_TYPE.CLUSTER_LIST ? 2 : 1,
                         h: 1,
                     }),
                     layoutMapperForCluster: mapperList.concat(itemOne),
@@ -1108,7 +1111,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_LIST) {
                 return (
-                    renderPerformanceSummaryTable(this, this.state.filteredClusterUsageList)
+                    this.state.loading ? renderPlaceHolderCircular() : renderPerformanceSummaryTable(this, this.state.filteredClusterUsageList)
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PIE) {
                 return (
