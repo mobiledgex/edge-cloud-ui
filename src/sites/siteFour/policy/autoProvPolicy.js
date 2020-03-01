@@ -95,13 +95,15 @@ class SiteFourPageFlavor extends React.Component {
                 })
             }
         }
-        else if (nextProps.computeRefresh.compute) {
-            this.getDataDeveloper(nextProps.changeRegion);
-            this.props.handleComputeRefresh(false);
-        }
         else if (this.props.changeRegion !== nextProps.changeRegion) {
             this.getDataDeveloper(nextProps.changeRegion);
         }
+    }
+
+    onRefresh = ()=>
+    {
+        alert(this.props.changeRegion)
+        this.getDataDeveloper(this.props.changeRegion);
     }
 
     getDataDeveloper = async (region, regionArr) => {
@@ -137,7 +139,7 @@ class SiteFourPageFlavor extends React.Component {
     render() {
         return (
             this.state.viewMode === LIST_VIEW ?
-                <MexListView devData={this.state.devData} headerInfo={keys} actionMenu={actionMenu(this)} onSelect = {this.onView}/> :
+                <MexListView devData={this.state.devData} headerInfo={keys} actionMenu={actionMenu(this)} onSelect = {this.onView} onRefresh={this.onRefresh}/> :
                 <MexDetailViewer detailData={this.state.detailData} keys={keys}/>
         )
     }

@@ -1,8 +1,8 @@
 import React from 'react';
-import { Table, Dropdown } from 'semantic-ui-react';
+import { Table, Dropdown, Grid, Header } from 'semantic-ui-react';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import AddIcon from '@material-ui/icons/Add';
-import { IconButton, Grow, Popper, Paper, ClickAwayListener, MenuList, Grid, Box } from '@material-ui/core';
+import { IconButton, Grow, Popper, Paper, ClickAwayListener, MenuList, Box, AppBar, Toolbar, Divider } from '@material-ui/core';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListIcon from '@material-ui/icons/List';
 import { withRouter } from 'react-router-dom';
@@ -14,6 +14,9 @@ import _ from "lodash";
 const regions = [{ key: 'ALL', value: 'ALL', text: 'ALL' },
     { key: 'US', value: 'US', text: 'US' },
     { key: 'EU', value: 'EU', text: 'EU' }]
+
+    const policies = [{ key: 'Auto Provisioning Policy', value: 'Auto Provisioning Policy', text: 'Auto Provisioning Policy' },
+    { key: 'Privacy Policy', value: 'Privacy Policy', text: 'Privacy Policy' }]
 class MexListView extends React.Component {
     constructor(props) {
         super(props);
@@ -23,6 +26,7 @@ class MexListView extends React.Component {
         };
         this.selectedRow = {};
         this.sorting = false;
+        this.selectedRegion = 'ALL'
     }
 
     gotoUrl(site, subPath, pg) {
@@ -43,6 +47,12 @@ class MexListView extends React.Component {
 
 
 
+
+    onRefresh = ()=>
+    {
+        alert(this.props.changeRegion)
+        this.getDataDeveloper(this.props.changeRegion);
+    }
 
     handleSort = clickedColumn => (a) => {
 
@@ -126,38 +136,32 @@ class MexListView extends React.Component {
 
     getToolbar = () => {
         return (
-            <div style={{ width: '100%' }}>
-
-                <Box display="flex">
-                    <Box width="100%">
-                        <Grid container spacing={2}>
-                            <Grid xs={3}>
-                                <label className='content_title_label'>Auto Privacy Policy</label>
-                            </Grid>
-                            <Grid>
-                                <div style={{marginTop:'10%'}}>
-                                    <strong>Region:&nbsp;&nbsp;</strong>
-                                    <Dropdown
-                                        options={regions}
-                                        defaultValue={regions[0].value}
-                                    /></div>
-                            </Grid>
-                        </Grid>
-                    </Box>
-
-                    <Box flexShrink={0}>
-                        <IconButton aria-label="Action" onClick={e => this.setState({ anchorEl: e.currentTarget })}>
-                            <AddIcon style={{ color: '#76ff03' }} />
-                        </IconButton>
-                    </Box>
-                    <Box flexShrink={0}>
-                        <IconButton aria-label="Action" onClick={e => this.setState({ anchorEl: e.currentTarget })}>
-                            <RefreshIcon style={{ color: '#76ff03' }} />
-                        </IconButton>
-                    </Box>
-                </Box>
-            </div>
-        )
+            <Toolbar>
+                <label className='content_title_label'>Auto Privacy Policy</label>
+                <div style={{ right: 0, position: 'absolute' }}>
+                    <div style={{display:'inline', margin:20}}>
+                        <strong>Region:&nbsp;&nbsp;</strong>
+                        <Dropdown
+                            options={regions}
+                            defaultValue={regions[0].value}
+                            onChange={(e,{value})=>{alert(value)}}
+                        />
+                    </div>
+                    <div style={{display:'inline', margin:20}}>
+                        <strong>Policies:&nbsp;&nbsp;</strong>
+                        <Dropdown
+                            options={policies}
+                            defaultValue={policies[0].value}
+                        />
+                    </div>
+                    <IconButton aria-label="Action">
+                        <AddIcon style={{ color: '#76ff03' }} />
+                    </IconButton>
+                    <IconButton aria-label="Action"  onClick={(e)=>this.props.onRefresh()}>
+                        <RefreshIcon style={{ color: '#76ff03' }}/>
+                    </IconButton>
+                </div>
+            </Toolbar>)
     }
 
     render() {
@@ -225,6 +229,8 @@ class MexListView extends React.Component {
         }
     }
 }
+
+
 
 
 const mapStateToProps = (state) => {
