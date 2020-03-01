@@ -43,7 +43,7 @@ const processData = (mcRequest) => {
 /* Organization */
 export const getOrganizationInfo = async (self) => {
     if (getOrganization()) {
-        return [{ OrganizationName: getOrganization(), isDefault: true }]
+        return [{ organizationName: getOrganization(), isDefault: true }]
     }
     else {
         let mcRequest = await sendSyncRequest(self, EP.SHOW_ORG)

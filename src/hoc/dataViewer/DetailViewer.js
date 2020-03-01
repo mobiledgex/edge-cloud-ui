@@ -69,8 +69,6 @@ const MexDetailViewer = (props) => {
             <Table.Body>
                 {props.keys.map((item, i) => {
                     let data = detailData[item.field]
-                    console.log('Rahul1234', data)
-                    console.log('Rahul1234', item.label)
                     return (
                         data !== undefined ?
                             item.keys ?

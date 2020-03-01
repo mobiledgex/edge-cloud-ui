@@ -1,6 +1,8 @@
 import React from 'react';
-import { Table } from 'semantic-ui-react';
-import {IconButton, Grow, Popper, Paper, ClickAwayListener, MenuList} from '@material-ui/core';
+import { Table, Dropdown } from 'semantic-ui-react';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import AddIcon from '@material-ui/icons/Add';
+import { IconButton, Grow, Popper, Paper, ClickAwayListener, MenuList, Grid, Box } from '@material-ui/core';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListIcon from '@material-ui/icons/List';
 import { withRouter } from 'react-router-dom';
@@ -9,12 +11,15 @@ import * as actions from '../actions';
 import './styles.css';
 import _ from "lodash";
 
+const regions = [{ key: 'ALL', value: 'ALL', text: 'ALL' },
+    { key: 'US', value: 'US', text: 'US' },
+    { key: 'EU', value: 'EU', text: 'EU' }]
 class MexListView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             dummyData: [],
-            anchorEl : null
+            anchorEl: null
         };
         this.selectedRow = {};
         this.sorting = false;
@@ -37,7 +42,7 @@ class MexListView extends React.Component {
     }
 
 
-    
+
 
     handleSort = clickedColumn => (a) => {
 
@@ -81,8 +86,7 @@ class MexListView extends React.Component {
 
     getCellClick = (field, item) => {
         this.selectedRow = item
-        if(field !== 'actions' && this.props.onSelect)
-        {
+        if (field !== 'actions' && this.props.onSelect) {
             this.props.onSelect(item)
         }
     }
@@ -111,19 +115,56 @@ class MexListView extends React.Component {
                 return <Table.Cell key={j} className="table_actions" textAlign='center' onClick={() => this.getCellClick(field, item)} style={(this.state.selectedItem == i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }}>
                     {
                         field === 'actions' ? this.getAction(item)
-                        :
-                        <div>
-                            {String(item[field])}
-                        </div>
+                            :
+                            <div>
+                                {String(item[field])}
+                            </div>
                     }</Table.Cell>
             }
         })
+    }
+
+    getToolbar = () => {
+        return (
+            <div style={{ width: '100%' }}>
+
+                <Box display="flex">
+                    <Box width="100%">
+                        <Grid container spacing={2}>
+                            <Grid xs={3}>
+                                <label className='content_title_label'>Auto Privacy Policy</label>
+                            </Grid>
+                            <Grid>
+                                <div style={{marginTop:'10%'}}>
+                                    <strong>Region:&nbsp;&nbsp;</strong>
+                                    <Dropdown
+                                        options={regions}
+                                        defaultValue={regions[0].value}
+                                    /></div>
+                            </Grid>
+                        </Grid>
+                    </Box>
+
+                    <Box flexShrink={0}>
+                        <IconButton aria-label="Action" onClick={e => this.setState({ anchorEl: e.currentTarget })}>
+                            <AddIcon style={{ color: '#76ff03' }} />
+                        </IconButton>
+                    </Box>
+                    <Box flexShrink={0}>
+                        <IconButton aria-label="Action" onClick={e => this.setState({ anchorEl: e.currentTarget })}>
+                            <RefreshIcon style={{ color: '#76ff03' }} />
+                        </IconButton>
+                    </Box>
+                </Box>
+            </div>
+        )
     }
 
     render() {
         return (
             <div style={{ display: 'flex', overflowY: 'auto', overflowX: 'hidden', width: '100%' }}>
                 <div className="round_panel" style={{ display: 'flex', flexDirection: 'column' }}>
+                    {this.getToolbar()}
                     {
                         this.state.dummyData.length > 0 ?
                             <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
@@ -157,31 +198,29 @@ class MexListView extends React.Component {
                                         <ClickAwayListener onClickAway={this.onActionClose}>
                                             <MenuList autoFocusItem={Boolean(this.state.anchorEl)} id="menu-list-grow" >
                                                 {this.props.actionMenu.map((action, i) => {
-                                                    return <MenuItem key={i} onClick={(e)=>{this.onActionClose(action)}}>{action.label}</MenuItem>
+                                                    return <MenuItem key={i} onClick={(e) => { this.onActionClose(action) }}>{action.label}</MenuItem>
                                                 })}
                                             </MenuList>
                                         </ClickAwayListener>
                                     </Paper>
                                 </Grow>
                             )}
-                </Popper> : null}
+                        </Popper> : null}
             </div>
         );
 
     }
 
-    componentDidMount()
-    {
+    componentDidMount() {
         this.setState({
-            dummyData:this.props.devData
+            dummyData: this.props.devData
         })
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if(prevProps.devData !== this.props.devData)
-        {
+        if (prevProps.devData !== this.props.devData) {
             this.setState({
-                dummyData:this.props.devData
+                dummyData: this.props.devData
             })
         }
     }

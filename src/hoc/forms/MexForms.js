@@ -47,7 +47,7 @@ const MexForms = (props) => {
                     }
                 }
             }
-            else if (form.visible && !isDisabled(form)) {
+            else if (form.editable && !isDisabled(form)) {
                 let rules = form.rules;
                 if (rules) {
                     if (rules.required) {
@@ -73,7 +73,7 @@ const MexForms = (props) => {
         if (form.validate) {
             for (let i = 0; i < props.forms.length; i++) {
                 let form = forms[i]
-                valid = form.visible ? validateRules(form, valid) : valid
+                valid = form.editable ? validateRules(form, valid) : valid
                 if (!valid) {
                     break;
                 }
@@ -102,7 +102,7 @@ const MexForms = (props) => {
             <div key={index} style={{ width: '100%' }}>
                 <h2 style={{ color: "white", display: 'inline' }}>{form.label}
                     {
-                        subForm ? subForm.type === 'Button' ?
+                        subForm ? subForm.formType === 'Button' ?
                             <IconButton style={{ color: "white", display: 'inline' }} onClick={subForm.onClick}>
                                 <AddIcon />
                             </IconButton> :
@@ -130,17 +130,17 @@ const MexForms = (props) => {
                 disabled = rules.disabled ? rules.disabled : false;
             }
             return (
-                form.visible ?
+                form.editable ?
                     <Grid.Column width={parentForm.width} key={key}>
                         <label style={form.labelStyle}>{form.label}{required ? ' *' : ''}</label>
                         {
-                            form.type === INPUT ?
+                            form.formType === INPUT ?
                                 <MexInput parentForm={parentForm} form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
-                                form.type === SELECT ?
+                                form.formType === SELECT ?
                                     <MexSelect parentForm={parentForm} form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
-                                form.type === CHECKBOX ?   
+                                form.formType === CHECKBOX ?   
                                     <MexCheckbox horizontal={true} form={form} onChange={onValueSelect} /> : 
-                                form.type === ICON_BUTTON ?
+                                form.formType === ICON_BUTTON ?
                                     <IconButton onClick={() => { form.onClick(form) }} style={{ color: form.color, top: 15 }}>{getIcon(form.icon)}</IconButton> :
                                     null
                         }
@@ -166,13 +166,13 @@ const MexForms = (props) => {
                     </Grid.Column>
                     <Grid.Column width={11}>
                         {
-                            form.type === SELECT ?
+                            form.formType === SELECT ?
                                 <MexSelect form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
-                                form.type === DUALLIST ?
+                                form.formType === DUALLIST ?
                                     <MexDualList form={form} onChange={onValueSelect} /> :
-                                    form.type === INPUT ?
+                                    form.formType === INPUT ?
                                         <MexInput form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
-                                        form.type === CHECKBOX ?
+                                        form.formType === CHECKBOX ?
                                             <MexCheckbox form={form} onChange={onValueSelect} /> :
                                             null
                         }
@@ -197,10 +197,10 @@ const MexForms = (props) => {
                     <Grid columns={2}>
                         {forms.map((form, i) => {
                             return (
-                                form.visible ?
-                                    form.type === HEADER ?
+                                form.editable ?
+                                    form.formType === HEADER ?
                                         loadHeader(i, form) :
-                                        form.type === 'MultiForm' ?
+                                        form.formType === 'MultiForm' ?
                                             form.forms ? loadMultiForm(i, form) : null :
                                             loadForms(i, form) :
                                     null
@@ -211,7 +211,7 @@ const MexForms = (props) => {
                 <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{ flexDirection: 'row', marginLeft: 10, marginRight: 10 }}>
                     <Form.Group inline>
                         {forms.map((form, i) => {
-                            return (form.type === 'Button' ?
+                            return (form.formType === 'Button' ?
                                 <MexButton
                                     form={form}
                                     key={i}

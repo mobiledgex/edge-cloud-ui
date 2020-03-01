@@ -141,8 +141,8 @@ class SiteFourPageFlavor extends React.Component {
     render() {
         return (
             this.state.viewMode === LIST_VIEW ?
-                <MexListView devData={this.state.devData} headerInfo={keys} actionMenu={actionMenu(this)} onSelect = {this.onView}/> :
-                <MexDetailViewer detailData={this.state.detailData} keys={keys}/>
+                <MexListView devData={this.state.devData} headerInfo={keys(this)} actionMenu={actionMenu(this)} onSelect = {this.onView}/> :
+                <MexDetailViewer detailData={this.state.detailData} keys={keys(this)}/>
         )
     }
 };

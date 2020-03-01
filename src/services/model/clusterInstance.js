@@ -30,6 +30,9 @@ export const getKey = (data) => {
     })
 }
 
+const customData = (value) => {
+}
+
 export const getData = (response, body) => {
-    return formatData(response, body, keys, true)
+    return formatData(response, body, keys, customData, true)
 }

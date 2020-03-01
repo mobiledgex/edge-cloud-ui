@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as serverData from '../../../services/model/serverData';
-import SiteFourAutoProvPolicyReg from './autoProvPolicyReg'
+import AutoProvPolicyReg from './autoProvPolicyReg'
 import MexDetailViewer from '../../../hoc/dataViewer/DetailViewer';
 import {keys, actionMenu} from '../../../services/model/autoProvisioningPolicy';
 import {fields} from '../../../services/model/format';
@@ -42,13 +42,13 @@ class SiteFourPageFlavor extends React.Component {
     onAddCloudlet = (data) => {
         this.data = data;
         this.action = 'Add'
-        this.props.childPage(<SiteFourAutoProvPolicyReg data={this.data} action={this.action} childPage={this.props.childPage}></SiteFourAutoProvPolicyReg>)
+        this.props.childPage(<AutoProvPolicyReg data={this.data} action={this.action} childPage={this.props.childPage}></AutoProvPolicyReg>)
     }
 
     onDeleteCloudlet = (data) => {
         this.data = data;
         this.action = 'Delete'
-        this.props.childPage(<SiteFourAutoProvPolicyReg data={this.data} action={this.action} childPage={this.props.childPage}></SiteFourAutoProvPolicyReg>)
+        this.props.childPage(<AutoProvPolicyReg data={this.data} action={this.action} childPage={this.props.childPage}></AutoProvPolicyReg>)
     }
 
     onDelete = async (data) => {

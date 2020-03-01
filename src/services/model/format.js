@@ -81,7 +81,8 @@ export const fields = {
     nickName: 'nickName',
     locked: 'locked',
     outboundSecurityRulesCount: 'outboundSecurityRulesCount',
-    cloudletCount: 'cloudletCount'
+    cloudletCount: 'cloudletCount',
+    fullIsolation:'fullIsolation'
 
 }
 
