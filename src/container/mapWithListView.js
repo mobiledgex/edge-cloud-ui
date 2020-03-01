@@ -778,10 +778,7 @@ class MapWithListView extends React.Component {
                                                         <MenuItem  key={i} onClick={(e) => { this.onActionClose(action) }}>
                                                             {/* <MaterialIcon color='white' icon={action.icon}/> */}
                                                             <label>{action.label}</label> 
-                                                        </MenuItem> : 
-                                                        <MenuItem  key={i}>
-                                                            <label>Not avaliable</label> 
-                                                        </MenuItem>
+                                                        </MenuItem> : null
                                                 })}
                                             </MenuList>
                                         </ClickAwayListener>
