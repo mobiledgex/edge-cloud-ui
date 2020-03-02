@@ -431,20 +431,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 clearInterval(this.intervalForAppInst)
 
                 this.setState({dropdownRequestLoading: true})
-                let clusterList = await getClusterList();
+               /* let clusterList = await getClusterList();
                 let cloudletList = await getCloudletList()
                 let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
                 if (appInstanceList.length === 0) {
                     this.setState({
                         isNoData: true,
                     })
-                }
+                }*/
 
                 //fixme: fakeData22222222222
                 //fixme: fakeData
-                /*let clusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterUsageList')
+                let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
                 let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-                let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')*/
+                let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
                 console.log('appInstanceList====>', appInstanceList);
 
                 console.log('clusterUsageList===>', clusterList);
@@ -496,17 +496,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //todo: remoteData
                 //todo: remoteData
                 //todo: remoteData
-                try {
+              /*  try {
                     allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
                 } catch (e) {
 
-                }
+                }*/
 
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
-                /*allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
-                console.log('filteredAppInstanceList===>', appInstanceList)*/
+                allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+                console.log('filteredAppInstanceList===>', appInstanceList)
 
                 let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
                 await this.setState({
@@ -1066,11 +1066,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 return 1;
             }
         }
-
-
-
-
-
 
 
         async __addGridItem(hwType, graphType = 'line') {
