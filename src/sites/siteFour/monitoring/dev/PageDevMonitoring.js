@@ -848,9 +848,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let ClusterInst = pCurrentAppInst.split('|')[2].trim()
             let Region = pCurrentAppInst.split('|')[3].trim()
 
-
-            let ___result=await getAppInstEventLogListOne(pCurrentAppInst);
-
+            //@fixme: _______appInstEventLogListOne_______appInstEventLogListOne_______appInstEventLogListOne_______appInstEventLogListOne_______appInstEventLogListOne
+            let _______appInstEventLogListOne=await getAppInstEventLogListOne(pCurrentAppInst);
 
 
             let filteredAppList = filterUsageByClassification(this.state.appInstanceList, Cloudlet, 'Cloudlet');
@@ -1155,7 +1154,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
 
         }
-
 
         _____makeGridItemOneByType(hwType, graphType) {
 
