@@ -2,6 +2,7 @@
 import * as React from 'react';
 import {Table} from "semantic-ui-react";
 import {Tooltip} from "antd";
+import {PageMonitoringStyles} from "../PageMonitoringCommonService";
 
 type Props = {
     eventLogList: any,
@@ -94,7 +95,7 @@ export default class EventLogList extends React.Component<Props, State> {
                             <Table.HeaderCell>
                                 DISK
                             </Table.HeaderCell>
-                          {/*  <Table.HeaderCell>
+                            {/*  <Table.HeaderCell>
                                 other
                             </Table.HeaderCell>*/}
                             <Table.HeaderCell>
@@ -106,10 +107,9 @@ export default class EventLogList extends React.Component<Props, State> {
 
                         </Table.Row>
                     </Table.Header>
-                    {this.state.eventLogList.length===0 &&
+                    {this.state.eventLogList.length === 0 &&
                     <Table.Body className="tbBodyList">
-                        <Table.Row className='page_monitoring_popup_table_row' style={{width:'100%'}}
-                        >
+                        <Table.Row positive={true}  className='page_monitoring_popup_table_row' style={PageMonitoringStyles.noData2}>
                             No Event Log
                         </Table.Row>
                     </Table.Body>

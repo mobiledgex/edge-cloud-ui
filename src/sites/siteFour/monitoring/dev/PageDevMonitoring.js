@@ -495,14 +495,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 //todo: remoteData
                 //todo: remoteData
-                //todo: remoteData
               /*  try {
                     allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
                 } catch (e) {
 
                 }*/
 
-                //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
                 allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
