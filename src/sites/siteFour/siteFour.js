@@ -665,6 +665,20 @@ class SiteFour extends React.Component {
         this.setState({learned: false})
     }
 
+    menuItemViewHide = (item, i, activeItem) => (
+        (this.state.hideLeftMenu)?
+            <Popup
+                className="table_actions_tooltip"
+                content={item.label}
+                position='right center'
+                trigger={
+                    this.menuItemView(item, i, activeItem)
+                }
+            />
+            :
+            this.menuItemView(item, i, activeItem)
+    )
+
     //compute page menu view
     menuItemView = (item, i, activeItem) => (
         <Menu.Item
@@ -703,8 +717,8 @@ class SiteFour extends React.Component {
                 </div>
 
             </div>
-
         </Menu.Item>
+
     )
 
     searchClick = (e) => {
@@ -1039,8 +1053,7 @@ class SiteFour extends React.Component {
                                         {
                                             this.OrgMenu.map((item, i) => (
                                                 (item.label === 'Accounts' && localStorage.selectRole !== 'AdminManager') ? null
-                                                    : (localStorage.selectRole === 'AdminManager') ? this.menuItemView(item, i, localStorage.selectMenu)
-                                                    : this.menuItemView(item, i, localStorage.selectMenu)
+                                                    : this.menuItemViewHide(item, i, localStorage.selectMenu)
                                             ))
                                         }
                                     </div>
@@ -1049,17 +1062,17 @@ class SiteFour extends React.Component {
                                         {
                                             (localStorage.selectRole === 'AdminManager') ?
                                                 this.menuItemsAll.map((item, i) => (
-                                                    this.menuItemView(item, i, localStorage.selectMenu)
+                                                    this.menuItemViewHide(item, i, localStorage.selectMenu)
                                                 ))
                                                 :
                                                 (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer') ?
                                                     this.menuItems.map((item, i) => (
-                                                        this.menuItemView(item, i, localStorage.selectMenu)
+                                                        this.menuItemViewHide(item, i, localStorage.selectMenu)
                                                     ))
                                                     :
                                                     (localStorage.selectRole === 'OperatorManager' || localStorage.selectRole === 'OperatorContributor' || localStorage.selectRole === 'OperatorViewer') ?
                                                         this.auth_three.map((item, i) => (
-                                                            this.menuItemView(item, i, localStorage.selectMenu)
+                                                            this.menuItemViewHide(item, i, localStorage.selectMenu)
                                                         ))
                                                         :
                                                         null
@@ -1146,7 +1159,7 @@ class SiteFour extends React.Component {
                                                                     disabled={this.props.viewBtn.onlyView}
                                                                     onClick={() => this.onHandleRegistry()}
                                                                 >
-                                                                    {(this.state.page.indexOf('create') === -1 && this.state.page.indexOf('edit') === -1 && this.state.page !== 'pg=newOrg') ? 'New' : 'reset'}
+                                                                    {(this.state.page.indexOf('create') === -1 && this.state.page.indexOf('edit') === -1 && this.state.page !== 'pg=newOrg') ? 'New' : 'Reset'}
                                                                 </Button>
                                                                 : null
                                                         }
