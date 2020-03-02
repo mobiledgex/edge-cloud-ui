@@ -1,8 +1,6 @@
 // @flow
 import * as React from 'react';
 import {Table} from "semantic-ui-react";
-import Lottie from "react-lottie";
-import type {TypeClusterEventLog} from "../../../../shared/Types";
 import {Tooltip} from "antd";
 
 type Props = {
@@ -116,7 +114,6 @@ export default class EventLogList extends React.Component<Props, State> {
                                            }}
                                 >
                                     {/*
-
                                     "time",0
                                     "cluster",1
                                     "dev",2
