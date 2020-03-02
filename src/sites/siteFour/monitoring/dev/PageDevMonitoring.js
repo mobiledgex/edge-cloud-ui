@@ -1067,6 +1067,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
         }
 
+
+
+
+
+
+
         async __addGridItem(hwType, graphType = 'line') {
 
             if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
