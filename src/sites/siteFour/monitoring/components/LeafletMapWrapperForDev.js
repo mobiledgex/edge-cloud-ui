@@ -105,9 +105,9 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
             pAppInstanceListGroupByCloudlet[key].map((innerItem: TypeAppInstance, index) => {
 
                 if (index === (pAppInstanceListGroupByCloudlet[key].length - 1)) {
-                    AppNames += innerItem.AppName + " | " + innerItem.ClusterInst;
+                    AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region;
                 } else {
-                    AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " , "
+                    AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " , "
                 }
 
 
@@ -254,6 +254,7 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
 
                                         let AppName = AppName_ClusterInst.trim().split(" | ")[0].trim()
                                         let ClusterInst = AppName_ClusterInst.trim().split(" | ")[1].trim()
+                                        let Region = AppName_ClusterInst.trim().split(" | ")[2].trim()
 
 
                                         return (
@@ -271,9 +272,11 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
 
                                                         let arrayTemp = AppName_ClusterInst.split(" | ");
 
-                                                        let Cluster = arrayTemp[1].trim();
                                                         let AppInst = arrayTemp[0].trim()
-                                                        let dataSet = AppInst + " | " + item.Cloudlet.trim() + " | " + Cluster
+                                                        let Cluster = arrayTemp[1].trim();
+                                                        let Region = arrayTemp[2].trim();
+
+                                                        let dataSet = AppInst + " | " + item.Cloudlet.trim() + " | " + Cluster + " | " + Region;
                                                         //showToast(dataSet)
 
                                                         this.props.handleAppInstDropdown(dataSet)

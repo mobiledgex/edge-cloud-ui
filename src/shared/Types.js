@@ -163,3 +163,18 @@ export type TypeLineChartData = {
     newDateTimeList: string,
     hardwareType: string,
 }
+
+export type TypeClusterEventLog = {
+    "time" : string,
+    "cluster": string,
+    "dev": string,
+    "cloudlet": string,
+    "operator": string,
+    "flavor": string,
+    "vcpu": number,
+    "ram": number,
+    "disk": number,
+    "other": string,
+    "event": string,
+    "status": string,
+}

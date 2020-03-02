@@ -26,7 +26,7 @@ import {
     makeLineChartDataForAppInst,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
-    makeSelectBoxListWithThreeValuePipe,
+    makeSelectBoxListWithValuePipe,
     renderPerformanceSummaryTable,
 } from "./PageDevMonitoringService";
 import {
@@ -65,7 +65,16 @@ import {
     renderPlaceHolderCircular,
     showToast
 } from "../PageMonitoringCommonService";
-import {getAppInstList, getAppLevelUsageList, getCloudletList, getClusterEventLogList, getClusterLevelUsageList, getClusterList} from "../PageMonitoringMetricService";
+import {
+    getAppInstanceEventLogListOne,
+    getAppInstList,
+    getAppLevelUsageList,
+    getCloudletList,
+    getClusterAllEventLogList,
+    getClusterEventLogList,
+    getClusterLevelUsageList,
+    getClusterList
+} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraph from "../components/ModalGraph";
@@ -80,6 +89,7 @@ import {MonitoringConsumer} from "../PageMonitoringGlobalState";
 import BubbleChartWrapper from "../components/BubbleChartWrapper";
 import BarChartWrapper from "../components/BarChartWrapper";
 import LineChartWrapper from "../components/LineChartWrapper";
+import EventLogList from "../components/EventLogList";
 
 const {Option} = Select;
 
@@ -231,6 +241,8 @@ type State = {
     themeOptions: any,
     isNoData: boolean,
     isBubbleChartMaked: boolean,
+    allClusterEventLogList: any,
+    filteredClusterEventLogList: any,
 
 }
 
@@ -376,6 +388,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 addItemList: ADD_ITEM_LIST,
                 themeOptions: THEME_OPTIONS_LIST,
                 isBubbleChartMaked: false,
+                allClusterEventLogList: [],
+                filteredClusterEventLogList: [],
             };
         }
 
@@ -441,8 +455,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 //@fixme: 클러스터 레벨 이벤트로그 호출...
                 //@fixme: 클러스터 레벨 이벤트로그 호출...
-                /*let clusterEventLogList = await getClusterEventLogList(clusterList);
-                alert(JSON.stringify(clusterEventLogList))*/
+                let allClusterEventLogList = await getClusterAllEventLogList(clusterList);
+
+                console.log("allClusterEventLogList===>", allClusterEventLogList);
+                await this.setState({
+                    allClusterEventLogList: allClusterEventLogList,
+                    filteredClusterEventLogList: allClusterEventLogList
+                })
 
                 let appInstanceListGroupByCloudlet = []
                 try {
@@ -485,7 +504,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
-                //allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+                allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
                 console.log('filteredAppInstanceList===>', appInstanceList)
 
                 let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
@@ -531,6 +550,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 filteredClusterUsageList: this.state.allClusterUsageList,
                 filteredAppInstanceList: this.state.appInstanceList,
+                filteredClusterEventLogList: this.state.allClusterEventLogList,
                 appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
             });
             //todo: reset bubble chart data
@@ -811,6 +831,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         handleAppInstDropdown = async (pCurrentAppInst) => {
+
             clearInterval(this.intervalForAppInst)
 
             await this.setState({
@@ -824,6 +845,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let AppName = pCurrentAppInst.split('|')[0].trim()
             let Cloudlet = pCurrentAppInst.split('|')[1].trim()
             let ClusterInst = pCurrentAppInst.split('|')[2].trim()
+            let Region = pCurrentAppInst.split('|')[3].trim()
+
+
+            let ___result=await getAppInstanceEventLogListOne(pCurrentAppInst);
+
+
+
             let filteredAppList = filterUsageByClassification(this.state.appInstanceList, Cloudlet, 'Cloudlet');
             filteredAppList = filterUsageByClassification(filteredAppList, ClusterInst, 'ClusterInst');
             filteredAppList = filterUsageByClassification(filteredAppList, AppName, 'AppName');
@@ -834,7 +862,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
             this.validateTerminal(filteredAppList)
 
-            let appInstDropdown = makeSelectBoxListWithThreeValuePipe(filteredAppList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
+            let appInstDropdown = makeSelectBoxListWithValuePipe(filteredAppList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
             await this.setState({
                 appInstDropdown,
             })
@@ -854,9 +882,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             console.log('allAppInstUsageList===>', allAppInstUsageList)
             // Cluster | AppInst
+
             let currentCluster = pCurrentAppInst.split("|")[2].trim() + " | " + pCurrentAppInst.split('|')[1].trim()
             pCurrentAppInst = pCurrentAppInst.trim();
             pCurrentAppInst = pCurrentAppInst.split("|")[0].trim() + " | " + pCurrentAppInst.split('|')[1].trim() + " | " + pCurrentAppInst.split('|')[2].trim()
+
+
 
             await this.setState({
                 currentClassification: CLASSIFICATION.APPINST,
@@ -912,12 +943,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 if (item.cluster === selectedCluster && item.cloudlet === selectedCloudlet) {
                     filteredClusterUsageList.push(item)
                 }
-                // console.log('Cluster_Dropdown===>', item);
+            })
+            await this.setState({
+                filteredClusterUsageList: filteredClusterUsageList,
             })
 
-            console.log('filteredUsageList===>', filteredClusterUsageList);
-            this.setState({
-                filteredClusterUsageList: filteredClusterUsageList,
+            let allClusterEventLogList = this.state.allClusterEventLogList
+            let filteredClusterEventLogList = []
+            allClusterEventLogList.map(item => {
+                /*                "cluster",1                "cloudlet",3                */
+                if (item[1] === selectedCluster && item[3] === selectedCloudlet) {
+                    filteredClusterEventLogList.push(item)
+                }
+            })
+
+            console.log("filteredClusterEventLogList===>", filteredClusterEventLogList);
+            await this.setState({
+                filteredClusterEventLogList: filteredClusterEventLogList,
             })
 
             let appInstanceList = this.state.appInstanceList;
@@ -929,9 +971,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 }
             })
             console.log('appInstDropdown===filteredAppInstList>', filteredAppInstList);
-            let appInstDropdown = makeSelectBoxListWithThreeValuePipe(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
+            let appInstDropdown = makeSelectBoxListWithValuePipe(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST, CLASSIFICATION.REGION)
             console.log('appInstDropdown===>', appInstDropdown);
-
             await this.setState({
                 appInstDropdown: appInstDropdown,
                 currentAppInst: '',
@@ -1010,7 +1051,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        async addGridItem(hwType, graphType = 'line') {
+        makeGridSizeByType(graphType) {
+            if (graphType === GRID_ITEM_TYPE.CLUSTER_LIST) {
+                return 2;
+            } else if (graphType === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST) {
+                return 2;
+            } else {
+                return 1;
+            }
+        }
+
+        async __addGridItem(hwType, graphType = 'line') {
 
             if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
 
@@ -1033,11 +1084,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         i: uniqueId,
                         x: 0,
                         y: maxY + 1,
-                        w: graphType === GRID_ITEM_TYPE.CLUSTER_LIST ? 2 : 1,//todo: grid item size.
+                        w: this.makeGridSizeByType(graphType),
                         h: 1,
                     }),
                     layoutMapperForCluster: mapperList.concat(itemOne),
-                });
+                })
+                ;
 
                 console.log("layoutMapperForCluster===>", this.state.layoutMapperForCluster)
 
@@ -1098,7 +1150,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        _makeGridItemOneByType(hwType, graphType) {
+        _____makeGridItemOneByType(hwType, graphType) {
 
             if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                 return (
@@ -1127,6 +1179,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PIE) {
                 return (
                     <PieChartWrapper/>
+                )
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST) {
+                return (
+                    <EventLogList eventLogList={this.state.filteredClusterEventLogList}/>
                 )
             }
 
@@ -1226,9 +1282,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                      }}
                 >
                     <div className='page_monitoring_column_kyungjoon1' style={{height: this.gridItemHeight}}>
-                        {/*@todo:_makeGridItemOneByType      */}
-                        {/*@todo:_makeGridItemOneByType      */}
-                        {this._makeGridItemOneByType(hwType, graphType.toUpperCase())}
+                        {/*@todo:_____makeGridItemOneByType      */}
+                        {/*@todo:_____makeGridItemOneByType      */}
+                        {this._____makeGridItemOneByType(hwType, graphType.toUpperCase())}
                     </div>
 
                     <div className="remove"
@@ -1608,7 +1664,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     selection
                                     loading={this.state.loading}
                                     onChange={async (e, {value}) => {
-                                        await this.addGridItem(value, value)
+                                        await this.__addGridItem(value, value)
                                         showToast('added ' + value + " item!!")
                                     }}
                                     style={PageMonitoringStyles.dropDown2}
@@ -1626,7 +1682,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     loading={this.state.loading}
                                     onChange={async (e, {value}) => {
                                         //alert(value)
-                                        await this.addGridItem(value, GRID_ITEM_TYPE.LINE)
+                                        await this.__addGridItem(value, GRID_ITEM_TYPE.LINE)
                                         showToast('added ' + value + " item!!")
                                     }}
                                     options={this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.state.hwListForCluster : this.state.hwListForAppInst}
@@ -1644,7 +1700,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     loading={this.state.loading}
                                     onChange={async (e, {value}) => {
                                         //alert(value)
-                                        await this.addGridItem(value, GRID_ITEM_TYPE.BAR)
+                                        await this.__addGridItem(value, GRID_ITEM_TYPE.BAR)
                                         showToast('added ' + value + " item!!")
                                     }}
                                     options={this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.state.hwListForCluster : this.state.hwListForAppInst}
@@ -1662,7 +1718,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     loading={this.state.loading}
                                     onChange={async (e, {value}) => {
                                         //alert(value)
-                                        await this.addGridItem(value, GRID_ITEM_TYPE.COLUMN)
+                                        await this.__addGridItem(value, GRID_ITEM_TYPE.COLUMN)
                                         showToast('added ' + value + " item!!")
                                     }}
                                     options={this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.state.hwListForCluster : this.state.hwListForAppInst}
@@ -1747,7 +1803,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         <img alt="example" src="/assets/brand/MobiledgeX_Logo_tm_white.svg" width={500} height={250}/>
                                     </div>}
                                 >
-                                    <div style={{fontSize: 45, fontFamily:'Roboto Condensed'}}>
+                                    <div style={{fontSize: 45, fontFamily: 'Roboto Condensed'}}>
                                         There is no app instance you can access..
                                     </div>
                                 </Card>

@@ -22,7 +22,7 @@ import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {Table} from "semantic-ui-react";
 import Lottie from "react-lottie";
-import type {TypeAppInstanceUsage2, TypeClusterUsageList} from "../../../../shared/Types";
+import type {TypeAppInstanceUsage2, TypeClusterEventLog, TypeClusterUsageList} from "../../../../shared/Types";
 import {Progress, Select, Tooltip} from "antd";
 import {Responsive, WidthProvider} from "react-grid-layout";
 import type {MonitoringContextInterface} from "../PageMonitoringGlobalState";
@@ -391,6 +391,7 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageD
         return chartDataSet
     }
 }
+
 
 export const renderPerformanceSummaryTable = (_this: PageDevMonitoring, pClusterList) => {
 
@@ -1617,15 +1618,27 @@ export const makeSelectBoxListWithKey = (arrList, keyName) => {
     return newArrList;
 }
 
-export const makeSelectBoxListWithThreeValuePipe = (arrList, keyName: string, valueName: string, thirdValue: string) => {
+export const makeSelectBoxListWithValuePipe = (arrList, keyName: string, valueName: string, thirdValue: string, fourthValue: string = '') => {
     let newArrList = [];
-    for (let i in arrList) {
-        newArrList.push({
-            key: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim() + " | " + arrList[i][thirdValue].trim(),
-            value: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim() + " | " + arrList[i][thirdValue].trim(),
-            text: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim() + " | " + arrList[i][thirdValue].trim(),
-        })
+    if (fourthValue !== '') {
+        for (let i in arrList) {
+            newArrList.push({
+                key: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim() + " | " + arrList[i][thirdValue].trim() + " | " + arrList[i][fourthValue].trim(),
+                value: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim() + " | " + arrList[i][thirdValue].trim() + " | " + arrList[i][fourthValue].trim(),
+                text: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim() + " | " + arrList[i][thirdValue].trim() + " | " + arrList[i][fourthValue].trim(),
+            })
+        }
+    } else {
+        for (let i in arrList) {
+            newArrList.push({
+                key: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim() + " | " + arrList[i][thirdValue].trim(),
+                value: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim() + " | " + arrList[i][thirdValue].trim(),
+                text: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim() + " | " + arrList[i][thirdValue].trim(),
+            })
+        }
     }
+
+
     return newArrList;
 }
 

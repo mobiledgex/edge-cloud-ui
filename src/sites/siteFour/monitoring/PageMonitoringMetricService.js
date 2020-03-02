@@ -8,9 +8,6 @@ import {formatData} from "../../../services/formatter/formatComputeInstance";
 import {makeFormForAppInstance} from "./admin/PageAdminMonitoringService";
 
 
-
-
-
 export const getAppInstList = async (pArrayRegion = ['EU', 'US']) => {
     try {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -712,69 +709,6 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
 }
 
 
-/**
- * fixme : asdlkflsdkflk
- * @returns {Promise<AxiosResponse<any>>}
- */
-export const getClusterEventLogList = async (clusterList) => {
-
-    let selectOrg = localStorage.getItem('selectOrg')
-    /*
-        Cloudlet: "berlin-staging"
-        CloudletLocation: "-"
-        ClusterName: "RahDemo123"
-        Deployment: "docker"
-        Edit: Array(10) [ "Region", "ClusterName", "OrganizationName", … ]
-        Flavor: "x1.medium"
-        IpAccess: 1
-        Operator: "TDG"
-    */
-
-    clusterList.map((item : TypeCluster,index)=>{
-
-        console.log("getClusterEventLogList===Cloudlet>", item.Cloudlet);
-        console.log("getClusterEventLogList===ClusterName>", item.ClusterName);
-
-    })
-
-
-    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-
-
-    let result = await axios({
-        url: '/api/v1/auth/events/cluster',
-        method: 'post',
-        data: {
-            "region": "EU",
-            "clusterinst": {
-                "cluster_key": {
-                    "name": "venky-test"
-                },
-                "cloudlet_key": {
-                    "operator_key": {
-                        "name": "TDG"
-                    },
-                    "name": "hamburg-stage"
-                },
-                "developer": selectOrg
-            },
-            "last": 10
-        },
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + store.userToken
-        },
-        timeout: 30 * 1000
-    }).then(async response => {
-        return response.data;
-    }).catch(e => {
-        //throw new Error(e)
-        //showToast(e.toString())
-    })
-    return result;
-}
-
-
 export const getAllCloudletEventLogs = async (cloudletList) => {
 
     try {
@@ -798,5 +732,191 @@ export const getAllCloudletEventLogs = async (cloudletList) => {
         throw new Error(e)
     }
 
+
+}
+
+
+/**
+ *
+ * @param clusterList
+ * @returns {Promise<[]>}
+ */
+export const getClusterAllEventLogList = async (clusterList) => {
+    try {
+        let clusterPromiseList = []
+        //todo: 모든 클러스터에 대한 이벤트 로그를 요청 비동기식 promiseList
+        clusterList.map((clusterOne: TypeCluster, index) => {
+            clusterPromiseList.push(getClusterEventLogListOne(clusterOne))
+        })
+
+        let allClusterEventLogs = await Promise.all(clusterPromiseList);
+
+
+        let completedEventLogList = []
+        allClusterEventLogs.map((item, index) => {
+            /*
+            if (index === 0) {
+                completedEventLogList.push([
+                    "time",                    "cluster",                    "dev",                    "cloudlet",                    "operator",
+                     "flavor",                    "vcpu",                    "ram",                    "disk",                    "other",
+                     "event",                    "status",
+                ])
+            }*/
+
+            if (item.Series !== null) {
+                let eventLogList = item.Series["0"].values;
+                eventLogList.map(item => {
+                    completedEventLogList.push(item)
+                })
+            }
+        })
+
+        console.log("completedEventLogList===>", completedEventLogList);
+        return completedEventLogList;
+    } catch (e) {
+        showToast(e.toString())
+    }
+}
+
+export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster) => {
+    try {
+        let selectOrg = localStorage.getItem('selectOrg')
+        let Cloudlet = clusterItemOne.Cloudlet;
+        let ClusterName = clusterItemOne.ClusterName;
+        let Region = clusterItemOne.Region;
+        let Operator = clusterItemOne.Operator;
+
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+
+
+        let result = await axios({
+            url: '/api/v1/auth/events/cluster',
+            method: 'post',
+            data: {
+                "region": Region,
+                "clusterinst": {
+                    "cluster_key": {
+                        "name": ClusterName
+                    },
+                    "cloudlet_key": {
+                        "operator_key": {
+                            "name": Operator
+                        },
+                        "name": Cloudlet
+                    },
+                    "developer": selectOrg
+                },
+                //"last": 10
+            },
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + store.userToken
+            },
+            timeout: 30 * 1000
+        }).then(async response => {
+
+            return response.data.data[0];
+        }).catch(e => {
+            //throw new Error(e)
+            //showToast(e.toString())
+        })
+        return result;
+    } catch (e) {
+
+    }
+
+}
+
+/*export const getAppInstanceAllEventLogList = async (appInstList) => {
+    try {
+        let promiseList = []
+        //todo: 모든 AppInst 대한 이벤트 로그를 요청 비동기식 promiseList
+        appInstList.map((appInstOne, index) => {
+            promiseList.push(getAppInstanceEventLogListOne(appInstOne))
+        })
+
+        let allAppInstEventLogs = await Promise.all(promiseList);
+        let completedEventLogList = []
+        allAppInstEventLogs.map((item, index) => {
+            if (item.Series !== null) {
+                let eventLogList = item.Series["0"].values;
+                eventLogList.map(item => {
+                    completedEventLogList.push(item)
+                })
+            }
+        })
+
+        console.log("completedEventLogList===>", completedEventLogList);
+        return completedEventLogList;
+    } catch (e) {
+        showToast(e.toString())
+    }
+}*/
+
+
+export const getAppInstanceEventLogListOne = async (appInstOne) => {
+    try {
+
+        console.log("getAppInstanceEventLogListOne===>", appInstOne);
+        let selectOrg = localStorage.getItem('selectOrg')
+        let AppName = appInstOne.split('|')[0].trim()
+        let Cloudlet = appInstOne.split('|')[1].trim()
+        let ClusterInst = appInstOne.split('|')[2].trim()
+        let Region = appInstOne.split('|')[3].trim()
+
+        alert('sdlfsdlkf===>'+ Region)
+
+
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+
+        let result = await axios({
+            url: '/api/v1/auth/events/app',
+            method: 'post',
+            data: {
+                "region": "EU",
+                "appinst": {
+                    "app_key": {
+                        "developer_key": {
+                            "name": selectOrg
+                        },
+                        "name": AppName,
+                        "version": "1.0"
+                    },
+                    "cluster_inst_key": {
+                        "cluster_key": {
+                            "name": ClusterInst
+                        },
+                        "cloudlet_key": {
+                            "operator_key": {
+                                "name": ""
+                            },
+                            "name": ""
+                        },
+                        "developer": ""
+                    }
+                }
+            },
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + store.userToken
+            },
+            timeout: 30 * 1000
+        }).then(async response => {
+
+            alert(JSON.stringify(response.data))
+
+            console.log("getAppInstanceEventLogListOne===>", response.data);
+
+            return response.data;
+            //return response.data;
+        }).catch(e => {
+            //throw new Error(e)
+            showToast(e.toString())
+        })
+        return result;
+    } catch (e) {
+
+        showToast(e.toString())
+    }
 
 }

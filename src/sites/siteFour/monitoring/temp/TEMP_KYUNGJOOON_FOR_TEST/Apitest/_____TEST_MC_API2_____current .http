@@ -381,7 +381,7 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODE0MjQ3N
 
 POST https://console-stage.mobiledgex.net:443/api/v1/auth/events/cloudlet
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODE0MjQ3NzUsImlhdCI6MTU4MTMzODM3NSwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.RC-xurMVdK36UJaEbuE189YoBIfuBn6wov1oXXHyjbj4yxhBrK-7APvyY6WgmlFrnr9j7ABbAmJ8k61iUf8peA
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODMyMTg0MDgsImlhdCI6MTU4MzEzMjAwOCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.hC0N6SqS2r_EwB3n-x9ZDHPpz5AOvPvv0YaERDCxqIGXgcQ_BHrjVsVj8S0oQlScwu4saU-rFZOfFMiCv_s08g
 
 {
   "region": "EU",
@@ -392,6 +392,40 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODE0MjQ3N
     "name": "hamburg-stage"
   },
   "last": 50
+}
+
+### @todo :앱 인스턴스 leevel event log
+### @todo :앱 인스턴스 leevel event log
+### @todo :앱 인스턴스 leevel event log
+
+POST https://console-stage.mobiledgex.net:443/api/v1/auth/events/app
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODMyMTg0MDgsImlhdCI6MTU4MzEzMjAwOCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.hC0N6SqS2r_EwB3n-x9ZDHPpz5AOvPvv0YaERDCxqIGXgcQ_BHrjVsVj8S0oQlScwu4saU-rFZOfFMiCv_s08g
+
+{
+    "region": "EU",
+    "appinst": {
+        "app_key": {
+            "developer_key": {
+                "name": "MobiledgeX"
+            },
+            "name": "test111qq",
+            "version": "1.0"
+        },
+        "cluster_inst_key": {
+            "cluster_key": {
+                "name": "qqqaaa"
+            },
+            "cloudlet_key": {
+                "operator_key": {
+                    "name": ""
+                },
+                "name": ""
+            },
+            "developer": ""
+        }
+    },
+    "last": 10
 }
 
 ###

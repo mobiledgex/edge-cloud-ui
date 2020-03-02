@@ -273,12 +273,14 @@ export const GRID_ITEM_TYPE = {
     TABLE: 'TABLE',
     PIE: 'PIE',
     CLUSTER_LIST: 'CLUSTER_LIST',
+    CLUSTER_EVENTLOG_LIST: 'CLUSTER_EVENTLOG_LIST',
 }
 
 export const ADD_ITEM_LIST = [
     {text: 'MAP', value: 'MAP'},
     {text: 'BUBBLE', value: 'BUBBLE'},
     {text: 'PERFORMANCE SUM', value: 'CLUSTER_LIST'},
+    {text: 'CLUSTER EVENT LOG', value: 'CLUSTER_EVENTLOG_LIST'},
 ]
 
 
