@@ -864,8 +864,7 @@ export const getAppInstanceEventLogListOne = async (appInstOne) => {
         let ClusterInst = appInstOne.split('|')[2].trim()
         let Region = appInstOne.split('|')[3].trim()
 
-        alert('sdlfsdlkf===>'+ Region)
-
+        //alert('sdlfsdlkf===>'+ Region)
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
@@ -873,7 +872,7 @@ export const getAppInstanceEventLogListOne = async (appInstOne) => {
             url: '/api/v1/auth/events/app',
             method: 'post',
             data: {
-                "region": "EU",
+                "region": Region,
                 "appinst": {
                     "app_key": {
                         "developer_key": {
