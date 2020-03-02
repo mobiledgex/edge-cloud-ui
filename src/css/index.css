@@ -1319,6 +1319,7 @@ body, button, input, textarea, optgroup, select, textarea,
 .contents_body .ui.table tbody tr {
     display: flex;
     width: 100%;
+    align-items: center;
 }
 .contents_body .ui.table tbody tr .table_actions {
     display: flex;
@@ -1337,6 +1338,12 @@ body, button, input, textarea, optgroup, select, textarea,
 }
 .contents_body .ui.basic.table tbody tr:last-child td {
     border-bottom: 1px solid rgba(255,255,255,.05) !important;
+}
+
+.contents_body .ui.basic.striped.table tbody tr:hover {
+    background: #444 !important;
+    cursor: pointer;
+
 }
 
 .contents_body .ui.celled.table tr td,
