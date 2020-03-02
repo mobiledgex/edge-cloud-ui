@@ -171,6 +171,7 @@ export function sendRequest(self, request, callback) {
 }
 
 export function clearSockets(uuid) {
+    console.log('Rahul1234', sockets)
     sockets.map(item => {
         let socket = item.socket;
         if (uuid === item.uuid && socket.readyState === WebSocket.OPEN) {
@@ -178,6 +179,7 @@ export function clearSockets(uuid) {
             item.isClosed = true;
         }
     })
+    console.log('Rahul12345', sockets)
 
 }
 

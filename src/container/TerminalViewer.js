@@ -360,7 +360,11 @@ class MexTerminal extends Component {
         })
     }
 
-    
+    loadVMPage = () =>
+    {
+        console.log('Rahu1234', this.props.data.vm.url)
+        return <iframe title="vm" id="ChatFrame" allowtransparency="true" frameborder="0" scrolling="no" src={this.props.data.vm.url} style={{ width: '100%', height: '100%' }}></iframe>
+    }
 
     render() {
         return (
@@ -382,7 +386,7 @@ class MexTerminal extends Component {
 
                     {
                     this.props.data.vm ?
-                        <iframe title="vm" id="ChatFrame" allowtransparency="true" frameborder="0" scrolling="no" src={this.props.data.vm.url} style={{ width: '100%', height: '100%' }}></iframe>
+                        this.loadVMPage()
                         :
                         this.containerIds.length > 0 ?
                             this.state.optionView ?

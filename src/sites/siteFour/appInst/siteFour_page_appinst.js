@@ -34,7 +34,7 @@ class SiteFourPageAppInst extends React.Component {
         this.headerH = 70;
         this.hgap = 0;
         this.loadCount = 0;
-
+        this.uuid = 0;
         this.headerLayout = [2, 2, 2, 1, 1, 2, 2, 2, 1, 4];
         this._AppInstDummy = [];
         this._diffRev = []
@@ -244,6 +244,9 @@ class SiteFourPageAppInst extends React.Component {
 
     onTermialClose = ()=>
     {
+        alert(this.uuid)
+        serviceMC.clearSockets(this.uuid)
+        this.uuid = 0;
         this.gotoUrl('/site4', 'pg=6')
     }
 
@@ -306,7 +309,9 @@ class SiteFourPageAppInst extends React.Component {
 
             let store = JSON.parse(localStorage.PROJECT_INIT);
             let token = store ? store.userToken : 'null';
+            this.uuid = serviceMC.generateUniqueId();
             let requestData = {
+                uuid:this.uuid,
                 token: token,
                 method: serviceMC.getEP().SHOW_CONSOLE,
                 data: requestedData
