@@ -741,7 +741,7 @@ export const getAllCloudletEventLogs = async (cloudletList) => {
  * @param clusterList
  * @returns {Promise<[]>}
  */
-export const getClusterAllEventLogList = async (clusterList) => {
+export const getAllClusterEventLogList = async (clusterList) => {
     try {
         let clusterPromiseList = []
         //todo: 모든 클러스터에 대한 이벤트 로그를 요청 비동기식 promiseList
@@ -832,7 +832,7 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster) => 
         let promiseList = []
         //todo: 모든 AppInst 대한 이벤트 로그를 요청 비동기식 promiseList
         appInstList.map((appInstOne, index) => {
-            promiseList.push(getAppInstanceEventLogListOne(appInstOne))
+            promiseList.push(getAppInstEventLogListOne(appInstOne))
         })
 
         let allAppInstEventLogs = await Promise.all(promiseList);
@@ -854,10 +854,10 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster) => 
 }*/
 
 
-export const getAppInstanceEventLogListOne = async (appInstOne) => {
+export const getAppInstEventLogListOne = async (appInstOne) => {
     try {
 
-        console.log("getAppInstanceEventLogListOne===>", appInstOne);
+        console.log("getAppInstEventLogListOne===>", appInstOne);
         let selectOrg = localStorage.getItem('selectOrg')
         let AppName = appInstOne.split('|')[0].trim()
         let Cloudlet = appInstOne.split('|')[1].trim()
@@ -904,7 +904,7 @@ export const getAppInstanceEventLogListOne = async (appInstOne) => {
 
             alert(JSON.stringify(response.data))
 
-            console.log("getAppInstanceEventLogListOne===>", response.data);
+            console.log("getAppInstEventLogListOne===>", response.data);
 
             return response.data;
             //return response.data;
@@ -914,7 +914,6 @@ export const getAppInstanceEventLogListOne = async (appInstOne) => {
         })
         return result;
     } catch (e) {
-
         showToast(e.toString())
     }
 

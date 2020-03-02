@@ -185,10 +185,7 @@ export default class EventLogList extends React.Component<Props, State> {
                                     <Table.Cell>
                                         {item[11]}
                                     </Table.Cell>
-
-
                                 </Table.Row>
-
                             )
                         })}
                     </Table.Body>

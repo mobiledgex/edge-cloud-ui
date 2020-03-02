@@ -66,11 +66,11 @@ import {
     showToast
 } from "../PageMonitoringCommonService";
 import {
-    getAppInstanceEventLogListOne,
+    getAppInstEventLogListOne,
     getAppInstList,
     getAppLevelUsageList,
     getCloudletList,
-    getClusterAllEventLogList,
+    getAllClusterEventLogList,
     getClusterEventLogList,
     getClusterLevelUsageList,
     getClusterList
@@ -455,7 +455,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 //@fixme: 클러스터 레벨 이벤트로그 호출...
                 //@fixme: 클러스터 레벨 이벤트로그 호출...
-                let allClusterEventLogList = await getClusterAllEventLogList(clusterList);
+                let allClusterEventLogList = await getAllClusterEventLogList(clusterList);
 
                 console.log("allClusterEventLogList===>", allClusterEventLogList);
                 await this.setState({
@@ -848,7 +848,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let Region = pCurrentAppInst.split('|')[3].trim()
 
 
-            let ___result=await getAppInstanceEventLogListOne(pCurrentAppInst);
+            let ___result=await getAppInstEventLogListOne(pCurrentAppInst);
 
 
 
