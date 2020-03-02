@@ -948,6 +948,8 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
             hardwareType,
         }
 
+        console.log("lineChartDataSet===>", lineChartDataSet)
+
         return lineChartDataSet
     }
 

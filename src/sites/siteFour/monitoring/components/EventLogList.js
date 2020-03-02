@@ -109,7 +109,7 @@ export default class EventLogList extends React.Component<Props, State> {
                     </Table.Header>
                     {this.state.eventLogList.length === 0 &&
                     <Table.Body className="tbBodyList">
-                        <Table.Row positive={true}  className='page_monitoring_popup_table_row' style={PageMonitoringStyles.noData2}>
+                        <Table.Row warning={true}  className='page_monitoring_popup_table_row' style={PageMonitoringStyles.noData2}>
                             No Event Log
                         </Table.Row>
                     </Table.Body>

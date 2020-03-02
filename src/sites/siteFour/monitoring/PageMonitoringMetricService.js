@@ -372,6 +372,10 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
             promiseList.push(getClusterLevelMatric(instanceBodyList[index], token))
         }
         let clusterLevelUsageList = await Promise.all(promiseList);
+
+
+        console.log("clusterLevelUsageList===>", clusterLevelUsageList);
+
         let newClusterLevelUsageList = []
         clusterLevelUsageList.map((item, index) => {
 

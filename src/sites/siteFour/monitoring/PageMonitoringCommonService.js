@@ -128,7 +128,7 @@ export const PageMonitoringStyles = {
     },
     noData2: {
         width: '100%', backgroundColor: 'blue', fontSize: 30, display: 'flex'
-        , alignItems: 'center', justifyContent: 'center', fontWeight: 'bold',
+        , alignItems: 'center', justifyContent: 'center',
     }
 
 }

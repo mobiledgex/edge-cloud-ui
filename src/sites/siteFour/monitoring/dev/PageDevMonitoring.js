@@ -431,20 +431,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 clearInterval(this.intervalForAppInst)
 
                 this.setState({dropdownRequestLoading: true})
-               /* let clusterList = await getClusterList();
+                let clusterList = await getClusterList();
                 let cloudletList = await getCloudletList()
                 let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
                 if (appInstanceList.length === 0) {
                     this.setState({
                         isNoData: true,
                     })
-                }*/
+                }
 
                 //fixme: fakeData22222222222
-                //fixme: fakeData
-                let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+                //fixme: fakeData22222222222
+                //fixme: fakeData22222222222
+                //fixme: fakeData22222222222
+                //fixme: fakeData22222222222
+                /*let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
                 let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-                let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
+                let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')*/
                 console.log('appInstanceList====>', appInstanceList);
 
                 console.log('clusterUsageList===>', clusterList);
@@ -495,15 +498,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 //todo: remoteData
                 //todo: remoteData
-              /*  try {
+                try {
                     allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
                 } catch (e) {
 
-                }*/
+                }
 
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
-                allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+               // allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
                 console.log('filteredAppInstanceList===>', appInstanceList)
 
                 let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
@@ -649,19 +652,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        renderDropDownForMultiTab(cate) {
-            if (cate === HARDWARE_TYPE.SENDBYTES || cate === HARDWARE_TYPE.RECVBYTES) {
-                return this.renderDropdownForNetwork(cate)
-            } else if (cate === HARDWARE_TYPE.TCPCONNS || cate === HARDWARE_TYPE.TCPRETRANS) {
-                return this.renderDropdownForTCP(cate)
-            } else if (cate === HARDWARE_TYPE.UDPRECV || cate === HARDWARE_TYPE.UDPSENT) {
-                return this.renderDropdownForUDP(cate)
-            } else if (cate === HARDWARE_TYPE.ACCEPTS_CONNECTION || cate === HARDWARE_TYPE.HANDLED_CONNECTION || cate === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-                return this.renderDropdownForConnections(cate)
-            }
-
-        }
-
         renderDropdownForConnections(subCategoryType) {
             return (
                 <Dropdown
@@ -720,58 +710,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        renderDropdownForTCP(subCategoryType) {
-            return (
-                <Dropdown
-                    placeholder='SELECT TCP TYPE'
-                    selection
-                    loading={this.state.loading}
-                    options={TCP_OPTIONS}
-                    defaultValue={TCP_OPTIONS[0].value}
-                    onChange={async (e, {value}) => {
-                        //TAB0 IS SENDBYTES
-                        if (value === HARDWARE_TYPE.TCPCONNS) {
-                            this.setState({
-                                tcpTabIndex: 0,
-                            })
-                        } else if (value === HARDWARE_TYPE.TCPRETRANS) {
-                            this.setState({
-                                tcpTabIndex: 1,
-                            })
-                        }
-                    }}
-                    value={subCategoryType}
-                    // style={Styles.dropDown}
-                />
-            )
-        }
-
-
-        renderDropdownForUDP(subCategoryType) {
-            return (
-                <Dropdown
-                    placeholder='SELECT UDP TYPE'
-                    selection
-                    loading={this.state.loading}
-                    options={UDP_OPTIONS}
-                    defaultValue={UDP_OPTIONS[0].value}
-                    onChange={async (e, {value}) => {
-                        //TAB0 IS SENDBYTES
-                        if (value === HARDWARE_TYPE.UDPRECV) {
-                            this.setState({
-                                udpTabIndex: 0,
-                            })
-                        } else if (value === HARDWARE_TYPE.UDPSENT) {
-                            this.setState({
-                                udpTabIndex: 1,
-                            })
-                        }
-                    }}
-                    value={subCategoryType}
-                    // style={Styles.dropDown}
-                />
-            )
-        }
 
         async resetGridPosition() {
             try {
