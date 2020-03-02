@@ -1,0 +1,144 @@
+[
+  {
+    "uuid": "045df44d-a2f2-4692-82f0-16b51002504a",
+    "Region": "EU",
+    "OrganizationName": "WonhoOrg1",
+    "AppName": "BICAPP",
+    "Version": "1.0",
+    "Operator": "TDG",
+    "Cloudlet": "Rah123",
+    "ClusterInst": "autoclusterbicapp",
+    "CloudletLocation": {
+      "latitude": 28,
+      "longitude": 3,
+      "timestamp": {}
+    },
+    "URI": "autoclusterbicapp.rah123.tdg.mobiledgex.net",
+    "Liveness": 1,
+    "Mapped_port": [
+      {
+        "proto": 1,
+        "internal_port": 1112,
+        "public_port": 1112
+      }
+    ],
+    "Flavor": "m4.medium",
+    "State": 5,
+    "Error": "-",
+    "Runtime": {
+      "container_ids": [
+        "BICAPP"
+      ]
+    },
+    "Created": "seconds : 1580141081",
+    "Progress": "",
+    "Edit": [
+      "Region",
+      "DeveloperName",
+      "AppName",
+      "Version",
+      "Operator",
+      "Cloudlet",
+      "ClusterInst",
+      "CloudletLocation",
+      "State",
+      "Editable"
+    ],
+    "Status": {},
+    "Revision": 2
+  },
+  {
+    "uuid": "b4ca2bf4-3d58-463a-8dcc-1471477cc8e3",
+    "Region": "EU",
+    "OrganizationName": "WonhoOrg1",
+    "AppName": "BICAPP",
+    "Version": "1.0",
+    "Operator": "TDG",
+    "Cloudlet": "hamburg-stage",
+    "ClusterInst": "autoclusterbicapp",
+    "CloudletLocation": {
+      "latitude": 53.55,
+      "longitude": 9.99
+    },
+    "URI": "autoclusterbicapp.hamburg-stage.tdg.mobiledgex.net",
+    "Liveness": 1,
+    "Mapped_port": [
+      {
+        "proto": 1,
+        "internal_port": 1112,
+        "public_port": 1112
+      }
+    ],
+    "Flavor": "m4.medium",
+    "State": 5,
+    "Error": "-",
+    "Runtime": {
+      "container_ids": [
+        "BICAPP"
+      ]
+    },
+    "Created": "seconds : 1580141109",
+    "Progress": "",
+    "Edit": [
+      "Region",
+      "DeveloperName",
+      "AppName",
+      "Version",
+      "Operator",
+      "Cloudlet",
+      "ClusterInst",
+      "CloudletLocation",
+      "State",
+      "Editable"
+    ],
+    "Status": {},
+    "Revision": 2
+  },
+  {
+    "uuid": "0ecee85c-fa2a-49dc-9eaa-f28b351bf944",
+    "Region": "EU",
+    "OrganizationName": "WonhoOrg1",
+    "AppName": "BICAPP",
+    "Version": "1.0",
+    "Operator": "TDG",
+    "Cloudlet": "frankfurt-eu",
+    "ClusterInst": "autoclusterbicapp",
+    "CloudletLocation": {
+      "latitude": 50.110924,
+      "longitude": 8.682127
+    },
+    "URI": "autoclusterbicapp.frankfurt-eu.tdg.mobiledgex.net",
+    "Liveness": 1,
+    "Mapped_port": [
+      {
+        "proto": 1,
+        "internal_port": 1112,
+        "public_port": 1112
+      }
+    ],
+    "Flavor": "m4.medium",
+    "State": 5,
+    "Error": "-",
+    "Runtime": {
+      "container_ids": [
+        "BICAPP"
+      ]
+    },
+    "Created": "seconds : 1579251799",
+    "Progress": "",
+    "Edit": [
+      "Region",
+      "DeveloperName",
+      "AppName",
+      "Version",
+      "Operator",
+      "Cloudlet",
+      "ClusterInst",
+      "CloudletLocation",
+      "State",
+      "Editable"
+    ],
+    "Status": {},
+    "Revision": 2
+  }
+]

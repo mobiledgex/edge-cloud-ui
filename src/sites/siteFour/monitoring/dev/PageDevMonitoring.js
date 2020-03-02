@@ -9,7 +9,7 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {Button as MButton, CircularProgress} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
-import {Button as AButton, Checkbox, DatePicker, Select, Tooltip} from 'antd';
+import {Button as AButton, Checkbox, DatePicker, Select, Tooltip, Card} from 'antd';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 
 import {
@@ -56,8 +56,16 @@ import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import '../PageMonitoring.css'
 
-import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, PageMonitoringStyles, renderLoaderArea, renderPlaceHolderCircular, showToast} from "../PageMonitoringCommonService";
-import {getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList} from "../PageMonitoringMetricService";
+import {
+    getOneYearStartEndDatetime,
+    isEmpty,
+    makeBubbleChartDataForCluster,
+    PageMonitoringStyles,
+    renderLoaderArea,
+    renderPlaceHolderCircular,
+    showToast
+} from "../PageMonitoringCommonService";
+import {getAppInstList, getAppLevelUsageList, getCloudletList, getClusterEventLogList, getClusterLevelUsageList, getClusterList} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraph from "../components/ModalGraph";
@@ -408,21 +416,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 clearInterval(this.intervalForAppInst)
 
                 this.setState({dropdownRequestLoading: true})
-                let clusterList = await getClusterList();
-                let cloudletList = await getCloudletList()
-                let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
-                if (appInstanceList.length === 0) {
-                    this.setState({
-                        isNoData: true,
-                    })
-                }
+                /*  let clusterList = await getClusterList();
+                  let cloudletList = await getCloudletList()
+                  let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
+                  if (appInstanceList.length === 0) {
+                      this.setState({
+                          isNoData: true,
+                      })
+                  }*/
 
                 //fixme: fakeData22222222222
                 //fixme: fakeData
-                /*    let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
-                    let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-                    let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
-                    console.log('appInstanceList====>', appInstanceList);*/
+                let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+                let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
+                let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
+                console.log('appInstanceList====>', appInstanceList);
 
                 console.log('clusterList===>', clusterList);
 
@@ -434,7 +442,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //@fixme: 클러스터 레벨 이벤트로그 호출...
                 //@fixme: 클러스터 레벨 이벤트로그 호출...
                 /*let clusterEventLogList = await getClusterEventLogList(clusterList);
-                //alert(JSON.stringify(clusterEventLogList))*/
+                alert(JSON.stringify(clusterEventLogList))*/
 
                 let appInstanceListGroupByCloudlet = []
                 try {
@@ -464,18 +472,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     })
                 }
                 let allClusterUsageList = []
-                try {
-                    allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
-                } catch (e) {
+                /* try {
+                     allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
+                 } catch (e) {
 
-                }
+                 }*/
 
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
-                /*allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
-                console.log('filteredAppInstanceList===>', appInstanceList)*/
-
+                allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+                console.log('filteredAppInstanceList===>', appInstanceList)
 
                 let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
                 await this.setState({
@@ -1022,7 +1029,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         i: uniqueId,
                         x: 0,
                         y: maxY + 1,
-                        w: graphType === GRID_ITEM_TYPE.CLUSTER_LIST ? 3 : 1,
+                        w: graphType === GRID_ITEM_TYPE.CLUSTER_LIST ? 2 : 1,//todo: grid item size.
                         h: 1,
                     }),
                     layoutMapperForCluster: mapperList.concat(itemOne),
@@ -1728,8 +1735,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <Grid.Row className='view_contents'>
                         <Grid.Column className='contents_body'>
                             {this.renderHeader()}
-                            <div style={{position: 'absolute', top: '37%', left: '48%'}}>
-                                <div style={{
+                            <div style={{position: 'absolute', top: '10%', left: '10%'}}>
+                                {/* <div style={{
                                     marginLeft: -450,
                                     display: 'flex',
                                     flexDirection: 'row',
@@ -1737,8 +1744,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     opacity: 1,
                                     color: 'white'
                                 }}>
-                                    There is no app instance you can access..
-                                </div>
+
+                                </div>*/}
+                                <Card
+                                    hoverable
+                                    style={{width: 800}}
+                                    cover={<img alt="example" src="/assets/brand/MobiledgeX_Logo_tm_white.svg"/>}
+                                >
+                                    <div style={{fontSize: 30}}>
+                                        There is no app instance you can access..3333
+                                    </div>
+                                </Card>
                             </div>
                         </Grid.Column>
                     </Grid.Row>
