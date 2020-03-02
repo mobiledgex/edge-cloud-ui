@@ -90,6 +90,7 @@ import BubbleChartWrapper from "../components/BubbleChartWrapper";
 import BarChartWrapper from "../components/BarChartWrapper";
 import LineChartWrapper from "../components/LineChartWrapper";
 import EventLogList from "../components/EventLogList";
+import PerformanceSummaryTable from "../components/PerformanceSummaryTable";
 
 const {Option} = Select;
 
@@ -137,7 +138,7 @@ type State = {
     clusterInstanceGroupList: any,
     startTime: string,
     endTime: string,
-    clusterList: any,
+    clusterUsageList: any,
     filteredCpuUsageList: any,
     filteredMemUsageList: any,
     filteredDiskUsageList: any,
@@ -441,12 +442,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 //fixme: fakeData22222222222
                 //fixme: fakeData
-                /*let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+                /*let clusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterUsageList')
                 let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
                 let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')*/
                 console.log('appInstanceList====>', appInstanceList);
 
-                console.log('clusterList===>', clusterList);
+                console.log('clusterUsageList===>', clusterList);
 
                 let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
 
@@ -504,8 +505,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
-                allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
-                console.log('filteredAppInstanceList===>', appInstanceList)
+                /*allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+                console.log('filteredAppInstanceList===>', appInstanceList)*/
 
                 let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
                 await this.setState({
@@ -937,8 +938,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             });
 
             let allUsageList = allClusterUsageList;
-            console.log('allClusterUsageList===>', allClusterUsageList)
+            console.log('handleClusterDropdown===>', allClusterUsageList)
             let filteredClusterUsageList = []
+
+            console.log("handleClusterDropdown===selectedCluster>", selectedCluster);
+            console.log("handleClusterDropdown===selectedCloudlet>", selectedCloudlet);
+
             allUsageList.map(item => {
                 if (item.cluster === selectedCluster && item.cloudlet === selectedCloudlet) {
                     filteredClusterUsageList.push(item)
@@ -947,6 +952,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 filteredClusterUsageList: filteredClusterUsageList,
             })
+
+            console.log("handleClusterDropdown===>", filteredClusterUsageList);
 
             let allClusterEventLogList = this.state.allClusterEventLogList
             let filteredClusterEventLogList = []
@@ -1174,7 +1181,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_LIST) {
                 return (
-                    this.state.loading ? renderPlaceHolderCircular() : renderPerformanceSummaryTable(this, this.state.filteredClusterUsageList)
+                    this.state.loading ? renderPlaceHolderCircular() : <PerformanceSummaryTable parent={this} clusterUsageList={this.state.filteredClusterUsageList}/>
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PIE) {
                 return (
