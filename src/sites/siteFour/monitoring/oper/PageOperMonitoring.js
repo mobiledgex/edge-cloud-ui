@@ -1046,7 +1046,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         <img alt="example" src="/assets/brand/MobiledgeX_Logo_tm_white.svg" width={500} height={250}/>
                                     </div>}
                                 >
-                                    <div style={{fontSize: 45, fontFamily:'Bungee'}}>
+                                    <div style={{fontSize: 45, fontFamily:'Roboto Condensed'}}>
                                         There is no cloudlet you can access...
                                     </div>
                                 </Card>
