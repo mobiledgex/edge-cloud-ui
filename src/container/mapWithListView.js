@@ -486,7 +486,7 @@ class MapWithListView extends React.Component {
     showAction = (item, field) => {
         return (
             String(item[field]) === 'null' ? '' :
-                <IconButton aria-label="Action" onClick={e => this.setState({ anchorEl: e.currentTarget, selected: item  })}>
+                <IconButton className='actionButton' aria-label="Action" onClick={e => this.setState({ anchorEl: e.currentTarget, selected: item  })}>
                     <ListIcon style={{ color: '#76ff03' }} />
                 </IconButton>
         )

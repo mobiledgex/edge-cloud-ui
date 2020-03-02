@@ -377,7 +377,8 @@ class DeveloperListView extends React.Component {
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <div ref={acell => this['actionCell_' + index] = acell}
                 style={{ backgroundColor: 'transparent', width: 0, height: 0, position: 'relative' }}></div>
-            <IconButton 
+            <IconButton
+                className='actionButton'
                 aria-label="Action" 
                 onClick={e => this.setState({ anchorEl: e.currentTarget })}
                 disabled={(localStorage.selectRole === 'AdminManager' || localStorage.selectOrg == item.Organization || (this.state.selectUse == index)) ? false : true}

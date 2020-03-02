@@ -98,7 +98,7 @@ class MexListView extends React.Component {
 
     getAction = (item) => {
         return (
-            <IconButton aria-label="Action" onClick={e => this.setState({ anchorEl: e.currentTarget })}>
+            <IconButton className='actionButton' aria-label="Action" onClick={e => this.setState({ anchorEl: e.currentTarget })}>
                 <ListIcon style={{ color: '#76ff03' }} />
             </IconButton>
         )

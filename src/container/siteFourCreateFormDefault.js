@@ -683,6 +683,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                     <Button
                                         primary
                                         positive
+                                        className='sumitFormButton'
                                         icon='checkmark'
                                         labelPosition='right'
                                         content={this.state.submitButton}

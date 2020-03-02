@@ -427,3 +427,233 @@ export const CloudletTutor = () => {
         }
     )
 }
+
+export const CloudletPoolTutor = () => {
+    return(
+        {
+            stepsCloudletPool: [
+                {
+                    element: '.createAppInst0',
+                    intro: 'This is cloudlet pool page.'
+                },
+                {
+                    element: '.stepOrg2',
+                    intro: 'Click “New” button to add new cloudlet Pool.'
+                },
+                {
+                    element: '.actionButton',
+                    intro: 'Click this button to perform "Add Cloudlet", "Link Organization" and "Delete Cloudlet Pool".'
+                }
+            ],
+            stepsNewPool: [
+                {
+                    element: '.cloudletReg0',
+                    intro: '<span>Select Region.</span>',
+                },
+                {
+                    element: '.cloudletReg1',
+                    intro: '<span>Select PoolName.</span>',
+                },
+                {
+                    element: '.cloudletReg2',
+                    intro: '<span>Add cloudlets.</span>',
+                },
+                {
+                    element: '.sumitFormButton',
+                    intro: '<span>Click this button to move step2.</span>',
+                },
+            ],
+            stepsNewPool2: [
+                {
+                    element: '.cloudletReg0',
+                    intro: '<span>Select.</span>',
+                },
+                {
+                    element: '.cloudletReg1',
+                    intro: '<span>Select.</span>',
+                },
+                {
+                    element: '.cloudletReg2',
+                    intro: '<span>link Organizations.</span>',
+                },
+                {
+                    element: '.sumitFormButton',
+                    intro: '<span>Click this button to move step3.</span>',
+                },
+            ],
+            stepsNewPool3: [
+                {
+                    element: '.newOrg3-1',
+                    intro: 'first',
+                },
+                {
+                    element: '.newOrg3-2',
+                    intro: 'second',
+                },
+                {
+                    element: '.newOrg3-3',
+                    intro: 'next.',
+                },
+                {
+                    element: '.newOrg3-4',
+                    intro: 'click button.',
+                },
+            ],
+        }
+    )
+
+}
+
+export const PolicyTutor = () => {
+    return(
+        {
+            stepsPolicy: [
+                {
+                    element: '.createAppInst0',
+                    intro: 'This is Policy page'
+                },
+                {
+                    element: '.stepOrg2',
+                    intro: 'Click “New” button to add new policy.'
+                },
+                {
+                    element: '.actionButton',
+                    intro: 'Click this button to perform "View", "Update" and "Delete".'
+                }
+            ],
+            stepsNewPolicy: [
+                {
+                    element: '.createAppInst0',
+                    intro: 'A Cloudlet is a set of compute resources at a particular location, provided by an Operator. Use this page to deploy, manage and view cloudlets.'
+                },
+                {
+                    element: '.progressIndicator',
+                    intro: 'Click to View Detail Progress'
+                }
+            ],
+            stepsNewPolicy2: [
+                {
+                    element: '.cloudletReg0',
+                    intro: 'Select region where you want to deploy.'
+                },
+                {
+                    element: '.cloudletReg1',
+                    intro: 'Name of the cloudlet.'
+                },
+                {
+                    element: '.cloudletReg2',
+                    intro: 'Name of the organization you are currently managing.'
+                },
+                {
+                    element: '.cloudletReg3',
+                    intro: 'Cloudlet Location'
+                },
+                {
+                    element: '.cloudletReg4',
+                    intro: '<span>Ip Support indicates the type of public IP support provided by the Cloudlet.<br />Static IP support indicates a set of static public IPs are available for use, and managed by the Controller.<br />Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.</span>'
+                },
+                {
+                    element: '.cloudletReg5',
+                    intro: 'Number of dynamic IPs available for dynamic IP support.'
+                },
+                {
+                    element: '.cloudletReg6',
+                    intro: 'Physical infrastructure cloudlet name.'
+                },
+                {
+                    element: '.cloudletReg7',
+                    intro: 'Supported list of cloudlet types.'
+                }
+            ],
+            stepsNewPolicyPrivacy: [
+                {
+                    element: '.newOrg3-1',
+                    intro: 'Please read this page carefully, as it provides instruction to upload your backend image to MobiledgeX registry.',
+                },
+                {
+                    element: '.newOrg3-2',
+                    intro: 'Instruction to upload a docker image is provided here.',
+                },
+                {
+                    element: '.newOrg3-3',
+                    intro: 'Instruction to upload a VM image is provided here.',
+                },
+                {
+                    element: '.newOrg3-4',
+                    intro: 'Click this button to view the organization you have created.',
+                },
+            ],
+        }
+    )
+
+}
+
+export const MonitoringTutor = () => {
+    return (
+        {
+            stepsMonitoring: [
+                {
+                    element: '.createAppInst0',
+                    intro: 'This is monitoring page(Admin)'
+                },
+                {
+                    element: '.page_monitoring_select_area',
+                    intro: 'step 2.'
+                },
+                {
+                    element: '.progressIndicator',
+                    intro: 'step 3'
+                }
+            ],
+            stepsMonitoringDev: [
+                {
+                    element: '.createAppInst0',
+                    intro: 'This is monitoring page(Dev)'
+                },
+                {
+                    element: '.page_monitoring_select_area',
+                    intro: 'step 2'
+                }
+            ],
+            stepsMonitoringOper: [
+                {
+                    element: '.cloudletReg0',
+                    intro: 'This is monitoring page(Oper)'
+                },
+                {
+                    element: '.page_monitoring_select_area',
+                    intro: 'step 2'
+                },
+                {
+                    element: '.cloudletReg2',
+                    intro: 'step 3'
+                },
+            ],
+        }
+    )
+}
+
+export const AuditTutor = () => {
+    return (
+        {
+            stepsAudit: [
+                {
+                    element: '.createAppInst0',
+                    intro: 'This is audit log page'
+                },
+                {
+                    element: '.page_audit_history',
+                    intro: 'step 2'
+                },
+                {
+                    element: '.page_audit_history_option_period',
+                    intro: 'step 3'
+                },
+                {
+                    element: '.page_audit_code',
+                    intro: 'step 4'
+                }
+            ],
+        }
+    )
+}

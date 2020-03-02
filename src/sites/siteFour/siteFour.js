@@ -62,7 +62,7 @@ import PopLegendViewer from '../../container/popLegendViewer';
 import * as serviceMC from '../../services/serviceMC';
 import * as reducer from '../../utils'
 
-import {organizationTutor, CloudletTutor} from '../../tutorial';
+import {organizationTutor, CloudletTutor, CloudletPoolTutor, PolicyTutor, MonitoringTutor, AuditTutor} from '../../tutorial';
 
 import Alert from 'react-s-alert';
 
@@ -76,6 +76,10 @@ let defaultMotion = {left: window.innerWidth / 2, top: window.innerHeight / 2, o
 
 const orgaSteps = organizationTutor();
 const cloudletSteps = CloudletTutor();
+const cloudletPoolSteps = CloudletPoolTutor();
+const policySteps = PolicyTutor();
+const monitoringSteps = MonitoringTutor();
+const auditSteps = AuditTutor();
 let _self = null;
 
 const autoPolicy = [
@@ -451,6 +455,33 @@ class SiteFour extends React.Component {
             enable = true;
         } else if (this.props.params.subPath === "pg=createFlavor") {
             currentStep = orgaSteps.stepsCreateFlavor;
+            enable = true;
+        } else if (this.props.params.subPath === "pg=7") {
+            currentStep = cloudletPoolSteps.stepsCloudletPool;
+            enable = true;
+        } else if (this.props.params.subPath === "pg=createCloudletPool") {
+            currentStep = cloudletPoolSteps.stepsNewPool;
+            enable = true;
+        } else if (this.props.params.subPath === "pg=8") {
+            currentStep = policySteps.stepsPolicy;
+            enable = true;
+        } else if (this.props.params.subPath === "pg=createPolicy") {
+            currentStep = policySteps.stepsPolicy;
+            enable = true;
+        } else if (this.props.params.subPath === "pg=createPrivacyPolicy") {
+            currentStep = policySteps.stepsPolicy;
+            enable = true;
+        } else if (this.props.params.subPath === "pg=Monitoring") {
+            if (localStorage.selectRole === 'AdminManager') {
+                currentStep = monitoringSteps.stepsMonitoring;
+            } else if (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer') {
+                currentStep = monitoringSteps.stepsMonitoringDev;
+            } else {
+                currentStep = monitoringSteps.stepsMonitoringOper;
+            }
+            enable = true;
+        } else if (this.props.params.subPath === "pg=audits") {
+            currentStep = auditSteps.stepsAudit;
             enable = true;
         }
 

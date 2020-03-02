@@ -425,7 +425,8 @@ class InsideListView extends React.Component {
                 className='actionButton'
                 aria-label="Action" 
                 onClick={(self) => {
-                        _self.onClickDropMenu(item, value, i, self)
+                        _self.
+                        onClickDropMenu(item, value, i, self)
                         OrgCount !== 0 ? this.setState({deleteDisabled : true}) : this.setState({deleteDisabled : false})
                     }}
                     onMouseOver={()=> _self.onOverDropMenu(item, value, i)}
