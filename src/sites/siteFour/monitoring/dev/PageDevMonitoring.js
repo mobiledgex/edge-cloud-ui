@@ -416,20 +416,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 clearInterval(this.intervalForAppInst)
 
                 this.setState({dropdownRequestLoading: true})
-                /*  let clusterList = await getClusterList();
-                  let cloudletList = await getCloudletList()
-                  let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
-                  if (appInstanceList.length === 0) {
-                      this.setState({
-                          isNoData: true,
-                      })
-                  }*/
+                let clusterList = await getClusterList();
+                let cloudletList = await getCloudletList()
+                let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
+                if (appInstanceList.length === 0) {
+                    this.setState({
+                        isNoData: true,
+                    })
+                }
 
                 //fixme: fakeData22222222222
                 //fixme: fakeData
-                let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+                /*let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
                 let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-                let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
+                let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')*/
                 console.log('appInstanceList====>', appInstanceList);
 
                 console.log('clusterList===>', clusterList);
@@ -472,16 +472,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     })
                 }
                 let allClusterUsageList = []
-                /* try {
-                     allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
-                 } catch (e) {
 
-                 }*/
+                //todo: remoteData
+                //todo: remoteData
+                //todo: remoteData
+                try {
+                    allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
+                } catch (e) {
+
+                }
 
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
-                allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+                //allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
                 console.log('filteredAppInstanceList===>', appInstanceList)
 
                 let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
@@ -1735,24 +1739,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <Grid.Row className='view_contents'>
                         <Grid.Column className='contents_body'>
                             {this.renderHeader()}
-                            <div style={{position: 'absolute', top: '10%', left: '10%'}}>
-                                {/* <div style={{
-                                    marginLeft: -450,
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    fontSize: 30,
-                                    opacity: 1,
-                                    color: 'white'
-                                }}>
-
-                                </div>*/}
+                            <div style={{}}>
                                 <Card
                                     hoverable
-                                    style={{width: 800}}
-                                    cover={<img alt="example" src="/assets/brand/MobiledgeX_Logo_tm_white.svg"/>}
+                                    style={{width: '100%', height: '100%'}}
+                                    cover={<div style={{marginLeft: 40, marginTop: 5}}>
+                                        <img alt="example" src="/assets/brand/MobiledgeX_Logo_tm_white.svg" width={500} height={250}/>
+                                    </div>}
                                 >
-                                    <div style={{fontSize: 30}}>
-                                        There is no app instance you can access..3333
+                                    <div style={{fontSize: 45, fontFamily:'Bungee'}}>
+                                        There is no app instance you can access..
                                     </div>
                                 </Card>
                             </div>

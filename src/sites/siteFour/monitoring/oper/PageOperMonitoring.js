@@ -9,7 +9,7 @@ import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
-import {DatePicker,} from 'antd';
+import {Card, DatePicker,} from 'antd';
 import {filterListBykeyForCloudlet, renderBubbleChartForCloudlet,} from "../admin/PageAdminMonitoringService";
 import {CLASSIFICATION, HARDWARE_OPTIONS_FOR_CLOUDLET, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../../shared/Constants";
 import type {TypeGridInstanceList} from "../../../../shared/Types";
@@ -1038,10 +1038,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <Grid.Row className='view_contents'>
                         <Grid.Column className='contents_body'>
                             {this.renderHeader()}
-                            <div style={{position: 'absolute', top: '37%', left: '48%'}}>
-                                <div style={{marginLeft: -450, display: 'flex', flexDirection: 'row', fontSize: 30, opacity: 1, color: 'white'}}>
-                                    No data to express ( There is no cloudlet you can access )
-                                </div>
+                            <div style={{}}>
+                                <Card
+                                    hoverable
+                                    style={{width: '100%', height: '100%'}}
+                                    cover={<div style={{marginLeft: 40, marginTop: 5}}>
+                                        <img alt="example" src="/assets/brand/MobiledgeX_Logo_tm_white.svg" width={500} height={250}/>
+                                    </div>}
+                                >
+                                    <div style={{fontSize: 45, fontFamily:'Bungee'}}>
+                                        There is no cloudlet you can access...
+                                    </div>
+                                </Card>
                             </div>
                         </Grid.Column>
                     </Grid.Row>
