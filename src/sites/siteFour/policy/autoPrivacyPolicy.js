@@ -15,6 +15,9 @@ import { keys } from '../../../services/model/privacyPolicy';
 class PrivacyPolicy extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            currentView :null
+        }
         this.action = '';
         this.data={}
     }
@@ -22,12 +25,11 @@ class PrivacyPolicy extends React.Component {
     onUpdate = (data) => {
         this.data = data;
         this.action = 'Update'
-        this.props.childPage(<PrivacyPolicyReg data={this.data} action={this.action} childPage={this.props.childPage}></PrivacyPolicyReg>)
+        this.setState({ currentView: <PrivacyPolicyReg data={this.data} action={this.action} childPage={this.props.childPage}></PrivacyPolicyReg> })
     }
 
-    onAdd = ()=>
-    {
-        this.props.childPage(<PrivacyPolicyReg/>)
+    onAdd = () => {
+        this.setState({ currentView: <PrivacyPolicyReg /> })
     }
 
    
@@ -47,7 +49,7 @@ class PrivacyPolicy extends React.Component {
             this.props.handleAlertInfo('success', `Privacy Policy ${data[fields.privacyPolicyName]} deleted successfully`)
             valid = true;
         }
-        return true;
+        return valid;
     }
 
     actionMenu = () => {
@@ -70,6 +72,7 @@ class PrivacyPolicy extends React.Component {
     
     render() {
         return (
+            this.state.currentView ? this.state.currentView :
             <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} />
         )
     }
