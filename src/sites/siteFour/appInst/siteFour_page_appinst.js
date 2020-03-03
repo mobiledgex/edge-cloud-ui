@@ -34,7 +34,6 @@ class SiteFourPageAppInst extends React.Component {
         this.headerH = 70;
         this.hgap = 0;
         this.loadCount = 0;
-        this.uuid = 0;
         this._AppInstDummy = [];
         this.socket = null;
         this._diffRev = []

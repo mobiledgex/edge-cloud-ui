@@ -35,7 +35,6 @@ class MexTerminal extends Component {
         if (props.data.Runtime && props.data.Runtime.container_ids) {
             this.containerIds = props.data.Runtime.container_ids;
         }
-        this.vmLoad = false;
         this.request='Run Command'
         this.requestTypes = ['Run Command', 'Show Logs']
         this.success = false;
