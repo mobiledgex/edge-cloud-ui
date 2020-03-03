@@ -236,14 +236,14 @@ class AccountListView extends React.Component {
                             {Object.keys(item).map((value, j) => (
                                 (value === 'Edit')?
                                     String(item[value]) === 'null' ? <Table.Cell /> :
-                                    <Table.Cell key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'} }>
+                                    <Table.Cell key={j} textAlign='center' style={{whiteSpace:'nowrap'} }>
 
                                         <Button disabled={item.Username === 'mexadmin'} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
 
                                     </Table.Cell>
                                 :
                                 (value === 'Type' && item[value])?
-                                    <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'}} >
+                                    <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={{whiteSpace:'nowrap'}} >
                                         {/*<div className="markBox">{this.typeMark(item[value])}</div>*/}
                                         <span style={(item[value] == 'developer')?{color:'#9b9979'}:{color:'#7d969b'}}>{item[value]}</span>
                                     </Table.Cell>
@@ -286,7 +286,7 @@ class AccountListView extends React.Component {
                                     </Table.Cell>
                                 :
                                 (!( String(hideHeader).indexOf(value) > -1 )) ?
-                                    <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{cursor:'pointer',background:'#444'} :{cursor:'pointer'} }>
+                                    <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} onClick={() => this.detailView(item)} style={{cursor:'pointer'} }>
                                         <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
                                             {String(item[value])}
                                         </div>

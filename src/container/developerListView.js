@@ -396,7 +396,7 @@ class DeveloperListView extends React.Component {
     )
     makeEditMenu = (item, j, i) => (
         <div key={j} textalign='center'
-            style={(this.state.selectUse == i) ? { whiteSpace: 'nowrap', background: '#444' } : { whiteSpace: 'nowrap' }}>
+            style={{ whiteSpace: 'nowrap' }}>
             {(this.props.siteId == 'Organization' && localStorage.selectRole !== 'AdminManager') ?
                 <Button className='stepOrgDeveloper1' color={(localStorage.selectOrg == item.Organization) ? 'teal' : (this.state.selectUse == i) ? 'teal' : null}
                     onClick={(evt) => this.onUseOrg(item, i, evt)}>
@@ -446,11 +446,7 @@ class DeveloperListView extends React.Component {
                                 (value === 'Edit') ?
                                     String(item[value]) === 'null' ? <Table.Cell /> :
                                         <Table.Cell className="table_actions" key={j} textAlign='center'
-                                            style={(this.state.selectUse === i) ? {
-                                                whiteSpace: 'nowrap',
-                                                background: '#444',
-                                                overflow: 'visible'
-                                            } : { whiteSpace: 'nowrap', overflow: 'visible' }}>
+                                            style={ { whiteSpace: 'nowrap', overflow: 'visible' }}>
 
                                             {(this.props.siteId === 'Organization' && localStorage.selectRole !== 'AdminManager') ?
                                                 <Button className='stepOrgDeveloper1'
@@ -469,10 +465,7 @@ class DeveloperListView extends React.Component {
                                     :
                                     (value === 'Type') ?
                                         <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)}
-                                            style={(this.state.selectUse === i) ? {
-                                                whiteSpace: 'nowrap',
-                                                background: '#444'
-                                            } : { whiteSpace: 'nowrap' }}>
+                                            style={{ whiteSpace: 'nowrap' }}>
                                             {/*<div className="markBox">{this.typeMark(item[value])}</div>*/}
                                             <span
                                                 style={(item[value] === 'developer') ? { color: '#9b9979' } : { color: '#7d969b' }}>{item[value]}</span>
@@ -529,10 +522,7 @@ class DeveloperListView extends React.Component {
                                                                 <Table.Cell key={j}
                                                                     textAlign={(value === 'Region') ? 'center' : (j === 0 || value.indexOf('Name') !== -1) ? 'left' : 'left'}
                                                                     onClick={() => this.detailView(item)}
-                                                                    style={(this.state.selectUse === i) ? {
-                                                                        cursor: 'pointer',
-                                                                        background: '#444'
-                                                                    } : { cursor: 'pointer' }}>
+                                                                    style={ { cursor: 'pointer' }}>
                                                                     <div ref={ref => this.tooltipref = ref}
                                                                         data-tip='tooltip' data-for='happyFace'>
                                                                         {String(item[value])}

@@ -209,7 +209,7 @@ class MapWithListView extends React.Component {
 
                     <div className={'grid_table ' + this.props.siteId}>
                         {
-                            this.TableExampleVeryBasic(this.props.headerLayout, dummyData)
+                            this.TableExampleVeryBasic(dummyData)
                         }
                     </div>
                 </div>
@@ -562,7 +562,7 @@ class MapWithListView extends React.Component {
         return this.props.headerInfo.map((header, j) => {
             if (header.visible) {
                 let field = header.field;
-                return <Table.Cell key={j} textAlign='center' ref={cell => this.tableCell = cell} onClick={() => this.getCellClick(field, item)} style={(this.state.selectedItem == i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
+                return <Table.Cell key={j} textAlign='center' ref={cell => this.tableCell = cell} onClick={() => this.getCellClick(field, item)} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
                     {
                             field === 'Actions' ?
                                 this.showAction(item, field) :
@@ -584,7 +584,7 @@ class MapWithListView extends React.Component {
         })
     }
 
-    TableExampleVeryBasic = (headL, dummyData) => (
+    TableExampleVeryBasic = (dummyData) => (
         <Table className="viewListTable" basic='very' striped celled sortable ref={ref => this.viewListTable = ref} style={{ width: '100%' }}>
             <Table.Header className="viewListTableHeader" style={{ width: '100%' }}>
                 <Table.Row>
@@ -778,10 +778,7 @@ class MapWithListView extends React.Component {
                                                         <MenuItem  key={i} onClick={(e) => { this.onActionClose(action) }}>
                                                             {/* <MaterialIcon color='white' icon={action.icon}/> */}
                                                             <label>{action.label}</label> 
-                                                        </MenuItem> : 
-                                                        <MenuItem  key={i}>
-                                                            <label>Not avaliable</label> 
-                                                        </MenuItem>
+                                                        </MenuItem> : null
                                                 })}
                                             </MenuList>
                                         </ClickAwayListener>
