@@ -11,12 +11,14 @@ type Props = {
     pHardwareType: string,
     graphType: string,
     chartDataSet: any,
+    isResizeComplete:boolean,
 };
 type State = {
     currentClassification: any,
     themeTitle: string,
     chartDataSet: any,
     pHardwareType: string,
+    isResizeComplete:boolean,
 };
 
 export default class LineChartWrapper extends React.Component<Props, State> {
@@ -48,6 +50,8 @@ export default class LineChartWrapper extends React.Component<Props, State> {
             })
         }
 
+
+
     }
 
 
@@ -67,7 +71,7 @@ export default class LineChartWrapper extends React.Component<Props, State> {
                                     </div>
                                 </div>
                                 <div className='page_monitoring_container'>
-                                    {this.props.loading ? renderPlaceHolderCircular() : renderLineChartCoreForDev(this.props.parent, this.state.chartDataSet)}
+                                    {this.props.loading ? renderPlaceHolderCircular() : renderLineChartCoreForDev(this.props.parent, this.state.chartDataSet, this.state.isResizeComplete)}
                                 </div>
                             </div>
                         </div>

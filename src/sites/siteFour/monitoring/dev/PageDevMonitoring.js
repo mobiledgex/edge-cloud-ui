@@ -9,7 +9,7 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {Button as MButton, CircularProgress} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
-import {Button as AButton, Checkbox, DatePicker, Select, Tooltip, Card} from 'antd';
+import {Button as AButton, Card, Checkbox, DatePicker, Select, Tooltip} from 'antd';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 
 import {
@@ -27,7 +27,6 @@ import {
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
     makeSelectBoxListWithValuePipe,
-    renderPerformanceSummaryTable,
 } from "./PageDevMonitoringService";
 import {
     ADD_ITEM_LIST,
@@ -46,10 +45,8 @@ import {
     NETWORK_OPTIONS,
     NETWORK_TYPE,
     RECENT_DATA_LIMIT_COUNT,
-    TCP_OPTIONS,
     THEME_OPTIONS,
-    THEME_OPTIONS_LIST,
-    UDP_OPTIONS
+    THEME_OPTIONS_LIST
 } from "../../../../shared/Constants";
 import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
@@ -66,12 +63,11 @@ import {
     showToast
 } from "../PageMonitoringCommonService";
 import {
+    getAllClusterEventLogList,
     getAppInstEventLogListOne,
     getAppInstList,
     getAppLevelUsageList,
     getCloudletList,
-    getAllClusterEventLogList,
-    getClusterEventLogList,
     getClusterLevelUsageList,
     getClusterList
 } from "../PageMonitoringMetricService";
@@ -244,6 +240,7 @@ type State = {
     isBubbleChartMaked: boolean,
     allClusterEventLogList: any,
     filteredClusterEventLogList: any,
+    isResizeComplete: boolean,
 
 }
 
@@ -391,6 +388,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isBubbleChartMaked: false,
                 allClusterEventLogList: [],
                 filteredClusterEventLogList: [],
+                isResizeComplete: false,
             };
         }
 
@@ -506,7 +504,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
-               // allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+                // allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
                 console.log('filteredAppInstanceList===>', appInstanceList)
 
                 let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
@@ -615,7 +613,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
 
             return (
-                <LineChartWrapper context={this.context} loading={this.state.loading}
+                <LineChartWrapper isResizeComplete={this.state.isResizeComplete} context={this.context} loading={this.state.loading}
                                   currentClassification={this.state.currentClassification}
                                   parent={this}
                                   pHardwareType={hwType} chartDataSet={lineChartDataSet}/>
@@ -637,7 +635,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
 
             return (
-                <BarChartWrapper parent={this} loading={this.state.loading} chartDataSet={barChartDataSet}
+                <BarChartWrapper isResizeComplete={this.state.isResizeComplete} parent={this} loading={this.state.loading} chartDataSet={barChartDataSet}
                                  pHardwareType={hwType} graphType={graphType}/>
             )
         }
@@ -708,7 +706,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 />
             )
         }
-
 
 
         async resetGridPosition() {
@@ -785,7 +782,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let Region = pCurrentAppInst.split('|')[3].trim()
 
             //@fixme: _______appInstEventLogListOne_______appInstEventLogListOne_______appInstEventLogListOne_______appInstEventLogListOne_______appInstEventLogListOne
-            let _______appInstEventLogListOne=await getAppInstEventLogListOne(pCurrentAppInst);
+            let _______appInstEventLogListOne = await getAppInstEventLogListOne(pCurrentAppInst);
 
 
             let filteredAppList = filterUsageByClassification(this.state.appInstanceList, Cloudlet, 'Cloudlet');
@@ -822,7 +819,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let currentCluster = pCurrentAppInst.split("|")[2].trim() + " | " + pCurrentAppInst.split('|')[1].trim()
             pCurrentAppInst = pCurrentAppInst.trim();
             pCurrentAppInst = pCurrentAppInst.split("|")[0].trim() + " | " + pCurrentAppInst.split('|')[1].trim() + " | " + pCurrentAppInst.split('|')[2].trim()
-
 
 
             await this.setState({
@@ -1092,7 +1088,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-        _____makeGridItemOneByType(hwType, graphType) {
+        _makeGridItemOneByType(hwType, graphType) {
 
             if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                 return (
@@ -1224,9 +1220,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                      }}
                 >
                     <div className='page_monitoring_column_kyungjoon1' style={{height: this.gridItemHeight}}>
-                        {/*@todo:_____makeGridItemOneByType      */}
-                        {/*@todo:_____makeGridItemOneByType      */}
-                        {this._____makeGridItemOneByType(hwType, graphType.toUpperCase())}
+                        {/*@todo:_makeGridItemOneByType      */}
+                        {/*@todo:_makeGridItemOneByType      */}
+                        {this._makeGridItemOneByType(hwType, graphType.toUpperCase())}
                     </div>
 
                     <div className="remove"
@@ -1280,17 +1276,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         renderGridLayoutForCluster() {
-
             return (
                 <ResponsiveReactGridLayout
                     style={{backgroundColor: 'black'}}
-                    isResizable={false}
+                    isResizable={true}
                     isDraggable={this.state.isDraggable}
                     useCSSTransforms={true}
                     className={'layout'}
                     cols={{lg: 3, md: 3, sm: 3, xs: 3, xxs: 3}}
                     layout={this.state.layoutForCluster}
                     rowHeight={this.gridItemHeight}
+                    onResizeStop={() => {
+
+                        this.setState({
+                            isResizeComplete: !this.state.isResizeComplete,
+                        })
+                    }}
                     onLayoutChange={(layout) => {
                         this.setState({
                             layoutForCluster: layout,

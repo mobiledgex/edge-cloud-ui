@@ -574,20 +574,21 @@ export const arraysEqual = (a, b) => {
     }
 }
 
-export const renderBarChartCore = (chartDataList, hardwareType, _this, graphType) => {
-
+export const renderBarChartCore = (chartDataList, hardwareType, _this, graphType, isResizeComplete) => {
 
     return (
-        <Chart
-            width={"100%"}
-            //height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
-            height={'100%'}
-            chartType={graphType === GRID_ITEM_TYPE.BAR ? 'BarChart' : 'ColumnChart'}
-            //chartType={'ColumnChart'}
-            loader={<div><CircularProgress style={{color: '#1cecff', zIndex: 999999}}/></div>}
-            data={chartDataList}
-            options={graphType === GRID_ITEM_TYPE.BAR ? barChartOption(hardwareType) : columnChartOption(hardwareType)}
-        />
+       <div style={{width:'100%'}}>
+           <Chart
+               key={isResizeComplete}
+               //height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
+               height={'100%'}
+               chartType={graphType === GRID_ITEM_TYPE.BAR ? 'BarChart' : 'ColumnChart'}
+               //chartType={'ColumnChart'}
+               loader={<div><CircularProgress style={{color: '#1cecff', zIndex: 999999}}/></div>}
+               data={chartDataList}
+               options={graphType === GRID_ITEM_TYPE.BAR ? barChartOption(hardwareType) : columnChartOption(hardwareType)}
+           />
+       </div>
     );
 }
 

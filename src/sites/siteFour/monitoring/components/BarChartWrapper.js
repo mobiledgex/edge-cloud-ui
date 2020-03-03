@@ -10,12 +10,14 @@ type Props = {
     pHardwareType: string,
     graphType: string,
     chartDataSet: any,
+    isResizeComplete: boolean,
 };
 type State = {
     currentClassification: any,
     themeTitle: string,
     chartDataSet: any,
     graphType: string,
+    isResizeComplete: boolean,
 };
 
 export default class BarChartWrapper extends React.Component<Props, State> {
@@ -48,6 +50,12 @@ export default class BarChartWrapper extends React.Component<Props, State> {
             })
         }
 
+        if (this.props.isResizeComplete !== nextProps.isResizeComplete) {
+            this.setState({
+                isResizeComplete: nextProps.isResizeComplete,
+            })
+        }
+
     }
 
     render() {
@@ -66,7 +74,7 @@ export default class BarChartWrapper extends React.Component<Props, State> {
                                 </div>
                             </div>
                             <div className='page_monitoring_container'>
-                                {this.props.loading ? renderPlaceHolderCircular() : renderBarChartCore(this.state.chartDataSet.chartDataList, this.state.chartDataSet.hardwareType, this, this.state.graphType)}
+                                {this.props.loading ? renderPlaceHolderCircular() : renderBarChartCore(this.state.chartDataSet.chartDataList, this.state.chartDataSet.hardwareType, this, this.state.graphType, this.state.isResizeComplete)}
                             </div>
                         </div>
                     </div>
