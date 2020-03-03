@@ -6,8 +6,9 @@ import type {TypeAppInstance} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 
 import {Circle, Map, Marker, Popup, TileLayer, Tooltip} from "../../../../components/react-leaflet_kj/src/index";
-import PageDevMonitoring from "./PageDevMonitoring";
+import PageDevMonitoring from "../dev/PageDevMonitoring";
 import {Icon} from "antd";
+import {showToast} from "../PageMonitoringCommonService";
 
 
 const DEFAULT_VIEWPORT = {
@@ -65,7 +66,7 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
     }
 
     componentDidMount = async () => {
-        console.log('markerList2222===>', this.props.markerList);
+        console.log('componentDidMount===>', this.props.markerList);
         let appInstanceListGroupByCloudlet = this.props.markerList
         this.setCloudletLocation(appInstanceListGroupByCloudlet)
 
@@ -74,7 +75,6 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
 
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
         if (this.props.markerList !== nextProps.markerList) {
-
             console.log('markerList2222 nextProps_markerList===>', nextProps.markerList);
             let appInstanceListGroupByCloudlet = nextProps.markerList;
             this.setCloudletLocation(appInstanceListGroupByCloudlet)
@@ -82,11 +82,13 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (this.props.markerList === nextProps.markerList && !this.state.isUpdateEnable) {
-            return false;
-        } else {
-            return true;
-        }
+        /*  if (this.props.markerList === nextProps.markerList && !this.state.isUpdateEnable) {
+              return false;//don't update
+          } else {
+              showToast('shouldComponentUpdate')
+              return true;
+          }*/
+        return true;
     }
 
     setCloudletLocation(pAppInstanceListGroupByCloudlet) {
@@ -237,7 +239,7 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                             style={{color: 'black'}}>{item.Cloudlet}</span>
                                 </Tooltip>
 
-                               {/* {item.isShowCircle &&
+                                {/* {item.isShowCircle &&
                                 <Circle
                                     center={[item.CloudletLocation.latitude, item.CloudletLocation.longitude,]}
                                     radius={5000000}
@@ -256,7 +258,8 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
 
                                         return (
                                             <div style={{
-                                                fontSize: 14, fontFamily: 'Roboto', cursor: 'crosshair',
+                                                fontSize: 14, cursor: 'crosshair',
+
                                                 flexDirection: 'column',
                                                 marginTop: 5, marginBottom: 5
                                             }}
@@ -279,7 +282,6 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                                     {AppName}
                                                     <div style={{
                                                         color: '#77BD25',
-                                                        fontFamily: 'Roboto',
                                                         fontSize: 12
                                                     }}>
                                                         &nbsp;&nbsp;{` [${ClusterInst.trim()}]`}

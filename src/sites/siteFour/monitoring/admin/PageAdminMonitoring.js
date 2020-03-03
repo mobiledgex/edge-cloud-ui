@@ -293,6 +293,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     cloudletList: allCloudletList,
                 })
 
+
                 //@test: FAKE JSON FOR DEV
                 //let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
 
@@ -333,7 +334,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 });
 
                 let allAppInstUsageList = [];
-
                 //@todo:realdata
                 try {
                     allAppInstUsageList = await getAppLevelUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
@@ -1168,7 +1168,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         />
                                                     </div>
                                                     {/*todo:---------------------------------*/}
-                                                    {/*todo: RENDER BUBBLE_CHART          */}
+                                                    {/*todo: RENDER BUBBLE          */}
                                                     {/*todo:---------------------------------*/}
                                                     <div className='page_monitoring_container'>
                                                         {!this.state.isAppInstaceDataReady ? renderPlaceHolder2() : renderBubbleChart(this, this.state.currentHardwareType, this.state.bubbleChartData)}
