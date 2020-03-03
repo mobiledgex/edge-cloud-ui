@@ -209,7 +209,7 @@ class MapWithListView extends React.Component {
 
                     <div className={'grid_table ' + this.props.siteId}>
                         {
-                            this.TableExampleVeryBasic(this.props.headerLayout, dummyData)
+                            this.TableExampleVeryBasic(dummyData)
                         }
                     </div>
                 </div>
@@ -584,7 +584,7 @@ class MapWithListView extends React.Component {
         })
     }
 
-    TableExampleVeryBasic = (headL, dummyData) => (
+    TableExampleVeryBasic = (dummyData) => (
         <Table className="viewListTable" basic='very' striped celled sortable ref={ref => this.viewListTable = ref} style={{ width: '100%' }}>
             <Table.Header className="viewListTableHeader" style={{ width: '100%' }}>
                 <Table.Row>

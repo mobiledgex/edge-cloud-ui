@@ -1,5 +1,5 @@
 
-import React, { Component } from 'react';
+import React, { Component} from 'react';
 import Terminal from '../hoc/terminal/mexTerminal'
 import * as serviceMC from '../services/serviceMC'
 import stripAnsi from 'strip-ansi'
@@ -35,13 +35,12 @@ class MexTerminal extends Component {
         if (props.data.Runtime && props.data.Runtime.container_ids) {
             this.containerIds = props.data.Runtime.container_ids;
         }
-
+        this.vmLoad = false;
         this.request='Run Command'
         this.requestTypes = ['Run Command', 'Show Logs']
         this.success = false;
         this.localConnection = null;
         this.sendChannel = null;
-
     }
 
     setRemote = (mcRequest) => {
@@ -362,8 +361,7 @@ class MexTerminal extends Component {
 
     loadVMPage = () =>
     {
-        console.log('Rahu1234', this.props.data.vm.url)
-        return <iframe title="vm" id="ChatFrame" allowtransparency="true" frameborder="0" scrolling="no" src={this.props.data.vm.url} style={{ width: '100%', height: '100%' }}></iframe>
+        return <iframe ref="vmPage" src={this.props.data.vm.url} style={{ width: '100%', height: '100%' }}></iframe>
     }
 
     render() {
@@ -406,6 +404,10 @@ class MexTerminal extends Component {
     }
 
     componentDidMount(){
+        if(document.getElementById('vmPage'))
+        {
+            document.getElementById('vmPage').focus()
+        }
         this.setState({
             forms : this.getForms()
         })
