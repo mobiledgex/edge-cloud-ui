@@ -34,9 +34,8 @@ class SiteFourPageAppInst extends React.Component {
         this.headerH = 70;
         this.hgap = 0;
         this.loadCount = 0;
-
-        this.headerLayout = [2, 2, 2, 1, 1, 2, 2, 2, 1, 4];
         this._AppInstDummy = [];
+        this.socket = null;
         this._diffRev = []
 
         this.headerInfo = [
@@ -132,9 +131,6 @@ class SiteFourPageAppInst extends React.Component {
         }
         if (nextProps.viewMode) {
             if (nextProps.viewMode === 'listView') {
-
-                //alert('viewmode..'+nextProps.viewMode+':'+ this.state.devData)
-                //this.getDataDeveloper(this.props.changeRegion)
                 this.setState({ viewMode: nextProps.viewMode })
             } else {
                 this.setState({ detailData: nextProps.detailData })
@@ -244,10 +240,15 @@ class SiteFourPageAppInst extends React.Component {
 
     onTermialClose = ()=>
     {
+        if (this.socket) {
+            this.socket.close();
+            this.socket = null;
+        }
         this.gotoUrl('/site4', 'pg=6')
     }
 
     setRemote = (mcRequest) => {
+        this.socket = mcRequest.socket;
         this.props.handleLoadingSpinner(false)
         let mcurl = process.env.REACT_APP_API_VM_ENDPOINT;
         if (mcRequest && mcRequest.response)
@@ -261,7 +262,7 @@ class SiteFourPageAppInst extends React.Component {
                 vmURL = mcurl+'/'+vmURLs[vmURLs.length-1];
                 _self.setState({ viewMode: 'detailView' })
                 let vm = {}
-                vm.vmURL = vmURL
+                vm.url = vmURL
                 let data = {}
                 data.vm = vm;
                 this.props.childPage(<TerminalViewer data={data} onClose={this.onTermialClose}></TerminalViewer>)  
@@ -324,7 +325,7 @@ class SiteFourPageAppInst extends React.Component {
         return (
             
             (viewMode === 'listView') ?
-                <MapWithListView actionMenu={this.actionMenu} devData={devData} headerLayout={this.headerLayout} headerInfo={this.headerInfo} siteId='appinst' dataRefresh={this.getDataDeveloperSub} onTerminal={this.onTerminal} dataSort={this.state.dataSort}></MapWithListView>
+                <MapWithListView actionMenu={this.actionMenu} devData={devData} headerInfo={this.headerInfo} siteId='appinst' dataRefresh={this.getDataDeveloperSub} onTerminal={this.onTerminal} dataSort={this.state.dataSort}></MapWithListView>
                 :
                 <PageDetailViewer data={detailData} page='appInst' />
         );
