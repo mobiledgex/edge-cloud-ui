@@ -246,11 +246,11 @@
     background-color: #1e2124;
 }
 
-tbody {
-    background-color: rgb(30, 33, 36);
-    height: 360px;
-    min-height: 350px;
-}
+/*tbody {*/
+/*    background-color: rgb(30, 33, 36);*/
+/*    height: 360px;*/
+/*    min-height: 350px;*/
+/*}*/
 
 .react-grid-layout {
     position: relative;

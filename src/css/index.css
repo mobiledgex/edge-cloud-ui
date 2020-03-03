@@ -1319,7 +1319,7 @@ body, button, input, textarea, optgroup, select, textarea,
 .contents_body .ui.table tbody tr {
     display: flex;
     width: 100%;
-    align-items: center;
+    /*align-items: center;*/
 }
 .contents_body .ui.table tbody tr .table_actions {
     display: flex;
@@ -1336,7 +1336,7 @@ body, button, input, textarea, optgroup, select, textarea,
 .contents_body .ui.basic.striped.table tbody tr:nth-child(2n) {
     background: none !important;
 }
-.contents_body .ui.basic.table tbody tr:last-child td {
+.contents_body .ui.basic.table tbody tr:last-child {
     border-bottom: 1px solid rgba(255,255,255,.05) !important;
 }
 
@@ -1356,6 +1356,7 @@ body, button, input, textarea, optgroup, select, textarea,
 .contents_body .ui.basic.table tbody tr {
     border-top: none;
     border-bottom: none;
+    align-items: center;
 }
 /* .contents_body .ui.table tr:last-child td {
     border-bottom: solid 1px rgba(0,0,0,.25);
