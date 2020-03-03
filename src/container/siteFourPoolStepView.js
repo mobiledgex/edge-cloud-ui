@@ -343,6 +343,7 @@ class SiteFourPoolStepView extends React.Component {
                     _self.props.handleAlertInfo('success','Created successfully')
                     /** send props to next step **/
                     _self.setState({selectedRegion:_self.state.submitValues.Region, gavePoolName:_self.state.submitValues.poolName})
+                    this.props.handleChangeStep('02');
                     _self.setState({step:2, validateError:null, keysData:[keys[1]], fakeData:[fakes[1]]})
                     _self.props.handleDataExist(true)
                 }
@@ -365,6 +366,7 @@ class SiteFourPoolStepView extends React.Component {
             } else {
                 /** test --- test ---- send props to next step **/
                 this.setState({selectedRegion:this.state.submitValues.Region, gavePoolName:this.state.submitValues.poolName})
+                this.props.handleChangeStep('03');
                 this.setState({step:3, validateError:null, keysData:[keys[2]], fakeData:[fakes[2]]})
                 /** **/
 
@@ -378,6 +380,7 @@ class SiteFourPoolStepView extends React.Component {
 
                 /** send props to next step **/
                 this.setState({selectedRegion:this.state.submitValues.Region, gavePoolName:this.state.submitValues.poolName})
+                this.props.handleChangeStep('03');
                 this.setState({step:3, validateError:null, keysData:[keys[2]], fakeData:[fakes[2]]})
             }
         }
@@ -401,6 +404,8 @@ class SiteFourPoolStepView extends React.Component {
 
 
     componentWillReceiveProps(nextProps, nextContext) {
+
+        console.log('0302 test step', this.state.step)
 
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
@@ -588,7 +593,8 @@ const mapDispatchProps = (dispatch) => {
         handleChangeComputeItem: (data) => { dispatch(actions.computeItem(data))},
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
-        handleChangeNext: (next) => { dispatch(actions.changeNext(next))}
+        handleChangeNext: (next) => { dispatch(actions.changeNext(next))},
+        handleChangeStep: (data) => { dispatch(actions.changeStep(data))},
 
     };
 };

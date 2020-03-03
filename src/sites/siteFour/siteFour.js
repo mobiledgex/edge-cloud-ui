@@ -460,16 +460,26 @@ class SiteFour extends React.Component {
             currentStep = cloudletPoolSteps.stepsCloudletPool;
             enable = true;
         } else if (this.props.params.subPath === "pg=createCloudletPool") {
-            currentStep = cloudletPoolSteps.stepsNewPool;
+            if (this.props.changeStep === '02') {
+                currentStep = cloudletPoolSteps.stepsNewPool2;
+            } else if (this.props.changeStep === '03') {
+                currentStep = cloudletPoolSteps.stepsNewPool3;
+            } else {
+                currentStep = cloudletPoolSteps.stepsNewPool;
+            }
             enable = true;
         } else if (this.props.params.subPath === "pg=8") {
             currentStep = policySteps.stepsPolicy;
             enable = true;
         } else if (this.props.params.subPath === "pg=createPolicy") {
-            currentStep = policySteps.stepsPolicy;
+            if (this.props.changeStep === '02') {
+                currentStep = policySteps.stepsNewPolicy2;
+            } else {
+                currentStep = policySteps.stepsNewPolicy;
+            }
             enable = true;
         } else if (this.props.params.subPath === "pg=createPrivacyPolicy") {
-            currentStep = policySteps.stepsPolicy;
+            currentStep = policySteps.stepsNewPolicyPrivacy;
             enable = true;
         } else if (this.props.params.subPath === "pg=Monitoring") {
             if (localStorage.selectRole === 'AdminManager') {
@@ -681,6 +691,7 @@ class SiteFour extends React.Component {
             // alert(JSON.stringify(nextProps.detailData))
             this.setState({detailData: nextProps.detailData})
         }
+        console.log('0302 test',this.props.changeStep)
 
     }
 

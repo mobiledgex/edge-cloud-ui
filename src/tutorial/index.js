@@ -452,7 +452,7 @@ export const CloudletPoolTutor = () => {
                 },
                 {
                     element: '.cloudletReg1',
-                    intro: '<span>Select PoolName.</span>',
+                    intro: '<span>Select Pool Name.</span>',
                 },
                 {
                     element: '.cloudletReg2',
@@ -466,15 +466,15 @@ export const CloudletPoolTutor = () => {
             stepsNewPool2: [
                 {
                     element: '.cloudletReg0',
-                    intro: '<span>Select.</span>',
+                    intro: '<span>Select Region.</span>',
                 },
                 {
                     element: '.cloudletReg1',
-                    intro: '<span>Select.</span>',
+                    intro: '<span>Select Pool Name.</span>',
                 },
                 {
                     element: '.cloudletReg2',
-                    intro: '<span>link Organizations.</span>',
+                    intro: '<span>Link Organizations.</span>',
                 },
                 {
                     element: '.sumitFormButton',
@@ -484,19 +484,11 @@ export const CloudletPoolTutor = () => {
             stepsNewPool3: [
                 {
                     element: '.newOrg3-1',
-                    intro: 'first',
-                },
-                {
-                    element: '.newOrg3-2',
-                    intro: 'second',
-                },
-                {
-                    element: '.newOrg3-3',
-                    intro: 'next.',
+                    intro: 'Review your Cloudlet pool',
                 },
                 {
                     element: '.newOrg3-4',
-                    intro: 'click button.',
+                    intro: 'Move to list page.',
                 },
             ],
         }
@@ -524,63 +516,75 @@ export const PolicyTutor = () => {
             stepsNewPolicy: [
                 {
                     element: '.createAppInst0',
-                    intro: 'A Cloudlet is a set of compute resources at a particular location, provided by an Operator. Use this page to deploy, manage and view cloudlets.'
+                    intro: 'Create new Policy'
                 },
                 {
                     element: '.progressIndicator',
-                    intro: 'Click to View Detail Progress'
+                    intro: 'step1'
+                },
+                {
+                    element: '.progressIndicator',
+                    intro: 'step2'
+                },
+                {
+                    element: '.progressIndicator',
+                    intro: 'step3'
+                },
+                {
+                    element: '.progressIndicator',
+                    intro: 'step4'
+                },
+                {
+                    element: '.progressIndicator',
+                    intro: 'step5'
+                },
+                {
+                    element: '.progressIndicator',
+                    intro: 'Submit'
                 }
             ],
             stepsNewPolicy2: [
                 {
-                    element: '.cloudletReg0',
-                    intro: 'Select region where you want to deploy.'
+                    element: '.createAppInst0',
+                    intro: 'Create new Policy2'
                 },
                 {
-                    element: '.cloudletReg1',
-                    intro: 'Name of the cloudlet.'
+                    element: '.progressIndicator',
+                    intro: 'step1'
                 },
                 {
-                    element: '.cloudletReg2',
-                    intro: 'Name of the organization you are currently managing.'
+                    element: '.progressIndicator',
+                    intro: 'step2'
                 },
                 {
-                    element: '.cloudletReg3',
-                    intro: 'Cloudlet Location'
+                    element: '.progressIndicator',
+                    intro: 'step3'
                 },
                 {
-                    element: '.cloudletReg4',
-                    intro: '<span>Ip Support indicates the type of public IP support provided by the Cloudlet.<br />Static IP support indicates a set of static public IPs are available for use, and managed by the Controller.<br />Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.</span>'
+                    element: '.progressIndicator',
+                    intro: 'step4'
                 },
                 {
-                    element: '.cloudletReg5',
-                    intro: 'Number of dynamic IPs available for dynamic IP support.'
-                },
-                {
-                    element: '.cloudletReg6',
-                    intro: 'Physical infrastructure cloudlet name.'
-                },
-                {
-                    element: '.cloudletReg7',
-                    intro: 'Supported list of cloudlet types.'
+                    element: '.progressIndicator',
+                    intro: 'Submit'
                 }
             ],
             stepsNewPolicyPrivacy: [
                 {
                     element: '.newOrg3-1',
-                    intro: 'Please read this page carefully, as it provides instruction to upload your backend image to MobiledgeX registry.',
+                    intro: 'New Privacy Policy.',
                 },
                 {
                     element: '.newOrg3-2',
-                    intro: 'Instruction to upload a docker image is provided here.',
+                    intro: 'step1',
                 },
                 {
                     element: '.newOrg3-3',
-                    intro: 'Instruction to upload a VM image is provided here.',
+                    intro: 'step2',
                 },
                 {
                     element: '.newOrg3-4',
-                    intro: 'Click this button to view the organization you have created.',
+                    intro: 'step3',
                 },
             ],
         }

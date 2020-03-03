@@ -124,6 +124,7 @@ class AutoProvPolicyReg extends React.Component {
             step:1,
             forms: step2
         })
+        this.props.handleChangeStep('');
     }
 
     addCloudletResponse = (mcRequestList)=>
@@ -161,6 +162,7 @@ class AutoProvPolicyReg extends React.Component {
                 let organization = data.AutoProvPolicy.key.developer;
                 let autoPolicyName = data.AutoProvPolicy.key.name;
                 this.props.handleAlertInfo('success', `Auto Provisioning Policy ${autoPolicyName} created successfully`)
+                this.props.handleChangeStep('02');
                 this.selectCloudlet(region, organization, autoPolicyName)
             }
         }
@@ -238,6 +240,7 @@ class AutoProvPolicyReg extends React.Component {
         this.setState({
             forms: this.state.forms
         })
+
     }
 
     render() {
@@ -309,6 +312,7 @@ class AutoProvPolicyReg extends React.Component {
         if(data)
         {
             this.OrganizationList = [{Organization:data.OrganizationName}]
+            this.props.handleChangeStep('02');
             this.selectCloudlet(data.Region, data.OrganizationName, data.AutoPolicyName)
         }
         else {
@@ -366,7 +370,8 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
+        handleChangeStep: (data) => { dispatch(actions.changeStep(data))},
     };
 };
 
