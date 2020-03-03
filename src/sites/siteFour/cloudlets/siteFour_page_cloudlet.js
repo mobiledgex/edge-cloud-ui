@@ -29,7 +29,8 @@ class SiteFourPageCloudlet extends React.Component {
             regions: [],
             regionToggle: false,
             dataSort: false,
-            changeRegion: null
+            changeRegion: null,
+            selectRole: ''
         };
         this.requestCount = 0;
         this.multiRequestData = [];
@@ -52,6 +53,9 @@ class SiteFourPageCloudlet extends React.Component {
 
         this.actionMenu = [
             { label: 'Delete', icon:'delete_outline'}
+        ]
+        this.actionMenu_disable = [
+            null
         ]
     }
 
@@ -95,18 +99,19 @@ class SiteFourPageCloudlet extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-
+        let userRole = localStorage.selectRole;
         this.setState({ bodyHeight: (window.innerHeight - this.headerH) })
         this.setState({ contHeight: (nextProps.size.height - this.headerH) / 2 - this.hgap })
         if (nextProps.viewMode) {
             if (nextProps.viewMode === 'listView') {
-                //alert('viewmode..'+nextProps.viewMode+':'+ this.state.devData)
-                //this.getDataDeveloper(this.props.changeRegion)
                 this.setState({ viewMode: nextProps.viewMode })
             } else {
-                this.setState({ viewMode: nextProps.viewMode })
-                // setTimeout(() => this.setState({detailData:nextProps.detailData}), 300)
-                this.setState({ detailData: nextProps.detailData })
+                if(userRole.indexOf('Developer') > -1) {
+                    return;
+                } else {
+                    this.setState({ viewMode: nextProps.viewMode })
+                    this.setState({ detailData: nextProps.detailData })
+                }
             }
 
         }
@@ -188,7 +193,7 @@ class SiteFourPageCloudlet extends React.Component {
 
     getDataDeveloper = (region, regionArr) => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        this.setState({ devData: [] })
+        this.setState({ devData: [], selectRole: localStorage.selectRole })
         this.multiRequestData = [];
         this.requestCount = 0;
         if (region !== 'All') {
@@ -221,11 +226,11 @@ class SiteFourPageCloudlet extends React.Component {
 
     render() {
 
-        const { devData, viewMode, detailData } = this.state;
+        const { devData, viewMode, detailData, selectRole } = this.state;
         let randomValue = Math.round(Math.random() * 100);
         return (
             (viewMode === 'listView') ?
-                <MapWithListView actionMenu={this.actionMenu} devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} headerInfo = {this.headerInfo} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort}></MapWithListView>
+                <MapWithListView actionMenu={selectRole.indexOf('Developer') > -1 ? this.actionMenu_disable : this.actionMenu} devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} headerInfo = {this.headerInfo} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort}></MapWithListView>
                 :
                 <PageDetailViewer data={detailData} page='cloudlet' />
         );

@@ -1,5 +1,4 @@
 /*craco.config.js*/
-
 const path = require('path');
 
 const loaderNameMatches = function (rule, loaderName) {
@@ -22,7 +21,7 @@ const getLoader = function (rules, matcher) {
 
 module.exports = {
     dev: {
-        useEslint: false
+        useEslint: true
     },
     eslint: {
         configure: {
@@ -45,6 +44,10 @@ module.exports = {
                 'no-useless-escape': 'off',
                 'no-self-assign': 'off',
                 'jsx-a11y/alt-text': 'off',
+                'react/style-prop-object': 'off',
+                'jsx-a11y/accessible-emoji': 'off',
+                'react/jsx-pascal-case': 'off',
+
             }
         }
     },
@@ -63,6 +66,10 @@ module.exports = {
         ],
     },
     plugins: [
+        /*{
+            plugin: reactHotReloadPlugin
+        },*/
+
         {
             plugin: {
                 overrideWebpackConfig: ({webpackConfig}) => {
@@ -191,6 +198,7 @@ module.exports = {
                     return webpackConfig;
                 }
             }
-        }
+        },
+
     ]
 };

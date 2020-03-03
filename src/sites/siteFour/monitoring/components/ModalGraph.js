@@ -2,9 +2,9 @@
 import * as React from 'react';
 import {Modal as AModal} from "antd";
 import {Line} from 'react-chartjs-2';
-import PageDevMonitoring from "./PageDevMonitoring";
+import PageDevMonitoring from "../dev/PageDevMonitoring";
 import type {TypeLineChartData2} from "../../../../shared/Types";
-import {CHART_COLOR_LIST, lineGraphOptions} from "../../../../shared/Constants";
+import {lineGraphOptions} from "../../../../shared/Constants";
 
 type Props = {
     modalIsOpen: boolean,
@@ -21,8 +21,7 @@ type State = {
 
 };
 
-
-export default class ModalGraphForCluster extends React.Component<Props, State> {
+export default class ModalGraph extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
@@ -57,8 +56,8 @@ export default class ModalGraphForCluster extends React.Component<Props, State> 
             let arrayDatasetsList = []
             let datasetsOne = {
                 label: currentClusterName,
-                backgroundColor: CHART_COLOR_LIST[index],
-                borderColor: CHART_COLOR_LIST[index],
+                backgroundColor: this.props.parent.state.chartColorList[index],
+                borderColor: this.props.parent.state.chartColorList[index],
                 borderCapStyle: 'butt',
                 fill: false,//todo: 라인차트 area fill True/false
                 //backgroundColor: '',
@@ -94,10 +93,10 @@ export default class ModalGraphForCluster extends React.Component<Props, State> 
     render() {
 
         return (
-            <div style={{flex: 1, display: 'flex', width:'100%'}}>
+            <div style={{flex: 1, display: 'flex', width: '100%'}}>
                 <AModal
                     mask={false}
-                    style={{ top: 245, left: -720,}} //@fixme :modal popup container location( absoulte)
+                    style={{top: 220, left: -470,}} //@fixme :modal popup container location( absoulte)
                     //title={this.props.currentGraphAppInst + " [" + this.props.cluster + "]" + "  " + this.state.hardwareType}
                     visible={this.props.modalIsOpen}
                     onOk={() => {
@@ -113,19 +112,29 @@ export default class ModalGraphForCluster extends React.Component<Props, State> 
                         })
 
                     }}
+                    maskStyle={{color:'white'}}
+                    bodyStyle={{backgroundColor:'black'}}
                     width={'30%'}
                     height={'85%'}
                     footer={null}
                 >
                     <div style={{display: 'flex', backgroundColor: 'transparent', width: '100%', height: 59}}>
-                        <div style={{flex: .85, display: 'flex', color: '#FFF',fontFamily: 'Kanit', fontSize: 28, fontWeight: 'bold', marginLeft: 3,}}>
+                        <div style={{
+                            flex: .85,
+                            display: 'flex',
+                            color: '#FFF',
+                            fontFamily: 'Roboto',
+                            fontSize: 28,
+                            fontWeight: 'bold',
+                            marginLeft: 3,
+                        }}>
                             {this.state.cluster_cloudlet}
                         </div>
                         <div
                             style={{
                                 flex: .15,
                                 color: 'white',
-                                fontFamily: 'Kanit',
+                                fontFamily: 'Roboto Condensed',
                                 fontSize: 30,
                                 fontWeight: 'bold',
                                 textAlign: 'right',

@@ -1,7 +1,13 @@
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Bungee|Candal|Righteous&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Acme|Roboto|Bungee|Barlow+Semi+Condensed|Candal|Encode+Sans+Condensed|Righteous|Karla|Roboto+Condensed&display=swap');
-@import url('~react-leaflet-markercluster/dist/styles.min.css');
 
+#button-wrapper {
+    position: absolute;
+    bottom: 0px;
+    width: 20%;
+    border: 1px solid black;
+    background-color: red;
+}
 
 .tooltipclass {
     z-index: 100;
@@ -244,6 +250,27 @@ tbody {
     background-color: rgb(30, 33, 36);
     height: 360px;
     min-height: 350px;
+}
+
+.react-grid-layout {
+    position: relative;
+    -webkit-transition: height 200ms ease;
+    transition: height 200ms ease;
+    background-color: black;
+}
+
+.leaflet-popup-content {
+    width: 700px;
+    min-width: 400px;
+}
+
+.leaflet-popup-content-wrapper {
+    background-color: rgba(0, 0, 0, 0.65);
+    /*font-weight: bold;*/
+    color: white;
+    border: solid 1px;
+    /*font-family: "Roboto Light";*/
+    font-size: 20px;
 }
 
 

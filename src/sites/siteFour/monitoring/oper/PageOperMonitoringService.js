@@ -1,23 +1,10 @@
 import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX} from "../../../../shared/Constants";
 import React from "react";
 import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
-import {
-    getCloudletLevelMatric,
-    makeFormForCloudletLevelMatric,
-    numberWithCommas,
-    renderBarChartCore,
-    renderLineChartCore,
-    renderPlaceHolderCircular,
-    renderUsageByType2,
-    showToast,
-    sortUsageListByType,
-    StylesForMonitoring
-} from "../PageMonitoringCommonService";
+import {numberWithCommas, renderBarChartCore, renderLineChartCore, renderPlaceHolderCircular, renderUsageByType2, sortUsageListByType, PageMonitoringStyles} from "../PageMonitoringCommonService";
 import PageOperMonitoring from "./PageOperMonitoring";
 import {Table} from "semantic-ui-react";
-import type {TypeCloudlet} from "../../../../shared/Types";
 import {Progress} from "antd";
-import axios from "axios";
 
 export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
     console.log('renderBarGraph2===>', usageList);
@@ -25,7 +12,7 @@ export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
 
     if (usageList.length === 0) {
         return (
-            <div style={StylesForMonitoring.noData}>
+            <div style={PageMonitoringStyles.noData}>
                 NO DATA
             </div>
         )
@@ -200,7 +187,7 @@ export const makeLineChartForCloudlet = (_this: PageOperMonitoring, pUsageList: 
 
     if (pUsageList.length === 0) {
         return (
-            <div style={StylesForMonitoring.noData}>
+            <div style={PageMonitoringStyles.noData}>
                 NO DATA
             </div>
         )
@@ -257,183 +244,5 @@ export const makeLineChartForCloudlet = (_this: PageOperMonitoring, pUsageList: 
     }
 }
 
-export const getAllCloudletEventLogs = async (cloudletList) => {
 
-    try {
-        let promiseList = []
-        cloudletList.map((cloudletOne: TypeCloudlet, index) => {
-            promiseList.push(getCloudletEventLog(cloudletOne.CloudletName, cloudletOne.Region))
-        })
-
-        let AllCloudletEventLogList = await Promise.all(promiseList);
-
-        let newAllCloudletEventLogList = []
-        AllCloudletEventLogList.map(listOne => {
-            listOne.map(item => {
-                newAllCloudletEventLogList.push(item)
-            })
-
-        })
-
-        return newAllCloudletEventLogList;
-    } catch (e) {
-        throw new Error(e)
-    }
-
-
-}
-
-
-export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
-    try {
-        let store = JSON.parse(localStorage.PROJECT_INIT);
-        let token = store ? store.userToken : 'null';
-        let selectOrg = localStorage.getItem('selectOrg')
-
-        let result = await axios({
-            url: '/api/v1/auth/events/cloudlet',
-            method: 'post',
-            data: {
-                "region": pRegion,
-                "cloudlet": {
-                    "operator_key": {
-                        "name": selectOrg
-                    },
-                    "name": cloudletSelectedOne
-                },
-                "last": 10
-            },
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: 'Bearer ' + token
-            },
-            timeout: 15 * 1000
-        }).then(async response => {
-
-
-            console.log('response===>Series', response.data.data["0"].Series);
-
-            /*
-                "time",
-                "cloudlet",
-                "operator",
-                "event",
-                "status"
-            */
-            if (response.data.data["0"].Series !== null) {
-                let values = response.data.data["0"].Series["0"].values
-                return values;
-            } else {
-                return [];
-            }
-
-        }).catch(e => {
-            // showToast(e.toString())
-        })
-        return result;
-    } catch (e) {
-        throw new Error(e)
-    }
-}
-
-
-export const getClouletLevelUsageList = async (cloudletList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
-
-    try {
-        let instanceBodyList = []
-        let store = JSON.parse(localStorage.PROJECT_INIT);
-        let token = store ? store.userToken : 'null';
-        for (let index = 0; index < cloudletList.length; index++) {
-            let instanceInfoOneForm = makeFormForCloudletLevelMatric(cloudletList[index], pHardwareType, token, recentDataLimitCount, pStartTime, pEndTime)
-            instanceBodyList.push(instanceInfoOneForm);
-        }
-
-        let promiseList = []
-        for (let index = 0; index < instanceBodyList.length; index++) {
-            promiseList.push(getCloudletLevelMatric(instanceBodyList[index], token))
-        }
-
-        let cloudletLevelMatricUsageList = await Promise.all(promiseList);
-        let usageList = []
-        cloudletLevelMatricUsageList.map((item, index) => {
-
-            let Region = cloudletList[index].Region
-            if (item.data["0"] !== undefined) {
-                let series = item.data["0"].Series["0"].values
-                let columns = item.data["0"].Series["0"].columns
-
-                let sumVirtualCpuUsed = 0;
-                let sumVirtualCpuMax = 0;
-                let sumMemUsed = 0;
-                let sumMemMax = 0;
-                let sumDiskUsed = 0;
-                let sumDiskMax = 0;
-                let sumNetSend = 0;
-                let sumNetRecv = 0;
-                let sumFloatingIpsUsed = 0;
-                let sumFloatingIpsMax = 0
-                let sumIpv4Used = 0;
-                let sumIpv4Max = 0;
-
-                let cloudlet = "";
-                let operator = "";
-                series.map(item => {
-                    cloudlet = item[1]
-                    operator = item[2]
-
-                    //todo: CPU
-                    let vCpuUsed = item["5"];
-                    let vCpuMax = item["6"];
-                    sumVirtualCpuUsed += vCpuUsed;
-                    sumVirtualCpuMax += vCpuMax;
-
-                    //todo: MEM
-                    sumMemUsed += item["7"];
-                    sumMemMax += item["8"];
-
-                    //todo: DISK
-                    sumDiskUsed += item["9"];
-                    sumDiskMax += item["10"];
-
-                    //todo: NETWORK(RECV,SEND)
-                    sumNetSend += item["3"];
-                    sumNetRecv += item["4"];
-
-                    //todo: FLOATIP
-                    sumFloatingIpsUsed += item["11"];
-                    sumFloatingIpsMax += item["12"];
-
-                    //todo: IPV4
-                    sumIpv4Used += item["13"];
-                    sumIpv4Max += item["14"];
-
-
-                })
-
-                usageList.push({
-                    sumVCpuUsage: sumVirtualCpuUsed / RECENT_DATA_LIMIT_COUNT,
-                    sumMemUsage: sumMemUsed / RECENT_DATA_LIMIT_COUNT,
-                    sumDiskUsage: sumDiskUsed / RECENT_DATA_LIMIT_COUNT,
-                    sumRecvBytes: sumNetRecv / RECENT_DATA_LIMIT_COUNT,
-                    sumSendBytes: sumNetSend / RECENT_DATA_LIMIT_COUNT,
-                    sumFloatingIpsUsage: sumFloatingIpsUsed / RECENT_DATA_LIMIT_COUNT,
-                    sumIpv4Usage: sumIpv4Used / RECENT_DATA_LIMIT_COUNT,
-                    columns: columns,
-                    series: series,
-                    cloudlet: cloudlet,
-                    operator: operator,
-                    Region: Region,
-
-                })
-            }
-
-        })
-
-
-        return usageList;
-    } catch (e) {
-        showToast(e.toString())
-    }
-
-}
 

@@ -1,22 +1,52 @@
+import {convertByteToMegaByte} from "../sites/siteFour/monitoring/PageMonitoringCommonService";
+
 export const API_ENDPOINT_PREFIX = '/api/v1/';
+export const BORDER_CHART_COLOR_LIST = ["#70001C", "#FF5E1D", "#E3DC39", "#128702", "#1C22FF",'#66D9EF', '#272822', '#75715E',]
+export const CHART_COLOR_LIST = ['#DE0000', '#FF9600', '#FFF600', '#5BCB00', '#0096FF','#66D9EF', '#272822', '#75715E',]
+export const CHART_COLOR_LIST2 = ['#65DEF1', '#A8DCD1', '#DCE2C8', '#F96900', '#F17F29','#66D9EF', '#272822', '#75715E',]
+
+export const CHART_COLOR_LIST3 = ['#008000', '#d7fff1', '#556B2F', '#32CD32', '#8cd790','#66D9EF', '#272822', '#75715E',]
+
+export const CHART_COLOR_LIST4 = ['#FF0000', '#FFBDAA', '#D4826A', '#802D15', '#551300','#66D9EF', '#272822', '#75715E',]
+
+export const CHART_COLOR_MONOKAI = ['#F92672', '#FD971F', '#A6E22E', '#E6DB74', '#A6E22E','#66D9EF', '#272822', '#75715E',]
 
 
-//rgb(255,0,10)
 
-export const BORDER_CHART_COLOR_LIST = ["rgb(112,0,28)", "rgb(255,94,29)", "rgb(227,220,57)", "rgb(18,135,2)", "rgb(28,34,255)"]
 
-export const CHART_COLOR_LIST = ['rgb(222,0,0)', 'rgb(255,150,0)', 'rgb(255,246,0)', 'rgb(91,203,0)', 'rgb(0,150,255)']
-//export const CHART_COLOR_LIST = ["rgb(112,0,28)", "rgb(255,94,29)", "rgb(227,220,57)", "rgb(18,135,2)", "rgb(28,34,255)"]
+export const CHART_COLOR_APPLE = ['#0A84FF', '#30D158', '#FF453A', '#FF9F0A', '#FF375F','#66D9EF', '#272822', '#75715E',]
 
-export const CHART_COLOR_LIST2 = ["rgba(112,0,28, 0.25)", "rgba(255,94,29,0.25)", "rgba(227,220,57,0.25)", "rgba(18,135,2,0.25)", "rgba(28,34,255,0.25)"]
+export const CHART_COLOR_LIST5 = ['#609732', '#6EDC12', '#69BA27', '#527536', '#405330']
+export const CHART_COLOR_LIST6 = ['#AA5939', '#F75514', '#D15A2B', '#83513C', '#5D4136']
+export const CHART_COLOR_LIST7 = ['#6F256F', '#A10DA1', '#881C88', '#552755', '#3C233C']
+
 
 export const GRAPH_HEIGHT = 300
-
 export const REGION = {
     ALL: 'ALL',
     US: "US",
     EU: 'EU',
 }
+
+export const THEME_OPTIONS = {
+    EUNDEW: 'EUNDEW',
+    BLUE: "BLUE",
+    GREEN: 'GREEN',
+    RED: 'RED',
+    MONOKAI: 'MONOKAI',
+    APPLE: 'APPLE',
+}
+
+export const THEME_OPTIONS_LIST = [
+    {value: 'EUNDEW', text: 'EUNDEW'},
+    {value: 'BLUE', text: 'BLUE'},
+    {value: 'GREEN', text: 'GREEN'},
+    {value: 'RED', text: 'RED'},
+    {value: 'MONOKAI', text: 'MONOKAI'},
+    {value: 'APPLE', text: 'APPLE'},
+    //CHART_COLOR_APPLE
+]
+
 
 export const lineGraphOptions = {
     animation: {
@@ -37,7 +67,7 @@ export const lineGraphOptions = {
             ticks: {
                 beginAtZero: true,
                 min: 0,
-                max: 100,
+                //max: 100,
                 fontColor: 'white',
             },
             gridLines: {
@@ -97,6 +127,7 @@ export const CLASSIFICATION = {
     CloudletName: 'CloudletName',
     cloudlet: 'cloudlet',
     APP_NAME: 'AppName',
+    appName: 'appName',
     APPNAME: 'AppName',
     APPINST: 'AppInst',
     CLUSTER_INST: 'ClusterInst',
@@ -233,6 +264,23 @@ export const NETWORK_TYPE = {
     SEND_BYTES: 'SEND_BYTES',
 }
 
+export const GRID_ITEM_TYPE = {
+    LINE: 'LINE',
+    BAR: 'BAR',
+    COLUMN: 'COLUMN',
+    BUBBLE: 'BUBBLE',
+    MAP: 'MAP',
+    TABLE: 'TABLE',
+    PIE: 'PIE',
+    CLUSTER_LIST: 'CLUSTER_LIST',
+}
+
+export const ADD_ITEM_LIST = [
+    {text: 'MAP', value: 'MAP'},
+    {text: 'BUBBLE', value: 'BUBBLE'},
+    {text: 'PERFORMANCE SUM', value: 'CLUSTER_LIST'},
+]
+
 
 export const HARDWARE_OPTIONS = [
     {text: 'FLAVOR', value: 'FLAVOR'},
@@ -244,12 +292,15 @@ export const HARDWARE_OPTIONS = [
 ]
 
 export const HARDWARE_OPTIONS_FOR_APPINST = [
+    //{text: 'ALL', value: 'ALL'},
     {text: 'CPU', value: 'CPU'},
     {text: 'MEM', value: 'MEM'},
     {text: 'DISK', value: 'DISK'},
-    {text: 'CONNECTION', value: 'CONNECTION'},
-    {text: 'RECV_BYTES', value: 'RECV_BYTES'},
-    {text: 'SEND_BYTES', value: 'SEND_BYTES'},
+    {text: 'RECV BYTES', value: 'RECV_BYTES'},
+    {text: 'SEND BYTES', value: 'SEND_BYTES'},
+    {text: 'ACTIVE CONNECTION', value: 'ACTIVE_CONNECTION'},
+    {text: 'HANDLED CONNECTION', value: 'HANDLED_CONNECTION'},
+    {text: 'ACCEPTS CONNECTION', value: 'ACCEPTS_CONNECTION'},
 ]
 
 
@@ -299,25 +350,17 @@ export const HARDWARE_TYPE_FOR_CLOUDLET = {
 }
 
 export const HARDWARE_TYPE = {
+    ALL:'ALL',
+
     FLAVOR: 'FLAVOR',
     CPU: 'CPU',
     VCPU: 'vCPU',
-    VCPU_MAX: 'VCPU_MAX',
     NET_SEND: 'NET_SEND',
     NET_RECV: 'NET_RECV',
-    VCPU_USED: 'VCPU_USED',
-
-    MEM_USED: 'MEM_USED',
-    MEM_MAX: 'MEM_MAX',
-    DISK_USED: 'DISK_USED',
-    DISK_MAX: 'DISK_MAX',
-    FLOATING_IPS_USED: 'FLOATING_IPS_USED',
-    FLOATING_IPS_MAX: 'FLOATING_IPS_MAX',
     FLOATING_IPS: 'FLOATING_IPS',
-    IPV4_USED: 'IPV4_USED',
-    IPV4_MAX: 'IPV4_MAX',
     IPV4: 'IPV4',
 
+    ////////////
     UDP: 'UDP',
     TCP: 'TCP',
     NETWORK: 'NETWORK',
@@ -333,7 +376,6 @@ export const HARDWARE_TYPE = {
     //NETWORK
     SENDBYTES: 'SEND_BYTES',
     RECVBYTES: 'RECV_BYTES',
-
 
     MEM: 'MEM',
     MEM2: 'MEM',

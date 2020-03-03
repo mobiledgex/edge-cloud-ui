@@ -11,6 +11,7 @@ import PageMonitoringForOperator from "./oper/PageOperMonitoring";
 import {Grid} from "semantic-ui-react";
 import PageMonitoringForDeveloper from "./dev/PageDevMonitoring";
 import PageMonitoringForAdmin from "./admin/PageAdminMonitoring";
+import {PageMonitoringProvider} from "./PageMonitoringGlobalState";
 
 const mapStateToProps = (state) => {
     return {
@@ -40,9 +41,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         state = {
             date: '',
         };
+
         constructor(props) {
             super(props);
         }
+
         componentWillMount(): void {
             let store = JSON.parse(localStorage.PROJECT_INIT);
             let token = store ? store.userToken : 'null';
@@ -54,6 +57,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 userRole: userRole,
             })
         }
+
 
         renderMainPage() {
             if (this.state.userRole.includes('Admin')) {
@@ -73,9 +77,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         render() {
             return (
-                <Grid.Row className='view_contents'>
-                    {this.renderMainPage()}
-                </Grid.Row>
+                <PageMonitoringProvider>
+                    <Grid.Row className='view_contents'>
+                        {this.renderMainPage()}
+                    </Grid.Row>
+                </PageMonitoringProvider>
 
             );
         }

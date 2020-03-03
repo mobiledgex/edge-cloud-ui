@@ -228,6 +228,28 @@ class InsideListView extends React.Component {
 
         setTimeout(() => this.sorting = false, 1000)
     }
+
+   returnReWord = (key) => {
+        let newName = '';
+        switch (key) {
+            case 'FlavorName' : newName = 'Flavor Name'; break;
+            case 'RAM' : newName = 'RAM Size'; break;
+            case 'vCPUs' : newName = 'Number of vCPUs'; break;
+            case 'Disk' : newName = 'Disk Space'; break;
+            case 'OrganizationName' : newName = 'Organization Name'; break;
+            case 'AppName' : newName = 'App Name'; break;
+            case 'DeploymentType' : newName = 'Deployment Type'; break;
+            case 'DefaultFlavor' : newName = 'Default Flavor'; break;
+            case 'PoolName' : newName = 'Pool Name'; break;
+            case 'NumOfCloudlets' : newName = 'Number of Cloudlets'; break;
+            case 'NumOfOrganizations' : newName = 'Number of Organizations'; break;
+            default: newName = key; break;
+        }
+        return newName;
+
+    }
+
+
     makeHeader(_keys, headL, visibles) {
         const { column, direction } = this.state
         let keys = Object.keys(_keys);
@@ -244,15 +266,7 @@ class InsideListView extends React.Component {
                 </Table.HeaderCell>
                 :
                 <Table.HeaderCell key={i} className={(key === 'Phone' || key === 'Address' || key === 'Ports')?'unsortable':''} textAlign='center'  sorted={column === key ? direction : null} onClick={(key !== 'Phone' && key !== 'Address' && key !== 'Ports')?this.handleSort(key):null}>
-                    {(key === 'FlavorName')? 'Flavor Name'
-                        : (key === 'RAM')? 'RAM Size'
-                            : (key === 'vCPUs')? 'Number of vCPUs'
-                                : (key === 'Disk')? 'Disk Space'
-                                    : (key === 'OrganizationName')? 'Organization Name'
-                                        : (key === 'AppName')? 'App Name'
-                                            : (key === 'DeploymentType')? 'Deployment Type'
-                                                : (key === 'DefaultFlavor')? 'Default Flavor'
-                                                    : key}
+                    {this.returnReWord(key)}
                 </Table.HeaderCell>
         ));
     }
@@ -421,7 +435,7 @@ class InsideListView extends React.Component {
         </div>
     )
     makeEditMenu = (item, value, i, j) => (
-        <Table.Cell key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'} }>
+        <Table.Cell key={j} textAlign='center' style={{whiteSpace:'nowrap'} }>
             <Button disabled style={{display:'none'}} key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}><Icon name={'edit'}/></Button>
             {(this.props.siteId == 'App')?
                 <Button className='launchButton' color='teal' disabled={this.props.dimmInfo.onlyView} onClick={() => this.appLaunch(item)}>
@@ -447,12 +461,12 @@ class InsideListView extends React.Component {
                             {Object.keys(item).map((value, j) => (
                                 (value === 'Edit')?
                                     String(item[value]) === 'null' ? <Table.Cell /> :
-                                        <Table.Cell className="table_actions" key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444', overflow:'visible'} :{whiteSpace:'nowrap', overflow:'visible'} }>
+                                        <Table.Cell className="table_actions" key={j} textAlign='center' style={{whiteSpace:'nowrap', overflow:'visible'} }>
                                             {this.makeEditButtonGroup(item, value, j, i, item['NumOfOrganizations'] && item['NumOfOrganizations'])}
                                         </Table.Cell>
                                 :
                                 (value === 'Type')?
-                                    <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'}} >
+                                    <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={{whiteSpace:'nowrap'}} >
                                         {/*<div className="markBox">{this.typeMark(item[value])}</div>*/}
                                         <span style={(item[value] == 'developer')?{color:'#9b9979'}:{color:'#7d969b'}}>{item[value]}</span>
                                     </Table.Cell>
@@ -494,7 +508,7 @@ class InsideListView extends React.Component {
                                     </Table.Cell>
                                 :
                                 (!( String(hideHeader).indexOf(value) > -1 )) ?
-                                    <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{cursor:'pointer',background:'#444'} :{cursor:'pointer'} }>
+                                    <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} onClick={() => this.detailView(item)} >
                                         <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace' style={{wordBreak:'break-all'}}>
                                             {String(item[value])}
                                         </div>

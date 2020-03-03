@@ -1,18 +1,25 @@
 import React from 'react';
-import axios from "axios";
-import {formatData} from "../../../../services/formatter/formatComputeInstance";
 import '../PageMonitoring.css';
-import {APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../../shared/Constants";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
 import BubbleChart from "../../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../../shared/Types";
 import PageAdminMonitoring from "./PageAdminMonitoring";
-import {numberWithCommas, renderBarChartCore, renderLineChartCore, renderUsageByType2, showToast, StylesForMonitoring} from "../PageMonitoringCommonService";
-import {SHOW_CLOUDLET, SHOW_ORG_CLOUDLET} from "../../../../services/endPointTypes";
-import {sendSyncRequest,} from "../../../../services/serviceMC";
+import {
+    convertByteToMegaByte,
+    numberWithCommas,
+    renderBarChartCore,
+    renderLineChartCore,
+    renderUsageByType2,
+    PageMonitoringStyles,
+    showToast
+} from "../PageMonitoringCommonService";
 import {TabPanel, Tabs} from "react-tabs";
+import {Table} from "semantic-ui-react";
+import type {TypeAppInstanceUsage2, TypeGridInstanceList} from "../../../../shared/Types";
+import {Progress} from "antd";
 
-export const cutArrayList = async (length: number = 5, paramArrayList: any) => {
+export const cutArrayList = (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];
     for (let index in paramArrayList) {
         if (index < 5) {
@@ -21,6 +28,33 @@ export const cutArrayList = async (length: number = 5, paramArrayList: any) => {
     }
     return newArrayList;
 }
+
+export const makeSelectBoxListByClassification = (arrList, keyName) => {
+    console.log('makeSelectBoxListByClassification====>', arrList);
+
+    let newArrList = [];
+    for (let i in arrList) {
+        newArrList.push({
+            value: arrList[i].AppName,
+            text: arrList[i].AppName,
+        })
+    }
+    return newArrList;
+}
+
+export const makeSelectBoxListByClassification_byKey = (arrList, keyName) => {
+    console.log('makeSelectBoxListByClassification====>', arrList);
+
+    let newArrList = [];
+    for (let i in arrList) {
+        newArrList.push({
+            value: arrList[i][keyName],
+            text: arrList[i][keyName],
+        })
+    }
+    return newArrList;
+}
+
 
 export const makeFormForAppInstance = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
 
@@ -250,11 +284,11 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
         return numberWithCommas(usageOne.sumDiskUsage) + " Byte"
     }
 
-    if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
+    if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
         return numberWithCommas(usageOne.sumRecvBytes) + " Byte";
     }
 
-    if (hardwareType === HARDWARE_TYPE.SEND_BYTES) {
+    if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
         return numberWithCommas(usageOne.sumSendBytes) + " Byte";
     }
 
@@ -275,9 +309,31 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
 
 export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
 
+    if (hardwareType === HARDWARE_TYPE.CPU) {
+        usageList.sort((a, b) => b.sumCpuUsage - a.sumCpuUsage);
+    } else if (hardwareType === HARDWARE_TYPE.MEM) {
+        usageList.sort((a, b) => b.sumMemUsage - a.sumMemUsage);
+    } else if (hardwareType === HARDWARE_TYPE.DISK) {
+        usageList.sort((a, b) => b.sumDiskUsage - a.sumDiskUsage);
+    } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+        usageList.sort((a, b) => b.sumRecvBytes - a.sumRecvBytes);
+    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+        usageList.sort((a, b) => b.sumSendBytes - a.sumSendBytes);
+    } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+        usageList.sort((a, b) => b.sumAcceptsConnection - a.sumAcceptsConnection);
+    } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+        usageList.sort((a, b) => b.sumActiveConnection - a.sumActiveConnection);
+    } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+        usageList.sort((a, b) => b.sumHandledConnection - a.sumHandledConnection);
+    }
+
+
+    console.log('hardwareType====>', hardwareType);
+
+
     if (usageList.length === 0) {
         return (
-            <div style={StylesForMonitoring.noData}>
+            <div style={PageMonitoringStyles.noData}>
                 NO DATA
             </div>
         )
@@ -285,19 +341,20 @@ export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
 
         let chartDataList = [];
         chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
-        for (let index = 0; index < usageList.length; index++) {
+
+        usageList.map((item: TypeAppInstanceUsage2, index) => {
             if (index < 5) {
-                let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10),
-                    renderUsageByType2(usageList[index], hardwareType),
+                let barDataOne = [item.appName.toString().substring(0, 10),
+                    renderUsageByType2(item, hardwareType),
                     CHART_COLOR_LIST[index],
-                    renderUsageLabelByType(usageList[index], hardwareType)]
+                    renderUsageLabelByType(item, hardwareType)]
                 chartDataList.push(barDataOne);
             }
-        }
+        })
 
         return renderBarChartCore(chartDataList, hardwareType)
-    }
 
+    }
 
 }
 
@@ -306,25 +363,23 @@ export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
  * bottom Grid InstanceList maker..
  * @returns {[]}
  */
-export const makeGridInstanceList = (usageList: Array) => {
-    let allCpuUsageList = usageList[0]
-    let allMemUsageList = usageList[1]
-    let allNetworkUsageList = usageList[2]
-    let allDiskUsageList = usageList[3]
-    let allConnectionsList = usageList[4]
+export const makeGridInstanceList = (usageList: any) => {
+
+    usageList.sort((a, b) => b.sumCpuUsage - a.sumCpuUsage);
+
 
     let gridInstanceList = []
-    allCpuUsageList.map((item, index) => {
+    usageList.map((item: TypeAppInstanceUsage2, index) => {
         gridInstanceList.push({
             instance: item.instance,
             sumCpuUsage: item.sumCpuUsage,
-            sumDiskUsage: allDiskUsageList[index].sumDiskUsage,
-            sumMemUsage: allMemUsageList[index].sumMemUsage,
-            sumRecvBytes: allNetworkUsageList[index].sumRecvBytes,
-            sumSendBytes: allNetworkUsageList[index].sumSendBytes,
-            sumActiveConnection: allConnectionsList[index].sumActiveConnection,
-            sumHandledConnection: allConnectionsList[index].sumHandledConnection,
-            sumAcceptsConnection: allConnectionsList[index].sumAcceptsConnection,
+            sumDiskUsage: item.sumDiskUsage,
+            sumMemUsage: item.sumMemUsage,
+            sumRecvBytes: item.sumRecvBytes,
+            sumSendBytes: item.sumSendBytes,
+            sumActiveConnection: item.sumActiveConnection,
+            sumHandledConnection: item.sumHandledConnection,
+            sumAcceptsConnection: item.sumAcceptsConnection,
         })
     })
     return gridInstanceList;
@@ -409,7 +464,7 @@ export const renderBubbleChart = (_this: PageAdminMonitoring, hardwareType: stri
 
     if (pBubbleChartData.length === 0) {
         return (
-            <div style={StylesForMonitoring.noData}>
+            <div style={PageMonitoringStyles.noData}>
                 NO DATA
             </div>
         )
@@ -497,7 +552,7 @@ export const renderBubbleChart = (_this: PageAdminMonitoring, hardwareType: stri
 export const renderBubbleChartForCloudlet = (_this: PageAdminMonitoring, hardwareType: string, pBubbleChartData: any) => {
     if (pBubbleChartData.length === 0 && _this.loading === false) {
         return (
-            <div style={StylesForMonitoring.noData}>
+            <div style={PageMonitoringStyles.noData}>
                 NO DATA
             </div>
         )
@@ -589,7 +644,7 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
     try {
         if (hardwareUsageList.length === 0) {
             return (
-                <div style={StylesForMonitoring.noData}>
+                <div style={PageMonitoringStyles.noData}>
                     NO DATA
                 </div>
             )
@@ -603,32 +658,30 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
             let instanceNameList = [];
             let usageSetList = []
             let dateTimeList = []
-            for (let i in hardwareUsageList) {
-                let seriesValues = hardwareUsageList[i].values
+            /*for (let i in hardwareUsageList) {
+            }*/
+            hardwareUsageList.map((item: TypeAppInstanceUsage2, index) => {
 
-                instanceAppName = hardwareUsageList[i].instance.AppName
+                let seriesValues = []
+                if (hardwareType === HARDWARE_TYPE.CPU) {
+                    seriesValues = item.cpuSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.MEM) {
+                    seriesValues = item.memSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.DISK) {
+                    seriesValues = item.diskSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
+                    seriesValues = item.networkSeriesValue
+
+                    console.log("NETWORK__seriesValues===>", seriesValues);
+
+                } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+                    seriesValues = item.connectionsSeriesValue
+                }
+
+                instanceAppName = item.instance.AppName
                 let usageList = [];
 
                 for (let j in seriesValues) {
-                    /*
-                      @todo: 하드웨어 매트릭 인덱스에 대한 상수처
-                      0: "time"
-                      1: "app"
-                      2: "cluster"
-                      3: "dev"
-                      4: "cloudlet"
-                      5: "operator"
-                      6: "cpu"
-                      7: "mem"
-                      8: "disk"
-                      9: "sendBytes"
-                      10: "recvBytes"
-                      11: "port"
-                      12: "active"
-                      13: "handled"
-                      14: "accepts"
-                      15: "bytesSent"
-                      16: "bytesRecvd"*/
                     let usageOne = 0;
                     if (hardwareType === HARDWARE_TYPE.CPU) {
                         usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.CPU];
@@ -648,7 +701,6 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
                         usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACCEPTS.toString()];
                     }
 
-
                     usageList.push(usageOne);
                     let dateOne = seriesValues[j]["0"];
                     dateOne = dateOne.toString().split("T")
@@ -658,7 +710,9 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
 
                 instanceNameList.push(instanceAppName)
                 usageSetList.push(usageList);
-            }
+
+            })
+
 
             //@todo: CUT LIST INTO RECENT_DATA_LIMIT_COUNT
             let newDateTimeList = []
@@ -696,9 +750,233 @@ export const makeNetworkBarData = (networkUsageList, hwType) => {
         }
     }
 
-
     return chartDataList;
 
+}
+
+
+export const handleBubbleChartDropDown = async (_this, value) => {
+    try {
+        await _this.setState({
+            currentHardwareType: value,
+        });
+
+        console.log("allAppInstUsageList===>", _this.state.allAppInstUsageList);
+
+        let appInstanceList = _this.state.appInstanceList;
+        let allUsageList = _this.state.allAppInstUsageList;
+
+        let chartData = [];
+
+        if (value === HARDWARE_TYPE.FLAVOR) {
+            appInstanceList.map((item, index) => {
+                chartData.push({
+                    //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+                    index: index,
+                    label: item.AppName.toString().substring(0, 10) + "...",
+                    value: instanceFlavorToPerformanceValue(item.Flavor),
+                    favor: item.Flavor,
+                    fullLabel: item.AppName.toString(),
+                })
+            })
+        } else if (value === HARDWARE_TYPE.CPU) {
+            allUsageList.map((item, index) => {
+                chartData.push({
+                    //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+                    index: index,
+                    label: item.instance.AppName.toString().substring(0, 10) + "...",
+                    value: (item.sumCpuUsage * 100).toFixed(0),
+                    favor: (item.sumCpuUsage * 100).toFixed(0),
+                    fullLabel: item.instance.AppName.toString(),
+                })
+            })
+        } else if (value === HARDWARE_TYPE.MEM) {
+            allUsageList.map((item, index) => {
+                chartData.push({
+                    //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+                    index: index,
+                    label: item.instance.AppName.toString().substring(0, 10) + "...",
+                    value: item.sumMemUsage,
+                    favor: item.sumMemUsage,
+                    fullLabel: item.instance.AppName.toString(),
+                })
+            })
+        } else if (value === HARDWARE_TYPE.DISK) {
+            allUsageList.map((item, index) => {
+                chartData.push({
+                    //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+                    index: index,
+                    label: item.instance.AppName.toString().substring(0, 10) + "...",
+                    value: item.sumDiskUsage,
+                    favor: item.sumDiskUsage,
+                    fullLabel: item.instance.AppName.toString(),
+                })
+            })
+        } else if (value === NETWORK_TYPE.RECV_BYTES) {
+            allUsageList.map((item, index) => {
+                chartData.push({
+                    index: index,
+                    label: item.instance.AppName.toString().substring(0, 10) + "...",
+                    value: item.sumRecvBytes,
+                    favor: item.sumRecvBytes,
+                    fullLabel: item.instance.AppName.toString(),
+                })
+            })
+        } else if (value === HARDWARE_TYPE.SEND_BYTES) {
+            allUsageList.map((item, index) => {
+                chartData.push({
+                    index: index,
+                    label: item.instance.AppName.toString().substring(0, 10) + "...",
+                    value: item.sumSendBytes,
+                    favor: item.sumSendBytes,
+                    fullLabel: item.instance.AppName.toString(),
+                })
+            })
+        }
+        //@todo:-----------------------
+        //todo: bubbleChart
+        //@todo:-----------------------
+        _this.setState({
+            bubbleChartData: chartData,
+        });
+    } catch (e) {
+
+        showToast(e.toString())
+    }
+}
+
+
+export const renderBottomGridArea = (_this) => {
+    return (
+        <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
+            <Table.Header className="viewListTableHeader">
+                <Table.Row>
+                    <Table.HeaderCell>
+                        index
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        NAME
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        CPU(%)
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        MEM
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        DISK
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        RECV BYTES
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        SEND BYTES
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        FLAVOR
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        ACTIVE CONN
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        HANDLED CONN
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        ACCEPTS CONN
+                    </Table.HeaderCell>
+                </Table.Row>
+            </Table.Header>
+            <Table.Body className="tbBodyList"
+                        ref={(div) => {
+                            this.messageList = div;
+                        }}
+            >
+                {/*-----------------------*/}
+                {/*todo:ROW HEADER        */}
+                {/*-----------------------*/}
+                {!_this.state.isReady &&
+                <Table.Row className='page_monitoring_popup_table_empty'>
+                    <Table.Cell>
+                        <Lottie
+                            options={{
+                                loop: true,
+                                autoplay: true,
+                                animationData: require('../../../../lotties/loader001'),
+                                rendererSettings: {
+                                    preserveAspectRatio: 'xMidYMid slice'
+                                }
+                            }}
+                            height={240}
+                            width={240}
+                            isStopped={false}
+                            isPaused={false}
+                        />
+                    </Table.Cell>
+                </Table.Row>}
+                {_this.state.isReady && _this.state.filteredGridInstanceList.map((item: TypeGridInstanceList, index) => {
+
+                    return (
+                        <Table.Row className='page_monitoring_popup_table_row'
+                        >
+                            <Table.Cell>
+                                {index}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {item.instance.AppName}
+                            </Table.Cell>
+                            <Table.Cell>
+                                <div>
+                                    <div>
+                                        {item.sumCpuUsage.toFixed(2) + '%'}
+                                    </div>
+                                    <div>
+                                        <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                                  percent={(item.sumCpuUsage / _this.state.gridInstanceListCpuMax) * 100}
+                                                  strokeColor={'#29a1ff'} status={'normal'}/>
+                                    </div>
+                                </div>
+                            </Table.Cell>
+                            <Table.Cell>
+                                <div>
+                                    <div>
+                                        {numberWithCommas(item.sumMemUsage) + ' Byte'}
+                                    </div>
+                                    <div>
+                                        <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                                  percent={(item.sumMemUsage / _this.state.gridInstanceListMemMax) * 100}
+                                                  strokeColor={'#29a1ff'} status={'normal'}/>
+                                    </div>
+
+                                </div>
+                            </Table.Cell>
+                            <Table.Cell>
+                                {numberWithCommas(item.sumDiskUsage) + ' Byte'}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {numberWithCommas(item.sumRecvBytes) + ' Byte'}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {numberWithCommas(item.sumSendBytes) + ' Byte'}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {item.instance.Flavor}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {item.sumActiveConnection}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {item.sumHandledConnection}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {item.sumAcceptsConnection}
+                            </Table.Cell>
+                        </Table.Row>
+
+                    )
+                })}
+            </Table.Body>
+        </Table>
+    )
 }
 
 export const makeNetworkLineChartData = (filteredNetworkUsageList, pHardwareType = HARDWARE_TYPE.RECV_BYTES) => {
@@ -776,30 +1054,6 @@ export const makeNetworkLineChartData = (filteredNetworkUsageList, pHardwareType
 
 }
 
-function makeAppInstOnCloudletList() {
-    /* let cloutletKeyList = Object.keys(appInstanceListGroupByCloudlet)
-
-     let newCloudletList = []
-     cloutletKeyList.map((key, index) => {
-
-         console.log('index===>', index);
-
-         let count = appInstanceListGroupByCloudlet[key].length
-         let cloudletList = appInstanceListGroupByCloudlet[key];
-
-         console.log('count===>', count);
-
-         newCloudletList.push({
-             count: count,
-             instanceOne: allCloudletList[index],
-             cloudletList:cloudletList,
-         })
-     })
-
-     console.log('newCloudletList===>', newCloudletList);*/
-}
-
-
 function isEmptyObject(obj) {
     //Loop through and check if a property
     //exists
@@ -822,11 +1076,11 @@ function isEmptyObject(obj) {
  */
 export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet, _this: PageAdminMonitoring) => {
 
-
+    let cloudletListLength = Object.keys(appInstanceListSortByCloudlet).length
     if (isEmptyObject(appInstanceListSortByCloudlet)) {
         //do something
         return (
-            <div style={StylesForMonitoring.noData}>
+            <div style={PageMonitoringStyles.noData}>
                 NO DATA
             </div>
         )
@@ -842,6 +1096,7 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
         }
 
         let chunkedCloudletListOfColSize = toChunkArray(cloudletList, 6);
+
 
         return (
             <Tabs selectedIndex={_this.state.currentSixGridIndex} className='page_monitoring_tab'>
@@ -861,6 +1116,7 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
                 {/*todo:#####################..*/}
                 {/*todo:하단의 dot paging ..*/}
                 {/*todo:#####################..*/}
+                {cloudletListLength > 6 &&
                 <div className='page_monitoring_pager_row'>
                     {chunkedCloudletListOfColSize.map((item, index) => {
                         return (
@@ -875,11 +1131,14 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
                                 {/*todo:#####################..*/}
                                 {/*todo:선택된 index는 그린Color */}
                                 {/*todo:#####################..*/}
-                                <div className='page_monitoring_pager_btn' style={{backgroundColor: _this.state.currentSixGridIndex === index ? 'rgba(136,221,0,.9)' : 'rgba(255,255,255,.5)'}}/>
+                                <div className='page_monitoring_pager_btn'
+                                     style={{backgroundColor: _this.state.currentSixGridIndex === index ? 'rgba(136,221,0,.9)' : 'rgba(255,255,255,.5)'}}/>
                             </div>
                         )
                     })}
                 </div>
+                }
+
             </Tabs>
         )
 
@@ -956,172 +1215,6 @@ export const filterUsageListByRegion = (pRegion, usageList) => {
     }
 }
 
-export const getCloudletList = async () => {
-    try {
-        let store = JSON.parse(localStorage.PROJECT_INIT);
-        let token = store ? store.userToken : 'null';
-        //data: { region: region, org: _self.props.selectOrg || localStorage.selectOrg }
-
-        let requestData = {showSpinner: false, token: token, method: SHOW_ORG_CLOUDLET, data: {region: REGION.EU, org: localStorage.selectOrg}};
-        let requestData2 = {showSpinner: false, token: token, method: SHOW_ORG_CLOUDLET, data: {region: REGION.US, org: localStorage.selectOrg}};
-        let promiseList = []
-
-        promiseList.push(sendSyncRequest(this, requestData))
-        promiseList.push(sendSyncRequest(this, requestData2))
-        let orgCloudletList = await Promise.all(promiseList);
-        console.log('results===EU>', orgCloudletList[0].response.data);
-        console.log('results===US>', orgCloudletList[1].response.data);
-
-        let cloudletEU = orgCloudletList[0].response.data;
-        let cloudletUS = orgCloudletList[1].response.data;
-
-        let mergedCloudletList = [];
-        orgCloudletList.map(item => {
-            //@todo : null check
-            if (item.response.data["0"].Region !== '') {
-                let cloudletList = item.response.data;
-                cloudletList.map(item => {
-                    mergedCloudletList.push(item);
-                })
-            }
-        })
-
-        let mergedOrgCloudletList = []
-        mergedCloudletList.map(item => {
-            if (item.Operator === localStorage.selectOrg) {
-                mergedOrgCloudletList.push(item)
-            }
-        })
-
-        console.log('mergedOrgCloudletList===>', mergedOrgCloudletList);
-
-        return mergedOrgCloudletList;
-    } catch (e) {
-
-    }
-}
-
-export const getCloudletListAll = async () => {
-    try {
-
-        let store = JSON.parse(localStorage.PROJECT_INIT);
-        let token = store ? store.userToken : 'null';
-        //data: { region: region, org: _self.props.selectOrg || localStorage.selectOrg }
-
-        let requestData = {showSpinner: false, token: token, method: SHOW_CLOUDLET, data: {region: REGION.EU}};
-        let requestData2 = {showSpinner: false, token: token, method: SHOW_CLOUDLET, data: {region: REGION.US}};
-        let promiseList = []
-
-        promiseList.push(sendSyncRequest(this, requestData))
-        promiseList.push(sendSyncRequest(this, requestData2))
-        let orgCloudletList = await Promise.all(promiseList);
-        console.log('results===EU>', orgCloudletList[0].response.data);
-        console.log('results===US>', orgCloudletList[1].response.data);
-
-        let cloudletEU = orgCloudletList[0].response.data;
-        let cloudletUS = orgCloudletList[1].response.data;
-
-        let mergedCloudletList = [];
-        orgCloudletList.map(item => {
-            //@todo : null check
-            if (item.response.data["0"].Region !== '') {
-                let cloudletList = item.response.data;
-                cloudletList.map(item => {
-                    mergedCloudletList.push(item);
-                })
-            }
-        })
-
-
-        return mergedCloudletList;
-    } catch (e) {
-
-    }
-}
-
-
-/**
- * @todo : fetch App Instance List BY region
- * @param pArrayRegion
- * @returns {Promise<[]>}
- */
-export const getAppInstList = async (pArrayRegion = ['EU', 'US']) => {
-    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-    let mergedAppInstanceList = [];
-
-    for (let index = 0; index < pArrayRegion.length; index++) {
-        let serviceBody = {
-            "token": store.userToken,
-            "params": {
-                "region": pArrayRegion[index],
-                "appinst": {
-                    "key": {
-                        "app_key": {
-                            "developer_key": {"name": localStorage.selectOrg},
-                        }
-                    }
-                }
-            }
-        }
-
-        let responseResult = await axios({
-            url: '/api/v1/auth/ctrl/ShowAppInst',
-            method: 'post',
-            data: serviceBody['params'],
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: 'Bearer ' + store.userToken
-            },
-            timeout: 15 * 1000
-        }).then(async response => {
-            let parseData = JSON.parse(JSON.stringify(response));
-            if (parseData.data === '') {
-                return null;
-            } else {
-                let finalizedJSON = formatData(parseData, serviceBody)
-                return finalizedJSON;
-            }
-
-        }).catch(e => {
-            showToast(e.toString())
-        }).finally(() => {
-
-        })
-
-        if (responseResult !== null) {
-            let mergedList = mergedAppInstanceList.concat(responseResult);
-            mergedAppInstanceList = mergedList;
-        }
-
-    }
-    return mergedAppInstanceList;
-}
-
-/**
- *
- * @param serviceBodyForAppInstanceOneInfo
- * @returns {Promise<AxiosResponse<any>>}
- */
-export const getAppLevelMetrics = async (serviceBodyForAppInstanceOneInfo: any) => {
-    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-    let result = await axios({
-        url: '/api/v1/auth/metrics/app',
-        method: 'post',
-        data: serviceBodyForAppInstanceOneInfo['params'],
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + store.userToken
-        },
-        timeout: 30 * 1000
-    }).then(async response => {
-        return response.data;
-    }).catch(e => {
-        //throw new Error(e)
-        //showToast(e.toString())
-    })
-    return result;
-}
-
 
 /**
  * 시간을 request요청에 맞게끔 변경 처리
@@ -1134,271 +1227,4 @@ export const makeCompleteDateTime = (date: string) => {
     return completeDateTimeString;
 }
 
-
-export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
-    try {
-        let instanceBodyList = []
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
-        for (let index = 0; index < appInstanceList.length; index++) {
-            //todo: Create a data FORM format for requests
-            let instanceInfoOneForm = makeFormForAppInstance(appInstanceList[index], pHardwareType, store.userToken, recentDataLimitCount, pStartTime, pEndTime)
-            instanceBodyList.push(instanceInfoOneForm);
-        }
-
-        let promiseList = []
-        for (let index = 0; index < instanceBodyList.length; index++) {
-            promiseList.push(getAppLevelMetrics(instanceBodyList[index]))
-        }
-        //todo: Bring health check list(cpu,mem,network,disk..) to the number of apps instance, by parallel request
-
-        let appInstanceHealthCheckList = []
-        try {
-            appInstanceHealthCheckList = await Promise.all(promiseList);
-        } catch (e) {
-            throw new Error(e)
-        }
-
-        let usageListForAllInstance = []
-        appInstanceList.map((item, index) => {
-            usageListForAllInstance.push({
-                instanceData: appInstanceList[index],
-                appInstanceHealth: appInstanceHealthCheckList[index],
-            });
-        })
-        /*
-         0: "time"
-         1: "app"
-         2: "cluster"
-         3: "dev"
-         4: "cloudlet"
-         5: "operator"
-         6: "cpu"
-         7: "mem"
-         8: "disk"
-         9: "sendBytes"
-         10: "recvBytes"
-         11: "port"
-         12: "active"
-         13: "handled"
-         14: "accepts"
-         15: "bytesSent"
-         16: "bytesRecvd"
-         */
-
-        let cpuUsageList = []
-        let memUsageList = [];
-        let diskUsageList = [];
-        let networkUsageList = [];
-        let connectionsUsageList = [];
-        let matrixedUsageList = []
-        usageListForAllInstance.map((item, index) => {
-            let appName = item.instanceData.AppName;
-            let sumMemUsage = 0;
-            let sumDiskUsage = 0;
-            let sumRecvBytes = 0;
-            let sumSendBytes = 0;
-            let sumCpuUsage = 0;
-
-            let sumActiveConnection = 0;
-            let sumHandledConnection = 0
-            let sumAcceptsConnection = 0
-
-            if (item.appInstanceHealth !== undefined) {
-
-                let series = item.appInstanceHealth.data["0"].Series;
-
-                /*
-
-                */
-
-                if (series !== null) {
-                    //@todo###########################
-                    //@todo makeCpuSeriesList
-                    //@todo###########################
-                    if (series["3"] !== undefined) {
-                        let cpuSeries = series["3"]
-                        cpuSeries.values.map(item => {
-                            let cpuUsage = item[APP_INST_MATRIX_HW_USAGE_INDEX.CPU];//cpuUsage..index
-                            sumCpuUsage += cpuUsage;
-                        })
-
-                        cpuUsageList.push({
-                            instance: item.instanceData,
-                            columns: cpuSeries.columns,
-                            sumCpuUsage: sumCpuUsage / RECENT_DATA_LIMIT_COUNT,
-                            values: cpuSeries.values,
-                            appName: appName,
-
-                        })
-                    }
-
-
-                    //@todo###########################
-                    //@todo MemSeriesList
-                    //@todo###########################
-                    if (series["1"] !== undefined) {
-                        let memSeries = series["1"]
-                        memSeries.values.map(item => {
-                            let usageOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.MEM];//memUsage..index
-                            sumMemUsage += usageOne;
-                        })
-
-                        memUsageList.push({
-                            instance: item.instanceData,
-                            columns: memSeries.columns,
-                            sumMemUsage: Math.ceil(sumMemUsage / RECENT_DATA_LIMIT_COUNT),
-                            values: memSeries.values,
-                            appName: appName,
-                        })
-                    }
-
-                    //@todo###########################
-                    //@todo DiskSeriesList
-                    //@todo###########################
-                    if (series["2"] !== undefined) {
-                        let diskSeries = series["2"]
-                        diskSeries.values.map(item => {
-                            let usageOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.DISK];//diskUsage..index
-                            sumDiskUsage += usageOne;
-                        })
-
-                        diskUsageList.push({
-                            instance: item.instanceData,
-                            columns: diskSeries.columns,
-                            sumDiskUsage: Math.ceil(sumDiskUsage / RECENT_DATA_LIMIT_COUNT),
-                            values: diskSeries.values,
-                            appName: appName,
-                        })
-
-                    }
-                    //@todo###############################
-                    //@todo NetworkUSageList
-                    //@todo##############################
-                    if (series["0"] !== undefined) {
-                        let networkSeries = series["0"]
-                        networkSeries.values.map(item => {
-                            let sendBytesOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.SENDBYTES];//sendBytesOne
-                            sumSendBytes += sendBytesOne;
-                            let recvBytesOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.RECVBYTES];//recvBytesOne
-                            sumRecvBytes += recvBytesOne;
-                        })
-
-                        networkUsageList.push({
-                            instance: item.instanceData,
-                            columns: networkSeries.columns,
-                            sumRecvBytes: Math.ceil(sumRecvBytes / RECENT_DATA_LIMIT_COUNT),
-                            sumSendBytes: Math.ceil(sumSendBytes / RECENT_DATA_LIMIT_COUNT),
-                            values: networkSeries.values,
-                            appName: appName,
-                        })
-                    }
-
-
-                    //@todo###############################
-                    //@todo connectionsUsageList [4]
-                    //@todo##############################
-                    if (series["4"] !== undefined) {
-                        /*12: "active"
-                        13: "handled"
-                        14: "accepts"*/
-                        let connectionsSeries = series["4"]
-                        connectionsSeries.values.map(item => {
-                            let connection1One = item[APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE];//1
-                            sumActiveConnection += connection1One;
-                            let connection2One = item[APP_INST_MATRIX_HW_USAGE_INDEX.HANDLED];//2
-                            sumHandledConnection += connection2One;
-                            let connection3One = item[APP_INST_MATRIX_HW_USAGE_INDEX.ACCEPTS];//3
-                            sumAcceptsConnection += connection3One;
-                        })
-
-                        connectionsUsageList.push({
-                            instance: item.instanceData,
-                            columns: connectionsSeries.columns,
-                            sumActiveConnection: Math.ceil(sumActiveConnection / RECENT_DATA_LIMIT_COUNT),
-                            sumHandledConnection: Math.ceil(sumHandledConnection / RECENT_DATA_LIMIT_COUNT),
-                            sumAcceptsConnection: Math.ceil(sumAcceptsConnection / RECENT_DATA_LIMIT_COUNT),
-                            values: connectionsSeries.values,
-                            appName: appName,
-                        })
-                    } else {
-                        connectionsUsageList.push({
-                            instance: item.instanceData,
-                            columns: "",
-                            sumActiveConnection: 0,
-                            sumHandledConnection: 0,
-                            sumAcceptsConnection: 0,
-                            values: [],
-                            appName: appName,
-                        })
-                    }
-
-                } else {//@todo: If series data is null
-                    cpuUsageList.push({
-                        instance: item.instanceData,
-                        columns: "",
-                        sumCpuUsage: 0,
-                        values: [],
-                        appName: appName,
-
-                    })
-
-                    memUsageList.push({
-                        instance: item.instanceData,
-                        columns: "",
-                        sumMemUsage: 0,
-                        values: [],
-                        appName: appName,
-
-                    })
-
-                    diskUsageList.push({
-                        instance: item.instanceData,
-                        columns: "",
-                        sumDiskUsage: 0,
-                        values: [],
-                        appName: appName,
-                    })
-
-                    networkUsageList.push({
-                        instance: item.instanceData,
-                        columns: "",
-                        sumRecvBytes: 0,
-                        sumSendBytes: 0,
-                        values: [],
-                        appName: appName,
-                    })
-
-                    connectionsUsageList.push({
-                        instance: item.instanceData,
-                        columns: "",
-                        sumActiveConnection: 0,
-                        sumHandledConnection: 0,
-                        sumAcceptsConnection: 0,
-                        values: [],
-                        appName: appName,
-                    })
-                }
-            }
-
-        })
-
-        //@todo :##################################
-        //@todo : Sort usage in reverse order.
-        //@todo :##################################
-        cpuUsageList.sort((a, b) => b.sumCpuUsage - a.sumCpuUsage);
-        memUsageList.sort((a, b) => b.sumMemUsage - a.sumMemUsage);
-        networkUsageList.sort((a, b) => b.sumRecvBytes - a.sumRecvBytes)
-        diskUsageList.sort((a, b) => b.sumDiskUsage - a.sumDiskUsage);
-        connectionsUsageList.sort((a, b) => b.sumHandledConnection - a.sumHandledConnection);
-        matrixedUsageList.push(cpuUsageList)
-        matrixedUsageList.push(memUsageList)
-        matrixedUsageList.push(networkUsageList)
-        matrixedUsageList.push(diskUsageList)
-        matrixedUsageList.push(connectionsUsageList)
-        return matrixedUsageList;
-    } catch (e) {
-        throw new Error(e.toString())
-    }
-
-}
 
