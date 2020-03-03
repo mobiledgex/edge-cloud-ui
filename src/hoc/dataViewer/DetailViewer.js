@@ -18,7 +18,7 @@ const jsonViewProps = {
 }
 const subView = (keys, dataList) => {
     return (
-        <Table celled>
+        <Table celled style={{ height: 50 }}>
             <Table.Header>
                 <Table.Row>
                     {keys.map((item, i) => {
@@ -48,7 +48,7 @@ const subView = (keys, dataList) => {
 
 const getRow = (id, label, data) => {
     return (
-        <Table.Row key={id}>
+        <Table.Row key={id} verticalAlign='top'>
             <Table.Cell>{label}</Table.Cell>
             <Table.Cell>
                 {data}
@@ -59,7 +59,7 @@ const getRow = (id, label, data) => {
 const MexDetailViewer = (props) => {
     let detailData = props.detailData;
     return (
-        <Table celled>
+        <Table celled style={{ width: '100%', backgroundColor: '#2A2C33', border: 'none' }}>
             <Table.Header>
                 <Table.Row>
                     <Table.HeaderCell>Key</Table.HeaderCell>

@@ -100,7 +100,7 @@ const mapObject = (currentObject, serverField) => {
 const map = (value, currentObject, keys) => {
     for (let i = 0; i < keys.length; i++) {
         let key = keys[i]
-        if (key.serverField) {
+        if (key && key.serverField) {
             if (key.keys) {
                 let childArray = []
                 let data = currentObject[key.serverField];
@@ -145,6 +145,5 @@ export const formatData = (response, body, keys, customData, isUnique) => {
     catch (e) {
         alert(e)
     }
-    console.log('Rahul123', values)
     return values
 }

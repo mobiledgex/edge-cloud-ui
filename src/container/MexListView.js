@@ -1,75 +1,54 @@
 import React from 'react';
-import { Table, Dropdown, Grid, Header } from 'semantic-ui-react';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import AddIcon from '@material-ui/icons/Add';
-import { IconButton, Grow, Popper, Paper, ClickAwayListener, MenuList, Box, AppBar, Toolbar, Divider } from '@material-ui/core';
+import { Table } from 'semantic-ui-react';
+import { IconButton, Grow, Popper, Paper, ClickAwayListener, MenuList  } from '@material-ui/core';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListIcon from '@material-ui/icons/List';
+import './styles.css';
+import _ from "lodash";
+import { fields } from '../services/model/format';
+import * as serverData from '../services/model/serverData';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import './styles.css';
-import _ from "lodash";
+import MexToolbar, {ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW} from './MexToolbar';
+import MexDetailViewer from '../hoc/dataViewer/DetailViewer';
 
-const regions = [{ key: 'ALL', value: 'ALL', text: 'ALL' },
-    { key: 'US', value: 'US', text: 'US' },
-    { key: 'EU', value: 'EU', text: 'EU' }]
 
-    const policies = [{ key: 'Auto Provisioning Policy', value: 'Auto Provisioning Policy', text: 'Auto Provisioning Policy' },
-    { key: 'Privacy Policy', value: 'Privacy Policy', text: 'Privacy Policy' }]
+//Temp should be retrieved from server
+const regions = ['US', 'EU']
 class MexListView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            dummyData: [],
-            anchorEl: null
+            dataList: [],
+            anchorEl: null,
+            currentView:null,
+            isDetail:false
         };
-        this.selectedRow = {};
+        this.keys = props.requestInfo.keys;
+        this.selectedRowIndex = {};
         this.sorting = false;
-        this.selectedRegion = 'ALL'
+        this.selectedRegion = REGION_ALL
     }
 
-    gotoUrl(site, subPath, pg) {
-        let arrSubPath = subPath.toString().split("&org=")
-        let orgName = arrSubPath[1];
-
-        this.props.history.push({
-            pathname: site,
-            search: subPath,
-            goBack: pg,
-            state: {
-                orgName: orgName
-            }
-        });
-        this.props.history.location.search = subPath;
-        this.props.handleChangeSite({ mainPath: site, subPath: subPath })
-    }
-
-
-
-
-    onRefresh = ()=>
-    {
-        alert(this.props.changeRegion)
-        this.getDataDeveloper(this.props.changeRegion);
-    }
+    
 
     handleSort = clickedColumn => (a) => {
 
         this.sorting = true;
-        const { column, dummyData, direction } = this.state
-        if ((column !== clickedColumn) && dummyData) {
-            let sorted = _.sortBy(dummyData, [clm => typeof clm[clickedColumn] === 'string' ? String(clm[clickedColumn]).toLowerCase() : clm[clickedColumn]])
+        const { column, dataList, direction } = this.state
+        if ((column !== clickedColumn) && dataList) {
+            let sorted = _.sortBy(dataList, [clm => typeof clm[clickedColumn] === 'string' ? String(clm[clickedColumn]).toLowerCase() : clm[clickedColumn]])
             this.setState({
                 column: clickedColumn,
-                dummyData: sorted,
+                dataList: sorted,
                 direction: 'ascending',
             })
             return
         } else {
-            let reverse = dummyData.reverse()
+            let reverse = dataList.reverse()
             this.setState({
-                dummyData: reverse,
+                dataList: reverse,
                 direction: direction === 'ascending' ? 'descending' : 'ascending',
             })
         }
@@ -77,7 +56,7 @@ class MexListView extends React.Component {
 
     makeHeader() {
         const { column, direction } = this.state
-        return this.props.headerInfo.map((header, i) => {
+        return this.keys.map((header, i) => {
             if (header.visible) {
                 return (
                     <Table.HeaderCell key={i} className={header.sortable ? '' : 'unsortable'} textAlign='center' sorted={column === header.field ? direction : null} onClick={header.sortable ? this.handleSort(header.field) : null}>
@@ -87,27 +66,37 @@ class MexListView extends React.Component {
         })
     }
 
-    appLaunch = (data) => {
-        this.gotoUrl('/site4', 'pg=createAppInst', 'pg=5')
-        this.props.handleAppLaunch(data)
-        localStorage.setItem('selectMenu', 'App Instances')
-    }
-
-
-    getCellClick = (field, item) => {
-        this.selectedRow = item
-        if (field !== 'actions' && this.props.onSelect) {
-            this.props.onSelect(item)
+    getCellClick = (field, rowIndex) => {
+        this.selectedRowIndex = rowIndex
+        let item = this.state.dataList[this.selectedRowIndex]
+        if (field !== 'actions') {
+            this.setState(
+                {
+                    isDetail:true,
+                    currentView: <MexDetailViewer detailData={item} keys={this.keys} />
+                }
+            )
         }
     }
 
-    onActionClose = (action) => {
-        if (action.onClick != null) {
-            action.onClick(this.selectedRow)
-        }
+    onActionClose = async (action) => {
         this.setState({
             anchorEl: null
         })
+        let dataList = this.state.dataList;
+        if (action.onClick != null) {
+            if(await action.onClick(dataList[this.selectedRowIndex]))
+            {
+                switch (action.label) {
+                    case 'Delete':
+                        dataList.splice(this.selectedRowIndex, 1)
+                        this.setState({ dataList: dataList })
+                        break;
+                    case 'Update':
+                        break;
+                } 
+            }
+        }
     }
 
     getAction = (item) => {
@@ -119,10 +108,10 @@ class MexListView extends React.Component {
     }
 
     makeBody(i, item) {
-        return this.props.headerInfo.map((header, j) => {
+        return this.keys.map((header, j) => {
             if (header.visible) {
                 let field = header.field;
-                return <Table.Cell key={j} className="table_actions" textAlign='center' onClick={() => this.getCellClick(field, item)} style={(this.state.selectedItem == i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }}>
+                return <Table.Cell key={j} className="table_actions" textAlign='center' onClick={() => this.getCellClick(field, i)} style={(this.state.selectedItem == i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }}>
                     {
                         field === 'actions' ? this.getAction(item)
                             :
@@ -134,61 +123,34 @@ class MexListView extends React.Component {
         })
     }
 
-    getToolbar = () => {
-        return (
-            <Toolbar>
-                <label className='content_title_label'>Auto Privacy Policy</label>
-                <div style={{ right: 0, position: 'absolute' }}>
-                    <div style={{display:'inline', margin:20}}>
-                        <strong>Region:&nbsp;&nbsp;</strong>
-                        <Dropdown
-                            options={regions}
-                            defaultValue={regions[0].value}
-                            onChange={(e,{value})=>{alert(value)}}
-                        />
-                    </div>
-                    <div style={{display:'inline', margin:20}}>
-                        <strong>Policies:&nbsp;&nbsp;</strong>
-                        <Dropdown
-                            options={policies}
-                            defaultValue={policies[0].value}
-                        />
-                    </div>
-                    <IconButton aria-label="Action">
-                        <AddIcon style={{ color: '#76ff03' }} />
-                    </IconButton>
-                    <IconButton aria-label="Action"  onClick={(e)=>this.props.onRefresh()}>
-                        <RefreshIcon style={{ color: '#76ff03' }}/>
-                    </IconButton>
-                </div>
-            </Toolbar>)
+    listView = () => {
+        return (this.state.dataList.length > 0 ?
+            <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
+                <Table.Header className="viewListTableHeader">
+                    <Table.Row>
+                        {this.makeHeader()}
+                    </Table.Row>
+                </Table.Header>
+                <Table.Body className="tbBodyList" onScroll={this.onHandleScroll}>
+                    {
+                        this.state.dataList.map((item, i) => (
+                            <Table.Row key={i}>
+                                {this.makeBody(i, item)}
+                            </Table.Row>
+                        ))
+                    }
+                </Table.Body>
+            </Table> :
+            null)
     }
 
+    
     render() {
         return (
             <div style={{ display: 'flex', overflowY: 'auto', overflowX: 'hidden', width: '100%' }}>
                 <div className="round_panel" style={{ display: 'flex', flexDirection: 'column' }}>
-                    {this.getToolbar()}
-                    {
-                        this.state.dummyData.length > 0 ?
-                            <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
-                                <Table.Header className="viewListTableHeader">
-                                    <Table.Row>
-                                        {this.makeHeader()}
-                                    </Table.Row>
-                                </Table.Header>
-                                <Table.Body className="tbBodyList" onScroll={this.onHandleScroll}>
-                                    {
-                                        this.state.dummyData.map((item, i) => (
-                                            <Table.Row key={i}>
-                                                {this.makeBody(i, item)}
-                                            </Table.Row>
-                                        ))
-                                    }
-                                </Table.Body>
-                            </Table> :
-                            null
-                    }
+                    <MexToolbar onAction={this.onToolbarAction} isDetail={this.state.isDetail}/>
+                    {this.state.currentView ? this.state.currentView : this.listView()}
                 </div>
                 {
                     this.props.actionMenu ?
@@ -215,64 +177,101 @@ class MexListView extends React.Component {
 
     }
 
-    componentDidMount() {
+    onToolbarAction = (type, data)=>
+    {
+        switch(type)
+        {
+            case ACTION_REGION:
+                this.selectedRegion = data;
+                this.dataFromServer(this.selectedRegion)
+                break;
+            case ACTION_REFRESH:
+                this.dataFromServer(this.selectedRegion)
+                break;
+            case ACTION_NEW:
+                this.props.requestInfo.onAdd()
+                break;
+            case ACTION_CLOSE:
+                this.setState({ isDetail: false, currentView: null })
+                break;
+            default:
+                    
+        }
+    }
+
+    getFilterInfo = (requestInfo, region)=>
+    {
+        let filterList = [];
+        if (requestInfo.isRegion) {
+            if (region === REGION_ALL) {
+                for (let i = 0; i < regions.length; i++) {
+                    region = regions[i];
+                    let filter = requestInfo.filter === undefined ? {} : requestInfo.filter;
+                    filter[fields.region] = region;
+                    filterList.push(filter)
+                }
+            }
+            else
+            {
+                let filter = requestInfo.filter === undefined ? {} : requestInfo.filter;
+                filter[fields.region] = region;  
+                filterList.push(filter)
+            }
+        }
+        else {
+            let filter = requestInfo.filter === undefined ? {} : requestInfo.filter;
+            filterList.push(filter)
+        }
+        return filterList;
+    }
+
+    dataFromServer = async (region) => {
+        let dataList = [];
+        let requestInfo = this.props.requestInfo
+        if (requestInfo) {
+            let filterList = this.getFilterInfo(requestInfo, region)
+            if (filterList && filterList.length > 0) {
+                for (let i = 0; i < filterList.length; i++) {
+                    let filter = filterList[i];
+                    let requestDataList = await serverData.getDataListFromServer(this, requestInfo.requestType, filter)
+                    if (requestDataList && requestDataList.length > 0) {
+                        if (requestDataList && requestDataList.length > 0) {
+                            dataList = [...dataList, ...requestDataList]
+                        }
+                    }
+                }
+            }
+            else {
+                let requestDataList = await serverData.getDataListFromServer(this, requestInfo.requestType)
+                if (requestDataList.length > 0) {
+                    if (requestDataList && requestDataList.length > 0) {
+                        dataList = requestDataList
+                    }
+                }
+            }
+        }
+
+        if(dataList.length > 0 && requestInfo.sortBy)
+        {
+            dataList = _.orderBy(dataList, requestInfo.sortBy)       
+        }
         this.setState({
-            dummyData: this.props.devData
+            dataList:dataList
         })
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (prevProps.devData !== this.props.devData) {
-            this.setState({
-                dummyData: this.props.devData
-            })
-        }
+    componentDidMount() {
+        this.dataFromServer(REGION_ALL)
     }
 }
 
-
-
-
 const mapStateToProps = (state) => {
-    let account = state.registryAccount.account;
-    let dimm = state.btnMnmt;
-    let accountInfo = account ? account + Math.random() * 10000 : null;
-    let dimmInfo = dimm ? dimm : null;
-
-    return {
-        accountInfo,
-        dimmInfo,
-        itemLabel: state.computeItem.item,
-        userToken: (state.user.userToken) ? state.userToken : null,
-        searchValue: (state.searchValue.search) ? state.searchValue.search : null,
-        searchType: (state.searchValue.scType) ? state.searchValue.scType : null,
-        userRole: state.showUserRole ? state.showUserRole.role : null,
-        roleInfo: state.roleInfo ? state.roleInfo.role : null,
-    }
+   
 };
+
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeSite: (data) => {
-            dispatch(actions.changeSite(data))
-        },
-        handleInjectDeveloper: (data) => {
-            dispatch(actions.registDeveloper(data))
-        },
-        handleUserRole: (data) => {
-            dispatch(actions.showUserRole(data))
-        },
-        handleSelectOrg: (data) => {
-            dispatch(actions.selectOrganiz(data))
-        },
-        handleRefreshData: (data) => {
-            dispatch(actions.refreshData(data))
-        },
-        handleAppLaunch: (data) => {
-            dispatch(actions.appLaunch(data))
-        },
-        handleChangeComputeItem: (data) => {
-            dispatch(actions.computeItem(data))
-        },
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) }
     };
 };
 

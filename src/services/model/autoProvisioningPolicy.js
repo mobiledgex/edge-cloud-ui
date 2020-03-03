@@ -1,7 +1,7 @@
 import {TYPE_JSON} from '../../hoc/constant';
 import { fields, formatData } from './format'
 
-export const keys = [
+export const keys =[
   { field: fields.region, label: 'Region', sortable: true, visible: true },
   { field: fields.organizationName, serverField: 'key#OS#developer', label: 'Organization Name', sortable: true, visible: true },
   { field: fields.autoPolicyName, serverField: 'key#OS#name', label: 'Auto Policy Name', sortable: false, visible: true },
@@ -16,14 +16,6 @@ export const keys = [
   },
   { field: 'actions', label: 'Actions', sortable: false, visible: true }
 ]
-
-export const actionMenu = (self) => {
-  return [{ label: 'View', onClick: self.onView },
-  { label: 'Add Cloudlet', onClick: self.onAddCloudlet },
-  { label: 'Delete Cloudlet', onClick: self.onDeleteCloudlet },
-  { label: 'Delete', onClick: self.onDelete }
-  ]
-}
 
 /** 
  * Function to add customized data along with server data

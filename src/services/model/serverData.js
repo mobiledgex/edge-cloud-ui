@@ -1,5 +1,7 @@
 import * as serviceMC from './serviceMC';
 import * as EP from './endPointTypes';
+import _ from 'lodash'
+import { fields } from './format';
 
 const getUserRole = ()=>
 {
@@ -102,4 +104,18 @@ export const deletePrivacyPolicy = async (self, data) => {
     return await sendSyncRequest(self, EP.DELETE_PRIVACY_POLICY, data)
 }
 /* Privacy Policy */
+
+export const getDataListFromServer = async (self, requestType, filter) => {
+
+    let dataList = [];
+    switch (requestType) {
+        case EP.SHOW_PRIVACY_POLICY:
+            dataList = await getPrivacyPolicy(self, filter)
+            break;
+        case EP.SHOW_AUTO_PROV_POLICY:
+            dataList = await getAutoProvPolicy(self, filter)
+            break;
+    }
+    return dataList;
+}
 
