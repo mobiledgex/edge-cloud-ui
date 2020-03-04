@@ -665,22 +665,22 @@ class SiteFour extends React.Component {
         this.setState({learned: false})
     }
 
-    menuItemViewHide = (item, i, activeItem) => (
+    menuItemViewHide = (item, i, activeItem, orgMenu) => (
         (this.state.hideLeftMenu)?
             <Popup
                 className="table_actions_tooltip"
                 content={item.label}
                 position='right center'
                 trigger={
-                    this.menuItemView(item, i, activeItem)
+                    this.menuItemView(item, i, activeItem, orgMenu)
                 }
             />
             :
-            this.menuItemView(item, i, activeItem)
+            this.menuItemView(item, i, activeItem, orgMenu)
     )
 
     //compute page menu view
-    menuItemView = (item, i, activeItem) => (
+    menuItemView = (item, i, activeItem, orgMenu) => (
         <Menu.Item
             className={'leftMenu_' + item.label}
             key={i}
@@ -689,10 +689,11 @@ class SiteFour extends React.Component {
             onClick={() => this.handleItemClick(i, item.label, item.pg, localStorage.selectRole)}
         >
             <div className="left_menu_item">
-                {(localStorage.selectRole === 'AdminManager') && <MaterialIcon icon={item.icon}/>}
-                {(localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer') &&
+                {orgMenu && <MaterialIcon icon={item.icon}/>}
+                {!orgMenu && (localStorage.selectRole === 'AdminManager') && <MaterialIcon icon={item.icon}/>}
+                {!orgMenu && (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer') &&
                 <MaterialIcon icon={item.icon}/>}
-                {(localStorage.selectRole === 'OperatorManager' || localStorage.selectRole === 'OperatorContributor' || localStorage.selectRole === 'OperatorViewer') &&
+                {!orgMenu && (localStorage.selectRole === 'OperatorManager' || localStorage.selectRole === 'OperatorContributor' || localStorage.selectRole === 'OperatorViewer') &&
                 <MaterialIcon icon={item.icon}/>}
                 <div className='label'>{item.label}</div>
                 {(activeItem === item.label) ?
@@ -1057,7 +1058,7 @@ class SiteFour extends React.Component {
                                         {
                                             this.OrgMenu.map((item, i) => (
                                                 (item.label === 'Accounts' && localStorage.selectRole !== 'AdminManager') ? null
-                                                    : this.menuItemViewHide(item, i, localStorage.selectMenu)
+                                                    : this.menuItemViewHide(item, i, localStorage.selectMenu, true)
                                             ))
                                         }
                                     </div>
@@ -1066,17 +1067,17 @@ class SiteFour extends React.Component {
                                         {
                                             (localStorage.selectRole === 'AdminManager') ?
                                                 this.menuItemsAll.map((item, i) => (
-                                                    this.menuItemViewHide(item, i, localStorage.selectMenu)
+                                                    this.menuItemViewHide(item, i, localStorage.selectMenu, false)
                                                 ))
                                                 :
                                                 (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer') ?
                                                     this.menuItems.map((item, i) => (
-                                                        this.menuItemViewHide(item, i, localStorage.selectMenu)
+                                                        this.menuItemViewHide(item, i, localStorage.selectMenu, false)
                                                     ))
                                                     :
                                                     (localStorage.selectRole === 'OperatorManager' || localStorage.selectRole === 'OperatorContributor' || localStorage.selectRole === 'OperatorViewer') ?
                                                         this.auth_three.map((item, i) => (
-                                                            this.menuItemViewHide(item, i, localStorage.selectMenu)
+                                                            this.menuItemViewHide(item, i, localStorage.selectMenu, false)
                                                         ))
                                                         :
                                                         null
