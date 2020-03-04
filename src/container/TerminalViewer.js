@@ -40,6 +40,7 @@ class MexTerminal extends Component {
         this.success = false;
         this.localConnection = null;
         this.sendChannel = null;
+        this.vmPage = React.createRef()
     }
 
     setRemote = (mcRequest) => {
@@ -360,7 +361,7 @@ class MexTerminal extends Component {
 
     loadVMPage = () =>
     {
-        return <iframe ref="vmPage" src={this.props.data.vm.url} style={{ width: '100%', height: '100%' }}></iframe>
+        return <iframe ref={this.vmPage} src={this.props.data.vm.url} style={{ width: '100%', height: '100%' }}></iframe>
     }
 
     render() {
@@ -403,9 +404,9 @@ class MexTerminal extends Component {
     }
 
     componentDidMount(){
-        if(document.getElementById('vmPage'))
+        if(this.vmPage && this.vmPage.current)
         {
-            document.getElementById('vmPage').focus()
+            this.vmPage.current.focus()
         }
         this.setState({
             forms : this.getForms()
