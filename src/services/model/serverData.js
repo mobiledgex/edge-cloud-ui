@@ -109,11 +109,14 @@ export const getDataListFromServer = async (self, requestType, filter) => {
 
     let dataList = [];
     switch (requestType) {
+        case EP.SHOW_AUTO_PROV_POLICY:
+            dataList = await getAutoProvPolicy(self, filter)
+            break;
         case EP.SHOW_PRIVACY_POLICY:
             dataList = await getPrivacyPolicy(self, filter)
             break;
-        case EP.SHOW_AUTO_PROV_POLICY:
-            dataList = await getAutoProvPolicy(self, filter)
+        case EP.SHOW_ORG:
+            dataList = await getOrganizationInfo(self)
             break;
     }
     return dataList;

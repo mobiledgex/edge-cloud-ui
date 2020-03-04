@@ -1,10 +1,11 @@
 import {fields, formatData} from './format'
 
-const keys = [
-    { field: fields.type, serverField: 'Type' },
-    { field: fields.organizationName, serverField: 'Name' },
-    { field: fields.address, serverField: 'Address' },
-    { field: fields.phone, serverField: 'Phone' },
+export const keys = [
+    { field: fields.organizationName, serverField: 'Name', label: 'Organization', sortable: true, visible: true },
+    { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: true },
+    { field: fields.phone, serverField: 'Phone', label: 'Phone', sortable: false, visible: true },
+    { field: fields.address, serverField: 'Address', label: 'Address', sortable: false, visible: true },
+    { field: 'actions', label: 'Actions', sortable: false, visible: true }
 ]
 
 export const getKey = (data) => {

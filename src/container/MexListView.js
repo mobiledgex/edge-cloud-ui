@@ -149,7 +149,7 @@ class MexListView extends React.Component {
         return (
             <div style={{ display: 'flex', overflowY: 'auto', overflowX: 'hidden', width: '100%' }}>
                 <div className="round_panel" style={{ display: 'flex', flexDirection: 'column' }}>
-                    <MexToolbar onAction={this.onToolbarAction} isDetail={this.state.isDetail}/>
+                    <MexToolbar label={this.props.requestInfo.headerLabel} onAction={this.onToolbarAction} isDetail={this.state.isDetail}/>
                     {this.state.currentView ? this.state.currentView : this.listView()}
                 </div>
                 {
@@ -266,7 +266,7 @@ class MexListView extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-   
+   return {}
 };
 
 const mapDispatchProps = (dispatch) => {

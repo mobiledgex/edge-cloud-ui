@@ -56,6 +56,7 @@ class AutoProvPolicy extends React.Component {
 
     requestInfo = () => {
         return ({
+            headerLabel:'Auto Provisioning Policy',
             requestType: EP.SHOW_AUTO_PROV_POLICY,
             isRegion: true,
             sortBy: [fields.region, fields.autoPolicyName],
@@ -71,7 +72,7 @@ class AutoProvPolicy extends React.Component {
 };
 
 const mapStateToProps = (state) => {
-
+    return {}
 };
 const mapDispatchProps = (dispatch) => {
     return {

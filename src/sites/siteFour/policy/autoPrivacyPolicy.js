@@ -62,6 +62,7 @@ class PrivacyPolicy extends React.Component {
 
     requestInfo = () => {
         return ({
+            headerLabel:'Privacy Policy',
             requestType: EP.SHOW_PRIVACY_POLICY,
             isRegion: true,
             sortBy: [fields.region, fields.privacyPolicyName],
@@ -79,7 +80,7 @@ class PrivacyPolicy extends React.Component {
 };
 
 const mapStateToProps = (state) => {
-    
+    return {}
 };
 const mapDispatchProps = (dispatch) => {
     return {

@@ -360,7 +360,7 @@ class MexTerminal extends Component {
 
     loadVMPage = () =>
     {
-        return <iframe ref="vmPage" src={this.props.data.vm.url} style={{ width: '100%', height: '100%' }}></iframe>
+        return <iframe id="vmPage" src={this.props.data.vm.url} style={{ width: '100%', height: '100%' }}></iframe>
     }
 
     render() {

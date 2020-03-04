@@ -45,7 +45,7 @@ const getList = (props) =>
 const MexToolbar = (props) => {
     return (
         <Toolbar>
-            <label className='content_title_label'>Auto Privacy Policy</label>
+            <label className='content_title_label'>{props.label}</label>
             {props.isDetail ? getDetail(props) : getList(props)}
         </Toolbar>
     )
