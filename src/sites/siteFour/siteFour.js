@@ -689,7 +689,11 @@ class SiteFour extends React.Component {
             onClick={() => this.handleItemClick(i, item.label, item.pg, localStorage.selectRole)}
         >
             <div className="left_menu_item">
-                <MaterialIcon icon={item.icon}/>
+                {(localStorage.selectRole === 'AdminManager') && <MaterialIcon icon={item.icon}/>}
+                {(localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer') &&
+                <MaterialIcon icon={item.icon}/>}
+                {(localStorage.selectRole === 'OperatorManager' || localStorage.selectRole === 'OperatorContributor' || localStorage.selectRole === 'OperatorViewer') &&
+                <MaterialIcon icon={item.icon}/>}
                 <div className='label'>{item.label}</div>
                 {(activeItem === item.label) ?
                     <div style={{position: 'absolute', right: '12px', top: '12px'}}>
