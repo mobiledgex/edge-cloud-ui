@@ -92,7 +92,7 @@ export function sendWSRequest(request, callback) {
             case getEP().DELETE_APP_INST:
                 clearSockets(request.uuid);
         }
-        callback({request: request, response: response});
+        callback({request: request, response: response, socket:ws});
     }
 
     ws.onclose = evt => {
