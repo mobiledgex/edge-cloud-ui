@@ -46,12 +46,14 @@ const subView = (keys, dataList) => {
     )
 }
 
-const getRow = (id, label, data) => {
+const getRow = (id, item, data) => {
     return (
         <Table.Row key={id} verticalAlign='top'>
-            <Table.Cell>{label}</Table.Cell>
+            <Table.Cell>{item.label}</Table.Cell>
             <Table.Cell>
-                {data}
+                {item.dataType === 'JSON' ?
+                    <ReactJson src={data} {...jsonViewProps} /> :
+                    item.customizedData ? item.customizedData(data, true) : data}
             </Table.Cell>
         </Table.Row>
     )
@@ -73,9 +75,9 @@ const MexDetailViewer = (props) => {
                         data !== undefined ?
                             item.keys ?
                                 data.length > 0 ?
-                                    getRow(i, item.label, subView(item.keys, data)) : null
+                                    getRow(i, item, subView(item.keys, data)) : null
                                 :
-                                getRow(i, item.label, data) :
+                                getRow(i, item, data) :
                             null
 
                     )

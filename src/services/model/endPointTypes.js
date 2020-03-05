@@ -226,6 +226,7 @@ export function formatData(request, response) {
 export function getKey(keyId, data) {
     switch (keyId) {
         case 'Cloudlet':
+        case STREAM_CLOUDLET:
             return Cloudlet.getKey(data)
         case 'ClusterInst':
             return ClusterInstance.getKey(data)

@@ -55,7 +55,7 @@ export const getOrganizationInfo = async (self) => {
 /* Organization */
 
 /* Clouldet */
-export const getCloudletInfo = async (self, data) => {
+export const getCloudlets = async (self, data) => {
     let method = EP.SHOW_ORG_CLOUDLET
     let requestData = { region: data.region, org: getOrganization() }
     if (getUserRole() === 'AdminManager') {
@@ -65,6 +65,15 @@ export const getCloudletInfo = async (self, data) => {
     let mcRequest = await sendSyncRequest(self, method, requestData)
     return processData(mcRequest)
 }
+
+/* Clouldet */
+export const getCloudletInfos = async (self, data) => {
+    if (getUserRole() === 'AdminManager') {
+        let mcRequest = await sendSyncRequest(self, EP.SHOW_CLOUDLET_INFO, data)
+        return processData(mcRequest)
+    }
+}
+
 /* Clouldet */
 
 /* Auto Provisioning Policy */
@@ -105,20 +114,11 @@ export const deletePrivacyPolicy = async (self, data) => {
 }
 /* Privacy Policy */
 
-export const getDataListFromServer = async (self, requestType, filter) => {
-
-    let dataList = [];
-    switch (requestType) {
-        case EP.SHOW_AUTO_PROV_POLICY:
-            dataList = await getAutoProvPolicy(self, filter)
-            break;
-        case EP.SHOW_PRIVACY_POLICY:
-            dataList = await getPrivacyPolicy(self, filter)
-            break;
-        case EP.SHOW_ORG:
-            dataList = await getOrganizationInfo(self)
-            break;
+export const getDataListFromServer = (self, requestType, filter, callback) => {
+    let requestDataList = [];
+    for (let i = 0; i < requestType.length; i++) {
+        requestDataList.push(getRequestInfo(requestType[i], filter))
     }
-    return dataList;
+    serviceMC.sendMultiRequest(self, requestDataList, callback)
 }
 

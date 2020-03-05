@@ -10,14 +10,8 @@ class DeleteItem extends React.Component {
     constructor() {
         super();
         this.state = {
-            dummyData: [],
             selected: {},
             open: false,
-            dimmer: '',
-            devOptionsOne: [],
-            devOptionsTwo: [],
-            dropdownValueOne: '',
-            dropdownValueTwo: '',
             showWarning: false,
             closeOnEscape: true,
             closeOnDimmerClick: true,
@@ -122,13 +116,13 @@ class DeleteItem extends React.Component {
             let name = '';
             this.setState({ showWarning: nextProps.open })
             if (nextProps.siteId == 'Organization') name = nextProps.selected.Organization
-            else if (nextProps.siteId == 'User') name = nextProps.selected.Username
-            else if (nextProps.siteId == 'Account') name = nextProps.selected.Username
-            else if (nextProps.siteId == 'Cloudlet') name = nextProps.selected.CloudletName
-            else if (nextProps.siteId == 'Flavors') name = nextProps.selected.FlavorName
-            else if (nextProps.siteId == 'ClusterInst') name = nextProps.selected.ClusterName
-            else if (nextProps.siteId == 'App') name = nextProps.selected.AppName
-            else if (nextProps.siteId == 'appinst') name = nextProps.selected.AppName
+            else if (nextProps.siteId === 'User') name = nextProps.selected.Username
+            else if (nextProps.siteId === 'Account') name = nextProps.selected.Username
+            else if (nextProps.siteId === 'Cloudlet') name = nextProps.selected.CloudletName
+            else if (nextProps.siteId === 'Flavors') name = nextProps.selected.FlavorName
+            else if (nextProps.siteId === 'ClusterInst') name = nextProps.selected.ClusterName
+            else if (nextProps.siteId === 'App') name = nextProps.selected.AppName
+            else if (nextProps.siteId === 'appinst') name = nextProps.selected.AppName
             this.setState({ deleteName: name })
             let orgName = '';
             if (nextProps.siteId == 'User') orgName = nextProps.selected.Organization

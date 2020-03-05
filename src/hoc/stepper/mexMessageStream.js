@@ -72,14 +72,14 @@ const VerticalStepper = (props) => {
     {
         body.current.scrollTop =  body.current.scrollHeight;
     }
-
     return (
         (props.uuid && props.uuid !== 0 && props.stepsArray && props.stepsArray.length > 0) ?
             <div>
-                {props.stepsArray.map(item => {
+                {props.stepsArray.map((item, i) => {
                     return (
                         props.uuid === item.uuid ?
                             <Popover
+                                key={i}
                                 style={{width:400}}
                                 anchorReference="anchorPosition"
                                 onEnter={()=>{body.current.scrollTop=body.current.scrollHeight}}

@@ -2,6 +2,7 @@ import { generateUniqueId } from '../serviceMC';
 import { toJson } from '../JsonUtil'
 
 export const fields = {
+    uuid:'uuid',
     region: 'region',
     clusterName: 'clusterName',
     organizationName: 'organizationName',
@@ -82,7 +83,9 @@ export const fields = {
     locked: 'locked',
     outboundSecurityRulesCount: 'outboundSecurityRulesCount',
     cloudletCount: 'cloudletCount',
-    fullIsolation:'fullIsolation'
+    fullIsolation:'fullIsolation',
+    cloudletStatus:'cloudletStatus',
+    actions:'actions'
 
 }
 

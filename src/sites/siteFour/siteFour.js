@@ -981,7 +981,7 @@ class SiteFour extends React.Component {
                             <HeaderGlobalMini email={this.state.email} data={this.props.userInfo.info} dimmer={false}/>
                         </Grid.Column>
                     </Grid.Row>
-                    <Container className={['view_left_container', this.state.hideLeftMenu && 'left_menu_hide']}
+                    <Container className={['view_left_container', this.state.hideLeftMenu && 'left_menu_hide'].join(' ')}
                                style={{position: 'relative', width: this.state.menuW}}>
                         <Grid.Row className='view_contents'>
                             <Grid.Column className='view_left'>
@@ -1119,7 +1119,7 @@ class SiteFour extends React.Component {
                                     (this.state.page === 'pg=PageOperMonitoring') ? <PageOperMonitoring/> :
                                         <Grid.Row className='view_contents'>
                                             <Grid.Column className='contents_body'>
-                                                <Grid.Row className='content_title'>
+                                                {/* <Grid.Row className='content_title'>
                                                     <div className='content_title_wrap'>
                                                         <div
                                                             className='content_title_label'>{this.state.headerTitle}</div>
@@ -1187,7 +1187,7 @@ class SiteFour extends React.Component {
                                                                 : null
                                                         }
                                                     </div>
-                                                </Grid.Row>
+                                                </Grid.Row> */}
 
 
                                                 <Grid.Row className='site_content_body'>

@@ -63,7 +63,7 @@ class PrivacyPolicy extends React.Component {
     requestInfo = () => {
         return ({
             headerLabel:'Privacy Policy',
-            requestType: EP.SHOW_PRIVACY_POLICY,
+            requestType: [EP.SHOW_PRIVACY_POLICY],
             isRegion: true,
             sortBy: [fields.region, fields.privacyPolicyName],
             keys:keys,

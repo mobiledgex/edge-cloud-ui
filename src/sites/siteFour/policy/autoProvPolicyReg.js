@@ -103,7 +103,7 @@ class AutoProvPolicyReg extends React.Component {
 
 
     selectCloudlet = async (region, organization, autoPolicyName) => {
-        this.cloudletList = await serverData.getCloudletInfo(this, {region:region})
+        this.cloudletList = await serverData.getCloudlets(this, {region:region})
         
         let action = 'Add'
         if (this.props.action === 'Add') {
