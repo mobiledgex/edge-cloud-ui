@@ -87,6 +87,7 @@ import BarChartWrapper from "../components/BarChartWrapper";
 import LineChartWrapper from "../components/LineChartWrapper";
 import EventLogList from "../components/EventLogList";
 import PerformanceSummaryTable from "../components/PerformanceSummaryTable";
+import TagCloudWrapper from "../components/TagCloudWrapper";
 
 const {Option} = Select;
 
@@ -429,26 +430,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 clearInterval(this.intervalForAppInst)
 
                 this.setState({dropdownRequestLoading: true})
-                let clusterList = await getClusterList();
+              /*  let clusterList = await getClusterList();
                 let cloudletList = await getCloudletList()
                 let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
-
                 console.log("appInstanceList===>", appInstanceList);
-
                 if (appInstanceList.length === 0) {
                     this.setState({
                         isNoData: true,
                     })
-                }
+                }*/
 
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
-                //fixme: fakeData22222222222
-                //fixme: fakeData22222222222
-                //fixme: fakeData22222222222
-                /*let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+                let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
                 let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-                let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')*/
+                let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
                 console.log('appInstanceList====>', appInstanceList);
 
                 console.log('clusterUsageList===>', clusterList);
@@ -458,8 +454,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 console.log("clusterDropdownList===>", clusterDropdownList);
 
+                //@fixme:###############################
                 //@fixme: 클러스터 레벨 이벤트로그 호출...
                 //@fixme: 클러스터 레벨 이벤트로그 호출...
+                //@fixme:###############################
                 let allClusterEventLogList = await getAllClusterEventLogList(clusterList);
 
                 console.log("allClusterEventLogList===>", allClusterEventLogList);
@@ -474,8 +472,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 } catch (e) {
                     showToast(e.toString())
                 }
-
-
                 console.log('appInstanceListGroupByCloudlet===>', appInstanceListGroupByCloudlet);
 
                 await this.setState({
@@ -499,15 +495,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 //todo: remoteData
                 //todo: remoteData
-                try {
+              /*  try {
                     allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
                 } catch (e) {
 
-                }
+                }*/
 
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
-                // allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+                allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
                 console.log('filteredAppInstanceList===>', appInstanceList)
 
                 let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
@@ -1130,6 +1126,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <EventLogList eventLogList={this.state.filteredClusterEventLogList}/>
                 )
             }
+
+            else if (graphType.toUpperCase() === GRID_ITEM_TYPE.TAG_CLOUD) {
+
+                return (
+                    <TagCloudWrapper allClusterUsageList={this.state.allClusterUsageList}/>
+                )
+            }
+
 
         }
 

@@ -274,10 +274,12 @@ export const GRID_ITEM_TYPE = {
     PIE: 'PIE',
     CLUSTER_LIST: 'CLUSTER_LIST',
     CLUSTER_EVENTLOG_LIST: 'CLUSTER_EVENTLOG_LIST',
+    //TAG_CLOUD: 'TAG_CLOUD',
 }
 
 export const ADD_ITEM_LIST = [
     {text: 'MAP', value: 'MAP'},
+    //{text: 'TAG_CLOUD', value: 'TAG_CLOUD'},
     {text: 'BUBBLE', value: 'BUBBLE'},
     {text: 'PERFORMANCE SUM', value: 'CLUSTER_LIST'},
     {text: 'CLUSTER EVENT LOG', value: 'CLUSTER_EVENTLOG_LIST'},
