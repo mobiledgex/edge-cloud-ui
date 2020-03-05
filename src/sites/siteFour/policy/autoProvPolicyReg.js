@@ -102,6 +102,7 @@ class AutoProvPolicyReg extends React.Component {
 
 
     selectCloudlet = async (region, organization, autoPolicyName) => {
+        this.props.handleChangeStep('02');
         this.cloudletList = await serverData.getCloudletInfo(this, {region:region})
         
         let action = 'Add'
@@ -124,7 +125,6 @@ class AutoProvPolicyReg extends React.Component {
             step:1,
             forms: step2
         })
-        this.props.handleChangeStep('');
     }
 
     addCloudletResponse = (mcRequestList)=>
@@ -162,7 +162,6 @@ class AutoProvPolicyReg extends React.Component {
                 let organization = data.AutoProvPolicy.key.developer;
                 let autoPolicyName = data.AutoProvPolicy.key.name;
                 this.props.handleAlertInfo('success', `Auto Provisioning Policy ${autoPolicyName} created successfully`)
-                this.props.handleChangeStep('02');
                 this.selectCloudlet(region, organization, autoPolicyName)
             }
         }
@@ -250,7 +249,7 @@ class AutoProvPolicyReg extends React.Component {
                     <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
                     {this.props.action ? null :
                             <div>
-                                <div className='content_title' style={{ padding: '0px 0px 10px 0' }}>Create Auto Provisioning Policy</div>
+                                <div className='content_title' style={{ padding: '0px 0px 10px 0' }}>{'Create Auto Provisioning Policy' + this.props.changeStep} </div>
 
                                 <Step.Group stackable='tablet' style={{ width: '100%' }}>
                                     {
@@ -312,10 +311,11 @@ class AutoProvPolicyReg extends React.Component {
         if(data)
         {
             this.OrganizationList = [{Organization:data.OrganizationName}]
-            this.props.handleChangeStep('02');
             this.selectCloudlet(data.Region, data.OrganizationName, data.AutoPolicyName)
         }
         else {
+
+            this.props.handleChangeStep('01');
             this.OrganizationList = await serverData.getOrganizationInfo(this)
             let step1 = [
                 { field: 'Region', label: 'Region', type: 'Select', placeholder: 'Select Region', rules: { required: true }, visible:true},

@@ -195,7 +195,7 @@ class SiteFourPoolThree extends React.Component {
                                         {
                                             (type === 'Developer')?
                                                 <Grid.Column>
-                                                        <Table compact>
+                                                        <Table compact className='tableCreateCloudletPool'>
                                                             <Table.Header>
                                                                 <Table.Row>
                                                                     <Table.HeaderCell width={2}>Region</Table.HeaderCell>

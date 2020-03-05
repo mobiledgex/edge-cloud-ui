@@ -556,6 +556,7 @@ class SiteFour extends React.Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
+        console.log('0305', this.props.changeStep)
         try {
             this.setState({bodyHeight: (window.innerHeight - this.headerH)})
             this.setState({contHeight: (nextProps.size.height - this.headerH) / 2 - this.hgap})

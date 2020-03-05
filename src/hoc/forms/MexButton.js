@@ -8,6 +8,7 @@ const MexButton = (props)=>
 
     const getForms = () => (
         <Form.Button
+            className='sumitFormButton'
             positive = {form.style ? false : true}
             style = {form.style}
             content={form.label}

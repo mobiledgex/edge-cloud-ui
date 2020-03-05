@@ -160,7 +160,7 @@ const MexForms = (props) => {
         }
         return (
             form.field ?
-                <Grid.Row columns={3} key={index}>
+                <Grid.Row columns={3} className={'createForm'+index}  key={index}>
                     <Grid.Column width={4} className='detail_item'>
                         <div style={form.labelStyle}>{form.label}{required ? ' *' : ''}</div>
                     </Grid.Column>
@@ -183,7 +183,7 @@ const MexForms = (props) => {
 
     const loadMultiForm = (index, form) => {
         return (
-            <Grid.Row columns={2} key={index} id={form.field}>
+            <Grid.Row columns={2} key={index} className={'createForm'+index} id={form.field}>
                 {loadHorizontalForms(index, form.forms)}
             </Grid.Row>
         )

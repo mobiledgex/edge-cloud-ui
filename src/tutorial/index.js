@@ -483,7 +483,7 @@ export const CloudletPoolTutor = () => {
             ],
             stepsNewPool3: [
                 {
-                    element: '.newOrg3-1',
+                    element: '.tableCreateCloudletPool',
                     intro: 'Review your Cloudlet pool',
                 },
                 {
@@ -516,56 +516,44 @@ export const PolicyTutor = () => {
             stepsNewPolicy: [
                 {
                     element: '.createAppInst0',
-                    intro: 'Create new Policy'
+                    intro: 'Create new Policy step1'
                 },
                 {
-                    element: '.progressIndicator',
-                    intro: 'step1'
+                    element: '.createForm0',
+                    intro: 'first'
                 },
                 {
-                    element: '.progressIndicator',
-                    intro: 'step2'
+                    element: '.createForm1',
+                    intro: 'second'
                 },
                 {
-                    element: '.progressIndicator',
-                    intro: 'step3'
+                    element: '.createForm2',
+                    intro: 'third'
                 },
                 {
-                    element: '.progressIndicator',
-                    intro: 'step4'
+                    element: '.createForm3',
+                    intro: 'next'
                 },
                 {
-                    element: '.progressIndicator',
-                    intro: 'step5'
+                    element: '.createForm4',
+                    intro: 'last'
                 },
                 {
-                    element: '.progressIndicator',
+                    element: '.sumitFormButton',
                     intro: 'Submit'
                 }
             ],
             stepsNewPolicy2: [
                 {
                     element: '.createAppInst0',
-                    intro: 'Create new Policy2'
+                    intro: 'Create new Policy step2'
                 },
                 {
-                    element: '.progressIndicator',
-                    intro: 'step1'
+                    element: '.createForm3',
+                    intro: 'first'
                 },
                 {
-                    element: '.progressIndicator',
-                    intro: 'step2'
-                },
-                {
-                    element: '.progressIndicator',
-                    intro: 'step3'
-                },
-                {
-                    element: '.progressIndicator',
-                    intro: 'step4'
-                },
-                {
-                    element: '.progressIndicator',
+                    element: '.sumitFormButton',
                     intro: 'Submit'
                 }
             ],
@@ -575,17 +563,29 @@ export const PolicyTutor = () => {
                     intro: 'New Privacy Policy.',
                 },
                 {
-                    element: '.newOrg3-2',
-                    intro: 'step1',
+                    element: '.createForm1',
+                    intro: 'Region',
                 },
                 {
-                    element: '.newOrg3-3',
-                    intro: 'step2',
+                    element: '.createForm2',
+                    intro: 'Organization',
                 },
                 {
-                    element: '.newOrg3-4',
-                    intro: 'step3',
+                    element: '.createForm3',
+                    intro: 'Policy Name',
                 },
+                {
+                    element: '.createForm4',
+                    intro: 'Full Isolation',
+                },
+                {
+                    element: '.createForm8',
+                    intro: 'Ports',
+                },
+                {
+                    element: '.sumitFormButton',
+                    intro: 'Submit'
+                }
             ],
         }
     )
