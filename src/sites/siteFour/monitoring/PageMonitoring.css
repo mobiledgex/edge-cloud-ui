@@ -261,7 +261,7 @@ tbody {
 
 .leaflet-popup-content {
     width: 700px;
-    min-width: 400px;
+    min-width: 450px;
 }
 
 .leaflet-popup-content-wrapper {

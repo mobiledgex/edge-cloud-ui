@@ -4,7 +4,7 @@ import "../PageMonitoring.css";
 import 'react-leaflet-fullscreen-control'
 import type {TypeAppInstance} from "../../../../shared/Types";
 import Ripples from "react-ripples";
-
+import {AccessAlarm, Check, CheckCircleOutlined, CheckOutlined} from '@material-ui/icons';
 import {Circle, Map, Marker, Popup, TileLayer, Tooltip} from "../../../../components/react-leaflet_kj/src/index";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import {Icon} from "antd";
@@ -105,11 +105,10 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
             pAppInstanceListGroupByCloudlet[key].map((innerItem: TypeAppInstance, index) => {
 
                 if (index === (pAppInstanceListGroupByCloudlet[key].length - 1)) {
-                    AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region;
+                    AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck;
                 } else {
-                    AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " , "
+                    AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " , "
                 }
-
 
                 CloudletLocation = innerItem.CloudletLocation;
                 Cloudlet = innerItem.Cloudlet;
@@ -148,34 +147,6 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
 
 
     }
-
-    /*async showGraphForAppInst(AppName_ClusterInst, ClusterInst, AppName, item) {
-        let arrayTemp = AppName_ClusterInst.split(" | ");
-        let Cluster = arrayTemp[1].trim();
-        let AppInst = arrayTemp[0].trim()
-        let dataSet = AppInst + " | " + item.Cloudlet.trim() + " | " + Cluster
-        //showToast2(AppName)
-        let filteredAppList = filterUsageByClassification(this.props.parent.state.appInstanceList, item.Cloudlet.trim(), 'Cloudlet');
-        filteredAppList = filterUsageByClassification(filteredAppList, ClusterInst, 'ClusterInst');
-        filteredAppList = filterUsageByClassification(filteredAppList, AppName, 'AppName');
-        let arrDateTime = getOneYearStartEndDatetime();
-        let filteredAppInstUsageList = [];
-        try {
-            filteredAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime[0], arrDateTime[1]);
-            console.log('allAppInstUsageList===>', filteredAppInstUsageList);
-            //let clickedClusterLineChartData = makeLineChartDataForCluster(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
-            let lineChartDataSet = makeLineChartDataForAppInst(filteredAppInstUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
-
-            this.props.parent.setState({
-                modalIsOpen: true,
-                currentGraphCluster: Cluster,
-                currentGraphAppInst: AppInst,
-                currentAppInstLineChartData: lineChartDataSet,
-            })
-        } catch (e) {
-
-        }
-    }*/
 
 
     render() {
@@ -255,6 +226,7 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                         let AppName = AppName_ClusterInst.trim().split(" | ")[0].trim()
                                         let ClusterInst = AppName_ClusterInst.trim().split(" | ")[1].trim()
                                         let Region = AppName_ClusterInst.trim().split(" | ")[2].trim()
+                                        let HealthCheck = AppName_ClusterInst.trim().split(" | ")[3].trim()
 
 
                                         return (
@@ -288,6 +260,17 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                                         fontSize: 12
                                                     }}>
                                                         &nbsp;&nbsp;{` [${ClusterInst.trim()}]`}
+                                                    </div>
+                                                    <div>
+                                                        {HealthCheck === 'undefined' ?
+                                                            <div style={{marginLeft: 7, marginBottom: 0,height:15, }}>
+                                                                <CheckCircleOutlined style={{color: 'red', fontSize: 17, marginBottom:25}}/>
+                                                            </div>
+                                                            :
+                                                            <div style={{marginLeft: 7, marginBottom: 0,height:15, }}>
+                                                                <CheckCircleOutlined style={{color: 'green', fontSize: 17, marginBottom:25}}/>
+                                                            </div>
+                                                        }
                                                     </div>
                                                 </Ripples>
                                             </div>

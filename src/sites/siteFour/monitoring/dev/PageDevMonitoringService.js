@@ -263,7 +263,7 @@ export const getUserId = () => {
 }
 
 
-export const filterUsageByClassification = (originalList, selectOne, filterKey,) => {
+export const filterByClassification = (originalList, selectOne, filterKey,) => {
 
     //todo:리전인 경우.....
     if (filterKey === CLASSIFICATION.REGION) {

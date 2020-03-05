@@ -400,21 +400,21 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODMyMTg0M
 
 POST https://console-stage.mobiledgex.net:443/api/v1/auth/events/app
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODMyMTg0MDgsImlhdCI6MTU4MzEzMjAwOCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.hC0N6SqS2r_EwB3n-x9ZDHPpz5AOvPvv0YaERDCxqIGXgcQ_BHrjVsVj8S0oQlScwu4saU-rFZOfFMiCv_s08g
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM0NjQyNTQsImlhdCI6MTU4MzM3Nzg1NCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.yWOlPpxg8vjMnAjMyJNvySu_-vOy-7_3FYgfa6Hb2dVrwXXs8dF8Nvm6cUnGMOLpnD09YbDgjjji9jvWPAwlNw
 
 {
     "region": "EU",
     "appinst": {
         "app_key": {
             "developer_key": {
-                "name": "MobiledgeX"
+                "name": "WonhoOrg1"
             },
-            "name": "test111qq",
+            "name": "BICAPP",
             "version": "1.0"
         },
         "cluster_inst_key": {
             "cluster_key": {
-                "name": "qqqaaa"
+                "name": "autoclusterbicapp"
             },
             "cloudlet_key": {
                 "operator_key": {
@@ -424,8 +424,7 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODMyMTg0M
             },
             "developer": ""
         }
-    },
-    "last": 10
+    }
 }
 
 ###
@@ -448,6 +447,34 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODE5ODg2N
   "method": "FindCloudlet",
   "selector": "api",
   "last": 100
+}
+
+###
+POST https://console-stage.mobiledgex.net:443//api/v1/auth/ctrl/ShowAppInst
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM0NjMyNDAsImlhdCI6MTU4MzM3Njg0MCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.Ni4Xg32qVRj6hiAzwwJ4nopBLFUWFk59K21FVZkQjDxSYy9EKwGj8pazLH-MEN4cz96nIsQuzFjhQ1e35YXw4w
+
+{
+    "region": "EU"
+}
+
+
+###
+POST https://console-stage.mobiledgex.net:443//api/v1/auth/ctrl/ShowAppInst
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM0NjMyNDAsImlhdCI6MTU4MzM3Njg0MCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.Ni4Xg32qVRj6hiAzwwJ4nopBLFUWFk59K21FVZkQjDxSYy9EKwGj8pazLH-MEN4cz96nIsQuzFjhQ1e35YXw4w
+
+{
+    "region": "EU",
+    "appinst": {
+        "key": {
+            "app_key": {
+                "developer_key": {
+                    "name": "WonhoOrg1"
+                }
+            }
+        }
+    }
 }
 
 ###

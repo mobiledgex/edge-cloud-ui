@@ -124,4 +124,36 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODE0NzQ0O
 
 ###
 
+POST https://127.0.0.1:9900/api/v1/auth/ctrl/ShowAppInst
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzgwMTE4NDIsImlhdCI6MTU3NzkyNTQ0MiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.EobJeBG1UpoXj7CQ71yjXZnuee7RTGqINB4FCYUMuGhvhltqqwyP3eHJ7kEMZpPTltvVoaSnYssi-lOo6n6zGQ
+
+{
+    "region": "US"
+}
+
+###
+POST https://127.0.0.1:9900/api/v1/auth/ctrl/ShowAppInst
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzgwMTE4NDIsImlhdCI6MTU3NzkyNTQ0MiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.EobJeBG1UpoXj7CQ71yjXZnuee7RTGqINB4FCYUMuGhvhltqqwyP3eHJ7kEMZpPTltvVoaSnYssi-lOo6n6zGQ
+
+
+{
+  "token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM0NjQyNTQsImlhdCI6MTU4MzM3Nzg1NCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.yWOlPpxg8vjMnAjMyJNvySu_-vOy-7_3FYgfa6Hb2dVrwXXs8dF8Nvm6cUnGMOLpnD09YbDgjjji9jvWPAwlNw",
+  "params": {
+    "region": "EU",
+    "appinst": {
+      "key": {
+        "app_key": {
+          "developer_key": {
+            "name": "WonhoOrg1"
+          }
+        }
+      }
+    }
+  }
+}
+
+###
+
 

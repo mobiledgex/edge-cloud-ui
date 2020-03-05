@@ -17,7 +17,7 @@ import {
     defaultLayoutForAppInst,
     defaultLayoutForCluster,
     defaultLayoutMapperForAppInst,
-    filterUsageByClassification,
+    filterByClassification,
     getUserId,
     makeAllLineChartData,
     makeBarChartDataForAppInst,
@@ -432,6 +432,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 let clusterList = await getClusterList();
                 let cloudletList = await getCloudletList()
                 let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
+
+                console.log("appInstanceList===>", appInstanceList);
+
                 if (appInstanceList.length === 0) {
                     this.setState({
                         isNoData: true,
@@ -779,15 +782,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let AppName = pCurrentAppInst.split('|')[0].trim()
             let Cloudlet = pCurrentAppInst.split('|')[1].trim()
             let ClusterInst = pCurrentAppInst.split('|')[2].trim()
-            let Region = pCurrentAppInst.split('|')[3].trim()
+            //let Region = pCurrentAppInst.split('|')[3].trim()
 
             //@fixme: _______appInstEventLogListOne_______appInstEventLogListOne_______appInstEventLogListOne_______appInstEventLogListOne_______appInstEventLogListOne
             let _______appInstEventLogListOne = await getAppInstEventLogListOne(pCurrentAppInst);
 
+            //alert(JSON.stringify(_______appInstEventLogListOne));
 
-            let filteredAppList = filterUsageByClassification(this.state.appInstanceList, Cloudlet, 'Cloudlet');
-            filteredAppList = filterUsageByClassification(filteredAppList, ClusterInst, 'ClusterInst');
-            filteredAppList = filterUsageByClassification(filteredAppList, AppName, 'AppName');
+
+            let filteredAppList = filterByClassification(this.state.appInstanceList, Cloudlet, 'Cloudlet');
+            filteredAppList = filterByClassification(filteredAppList, ClusterInst, 'ClusterInst');
+            filteredAppList = filterByClassification(filteredAppList, AppName, 'AppName');
+
+            console.log("filteredAppList===>", filteredAppList);
 
             //todo:Terminal
             this.setState({

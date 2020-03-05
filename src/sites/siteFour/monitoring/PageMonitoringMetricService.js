@@ -58,6 +58,10 @@ export const getAppInstList = async (pArrayRegion = ['EU', 'US']) => {
             }
 
         }
+
+
+        console.log("mergedAppInstanceList===>", mergedAppInstanceList);
+
         return mergedAppInstanceList;
     } catch (e) {
         showToast("getAppInstList===>" + e.toString())
@@ -870,6 +874,32 @@ export const getAppInstEventLogListOne = async (appInstOne) => {
 
         //alert('sdlfsdlkf===>'+ Region)
 
+        let data={
+            "region": Region,
+            "appinst": {
+                "app_key": {
+                    "developer_key": {
+                        "name": selectOrg
+                    },
+                    "name": AppName,
+                    "version": "1.0"
+                },
+                "cluster_inst_key": {
+                    "cluster_key": {
+                        "name": ClusterInst
+                    },
+                    "cloudlet_key": {
+                        "operator_key": {
+                            "name": ""
+                        },
+                        "name": ""
+                    },
+                    "developer": ""
+                }
+            }
+        }
+
+
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
         let result = await axios({
@@ -905,8 +935,6 @@ export const getAppInstEventLogListOne = async (appInstOne) => {
             },
             timeout: 30 * 1000
         }).then(async response => {
-
-            alert(JSON.stringify(response.data))
 
             console.log("getAppInstEventLogListOne===>", response.data);
 

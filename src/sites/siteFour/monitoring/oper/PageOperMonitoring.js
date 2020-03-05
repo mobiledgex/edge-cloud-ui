@@ -22,7 +22,7 @@ import {PageMonitoringStyles, renderLoaderArea, renderPlaceHolderCircular, showT
 import {CircularProgress} from "@material-ui/core";
 import {handleBubbleChartDropDownForCloudlet, makeBarChartDataForCloudlet, makeLineChartForCloudlet, renderBottomGridAreaForCloudlet} from "./PageOperMonitoringService";
 import LeafletMap from "../components/LeafletMapWrapperForOper";
-import {filterUsageByClassification, makeSelectBoxListWithKey, sortByKey} from "../dev/PageDevMonitoringService";
+import {filterByClassification, makeSelectBoxListWithKey, sortByKey} from "../dev/PageDevMonitoringService";
 
 import {getAllCloudletEventLogs, getCloudletEventLog, getCloudletLevelUsageList, getCloudletList,} from '../PageMonitoringMetricService'
 
@@ -663,8 +663,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             this.setState({
                 currentRegion: selectedRegion,
             }, async () => {
-                let filteredCloudletList = filterUsageByClassification(this.state.cloudletList, selectedRegion, CLASSIFICATION.REGION)
-                let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, selectedRegion, CLASSIFICATION.REGION)
+                let filteredCloudletList = filterByClassification(this.state.cloudletList, selectedRegion, CLASSIFICATION.REGION)
+                let filteredCloudletUsageList = filterByClassification(this.state.allCloudletUsageList, selectedRegion, CLASSIFICATION.REGION)
                 let dropdownCloudletList = makeSelectBoxListWithKey(filteredCloudletList, "CloudletName")
                 console.log('dropdownCloudletList===>', dropdownCloudletList);
                 await this.setState({
@@ -697,7 +697,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 }
 
 
-                let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, selectedCloudlet.toString().trim(), CLASSIFICATION.cloudlet)
+                let filteredCloudletUsageList = filterByClassification(this.state.allCloudletUsageList, selectedCloudlet.toString().trim(), CLASSIFICATION.cloudlet)
                 await this.setState({
                     // filteredCloudletList: filteredCloudletList,
                     cloudletSelectLoading: false,

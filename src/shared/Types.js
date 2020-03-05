@@ -149,6 +149,7 @@ export type TypeAppInstance = {
     "Edit": any,
     "Status": any,
     "Revision": number,
+    "HealthCheck": number,
 }
 
 export type TypeBarChartData = {

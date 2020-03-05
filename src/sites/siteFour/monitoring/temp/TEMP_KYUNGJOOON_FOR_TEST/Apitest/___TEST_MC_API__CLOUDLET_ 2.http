@@ -290,7 +290,14 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Nzk2ODAyO
 }
 
 ###
+POST https://console-stage.mobiledgex.net:443//api/v1/auth/ctrl/ShowAppInst
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM0NjMyNDAsImlhdCI6MTU4MzM3Njg0MCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.Ni4Xg32qVRj6hiAzwwJ4nopBLFUWFk59K21FVZkQjDxSYy9EKwGj8pazLH-MEN4cz96nIsQuzFjhQ1e35YXw4w
 
+{
+    "region": "EU"
+}
 
+###
 
 
