@@ -604,10 +604,6 @@ export const MonitoringTutor = () => {
                     element: '.page_monitoring_select_area',
                     intro: 'step 2.'
                 },
-                {
-                    element: '.progressIndicator',
-                    intro: 'step 3'
-                }
             ],
             stepsMonitoringDev: [
                 {
@@ -627,10 +623,6 @@ export const MonitoringTutor = () => {
                 {
                     element: '.page_monitoring_select_area',
                     intro: 'step 2'
-                },
-                {
-                    element: '.cloudletReg2',
-                    intro: 'step 3'
                 },
             ],
         }
