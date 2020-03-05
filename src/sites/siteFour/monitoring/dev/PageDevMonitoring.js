@@ -1329,9 +1329,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
                 <ResponsiveReactGridLayout
                     style={{backgroundColor: 'black'}}
-                    isResizable={false}
                     isDraggable={this.state.isDraggable}
                     useCSSTransforms={true}
+                    isResizable={true}
                     className={'layout'}
                     cols={{lg: 3, md: 3, sm: 3, xs: 3, xxs: 3}}
                     layout={this.state.layoutForAppInst}
