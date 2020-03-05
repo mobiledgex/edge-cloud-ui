@@ -392,7 +392,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             };
         }
 
-
         componentDidMount = async () => {
             /*  notification.info({
                   message: 'To release or freeze a grid item,, double click the item!',
@@ -403,6 +402,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 loading: true,
                 bubbleChartLoader: true,
                 selectOrg: localStorage.selectOrg === undefined ? '' : localStorage.selectOrg.toString(),
+
             })
             await this.loadInitDataForCluster();
 
@@ -1600,7 +1600,50 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+       /* temp____filterByGraphType(arrList, graphType) {
+            return arrList.filter((item, pos) => {
+                return item.graphType === graphType;
+            })
+        }*/
+
+       /* temp__makeDropdownListForLine_Cluster(hwListForCluster) {
+            let currentGridItems = this.state.layoutMapperForCluster;
+
+            if (!isEmpty(currentGridItems)) {
+                let lineChartListInGrid = this.filterByGraphType(currentGridItems, "line");
+                console.log("filteredList===>", lineChartListInGrid);
+
+                let lineChartHwList = []
+                lineChartListInGrid.map(item => {
+                    lineChartHwList.push(item.hwType);
+                })
+
+                console.log("lineChartHwList===>", lineChartHwList);
+                console.log("lineChartHwList===ADD_ITEM_LIST>", hwListForCluster);
+
+                let dropdownListForLineChart = hwListForCluster;
+
+                let lineChartNewDropdownList = []
+                dropdownListForLineChart.map((item, index) => {
+
+                    lineChartHwList.map((innerItem, innerIndex) => {
+                        if (item.value === innerItem) {
+                            dropdownListForLineChart.splice(index, 1);
+                        }
+                    })
+                })
+
+                console.log("lineChartHwList===filteredLineChartList>", dropdownListForLineChart);
+
+                this.setState({
+                    hwListForCluster: dropdownListForLineChart,
+                })
+            }
+        }*/
+
         renderSelectBoxRow2nd() {
+
+
             return (
                 <div className='page_monitoring_select_row' style={{borderWidth: 1, borderColor: 'grey', marginBottom: 5, marginTop: 6}}>
                     <div className='page_monitoring_select_area'>
@@ -1634,6 +1677,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         //alert(value)
                                         await this.__addGridItem(value, GRID_ITEM_TYPE.LINE)
                                         showToast('added ' + value + " item!!")
+
                                     }}
                                     options={this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.state.hwListForCluster : this.state.hwListForAppInst}
                                 />

@@ -814,7 +814,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        renderSelectBoxRow() {
+        renderDropdowns() {
             return (
                 <div className='page_monitoring_select_row'>
                     <div className='page_monitoring_select_area'>
@@ -863,7 +863,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 CloudLet
                             </div>
                             <Dropdown
-                                style={{zIndex: 9999}}
+                                style={{zIndex: 9999, minWidth:240}}
                                 disabled={this.state.loading}
                                 value={this.state.currentCloudLet}
                                 clearable={this.state.cloudLetSelectBoxClearable}
@@ -930,7 +930,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 App Inst
                             </div>
                             <Dropdown
-                                style={{zIndex: 9999, minWidth:300}}
+                                style={{zIndex: 9999, minWidth:290}}
                                 disabled={this.state.currentCluster === '' || this.state.loading}
                                 clearable={this.state.appInstSelectBoxClearable}
                                 loading={this.state.loading}
@@ -1091,7 +1091,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         {/*todo:---------------------------------*/}
                                         {/*todo:SELECTBOX_ROW        */}
                                         {/*todo:---------------------------------*/}
-                                        {this.renderSelectBoxRow()}
+                                        {this.renderDropdowns()}
 
                                         <div className='page_monitoring_dashboard'>
                                             {/*_____row____1*/}

@@ -47,10 +47,11 @@ export const defaultLayoutForCluster = [
     {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},
     {i: '2', x: 1, y: 0, w: 1, h: 1, "add": false},
     {i: '3', x: 2, y: 0, w: 1, h: 1, "add": false},
-
-
     {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false},
     {i: '5', x: 1, y: 1, w: 1, h: 1, "add": false},
+
+
+
     /*{i: '6', x: 2, y: 1, w: 1, h: 1, "add": false,},
 
     {i: '7', x: 0, y: 2, w: 1, h: 1, "add": false,},
@@ -114,7 +115,6 @@ export const HARDWARE_TYPE_FOR_GRID = {
 }
 
 export const defaultHwMapperListForCluster = [
-
     {
         id: '1',
         hwType: HARDWARE_TYPE_FOR_GRID.MAP,
@@ -141,16 +141,7 @@ export const defaultHwMapperListForCluster = [
         hwType: HARDWARE_TYPE_FOR_GRID.DISK,
         graphType: 'line',
     },
-    {
-        id: '6',
-        hwType: HARDWARE_TYPE_FOR_GRID.RECVBYTES,
-        graphType: 'line',
-    },
-    {
-        id: '7',
-        hwType: HARDWARE_TYPE_FOR_GRID.SENDBYTES,
-        graphType: 'line',
-    },
+
 ]
 
 export const defaultLayoutMapperForAppInst = [
