@@ -344,7 +344,7 @@ export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
 
         usageList.map((item: TypeAppInstanceUsage2, index) => {
             if (index < 5) {
-                let barDataOne = [item.appName.toString().substring(0, 10),
+                let barDataOne = [item.appName.toString().substring(0, 13)+ "..",
                     renderUsageByType2(item, hardwareType),
                     CHART_COLOR_LIST[index],
                     renderUsageLabelByType(item, hardwareType)]

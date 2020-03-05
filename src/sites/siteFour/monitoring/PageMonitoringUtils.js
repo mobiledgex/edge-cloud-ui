@@ -139,7 +139,9 @@ export const columnChartOption = (hardwareType) => {
             //titlePosition: 'out',
             chartArea: {
                 // left: 20, right: 150, top: 50, bottom: 25,
-                width: "90%", height: "80%",
+                //left:10,
+                right:25,
+                width: "87%", height: "80%",
             },
             legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
             //xAxis

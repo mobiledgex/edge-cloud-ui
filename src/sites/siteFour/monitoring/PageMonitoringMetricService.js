@@ -59,10 +59,17 @@ export const getAppInstList = async (pArrayRegion = ['EU', 'US']) => {
 
         }
 
+        let newMergedAppInstList=[]
+        mergedAppInstanceList.map(item=>{
+            console.log("mergedAppInstanceList===>", item);
+            item.AppName = item.AppName + "["+ item.Version+ "]";
 
-        console.log("mergedAppInstanceList===>", mergedAppInstanceList);
+            newMergedAppInstList.push(item);
+        })
 
-        return mergedAppInstanceList;
+        console.log("mergedAppInstanceList===>", newMergedAppInstList);
+
+        return newMergedAppInstList;
     } catch (e) {
         showToast("getAppInstList===>" + e.toString())
     }
