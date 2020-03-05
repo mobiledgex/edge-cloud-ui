@@ -73,18 +73,17 @@ class MexListView extends React.Component {
     getCellClick = (key, rowIndex) => {
         this.selectedRowIndex = rowIndex
         let item = this.state.dataList[this.selectedRowIndex]
-        if (key.field !== fields.actions) {
-            if (key.field === fields.state) {
-                this.onProgress(item)
-            }
-            else {
-                this.setState(
-                    {
-                        isDetail: true,
-                        currentView: <MexDetailViewer detailData={item} keys={this.keys} />
-                    }
-                )
-            }
+
+        if (key.field === fields.state) {
+            this.onProgress(item)
+        }
+        else if (key.clickable === undefined || !key.clickable) {
+            this.setState(
+                {
+                    isDetail: true,
+                    currentView: <MexDetailViewer detailData={item} keys={this.keys} />
+                }
+            )
         }
     }
 

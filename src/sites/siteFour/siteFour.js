@@ -34,7 +34,7 @@ import SiteFourPageUser from './userRole/siteFour_page_user';
 import SiteFourPageAccount from './accounts/siteFour_page_account';
 import SiteFourPageApps from './apps/siteFour_page_apps';
 import SiteFourPageAppInst from './appInst/siteFour_page_appinst';
-import SiteFourPageClusterInst from './clusterInst/siteFour_page_clusterinst';
+import SiteFourPageClusterInst from './clusterInst/clusterInstView';
 import SiteFourPageCloudlet from './cloudlets/siteFour_page_cloudlet';
 import SiteFourPageCloudletReg from './cloudlets/siteFour_page_cloudletReg';
 import SiteFourPageFlavorReg from './flavors/siteFour_page_flavorReg';
