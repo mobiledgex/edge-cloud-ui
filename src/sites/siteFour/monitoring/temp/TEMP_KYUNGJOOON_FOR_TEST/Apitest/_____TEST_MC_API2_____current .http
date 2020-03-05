@@ -467,11 +467,20 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM0NjMyN
 {
     "region": "EU",
     "appinst": {
-        "key": {
-            "app_key": {
-                "developer_key": {
-                    "name": "WonhoOrg1"
-                }
+        "app_key": {
+            "developer_key": {
+                "name": "MobiledgeX"
+            }
+        },
+        "cluster_inst_key": {
+            "cluster_key": {
+                "name": "venky-test"
+            },
+            "cloudlet_key": {
+                "operator_key": {
+                    "name": "TDG"
+                },
+                "name": "hamburg-stage"
             }
         }
     }
