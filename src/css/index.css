@@ -751,9 +751,10 @@ body, button, input, textarea, optgroup, select, textarea,
     overflow: hidden;
 }
 .site_content_body {
-    height: calc(100% - 56px);
+    height: 100%;
     padding: 0;
 }
+
 .site_content_body > .column {
     height: 100%;
 }
@@ -992,6 +993,9 @@ body, button, input, textarea, optgroup, select, textarea,
     color: rgba(136,221,0,.85);
 }
 
+.mexListView{
+    height: calc(100% - 35px);
+}
 
 .round_panel {
     background-color: #292c33;

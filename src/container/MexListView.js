@@ -1,6 +1,6 @@
 import React from 'react';
 import { Table } from 'semantic-ui-react';
-import { IconButton, Grow, Popper, Paper, ClickAwayListener, MenuList } from '@material-ui/core';
+import { IconButton, Grow, Popper, Paper, ClickAwayListener, MenuList, Card } from '@material-ui/core';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListIcon from '@material-ui/icons/List';
 import './styles.css';
@@ -81,7 +81,7 @@ class MexListView extends React.Component {
             this.setState(
                 {
                     isDetail: true,
-                    currentView: <MexDetailViewer detailData={item} keys={this.keys} />
+                    currentView: <Card style={{height:'90%'}}><MexDetailViewer detailData={item} keys={this.keys} /></Card>
                 }
             )
         }
@@ -133,12 +133,12 @@ class MexListView extends React.Component {
     listView = () => {
         let isMap = this.props.requestInfo.isMap && this.state.showMap
         return (this.state.dataList.length > 0 ?
-            <div style={{height:'100%'}}>
+            <div className="mexListView">
                 {isMap ?
                     <div className='panel_worldmap' style={{ height: '40%' }}>
                         <ClustersMap dataList = {this.state.dataList} id={this.props.requestInfo.id} />
                     </div> : null}
-                <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing style={{ height: isMap ? '50%' : '95%' }}>
+                <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing style={{ height: isMap ? '55%' : '97%' }}>
                     <Table.Header className="viewListTableHeader">
                         <Table.Row>
                             {this.makeHeader()}
@@ -269,7 +269,7 @@ class MexListView extends React.Component {
 
     render() {
         return (
-            <div className="round_panel">
+            <Card style={{width:'100%', height:'100%', backgroundColor:'#292c33', padding:10, color:'white'}}>
                 <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} stepsArray={this.state.stepsArray} />
                 <MexToolbar requestInfo={this.props.requestInfo} onAction={this.onToolbarAction} isDetail={this.state.isDetail} />
                 {this.state.currentView ? this.state.currentView : this.listView()}
@@ -293,7 +293,7 @@ class MexListView extends React.Component {
                                 </Grow>
                             )}
                         </Popper> : null}
-            </div>
+            </Card>
         );
 
     }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Table } from 'semantic-ui-react'
 import ReactJson from 'react-json-view';
+import { Card } from '@material-ui/core';
 
 const jsonViewProps = {
     name: null,
@@ -18,7 +19,7 @@ const jsonViewProps = {
 }
 const subView = (keys, dataList) => {
     return (
-        <Table celled style={{ height: 50 }}>
+        <Table celled>
             <Table.Header>
                 <Table.Row>
                     {keys.map((item, i) => {
@@ -61,29 +62,31 @@ const getRow = (id, item, data) => {
 const MexDetailViewer = (props) => {
     let detailData = props.detailData;
     return (
-        <Table celled style={{ width: '100%', backgroundColor: '#2A2C33', border: 'none' }}>
-            <Table.Header>
-                <Table.Row>
-                    <Table.HeaderCell>Key</Table.HeaderCell>
-                    <Table.HeaderCell>Value</Table.HeaderCell>
-                </Table.Row>
-            </Table.Header>
-            <Table.Body>
-                {props.keys.map((item, i) => {
-                    let data = detailData[item.field]
-                    return (
-                        data !== undefined ?
-                            item.keys ?
-                                data.length > 0 ?
-                                    getRow(i, item, subView(item.keys, data)) : null
-                                :
-                                getRow(i, item, data) :
-                            null
+        <Card style={{width:'100%', height:'100%', backgroundColor:'transparent', color:'white'}}>
+            <Table celled style={{ width: '100%', backgroundColor: '#2A2C33', border: 'none' }}>
+                <Table.Header>
+                    <Table.Row>
+                        <Table.HeaderCell>Key</Table.HeaderCell>
+                        <Table.HeaderCell>Value</Table.HeaderCell>
+                    </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                    {props.keys.map((item, i) => {
+                        let data = detailData[item.field]
+                        return (
+                            data !== undefined ?
+                                item.keys ?
+                                    data.length > 0 ?
+                                        getRow(i, item, subView(item.keys, data)) : null
+                                    :
+                                    getRow(i, item, data) :
+                                null
 
-                    )
-                })}
-            </Table.Body>
-        </Table>
+                        )
+                    })}
+                </Table.Body>
+            </Table>
+        </Card>
     )
 }
 
