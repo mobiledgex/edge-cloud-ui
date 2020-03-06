@@ -1433,7 +1433,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 style={{
                                     borderColor: !this.state.isDraggable ? 'green' : 'rgba(117,122,133,.65)',
                                     backgroundColor: !this.state.isDraggable ? 'green' : 'rgba(117,122,133,.65)',
-                                    color: 'white',
+                                    color: 'rgba(255,255,255,.75)',
                                     height: 35,
                                 }}
                                 onClick={async () => {

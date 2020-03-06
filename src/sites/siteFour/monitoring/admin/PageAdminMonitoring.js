@@ -336,7 +336,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 let allAppInstUsageList = [];
                 //@todo:realdata
                 try {
-                    allAppInstUsageList = await getAppLevelUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
+                    allAppInstUsageList = await getAppLevelUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime, USER_TYPE.ADMIN);
                 } catch (e) {
                     showToast(e.toString())
                 }
@@ -863,7 +863,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 CloudLet
                             </div>
                             <Dropdown
-                                style={{zIndex: 9999, minWidth:240}}
+                                style={{zIndex: 9999, minWidth: 240}}
                                 disabled={this.state.loading}
                                 value={this.state.currentCloudLet}
                                 clearable={this.state.cloudLetSelectBoxClearable}
@@ -930,7 +930,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 App Inst
                             </div>
                             <Dropdown
-                                style={{zIndex: 9999, minWidth:290}}
+                                style={{zIndex: 9999, minWidth: 290}}
                                 disabled={this.state.currentCluster === '' || this.state.loading}
                                 clearable={this.state.appInstSelectBoxClearable}
                                 loading={this.state.loading}

@@ -59,8 +59,7 @@ export const getAppInstList = async (pArrayRegion = ['EU', 'US'], type: string =
 
         }
 
-
-        if (type === USER_TYPE.ADMIN) {
+        /*if (type === USER_TYPE.ADMIN) {
             let appInstListWithVersion = []
             mergedAppInstanceList.map(item => {
                 item.AppName = item.AppName + "[" + item.Version + "]";
@@ -68,8 +67,9 @@ export const getAppInstList = async (pArrayRegion = ['EU', 'US'], type: string =
             })
             return appInstListWithVersion;
         } else {
-            return mergedAppInstanceList
-        }
+
+        }*/
+        return mergedAppInstanceList
 
 
     } catch (e) {
@@ -206,7 +206,7 @@ export const getCloudletListAll = async () => {
 }
 
 
-export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
+export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '', userType = '') => {
     try {
 
 
@@ -245,7 +245,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
         let allUsageList = []
         usageListForAllInstance.map((item, index) => {
-            let appName = item.instanceData.AppName; //+ "[" + item.instanceData.Version + "]";
+            let appName = item.instanceData.AppName;
             let sumMemUsage = 0;
             let sumDiskUsage = 0;
             let sumRecvBytes = 0;
