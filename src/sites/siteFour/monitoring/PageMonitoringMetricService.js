@@ -877,39 +877,30 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster) => 
 }*/
 
 
-export const getAppInstEventLogListOne = async (appInstOne) => {
+export const getAppInstEventLogs = async (region = ['EU', 'US']) => {
     try {
 
-        console.log("getAppInstEventLogListOne===>", appInstOne);
         let selectOrg = localStorage.getItem('selectOrg')
-        let AppName = appInstOne.split('|')[0].trim()
-        let Cloudlet = appInstOne.split('|')[1].trim()
-        let ClusterInst = appInstOne.split('|')[2].trim()
-        let Region = appInstOne.split('|')[3].trim()
 
-        //alert('sdlfsdlkf===>'+ Region)
 
-        let data = {
-            "region": Region,
+        let body = {
+            "region": 'EU',
             "appinst": {
                 "app_key": {
                     "developer_key": {
                         "name": selectOrg
                     },
-                    "name": AppName,
-                    "version": "1.0"
                 },
                 "cluster_inst_key": {
                     "cluster_key": {
-                        "name": ClusterInst
+                        "name": ""
                     },
                     "cloudlet_key": {
                         "operator_key": {
                             "name": ""
                         },
                         "name": ""
-                    },
-                    "developer": ""
+                    }
                 }
             }
         }
@@ -920,30 +911,7 @@ export const getAppInstEventLogListOne = async (appInstOne) => {
         let result = await axios({
             url: '/api/v1/auth/events/app',
             method: 'post',
-            data: {
-                "region": Region,
-                "appinst": {
-                    "app_key": {
-                        "developer_key": {
-                            "name": selectOrg
-                        },
-                        "name": AppName,
-                        "version": "1.0"
-                    },
-                    "cluster_inst_key": {
-                        "cluster_key": {
-                            "name": ClusterInst
-                        },
-                        "cloudlet_key": {
-                            "operator_key": {
-                                "name": ""
-                            },
-                            "name": ""
-                        },
-                        "developer": ""
-                    }
-                }
-            },
+            data: body,
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + store.userToken
@@ -951,9 +919,9 @@ export const getAppInstEventLogListOne = async (appInstOne) => {
             timeout: 30 * 1000
         }).then(async response => {
 
-            console.log("getAppInstEventLogListOne===>", response.data);
+            console.log("getAppInstEventLogListOne===>", response.data.data[0].Series[0]);
 
-            return response.data;
+            return response.data.data[0].Series[0];
             //return response.data;
         }).catch(e => {
             //throw new Error(e)

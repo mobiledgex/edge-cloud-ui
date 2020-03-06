@@ -64,7 +64,7 @@ import {
 } from "../PageMonitoringCommonService";
 import {
     getAllClusterEventLogList,
-    getAppInstEventLogListOne, getAppInstList,
+    getAppInstEventLogs, getAppInstList,
     getAppLevelUsageList,
     getCloudletList,
     getClusterLevelUsageList,
@@ -87,6 +87,7 @@ import LineChartWrapper from "../components/LineChartWrapper";
 import EventLogList from "../components/EventLogList";
 import PerformanceSummaryTable from "../components/PerformanceSummaryTable";
 import TagCloudWrapper from "../components/TagCloudWrapper";
+import EventLogListForAppInst from "../components/EventLogListForAppInst";
 
 const {Option} = Select;
 
@@ -241,6 +242,8 @@ type State = {
     allClusterEventLogList: any,
     filteredClusterEventLogList: any,
     isResizeComplete: boolean,
+    allAppInstEventLogs: any,
+    filteredAppInstEventLogs: any,
 
 }
 
@@ -389,6 +392,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 allClusterEventLogList: [],
                 filteredClusterEventLogList: [],
                 isResizeComplete: false,
+                allAppInstEventLogs: [],
+                filteredAppInstEventLogs: [],
             };
         }
 
@@ -453,17 +458,28 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 console.log("clusterDropdownList===>", clusterDropdownList);
 
-                //@fixme:###############################
-                //@fixme: 클러스터 레벨 이벤트로그 호출...
-                //@fixme: 클러스터 레벨 이벤트로그 호출...
-                //@fixme:###############################
+                //@todo:###############################
+                //@todo: getAllClusterEventLogList
+                //@todo:###############################
                 let allClusterEventLogList = await getAllClusterEventLogList(clusterList);
-
                 console.log("allClusterEventLogList===>", allClusterEventLogList);
                 await this.setState({
                     allClusterEventLogList: allClusterEventLogList,
                     filteredClusterEventLogList: allClusterEventLogList
                 })
+
+
+                //@todo:###############################
+                //@todo: getAppInstEventLogs
+                //@todo:###############################
+                let allAppInstEventLogs = await getAppInstEventLogs();
+                await this.setState({
+                    allAppInstEventLogs: allAppInstEventLogs,
+                    filteredAppInstEventLogs: allAppInstEventLogs,
+                })
+
+                console.log('appInstEventLogs===>', allAppInstEventLogs);
+
 
                 let appInstanceListGroupByCloudlet = []
                 try {
@@ -777,11 +793,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let Cloudlet = pCurrentAppInst.split('|')[1].trim()
             let ClusterInst = pCurrentAppInst.split('|')[2].trim()
             //let Region = pCurrentAppInst.split('|')[3].trim()
-
-            //@fixme: _______appInstEventLogListOne_______appInstEventLogListOne_______appInstEventLogListOne_______appInstEventLogListOne_______appInstEventLogListOne
-            let _______appInstEventLogListOne = await getAppInstEventLogListOne(pCurrentAppInst);
-
-            //alert(JSON.stringify(_______appInstEventLogListOne));
+            //alert(JSON.stringify(__appInstEventLogListOne));
 
 
             let filteredAppList = filterByClassification(this.state.appInstanceList, Cloudlet, 'Cloudlet');
@@ -1089,7 +1101,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-        _makeGridItemOneByType(hwType, graphType) {
+        __________makeGridItemOneByType(hwType, graphType) {
 
             if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                 return (
@@ -1123,12 +1135,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 return (
                     <EventLogList eventLogList={this.state.filteredClusterEventLogList}/>
                 )
-            }
-
-            else if (graphType.toUpperCase() === GRID_ITEM_TYPE.TAG_CLOUD) {
-
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                 return (
-                    <TagCloudWrapper allClusterUsageList={this.state.allClusterUsageList}/>
+                    <EventLogListForAppInst parent={this} handleAppInstDropdown={this.handleAppInstDropdown} eventLogList={this.state.filteredAppInstEventLogs}/>
                 )
             }
 
@@ -1231,7 +1240,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_column_kyungjoon1' style={{height: this.gridItemHeight}}>
                         {/*@todo:_makeGridItemOneByType      */}
                         {/*@todo:_makeGridItemOneByType      */}
-                        {this._makeGridItemOneByType(hwType, graphType.toUpperCase())}
+                        {this.__________makeGridItemOneByType(hwType, graphType.toUpperCase())}
                     </div>
 
                     <div className="remove"
@@ -1602,46 +1611,46 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-       /* temp____filterByGraphType(arrList, graphType) {
-            return arrList.filter((item, pos) => {
-                return item.graphType === graphType;
-            })
-        }*/
+        /* temp____filterByGraphType(arrList, graphType) {
+             return arrList.filter((item, pos) => {
+                 return item.graphType === graphType;
+             })
+         }*/
 
-       /* temp__makeDropdownListForLine_Cluster(hwListForCluster) {
-            let currentGridItems = this.state.layoutMapperForCluster;
+        /* temp__makeDropdownListForLine_Cluster(hwListForCluster) {
+             let currentGridItems = this.state.layoutMapperForCluster;
 
-            if (!isEmpty(currentGridItems)) {
-                let lineChartListInGrid = this.filterByGraphType(currentGridItems, "line");
-                console.log("filteredList===>", lineChartListInGrid);
+             if (!isEmpty(currentGridItems)) {
+                 let lineChartListInGrid = this.filterByGraphType(currentGridItems, "line");
+                 console.log("filteredList===>", lineChartListInGrid);
 
-                let lineChartHwList = []
-                lineChartListInGrid.map(item => {
-                    lineChartHwList.push(item.hwType);
-                })
+                 let lineChartHwList = []
+                 lineChartListInGrid.map(item => {
+                     lineChartHwList.push(item.hwType);
+                 })
 
-                console.log("lineChartHwList===>", lineChartHwList);
-                console.log("lineChartHwList===ADD_ITEM_LIST>", hwListForCluster);
+                 console.log("lineChartHwList===>", lineChartHwList);
+                 console.log("lineChartHwList===ADD_ITEM_LIST>", hwListForCluster);
 
-                let dropdownListForLineChart = hwListForCluster;
+                 let dropdownListForLineChart = hwListForCluster;
 
-                let lineChartNewDropdownList = []
-                dropdownListForLineChart.map((item, index) => {
+                 let lineChartNewDropdownList = []
+                 dropdownListForLineChart.map((item, index) => {
 
-                    lineChartHwList.map((innerItem, innerIndex) => {
-                        if (item.value === innerItem) {
-                            dropdownListForLineChart.splice(index, 1);
-                        }
-                    })
-                })
+                     lineChartHwList.map((innerItem, innerIndex) => {
+                         if (item.value === innerItem) {
+                             dropdownListForLineChart.splice(index, 1);
+                         }
+                     })
+                 })
 
-                console.log("lineChartHwList===filteredLineChartList>", dropdownListForLineChart);
+                 console.log("lineChartHwList===filteredLineChartList>", dropdownListForLineChart);
 
-                this.setState({
-                    hwListForCluster: dropdownListForLineChart,
-                })
-            }
-        }*/
+                 this.setState({
+                     hwListForCluster: dropdownListForLineChart,
+                 })
+             }
+         }*/
 
         renderSelectBoxRow2nd() {
 

@@ -22,16 +22,16 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Nzk2Njc1NzksImlhdCI6MTU3OTU4MTE3OSwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.RaO3cZNCVsENI30mhQbFaPXTCC5XQv-CUNjfZuaSUodjrp_BYTU2jVyY5klV7A6cIUN0DG8huB_wo5K6T5Dt9w
 
 {
-  "region": "EU",
-  "appinst": {
-    "key": {
-      "app_key": {
-        "developer_key": {
-          "name": "kyungjoon_dev"
+    "region": "EU",
+    "appinst": {
+        "key": {
+            "app_key": {
+                "developer_key": {
+                    "name": "kyungjoon_dev"
+                }
+            }
         }
-      }
     }
-  }
 }
 
 ###
@@ -41,7 +41,7 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzgwMTE4NDIsImlhdCI6MTU3NzkyNTQ0MiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.EobJeBG1UpoXj7CQ71yjXZnuee7RTGqINB4FCYUMuGhvhltqqwyP3eHJ7kEMZpPTltvVoaSnYssi-lOo6n6zGQ
 
 {
-  "region": "US"
+    "region": "US"
 }
 
 
@@ -52,16 +52,16 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Nzk4Mzk0OTUsImlhdCI6MTU3OTc1MzA5NSwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.NhEILsD7dy1wmJ4Pm-nrYDJAI_KeY-gxkxz63L7kqjcg77c4Calxpkswd_GGnefDNoKEX_8OIK1vXykaTScOPg
 
 {
-  "region": "EU",
-  "appinst": {
-    "app_key": {
-      "developer_key": {
-        "name": "MobiledgeX"
-      }
-    }
-  },
-  "selector": "*",
-  "last": 1
+    "region": "EU",
+    "appinst": {
+        "app_key": {
+            "developer_key": {
+                "name": "MobiledgeX"
+            }
+        }
+    },
+    "selector": "*",
+    "last": 1
 }
 
 ### http --verify=false --auth-type=jwt --auth=$SUPERPASS POST https://127.0.0.1:9900/api/v1/auth/metrics/cloudlet <<< '{"region":"local","cloudlet":{"operator_key":{"name":"mexdev"},"name":"localtest"},"selector":"utilization","last":1}'
@@ -71,15 +71,15 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzgxMjY4NTEsImlhdCI6MTU3ODA0MDQ1MSwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.xzNfGtWMnhj2Uzeau6id4TLAyOALvqV1Lm74mM8hMRIhw7ae0RHUpronqVGAlYxNVJSOSZsykeY-jCKWmWBCUw
 
 {
-  "region": "EU",
-  "cloudlet": {
-    "operator_key": {
-      "name": "mexadmin"
+    "region": "EU",
+    "cloudlet": {
+        "operator_key": {
+            "name": "mexadmin"
+        },
+        "name": "frankfurt-eu"
     },
-    "name": "frankfurt-eu"
-  },
-  "selector": "utilization",
-  "last": 100
+    "selector": "utilization",
+    "last": 100
 }
 
 ### metrics/app_level
@@ -96,30 +96,30 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzgxMjY4NTEsImlhdCI6MTU3ODA0MDQ1MSwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.xzNfGtWMnhj2Uzeau6id4TLAyOALvqV1Lm74mM8hMRIhw7ae0RHUpronqVGAlYxNVJSOSZsykeY-jCKWmWBCUw
 
 {
-  "region": "EU",
-  "appinst": {
-    "app_key": {
-      "developer_key": {
-        "name": "MobiledgeX"
-      },
-      "name": "bicTestApp1112-01",
-      "version": "1.0"
-    },
-    "cluster_inst_key": {
-      "cluster_key": {
-        "name": "qqqaaa"
-      },
-      "cloudlet_key": {
-        "operator_key": {
-          "name": ""
+    "region": "EU",
+    "appinst": {
+        "app_key": {
+            "developer_key": {
+                "name": "MobiledgeX"
+            },
+            "name": "bicTestApp1112-01",
+            "version": "1.0"
+        },
+        "cluster_inst_key": {
+            "cluster_key": {
+                "name": "qqqaaa"
+            },
+            "cloudlet_key": {
+                "operator_key": {
+                    "name": ""
+                }
+            }
         }
-      }
-    }
-  },
-  "starttime": "*",
-  "endtime": "*",
-  "last": 10,
-  "selector": "cpu"
+    },
+    "starttime": "*",
+    "endtime": "*",
+    "last": 10,
+    "selector": "cpu"
 }
 
 
@@ -131,15 +131,15 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzgxMjY4NTEsImlhdCI6MTU3ODA0MDQ1MSwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.xzNfGtWMnhj2Uzeau6id4TLAyOALvqV1Lm74mM8hMRIhw7ae0RHUpronqVGAlYxNVJSOSZsykeY-jCKWmWBCUw
 
 {
-  "region": "EU",
-  "cloudlet": {
-    "operator_key": {
-      "name": "mexadmin"
+    "region": "EU",
+    "cloudlet": {
+        "operator_key": {
+            "name": "mexadmin"
+        },
+        "name": "frankfurt-eu"
     },
-    "name": "frankfurt-eu"
-  },
-  "selector": "utilization",
-  "last": 1
+    "selector": "utilization",
+    "last": 1
 }
 
 
@@ -150,15 +150,15 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzgwMTE4NDIsImlhdCI6MTU3NzkyNTQ0MiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.EobJeBG1UpoXj7CQ71yjXZnuee7RTGqINB4FCYUMuGhvhltqqwyP3eHJ7kEMZpPTltvVoaSnYssi-lOo6n6zGQ
 
 {
-  "region": "EU",
-  "cloudlet": {
-    "operator_key": {
-      "name": "TDG"
+    "region": "EU",
+    "cloudlet": {
+        "operator_key": {
+            "name": "TDG"
+        },
+        "name": "frankfurt-eu"
     },
-    "name": "frankfurt-eu"
-  },
-  "selector": "utilization",
-  "last": 1
+    "selector": "utilization",
+    "last": 1
 }
 
 ###
@@ -168,30 +168,30 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Nzg3OTI3MTcsImlhdCI6MTU3ODcwNjMxNywidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.zCXUcs98hEKMtT6bga4grEFf9i2BrGmb2G5tjEaqqnAkniujN1CDtoB4NwNceQUkofeIciMyboNrkxFVluaA7w
 
 {
-  "region": "EU",
-  "appinst": {
-    "app_key": {
-      "developer_key": {
-        "name": "MobiledgeX"
-      },
-      "name": "bicTestApp1112-01",
-      "version": "1.0"
-    },
-    "cluster_inst_key": {
-      "cluster_key": {
-        "name": "qqqaaa"
-      },
-      "cloudlet_key": {
-        "operator_key": {
-          "name": "frankfurt-eu"
+    "region": "EU",
+    "appinst": {
+        "app_key": {
+            "developer_key": {
+                "name": "MobiledgeX"
+            },
+            "name": "bicTestApp1112-01",
+            "version": "1.0"
+        },
+        "cluster_inst_key": {
+            "cluster_key": {
+                "name": "qqqaaa"
+            },
+            "cloudlet_key": {
+                "operator_key": {
+                    "name": "frankfurt-eu"
+                }
+            }
         }
-      }
-    }
-  },
-  "starttime": "2019-06-11T21:26:04Z",
-  "endtime": "2019-12-31T21:26:10Z",
-  "last": 6,
-  "selector": "*"
+    },
+    "starttime": "2019-06-11T21:26:04Z",
+    "endtime": "2019-12-31T21:26:10Z",
+    "last": 6,
+    "selector": "*"
 }
 
 
@@ -202,28 +202,28 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Nzg3MDU5MTcsImlhdCI6MTU3ODYxOTUxNywidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.tzWT3VrZe6Ql_AuKiw93pg618kho7m-x8dyk0Bk7m75-4wD54Vl1BVOykFQ-MsvSSPBLNzEoF7q-66m4Wfn0KA
 
 {
-  "region": "EU",
-  "appinst": {
-    "app_key": {
-      "developer_key": {
-        "name": "WonhoOrg1"
-      },
-      "name": "BICAPP",
-      "version": "1.0"
-    },
-    "cluster_inst_key": {
-      "cluster_key": {
-        "name": "autoclusterbicapp"
-      },
-      "cloudlet_key": {
-        "operator_key": {
-          "name": "frankfurt-eu"
+    "region": "EU",
+    "appinst": {
+        "app_key": {
+            "developer_key": {
+                "name": "WonhoOrg1"
+            },
+            "name": "BICAPP",
+            "version": "1.0"
+        },
+        "cluster_inst_key": {
+            "cluster_key": {
+                "name": "autoclusterbicapp"
+            },
+            "cloudlet_key": {
+                "operator_key": {
+                    "name": "frankfurt-eu"
+                }
+            }
         }
-      }
-    }
-  },
-  "last": 6,
-  "selector": "*"
+    },
+    "last": 6,
+    "selector": "*"
 }
 
 
@@ -239,18 +239,18 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODAxNTg0OTAsImlhdCI6MTU4MDA3MjA5MCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.FZiHTIKPeX5M3smmiHnk73kgwU2o8GO-QQAE7L-rh_OZL0dsWiUYTSkWwYeltr1iGFTPAqAP9ROFYkAnjg8Xog
 
 {
-  "region": "US",
-  "appinst": {
-    "app_key": {
-      "developer_key": {
-        "name": "MobiledgeX"
-      }
-    }
-  },
-  "selector": "*",
-  "last": 100,
-  "starttime": "2019-06-11T21:26:00Z",
-  "endtime": "2019-12-31T21:26:00Z"
+    "region": "US",
+    "appinst": {
+        "app_key": {
+            "developer_key": {
+                "name": "MobiledgeX"
+            }
+        }
+    },
+    "selector": "*",
+    "last": 100,
+    "starttime": "2019-06-11T21:26:00Z",
+    "endtime": "2019-12-31T21:26:00Z"
 }
 
 ### 오퍼레이터일때 클라우드렛 레벨의 메트릭 호출..
@@ -262,15 +262,15 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODAxNTkzOTksImlhdCI6MTU4MDA3Mjk5OSwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.ZbdOT1TWFAz9wTpiAxvMGPaO6L6pM9dEOU7tAktGccIO-F6P9vtYAqLTFDkt8OCKtb4srysQ2WLTj6UX7fr8hw
 
 {
-  "region": "EU",
-  "cloudlet": {
-    "operator_key": {
-      "name": "TDG"
+    "region": "EU",
+    "cloudlet": {
+        "operator_key": {
+            "name": "TDG"
+        },
+        "name": "berlin-staging"
     },
-    "name": "berlin-staging"
-  },
-  "last": 2,
-  "selector": "*"
+    "last": 2,
+    "selector": "*"
 }
 
 ###
@@ -281,15 +281,15 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODExMjMxNzAsImlhdCI6MTU4MTAzNjc3MCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.PlCaUm_y93cCQeeK4e8-6rwP4eXOzvomWBTtT2KWKyH4So1R5R99sO6NZ0obcc_HwkHDe3nGbHcsYnNAGDo5QA
 
 {
-  "region": "EU",
-  "cloudlet": {
-    "operator_key": {
-      "name": "TDG"
+    "region": "EU",
+    "cloudlet": {
+        "operator_key": {
+            "name": "TDG"
+        },
+        "name": "hamburg-stage"
     },
-    "name": "hamburg-stage"
-  },
-  "last": 100,
-  "selector": "*"
+    "last": 100,
+    "selector": "*"
 }
 
 ### 전체 클라우드렛에 대한 상태를 콜하는 Api
@@ -302,15 +302,15 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODA2OTYyNzYsImlhdCI6MTU4MDYwOTg3NiwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.UP63BOJHKrZmVcLRkXglc0L2LxCC7C5wkM74k3-7hUzSFfX-rQySuJgLcNtuTmkJxFnVH0gqHKkoRuZDB7BYDA
 
 {
-  "region": "EU",
-  "cloudlet": {
-    "key": {
-      "name": "*",
-      "operator_key": {
-        "name": "TDG"
-      }
+    "region": "EU",
+    "cloudlet": {
+        "key": {
+            "name": "*",
+            "operator_key": {
+                "name": "TDG"
+            }
+        }
     }
-  }
 }
 
 ### 앱 instance 하나에 대해서 사용량을 호출한다#######
@@ -323,30 +323,30 @@ Content-Type: application/json
 Authorization: Bearer  eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODA2OTYyNzYsImlhdCI6MTU4MDYwOTg3NiwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.UP63BOJHKrZmVcLRkXglc0L2LxCC7C5wkM74k3-7hUzSFfX-rQySuJgLcNtuTmkJxFnVH0gqHKkoRuZDB7BYDA
 
 {
-  "region": "EU",
-  "appinst": {
-    "app_key": {
-      "developer_key": {
-        "name": "WonhoOrg1"
-      },
-      "name": "BICAPP",
-      "version": "1.0"
-    },
-    "cluster_inst_key": {
-      "cluster_key": {
-        "name": "autoclusterbicapp"
-      },
-      "cloudlet_key": {
-        "operator_key": {
-          "name": ""
+    "region": "EU",
+    "appinst": {
+        "app_key": {
+            "developer_key": {
+                "name": "WonhoOrg1"
+            },
+            "name": "BICAPP",
+            "version": "1.0"
+        },
+        "cluster_inst_key": {
+            "cluster_key": {
+                "name": "autoclusterbicapp"
+            },
+            "cloudlet_key": {
+                "operator_key": {
+                    "name": ""
+                }
+            }
         }
-      }
-    }
-  },
-  "starttime": "2019-06-11T21:26:04Z",
-  "endtime": "2019-12-11T21:26:10Z",
-  "last": 6,
-  "selector": "*"
+    },
+    "starttime": "2019-06-11T21:26:04Z",
+    "endtime": "2019-12-11T21:26:10Z",
+    "last": 6,
+    "selector": "*"
 }
 
 ###/api/v1/auth/ctrl/ShowCloudlet
@@ -357,15 +357,15 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODA5NDM5NDQsImlhdCI6MTU4MDg1NzU0NCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.VhuKLhZ7_u9b3UfvNdI8wP51lQrGFMc5LRfWKPcnXJujRFyQqInqzbGb10FmhC0srQrAtKEEgwbGMeyqlo_DmA
 
 {
-  "region": "EU",
-  "cloudlet": {
-    "key": {
-      "operator_key": {
-        "name": "TDG"
-      }
-    },
-    "name": "*"
-  }
+    "region": "EU",
+    "cloudlet": {
+        "key": {
+            "operator_key": {
+                "name": "TDG"
+            }
+        },
+        "name": "*"
+    }
 }
 
 ###  /api/v1/auth/orgcloudlet/show
@@ -374,7 +374,7 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODE0MjQ3NzUsImlhdCI6MTU4MTMzODM3NSwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.RC-xurMVdK36UJaEbuE189YoBIfuBn6wov1oXXHyjbj4yxhBrK-7APvyY6WgmlFrnr9j7ABbAmJ8k61iUf8peA
 
 {
-  "region": "EU"
+    "region": "EU"
 }
 
 ###cloudletcloudletcloudletcloudletcloudletcloudletcloudletcloudletcloudlet
@@ -384,14 +384,14 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODMyMTg0MDgsImlhdCI6MTU4MzEzMjAwOCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.hC0N6SqS2r_EwB3n-x9ZDHPpz5AOvPvv0YaERDCxqIGXgcQ_BHrjVsVj8S0oQlScwu4saU-rFZOfFMiCv_s08g
 
 {
-  "region": "EU",
-  "cloudlet": {
-    "operator_key": {
-      "name": "TDG"
+    "region": "EU",
+    "cloudlet": {
+        "operator_key": {
+            "name": "TDG"
+        },
+        "name": "hamburg-stage"
     },
-    "name": "hamburg-stage"
-  },
-  "last": 50
+    "last": 50
 }
 
 
@@ -402,19 +402,19 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODE5ODg2NTEsImlhdCI6MTU4MTkwMjI1MSwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.bm8uSAJCsFMnPYatSKRyGf06AQPtKjX9jLPuP9vw9kNFNn8JiU4ehil2IIJvAZgOSfuFKacw9FHVHDrv77o2VQ
 
 {
-  "region": "EU",
-  "appinst": {
-    "app_key": {
-      "developer_key": {
-        "name": "WonhoOrg1"
-      },
-      "name": "autoclusterbicapp",
-      "version": "1.0"
-    }
-  },
-  "method": "FindCloudlet",
-  "selector": "api",
-  "last": 100
+    "region": "EU",
+    "appinst": {
+        "app_key": {
+            "developer_key": {
+                "name": "WonhoOrg1"
+            },
+            "name": "autoclusterbicapp",
+            "version": "1.0"
+        }
+    },
+    "method": "FindCloudlet",
+    "selector": "api",
+    "last": 100
 }
 
 ###
@@ -462,7 +462,7 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM0NjMyN
 
 POST https://console-stage.mobiledgex.net:443/api/v1/auth/events/app
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM0NjQyNTQsImlhdCI6MTU4MzM3Nzg1NCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.yWOlPpxg8vjMnAjMyJNvySu_-vOy-7_3FYgfa6Hb2dVrwXXs8dF8Nvm6cUnGMOLpnD09YbDgjjji9jvWPAwlNw
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM1NTg0OTIsImlhdCI6MTU4MzQ3MjA5MiwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.7I0QJZXjrVmbPHqshWgWcVmRNn3m2FnIPxSBemIHzU33X7jtdqO5qISaO0haRhYpNr0Jrkhd12VuUwlnxz1g0g
 
 {
     "region": "EU",
@@ -478,9 +478,9 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM0NjQyN
             },
             "cloudlet_key": {
                 "operator_key": {
-                    "name": "TDG"
+                    "name": ""
                 },
-                "name": "hamburg-stage"
+                "name": ""
             }
         }
     }

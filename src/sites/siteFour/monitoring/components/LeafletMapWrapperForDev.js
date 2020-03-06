@@ -249,8 +249,6 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                                         let Region = arrayTemp[2].trim();
 
                                                         let dataSet = AppInst + " | " + item.Cloudlet.trim() + " | " + Cluster + " | " + Region;
-                                                        //showToast(dataSet)
-
                                                         this.props.handleAppInstDropdown(dataSet)
                                                     }}
                                                 >
