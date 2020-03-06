@@ -936,6 +936,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 return 2;
             } else if (graphType === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST) {
                 return 2;
+            } else if (graphType === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
+                return 2;
             } else {
                 return 1;
             }
@@ -1075,7 +1077,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 )
             }
         }
-
 
 
         makeLineChartDataForBigModal(lineChartDataSet) {

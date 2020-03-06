@@ -1257,13 +1257,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*todo:---------------------------------*/}
                                                         {/*todo: BOTTOM APP INSTACE LIST         */}
                                                         {/*todo:---------------------------------*/}
-                                                        <div className='page_monitoring_popup_table'>
+                                                       {/* <div className='page_monitoring_popup_table'>
                                                             {this.state.filteredGridInstanceList.length && this.state.isReady === 0 ?
                                                                 <div style={PageMonitoringStyles.noData}>
                                                                     NO DATA
                                                                 </div>
                                                                 : renderBottomGridArea(this)}
-                                                        </div>
+                                                        </div>*/}
                                                     </div>
                                                 </OutsideClickHandler>
                                             </ToggleDisplay>
