@@ -45,7 +45,7 @@ import {
     NETWORK_OPTIONS,
     NETWORK_TYPE,
     RECENT_DATA_LIMIT_COUNT,
-    REGIONS_OPTIONS
+    REGIONS_OPTIONS, USER_TYPE
 } from "../../../../shared/Constants";
 import type {TypeAppInstance, TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeUtilization} from "../../../../shared/Types";
@@ -298,7 +298,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
 
                 //@fixme: realdata
-                let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
+                let appInstanceList: Array<TypeAppInstance> = await getAppInstList(['EU', 'US'], USER_TYPE.ADMIN);
 
                 appInstanceList.map(async (item: TypeAppInstance, index) => {
                     if (index === 0) {

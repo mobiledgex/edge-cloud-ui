@@ -262,13 +262,17 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                                         &nbsp;&nbsp;{` [${ClusterInst.trim()}]`}
                                                     </div>
                                                     <div>
-                                                        {HealthCheck === 'undefined' ?
+
+                                                        {/*todo:HealthCheck value 3 is okay*/}
+                                                        {/*todo:HealthCheck value 3 is okay*/}
+                                                        {/*todo:HealthCheck value 3 is okay*/}
+                                                        {HealthCheck === 3 ?
                                                             <div style={{marginLeft: 7, marginBottom: 0,height:15, }}>
-                                                                <CheckCircleOutlined style={{color: 'red', fontSize: 17, marginBottom:25}}/>
+                                                                <CheckCircleOutlined style={{color: 'green', fontSize: 17, marginBottom:25}}/>
                                                             </div>
                                                             :
                                                             <div style={{marginLeft: 7, marginBottom: 0,height:15, }}>
-                                                                <CheckCircleOutlined style={{color: 'green', fontSize: 17, marginBottom:25}}/>
+                                                                <CheckCircleOutlined style={{color: 'red', fontSize: 17, marginBottom:25}}/>
                                                             </div>
                                                         }
                                                     </div>

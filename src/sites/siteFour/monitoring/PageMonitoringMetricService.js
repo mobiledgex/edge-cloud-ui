@@ -1,14 +1,14 @@
 import axios from "axios";
 import type {TypeCloudlet, TypeCluster} from "../../../shared/Types";
 import {SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET} from "../../../services/endPointTypes";
-import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../shared/Constants";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT, REGION, USER_TYPE} from "../../../shared/Constants";
 import {sendSyncRequest} from "../../../services/serviceMC";
 import {makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
 import {formatData} from "../../../services/formatter/formatComputeInstance";
 import {makeFormForAppInstance} from "./admin/PageAdminMonitoringService";
 
 
-export const getAppInstList = async (pArrayRegion = ['EU', 'US']) => {
+export const getAppInstList = async (pArrayRegion = ['EU', 'US'], type: string = '') => {
     try {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let mergedAppInstanceList = [];
@@ -59,17 +59,19 @@ export const getAppInstList = async (pArrayRegion = ['EU', 'US']) => {
 
         }
 
-        let newMergedAppInstList=[]
-        mergedAppInstanceList.map(item=>{
-            console.log("mergedAppInstanceList===>", item);
-            item.AppName = item.AppName + "["+ item.Version+ "]";
 
-            newMergedAppInstList.push(item);
-        })
+        if (type === USER_TYPE.ADMIN) {
+            let appInstListWithVersion = []
+            mergedAppInstanceList.map(item => {
+                item.AppName = item.AppName + "[" + item.Version + "]";
+                appInstListWithVersion.push(item);
+            })
+            return appInstListWithVersion;
+        } else {
+            return mergedAppInstanceList
+        }
 
-        console.log("mergedAppInstanceList===>", newMergedAppInstList);
 
-        return newMergedAppInstList;
     } catch (e) {
         showToast("getAppInstList===>" + e.toString())
     }
@@ -206,6 +208,10 @@ export const getCloudletListAll = async () => {
 
 export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
     try {
+
+
+        console.log("filteredAppList===>", appInstanceList);
+
         let instanceBodyList = []
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
         for (let index = 0; index < appInstanceList.length; index++) {
@@ -235,9 +241,11 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
             });
         })
 
+        console.log("usageListForAllInstance===>", usageListForAllInstance);
+
         let allUsageList = []
         usageListForAllInstance.map((item, index) => {
-            let appName = item.instanceData.AppName;
+            let appName = item.instanceData.AppName; //+ "[" + item.instanceData.Version + "]";
             let sumMemUsage = 0;
             let sumDiskUsage = 0;
             let sumRecvBytes = 0;
@@ -881,7 +889,7 @@ export const getAppInstEventLogListOne = async (appInstOne) => {
 
         //alert('sdlfsdlkf===>'+ Region)
 
-        let data={
+        let data = {
             "region": Region,
             "appinst": {
                 "app_key": {
