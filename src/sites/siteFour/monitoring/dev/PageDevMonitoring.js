@@ -87,7 +87,7 @@ import LineChartContainer from "../components/LineChartContainer";
 import EventLogListContainer from "../components/EventLogListContainer";
 import PerformanceSummaryTable from "../components/PerformanceSummaryTable";
 import TagCloudContainer from "../components/TagCloudContainer";
-import EventLogListContainerAppInst from "../components/EventLogListContainerAppInst";
+import EventLogListContainerForAppInst from "../components/EventLogListContainerAppInst";
 
 const {Option} = Select;
 
@@ -665,64 +665,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        renderDropdownForConnections(subCategoryType) {
-            return (
-                <Dropdown
-                    placeholder='SELECT CONN TYPE'
-                    selection
-                    loading={this.state.loading}
-                    options={CONNECTIONS_OPTIONS}
-                    defaultValue={CONNECTIONS_OPTIONS[0].value}
-                    onChange={async (e, {value}) => {
-                        //TAB0 IS SENDBYTES
-                        if (value === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-                            this.setState({
-                                connectionsTabIndex: 0,
-                            })
-                        } else if (value === HARDWARE_TYPE.HANDLED_CONNECTION) {
-                            this.setState({
-                                connectionsTabIndex: 1,
-                            })
-                        } else if (value === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-                            this.setState({
-                                connectionsTabIndex: 2,
-                            })
-                        }
-
-                    }}
-                    value={subCategoryType}
-                    // style={Styles.dropDown}
-                />
-            )
-        }
-
-        renderDropdownForNetwork(hwType) {
-            return (
-                <Dropdown
-                    placeholder='SELECT NET TYPE'
-                    selection
-                    loading={this.state.loading}
-                    options={NETWORK_OPTIONS}
-                    defaultValue={NETWORK_OPTIONS[0].value}
-                    onChange={async (e, {value}) => {
-                        //TAB0 IS SENDBYTES
-                        if (value === HARDWARE_TYPE.RECVBYTES) {
-                            this.setState({
-                                networkTabIndex: 0,
-                            })
-                        } else if (value === HARDWARE_TYPE.SENDBYTES) {
-                            this.setState({
-                                networkTabIndex: 1,
-                            })
-                        }
-                    }}
-                    value={hwType}
-                    // style={Styles.dropDown}
-                />
-            )
-        }
-
-
         async resetGridPosition() {
             try {
                 reactLocalStorage.remove(getUserId() + "_layout")
@@ -941,21 +883,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
         }
 
-
-        renderBubbleChartArea() {
-            return (
-                <div style={{height: '100%'}}>
-                    <BubbleChartContainer
-                        loading={this.state.loading}
-                        parent={this}
-                        currentHardwareType={this.state.currentHardwareType}
-                        bubbleChartData={this.state.bubbleChartData}
-                        themeTitle={this.state.themeTitle}/>
-                </div>
-            )
-        }
-
-
         renderMapArea() {
             return (
                 <>
@@ -1103,7 +1030,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-        __________makeGridItemOneByType(hwType, graphType) {
+        ____makeGridItemOneByType(hwType, graphType) {
 
             if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                 return (
@@ -1119,7 +1046,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BUBBLE) {
                 return (
-                    this.renderBubbleChartArea()
+                    <BubbleChartContainer
+                        loading={this.state.loading}
+                        parent={this}
+                        currentHardwareType={this.state.currentHardwareType}
+                        bubbleChartData={this.state.bubbleChartData}
+                        themeTitle={this.state.themeTitle}/>
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.MAP) {
                 return (
@@ -1139,12 +1071,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                 return (
-                    <EventLogListContainerAppInst parent={this} handleAppInstDropdown={this.handleAppInstDropdown} eventLogList={this.state.filteredAppInstEventLogs}/>
+                    <EventLogListContainerForAppInst parent={this} handleAppInstDropdown={this.handleAppInstDropdown} eventLogList={this.state.filteredAppInstEventLogs}/>
                 )
             }
-
-
         }
+
+
 
         makeLineChartDataForBigModal(lineChartDataSet) {
             let levelTypeNameList = lineChartDataSet.levelTypeNameList
@@ -1248,7 +1180,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_column_kyungjoon1' style={{height: this.gridItemHeight}}>
                         {/*@todo:_makeGridItemOneByType      */}
                         {/*@todo:_makeGridItemOneByType      */}
-                        {this.__________makeGridItemOneByType(hwType, graphType.toUpperCase())}
+                        {this.____makeGridItemOneByType(hwType, graphType.toUpperCase())}
                     </div>
 
                     <div className="remove"
