@@ -6,7 +6,7 @@ import {Line} from "react-chartjs-2";
 import {Chart as Bar_Column_Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {barChartOption, columnChartOption} from "../PageMonitoringUtils";
-import LeafletMapWrapperForDev from "./LeafletMapWrapperForDev";
+import LeafletMapWrapperForDev from "./LeafletMapContainerDev";
 
 const FA = require('react-fontawesome')
 type Props = {
@@ -25,7 +25,7 @@ type State = {
     appInstanceListGroupByCloudlet: any,
 };
 
-export default class BigModalGraph extends React.Component<Props, State> {
+export default class BigModalGraphContainer extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props)
         this.state = {

@@ -21,7 +21,7 @@ type State = {
     isResizeComplete:boolean,
 };
 
-export default class LineChartWrapper extends React.Component<Props, State> {
+export default class LineChartContainer extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)

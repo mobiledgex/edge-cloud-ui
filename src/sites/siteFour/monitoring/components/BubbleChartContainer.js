@@ -21,7 +21,7 @@ type State = {
     themeTitle: string,
 };
 
-export default class BubbleChartWrapper extends React.Component<Props, State> {
+export default class BubbleChartContainer extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)

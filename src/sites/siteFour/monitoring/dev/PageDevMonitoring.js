@@ -74,20 +74,20 @@ import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraph from "../components/ModalGraph";
 import {reactLocalStorage} from "reactjs-localstorage";
-import LeafletMapWrapperForDev from "../components/LeafletMapWrapperForDev";
+import LeafletMapWrapperForDev from "../components/LeafletMapContainerDev";
 import {Responsive, WidthProvider} from "react-grid-layout";
 import _ from "lodash";
-import PieChartWrapper from "../components/PieChartWrapper";
-import BigModalGraph from "../components/BigModalGraph";
+import PieChartContainer from "../components/PieChartContainer";
+import BigModalGraphContainer from "../components/BigModalGraphContainer";
 import type {MonitoringContextInterface,} from "../PageMonitoringGlobalState";
 import {MonitoringConsumer} from "../PageMonitoringGlobalState";
-import BubbleChartWrapper from "../components/BubbleChartWrapper";
-import BarChartWrapper from "../components/BarChartWrapper";
-import LineChartWrapper from "../components/LineChartWrapper";
-import EventLogList from "../components/EventLogList";
+import BubbleChartContainer from "../components/BubbleChartContainer";
+import BarChartContainer from "../components/BarChartContainer";
+import LineChartContainer from "../components/LineChartContainer";
+import EventLogListContainer from "../components/EventLogListContainer";
 import PerformanceSummaryTable from "../components/PerformanceSummaryTable";
-import TagCloudWrapper from "../components/TagCloudWrapper";
-import EventLogListForAppInst from "../components/EventLogListForAppInst";
+import TagCloudContainer from "../components/TagCloudContainer";
+import EventLogListContainerAppInst from "../components/EventLogListContainerAppInst";
 
 const {Option} = Select;
 
@@ -244,6 +244,7 @@ type State = {
     isResizeComplete: boolean,
     allAppInstEventLogs: any,
     filteredAppInstEventLogs: any,
+    isFixGrid: boolean,
 
 }
 
@@ -394,6 +395,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isResizeComplete: false,
                 allAppInstEventLogs: [],
                 filteredAppInstEventLogs: [],
+                isFixGrid: false,
             };
         }
 
@@ -626,10 +628,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
 
             return (
-                <LineChartWrapper isResizeComplete={this.state.isResizeComplete} context={this.context} loading={this.state.loading}
-                                  currentClassification={this.state.currentClassification}
-                                  parent={this}
-                                  pHardwareType={hwType} chartDataSet={lineChartDataSet}/>
+                <LineChartContainer isResizeComplete={this.state.isResizeComplete} context={this.context} loading={this.state.loading}
+                                    currentClassification={this.state.currentClassification}
+                                    parent={this}
+                                    pHardwareType={hwType} chartDataSet={lineChartDataSet}/>
             )
 
         }
@@ -648,8 +650,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
 
             return (
-                <BarChartWrapper isResizeComplete={this.state.isResizeComplete} parent={this} loading={this.state.loading} chartDataSet={barChartDataSet}
-                                 pHardwareType={hwType} graphType={graphType}/>
+                <BarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this} loading={this.state.loading} chartDataSet={barChartDataSet}
+                                   pHardwareType={hwType} graphType={graphType}/>
             )
         }
 
@@ -943,7 +945,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         renderBubbleChartArea() {
             return (
                 <div style={{height: '100%'}}>
-                    <BubbleChartWrapper
+                    <BubbleChartContainer
                         loading={this.state.loading}
                         parent={this}
                         currentHardwareType={this.state.currentHardwareType}
@@ -1129,15 +1131,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PIE) {
                 return (
-                    <PieChartWrapper/>
+                    <PieChartContainer/>
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST) {
                 return (
-                    <EventLogList eventLogList={this.state.filteredClusterEventLogList}/>
+                    <EventLogListContainer eventLogList={this.state.filteredClusterEventLogList}/>
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                 return (
-                    <EventLogListForAppInst parent={this} handleAppInstDropdown={this.handleAppInstDropdown} eventLogList={this.state.filteredAppInstEventLogs}/>
+                    <EventLogListContainerAppInst parent={this} handleAppInstDropdown={this.handleAppInstDropdown} eventLogList={this.state.filteredAppInstEventLogs}/>
                 )
             }
 
@@ -1229,12 +1231,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                      }}
                      onDoubleClick={async () => {
                          await this.setState({
+                             isFixGrid: true,
                              isDraggable: !this.state.isDraggable,
                              appInstanceListGroupByCloudlet: [],
                          })
                          this.setState({
                              appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
                          });
+                         setTimeout(() => {
+                             this.setState({
+                                 isFixGrid: false,
+                             })
+                         }, 500)
                      }}
                 >
                     <div className='page_monitoring_column_kyungjoon1' style={{height: this.gridItemHeight}}>
@@ -1439,6 +1447,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }
                         >
                             <AButton
+                                loading={this.state.isFixGrid}
+                                //loading={true}
                                 style={{
                                     borderColor: !this.state.isDraggable ? 'green' : 'rgba(117,122,133,.65)',
                                     backgroundColor: !this.state.isDraggable ? 'green' : 'rgba(117,122,133,.65)',
@@ -1835,7 +1845,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         modalIsOpen={this.state.modalIsOpen}
                                         cluster={''} contents={''}/>
 
-                            <BigModalGraph
+                            <BigModalGraphContainer
                                 chartDataForRendering={this.state.chartDataForRendering}
                                 isShowBigGraph={this.state.isShowBigGraph}
                                 parent={this}

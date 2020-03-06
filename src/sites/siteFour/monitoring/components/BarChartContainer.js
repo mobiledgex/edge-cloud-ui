@@ -20,7 +20,7 @@ type State = {
     isResizeComplete: boolean,
 };
 
-export default class BarChartWrapper extends React.Component<Props, State> {
+export default class BarChartContainer extends React.Component<Props, State> {
     context = React.createRef();
 
     constructor(props: Props) {

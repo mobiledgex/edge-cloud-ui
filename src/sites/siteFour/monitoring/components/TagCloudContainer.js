@@ -14,7 +14,7 @@ type State = {
     allClusterUsageList: any,
 };
 
-export default class TagCloudWrapper extends React.Component<Props, State> {
+export default class TagCloudContainer extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props)
         this.state = {

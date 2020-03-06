@@ -5,7 +5,7 @@ import {Chart} from "react-google-charts";
 type Props = {};
 type State = {};
 
-export default class PieChartWrapper extends React.Component<Props, State> {
+export default class PieChartContainer extends React.Component<Props, State> {
 
 
     render() {
