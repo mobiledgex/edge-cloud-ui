@@ -1672,7 +1672,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         showToast('added ' + value + " item!!")
                                     }}
                                     style={PageMonitoringStyles.dropDown2}
-
                                     options={ADD_ITEM_LIST}
                                 />
                             </div>
@@ -1681,6 +1680,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                             <div style={{marginBottom: 0,}}>
                                 <Dropdown
+                                    onClick={e => e.stopPropagation()}
                                     placeholder="Select Item"
                                     selection
                                     loading={this.state.loading}
@@ -1700,6 +1700,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     Add Bar Chart
                                 </div>
                                 <Dropdown
+                                    onClick={e => e.stopPropagation()}
                                     placeholder="Select Item"
                                     selection
                                     loading={this.state.loading}

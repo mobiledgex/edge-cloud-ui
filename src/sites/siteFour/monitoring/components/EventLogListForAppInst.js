@@ -122,9 +122,18 @@ export default class EventLogListForAppInst extends React.Component<Props, State
                                         {`\n\n`}
                                         {item[0].toString().split('T')[1].substring(0, 8)}
                                     </Table.Cell>
-                                    <Table.Cell>
-                                        {item[1]}
-                                    </Table.Cell>
+                                    <Tooltip
+                                        placement="topLeft"
+                                        title={
+                                            <div>
+                                                <p>{item[1]}</p>
+                                            </div>
+                                        }
+                                    >
+                                        <Table.Cell>
+                                            {item[1]}
+                                        </Table.Cell>
+                                    </Tooltip>
                                     <Table.Cell>
                                         {item[2]}
                                     </Table.Cell>
