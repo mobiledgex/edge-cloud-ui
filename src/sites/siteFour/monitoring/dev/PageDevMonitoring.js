@@ -1652,8 +1652,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
              }
          }*/
 
-        renderSelectBoxRow2nd() {
 
+        renderSelectBoxRow2nd() {
 
             return (
                 <div className='page_monitoring_select_row' style={{borderWidth: 1, borderColor: 'grey', marginBottom: 5, marginTop: 6}}>
