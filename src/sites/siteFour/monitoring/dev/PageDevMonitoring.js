@@ -1664,6 +1664,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     Add Item
                                 </div>
                                 <Dropdown
+                                    selectOnBlur={false}
                                     placeholder="Select Item"
                                     selection
                                     loading={this.state.loading}
@@ -1680,6 +1681,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                             <div style={{marginBottom: 0,}}>
                                 <Dropdown
+                                    selectOnBlur={false}
                                     onClick={e => e.stopPropagation()}
                                     placeholder="Select Item"
                                     selection
@@ -1700,6 +1702,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     Add Bar Chart
                                 </div>
                                 <Dropdown
+                                    selectOnBlur={false}
                                     onClick={e => e.stopPropagation()}
                                     placeholder="Select Item"
                                     selection
@@ -1719,6 +1722,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     Add Column Chart
                                 </div>
                                 <Dropdown
+                                    selectOnBlur={false}
                                     placeholder="Select Item"
                                     selection
                                     loading={this.state.loading}
@@ -1739,6 +1743,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 </div>
                                 <div style={{marginBottom: 0,}}>
                                     <Dropdown
+                                        selectOnBlur={false}
                                         placeholder="Select Theme"
                                         selection
                                         loading={this.state.loading}
@@ -1782,8 +1787,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </>
                     </div>
                 </div>
-
-
             )
         }
 
