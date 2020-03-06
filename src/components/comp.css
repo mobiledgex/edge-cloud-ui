@@ -93,7 +93,7 @@
   background: linear-gradient(#2f5a94 20%, #4d7094 100%, #2f5a94 20%); /* Standard syntax (must be last) */
 }
 .test {
-    color: "#ffffff"
+    color: #ffffff
 }
 .tableA table thead .cellasHeader th:first-child{
   border-radius:0 0 0 0;
@@ -135,7 +135,8 @@
 .page {
   height: 100%;
 }
-%shape {
+
+.shape {
   position: absolute;
   top: 0;
   bottom: 0;
