@@ -2,7 +2,7 @@ import 'react-hot-loader';
 import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Button, Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
+import {Button, Dropdown, Grid, Modal, Tab, Table} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
@@ -87,7 +87,7 @@ import LineChartContainer from "../components/LineChartContainer";
 import EventLogListContainer from "../components/EventLogListContainer";
 import PerformanceSummaryTable from "../components/PerformanceSummaryTable";
 import TagCloudContainer from "../components/TagCloudContainer";
-import EventLogListContainerForAppInst from "../components/EventLogListContainerAppInst";
+import EventLogListContainerForAppInst from "../components/AppInstEventLogListContainer";
 
 const {Option} = Select;
 
@@ -476,11 +476,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //@todo:###############################
                 let allAppInstEventLogs = await getAppInstEventLogs();
                 await this.setState({
-                    allAppInstEventLogs: allAppInstEventLogs,
-                    filteredAppInstEventLogs: allAppInstEventLogs,
+                    allAppInstEventLogs: allAppInstEventLogs.values,
+                    filteredAppInstEventLogs: allAppInstEventLogs.values,
                 })
 
-                console.log('appInstEventLogs===>', allAppInstEventLogs);
+                console.log('appInstEventLogs_columns===>', allAppInstEventLogs.columns);
 
 
                 let appInstanceListGroupByCloudlet = []
@@ -794,6 +794,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 console.log('filteredAppInstUsageList===>', this.state.filteredAppInstUsageList)
             })
 
+            //todo: appInst EventLog
+            //todo: appInst EventLog
+            //todo: appInst EventLog
+
+            let appInstEventLog = this.state.allAppInstEventLogs;
+            let appInstEventLogList = appInstEventLog.filter(item => {
+                if (item[1] === AppName && item[2] === ClusterInst) {
+                    return true;
+                }
+            })
+
+            console.log("_eventLogs===>", appInstEventLogList);
+
+            await this.setState({
+                filteredAppInstEventLogs: appInstEventLogList === 0 ? [] : appInstEventLogList,
+            });
+
             await this.setState({
                 currentTabIndex: 0,
             })
@@ -1073,7 +1090,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                 return (
-                    <EventLogListContainerForAppInst parent={this} handleAppInstDropdown={this.handleAppInstDropdown} eventLogList={this.state.filteredAppInstEventLogs}/>
+                    <EventLogListContainerForAppInst currentAppInst={this.state.currentAppInst} parent={this} handleAppInstDropdown={this.handleAppInstDropdown} eventLogList={this.state.filteredAppInstEventLogs}/>
                 )
             }
         }
@@ -1160,24 +1177,24 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
                 <div
                     key={uniqueIndex} data-grid={item} style={{margin: 0, backgroundColor: 'black'}}
-                     onClick={() => {
+                    onClick={() => {
                         // alert('sdlkfdslkf')
-                     }}
-                     onDoubleClick={async () => {
-                         await this.setState({
-                             isFixGrid: true,
-                             isDraggable: !this.state.isDraggable,
-                             appInstanceListGroupByCloudlet: [],
-                         })
-                         this.setState({
-                             appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
-                         });
-                         setTimeout(() => {
-                             this.setState({
-                                 isFixGrid: false,
-                             })
-                         }, 500)
-                     }}
+                    }}
+                    onDoubleClick={async () => {
+                        await this.setState({
+                            isFixGrid: true,
+                            isDraggable: !this.state.isDraggable,
+                            appInstanceListGroupByCloudlet: [],
+                        })
+                        this.setState({
+                            appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
+                        });
+                        setTimeout(() => {
+                            this.setState({
+                                isFixGrid: false,
+                            })
+                        }, 500)
+                    }}
                 >
                     <div className='page_monitoring_column_kyungjoon1'
                         //onMouseDown={ e => e.stopPropagation() }
@@ -1833,6 +1850,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
     }
-))));
+))))
+;
 
 

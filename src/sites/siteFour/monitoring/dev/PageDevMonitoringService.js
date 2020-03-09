@@ -255,28 +255,31 @@ export const getUserId = () => {
 
 
 export const filterByClassification = (originalList, selectOne, filterKey,) => {
-
-    //todo:리전인 경우.....
-    if (filterKey === CLASSIFICATION.REGION) {
-        if (selectOne !== 'ALL') {
-            let filteredList = []
+    try{
+        //todo:리전인 경우.....
+        if (filterKey === CLASSIFICATION.REGION) {
+            if (selectOne !== 'ALL') {
+                let filteredList = []
+                originalList.map(item => {
+                    if (item[filterKey] === selectOne) {
+                        filteredList.push(item);
+                    }
+                })
+                return filteredList;
+            } else {
+                return originalList;
+            }
+        } else {
+            let filteredInstanceList = []
             originalList.map(item => {
                 if (item[filterKey] === selectOne) {
-                    filteredList.push(item);
+                    filteredInstanceList.push(item);
                 }
             })
-            return filteredList;
-        } else {
-            return originalList;
+            return filteredInstanceList;
         }
-    } else {
-        let filteredInstanceList = []
-        originalList.map(item => {
-            if (item[filterKey] === selectOne) {
-                filteredInstanceList.push(item);
-            }
-        })
-        return filteredInstanceList;
+    }catch (e) {
+
     }
 
 }
