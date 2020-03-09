@@ -70,7 +70,10 @@ const newLineToJsonObject = (data) => {
             let dataArray = data.split('\n');
             for (let i = 0; i < dataArray.length; i++) {
                 let dataObject = dataArray[i].split(':')
-                formatedData[dataObject[0]] = dataObject[1]
+                if(dataObject.length == 2)
+                {
+                    formatedData[dataObject[0]] = dataObject[1]
+                }
             }
             return formatedData
         }

@@ -1124,7 +1124,7 @@ class SiteFour extends React.Component {
                                     (this.state.page === 'pg=PageOperMonitoring') ? <PageOperMonitoring/> :
                                         <Grid.Row className='view_contents'>
                                             <Grid.Column className='contents_body'>
-                                                <Grid.Row className='content_title'>
+                                                {/* <Grid.Row className='content_title'>
                                                     <div className='content_title_wrap'>
                                                         <div
                                                             className='content_title_label'>{this.state.headerTitle}</div>
@@ -1192,7 +1192,7 @@ class SiteFour extends React.Component {
                                                                 : null
                                                         }
                                                     </div>
-                                                </Grid.Row>
+                                                </Grid.Row> */}
 
 
                                                 <Grid.Row className='site_content_body'>
