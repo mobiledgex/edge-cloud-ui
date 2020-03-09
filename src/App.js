@@ -24,6 +24,8 @@ import './css/pages/cloudletPool.css';
 import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
 import TagCloudTest from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/TagCloudTest";
+import Test005 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/Test005";
+import Test007 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/Test007";
 // API
 
 let self = null;
@@ -332,6 +334,7 @@ class App extends Component {
                     <Route exact path='/passwordreset' component={DashboardContainer.bind(this, {mainPath:'/passwordreset'})} />
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
                     <Route exact path='/TagCloudTest' component={TagCloudTest} />
+                    <Route exact path='/Test007' component={Test007} />
                 </div>
             </Router>
         );

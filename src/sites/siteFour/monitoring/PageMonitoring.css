@@ -274,5 +274,12 @@
 }
 
 
+.react-grid-item {
+    touch-action: none;
+}
+
+.drag-handle {
+    touch-action: none;
+}
 
 

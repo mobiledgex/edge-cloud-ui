@@ -1158,9 +1158,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         _makeGridItemOne(uniqueIndex, hwType, graphType, item,) {
             return (
-                <div key={uniqueIndex} data-grid={item} style={{margin: 5, backgroundColor: 'black'}}
+                <div
+                    key={uniqueIndex} data-grid={item} style={{margin: 0, backgroundColor: 'black'}}
                      onClick={() => {
-                         //alert('sdlkfdslkf')
+                        // alert('sdlkfdslkf')
                      }}
                      onDoubleClick={async () => {
                          await this.setState({
@@ -1178,7 +1179,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                          }, 500)
                      }}
                 >
-                    <div className='page_monitoring_column_kyungjoon1' style={{height: this.gridItemHeight}}>
+                    <div className='page_monitoring_column_kyungjoon1'
+                        //onMouseDown={ e => e.stopPropagation() }
+                         style={{height: this.gridItemHeight}}>
                         {/*@todo:_makeGridItemOneByType      */}
                         {/*@todo:_makeGridItemOneByType      */}
                         {this.____makeGridItemOneByType(hwType, graphType.toUpperCase())}
@@ -1240,7 +1243,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     style={{backgroundColor: 'black'}}
                     isResizable={true}
                     isDraggable={this.state.isDraggable}
-                    useCSSTransforms={true}
+                    //useCSSTransforms={true}
                     className={'layout'}
                     cols={{lg: 3, md: 3, sm: 3, xs: 3, xxs: 3}}
                     layout={this.state.layoutForCluster}
@@ -1251,6 +1254,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             isResizeComplete: !this.state.isResizeComplete,
                         })
                     }}
+
                     onLayoutChange={(layout) => {
                         this.setState({
                             layoutForCluster: layout,
@@ -1261,6 +1265,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         reactLocalStorage.setObject(getUserId() + "_layout", layout)
 
                     }}
+
+                    {...this.props}
 
                 >
                     {this.state.layoutForCluster.map((item, loopIndex) => {
