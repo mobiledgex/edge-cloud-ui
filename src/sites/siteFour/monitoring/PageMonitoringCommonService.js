@@ -134,10 +134,13 @@ export const PageMonitoringStyles = {
         width: '100%', backgroundColor: 'blue', fontSize: 15, display: 'flex'
         , alignItems: 'center', justifyContent: 'center',
     },
-    gridTableData: {flex: .15, backgroundColor: '#181A1F', height: 64, marginTop: 0, alignSelf: 'center'},
-    gridTableData2: {flex: .15, backgroundColor: '#1e2025', height: 64, marginTop: 0, alignSelf: 'center'},
+    gridTableData: {flex: .15, backgroundColor: '#181A1F', height: 64, marginTop: 0, textAlign: 'center'},
+    gridTableData2: {flex: .15, backgroundColor: '#1e2025', height: 64, marginTop: 0, textAlign: 'center'},
 
 
+
+    appInstGridTableData: {flex: .083, backgroundColor: '#181A1F', height: 64, marginTop: 0, textAlign: 'center'},
+    appInstGridTableData2: {flex: .083, backgroundColor: '#1e2025', height: 64, marginTop: 0, textAlign: 'center'},
 }
 export const noDataArea = () => (
     <div style={PageMonitoringStyles.center3}>

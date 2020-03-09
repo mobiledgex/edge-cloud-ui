@@ -57,10 +57,8 @@ export default class VirutalAppInstEventLogListContainer extends React.Component
 
 
     render() {
-
         let gridHeight = 305
-        let gridWidth = window.innerWidth;
-
+        let gridWidth = window.innerWidth*0.9;
         let eventLogList = this.state.eventLogList;
 
         return (
@@ -86,12 +84,10 @@ export default class VirutalAppInstEventLogListContainer extends React.Component
                     </div>
 
                 </div>
-                <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing styles={{zIndex: 999999999999, overflowY: 'auto'}}>
+                <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing styles={{zIndex: 999999999999}}>
                     <Table.Header className="viewListTableHeader" styles={{zIndex: 99999999999}}>
                         <Table.Row>
-                            <Table.HeaderCell textAlign={'center'}>
-                                INDEX
-                            </Table.HeaderCell>
+
                             <Table.HeaderCell textAlign={'center'}>
                                 TIME
                             </Table.HeaderCell>
@@ -147,13 +143,7 @@ export default class VirutalAppInstEventLogListContainer extends React.Component
                     >
                         {({index, style}) => {
                             return (
-                                <tr className='page_monitoring_popup_table_row' style={style}
-                                >
-                                    <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableData : PageMonitoringStyles.gridTableData2}>
-                                        <div style={{marginTop: 10}}>
-                                            {index}
-                                        </div>
-                                    </td>
+                                <tr className='page_monitoring_popup_table_row' style={style}>
                                     <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableData : PageMonitoringStyles.gridTableData2}>
                                         <div style={{marginTop: 10}}>
                                             {eventLogList[index][0].toString().split('T')[0]}
