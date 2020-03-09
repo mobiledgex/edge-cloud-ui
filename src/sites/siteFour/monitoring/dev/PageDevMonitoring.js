@@ -1261,11 +1261,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         }, () => {
                             console.log("layoutForCluster===>", this.state.layoutForCluster);
                         })
-
                         reactLocalStorage.setObject(getUserId() + "_layout", layout)
-
                     }}
-
                     {...this.props}
 
                 >
@@ -1512,6 +1509,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 Cluster | Cloudlet
                             </div>
                             <Dropdown
+                                selectOnBlur={false}
                                 value={this.state.currentCluster}
                                 clearable={this.state.clusterSelectBoxClearable}
                                 disabled={this.state.loading}
@@ -1535,6 +1533,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 App Inst
                             </div>
                             <Dropdown
+                                selectOnBlur={false}
                                 disabled={this.state.currentCluster === '' || this.state.loading || this.state.appInstDropdown.length === 0}
                                 clearable={this.state.appInstSelectBoxClearable}
                                 loading={this.state.loading}

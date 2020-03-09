@@ -282,4 +282,17 @@
     touch-action: none;
 }
 
+.react-grid-item.react-grid-placeholder {
+    background-color: navy;
+    border: solid 2px #3f9ec6;
+    opacity: 0.25;
+    transition-duration: 100ms;
+    z-index: 2;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+}
+
 
