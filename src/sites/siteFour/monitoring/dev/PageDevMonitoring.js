@@ -60,7 +60,15 @@ import {
     renderPlaceHolderCircular,
     showToast
 } from "../PageMonitoringCommonService";
-import {getAllClusterEventLogList, getAppInstEventLogs, getAppLevelUsageList} from "../PageMonitoringMetricService";
+import {
+    getAllClusterEventLogList,
+    getAppInstEventLogs,
+    getAppInstList,
+    getAppLevelUsageList,
+    getCloudletList,
+    getClusterLevelUsageList,
+    getClusterList
+} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraph from "../components/ModalGraph";
@@ -78,6 +86,7 @@ import LineChartContainer from "../components/LineChartContainer";
 import EventLogListContainer from "../components/EventLogListContainer";
 import PerformanceSummaryTable from "../components/PerformanceSummaryTable";
 import VirutalAppInstEventLogListContainer from "../components/VirutalAppInstEventLogListContainer";
+import AppInstEventLogListContainer from "../components/AppInstEventLogListContainer";
 
 const {Option} = Select;
 
@@ -426,7 +435,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 clearInterval(this.intervalForAppInst)
 
                 this.setState({dropdownRequestLoading: true})
-              /*  let clusterList = await getClusterList();
+                let clusterList = await getClusterList();
                 let cloudletList = await getCloudletList()
                 let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
                 console.log("appInstanceList===>", appInstanceList);
@@ -434,13 +443,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     this.setState({
                         isNoData: true,
                     })
-                }*/
+                }
 
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
-                let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+                /*let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
                 let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-                let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
+                let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')*/
                 console.log('appInstanceList====>', appInstanceList);
 
                 console.log('clusterUsageList===>', clusterList);
@@ -502,16 +511,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 //fixme: real data
                 //fixme: real data
-              /*  try {
+                try {
                     allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
                 } catch (e) {
 
-                }*/
+                }
 
 
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
-                allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+                //allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
                 console.log('filteredAppInstanceList===>', appInstanceList)
 
                 let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
@@ -790,14 +799,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: ############################
             //todo: filtered AppInstEventLogList
             //todo: ############################
-            let filteredAppInstEventLogList = this.state.allAppInstEventLogs.filter(item => {
-                if (item[1] === AppName && item[2] === ClusterInst) {
+
+            let _allAppInstEventLog = this.state.allAppInstEventLogs;
+
+            let filteredAppInstEventLogList = _allAppInstEventLog.filter(item => {
+                if (item[1] === AppName && item[2] === ClusterInst && item[4] === Cloudlet) {
                     return true;
                 }
             })
 
             await this.setState({
-                filteredAppInstEventLogs: filteredAppInstEventLogList === 0 ? [] : filteredAppInstEventLogList,
+                filteredAppInstEventLogs: filteredAppInstEventLogList.length > 0 ? filteredAppInstEventLogList : [],
                 currentTabIndex: 0,
             });
 

@@ -129,7 +129,7 @@ export default class AppInstEventLogListContainer extends React.Component<Props,
 
                                                //let dataSet = AppInst + " | " + item.Cloudlet.trim() + " | " + Cluster + " | " + Region;
 
-                                               let AppName = item[1]
+                                             /*  let AppName = item[1]
                                                let Cloudlet = item[4]
                                                let Cluster = item[2]
                                                let currentAppInst = AppName + " | " + Cloudlet + " | " + Cluster + " | ";
@@ -138,7 +138,7 @@ export default class AppInstEventLogListContainer extends React.Component<Props,
                                                    loading: true,
                                                }, () => {
                                                    this.props.handleAppInstDropdown(currentAppInst)
-                                               })
+                                               })*/
 
 
                                            }}

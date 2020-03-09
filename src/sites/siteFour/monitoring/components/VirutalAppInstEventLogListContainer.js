@@ -5,7 +5,9 @@ import {Tooltip} from "antd";
 import {PageMonitoringStyles, renderPlaceHolderCircular} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
+import {FixedSizeList} from "react-window";
 
+const {Row, Cell, Body, Header, HeaderCell} = Table
 type Props = {
     eventLogList: any,
     columnList: any,
@@ -34,6 +36,7 @@ export default class VirutalAppInstEventLogListContainer extends React.Component
             eventLogList: this.props.eventLogList,
         }, () => {
             //alert(JSON.stringify(this.state.eventLogList))
+            //  alert(this.state.eventLogList.length)
         })
     }
 
@@ -45,6 +48,8 @@ export default class VirutalAppInstEventLogListContainer extends React.Component
                 eventLogList: nextProps.eventLogList,
             }, () => {
                 //alert(JSON.stringify(this.state.eventLogList))
+
+                //alert(this.state.eventLogList.length)
             })
         }
 
@@ -52,6 +57,12 @@ export default class VirutalAppInstEventLogListContainer extends React.Component
 
 
     render() {
+
+        let gridHeight = 270
+        let gridWidth = window.innerWidth;
+
+        let eventLogList = this.state.eventLogList;
+
         return (
             <>
                 <div style={{
@@ -80,32 +91,31 @@ export default class VirutalAppInstEventLogListContainer extends React.Component
                 <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing styles={{zIndex: 999999999999, overflowY: 'auto'}}>
                     <Table.Header className="viewListTableHeader" styles={{zIndex: 99999999999}}>
                         <Table.Row>
-                            <Table.HeaderCell>
+                            <Table.HeaderCell textAlign={'center'}>
+                                INDEX
+                            </Table.HeaderCell>
+                            <Table.HeaderCell textAlign={'center'}>
                                 TIME
                             </Table.HeaderCell>
-                            <Table.HeaderCell>
+                            <Table.HeaderCell textAlign={'center'}>
                                 APP
                             </Table.HeaderCell>
-                            <Table.HeaderCell>
+                            <Table.HeaderCell textAlign={'center'}>
                                 CLUSTER
-
                             </Table.HeaderCell>
-                            <Table.HeaderCell>
+                            <Table.HeaderCell textAlign={'center'}>
                                 DEV
-
                             </Table.HeaderCell>
-                            <Table.HeaderCell>
+                            <Table.HeaderCell textAlign={'center'}>
                                 CLOUDLET
-
                             </Table.HeaderCell>
-                            <Table.HeaderCell>
+                            <Table.HeaderCell textAlign={'center'}>
                                 OPERATOR
-
                             </Table.HeaderCell>
-                            <Table.HeaderCell>
+                            <Table.HeaderCell textAlign={'center'}>
                                 EVENT
                             </Table.HeaderCell>
-                            <Table.HeaderCell>
+                            <Table.HeaderCell textAlign={'center'}>
                                 STATUS
                             </Table.HeaderCell>
                         </Table.Row>
@@ -118,92 +128,86 @@ export default class VirutalAppInstEventLogListContainer extends React.Component
                     </Table.Body>
                     }
 
-                    <Table.Body isSorted={true} className="tbBodyList">
+                    <table style={{display: 'flex', marginTop: 0}}>
                         {this.props.parent.state.loading &&
-                        renderPlaceHolderCircular()
+                        <div
+                             style={PageMonitoringStyles.center3}>
+
+                            <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}/>
+
+                        </div>
                         }
-                        {!this.props.parent.state.loading && this.state.eventLogList !== undefined && this.state.eventLogList.map((item, index) => {
-                            return (
-                                <Table.Row className='page_monitoring_popup_table_row'
-                                           onClick={async () => {
 
-                                               //let dataSet = AppInst + " | " + item.Cloudlet.trim() + " | " + Cluster + " | " + Region;
+                        {!this.props.parent.state.loading && this.state.eventLogList !== undefined &&
+                        <FixedSizeList
+                            className="List"
+                            height={gridHeight}
+                            itemCount={this.state.eventLogList.length}
+                            itemSize={50}
+                            style={{backgroundColor: 'black', overFlowY: 'auto'}}
+                            width={gridWidth}
+                        >
+                            {({index, style}) => {
+                                return (
+                                    <tr className='page_monitoring_popup_table_row' style={style}
 
-                                               let AppName = item[1]
-                                               let Cloudlet = item[4]
-                                               let Cluster = item[2]
-                                               let currentAppInst = AppName + " | " + Cloudlet + " | " + Cluster + " | ";
+                                        onClick={async () => {
 
-                                               this.setState({
-                                                   loading: true,
-                                               }, () => {
-                                                   this.props.handleAppInstDropdown(currentAppInst)
-                                               })
+                                            //let dataSet = AppInst + " | " + item.Cloudlet.trim() + " | " + Cluster + " | " + Region;
+
+                                            let AppName = eventLogList[index][1]
+                                            let Cloudlet = eventLogList[index][4]
+                                            let Cluster = eventLogList[index][2]
+                                            let currentAppInst = AppName + " | " + Cloudlet + " | " + Cluster + " | ";
+
+                                            this.setState({
+                                                loading: true,
+                                            }, () => {
+                                                this.props.handleAppInstDropdown(currentAppInst)
+                                            })
 
 
-                                           }}
-                                >
-                                    <Table.Cell>
-                                        {item[0].toString().split('T')[0]}
-                                        {`\n\n`}
-                                        {item[0].toString().split('T')[1].substring(0, 8)}
-                                    </Table.Cell>
-                                    <Tooltip
-                                        placement="topLeft"
-                                        title={
-                                            <div>
-                                                <p>{item[1]}</p>
-                                            </div>
-                                        }
+                                        }}
                                     >
-                                        <Table.Cell>
-                                            {/*todo:appInst*/}
-                                            {item[1]}
-                                        </Table.Cell>
-                                    </Tooltip>
-                                    <Table.Cell>
-                                        {/*todo:Cluster*/}
-                                        {item[2]}
-                                    </Table.Cell>
-                                    <Tooltip
-                                        placement="topLeft"
-                                        title={
-                                            <div>
-                                                <p>{item[3]}</p>
-                                            </div>
-                                        }
-                                    >
-                                        <Table.Cell>
-                                            {item[3]}
-                                        </Table.Cell>
-                                    </Tooltip>
+                                        <td style={{flex: .15, backgroundColor: 'black', textAlign: 'center', height: 50}}>
+                                            {index}
+                                        </td>
+                                        <td style={{flex: .15, backgroundColor: 'black', textAlign: 'center', height: 50}}>
+                                            {eventLogList[index][0].toString().split('T')[0]}
+                                            {`\n\n`}
+                                            {eventLogList[index][0].toString().split('T')[1].substring(0, 8)}
+                                        </td>
+                                        <td style={{flex: .15, backgroundColor: 'black', textAlign: 'center', height: 50}}>
+                                            {eventLogList[index][1]}
+                                        </td>
+                                        <td style={{flex: .15, backgroundColor: 'black', textAlign: 'center', height: 50}}>
+                                            {eventLogList[index][2]}
+                                        </td>
+                                        <td style={{flex: .15, backgroundColor: 'black', textAlign: 'center', height: 50}}>
+                                            {eventLogList[index][3]}
+                                        </td>
+                                        <td style={{flex: .15, backgroundColor: 'black', textAlign: 'center', height: 50}}>
+                                            {eventLogList[index][4]}
+                                        </td>
+                                        <td style={{flex: .15, backgroundColor: 'black', textAlign: 'center', height: 50}}>
+                                            {eventLogList[index][5]}
+                                        </td>
+                                        <td style={{flex: .15, backgroundColor: 'black', textAlign: 'center', height: 50}}>
+                                            {eventLogList[index][5]}
+                                        </td>
+                                        <td style={{flex: .15, backgroundColor: 'black', textAlign: 'center', height: 50}}>
+                                            {eventLogList[index][5]}
+                                        </td>
+                                    </tr>
 
-                                    <Table.Cell>
-                                        {item[4]}
-                                    </Table.Cell>
-                                    <Tooltip
-                                        placement="topLeft"
-                                        title={
-                                            <div>
-                                                <p>{item[5]}</p>
-                                            </div>
-                                        }
-                                    >
-                                        <Table.Cell>
-                                            {item[5]}
-                                        </Table.Cell>
-                                    </Tooltip>
+                                )
+                            }}
 
-                                    <Table.Cell>
-                                        {item[6]}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {item[7]}
-                                    </Table.Cell>
-                                </Table.Row>
-                            )
-                        })}
-                    </Table.Body>
+                        </FixedSizeList>
+                        }
+
+
+                    </table>
                 </Table>
             </>
         )

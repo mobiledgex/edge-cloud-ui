@@ -211,6 +211,31 @@ export const renderPlaceHolderCircular = (type: string = '') => {
     )
 }
 
+export const renderPlaceHolderCircular2 = (type: string = '') => {
+    return (
+        <div className='page_monitoring_blank_box'
+             style={{height: '100%'}}>
+            {/*<Lottie
+                options={{
+                    loop: true,
+                    autoplay: true,
+                    animationData: require('../../../lotties/14112-heartrate_777'),
+                    rendererSettings: {
+                        preserveAspectRatio: 'xMidYMid slice'
+                    }
+                }}
+                speed={2.5}
+                height={150}
+                width={150}
+                isStopped={false}
+                isPaused={false}
+            />*/}
+            <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}
+            />
+        </div>
+    )
+}
+
 
 export const renderPlaceHolderLottiePinJump = (type: string = '') => {
     return (
@@ -577,18 +602,18 @@ export const arraysEqual = (a, b) => {
 export const renderBarChartCore = (chartDataList, hardwareType, _this, graphType, isResizeComplete) => {
 
     return (
-       <div style={{width:'100%'}}>
-           <Chart
-               key={isResizeComplete}
-               //height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
-               height={'100%'}
-               chartType={graphType === GRID_ITEM_TYPE.BAR ? 'BarChart' : 'ColumnChart'}
-               //chartType={'ColumnChart'}
-               loader={<div><CircularProgress style={{color: '#1cecff', zIndex: 999999}}/></div>}
-               data={chartDataList}
-               options={graphType === GRID_ITEM_TYPE.BAR ? barChartOption(hardwareType) : columnChartOption(hardwareType)}
-           />
-       </div>
+        <div style={{width: '100%'}}>
+            <Chart
+                key={isResizeComplete}
+                //height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
+                height={'100%'}
+                chartType={graphType === GRID_ITEM_TYPE.BAR ? 'BarChart' : 'ColumnChart'}
+                //chartType={'ColumnChart'}
+                loader={<div><CircularProgress style={{color: '#1cecff', zIndex: 999999}}/></div>}
+                data={chartDataList}
+                options={graphType === GRID_ITEM_TYPE.BAR ? barChartOption(hardwareType) : columnChartOption(hardwareType)}
+            />
+        </div>
     );
 }
 

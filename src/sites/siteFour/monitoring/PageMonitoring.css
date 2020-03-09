@@ -295,4 +295,22 @@
 
 }
 
+.page_monitoring_popup_table_row {
+    flex: 1;
+    display: flex;
+}
+
+/*.viewListTableHeader{
+    flex: 1;
+    display: flex;
+}*/
+
+
+.viewListTableHeader2 {
+    flex: 1;
+    display: flex;
+}
+
+
+
 
