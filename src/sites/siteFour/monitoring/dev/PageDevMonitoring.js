@@ -809,7 +809,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
 
             await this.setState({
-                filteredAppInstEventLogs: filteredAppInstEventLogList.length > 0 ? filteredAppInstEventLogList : [],
+                filteredAppInstEventLogs: filteredAppInstEventLogList,
                 currentTabIndex: 0,
             });
 

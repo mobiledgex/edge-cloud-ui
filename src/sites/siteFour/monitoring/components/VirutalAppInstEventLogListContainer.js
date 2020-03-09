@@ -155,7 +155,7 @@ export default class VirutalAppInstEventLogListContainer extends React.Component
 
                                             //let dataSet = AppInst + " | " + item.Cloudlet.trim() + " | " + Cluster + " | " + Region;
 
-                                            let AppName = eventLogList[index][1]
+                                         /*   let AppName = eventLogList[index][1]
                                             let Cloudlet = eventLogList[index][4]
                                             let Cluster = eventLogList[index][2]
                                             let currentAppInst = AppName + " | " + Cloudlet + " | " + Cluster + " | ";
@@ -164,7 +164,7 @@ export default class VirutalAppInstEventLogListContainer extends React.Component
                                                 loading: true,
                                             }, () => {
                                                 this.props.handleAppInstDropdown(currentAppInst)
-                                            })
+                                            })*/
 
 
                                         }}
