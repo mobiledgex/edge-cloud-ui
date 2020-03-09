@@ -440,9 +440,9 @@
     cursor: default;
 }
 
-.page_monitoring_popup_table .ui.celled.table tbody tr.page_monitoring_popup_table_row:hover {
+/*.page_monitoring_popup_table .ui.celled.table tbody tr.page_monitoring_popup_table_row:hover {
     background-color: #444 !important;
-}
+}*/
 
 
 .page_monitoring_grid {

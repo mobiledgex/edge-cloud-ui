@@ -71,18 +71,16 @@ export default class VirutalAppInstEventLogListContainer extends React.Component
                     height: 45
                 }}>
                     <div className='page_monitoring_title' style={{
-                        backgroundColor: 'transparent',
-                        flex: .2,
+                        //backgroundColor: 'red',
+                        flex: .13,
                         marginTop: 8,
                         alignSelf: 'center',
+
                     }}>
                         App Inst Event Log
                     </div>
-                    <div style={{
-                        flex: .8,
-                        marginRight: 70, alignItems: 'flex-start', marginTop: 8, alignSelf: 'center', justifyContent: 'flex-start'
-                    }} className={'page_monitoring_title'}>
-                        {this.props.parent.state.currentAppInst.toString()}
+                    <div style={PageMonitoringStyles.gridTitle2} className={'page_monitoring_title'}>
+                        {!this.props.parent.state.loading && this.props.parent.state.currentAppInst.toString()}
 
                         {/*.split("|")[0].trim()*/}
                     </div>
@@ -120,7 +118,7 @@ export default class VirutalAppInstEventLogListContainer extends React.Component
                             </Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
-                    {this.state.eventLogList.length === 0 &&
+                    {!this.props.parent.state.loading && this.state.eventLogList.length === 0 &&
                     <Table.Body className="tbBodyList">
                         <Table.Row warning={true} className='page_monitoring_popup_table_row' style={PageMonitoringStyles.noData2}>
                             <Table.Cell positive={false}>No Event Log</Table.Cell>
@@ -128,7 +126,7 @@ export default class VirutalAppInstEventLogListContainer extends React.Component
                     </Table.Body>
                     }
 
-                    <table style={{display: 'flex', marginTop: 0}}>
+                    <tbody style={{display: 'flex', marginTop: 0}}>
                         {this.props.parent.state.loading &&
                         <div
                              style={PageMonitoringStyles.center3}>
@@ -143,7 +141,7 @@ export default class VirutalAppInstEventLogListContainer extends React.Component
                             className="List"
                             height={gridHeight}
                             itemCount={this.state.eventLogList.length}
-                            itemSize={50}
+                            itemSize={64}
                             style={{backgroundColor: 'black', overFlowY: 'auto'}}
                             width={gridWidth}
                         >
@@ -151,33 +149,33 @@ export default class VirutalAppInstEventLogListContainer extends React.Component
                                 return (
                                     <tr className='page_monitoring_popup_table_row' style={style}
                                     >
-                                        <td style={{flex: .15, backgroundColor: 'black', textAlign: 'center', height: 50}}>
+                                        <td style={index% 2 ===0 ? PageMonitoringStyles.gridTableData : PageMonitoringStyles.gridTableData2}>
                                             {index}
                                         </td>
-                                        <td style={{flex: .15, backgroundColor: 'black', textAlign: 'center', height: 50}}>
+                                        <td style={index% 2 ===0 ? PageMonitoringStyles.gridTableData : PageMonitoringStyles.gridTableData2}>
                                             {eventLogList[index][0].toString().split('T')[0]}
                                             {`\n\n`}
                                             {eventLogList[index][0].toString().split('T')[1].substring(0, 8)}
                                         </td>
-                                        <td style={{flex: .15, backgroundColor: 'black', textAlign: 'center', height: 50}}>
+                                        <td style={index% 2 ===0 ? PageMonitoringStyles.gridTableData : PageMonitoringStyles.gridTableData2}>
                                             {eventLogList[index][1]}
                                         </td>
-                                        <td style={{flex: .15, backgroundColor: 'black', textAlign: 'center', height: 50}}>
+                                        <td style={index% 2 ===0 ? PageMonitoringStyles.gridTableData : PageMonitoringStyles.gridTableData2}>
                                             {eventLogList[index][2]}
                                         </td>
-                                        <td style={{flex: .15, backgroundColor: 'black', textAlign: 'center', height: 50}}>
+                                        <td style={index% 2 ===0 ? PageMonitoringStyles.gridTableData : PageMonitoringStyles.gridTableData2}>
                                             {eventLogList[index][3]}
                                         </td>
-                                        <td style={{flex: .15, backgroundColor: 'black', textAlign: 'center', height: 50}}>
+                                        <td style={index% 2 ===0 ? PageMonitoringStyles.gridTableData : PageMonitoringStyles.gridTableData2}>
                                             {eventLogList[index][4]}
                                         </td>
-                                        <td style={{flex: .15, backgroundColor: 'black', textAlign: 'center', height: 50}}>
+                                        <td style={index% 2 ===0 ? PageMonitoringStyles.gridTableData : PageMonitoringStyles.gridTableData2}>
                                             {eventLogList[index][5]}
                                         </td>
-                                        <td style={{flex: .15, backgroundColor: 'black', textAlign: 'center', height: 50}}>
+                                        <td style={index% 2 ===0 ? PageMonitoringStyles.gridTableData : PageMonitoringStyles.gridTableData2}>
                                             {eventLogList[index][5]}
                                         </td>
-                                        <td style={{flex: .15, backgroundColor: 'black', textAlign: 'center', height: 50}}>
+                                        <td style={index% 2 ===0 ? PageMonitoringStyles.gridTableData : PageMonitoringStyles.gridTableData2}>
                                             {eventLogList[index][5]}
                                         </td>
                                     </tr>
@@ -189,7 +187,7 @@ export default class VirutalAppInstEventLogListContainer extends React.Component
                         }
 
 
-                    </table>
+                    </tbody>
                 </Table>
             </>
         )

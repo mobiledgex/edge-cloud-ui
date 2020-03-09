@@ -14,6 +14,10 @@ import {Grid} from "semantic-ui-react";
 import {barChartOption, columnChartOption} from "./PageMonitoringUtils";
 
 export const PageMonitoringStyles = {
+    gridTitle2: {
+        flex: .87,
+        marginLeft: 0, alignItems: 'flex-start', marginTop: 8, alignSelf: 'center', justifyContent: 'flex-start'
+    },
     selectBoxRow: {
         alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,
     },
@@ -129,7 +133,11 @@ export const PageMonitoringStyles = {
     noData2: {
         width: '100%', backgroundColor: 'blue', fontSize: 15, display: 'flex'
         , alignItems: 'center', justifyContent: 'center',
-    }
+    },
+    gridTableData: {flex: .15, backgroundColor: '#181A1F', textAlign: 'center', height: 64, display: 'flex', alignSelf: 'center'},
+    gridTableData2: {flex: .15, backgroundColor: '#1e2025', textAlign: 'center', height: 64, display: 'flex', alignSelf: 'center'},
+
+
 
 }
 export const noDataArea = () => (
