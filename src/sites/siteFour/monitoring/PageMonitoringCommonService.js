@@ -199,7 +199,7 @@ export const renderGridLoader = () => {
 export const renderPlaceHolderCircular = (type: string = '') => {
     return (
         <div className='page_monitoring_blank_box'
-             style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
+             style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%', zIndex:999999999999999999999}}>
             {/*<Lottie
                 options={{
                     loop: true,

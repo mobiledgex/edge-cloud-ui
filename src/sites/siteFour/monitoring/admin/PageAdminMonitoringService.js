@@ -12,7 +12,7 @@ import {
     renderLineChartCore,
     renderUsageByType2,
     PageMonitoringStyles,
-    showToast
+    showToast, renderPlaceHolderCircular
 } from "../PageMonitoringCommonService";
 import {TabPanel, Tabs} from "react-tabs";
 import {Table} from "semantic-ui-react";
@@ -895,22 +895,9 @@ export const renderBottomGridArea = (_this) => {
                 {/*todo:ROW HEADER        */}
                 {/*-----------------------*/}
                 {!_this.state.isReady &&
-                <Table.Row className='page_monitoring_popup_table_empty'>
+                <Table.Row className='page_monitoring_popup_table_empty' style={{zIndex:999999}}>
                     <Table.Cell>
-                        <Lottie
-                            options={{
-                                loop: true,
-                                autoplay: true,
-                                animationData: require('../../../../lotties/loader001'),
-                                rendererSettings: {
-                                    preserveAspectRatio: 'xMidYMid slice'
-                                }
-                            }}
-                            height={240}
-                            width={240}
-                            isStopped={false}
-                            isPaused={false}
-                        />
+                        {renderPlaceHolderCircular()}
                     </Table.Cell>
                 </Table.Row>}
                 {_this.state.isReady && _this.state.filteredGridInstanceList.map((item: TypeGridInstanceList, index) => {
