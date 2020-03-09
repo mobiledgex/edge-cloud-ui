@@ -794,26 +794,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 console.log('filteredAppInstUsageList===>', this.state.filteredAppInstUsageList)
             })
 
-            //todo: appInst EventLog
-            //todo: appInst EventLog
-            //todo: appInst EventLog
-
-            let appInstEventLog = this.state.allAppInstEventLogs;
-            let appInstEventLogList = appInstEventLog.filter(item => {
+            //todo: ############################
+            //todo: filtered AppInstEventLogList
+            //todo: ############################
+            let filteredAppInstEventLogList = this.state.allAppInstEventLogs.filter(item => {
                 if (item[1] === AppName && item[2] === ClusterInst) {
                     return true;
                 }
             })
 
-            console.log("_eventLogs===>", appInstEventLogList);
-
             await this.setState({
-                filteredAppInstEventLogs: appInstEventLogList === 0 ? [] : appInstEventLogList,
-            });
-
-            await this.setState({
+                filteredAppInstEventLogs: filteredAppInstEventLogList === 0 ? [] : filteredAppInstEventLogList,
                 currentTabIndex: 0,
-            })
+            });
 
             if (this.state.isStream) {
                 this.setAppInstInterval(filteredAppList)
