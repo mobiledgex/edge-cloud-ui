@@ -292,7 +292,6 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-
 }
 
 .page_monitoring_popup_table_row {
@@ -311,11 +310,6 @@
     display: flex;
 }
 
-.page_monitoring_popup_table_row:hover
-{
-    /*your code goes here*/
-    pointer-events: none;
-}
 
 
 

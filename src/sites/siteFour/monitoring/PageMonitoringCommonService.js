@@ -134,9 +134,8 @@ export const PageMonitoringStyles = {
         width: '100%', backgroundColor: 'blue', fontSize: 15, display: 'flex'
         , alignItems: 'center', justifyContent: 'center',
     },
-    gridTableData: {flex: .15, backgroundColor: '#181A1F', textAlign: 'center', height: 64, display: 'flex', alignSelf: 'center'},
-    gridTableData2: {flex: .15, backgroundColor: '#1e2025', textAlign: 'center', height: 64, display: 'flex', alignSelf: 'center'},
-
+    gridTableData: {flex: .15, backgroundColor: '#181A1F', height: 64, marginTop: 0, alignSelf: 'center'},
+    gridTableData2: {flex: .15, backgroundColor: '#1e2025', height: 64, marginTop: 0, alignSelf: 'center'},
 
 
 }
