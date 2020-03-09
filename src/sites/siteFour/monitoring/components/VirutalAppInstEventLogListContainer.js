@@ -150,24 +150,6 @@ export default class VirutalAppInstEventLogListContainer extends React.Component
                             {({index, style}) => {
                                 return (
                                     <tr className='page_monitoring_popup_table_row' style={style}
-
-                                        onClick={async () => {
-
-                                            //let dataSet = AppInst + " | " + item.Cloudlet.trim() + " | " + Cluster + " | " + Region;
-
-                                         /*   let AppName = eventLogList[index][1]
-                                            let Cloudlet = eventLogList[index][4]
-                                            let Cluster = eventLogList[index][2]
-                                            let currentAppInst = AppName + " | " + Cloudlet + " | " + Cluster + " | ";
-
-                                            this.setState({
-                                                loading: true,
-                                            }, () => {
-                                                this.props.handleAppInstDropdown(currentAppInst)
-                                            })*/
-
-
-                                        }}
                                     >
                                         <td style={{flex: .15, backgroundColor: 'black', textAlign: 'center', height: 50}}>
                                             {index}
