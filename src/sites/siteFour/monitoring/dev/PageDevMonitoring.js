@@ -566,6 +566,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredClusterUsageList: this.state.allClusterUsageList,
                 filteredAppInstanceList: this.state.appInstanceList,
                 filteredClusterEventLogList: this.state.allClusterEventLogList,
+                filteredAppInstEventLogs: this.state.allAppInstEventLogs,
                 appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
             });
             //todo: reset bubble chart data
@@ -1083,7 +1084,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                 return (
-                    <EventLogListContainerForAppInst currentAppInst={this.state.currentAppInst} parent={this} handleAppInstDropdown={this.handleAppInstDropdown} eventLogList={this.state.filteredAppInstEventLogs}/>
+                    <EventLogListContainerForAppInst currentAppInst={this.state.currentAppInst} parent={this} handleAppInstDropdown={this.handleAppInstDropdown}
+                                                     eventLogList={this.state.filteredAppInstEventLogs}/>
                 )
             }
         }

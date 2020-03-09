@@ -71,7 +71,9 @@ export default class AppInstEventLogListContainer extends React.Component<Props,
                         flex: .8,
                         marginRight: 70, alignItems: 'flex-start', marginTop: 8, color: 'yellow', alignSelf: 'center', justifyContent: 'flex-start'
                     }} className={'page_monitoring_title'}>
-                        {this.props.parent.state.currentAppInst.toString().split("|")[0].trim()}
+                        {this.props.parent.state.currentAppInst.toString()}
+
+                        {/*.split("|")[0].trim()*/}
                     </div>
 
                 </div>
