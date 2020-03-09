@@ -80,7 +80,7 @@ export default class VirutalAppInstEventLogListContainer extends React.Component
                     </div>
                     <div style={{
                         flex: .8,
-                        marginRight: 70, alignItems: 'flex-start', marginTop: 8, color: 'yellow', alignSelf: 'center', justifyContent: 'flex-start'
+                        marginRight: 70, alignItems: 'flex-start', marginTop: 8, alignSelf: 'center', justifyContent: 'flex-start'
                     }} className={'page_monitoring_title'}>
                         {this.props.parent.state.currentAppInst.toString()}
 
