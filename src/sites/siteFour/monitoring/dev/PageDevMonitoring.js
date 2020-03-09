@@ -2,7 +2,7 @@ import 'react-hot-loader';
 import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Button, Dropdown, Grid, Modal, Tab, Table} from 'semantic-ui-react'
+import {Button, Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
@@ -37,12 +37,10 @@ import {
     CHART_COLOR_LIST4,
     CHART_COLOR_MONOKAI,
     CLASSIFICATION,
-    CONNECTIONS_OPTIONS,
     GRID_ITEM_TYPE,
     HARDWARE_OPTIONS_FOR_APPINST,
     HARDWARE_OPTIONS_FOR_CLUSTER,
     HARDWARE_TYPE,
-    NETWORK_OPTIONS,
     NETWORK_TYPE,
     RECENT_DATA_LIMIT_COUNT,
     THEME_OPTIONS,
@@ -62,14 +60,7 @@ import {
     renderPlaceHolderCircular,
     showToast
 } from "../PageMonitoringCommonService";
-import {
-    getAllClusterEventLogList,
-    getAppInstEventLogs, getAppInstList,
-    getAppLevelUsageList,
-    getCloudletList,
-    getClusterLevelUsageList,
-    getClusterList
-} from "../PageMonitoringMetricService";
+import {getAllClusterEventLogList, getAppInstEventLogs, getAppLevelUsageList} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraph from "../components/ModalGraph";
@@ -86,8 +77,7 @@ import BarChartContainer from "../components/BarChartContainer";
 import LineChartContainer from "../components/LineChartContainer";
 import EventLogListContainer from "../components/EventLogListContainer";
 import PerformanceSummaryTable from "../components/PerformanceSummaryTable";
-import TagCloudContainer from "../components/TagCloudContainer";
-import EventLogListContainerForAppInst from "../components/AppInstEventLogListContainer";
+import VirutalAppInstEventLogListContainer from "../components/VirutalAppInstEventLogListContainer";
 
 const {Option} = Select;
 
@@ -1086,8 +1076,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                 return (
-                    <EventLogListContainerForAppInst currentAppInst={this.state.currentAppInst} parent={this} handleAppInstDropdown={this.handleAppInstDropdown}
-                                                     eventLogList={this.state.filteredAppInstEventLogs}/>
+                    <VirutalAppInstEventLogListContainer currentAppInst={this.state.currentAppInst} parent={this} handleAppInstDropdown={this.handleAppInstDropdown}
+                                                         eventLogList={this.state.filteredAppInstEventLogs}/>
                 )
             }
         }

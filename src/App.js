@@ -24,7 +24,7 @@ import './css/pages/cloudletPool.css';
 import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
 import TagCloudTest from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/TagCloudTest";
-import VirtualIszeListExample from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/VirtualIszeListExample";
+import VirtualIzedListExample from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/VirtualIzedListExample";
 import Test007 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/Test007";
 // API
 
@@ -334,7 +334,7 @@ class App extends Component {
                     <Route exact path='/passwordreset' component={DashboardContainer.bind(this, {mainPath:'/passwordreset'})} />
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
                     <Route exact path='/TagCloudTest' component={TagCloudTest} />
-                    <Route exact path='/VirtualIszeListExample' component={VirtualIszeListExample} />
+                    <Route exact path='/VirtualIzedListExample' component={VirtualIzedListExample} />
                 </div>
             </Router>
         );
