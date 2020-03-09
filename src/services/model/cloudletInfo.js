@@ -1,5 +1,10 @@
 import { generateUniqueId } from '../serviceMC';
-import { fields, formatData } from './format'
+import * as formatter from './format'
+
+let fields = formatter.fields;
+
+export const SHOW_CLOUDLET_INFO = "ShowCloudletInfo";
+
 
 const keys = [
     { field: fields.cloudletName, serverField: 'key#OS#name' },
@@ -14,6 +19,17 @@ const keys = [
     { field: fields.osMaxVolGB, serverField: 'os_max_vol_gb' },
     { field: fields.flavors, serverField: 'flavors' },
 ]
+
+export const showCloudletInfos = (data) => {
+    let method = undefined;
+    if (formatter.isAdmin()) {
+        method = SHOW_CLOUDLET_INFO;
+    }
+    if(method)
+    {
+        return { method: method, data: data }
+    }
+}
 
 export const getKey = (data) => {
     const { CloudletName, Operator, Region } = data
@@ -32,5 +48,5 @@ const customData = (value) => {
 }
 
 export const getData = (response, body) => {
-    return formatData(response, body, keys, customData)
+    return formatter.formatData(response, body, keys, customData)
 }

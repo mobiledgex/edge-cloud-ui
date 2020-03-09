@@ -4,7 +4,7 @@ import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
 import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography';
-import { Button } from 'semantic-ui-react';
+import { Button } from '@material-ui/core';
 
 const DialogContent = withStyles(theme => ({
     root: {
@@ -20,22 +20,23 @@ const DialogActions = withStyles(theme => ({
 }))(MuiDialogActions);
 
 const MexMessageDialog = (props) => {
+    let message = props.messageInfo.message;
     return (
-        props.message && props.message.length>0 ?
-            <Dialog  open={props.message.length>0}>
-                {props.message.map(item=>(
-                    <DialogContent style={{background:'#616161',width:500}}>
-                        <Typography style={{color:'#FFF'}}>
-                            <p>{item}</p>
-                        </Typography>
-                    </DialogContent>
-                ))}
-                <DialogActions style={{background:'#616161'}}>
-                    <Button  autoFocus onClick={()=>{props.close()}} color="primary">
-                        OK
+        message ?
+            <Dialog open={message.length > 0}>
+                <DialogContent style={{ background: '#616161', width: 500 }}>
+                    <Typography style={{ color: '#FFF' }}>
+                        <p>{message}</p>
+                    </Typography>
+                </DialogContent>
+                <DialogActions style={{ background: '#616161' }}>
+                    <Button onClick={() => { props.onClick(false) }}>
+                        NO
+                    </Button>
+                    <Button onClick={() => { props.onClick(true) }} style={{color:'#76ff03'}}>
+                        YES
                     </Button>
                 </DialogActions>
-
             </Dialog> : null
     )
 }

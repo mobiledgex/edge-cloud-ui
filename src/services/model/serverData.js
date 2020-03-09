@@ -114,10 +114,33 @@ export const deletePrivacyPolicy = async (self, data) => {
 }
 /* Privacy Policy */
 
-export const getDataListFromServer = (self, requestType, filter, callback) => {
+const getToken = ()=>
+{
+    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+    return store.userToken;
+}
+
+export const sendRequest = async (self, requestData) =>
+{
+    requestData.token = getToken();
+    return await serviceMC.sendSyncRequest(self, requestData)
+}
+
+export const sendWSRequest = async (requestData, callback) =>
+{
+    requestData.token = getToken();
+    serviceMC.sendWSRequest(requestData, callback)
+}
+
+export const showDataFromServer = (self, requestType, filter, callback) => {
     let requestDataList = [];
     for (let i = 0; i < requestType.length; i++) {
-        requestDataList.push(getRequestInfo(requestType[i], filter))
+        let request = requestType[i](Object.assign({}, filter))
+        if (request) {
+            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+            request.token = store.userToken;
+            requestDataList.push(request);
+        }
     }
     serviceMC.sendMultiRequest(self, requestDataList, callback)
 }

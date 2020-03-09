@@ -86,12 +86,6 @@ export function sendWSRequest(request, callback) {
         let data = JSON.parse(evt.data);
         let response = {};
         response.data = data;
-        switch (request.method) {
-            case getEP().DELETE_CLUSTER_INST:
-            case getEP().DELETE_CLOUDLET:
-            case getEP().DELETE_APP_INST:
-                clearSockets(request.uuid);
-        }
         callback({request: request, response: response});
     }
 
@@ -109,6 +103,7 @@ export function sendWSRequest(request, callback) {
 
 
 export function sendMultiRequest(self, requestDataList, callback) {
+    
     if (requestDataList && requestDataList.length > 0) {
         let isSpinner = requestDataList[0].showSpinner === undefined ? true : requestDataList[0].showSpinner;
         showSpinner(self, isSpinner)
@@ -126,7 +121,6 @@ export function sendMultiRequest(self, requestDataList, callback) {
                 responseList.map((response, i) => {
                     resResults.push(EP.formatData(requestDataList[i], response));
                 })
-
                 showSpinner(self, false)
                 callback(resResults);
 

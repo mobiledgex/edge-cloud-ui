@@ -1,9 +1,48 @@
 import React from 'react'
-import {fields, formatData} from './format'
+import * as formatter from './format'
 import {TYPE_JSON} from '../../hoc/constant';
-import { Button, Popup, Icon } from 'semantic-ui-react';
+import { Button} from 'semantic-ui-react';
 import * as constant from './shared';
 
+const fields = formatter.fields;
+
+export const SHOW_CLOUDLET = "ShowCloudlet";
+export const SHOW_ORG_CLOUDLET = "orgcloudlet";
+export const STREAM_CLOUDLET = "StreamCloudlet";
+export const DELETE_CLOUDLET = "DeleteCloudlet";
+
+export const getKey = (data) => {
+    return ({
+        region: data[fields.region],
+        cloudlet: {
+            key: {
+                operator_key: { name: data[fields.operatorName] },
+                name: data[fields.cloudletName]
+            }
+        }
+    })
+}
+
+export const showCloudlets = (data) => {
+    let method = SHOW_ORG_CLOUDLET
+    if (formatter.isAdmin()) {
+        method = SHOW_CLOUDLET;
+    }
+    else {
+        data.org = formatter.getOrganization()
+    }
+    return { method: method, data: data }
+}
+
+export const deleteCloudlet = (data) => {
+    let requestData = getKey(data)
+    return {uuid:data.uuid, method: DELETE_CLOUDLET, data : requestData, success:`Cloudlet ${data[fields.cloudletName]}`}
+}
+
+export const streamCloudlet = (data) => {
+    let requestData = getKey(data)
+    return {uuid:data.uuid, method: STREAM_CLOUDLET, data : requestData}
+}
 
 export const getCloudletInfoState = (id, isDetailView) => {
     let state = 'Not Present';
@@ -59,18 +98,6 @@ export const keys = [
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable:true  }
 ]
 
-export const getKey = (data) => {
-    return ({
-        region: data[fields.region],
-        cloudlet: {
-            key: {
-                operator_key: { name: data[fields.operatorName] },
-                name: data[fields.cloudletName]
-            }
-        }
-    })
-}
-
 
 
 const customData = (value) => {
@@ -78,5 +105,5 @@ const customData = (value) => {
 }
 
 export const getData = (response, body) => {
-    return formatData(response, body, keys, customData, true)
+    return formatter.formatData(response, body, keys, customData, true)
 }

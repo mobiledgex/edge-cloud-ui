@@ -1,6 +1,11 @@
-import { fields, formatData } from './format'
+import * as formatter from './format'
 import * as constant from './shared';
 import { TYPE_JSON } from '../../hoc/constant';
+
+let fields = formatter.fields;
+
+export const SHOW_CLUSTER_INST = "ShowClusterInst";
+export const STREAM_CLUSTER_INST = "StreamClusterInst";
 
 export const keys = [
     { field: fields.region, label: 'Region', sortable: true, visible: true },
@@ -21,6 +26,19 @@ export const keys = [
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
 
+export const showClusterInsts = (data) => {
+    if (!formatter.isAdmin()) {
+        {
+            data.clusterinst = {
+                key: {
+                    developer: formatter.getOrganization()
+                }
+            }
+        }
+        return { method: SHOW_CLUSTER_INST, data: data }
+    }
+}
+
 export const getKey = (data) => {
     return ({
         region: data[fields.region],
@@ -39,5 +57,5 @@ const customData = (value) => {
 }
 
 export const getData = (response, body) => {
-    return formatData(response, body, keys, customData, true)
+    return formatter.formatData(response, body, keys, customData, true)
 }

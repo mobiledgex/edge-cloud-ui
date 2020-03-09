@@ -181,13 +181,6 @@ class AutoProvPolicyReg extends React.Component {
     addRulesForm = () => {
         this.setState(prevState => ({ forms: [...prevState.forms, this.getOutboundSecurityForm(this.getOutBoundRules())] }))
     }
-
-    
-
-    getNewJsonObject = (data)=>
-    {
-        return JSON.parse(JSON.stringify(data))
-    }
     
     /***
      * Map values from form to field
@@ -229,13 +222,13 @@ class AutoProvPolicyReg extends React.Component {
                     let form = this.state.forms[i];
                     if (form.uuid) {
                         let uuid = form.uuid;
-                        let OutboundSecurityRule = data[uuid]
-                        if (OutboundSecurityRule) {
+                        let outboundSecurityRule = data[uuid]
+                        if (outboundSecurityRule) {
                             outbound_security_rules.push({
-                                protocol: OutboundSecurityRule.Protocol,
-                                port_range_min: OutboundSecurityRule.Protocol !== 'icmp' ? parseInt(OutboundSecurityRule.PortRangeMin) : undefined,
-                                port_range_max: OutboundSecurityRule.Protocol !== 'icmp' ? parseInt(OutboundSecurityRule.PortRangeMax) : undefined,
-                                remote_cidr: OutboundSecurityRule.RemoteCIDR
+                                protocol: outboundSecurityRule[fields.protocol],
+                                port_range_min: outboundSecurityRule[fields.protocol] !== 'icmp' ? parseInt(outboundSecurityRule[fields.portRangeMin]) : undefined,
+                                port_range_max: outboundSecurityRule[fields.protocol] !== 'icmp' ? parseInt(outboundSecurityRule[fields.portRangeMax]) : undefined,
+                                remote_cidr: outboundSecurityRule[fields.remoteCIDR]
                             })
                         }
 
@@ -253,9 +246,11 @@ class AutoProvPolicyReg extends React.Component {
                     outbound_security_rules: outbound_security_rules
                 }
             }
+
             let mcRequest = this.props.action === 'Update' ? await serverData.updatePrivacyPolicy(this, requestData) : await serverData.createPrivacyPolicy(this, requestData)
-            if (mcRequest.response) {
-                if (mcRequest.response.status === 200) {
+            if (mcRequest && mcRequest.response) {
+                let response = mcRequest.response
+                if (response.status === 200) {
                     let msg = 'Created'
                     switch (this.props.action) {
                         case 'Update':
@@ -266,7 +261,7 @@ class AutoProvPolicyReg extends React.Component {
                     }
                     let policyName = mcRequest.request.data.privacypolicy.key.name;
                     this.props.handleAlertInfo('success', `Privacy Policy ${policyName} ${msg} successfully`)
-                    setTimeout(() => { this.gotoUrl('site4', 'pg=8') }, 2000)
+                    this.props.onClose(true)
                 }
             }
         }
@@ -292,18 +287,8 @@ class AutoProvPolicyReg extends React.Component {
         )
     }
 
-    gotoUrl(site, subPath) {
-        this.props.history.push({
-            pathname: site,
-            search: subPath
-        });
-        this.props.history.location.search = subPath;
-        this.props.handleChangeSite({ mainPath: site, subPath: subPath })
-        this.setState({ page: subPath })
-    }
-
     onAddCancel = () => {
-        this.gotoUrl('site4', 'pg=8')
+        this.props.onClose(false)
     }
 
    
@@ -405,12 +390,6 @@ class AutoProvPolicyReg extends React.Component {
         this.getFormData(this.props.data)
     }
 
-    componentWillUnmount() {
-        if (this.props.childPage) {
-            this.props.childPage(null)
-        }
-    }
-
 };
 const mapStateToProps = (state) => {
 
@@ -433,7 +412,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
     };

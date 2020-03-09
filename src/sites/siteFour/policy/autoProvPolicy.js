@@ -2,13 +2,12 @@ import _ from 'lodash'
 import React from 'react';
 import MexListView from '../../../container/MexListView';
 import { withRouter } from 'react-router-dom';
-import * as EP from '../../../services/model/endPointTypes';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as serverData from '../../../services/model/serverData';
 import AutoProvPolicyReg from './autoProvPolicyReg'
-import { keys, actionMenu } from '../../../services/model/autoProvisioningPolicy';
+import { keys, showAutoProvPolicies } from '../../../services/model/autoProvisioningPolicy';
 import { fields } from '../../../services/model/format';
 
 class AutoProvPolicy extends React.Component {
@@ -57,7 +56,7 @@ class AutoProvPolicy extends React.Component {
     requestInfo = () => {
         return ({
             headerLabel:'Auto Provisioning Policy',
-            requestType: [EP.SHOW_AUTO_PROV_POLICY],
+            requestType: [showAutoProvPolicies],
             isRegion: true,
             sortBy: [fields.region, fields.autoPolicyName],
             keys:keys

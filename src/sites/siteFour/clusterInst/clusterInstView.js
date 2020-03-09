@@ -7,9 +7,9 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 
 import * as serverData from '../../../services/model/serverData';
-import * as EP from '../../../services/model/endPointTypes';
 import { fields } from '../../../services/model/format';
-import { keys } from '../../../services/model/clusterInstance';
+import { keys, showClusterInsts, SHOW_CLUSTER_INST, STREAM_CLUSTER_INST } from '../../../services/model/clusterInstance';
+import { showCloudlets, SHOW_CLOUDLET, SHOW_ORG_CLOUDLET } from '../../../services/model/cloudlet';
 import ClusterInstReg from './siteFour_page_clusterInstReg';
 
 class ClusterInstView extends React.Component {
@@ -52,41 +52,7 @@ class ClusterInstView extends React.Component {
         ]
     }
 
-    multiDataRequest = (mcRequestList) => {
-        let cloudletList = [];
-        let cloudletInfoList = [];
-        for (let i = 0; i < mcRequestList.length; i++) {
-            let mcRequest = mcRequestList[i];
-            let request = mcRequest.request;
-            if (request.method === EP.SHOW_CLOUDLET || request.method === EP.SHOW_ORG_CLOUDLET) {
-                for (let i = 0; i < keys.length > 0; i++) {
-                    let key = keys[i];
-                    if (key.field === fields.cloudletStatus) {
-                        key.visible = request.method === EP.SHOW_ORG_CLOUDLET ? false : true;
-                        break;
-                    }
-                }
-                cloudletList = mcRequest.response.data
-            }
-            else if (request.method === EP.SHOW_CLOUDLET_INFO) {
-                cloudletInfoList = mcRequest.response.data
-            }
-        }
-
-        if (cloudletList && cloudletList.length > 0) {
-            for (let i = 0; i < cloudletList.length; i++) {
-                let cloudlet = cloudletList[i]
-                for (let j = 0; j < cloudletInfoList.length; j++) {
-                    let cloudletInfo = cloudletInfoList[j]
-                    if (cloudlet[fields.cloudletName] === cloudletInfo[fields.cloudletName]) {
-                        cloudlet[fields.cloudletStatus] = cloudletInfo[fields.state]
-                        break;
-                    }
-                }
-            }
-        }
-        return cloudletList;
-    }
+    
 
     multiDataRequest = (mcRequestList) => {
         let cloudletDataList = [];
@@ -95,10 +61,10 @@ class ClusterInstView extends React.Component {
             let mcRequest = mcRequestList[i];
             if (mcRequest.response) {
                 let request = mcRequest.request;
-                if (request.method === EP.SHOW_CLOUDLET || request.method === EP.SHOW_ORG_CLOUDLET) {
+                if (request.method === SHOW_CLOUDLET || request.method === SHOW_ORG_CLOUDLET) {
                     cloudletDataList = mcRequest.response.data;
                 }
-                if (mcRequest.request.method === EP.SHOW_CLUSTER_INST) {
+                if (mcRequest.request.method === SHOW_CLUSTER_INST) {
                     clusterDataList = mcRequest.response.data;
                 }
             }
@@ -123,8 +89,8 @@ class ClusterInstView extends React.Component {
         return ({
             id:'ClusterInst',
             headerLabel: 'Cluster Instances',
-            requestType: [EP.SHOW_CLUSTER_INST, EP.SHOW_CLOUDLET],
-            streamType: EP.STREAM_CLUSTER_INST,
+            requestType: [showClusterInsts, showCloudlets],
+            streamType: STREAM_CLUSTER_INST,
             isRegion: true,
             isMap:true,
             sortBy: [fields.region, fields.cloudletName],

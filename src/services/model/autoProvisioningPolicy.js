@@ -1,5 +1,14 @@
 import {TYPE_JSON} from '../../hoc/constant';
-import { fields, formatData } from './format'
+import * as formatter from './format'
+
+let fields = formatter.fields
+
+export const SHOW_AUTO_PROV_POLICY = "ShowAutoProvPolicy";
+export const CREATE_AUTO_PROV_POLICY = "CreateAutoProvPolicy";
+export const DELETE_AUTO_PROV_POLICY= "DeleteAutoProvPolicy";
+export const ADD_AUTO_PROV_POLICY_CLOUDLET = "AddAutoProvPolicyCloudlet";
+export const REMOVE_AUTO_PROV_POLICY_CLOUDLET = "RemoveAutoProvPolicyCloudlet";
+
 
 export const keys =[
   { field: fields.region, label: 'Region', sortable: true, visible: true },
@@ -17,6 +26,19 @@ export const keys =[
   { field: 'actions', label: 'Actions', sortable: false, visible: true }
 ]
 
+export const showAutoProvPolicies = (data) => {
+  if (!formatter.isAdmin()) {
+    {
+      data.AutoProvPolicy = {
+        key: {
+          developer: formatter.getOrganization()
+        }
+      }
+    }
+    return { method: SHOW_AUTO_PROV_POLICY, data: data }
+  }
+}
+
 /** 
  * Function to add customized data along with server data
  * **/
@@ -28,5 +50,5 @@ const customData = (value) => {
  * Format server data to required local data format based on keys object
  * **/
 export const getData = (response, body) => {
-  return formatData(response, body, keys, customData)
+  return formatter.formatData(response, body, keys, customData)
 }

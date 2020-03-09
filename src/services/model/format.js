@@ -89,6 +89,19 @@ export const fields = {
 
 }
 
+export const isAdmin = ()=>
+{
+    return localStorage.selectRole && localStorage.selectRole === 'AdminManager'
+}
+
+export const getOrganization = ()=>
+{
+    if(localStorage.selectOrg)
+    {
+        return localStorage.selectOrg
+    }
+}
+
 const mapObject = (currentObject, serverField) => {
     if (currentObject && serverField) {
         let fields = serverField.split('#OS#');

@@ -1,4 +1,6 @@
-import {fields, formatData} from './format'
+import * as formatter from './format'
+
+let fields = formatter.fields;
 
 const keys = [
     { field: fields.cloudletName, serverField: 'key#OS#name' },
@@ -28,5 +30,5 @@ const customData = (value) => {
 }
 
 export const getData = (response, body) => {
-    return formatData(response, body, keys, customData, true)
+    return formatter.formatData(response, body, keys, customData, true)
 }

@@ -6,75 +6,54 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 
-import * as serverData from '../../../services/model/serverData';
 import PrivacyPolicyReg from './autoPrivacyPolicyReg'
-import * as EP from '../../../services/model/endPointTypes';
-import { fields } from '../../../services/model/format';
-import { keys } from '../../../services/model/privacyPolicy';
+import { keys, fields, showPrivacyPolicies, deletePrivacyPolicy } from '../../../services/model/privacyPolicy';
 
 class PrivacyPolicy extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentView :null
+            currentView: null
         }
-        this.action = '';
-        this.data={}
     }
 
-    onUpdate = (data) => {
-        this.data = data;
-        this.action = 'Update'
-        this.setState({ currentView: <PrivacyPolicyReg data={this.data} action={this.action} childPage={this.props.childPage}></PrivacyPolicyReg> })
+    onRegClose = (isEdited)=>
+    {
+        this.setState({ currentView: null })
     }
 
     onAdd = () => {
-        this.setState({ currentView: <PrivacyPolicyReg /> })
+        this.setState({ currentView: <PrivacyPolicyReg onClose={this.onRegClose} /> })
     }
 
-   
-    onDelete = async (data) => {
-        let valid = false;
-        let privacypolicy = {
-            key: { developer: data[fields.organizationName], name: data[fields.privacyPolicyName] },
-            outbound_security_rules: data[fields.outboundSecurityRules]
-        }
-
-        let requestData = {
-            region: data[fields.region],
-            privacypolicy: privacypolicy
-        }
-        let mcRequest = await serverData.deletePrivacyPolicy(this, requestData)
-        if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-            this.props.handleAlertInfo('success', `Privacy Policy ${data[fields.privacyPolicyName]} deleted successfully`)
-            valid = true;
-        }
-        return valid;
+    onUpdate = (data) => {
+        this.setState({ currentView: <PrivacyPolicyReg data={data} action='Update' onClose={this.onRegClose}/> })
     }
 
     actionMenu = () => {
         return [
             { label: 'Update', onClick: this.onUpdate },
-            { label: 'Delete', onClick: this.onDelete }
+            { label: 'Delete', onClick: deletePrivacyPolicy }
         ]
     }
-      
 
     requestInfo = () => {
         return ({
-            headerLabel:'Privacy Policy',
-            requestType: [EP.SHOW_PRIVACY_POLICY],
+            headerLabel: 'Privacy Policy',
+            requestType: [showPrivacyPolicies],
             isRegion: true,
+            nameField: fields.privacyPolicyName,
             sortBy: [fields.region, fields.privacyPolicyName],
-            keys:keys,
+            keys: keys,
             onAdd: this.onAdd
         })
     }
-    
+
+
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-            <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} />
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} />
         )
     }
 };
@@ -85,7 +64,7 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) }
     };
 };
 
