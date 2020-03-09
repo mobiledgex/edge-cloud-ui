@@ -58,7 +58,7 @@ export default class VirutalAppInstEventLogListContainer extends React.Component
 
     render() {
 
-        let gridHeight = 270
+        let gridHeight = 300
         let gridWidth = window.innerWidth;
 
         let eventLogList = this.state.eventLogList;
