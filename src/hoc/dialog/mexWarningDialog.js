@@ -30,7 +30,7 @@ const MexMessageDialog = (props) => {
                     </Typography>
                 </DialogContent>
                 <DialogActions style={{ background: '#616161' }}>
-                    <Button onClick={() => { props.onClick(false) }}>
+                    <Button onClick={() => { props.onClick(false) }} style={{color:'#D3D3D3'}}>
                         NO
                     </Button>
                     <Button onClick={() => { props.onClick(true) }} style={{color:'#76ff03'}}>

@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import { GridLoader } from "react-spinners";
+import {fields} from '../services/model/format';
 import './styles.css';
 
 let _self = null;
@@ -33,7 +34,7 @@ class PopAddUserViewer extends React.Component {
     componentWillReceiveProps(nextProps, nextContext) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         if (nextProps.open) {
-            this.setState({ open: nextProps.open, dimmer: nextProps.dimmer, typeOperator: (nextProps.data['Type'].substring(0, 1).toUpperCase() + nextProps.data['Type'].substring(1)), organization: nextProps.data['Organization'] });
+            this.setState({ open: nextProps.open, dimmer: nextProps.dimmer, typeOperator: (nextProps.data[fields.type].substring(0, 1).toUpperCase() + nextProps.data[fields.type].substring(1)), organization: nextProps.data[fields.organizationName] });
         }
         if (nextProps.stepTwo && nextProps.stepTwo.submitSucceeded && !this.state.toggleSubmit) {
             this.props.handleLoadingSpinner(true);
@@ -98,11 +99,6 @@ class PopAddUserViewer extends React.Component {
                 <Modal.Header>Add User</Modal.Header>
                 <Modal.Content scrolling>
                     <Grid className='popup_user'>
-                        {/*<Grid.Row>*/}
-                        {/*    <Grid.Column>*/}
-                        {/*        <Image src='/assets/matthew.png' size="tiny" centered bordered/>*/}
-                        {/*    </Grid.Column>*/}
-                        {/*</Grid.Row>*/}
                         {this.setForms()}
                     </Grid>
                     {(this.props.loadingSpinner == true) ?
@@ -112,13 +108,11 @@ class PopAddUserViewer extends React.Component {
                                 size={30}
                                 color={'#70b2bc'}
                                 loading={this.props.loadingSpinner}
-                            //loading={true}
                             />
                             <span className={this.props.loadingSpinner ? '' : 'loading'} style={{ fontSize: '22px', color: '#70b2bc' }}>Loading...</span>
                         </div> : null}
                 </Modal.Content>
                 <Modal.Actions>
-                    {/*<Modal.Actions  className='adduser-close'>*/}
                     <Button onClick={() => this.close()} style={{}}>
                         Close
                     </Button>

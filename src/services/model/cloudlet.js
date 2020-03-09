@@ -92,9 +92,9 @@ export const keys = [
     { field: fields.numDynamicIPs, serverField: 'num_dynamic_ips', label: 'Number of Dynamic IPs' },
     { field: fields.physicalName, serverField: 'physical_name' , label: '	Physical Name'},
     { field: fields.platformType, serverField: 'platform_type', label: 'Platform Type' },
+    { field: fields.cloudletStatus, label: 'Cloudlet Status', visible:true, customizedData: getCloudletInfoState},
     { field: fields.state, serverField: 'state', label: 'Progress', visible: true, customizedData: constant.showProgress , clickable:true },
     { field: fields.status, serverField: 'status', label: 'Status', dataType: TYPE_JSON },
-    { field: fields.cloudletStatus, label: 'Cloudlet Status', visible:true, customizedData: getCloudletInfoState},
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable:true  }
 ]
 

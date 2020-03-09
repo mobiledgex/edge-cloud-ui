@@ -6,23 +6,24 @@ let fields = formatter.fields;
 
 export const SHOW_CLUSTER_INST = "ShowClusterInst";
 export const STREAM_CLUSTER_INST = "StreamClusterInst";
+export const DELETE_CLUSTER_INST = "DeleteClusterInst";
 
 export const keys = [
     { field: fields.region, label: 'Region', sortable: true, visible: true },
-    { field: fields.clusterName, serverField: 'key#OS#cluster_key#OS#name', label: 'Cluster', visible: true },
-    { field: fields.organizationName, serverField: 'key#OS#developer', label: 'Organization', visible: true },
-    { field: fields.operatorName, serverField: 'key#OS#cloudlet_key#OS#operator_key#OS#name', label: 'Operator', visible: true },
-    { field: fields.cloudletName, serverField: 'key#OS#cloudlet_key#OS#name', label: 'Cloudlet', visible: true },
-    { field: fields.flavorName, serverField: 'flavor#OS#name', label: 'Flavor', visible: true },
-    { field: fields.ipAccess, serverField: 'ip_access', label: 'IP Access', visible: true, customizedData: constant.getIPAccess },
+    { field: fields.clusterName, serverField: 'key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster', visible: true },
+    { field: fields.organizationName, serverField: 'key#OS#developer', sortable: true, label: 'Organization', visible: true },
+    { field: fields.operatorName, serverField: 'key#OS#cloudlet_key#OS#operator_key#OS#name', sortable: true, label: 'Operator', visible: true },
+    { field: fields.cloudletName, serverField: 'key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: true },
+    { field: fields.flavorName, serverField: 'flavor#OS#name', sortable: true, label: 'Flavor', visible: true },
+    { field: fields.ipAccess, serverField: 'ip_access', label: 'IP Access', sortable: true, visible: true, customizedData: constant.getIPAccess },
     { field: fields.cloudletLocation, label: 'Cloudlet Location', dataType: TYPE_JSON },
-    { field: fields.nodeFlavor, serverField: 'node_flavor', label:'Node Flavor'},
-    { field: fields.numberOfMasters, serverField: 'num_masters', label:'Number of Masters'},
-    { field: fields.numberOfNodes, serverField: 'num_nodes', label:'Node of Nodes' },
+    { field: fields.nodeFlavor, serverField: 'node_flavor', label: 'Node Flavor' },
+    { field: fields.numberOfMasters, serverField: 'num_masters', label: 'Number of Masters' },
+    { field: fields.numberOfNodes, serverField: 'num_nodes', label: 'Node of Nodes' },
+    { field: fields.deployment, serverField: 'deployment', sortable: true, label: 'Deployment', visible: true },
     { field: fields.state, serverField: 'state', label: 'Progress', visible: true, customizedData: constant.showProgress, clickable: true },
-    { field: fields.status, serverField: 'status', label:'Status', dataType:TYPE_JSON },
+    { field: fields.status, serverField: 'status', label: 'Status', dataType: TYPE_JSON },
     { field: fields.reservable, serverField: 'reservable' },
-    { field: fields.deployment, serverField: 'deployment', label: 'Deployment', visible: true },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
 
@@ -35,10 +36,19 @@ export const showClusterInsts = (data) => {
                 }
             }
         }
-        return { method: SHOW_CLUSTER_INST, data: data }
     }
+    return { method: SHOW_CLUSTER_INST, data: data }
 }
 
+export const deleteClusterInst = (data) => {
+    let requestData = getKey(data)
+    return { uuid: data.uuid, method: DELETE_CLUSTER_INST, data: requestData, success: `Cluster Instance ${data[fields.appName]}` }
+}
+
+export const streamClusterInst = (data) => {
+    let requestData = getKey(data)
+    return { uuid: data.uuid, method: STREAM_CLUSTER_INST, data: requestData }
+}
 export const getKey = (data) => {
     return ({
         region: data[fields.region],

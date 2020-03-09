@@ -8,7 +8,7 @@ import * as actions from '../../../actions';
 
 import * as serverData from '../../../services/model/serverData';
 import { fields } from '../../../services/model/format';
-import { keys, showClusterInsts, SHOW_CLUSTER_INST, STREAM_CLUSTER_INST } from '../../../services/model/clusterInstance';
+import { keys, showClusterInsts, deleteClusterInst, streamClusterInst, SHOW_CLUSTER_INST, STREAM_CLUSTER_INST } from '../../../services/model/clusterInstance';
 import { showCloudlets, SHOW_CLOUDLET, SHOW_ORG_CLOUDLET } from '../../../services/model/cloudlet';
 import ClusterInstReg from './siteFour_page_clusterInstReg';
 
@@ -48,7 +48,7 @@ class ClusterInstView extends React.Component {
 
     actionMenu = () => {
         return [
-            { label: 'Delete', onClick: this.onDelete }
+            { label: 'Delete', onClick: deleteClusterInst, ws:true }
         ]
     }
 
@@ -89,8 +89,9 @@ class ClusterInstView extends React.Component {
         return ({
             id:'ClusterInst',
             headerLabel: 'Cluster Instances',
+            nameField: fields.clusterName,
             requestType: [showClusterInsts, showCloudlets],
-            streamType: STREAM_CLUSTER_INST,
+            streamType: streamClusterInst,
             isRegion: true,
             isMap:true,
             sortBy: [fields.region, fields.cloudletName],

@@ -29,16 +29,16 @@ import {GridLoader, ClipLoader} from "react-spinners";
 import HeaderGlobalMini from '../../container/headerGlobalMini';
 
 //pages
-import SiteFourPageFlavor from './flavors/siteFour_page_flavor';
+import SiteFourPageFlavor from './flavors/flavorList';
 import SiteFourPageUser from './userRole/siteFour_page_user';
 import SiteFourPageAccount from './accounts/siteFour_page_account';
-import SiteFourPageApps from './apps/siteFour_page_apps';
-import SiteFourPageAppInst from './appInst/siteFour_page_appinst';
-import SiteFourPageClusterInst from './clusterInst/clusterInstView';
-import SiteFourPageCloudlet from './cloudlets/siteFour_page_cloudlet';
+import SiteFourPageApps from './apps/appList';
+import SiteFourPageAppInst from './appInst/appInstList';
+import SiteFourPageClusterInst from './clusterInst/clusterInstList';
+import SiteFourPageCloudlet from './cloudlets/cloudletList';
 import SiteFourPageCloudletReg from './cloudlets/siteFour_page_cloudletReg';
 import SiteFourPageFlavorReg from './flavors/siteFour_page_flavorReg';
-import SiteFourPageOrganization from './organization/siteFour_page_organization';
+import SiteFourPageOrganization from './organization/organizationList';
 import SiteFourPageAppReg from './apps/siteFour_page_appReg';
 import SiteFourPageAppInstReg from './appInst/siteFour_page_appInstReg';
 import SiteFourPageCreateorga from './organization/siteFour_page_createOrga';
@@ -1124,7 +1124,7 @@ class SiteFour extends React.Component {
                                     (this.state.page === 'pg=PageOperMonitoring') ? <PageOperMonitoring/> :
                                         <Grid.Row className='view_contents'>
                                             <Grid.Column className='contents_body'>
-                                                {/* <Grid.Row className='content_title'>
+                                                <Grid.Row className='content_title'>
                                                     <div className='content_title_wrap'>
                                                         <div
                                                             className='content_title_label'>{this.state.headerTitle}</div>
@@ -1192,7 +1192,7 @@ class SiteFour extends React.Component {
                                                                 : null
                                                         }
                                                     </div>
-                                                </Grid.Row> */}
+                                                </Grid.Row>
 
 
                                                 <Grid.Row className='site_content_body'>

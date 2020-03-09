@@ -76,6 +76,17 @@ class MexListView extends React.Component {
         })
     }
 
+    detailView = (data)=>
+    {
+        let additionalDetail = this.props.requestInfo.additionalDetail
+        return (
+            <Card style={{ height: '90%', backgroundColor:'#2A2C33' }}>
+                <MexDetailViewer detailData={data} keys={this.keys} />
+                {additionalDetail ? additionalDetail(data) : null}
+            </Card>
+        )
+    }
+
     getCellClick = (key, rowIndex) => {
         this.selectedRowIndex = rowIndex
         let item = this.state.dataList[this.selectedRowIndex]
@@ -87,7 +98,7 @@ class MexListView extends React.Component {
             this.setState(
                 {
                     isDetail: true,
-                    currentView: <Card style={{ height: '90%' }}><MexDetailViewer detailData={item} keys={this.keys} /></Card>
+                    currentView: this.detailView(item)
                 }
             )
         }
@@ -159,9 +170,8 @@ class MexListView extends React.Component {
             case 'Delete':
                 this.onDeleteWarning(action, data)
                 break;
-            case 'Update':
+            default:
                 action.onClick(data)
-                break;
         }
     }
 
@@ -230,7 +240,7 @@ class MexListView extends React.Component {
                         style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center right' }}
                     >
                         <Paper style={{ backgroundColor: '#212121', color: 'white' }}>
-                            <ClickAwayListener onClickAway={this.onActionClose}>
+                            <ClickAwayListener onClickAway={()=>this.setState({ anchorEl: null})}>
                                 <MenuList autoFocusItem={Boolean(this.state.anchorEl)} id="menu-list-grow" >
                                     {this.props.actionMenu.map((action, i) => {
                                         return <MenuItem key={i} onClick={(e) => { this.onActionClose(action) }}>{action.label}</MenuItem>

@@ -70,6 +70,7 @@ class PrivacyPolicy extends React.Component {
         return ({
             id: 'Cloudlets',
             headerLabel: 'Cloudlets',
+            nameField: fields.cloudletName,
             requestType: [showCloudlets, showCloudletInfos],
             streamType: streamCloudlet,
             isRegion: true,

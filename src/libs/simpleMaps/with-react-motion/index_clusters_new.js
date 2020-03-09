@@ -360,7 +360,7 @@ class ClustersMap extends Component {
             let id = nextProps.id
             if (id === "Cloudlets") {
                 return item[fields.cloudletName]
-            } else if (id === "AppInst") {
+            } else if (id === "AppInsts") {
                 return item[fields.appName]
             } else if (id === "ClusterInst") {
                 if (nextProps.reg === 'cloudletAndClusterMap') {
@@ -509,7 +509,7 @@ class ClustersMap extends Component {
                                                         :MarkerComponent(this, city, i, {transform:"translate(-25,-27)", gColor:8, cName:'st2', path:1})
                                                 ))
                                                 :
-                                                (this.props.id == "AppInst" && !this.state.detailMode) ?
+                                                (this.props.id == "AppInsts" && !this.state.detailMode) ?
                                                 this.state.cities.map((city, i) => (
                                                     MarkerComponent(this, city, i, {transform:"translate(-17,-21)", gColor:7, cName:'st3', path:2})
                                                 ))
