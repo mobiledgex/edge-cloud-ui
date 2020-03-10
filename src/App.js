@@ -26,7 +26,7 @@ import './css/components/timelineH.css';
 import TagCloudTest from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/TagCloudTest";
 import VirtualIzedListExample from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/VirtualIzedListExample";
 import Test007 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/Test007";
-import Test010 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/Test010";
+import ContextMenuTest from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/ContextMenuTest";
 // API
 
 let self = null;
@@ -335,7 +335,7 @@ class App extends Component {
                     <Route exact path='/passwordreset' component={DashboardContainer.bind(this, {mainPath:'/passwordreset'})} />
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
                     <Route exact path='/TagCloudTest' component={TagCloudTest} />
-                    <Route exact path='/Test010' component={Test010} />
+                    <Route exact path='/ContextMenuTest' component={ContextMenuTest} />
                 </div>
             </Router>
         );

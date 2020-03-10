@@ -6,7 +6,7 @@ import {theme, animation} from 'react-contexify';
 type Props = {};
 type State = {};
 
-export default class Test010 extends React.Component<Props, State> {
+export default class ContextMenuTest extends React.Component<Props, State> {
     render() {
         return (
             <div>
