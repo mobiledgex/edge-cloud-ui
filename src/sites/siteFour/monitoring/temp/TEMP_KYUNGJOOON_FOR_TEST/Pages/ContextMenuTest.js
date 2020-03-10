@@ -1,6 +1,6 @@
 import React from 'react';
 import {Menu, Item, Separator, Submenu, MenuProvider} from 'react-contexify';
-import 'react-contexify/dist/ReactContexify.min.css';
+import './contextmenu.css'
 import {theme, animation} from 'react-contexify';
 
 type Props = {};
