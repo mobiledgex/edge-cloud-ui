@@ -138,7 +138,6 @@ export const PageMonitoringStyles = {
     gridTableData2: {flex: .15, backgroundColor: '#1e2025', height: 64, marginTop: 0, textAlign: 'center'},
 
 
-
     appInstGridTableData: {flex: .083, backgroundColor: '#181A1F', height: 64, marginTop: 0, textAlign: 'center'},
     appInstGridTableData2: {flex: .083, backgroundColor: '#1e2025', height: 64, marginTop: 0, textAlign: 'center'},
 }
@@ -199,7 +198,7 @@ export const renderGridLoader = () => {
 export const renderPlaceHolderCircular = (type: string = '') => {
     return (
         <div className='page_monitoring_blank_box'
-             style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%', zIndex:999999999999999999999}}>
+             style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%', zIndex: 999999999999999999999}}>
             {/*<Lottie
                 options={{
                     loop: true,
@@ -434,7 +433,12 @@ export const lineGraphOptionsForAppInst = (hardwareType) => {
                         beginAtZero: true,
                         fontColor: 'white',
                         callback(value, index, label) {
-                            return convertByteToMegaByte(value, hardwareType)
+                            if (hardwareType === HARDWARE_TYPE.CPU) {
+                                return value.toFixed(2);
+                            } else {
+                                return convertByteToMegaByte(value, hardwareType)
+                            }
+
 
                         },
                     },
