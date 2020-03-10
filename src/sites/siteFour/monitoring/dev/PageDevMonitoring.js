@@ -85,7 +85,7 @@ import BarChartContainer from "../components/BarChartContainer";
 import LineChartContainer from "../components/LineChartContainer";
 import EventLogListContainer from "../components/EventLogListContainer";
 import PerformanceSummaryTable from "../components/PerformanceSummaryTable";
-import VirutalAppInstEventLogListContainer from "../components/VirutalAppInstEventLogListContainer";
+import VirtualAppInstEventLogListContainer from "../components/VirtualAppInstEventLogListContainer";
 import AppInstEventLogListContainer from "../components/AppInstEventLogListContainer";
 
 const {Option} = Select;
@@ -1094,7 +1094,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                 return (
-                    <VirutalAppInstEventLogListContainer currentAppInst={this.state.currentAppInst} parent={this} handleAppInstDropdown={this.handleAppInstDropdown}
+                    <VirtualAppInstEventLogListContainer currentAppInst={this.state.currentAppInst} parent={this} handleAppInstDropdown={this.handleAppInstDropdown}
                                                          eventLogList={this.state.filteredAppInstEventLogs}/>
                 )
             }

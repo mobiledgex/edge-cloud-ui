@@ -35,8 +35,8 @@ export const makeSelectBoxListByClassification = (arrList, keyName) => {
     let newArrList = [];
     for (let i in arrList) {
         newArrList.push({
-            value: arrList[i].AppName,
-            text: arrList[i].AppName,
+            value: arrList[i].appName,
+            text: arrList[i].appName,
         })
     }
     return newArrList;
@@ -58,6 +58,11 @@ export const makeSelectBoxListByClassification_byKey = (arrList, keyName) => {
 
 export const makeFormForAppInstance = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
 
+    let appName = dataOne.AppName;
+    if (dataOne.AppName.includes('[')) {
+        appName = dataOne.AppName.toString().split('[')[0]
+    }
+
     if (pStartTime !== '' && pEndTime !== '') {
         return (
             {
@@ -67,7 +72,7 @@ export const makeFormForAppInstance = (dataOne, valid = "*", token, fetchingData
                     "appinst": {
                         "app_key": {
                             "developer_key": {"name": dataOne.OrganizationName},
-                            "name": dataOne.AppName.toLowerCase().replace(/\s+/g, ''),
+                            "name": appName,
                             "version": dataOne.Version
                         },
                         "cluster_inst_key": {
@@ -309,6 +314,10 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
 
 export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
 
+
+    console.log("usageList===>", usageList);
+
+
     if (hardwareType === HARDWARE_TYPE.CPU) {
         usageList.sort((a, b) => b.sumCpuUsage - a.sumCpuUsage);
     } else if (hardwareType === HARDWARE_TYPE.MEM) {
@@ -344,7 +353,7 @@ export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
 
         usageList.map((item: TypeAppInstanceUsage2, index) => {
             if (index < 5) {
-                let barDataOne = [item.appName.toString().substring(0, 13)+ "..",
+                let barDataOne = [item.appName.toString().substring(0, 13) + "..",
                     renderUsageByType2(item, hardwareType),
                     CHART_COLOR_LIST[index],
                     renderUsageLabelByType(item, hardwareType)]
@@ -741,7 +750,7 @@ export const makeNetworkBarData = (networkUsageList, hwType) => {
     for (let index = 0; index < networkUsageList.length; index++) {
         if (index < 5) {
             let barDataOne = [
-                networkUsageList[index].instance.AppName.toString().substring(0, 10) + "...",
+                networkUsageList[index].appName.toString().substring(0, 10) + "...",
                 hwType === HARDWARE_TYPE.RECV_BYTES ? networkUsageList[index].sumRecvBytes : networkUsageList[index].sumSendBytes,
                 CHART_COLOR_LIST[index],
                 hwType === HARDWARE_TYPE.RECV_BYTES ? networkUsageList[index].sumRecvBytes : networkUsageList[index].sumSendBytes,
@@ -895,7 +904,7 @@ export const renderBottomGridArea = (_this) => {
                 {/*todo:ROW HEADER        */}
                 {/*-----------------------*/}
                 {!_this.state.isReady &&
-                <Table.Row className='page_monitoring_popup_table_empty' style={{zIndex:999999}}>
+                <Table.Row className='page_monitoring_popup_table_empty' style={{zIndex: 999999}}>
                     <Table.Cell>
                         {renderPlaceHolderCircular()}
                     </Table.Cell>
@@ -974,7 +983,7 @@ export const makeNetworkLineChartData = (filteredNetworkUsageList, pHardwareType
 
     for (let i in filteredNetworkUsageList) {
         let seriesValues = filteredNetworkUsageList[i].values
-        instanceAppName = filteredNetworkUsageList[i].instance.AppName
+        instanceAppName = filteredNetworkUsageList[i].appName;
         let usageList = [];
 
         for (let j in seriesValues) {

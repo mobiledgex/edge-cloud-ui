@@ -19,7 +19,7 @@ type State = {
     loading: boolean,
 };
 
-export default class VirutalAppInstEventLogListContainer extends React.Component<Props, State> {
+export default class VirtualAppInstEventLogListContainer extends React.Component<Props, State> {
 
 
     constructor(props: Props) {

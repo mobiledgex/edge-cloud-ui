@@ -610,7 +610,6 @@ export const arraysEqual = (a, b) => {
 }
 
 export const renderBarChartCore = (chartDataList, hardwareType, _this, graphType, isResizeComplete) => {
-
     return (
         <div style={{width: '100%'}}>
             <Chart

@@ -343,7 +343,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 //fixme: fakedata
                 //allAppInstUsageList = require('./appAppLevelUsageList__all')
-                //console.log('allAppInstUsageList====>', allAppInstUsageList);
+                console.log('allAppInstUsageList====>', allAppInstUsageList);
 
 
                 //todo: MAKE SELECTBOX.
@@ -363,7 +363,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //todo: -------------------------------------------------------------
                 //todo: MAKE TOP5 INSTANCE LIST
                 //todo: -------------------------------------------------------------
-                let appInstanceListTop5 = makeSelectBoxListByClassification(cutArrayList(5, this.state.filteredAppInstUsageList), CLASSIFICATION.APP_NAME)
+
+                console.log("filteredAppInstUsageList===>", this.state.filteredAppInstUsageList);
+
+                let appInstanceListTop5 = makeSelectBoxListByClassification(cutArrayList(5, this.state.filteredAppInstUsageList), CLASSIFICATION.appName)
 
                 console.log('appInstanceListTop5====>', appInstanceListTop5);
 
@@ -828,6 +831,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                             <Dropdown
                                 disabled={this.state.loading}
+                                selectOnBlur={false}
                                 clearable={this.state.regionSelectBoxClearable}
                                 placeholder='REGION'
                                 selection
@@ -865,6 +869,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <Dropdown
                                 style={{zIndex: 9999, minWidth: 240}}
                                 disabled={this.state.loading}
+                                selectOnBlur={false}
                                 value={this.state.currentCloudLet}
                                 clearable={this.state.cloudLetSelectBoxClearable}
                                 loading={this.state.loading}
@@ -897,6 +902,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <Dropdown
                                 style={{zIndex: 9999}}
                                 disabled={this.state.loading}
+                                selectOnBlur={false}
                                 value={this.state.currentCluster}
                                 clearable={this.state.clusterSelectBoxClearable}
                                 disabled={this.state.currentCloudLet === '' || this.state.loading}
@@ -930,6 +936,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 App Inst
                             </div>
                             <Dropdown
+                                selectOnBlur={false}
                                 style={{zIndex: 9999, minWidth: 290}}
                                 disabled={this.state.currentCluster === '' || this.state.loading}
                                 clearable={this.state.appInstSelectBoxClearable}
@@ -1257,13 +1264,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*todo:---------------------------------*/}
                                                         {/*todo: BOTTOM APP INSTACE LIST         */}
                                                         {/*todo:---------------------------------*/}
-                                                        <div className='page_monitoring_popup_table'>
+                                                       {/* <div className=''>
                                                             {this.state.filteredGridInstanceList.length && this.state.isReady === 0 ?
                                                                 <div style={PageMonitoringStyles.noData}>
                                                                     NO DATA
                                                                 </div>
                                                                 : renderBottomGridArea(this)}
-                                                        </div>
+                                                        </div>*/}
                                                     </div>
                                                 </OutsideClickHandler>
                                             </ToggleDisplay>

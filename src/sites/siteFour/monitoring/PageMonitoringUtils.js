@@ -161,7 +161,7 @@ export const columnChartOption = (hardwareType) => {
                 gridlines: {
                     color: "grey"
                 },
-                format: hardwareType === HARDWARE_TYPE.CPU ? '#\'%\'' : '0.##\' byte\'',
+                format: hardwareType === HARDWARE_TYPE.CPU ? '0.###\'%\'' : '0.###\' byte\'',
                 baselineColor: "grey",
                 //out', 'in', 'none'.
             },
