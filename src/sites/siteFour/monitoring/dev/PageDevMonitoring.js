@@ -1086,7 +1086,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 return (
                     this.renderMapArea()
                 )
-            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_LIST) {
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
                 return (
                     this.state.loading ? renderPlaceHolderCircular() : <PerformanceSummaryTable parent={this} clusterUsageList={this.state.filteredClusterUsageList}/>
                 )
@@ -1239,22 +1239,25 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                     {/*todo:maximize button*/}
                     {/*todo:maximize button*/}
-                    {graphType.toUpperCase() !== GRID_ITEM_TYPE.BUBBLE &&
-                    <div className="maxize"
-                         onClick={this.showBigModal.bind(this, hwType, graphType)}
-                         style={{
-                             fontSize: 29,
-                             width: 37,
-                             display: 'flex',
-                             alignItems: 'center',
-                             justifyContent: 'center',
-                             //backgroundColor: 'red',
-                             position: "absolute",
-                             right: "0px",
-                             top: 7,
-                             fontWeight: 'bold',
-                             cursor: "pointer"
-                         }}
+                    {graphType.toUpperCase() !== GRID_ITEM_TYPE.PERFORMANCE_SUM
+                    && graphType.toUpperCase() !== GRID_ITEM_TYPE.BUBBLE
+                    && graphType.toUpperCase() !== GRID_ITEM_TYPE.APP_INST_EVENT_LOG
+                    && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST
+                    && <div className="maxize"
+                            onClick={this.showBigModal.bind(this, hwType, graphType)}
+                            style={{
+                                fontSize: 29,
+                                width: 37,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                //backgroundColor: 'red',
+                                position: "absolute",
+                                right: "0px",
+                                top: 7,
+                                fontWeight: 'bold',
+                                cursor: "pointer"
+                            }}
                     >
                         <FullscreenIcon color="primary" style={{color: 'white', fontSize: 25}}/>
                     </div>
