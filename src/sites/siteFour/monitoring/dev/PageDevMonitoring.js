@@ -435,15 +435,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 clearInterval(this.intervalForAppInst)
 
                 this.setState({dropdownRequestLoading: true})
-              /*  let clusterList = await getClusterList();
-                let cloudletList = await getCloudletList()
-                let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
-                console.log("appInstanceList===>", appInstanceList);
-                if (appInstanceList.length === 0) {
-                    this.setState({
-                        isNoData: true,
-                    })
-                }*/
+                /*  let clusterList = await getClusterList();
+                  let cloudletList = await getCloudletList()
+                  let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
+                  console.log("appInstanceList===>", appInstanceList);
+                  if (appInstanceList.length === 0) {
+                      this.setState({
+                          isNoData: true,
+                      })
+                  }*/
 
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
@@ -473,11 +473,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //@todo:###############################
                 //@todo: getAppInstEventLogs
                 //@todo:###############################
-             /*   let allAppInstEventLogs = await getAppInstEventLogs();
-                await this.setState({
-                    allAppInstEventLogs: allAppInstEventLogs.values,
-                    filteredAppInstEventLogs: allAppInstEventLogs.values,
-                })*/
+                /*   let allAppInstEventLogs = await getAppInstEventLogs();
+                   await this.setState({
+                       allAppInstEventLogs: allAppInstEventLogs.values,
+                       filteredAppInstEventLogs: allAppInstEventLogs.values,
+                   })*/
 
                 let __allAppInstEvLogListValues = require('./allAppInstEventLogList')
 
@@ -485,7 +485,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     allAppInstEventLogs: __allAppInstEvLogListValues,
                     filteredAppInstEventLogs: __allAppInstEvLogListValues,
                 })
-
 
 
                 let appInstanceListGroupByCloudlet = []
@@ -517,11 +516,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 //fixme: real data
                 //fixme: real data
-              /*  try {
-                    allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
-                } catch (e) {
+                /*  try {
+                      allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
+                  } catch (e) {
 
-                }*/
+                  }*/
 
 
                 //fixme: fakeData22222222222
@@ -733,6 +732,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             clearInterval(this.intervalForAppInst)
 
+
             await this.setState({
                 isShowBigGraph: false,
             })
@@ -786,6 +786,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             pCurrentAppInst = pCurrentAppInst.split("|")[0].trim() + " | " + pCurrentAppInst.split('|')[1].trim() + " | " + pCurrentAppInst.split('|')[2].trim()
 
 
+            /*   if (!isEmpty(this.state.currentCluster)) {
+                   alert(this.state.currentCluster)
+               } else {
+                   alert('empty')
+               }*/
+
             await this.setState({
                 currentClassification: CLASSIFICATION.APPINST,
                 allAppInstUsageList: allAppInstUsageList,
@@ -793,7 +799,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 loading: false,
                 currentAppInst: pCurrentAppInst,
                 //currentCluster: currentCluster,
-                currentCluster: '',
+                currentCluster: isEmpty(this.state.currentCluster) ? '' : this.state.currentCluster,
                 clusterSelectBoxPlaceholder: 'Select cluster'
                 //clusterSelectBoxPlaceholder: 'Select Cluster'
             }, () => {
