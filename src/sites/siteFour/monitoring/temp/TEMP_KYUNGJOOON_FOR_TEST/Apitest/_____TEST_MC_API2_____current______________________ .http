@@ -430,7 +430,7 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM0NjMyN
 ###
 POST https://console-stage.mobiledgex.net:443//api/v1/auth/ctrl/ShowAppInst
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM0NjMyNDAsImlhdCI6MTU4MzM3Njg0MCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.Ni4Xg32qVRj6hiAzwwJ4nopBLFUWFk59K21FVZkQjDxSYy9EKwGj8pazLH-MEN4cz96nIsQuzFjhQ1e35YXw4w
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM5ODcxNjgsImlhdCI6MTU4MzkwMDc2OCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.sv519Ngf7DfTa-8po2n1JaLZw3_JV305APdgcyLFa4p4VddKUAeDhkbyZF6RJ1oPqG8vXjalIa_1Rj6LykfPjQ
 
 {
     "region": "EU",
@@ -456,13 +456,13 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM0NjMyN
 
 ###
 
-### @todo :앱 인스턴스 leevel event log
-### @todo :앱 인스턴스 leevel event log
-### @todo :앱 인스턴스 leevel event log
+### @todo :https://console-stage.mobiledgex.net:443/api/v1/auth/ctrl/ShowAppInstClient
+### @todo :https://console-stage.mobiledgex.net:443/api/v1/auth/ctrl/ShowAppInstClient
+### @todo :https://console-stage.mobiledgex.net:443/api/v1/auth/ctrl/ShowAppInstClient
 
-POST https://console-stage.mobiledgex.net:443/api/v1/auth/events/app
+POST https://console-stage.mobiledgex.net:443/api/v1/auth/ctrl/ShowAppInstClient
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM1NTg0OTIsImlhdCI6MTU4MzQ3MjA5MiwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.7I0QJZXjrVmbPHqshWgWcVmRNn3m2FnIPxSBemIHzU33X7jtdqO5qISaO0haRhYpNr0Jrkhd12VuUwlnxz1g0g
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM5ODcxNjgsImlhdCI6MTU4MzkwMDc2OCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.sv519Ngf7DfTa-8po2n1JaLZw3_JV305APdgcyLFa4p4VddKUAeDhkbyZF6RJ1oPqG8vXjalIa_1Rj6LykfPjQ
 
 {
     "region": "EU",
@@ -486,6 +486,35 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM1NTg0O
     }
 }
 
-###
+### ShowAppInstClient EXAMPLE
+POST https://console-stage.mobiledgex.net:443/api/v1/auth/ctrl/ShowAppInstClient
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM5ODcxNjgsImlhdCI6MTU4MzkwMDc2OCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.sv519Ngf7DfTa-8po2n1JaLZw3_JV305APdgcyLFa4p4VddKUAeDhkbyZF6RJ1oPqG8vXjalIa_1Rj6LykfPjQ
 
+{
+    "region": "EU",
+    "appinst": {
+        "app_key": {
+            "developer_key": {
+                "name": "MobiledgeX"
+            },
+            "name": "MobiledgeX SDK Demo",
+            "version": "2.0"
+        },
+        "cluster_inst_key": {
+            "cluster_key": {
+                "name": "autoclustermobiledgexsdkdemo"
+            },
+            "cloudlet_key": {
+                "operator_key": {
+                    "name": "TDG"
+                },
+                "name": "hamburg-stage"
+            }
+        }
+    }
+}
+
+
+###//console-stage.mobiledgex.net:443 region ShowAppInstClient  region=EU developer=MobiledgeX appname="MobiledgeX SDK Demo" appvers=2.0 operator=TDG cloudlet=hamburg-stage cluster=autoclustermobiledgexsdkdemo
 

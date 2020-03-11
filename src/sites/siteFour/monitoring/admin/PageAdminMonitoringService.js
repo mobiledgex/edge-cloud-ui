@@ -266,7 +266,7 @@ export const makeCloudletListSelectBox = (appInstanceList) => {
  * @param hardwareType
  * @returns {string}
  */
-export const renderUsageLabelByType = (usageOne, hardwareType) => {
+export const renderUsageLabelByType = (usageOne, hardwareType, _this) => {
     if (hardwareType === HARDWARE_TYPE.CPU) {
         let cpuUsageOne = '';
         try {
@@ -309,8 +309,55 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
         return usageOne.sumAcceptsConnection
     }
 
+}
+
+
+export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, _this) => {
+    if (hardwareType === HARDWARE_TYPE.CPU) {
+        let cpuUsageOne = '';
+        try {
+            cpuUsageOne = (usageOne.sumCpuUsage * 1).toFixed(2) + " %";
+        } catch (e) {
+            cpuUsageOne = 0;
+        }
+        return cpuUsageOne;
+    }
+
+    if (hardwareType === HARDWARE_TYPE.VCPU) {
+        return numberWithCommas(usageOne.sumVCpuUsage) + ""
+    }
+
+    if (hardwareType === HARDWARE_TYPE.MEM) {
+        return numberWithCommas((usageOne.sumMemUsage / 1000000).toFixed(2)) + " %"
+    }
+
+    if (hardwareType === HARDWARE_TYPE.DISK) {
+        return numberWithCommas(usageOne.sumDiskUsage) + " Byte"
+    }
+
+    if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+        return numberWithCommas(usageOne.sumRecvBytes) + " Byte";
+    }
+
+    if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+        return numberWithCommas(usageOne.sumSendBytes) + " Byte";
+    }
+
+    if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+        return usageOne.sumActiveConnection
+    }
+
+    if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+        return usageOne.sumHandledConnection
+    }
+
+    if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+        return usageOne.sumAcceptsConnection
+    }
 
 }
+
+
 
 export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
 

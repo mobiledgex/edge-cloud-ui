@@ -2,28 +2,13 @@ import 'react-hot-loader';
 
 import React from 'react';
 import '../PageMonitoring.css';
-import {
-    APP_INST_MATRIX_HW_USAGE_INDEX,
-    CHART_COLOR_LIST,
-    CLASSIFICATION,
-    HARDWARE_TYPE,
-    RECENT_DATA_LIMIT_COUNT,
-    USAGE_INDEX_FOR_CLUSTER
-} from "../../../../shared/Constants";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, CLASSIFICATION, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX_FOR_CLUSTER} from "../../../../shared/Constants";
 import BubbleChart from "../../../../components/BubbleChart";
 import PageDevMonitoring from "./PageDevMonitoring";
-import {
-    convertByteToMegaByte,
-    numberWithCommas,
-    PageMonitoringStyles,
-    renderUsageByType, showToast
-} from "../PageMonitoringCommonService";
-import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
+import {convertByteToMegaByte, numberWithCommas, PageMonitoringStyles, renderUsageByType, showToast} from "../PageMonitoringCommonService";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
-import {Table} from "semantic-ui-react";
-import Lottie from "react-lottie";
-import type {TypeAppInstanceUsage2, TypeClusterEventLog, TypeClusterUsageList} from "../../../../shared/Types";
-import {Progress, Select, Tooltip} from "antd";
+import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
+import {Select} from "antd";
 import {Responsive, WidthProvider} from "react-grid-layout";
 import type {MonitoringContextInterface} from "../PageMonitoringGlobalState";
 
@@ -49,7 +34,6 @@ export const defaultLayoutForCluster = [
     {i: '3', x: 2, y: 0, w: 1, h: 1, "add": false},
     {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false},
     {i: '5', x: 1, y: 1, w: 1, h: 1, "add": false},
-
 
 
     /*{i: '6', x: 2, y: 1, w: 1, h: 1, "add": false,},
@@ -255,7 +239,7 @@ export const getUserId = () => {
 
 
 export const filterByClassification = (originalList, selectOne, filterKey,) => {
-    try{
+    try {
         //todo:리전인 경우.....
         if (filterKey === CLASSIFICATION.REGION) {
             if (selectOne !== 'ALL') {
@@ -278,12 +262,11 @@ export const filterByClassification = (originalList, selectOne, filterKey,) => {
             })
             return filteredInstanceList;
         }
-    }catch (e) {
+    } catch (e) {
 
     }
 
 }
-
 
 export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, userType = '') => {
     if (hardwareType === HARDWARE_TYPE.CPU) {
@@ -303,15 +286,18 @@ export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, userTyp
         return numberWithCommas((usageOne.sumTcpConns).toFixed(2)) + " "
     }
 
+    if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
+        return numberWithCommas((usageOne.sumTcpConns).toFixed(2)) + " "
+    }
+
     if (hardwareType === HARDWARE_TYPE.UDPSENT) {
-        return numberWithCommas((usageOne.sumUdpSent).toFixed(2)) + " "
+        return numberWithCommas((usageOne.sumUdpSent).toFixed(2)) + " datagrams"
     }
 
     if (hardwareType === HARDWARE_TYPE.UDPRECV) {
-        return numberWithCommas((usageOne.sumUdpRecv).toFixed(2)) + " "
+        return numberWithCommas((usageOne.sumUdpRecv).toFixed(2)) + " datagrams"
     }
 
-    //@fixme
     if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
         return numberWithCommas((usageOne.sumSendBytes / 1000000).toFixed(0)) + " MByte"
     }
@@ -370,7 +356,7 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageD
             if (index < 5) {
                 let barDataOne = [
                     usageList[index].cluster.toString() + "\n[" + usageList[index].cloudlet + "]",//clusterName
-                    renderUsageByType(usageList[index], hardwareType),
+                    renderUsageByType(usageList[index], hardwareType, _this),
                     _this.state.chartColorList[index],
                     renderUsageLabelByTypeForCluster(usageList[index], hardwareType)
                 ]
@@ -425,9 +411,9 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
                 if (index < 5) {
                     let barDataOne = [
                         typedUsageList[index].instance.AppName.toString().substring(0, 10) + "..." + "\n[" + typedUsageList[index].instance.Cloudlet + "]",
-                        renderUsageByType(typedUsageList[index], hardwareType),
+                        renderUsageByType(typedUsageList[index], hardwareType, _this),
                         CHART_COLOR_LIST[index],
-                        renderUsageLabelByType(typedUsageList[index], hardwareType)
+                        renderUsageLabelByTypeForCluster(typedUsageList[index], hardwareType, _this)
                     ]
                     chartDataList.push(barDataOne);
                 }
@@ -1031,6 +1017,31 @@ export const handleLegendAndBubbleClickedEvent = (_this: PageDevMonitoring, clic
     _this.showModalClusterLineChart(selectedLineChartDataSetOne, selectedIndex)
 }
 
+export const addUnitNameForUsage = (value, hardwareType, _this) => {
+
+    if (_this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+
+        if (hardwareType === HARDWARE_TYPE.CPU || hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
+            return value + " %";
+        } else if (hardwareType === HARDWARE_TYPE.SENDBYTES || hardwareType === HARDWARE_TYPE.RECVBYTES) {
+            return convertByteToMegaByte(value, hardwareType)
+        } else if (hardwareType === HARDWARE_TYPE.UDPRECV || hardwareType === HARDWARE_TYPE.UDPSENT) {
+            return value + " datagrams";
+        } else {
+            return value;
+        }
+
+    } else if (_this.state.currentClassification === CLASSIFICATION.APPINST) {
+        if (hardwareType === HARDWARE_TYPE.CPU) {
+            return value + " %";
+        } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM || hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
+            return convertByteToMegaByte(value, hardwareType)
+        } else {
+            return value;
+        }
+    }
+}
+
 
 export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, context: MonitoringContextInterface) => {
 
@@ -1075,13 +1086,9 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, cont
                     //max: 100,//todo max value
                     fontColor: 'white',
                     callback(value, index, label) {
-
-                        if (hardwareType === 'ALL') {
-                            return value;
-                        } else {
-                            return convertByteToMegaByte(value, hardwareType)
-                        }
-
+                        console.log("yAxes===>", hardwareType);
+                        console.log("yAxes===>", _this.state.currentClassification);
+                        return addUnitNameForUsage(value, hardwareType, _this,)
 
                     },
                 },

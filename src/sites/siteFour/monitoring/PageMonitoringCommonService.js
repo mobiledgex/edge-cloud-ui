@@ -545,7 +545,7 @@ export const sortUsageListByType = (usageList, hardwareType) => {
 }
 
 
-export const renderUsageByType = (usageOne, hardwareType, role = '',) => {
+export const renderUsageByType = (usageOne, hardwareType, _this) => {
 
     if (hardwareType === HARDWARE_TYPE.CPU) {
         return usageOne.sumCpuUsage
@@ -562,7 +562,6 @@ export const renderUsageByType = (usageOne, hardwareType, role = '',) => {
     if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
         return usageOne.sumTcpRetrans;
     }
-    ////////////////////////////
     if (hardwareType === HARDWARE_TYPE.UDPRECV) {
         return usageOne.sumUdpRecv;
     }
@@ -577,7 +576,6 @@ export const renderUsageByType = (usageOne, hardwareType, role = '',) => {
     if (hardwareType === HARDWARE_TYPE.NET_RECV) {
         return usageOne.avgNetRecv;
     }
-
 
     if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
         return usageOne.sumRecvBytes
