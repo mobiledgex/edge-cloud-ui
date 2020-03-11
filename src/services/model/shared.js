@@ -1,7 +1,9 @@
 import React from 'react'
 import { Popup, Icon } from 'semantic-ui-react';
+import { fields } from './format';
 
-export const getIPAccess = (id) => {
+export const getIPAccess = (data) => {
+    let id = data[fields.ipAccess]
     switch (id) {
         case 1:
             return 'Dedicated'
@@ -10,7 +12,8 @@ export const getIPAccess = (id) => {
     }
 }
 
-export const getIPSupport = (id) => {
+export const getIPSupport = (data) => {
+    let id = data[fields.ipSupport]
     switch (id) {
         case 1:
             return 'Static'
@@ -56,7 +59,8 @@ const getStateStatus = (id) => {
     }
 }
 
-export const showProgress = (state, isDetailView) => {
+export const showProgress = (data, isDetailView) => {
+    let state = data[fields.state]
     if (isDetailView) {
         return getStateStatus(state)
     }

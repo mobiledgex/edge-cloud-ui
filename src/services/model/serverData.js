@@ -1,7 +1,6 @@
 import * as serviceMC from './serviceMC';
 import * as EP from './endPointTypes';
 import _ from 'lodash'
-import { fields } from './format';
 
 const getUserRole = ()=>
 {
@@ -40,6 +39,38 @@ const processData = (mcRequest) => {
         }
     }
     return dataList;
+}
+
+/* User Role */
+export const getUserRoles = async (self) => {
+
+    let mcRequest = await sendSyncRequest(self, EP.SHOW_ROLE)
+    return processData(mcRequest)
+
+}
+
+export const sendVerify = async (self, data) => {
+    let valid = false;
+    let mcRequest = await sendSyncRequest(self, EP.RESEND_VERIFY, data)
+    if(mcRequest && mcRequest.response)
+    {
+        let response = mcRequest.response;
+        valid = response.status === 200 ? true : false
+    }
+    return valid
+
+}
+
+export const settingLock = async (self, data) => {
+    let valid = false;
+    let mcRequest = await sendSyncRequest(self, EP.SETTING_LOCK, data)
+    if(mcRequest && mcRequest.response)
+    {
+        let response = mcRequest.response;
+        valid = response.status === 200 ? true : false
+    }
+    return valid
+
 }
 
 /* Organization */

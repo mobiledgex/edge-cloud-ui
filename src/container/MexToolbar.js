@@ -54,7 +54,7 @@ const MexToolbar = (props) => {
                             defaultValue={regions[0].value}
                             onChange={(e, { value }) => { props.onAction(ACTION_REGION, value) }}
                         />
-                    </div>: 
+                    </div> :
                     null
                 }
                 {requestInfo.isMap ?
@@ -62,12 +62,15 @@ const MexToolbar = (props) => {
                         <strong>Map:&nbsp;&nbsp;</strong>
                         <CustomSwitch size="small" color="primary" defaultChecked
                             onChange={(e) => { props.onAction(ACTION_MAP, e.target.checked) }} />
-                    </div> : 
+                    </div> :
                     null
                 }
-                <IconButton aria-label="new" onClick={(e) => { props.onAction(ACTION_NEW) }}>
-                    <AddIcon style={{ color: '#76ff03' }} />
-                </IconButton>
+                {
+                    requestInfo.onAdd ?
+                        <IconButton aria-label="new" onClick={(e) => { props.onAction(ACTION_NEW) }}>
+                            <AddIcon style={{ color: '#76ff03' }} />
+                        </IconButton> : null
+                }
                 <IconButton aria-label="refresh" onClick={(e) => { props.onAction(ACTION_REFRESH) }}>
                     <RefreshIcon style={{ color: '#76ff03' }} />
                 </IconButton>

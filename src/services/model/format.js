@@ -2,7 +2,7 @@ import { generateUniqueId } from '../serviceMC';
 import { toJson } from '../JsonUtil'
 
 export const fields = {
-    uuid:'uuid',
+    uuid: 'uuid',
     region: 'region',
     clusterName: 'clusterName',
     organizationName: 'organizationName',
@@ -83,21 +83,19 @@ export const fields = {
     locked: 'locked',
     outboundSecurityRulesCount: 'outboundSecurityRulesCount',
     cloudletCount: 'cloudletCount',
-    fullIsolation:'fullIsolation',
-    cloudletStatus:'cloudletStatus',
-    actions:'actions'
+    fullIsolation: 'fullIsolation',
+    cloudletStatus: 'cloudletStatus',
+    actions: 'actions',
+    manage: 'manage'
 
 }
 
-export const isAdmin = ()=>
-{
+export const isAdmin = () => {
     return localStorage.selectRole && localStorage.selectRole === 'AdminManager'
 }
 
-export const getOrganization = ()=>
-{
-    if(localStorage.selectOrg)
-    {
+export const getOrganization = () => {
+    if (localStorage.selectOrg) {
         return localStorage.selectOrg
     }
 }
@@ -131,7 +129,12 @@ const map = (value, currentObject, keys) => {
             }
             else {
                 let updatedData = mapObject(currentObject, key.serverField);
-                value[key.field] = updatedData ? updatedData : key.defaultValue
+                if (typeof updatedData === 'boolean') {
+                    value[key.field] = updatedData
+                }
+                else {
+                    value[key.field] = updatedData ? updatedData : key.defaultValue
+                }
             }
         }
     }

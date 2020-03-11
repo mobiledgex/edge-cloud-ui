@@ -62,7 +62,7 @@ const getRow = (id, item, data) => {
 const MexDetailViewer = (props) => {
     let detailData = props.detailData;
     return (
-        <Card style={{width:'100%', backgroundColor:'transparent', color:'white', height:'100%', overflowY:'auto'}}>
+        <Card style={{width:'100%', backgroundColor:'transparent', color:'white'}}>
             <Table celled style={{ width: '100%', backgroundColor: '#2A2C33', border: 'none'}}>
                 <Table.Header>
                     <Table.Row>

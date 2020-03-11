@@ -30,8 +30,8 @@ import HeaderGlobalMini from '../../container/headerGlobalMini';
 
 //pages
 import SiteFourPageFlavor from './flavors/flavorList';
-import SiteFourPageUser from './userRole/siteFour_page_user';
-import SiteFourPageAccount from './accounts/siteFour_page_account';
+import SiteFourPageUser from './userRole/userList';
+import SiteFourPageAccount from './accounts/accountList';
 import SiteFourPageApps from './apps/appList';
 import SiteFourPageAppInst from './appInst/appInstList';
 import SiteFourPageClusterInst from './clusterInst/clusterInstList';
@@ -466,12 +466,12 @@ class SiteFour extends React.Component {
 
     }
 
-    getAdminInfo(token) {
+    getAdminInfo = async(token) =>{
         serviceMC.sendRequest(_self, {
             token: token,
             method: serviceMC.getEP().SHOW_CONTROLLER
         }, this.receiveControllerResult);
-        serviceMC.sendRequest(_self, {token: token, method: serviceMC.getEP().SHOW_ROLE}, this.receiveAdminInfo)
+        //serviceMC.sendRequest(_self, {token: token, method: serviceMC.getEP().SHOW_ROLE}, this.receiveAdminInfo)
         _self.setState({currentVersion: process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'})
     }
 
@@ -482,11 +482,8 @@ class SiteFour extends React.Component {
 
     }
 
+   
     componentWillMount() {
-
-    }
-
-    componentDidMount() {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         this.setState({
             activeItem: (localStorage.selectMenu) ? localStorage.selectMenu : 'Organizations',
@@ -511,7 +508,6 @@ class SiteFour extends React.Component {
         if (this.props.params.subPath !== 'pg=audits') {
             this.getDataAudit();
         }
-
     }
 
     componentWillReceiveProps(nextProps, nextContext) {

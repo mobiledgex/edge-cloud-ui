@@ -44,7 +44,8 @@ export const streamCloudlet = (data) => {
     return {uuid:data.uuid, method: STREAM_CLOUDLET, data : requestData}
 }
 
-export const getCloudletInfoState = (id, isDetailView) => {
+export const getCloudletInfoState = (data, isDetailView) => {
+    let id = data[fields.cloudletStatus]
     let state = 'Not Present';
     let color = 'red'
     switch (id) {

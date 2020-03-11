@@ -31,7 +31,8 @@ class MexListView extends React.Component {
             stepsArray: [],
             showMap: true,
             dialogMessageInfo:{},
-            uuid: 0
+            uuid: 0,
+            refresh:true,
         };
         this.wsResponseCount = 0;
         this.requestCount = 0;
@@ -80,7 +81,7 @@ class MexListView extends React.Component {
     {
         let additionalDetail = this.props.requestInfo.additionalDetail
         return (
-            <Card style={{ height: '90%', backgroundColor:'#2A2C33' }}>
+            <Card style={{ height: '90%', backgroundColor:'#2A2C33', overflowY:'auto' }}>
                 <MexDetailViewer detailData={data} keys={this.keys} />
                 {additionalDetail ? additionalDetail(data) : null}
             </Card>
@@ -89,16 +90,21 @@ class MexListView extends React.Component {
 
     getCellClick = (key, rowIndex) => {
         this.selectedRowIndex = rowIndex
-        let item = this.state.dataList[this.selectedRowIndex]
+        let data = this.state.dataList[this.selectedRowIndex]
 
         if (key.field === fields.state) {
-            this.onProgress(item)
+            this.onProgress(data)
         }
-        else if (key.clickable === undefined || !key.clickable) {
+        else if (key.clickable) {
+            if (this.props.onClick) {
+                this.props.onClick(key, data)
+            }
+        }
+        else{
             this.setState(
                 {
                     isDetail: true,
-                    currentView: this.detailView(item)
+                    currentView: this.detailView(data)
                 }
             )
         }
@@ -197,7 +203,7 @@ class MexListView extends React.Component {
                         field === fields.actions ? this.getAction(item)
                             :
                             <div>
-                                {header.customizedData ? header.customizedData(item[field]) : item[field]}
+                                {header.customizedData ? header.customizedData(item) : item[field]}
                             </div>
                     }</Table.Cell>
             }
@@ -368,6 +374,14 @@ class MexListView extends React.Component {
       Stepper Block
       Todo: Move to separate file
       */
+
+
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.refreshToggle !== state.refresh) {
+            return { refresh: props.refreshToggle, dataList : state.dataList }
+        }
+    } 
 
     render() {
         return (

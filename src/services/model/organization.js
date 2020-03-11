@@ -6,6 +6,7 @@ export const DELETE_ORG = "deleteOrg";
 
 export const additionalDetail = (data) => {
     return (
+        data[fields.type] === 'developer' ?
         <div style={{ margin: 20, color: 'white' }}>
             <div className="newOrg3-2">
                 <div>
@@ -35,15 +36,16 @@ export const additionalDetail = (data) => {
                     {'$ curl -u<username> -T <path_to_file>'} <code style={{ color: '#76ff03' }}>{`"https://artifactory.mobiledgex.net/artifactory/repo-${data[fields.organizationName]}/<target_file_path>"`}</code> {'--progress-bar -o <upload status filename>'}
                 </div>
             </div>
-        </div>)
+        </div> : null)
 }
+
 
 export const keys = [
     { field: fields.organizationName, serverField: 'Name', label: 'Organization', sortable: true, visible: true },
     { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: true },
     { field: fields.phone, serverField: 'Phone', label: 'Phone', sortable: false, visible: true },
     { field: fields.address, serverField: 'Address', label: 'Address', sortable: false, visible: true },
-    { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true }
+    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
 
 export const getKey = (data) => {
