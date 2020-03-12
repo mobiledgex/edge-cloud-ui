@@ -193,7 +193,6 @@ type State = {
     connectionsTabIndex: number,
     tcpTabIndex: number,
     udpTabIndex: number,
-    cloudletList: Array,
     maxCpu: number,
     maxMem: number,
     intervalLoading: boolean,
@@ -1056,6 +1055,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 </>
             )
         }
+
 
         makeGridSizeByType(graphType) {
             if (graphType === GRID_ITEM_TYPE.CLUSTER_LIST) {
