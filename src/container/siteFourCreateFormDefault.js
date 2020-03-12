@@ -7,7 +7,6 @@ import * as serviceMC from '../services/serviceMC';
 import SankeyDiagram from '../charts/plotly/SankeyDiagram';
 import DualListBox from 'react-dual-listbox';
 import './styles.css';
-//import './react_dualist.css'
 import '../css/components/dualListbox/react-dual-listbox.css';
 
 
