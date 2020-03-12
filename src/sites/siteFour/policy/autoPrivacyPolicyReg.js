@@ -6,8 +6,11 @@ import MexForms from '../../../hoc/forms/MexForms';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import uuid from 'uuid';
-import * as serverData from '../../../services/model/serverData';
 import {fields} from '../../../services/model/format';
+//model
+import {showOrganizations} from '../../../services/model/organization';
+import {updatePrivacyPolicy, createPrivacyPolicy} from '../../../services/model/privacyPolicy';
+import * as serverData from '../../../services/model/serverData';
 
 class AutoProvPolicyReg extends React.Component {
     constructor(props) {
@@ -18,7 +21,7 @@ class AutoProvPolicyReg extends React.Component {
         }
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
         this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
-        this.OrganizationList = []
+        this.organizationList = []
         this.cloudletList = []
     }
 
@@ -236,18 +239,8 @@ class AutoProvPolicyReg extends React.Component {
                 }
             }
 
-            let requestData = {
-                region: data[fields.region],
-                privacypolicy: {
-                    key: {
-                        name: data[fields.privacyPolicyName],
-                        developer: data[fields.organizationName]
-                    },
-                    outbound_security_rules: outbound_security_rules
-                }
-            }
-
-            let mcRequest = this.props.action === 'Update' ? await serverData.updatePrivacyPolicy(this, requestData) : await serverData.createPrivacyPolicy(this, requestData)
+            
+            let mcRequest = await serverData.sendRequest(this, this.props.action === 'Update' ? updatePrivacyPolicy(data) : createPrivacyPolicy(data))
             if (mcRequest && mcRequest.response) {
                 let response = mcRequest.response
                 if (response.status === 200) {
@@ -308,7 +301,7 @@ class AutoProvPolicyReg extends React.Component {
                 if (form.formType === 'Select') {
                     switch (form.field) {
                         case fields.organizationName:
-                            form.options = this.getOrganizationData(form, this.OrganizationList)
+                            form.options = this.getOrganizationData(form, this.organizationList)
                             break;
                         case fields.region:
                             form.options = this.getRegionData();
@@ -351,7 +344,7 @@ class AutoProvPolicyReg extends React.Component {
         if (data) {
             let organization = {}
             organization[fields.organizationName] = data[fields.organizationName]
-            this.OrganizationList = [organization]
+            this.organizationList = [organization]
 
             this.loadData(forms, data)
             if (data[fields.outboundSecurityRules] && data[fields.outboundSecurityRules].length > 0) {
@@ -375,7 +368,7 @@ class AutoProvPolicyReg extends React.Component {
             }
         }
         else {
-            this.OrganizationList = await serverData.getOrganizationInfo(this)
+            this.organizationList = await serverData.sendRequest(this, showOrganizations())
             this.loadData(forms)
             forms.push(this.getOutboundSecurityForm(this.getOutBoundRules()))
         }

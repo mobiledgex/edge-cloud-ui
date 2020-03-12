@@ -9,6 +9,8 @@ import { keys, showOrganizations, deleteOrganization, additionalDetail } from '.
 import OrganizationReg from './siteFour_page_createOrga';
 import PopAddUserViewer from '../../../container/popAddUserViewer';
 import * as serverData from '../../../services/model/serverData'
+import * as constant from '../../../services/model/shared';
+
 import { Button } from '@material-ui/core';
 
 class OrganizationList extends React.Component {
@@ -111,15 +113,15 @@ class OrganizationList extends React.Component {
             sortBy: [fields.organizationName],
             keys: this.keys,
             onAdd: this.onAdd,
-            additionalDetail: additionalDetail
+            additionalDetail: constant.additionalDetail
         })
     }
 
     getUserRoles = async (key) => {
         let isAdmin = false;
-        let userRoles = await serverData.getUserRoles(this)
-        if (userRoles) {
-
+        let mcRequest = await serverData.showUserRoles(this)
+        if (mcRequest && mcRequest.response) {
+            let userRoles = mcRequest.response.data
             this.props.handleRoleInfo(userRoles)
             for(let i=0;i<userRoles.length;i++)
             {

@@ -1,6 +1,5 @@
 import * as formatter from './format'
-export const SHOW_ACCOUNTS = "ShowAccounts";
-export const DELETE_ACCOUNT = "DeleteAccount";
+import {SHOW_ACCOUNTS, DELETE_ACCOUNT} from './endPointTypes'
 
 let fields = formatter.fields
 

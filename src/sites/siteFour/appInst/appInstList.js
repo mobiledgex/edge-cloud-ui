@@ -5,8 +5,8 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { fields } from '../../../services/model/format';
-import { keys, showAppInsts, deleteAppInst, streamAppInst, SHOW_APP_INST } from '../../../services/model/appInstance';
-import { showApps, SHOW_APP } from '../../../services/model/app';
+import { keys, showAppInsts, deleteAppInst, streamAppInst, multiDataRequest } from '../../../services/model/appInstance';
+import { showApps } from '../../../services/model/app';
 import AppInstReg from './siteFour_page_appInstReg';
 import * as constant from '../../../services/model/shared';
 
@@ -30,36 +30,6 @@ class PrivacyPolicy extends React.Component {
             { label: 'Delete', onClick: deleteAppInst, ws: true }
         ]
     }
-
-    multiDataRequest = (mcRequestList) => {
-        let appInstList = [];
-        let appList = [];
-        for (let i = 0; i < mcRequestList.length; i++) {
-            let mcRequest = mcRequestList[i];
-            let request = mcRequest.request;
-            if (request.method === SHOW_APP_INST) {
-                appInstList = mcRequest.response.data
-            }
-            else if (request.method === SHOW_APP) {
-                appList = mcRequest.response.data
-            }
-        }
-
-        if (appInstList && appInstList.length > 0) {
-            for (let i = 0; i < appInstList.length; i++) {
-                let appInst = appInstList[i]
-                for (let j = 0; j < appList.length; j++) {
-                    let app = appList[j]
-                    if (appInst[fields.appName] === app[fields.appName]) {
-                        appInst[fields.deployment] = app[fields.deployment];
-                        break;
-                    }
-                }
-            }
-        }
-        return appInstList;
-    }
-
 
     requestInfo = () => {
         return ({
@@ -100,7 +70,7 @@ class PrivacyPolicy extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={this.multiDataRequest} />
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} />
         )
     }
 };

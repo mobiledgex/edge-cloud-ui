@@ -1,10 +1,8 @@
-import { generateUniqueId } from '../serviceMC';
+
+import { SHOW_CLOUDLET_INFO } from './endPointTypes'
 import * as formatter from './format'
 
 let fields = formatter.fields;
-
-export const SHOW_CLOUDLET_INFO = "ShowCloudletInfo";
-
 
 const keys = [
     { field: fields.cloudletName, serverField: 'key#OS#name' },

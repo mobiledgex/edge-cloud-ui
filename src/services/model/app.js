@@ -1,25 +1,21 @@
 import * as formatter from './format'
 import { TYPE_JSON } from '../../constant';
-
-export const SHOW_APP = "ShowApp";
-export const CREATE_APP = "CreateApp";
-export const UPDATE_APP = "UpdateApp";
-export const DELETE_APP = "DeleteApp";
+import { SHOW_APP, CREATE_APP, UPDATE_APP, DELETE_APP } from './endPointTypes'
 
 let fields = formatter.fields
 
 export const keys = [
     { field: fields.region, label: 'Region', sortable: true, visible: true },
-    { field: fields.organizationName, serverField: 'key#OS#developer_key#OS#name',  sortable: true, label: 'Organization', visible: true },
-    { field: fields.appName, serverField: 'key#OS#name', label: 'App', sortable: true,  visible: true },
+    { field: fields.organizationName, serverField: 'key#OS#developer_key#OS#name', sortable: true, label: 'Organization', visible: true },
+    { field: fields.appName, serverField: 'key#OS#name', label: 'App', sortable: true, visible: true },
     { field: fields.version, serverField: 'key#OS#version', label: 'Version', visible: true },
-    { field: fields.deployment, serverField: 'deployment', label: 'Deployment',  sortable: true, visible: true },
+    { field: fields.deployment, serverField: 'deployment', label: 'Deployment', sortable: true, visible: true },
     { field: fields.command, serverField: 'command', label: 'Command' },
     { field: fields.deploymentManifest, serverField: 'deployment_manifest', label: 'Deployment Manifest', dataType: TYPE_JSON },
     { field: fields.deploymentGenerator, serverField: 'deployment_generator', label: 'Deployment Generator' },
     { field: fields.imageType, serverField: 'image_type', label: 'Image Type' },
     { field: fields.imagePath, serverField: 'image_path', label: 'Image Path' },
-    { field: fields.defaultFlavorName, serverField: 'default_flavor#OS#name',  sortable: true, label: 'Default Flavor', visible: true },
+    { field: fields.defaultFlavorName, serverField: 'default_flavor#OS#name', sortable: true, label: 'Default Flavor', visible: true },
     { field: fields.accessPorts, serverField: 'access_ports', label: 'Ports', visible: true },
     { field: fields.accessType, serverField: 'access_type', label: 'Access Type' },
     { field: fields.authPublicKey, serverField: 'auth_public_key', label: 'Auth Public Key' },
@@ -70,8 +66,7 @@ const newLineToJsonObject = (data) => {
             let dataArray = data.split('\n');
             for (let i = 0; i < dataArray.length; i++) {
                 let dataObject = dataArray[i].split(':')
-                if(dataObject.length == 2)
-                {
+                if (dataObject.length == 2) {
                     formatedData[dataObject[0]] = dataObject[1]
                 }
             }

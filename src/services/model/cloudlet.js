@@ -1,12 +1,8 @@
 import * as formatter from './format'
 import { TYPE_JSON } from '../../constant';
+import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, STREAM_CLOUDLET, DELETE_CLOUDLET, SHOW_CLOUDLET_INFO} from './endPointTypes'
 
 const fields = formatter.fields;
-
-export const SHOW_CLOUDLET = "ShowCloudlet";
-export const SHOW_ORG_CLOUDLET = "orgcloudlet";
-export const STREAM_CLOUDLET = "StreamCloudlet";
-export const DELETE_CLOUDLET = "DeleteCloudlet";
 
 export const getKey = (data) => {
     return ({
@@ -18,6 +14,42 @@ export const getKey = (data) => {
             }
         }
     })
+}
+
+export const multiDataRequest = (mcRequestList) => {
+    let cloudletList = [];
+    let cloudletInfoList = [];
+    for (let i = 0; i < mcRequestList.length; i++) {
+        let mcRequest = mcRequestList[i];
+        let request = mcRequest.request;
+        if (request.method === SHOW_CLOUDLET || request.method === SHOW_ORG_CLOUDLET) {
+            for (let i = 0; i < this.keys.length > 0; i++) {
+                let key = this.keys[i];
+                if (key.field === fields.cloudletStatus) {
+                    key.visible = request.method === SHOW_ORG_CLOUDLET ? false : true;
+                    break;
+                }
+            }
+            cloudletList = mcRequest.response.data
+        }
+        else if (request.method === SHOW_CLOUDLET_INFO) {
+            cloudletInfoList = mcRequest.response.data
+        }
+    }
+
+    if (cloudletList && cloudletList.length > 0) {
+        for (let i = 0; i < cloudletList.length; i++) {
+            let cloudlet = cloudletList[i]
+            for (let j = 0; j < cloudletInfoList.length; j++) {
+                let cloudletInfo = cloudletInfoList[j]
+                if (cloudlet[fields.cloudletName] === cloudletInfo[fields.cloudletName]) {
+                    cloudlet[fields.cloudletStatus] = cloudletInfo[fields.state]
+                    break;
+                }
+            }
+        }
+    }
+    return cloudletList;
 }
 
 export const showCloudlets = (data) => {

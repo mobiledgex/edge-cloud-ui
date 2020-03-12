@@ -1,7 +1,5 @@
 import { fields, formatData } from './format'
-
-export const SHOW_USERS = "ShowUsers";
-export const DELETE_USER = "DeleteUser";
+import { SHOW_USERS, DELETE_USER} from './endPointTypes'
 
 
 

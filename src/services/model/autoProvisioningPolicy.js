@@ -1,16 +1,11 @@
-import {TYPE_JSON} from '../../constant';
+import { TYPE_JSON } from '../../constant';
 import * as formatter from './format'
+import { SHOW_AUTO_PROV_POLICY, CREATE_AUTO_PROV_POLICY, DELETE_AUTO_PROV_POLICY, ADD_AUTO_PROV_POLICY_CLOUDLET, REMOVE_AUTO_PROV_POLICY_CLOUDLET } from './endPointTypes'
 
 let fields = formatter.fields
 
-export const SHOW_AUTO_PROV_POLICY = "ShowAutoProvPolicy";
-export const CREATE_AUTO_PROV_POLICY = "CreateAutoProvPolicy";
-export const DELETE_AUTO_PROV_POLICY= "DeleteAutoProvPolicy";
-export const ADD_AUTO_PROV_POLICY_CLOUDLET = "AddAutoProvPolicyCloudlet";
-export const REMOVE_AUTO_PROV_POLICY_CLOUDLET = "RemoveAutoProvPolicyCloudlet";
 
-
-export const keys =[
+export const keys = [
   { field: fields.region, label: 'Region', sortable: true, visible: true },
   { field: fields.organizationName, serverField: 'key#OS#developer', label: 'Organization Name', sortable: true, visible: true },
   { field: fields.autoPolicyName, serverField: 'key#OS#name', label: 'Auto Policy Name', sortable: false, visible: true },
@@ -23,8 +18,15 @@ export const keys =[
     { field: fields.operatorName, serverField: 'key#OS#operator_key#OS#name', label: 'Operator' },
     { field: fields.cloudletLocation, serverField: 'loc', label: 'Location', dataType: TYPE_JSON }]
   },
-  { field: 'actions', label: 'Actions', sortable: false, visible: true }
+  { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
+
+export const getKey = (data) => {
+  return ({
+    region: data[fields.region],
+    AutoProvPolicy: { key: { developer: data[fields.organizationName], name: data[fields.autoPolicyName] } }
+  })
+}
 
 export const showAutoProvPolicies = (data) => {
   if (!formatter.isAdmin()) {
@@ -35,8 +37,13 @@ export const showAutoProvPolicies = (data) => {
         }
       }
     }
-    return { method: SHOW_AUTO_PROV_POLICY, data: data }
   }
+  return { method: SHOW_AUTO_PROV_POLICY, data: data }
+}
+
+export const deleteAutoProvPolicy = (data) => {
+  let requestData = getKey(data)
+  return { method: DELETE_AUTO_PROV_POLICY, data: requestData, success: `Auto Provisioning Policy ${data[fields.autoPolicyName]}` }
 }
 
 /** 

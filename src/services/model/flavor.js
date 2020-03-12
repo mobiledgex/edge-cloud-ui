@@ -1,10 +1,6 @@
 
 import { fields, formatData } from './format'
-
-
-export const SHOW_FLAVOR = "ShowFlavor";
-export const CREATE_FLAVOR = "CreateFlavor";
-export const DELETE_FLAVOR = "DeleteFlavor"
+import { SHOW_FLAVOR, CREATE_FLAVOR, DELETE_FLAVOR } from './endPointTypes'
 
 export const keys = [ 
     { field: fields.region, label: 'Region', sortable: true, visible: true },

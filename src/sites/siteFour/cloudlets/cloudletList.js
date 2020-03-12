@@ -5,8 +5,8 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { fields } from '../../../services/model/format';
-import { keys, showCloudlets, deleteCloudlet, streamCloudlet, SHOW_CLOUDLET, SHOW_ORG_CLOUDLET } from '../../../services/model/cloudlet';
-import { showCloudletInfos, SHOW_CLOUDLET_INFO } from '../../../services/model/cloudletInfo';
+import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/model/cloudlet';
+import { showCloudletInfos } from '../../../services/model/cloudletInfo';
 import ClouldletReg from './siteFour_page_cloudletReg';
 
 import * as constant from '../../../services/model/shared';
@@ -33,41 +33,7 @@ class PrivacyPolicy extends React.Component {
         ]
     }
 
-    multiDataRequest = (mcRequestList) => {
-        let cloudletList = [];
-        let cloudletInfoList = [];
-        for (let i = 0; i < mcRequestList.length; i++) {
-            let mcRequest = mcRequestList[i];
-            let request = mcRequest.request;
-            if (request.method === SHOW_CLOUDLET || request.method === SHOW_ORG_CLOUDLET) {
-                for (let i = 0; i < this.keys.length > 0; i++) {
-                    let key = this.keys[i];
-                    if (key.field === fields.cloudletStatus) {
-                        key.visible = request.method === SHOW_ORG_CLOUDLET ? false : true;
-                        break;
-                    }
-                }
-                cloudletList = mcRequest.response.data
-            }
-            else if (request.method === SHOW_CLOUDLET_INFO) {
-                cloudletInfoList = mcRequest.response.data
-            }
-        }
-
-        if (cloudletList && cloudletList.length > 0) {
-            for (let i = 0; i < cloudletList.length; i++) {
-                let cloudlet = cloudletList[i]
-                for (let j = 0; j < cloudletInfoList.length; j++) {
-                    let cloudletInfo = cloudletInfoList[j]
-                    if (cloudlet[fields.cloudletName] === cloudletInfo[fields.cloudletName]) {
-                        cloudlet[fields.cloudletStatus] = cloudletInfo[fields.state]
-                        break;
-                    }
-                }
-            }
-        }
-        return cloudletList;
-    }
+    
 
 
     requestInfo = () => {
@@ -155,7 +121,7 @@ class PrivacyPolicy extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={this.multiDataRequest} />
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} />
         )
     }
 };

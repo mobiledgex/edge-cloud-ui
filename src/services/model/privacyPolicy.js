@@ -1,11 +1,6 @@
 import * as formatter from './format'
-
+import { SHOW_PRIVACY_POLICY, UPDATE_PRIVACY_POLICY, CREATE_PRIVACY_POLICY, DELETE_PRIVACY_POLICY } from './endPointTypes'
 export const fields = formatter.fields;
-
-export const SHOW_PRIVACY_POLICY = "ShowPrivacyPolicy";
-export const UPDATE_PRIVACY_POLICY = "UpdatePrivacyPolicy";
-export const CREATE_PRIVACY_POLICY = "CreatePrivacyPolicy";
-export const DELETE_PRIVACY_POLICY = "DeletePrivacyPolicy";
 
 export const outboundSecurityRulesKeys = [
   { field: fields.protocol, serverField: 'protocol', label: 'Protocol' },
@@ -23,7 +18,7 @@ export const keys = [
     field: fields.outboundSecurityRules, serverField: 'outbound_security_rules', label: 'Outbound Security Rules',
     keys: outboundSecurityRulesKeys
   },
-  { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable:true }
+  { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
 
 const getKey = (data) => {
@@ -35,6 +30,7 @@ const getKey = (data) => {
     }
   }
 }
+
 
 export const showPrivacyPolicies = (data) => {
   if (!formatter.isAdmin()) {
@@ -49,9 +45,20 @@ export const showPrivacyPolicies = (data) => {
   return { method: SHOW_PRIVACY_POLICY, data: data }
 }
 
+export const updatePrivacyPolicy = (data) => {
+  let requestData = getKey(data)
+  return { method: UPDATE_PRIVACY_POLICY, data: requestData }
+}
+
+
+export const createPrivacyPolicy = (data) => {
+  let requestData = getKey(data)
+  return { method: CREATE_PRIVACY_POLICY, data: requestData }
+}
+
 export const deletePrivacyPolicy = (data) => {
-    let requestData = getKey(data)
-    return {method: DELETE_PRIVACY_POLICY, data : requestData, success:`Privacy Policy ${data[fields.privacyPolicyName]}`}
+  let requestData = getKey(data)
+  return { method: DELETE_PRIVACY_POLICY, data: requestData, success: `Privacy Policy ${data[fields.privacyPolicyName]}` }
 }
 
 const customData = (value) => {

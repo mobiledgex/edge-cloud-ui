@@ -1,71 +1,63 @@
-import _ from 'lodash'
 import React from 'react';
-import MexListView from '../../../container/MexListView';
 import { withRouter } from 'react-router-dom';
-//redux
 import { connect } from 'react-redux';
+//redux
 import * as actions from '../../../actions';
-import * as serverData from '../../../services/model/serverData';
+//reg
 import AutoProvPolicyReg from './autoProvPolicyReg'
-import { keys, showAutoProvPolicies } from '../../../services/model/autoProvisioningPolicy';
+//model
 import { fields } from '../../../services/model/format';
+import { keys, showAutoProvPolicies, deleteAutoProvPolicy } from '../../../services/model/autoProvisioningPolicy';
+//list
+import MexListView from '../../../container/MexListView';
 
 class AutoProvPolicy extends React.Component {
     constructor(props) {
         super(props);
-        this.action = '';
-        this.data = {}
+        this.state = {
+            currentView: null
+        }
+    }
+
+    onRegClose = (isEdited)=>
+    {
+        this.setState({ currentView: null })
+    }
+
+    onAdd = () => {
+        this.setState({ currentView: <AutoProvPolicyReg onClose={this.onRegClose}/> })
     }
 
     onAddCloudlet = (data) => {
-        this.data = data;
-        this.action = 'Add'
-        this.props.childPage(<AutoProvPolicyReg data={this.data} action={this.action} childPage={this.props.childPage}></AutoProvPolicyReg>)
+        this.setState({ currentView: <AutoProvPolicyReg data={data} action={'Add'} onClose={this.onRegClose}/> })
     }
 
     onDeleteCloudlet = (data) => {
-        this.data = data;
-        this.action = 'Delete'
-        this.props.childPage(<AutoProvPolicyReg data={this.data} action={this.action} childPage={this.props.childPage}></AutoProvPolicyReg>)
-    }
-
-    onDelete = async (data) => {
-        let valid = false;
-        let AutoProvPolicy = {
-            key: { developer: data[fields.organizationName], name: data[fields.autoPolicyName] }
-        }
-
-        let requestData = {
-            region: data[fields.region],
-            AutoProvPolicy: AutoProvPolicy
-        }
-        let mcRequest = await serverData.deleteAutoProvPolicy(this, requestData)
-        if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-            this.props.handleAlertInfo('success', `Auto Provisioning Policy ${data[fields.autoPolicyName]} deleted successfully`)
-            valid = true;
-        }
-        return valid;
+        this.setState({ currentView: <AutoProvPolicyReg data={data} action={'Delete'} onClose={this.onRegClose}/> })
     }
 
     actionMenu = () => {
         return [{ label: 'Add Cloudlet', onClick: this.onAddCloudlet },
         { label: 'Delete Cloudlet', onClick: this.onDeleteCloudlet },
-        { label: 'Delete', onClick: this.onDelete }]
+        { label: 'Delete', onClick: deleteAutoProvPolicy }]
     }
 
     requestInfo = () => {
         return ({
-            headerLabel:'Auto Provisioning Policy',
+            headerLabel: 'Auto Provisioning Policy',
+            nameField: fields.autoPolicyName,
             requestType: [showAutoProvPolicies],
             isRegion: true,
             sortBy: [fields.region, fields.autoPolicyName],
-            keys:keys
+            keys: keys,
+            onAdd: this.onAdd
         })
     }
 
     render() {
         return (
-            <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} />
+            this.state.currentView ? this.state.currentView :
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} />
         )
     }
 };
@@ -76,7 +68,7 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) }
     };
 };
 

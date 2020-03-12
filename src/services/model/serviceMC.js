@@ -132,12 +132,10 @@ export function sendMultiRequest(self, requestDataList, callback) {
 
 export const sendSyncRequest = async (self, request) => {
     try {
-        request.showSpinner === undefined && showSpinner(self, true)
         let response = await axios.post(EP.getPath(request), request.data,
             {
                 headers: getHeader(request)
             });
-        request.showSpinner === undefined && showSpinner(self, false)
         return EP.formatData(request, response);
     } catch (error) {
         if (error.response) {
@@ -162,17 +160,6 @@ export function sendRequest(self, request, callback) {
                 responseError(self, request, error.response, callback)
             }
         })
-}
-
-export function clearSockets(uuid) {
-    sockets.map(item => {
-        let socket = item.socket;
-        if (uuid === item.uuid && socket.readyState === WebSocket.OPEN) {
-            socket.close();
-            item.isClosed = true;
-        }
-    })
-
 }
 
 

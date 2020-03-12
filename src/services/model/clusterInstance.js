@@ -1,12 +1,8 @@
 import * as formatter from './format'
-import * as constant from './shared';
+import { SHOW_CLUSTER_INST, STREAM_CLUSTER_INST, DELETE_CLUSTER_INST, SHOW_CLOUDLET, SHOW_ORG_CLOUDLET} from './endPointTypes'
 import { TYPE_JSON } from '../../constant';
 
 let fields = formatter.fields;
-
-export const SHOW_CLUSTER_INST = "ShowClusterInst";
-export const STREAM_CLUSTER_INST = "StreamClusterInst";
-export const DELETE_CLUSTER_INST = "DeleteClusterInst";
 
 export const keys = [
     { field: fields.region, label: 'Region', sortable: true, visible: true },
@@ -26,6 +22,36 @@ export const keys = [
     { field: fields.reservable, serverField: 'reservable' },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
+
+export const multiDataRequest = (mcRequestList) => {
+    let cloudletDataList = [];
+    let clusterDataList = [];
+    for (let i = 0; i < mcRequestList.length; i++) {
+        let mcRequest = mcRequestList[i];
+        if (mcRequest.response) {
+            let request = mcRequest.request;
+            if (request.method === SHOW_CLOUDLET || request.method === SHOW_ORG_CLOUDLET) {
+                cloudletDataList = mcRequest.response.data;
+            }
+            if (mcRequest.request.method === SHOW_CLUSTER_INST) {
+                clusterDataList = mcRequest.response.data;
+            }
+        }
+    }
+
+    if (clusterDataList && clusterDataList.length > 0) {
+        for (let i = 0; i < clusterDataList.length; i++) {
+            let clusterData = clusterDataList[i]
+            for (let j = 0; j < cloudletDataList.length; j++) {
+                let cloudletData = cloudletDataList[j]
+                if (clusterData[fields.cloudletName] === cloudletData[fields.cloudletName]) {
+                    clusterData[fields.cloudletLocation] = cloudletData[fields.cloudletLocation];
+                }
+            }
+        }
+    }
+    return clusterDataList;
+}
 
 export const showClusterInsts = (data) => {
     if (!formatter.isAdmin()) {

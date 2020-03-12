@@ -1,24 +1,19 @@
 import * as formatter from './format'
 import { TYPE_JSON } from '../../constant';
+import { SHOW_APP_INST, CREATE_APP_INST, UPDATE_APP_INST, DELETE_APP_INST, STREAM_APP_INST, SHOW_APP } from './endPointTypes'
 
 let fields = formatter.fields;
-
-export const SHOW_APP_INST = "ShowAppInst";
-export const CREATE_APP_INST = "CreateAppInst";
-export const UPDATE_APP_INST = "UpdateAppInst";
-export const DELETE_APP_INST = "DeleteAppInst";
-export const STREAM_APP_INST = "StreamAppInst";
 
 export const keys = [
   { field: fields.region, label: 'Region', sortable: true, visible: true },
   { field: fields.organizationName, serverField: 'key#OS#app_key#OS#developer_key#OS#name', sortable: true, label: 'Organization', visible: true },
-  { field: fields.appName, serverField: 'key#OS#app_key#OS#name',  sortable: true, label: 'App', visible: true },
+  { field: fields.appName, serverField: 'key#OS#app_key#OS#name', sortable: true, label: 'App', visible: true },
   { field: fields.version, serverField: 'key#OS#app_key#OS#version', label: 'Version', visible: true },
-  { field: fields.operatorName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#operator_key#OS#name',  sortable: true, label: 'Operator', visible: true },
-  { field: fields.cloudletName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#name',  sortable: true, label: 'Cloudlet', visible: true },
+  { field: fields.operatorName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#operator_key#OS#name', sortable: true, label: 'Operator', visible: true },
+  { field: fields.cloudletName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: true },
   { field: fields.cloudletLocation, serverField: 'cloudlet_loc', label: 'Cloudlet Location', dataType: TYPE_JSON },
-  { field: fields.clusterName, serverField: 'key#OS#cluster_inst_key#OS#cluster_key#OS#name',  sortable: true, label: 'Cluster Instance', visible: true },
-  { field: fields.deployment, label:'Deployment',  sortable: true, visible:true },
+  { field: fields.clusterName, serverField: 'key#OS#cluster_inst_key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster Instance', visible: true },
+  { field: fields.deployment, label: 'Deployment', sortable: true, visible: true },
   { field: fields.uri, serverField: 'uri', label: 'URI' },
   { field: fields.liveness, serverField: 'liveness', label: 'Liveness' },
   { field: fields.mappedPorts, serverField: 'mapped_ports', label: 'Mapped Port', dataType: TYPE_JSON },
@@ -46,6 +41,35 @@ export const getKey = (data) => {
   })
 }
 
+export const multiDataRequest = (mcRequestList) => {
+  let appInstList = [];
+  let appList = [];
+  for (let i = 0; i < mcRequestList.length; i++) {
+      let mcRequest = mcRequestList[i];
+      let request = mcRequest.request;
+      if (request.method === SHOW_APP_INST) {
+          appInstList = mcRequest.response.data
+      }
+      else if (request.method === SHOW_APP) {
+          appList = mcRequest.response.data
+      }
+  }
+
+  if (appInstList && appInstList.length > 0) {
+      for (let i = 0; i < appInstList.length; i++) {
+          let appInst = appInstList[i]
+          for (let j = 0; j < appList.length; j++) {
+              let app = appList[j]
+              if (appInst[fields.appName] === app[fields.appName]) {
+                  appInst[fields.deployment] = app[fields.deployment];
+                  break;
+              }
+          }
+      }
+  }
+  return appInstList;
+}
+
 export const showAppInsts = (data) => {
   if (!formatter.isAdmin()) {
     {
@@ -63,12 +87,12 @@ export const showAppInsts = (data) => {
 
 export const deleteAppInst = (data) => {
   let requestData = getKey(data)
-  return {uuid:data.uuid, method: DELETE_APP_INST, data : requestData, success:`App Instance ${data[fields.appName]}`}
+  return { uuid: data.uuid, method: DELETE_APP_INST, data: requestData, success: `App Instance ${data[fields.appName]}` }
 }
 
 export const streamAppInst = (data) => {
   let requestData = getKey(data)
-  return {uuid:data.uuid, method: STREAM_APP_INST, data : requestData}
+  return { uuid: data.uuid, method: STREAM_APP_INST, data: requestData }
 }
 
 const customData = (value) => {
