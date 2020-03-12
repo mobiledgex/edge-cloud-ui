@@ -2,8 +2,6 @@ import * as React from 'react';
 import {CircularProgress} from "@material-ui/core";
 import ndjsonStream from "can-ndjson-stream";
 import FlexBox from "flexbox-react";
-import axios from 'axios'
-import qs from "qs";
 
 type Props = {
     history: any,
@@ -13,7 +11,7 @@ type State = {
     results: any,
 };
 
-export class StreamingRequestExample extends React.Component<Props, State> {
+export default class StreamingRequestExample002 extends React.Component<Props, State> {
     state = {
         loading: false,
         results: [],
@@ -24,40 +22,60 @@ export class StreamingRequestExample extends React.Component<Props, State> {
     }
 
     async requestShowAppInst() {
-        this.setState({
-            loading: true,
-        })
-        fetch('/api/v1/auth/ctrl/ShowAppInst', {
+        fetch('/api/v1/auth/ctrl/ShowAppInstClient', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzY4MDk5MzIsImlhdCI6MTU3NjcyMzUzMiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.JPKz83yI45GdSIacNanYyX_7zmmE7HvaQvISTLVpWr-IofHwGY8tTQGChyizMpaMcOtKWg2J989p16Rm_2Mr1w",
+                'Authorization': "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODQwNTg5NjYsImlhdCI6MTU4Mzk3MjU2NiwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.e3fY3ARAU0TyVUekNEyP_sYNPH-6AkvtW64rpjMgXEOhDt0BVs2m7HRgqUlov8EPeM1B5767PoUhm_TC0WLsXQ",
             },
             body: JSON.stringify({
-                "region": 'US',
+                "appinstclientkey": {
+                    "key": {
+                        "app_key": {
+                            "developer_key": {
+                                "name": "MobiledgeX"
+                            },
+                            "name": "MobiledgeX SDK Demo",
+                            "version": "2.0"
+                        },
+                        "cluster_inst_key": {
+                            "cloudlet_key": {
+                                "name": "hamburg-stage",
+                                "operator_key": {
+                                    "name": "TDG"
+                                }
+                            },
+                            "cluster_key": {
+                                "name": "autoclustermobiledgexsdkdemo"
+                            },
+                            "developer": "MobiledgeX"
+                        }
+                    }
+                },
+                "region": "EU"
             })
-        }).then((response) => ndjsonStream(response.body)).then((streamData) => {
-            const reader = streamData.getReader();
+        }).then((response) => ndjsonStream(response.body)).then((exampleStream) => {
+
+            console.log("ndjsonStream Then===>");
+
+            const reader = exampleStream.getReader();
             let read;
-            let _results = [];
-            reader.read().then(read = (result) => {
-                //todo:스트림이 완료 된 경우...
-                if (result.done) {
+            reader.read().then( read = ( result ) => {
+                if ( result.done ) {
                     this.setState({
                         loading: false,
-                        results: _results,
-                    }, () => {
-                        console.log('streamed results===>', this.state.results);
                     })
-                    return false;
+                    alert("done!!!!!")
+                    return;
                 }
-                console.log("streaming data====>", result.value.data);
-                let streamedDataOne = result.value.data;
-                _results.push(streamedDataOne)
-                //todo:다음 Stream 데이터를 읽어온다..
-                reader.read().then(read);
-            });
-        });
+
+                console.log( result );
+                reader.read().then( read );
+
+            } );
+        }).catch(e=>{
+            alert(e.toString())
+        })
     }
 
 
@@ -70,7 +88,7 @@ export class StreamingRequestExample extends React.Component<Props, State> {
                 </FlexBox>}
                 Streaming Request Example ...
 
-                {this.state.results.map((item, index) => {
+               {/* {this.state.results.map((item, index) => {
                     return (
                         <FlexBox style={{marginRight: 23}} key={index}
                                  style={{alignItems: 'center', justifyContent: 'flex-start'}}>
@@ -87,7 +105,7 @@ export class StreamingRequestExample extends React.Component<Props, State> {
                             </FlexBox>
                         </FlexBox>
                     )
-                })}
+                })}*/}
             </div>
         );
     };

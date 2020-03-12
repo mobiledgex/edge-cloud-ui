@@ -510,7 +510,7 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM5ODcxN
                     "name": "TDG"
                 },
                 "name": "hamburg-stage",
-                "clusterdeveloper" : "MobiledgeX"
+                "clusterdeveloper": "MobiledgeX"
             }
         }
     }
@@ -523,33 +523,67 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM5OTU5NjUsImlhdCI6MTU4MzkwOTU2NSwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.5787Dk07m-G2N9kuB_y0f1Saps5mQv_D8Cj1VD-gslM8OtlfPvmdmZcn9jHbh5FQ6XQMfBdXGGz1WuTilYJyhA
 
 {
-    "appinstclientkey":{
-        "key":{
-            "app_key":{
-                "developer_key":{
-                    "name":"MobiledgeX"
+    "appinstclientkey": {
+        "key": {
+            "app_key": {
+                "developer_key": {
+                    "name": "MobiledgeX"
                 },
-                "name":"MobiledgeX SDK Demo",
-                "version":"2.0"
+                "name": "MobiledgeX SDK Demo",
+                "version": "2.0"
             },
-            "cluster_inst_key":{
-                "cloudlet_key":{
-                    "name":"hamburg-stage",
-                    "operator_key":{
-                        "name":"TDG"
+            "cluster_inst_key": {
+                "cloudlet_key": {
+                    "name": "hamburg-stage",
+                    "operator_key": {
+                        "name": "TDG"
                     }
                 },
-                "cluster_key":{
-                    "name":"autoclustermobiledgexsdkdemo"
+                "cluster_key": {
+                    "name": "autoclustermobiledgexsdkdemo"
                 },
-                "developer":"MobiledgeX"
+                "developer": "MobiledgeX"
             }
         }
     },
-    "region":"EU"
+    "region": "EU"
 }
 
 
 
 ###//console-stage.mobiledgex.net:443 region ShowAppInstClient  region=EU developer=MobiledgeX appname="MobiledgeX SDK Demo" appvers=2.0 operator=TDG cloudlet=hamburg-stage cluster=autoclustermobiledgexsdkdemo
 
+### ShowAppInstClient as stream
+
+POST https://console-stage.mobiledgex.net:443/api/v1/auth/ctrl/ShowAppInstClient
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODQwNTg5NjYsImlhdCI6MTU4Mzk3MjU2NiwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.e3fY3ARAU0TyVUekNEyP_sYNPH-6AkvtW64rpjMgXEOhDt0BVs2m7HRgqUlov8EPeM1B5767PoUhm_TC0WLsXQ
+
+{
+    "appinstclientkey": {
+        "key": {
+            "app_key": {
+                "developer_key": {
+                    "name": "MobiledgeX"
+                },
+                "name": "MobiledgeX SDK Demo",
+                "version": "2.0"
+            },
+            "cluster_inst_key": {
+                "cloudlet_key": {
+                    "name": "hamburg-stage",
+                    "operator_key": {
+                        "name": "TDG"
+                    }
+                },
+                "cluster_key": {
+                    "name": "autoclustermobiledgexsdkdemo"
+                },
+                "developer": "MobiledgeX"
+            }
+        }
+    },
+    "region": "EU"
+}
+
+###

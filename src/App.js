@@ -24,9 +24,9 @@ import './css/pages/cloudletPool.css';
 import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
 import TagCloudTest from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/TagCloudTest";
-import VirtualIzedListExample from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/VirtualIzedListExample";
-import Test007 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/Test007";
 import ContextMenuTest from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/ContextMenuTest";
+import StreamTest from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/StreamTest";
+import StreamingRequestExample002 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/StreamingRequestExample002";
 // API
 
 let self = null;
@@ -336,6 +336,8 @@ class App extends Component {
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
                     <Route exact path='/TagCloudTest' component={TagCloudTest} />
                     <Route exact path='/ContextMenuTest' component={ContextMenuTest} />
+                    <Route exact path='/StreamTest' component={StreamTest} />
+                    <Route exact path='/StreamingRequestExample002' component={StreamingRequestExample002} />
                 </div>
             </Router>
         );
