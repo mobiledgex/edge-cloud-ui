@@ -27,6 +27,8 @@ import TagCloudTest from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_T
 import ContextMenuTest from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/ContextMenuTest";
 import StreamTest from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/StreamTest";
 import StreamingRequestExample002 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/StreamingRequestExample002";
+import StreamTestTickTock from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/StreamTestTickTock";
+import WebSocketTest from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/WebSocketTest";
 // API
 
 let self = null;
@@ -338,6 +340,7 @@ class App extends Component {
                     <Route exact path='/ContextMenuTest' component={ContextMenuTest} />
                     <Route exact path='/StreamTest' component={StreamTest} />
                     <Route exact path='/StreamingRequestExample002' component={StreamingRequestExample002} />
+                    <Route exact path='/WebSocketTest' component={WebSocketTest} />
                 </div>
             </Router>
         );
