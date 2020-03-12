@@ -105,15 +105,19 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
             pAppInstanceListGroupByCloudlet[key].map((innerItem: TypeAppInstance, index) => {
 
                 if (index === (pAppInstanceListGroupByCloudlet[key].length - 1)) {
-                    AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck;
+                    AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version;
                 } else {
-                    AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " , "
+                    AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version + " , "
                 }
+
+               // console.log("Version===>", innerItem.Version);
 
                 CloudletLocation = innerItem.CloudletLocation;
                 Cloudlet = innerItem.Cloudlet;
 
             })
+
+            console.log("setCloudletLocation===>", AppNames);
 
             newCloudLetLocationList.push({
                 AppNames: AppNames,
@@ -170,8 +174,8 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                         style={{zIndex: 1}}
                         //maxZoom={15}
                     />
-                    {this.state.newCloudLetLocationList.map((item, outerIndex) => {
-                        let listAppName = item.AppNames.split(",")
+                    {this.state.newCloudLetLocationList.map((outerItem, outerIndex) => {
+                        let listAppName = outerItem.AppNames.split(",")
 
                         return (
                             <Marker
@@ -179,7 +183,7 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                 icon={greenIcon}
                                 className='marker1'
                                 position={
-                                    [item.CloudletLocation.latitude, item.CloudletLocation.longitude,]
+                                    [outerItem.CloudletLocation.latitude, outerItem.CloudletLocation.longitude,]
                                 }
                                 onClick={() => {
 
@@ -207,7 +211,7 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
 
                                         <span
                                             className='toolTip'
-                                            style={{color: 'black'}}>{item.Cloudlet}</span>
+                                            style={{color: 'black'}}>{outerItem.Cloudlet}</span>
                                 </Tooltip>
 
                                 {/* {item.isShowCircle &&
@@ -221,12 +225,13 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                 }*/}
                                 <Popup className='popup1'>
 
-                                    {listAppName.map(AppName_ClusterInst => {
+                                    {listAppName.map(AppFullName => {
 
-                                        let AppName = AppName_ClusterInst.trim().split(" | ")[0].trim()
-                                        let ClusterInst = AppName_ClusterInst.trim().split(" | ")[1].trim()
-                                        let Region = AppName_ClusterInst.trim().split(" | ")[2].trim()
-                                        let HealthCheck = AppName_ClusterInst.trim().split(" | ")[3].trim()
+                                        let AppName = AppFullName.trim().split(" | ")[0].trim()
+                                        let ClusterInst = AppFullName.trim().split(" | ")[1].trim()
+                                        let Region = AppFullName.trim().split(" | ")[2].trim()
+                                        let HealthCheck = AppFullName.trim().split(" | ")[3].trim()
+                                        let Version = AppFullName.trim().split(" | ")[4].trim()
 
 
                                         return (
@@ -242,17 +247,11 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                                     color='#1cecff' during={500}
                                                     onClick={() => {
 
-                                                        let arrayTemp = AppName_ClusterInst.split(" | ");
-
-                                                        let AppInst = arrayTemp[0].trim()
-                                                        let Cluster = arrayTemp[1].trim();
-                                                        let Region = arrayTemp[2].trim();
-
-                                                        let dataSet = AppInst + " | " + item.Cloudlet.trim() + " | " + Cluster + " | " + Region;
+                                                        let dataSet = AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version;
                                                         this.props.handleAppInstDropdown(dataSet)
                                                     }}
                                                 >
-                                                    {AppName}
+                                                    {AppName} [{Version}]
                                                     <div style={{
                                                         color: '#77BD25',
                                                         fontSize: 12
@@ -265,12 +264,12 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                                         {/*todo:HealthCheck value 3 is okay*/}
                                                         {/*todo:HealthCheck value 3 is okay*/}
                                                         {HealthCheck === 3 ?
-                                                            <div style={{marginLeft: 7, marginBottom: 0,height:15, }}>
-                                                                <CheckCircleOutlined style={{color: 'green', fontSize: 17, marginBottom:25}}/>
+                                                            <div style={{marginLeft: 7, marginBottom: 0, height: 15,}}>
+                                                                <CheckCircleOutlined style={{color: 'green', fontSize: 17, marginBottom: 25}}/>
                                                             </div>
                                                             :
-                                                            <div style={{marginLeft: 7, marginBottom: 0,height:15, }}>
-                                                                <CheckCircleOutlined style={{color: 'red', fontSize: 17, marginBottom:25}}/>
+                                                            <div style={{marginLeft: 7, marginBottom: 0, height: 15,}}>
+                                                                <CheckCircleOutlined style={{color: 'red', fontSize: 17, marginBottom: 25}}/>
                                                             </div>
                                                         }
                                                     </div>

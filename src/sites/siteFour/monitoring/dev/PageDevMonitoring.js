@@ -87,6 +87,7 @@ import EventLogListContainer from "../components/EventLogListContainer";
 import PerformanceSummaryTable from "../components/PerformanceSummaryTable";
 import VirtualAppInstEventLogListContainer from "../components/VirtualAppInstEventLogListContainer";
 import AppInstEventLogListContainer from "../components/AppInstEventLogListContainer";
+import uuid from "uuid";
 
 const {Option} = Select;
 
@@ -244,8 +245,11 @@ type State = {
     allAppInstEventLogs: any,
     filteredAppInstEventLogs: any,
     isFixGrid: boolean,
+    webSocketLoading: boolean,
 
 }
+
+let sockets = [];
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class PageDevMonitoring extends Component<Props, State> {
@@ -395,6 +399,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 allAppInstEventLogs: [],
                 filteredAppInstEventLogs: [],
                 isFixGrid: false,
+                webSocketLoading: false,
             };
         }
 
@@ -435,21 +440,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 clearInterval(this.intervalForAppInst)
 
                 this.setState({dropdownRequestLoading: true})
-                /*  let clusterList = await getClusterList();
-                  let cloudletList = await getCloudletList()
-                  let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
-                  console.log("appInstanceList===>", appInstanceList);
-                  if (appInstanceList.length === 0) {
-                      this.setState({
-                          isNoData: true,
-                      })
-                  }*/
+                let clusterList = await getClusterList();
+                let cloudletList = await getCloudletList()
+                let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
+                console.log("appInstanceList===>", appInstanceList);
+                if (appInstanceList.length === 0) {
+                    this.setState({
+                        isNoData: true,
+                    })
+                }
 
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
-                let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+                /*let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
                 let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-                let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
+                let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')*/
                 console.log('appInstanceList====>', appInstanceList);
 
                 console.log('clusterUsageList===>', clusterList);
@@ -473,18 +478,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //@todo:###############################
                 //@todo: getAppInstEventLogs
                 //@todo:###############################
-                /*   let allAppInstEventLogs = await getAppInstEventLogs();
-                   await this.setState({
-                       allAppInstEventLogs: allAppInstEventLogs.values,
-                       filteredAppInstEventLogs: allAppInstEventLogs.values,
-                   })*/
+                let allAppInstEventLogs = await getAppInstEventLogs();
+                await this.setState({
+                    allAppInstEventLogs: allAppInstEventLogs.values,
+                    filteredAppInstEventLogs: allAppInstEventLogs.values,
+                })
 
-                let __allAppInstEvLogListValues = require('./allAppInstEventLogList')
 
+                //@fixme: fakeData
+                //@fixme: fakeData
+                //@fixme: fakeData
+                /*let __allAppInstEvLogListValues = require('./allAppInstEventLogList')
                 await this.setState({
                     allAppInstEventLogs: __allAppInstEvLogListValues,
                     filteredAppInstEventLogs: __allAppInstEvLogListValues,
-                })
+                })*/
 
 
                 let appInstanceListGroupByCloudlet = []
@@ -516,17 +524,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 //fixme: real data
                 //fixme: real data
-                /*  try {
-                      allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
-                  } catch (e) {
+                try {
+                    allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
+                } catch (e) {
 
-                  }*/
+                }
 
 
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
-                allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
-                console.log('filteredAppInstanceList===>', appInstanceList)
+                /*allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+                console.log('filteredAppInstanceList===>', appInstanceList)*/
 
                 let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
                 await this.setState({
@@ -733,6 +741,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             clearInterval(this.intervalForAppInst)
 
 
+            //@fixme: _______makeWebsocketRequest
+            //@fixme: _______makeWebsocketRequest
+            //@fixme: _______makeWebsocketRequest
+
+
             await this.setState({
                 isShowBigGraph: false,
             })
@@ -831,7 +844,93 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 clearInterval(this.intervalForAppInst)
             }
 
+            this._______makeWebsocketRequest(pCurrentAppInst);
+
         }
+
+        _______makeWebsocketRequest(pCurrentAppInst) {
+
+
+            //AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version;
+            console.log("onmessage 00===>", pCurrentAppInst);
+            /*let AppName = pCurrentAppInst.split('|')[0].trim()
+            let Cloudlet = pCurrentAppInst.split('|')[1].trim()
+            let ClusterInst = pCurrentAppInst.split('|')[2].trim()
+            let Region = pCurrentAppInst.split('|')[3].trim()
+            let HealthCheck = pCurrentAppInst.split('|')[4].trim()
+            let Version = pCurrentAppInst.split('|')[5].trim()*/
+
+            let store = JSON.parse(localStorage.PROJECT_INIT);
+            let token = store ? store.userToken : 'null';
+
+            let organization= localStorage.selectOrg.toString()
+
+            console.log("onmessage 2===>", organization);
+
+          /*  this.setState({
+                webSocketLoading: true,
+            })*/
+            const webSocket = new WebSocket('wss://console-stage.mobiledgex.net:443/ws/api/v1/auth/ctrl/ShowAppInstClient')
+
+            webSocket.onopen = () => {
+
+                console.log("onmessage WebSocket is open now.");
+
+                webSocket.send(JSON.stringify({
+                    token: token,
+                }))
+
+                try{
+                    webSocket.send(JSON.stringify({
+                        "appinstclientkey": {
+                            "key": {
+                                "app_key": {
+                                    "developer_key": {
+                                        "name": "MobiledgeX"
+                                    },
+                                    "name": "MobiledgeX SDK Demo",
+                                    "version": "2.0"
+                                },
+                                "cluster_inst_key": {
+                                    "cloudlet_key": {
+                                        "name": "hamburg-stage",
+                                        "operator_key": {
+                                            "name": "TDG"
+                                        }
+                                    },
+                                    "cluster_key": {
+                                        "name": "autoclustermobiledgexsdkdemo"
+                                    },
+                                    "developer": "MobiledgeX"
+                                }
+                            }
+                        },
+                        "region": "EU"
+                    }))
+                }catch (e) {
+                    alert(e.toString())
+                }
+            }
+
+
+            webSocket.onmessage = event => {
+                let data = JSON.parse(event.data);
+                console.log("onmessage=fffff==>", data.data);
+                //console.log("onmessage_event===>", event);
+                //console.log("onmessage===>", data.data.location);
+            }
+
+            webSocket.onerror = (event) => {
+               alert(event.toString())
+            };
+
+            webSocket.onclose = function (event) {
+
+            };
+
+
+        }
+
 
         async handleClusterDropdown(value) {
             clearInterval(this.intervalForAppInst)
@@ -1482,6 +1581,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         fontSize: 10
                                     }}
                                     size={20}
+                                />
+                            </div>
+                        </div>
+                        }
+
+                        {this.state.webSocketLoading &&
+                        <div>
+                            <div style={{marginLeft: 15}}>
+                                <CircularProgress
+                                    style={{
+                                        color: 'green',
+                                        zIndex: 9999999,
+                                    }}
+                                    size={45}
                                 />
                             </div>
                         </div>
