@@ -115,7 +115,7 @@ class OrganizationList extends React.Component {
         })
     }
 
-    getUserRoles = async () => {
+    getUserRoles = async (key) => {
         let isAdmin = false;
         let userRoles = await serverData.getUserRoles(this)
         if (userRoles) {
@@ -134,12 +134,26 @@ class OrganizationList extends React.Component {
         }
         if(!isAdmin)
         {
-            this.keys.push({ field: 'manage', label: 'Manage', sortable: false, visible: true, clickable: true, customizedData: this.getManage })
+            key.visible = true;
+            key.customizedData = this.getManage;
         }
     }
 
+    customizedData = () => {
+        for (let i = 0; i < this.keys.length; i++) {
+            let key = this.keys[i]
+            if (key.field === fields.manage) {
+                this.getUserRoles(key)
+            }
+        }
+    }
+
+    /**
+    * Customized data block
+    * ** */
+
     componentWillMount() {
-        this.getUserRoles()
+        this.customizedData()
     }
 
     render() {

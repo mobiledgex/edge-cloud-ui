@@ -1,4 +1,4 @@
-import {TYPE_JSON} from '../../hoc/constant';
+import {TYPE_JSON} from '../../constant';
 import * as formatter from './format'
 
 let fields = formatter.fields

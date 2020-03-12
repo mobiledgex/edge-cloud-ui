@@ -45,6 +45,7 @@ export const keys = [
     { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: true },
     { field: fields.phone, serverField: 'Phone', label: 'Phone', sortable: false, visible: true },
     { field: fields.address, serverField: 'Address', label: 'Address', sortable: false, visible: true },
+    { field: 'manage', label: 'Manage', sortable: false, visible: false, clickable: true},
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
 

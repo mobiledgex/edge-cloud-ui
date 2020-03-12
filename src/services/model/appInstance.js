@@ -1,6 +1,5 @@
 import * as formatter from './format'
-import * as constant from './shared';
-import { TYPE_JSON } from '../../hoc/constant';
+import { TYPE_JSON } from '../../constant';
 
 let fields = formatter.fields;
 
@@ -24,7 +23,7 @@ export const keys = [
   { field: fields.liveness, serverField: 'liveness', label: 'Liveness' },
   { field: fields.mappedPorts, serverField: 'mapped_ports', label: 'Mapped Port', dataType: TYPE_JSON },
   { field: fields.flavorName, serverField: 'flavor#OS#name', label: 'Flavor' },
-  { field: fields.state, serverField: 'state', label: 'Progress', visible: true, customizedData: constant.showProgress, clickable: true },
+  { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
   { field: fields.runtimeInfo, serverField: 'runtime_info', label: 'Runtime', dataType: TYPE_JSON },
   { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: TYPE_JSON },
   { field: fields.status, serverField: 'status', label: 'Status', dataType: TYPE_JSON },

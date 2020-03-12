@@ -8,6 +8,7 @@ import { fields } from '../../../services/model/format';
 import { keys, showAppInsts, deleteAppInst, streamAppInst, SHOW_APP_INST } from '../../../services/model/appInstance';
 import { showApps, SHOW_APP } from '../../../services/model/app';
 import AppInstReg from './siteFour_page_appInstReg';
+import * as constant from '../../../services/model/shared';
 
 class PrivacyPolicy extends React.Component {
     constructor(props) {
@@ -16,7 +17,8 @@ class PrivacyPolicy extends React.Component {
             currentView: null
         }
         this.action = '';
-        this.data = {}
+        this.data = {};
+        this.keys = Object.assign([], keys);
     }
 
     onAdd = () => {
@@ -69,9 +71,30 @@ class PrivacyPolicy extends React.Component {
             isRegion: true,
             isMap: true,
             sortBy: [fields.region, fields.appName],
-            keys: keys,
+            keys: this.keys,
             onAdd: this.onAdd
         })
+    }
+
+    /**
+   * Customized data block
+   **/
+
+    customizedData = () => {
+        for (let i = 0; i < this.keys.length; i++) {
+            let key = this.keys[i]
+            if (key.field === fields.state) {
+                key.customizedData = constant.showProgress
+            }
+        }
+    }
+
+    /**
+    * Customized data block
+    * ** */
+
+    componentWillMount() {
+        this.customizedData()
     }
 
     render() {

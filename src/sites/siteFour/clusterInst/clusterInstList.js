@@ -11,6 +11,7 @@ import { fields } from '../../../services/model/format';
 import { keys, showClusterInsts, deleteClusterInst, streamClusterInst, SHOW_CLUSTER_INST, STREAM_CLUSTER_INST } from '../../../services/model/clusterInstance';
 import { showCloudlets, SHOW_CLOUDLET, SHOW_ORG_CLOUDLET } from '../../../services/model/cloudlet';
 import ClusterInstReg from './siteFour_page_clusterInstReg';
+import * as constant from '../../../services/model/shared';
 
 class ClusterInstView extends React.Component {
     constructor(props) {
@@ -19,7 +20,8 @@ class ClusterInstView extends React.Component {
             currentView: null
         }
         this.action = '';
-        this.data = {}
+        this.data = {};
+        this.keys = Object.assign([], keys);
     }
 
     onAdd = () => {
@@ -48,11 +50,11 @@ class ClusterInstView extends React.Component {
 
     actionMenu = () => {
         return [
-            { label: 'Delete', onClick: deleteClusterInst, ws:true }
+            { label: 'Delete', onClick: deleteClusterInst, ws: true }
         ]
     }
 
-    
+
 
     multiDataRequest = (mcRequestList) => {
         let cloudletDataList = [];
@@ -87,23 +89,46 @@ class ClusterInstView extends React.Component {
 
     requestInfo = () => {
         return ({
-            id:'ClusterInst',
+            id: 'ClusterInst',
             headerLabel: 'Cluster Instances',
             nameField: fields.clusterName,
             requestType: [showClusterInsts, showCloudlets],
             streamType: streamClusterInst,
             isRegion: true,
-            isMap:true,
+            isMap: true,
             sortBy: [fields.region, fields.cloudletName],
-            keys: keys,
+            keys: this.keys,
             onAdd: this.onAdd
         })
+    }
+
+    /**
+   * Customized data block
+   **/
+    customizedData = () => {
+        for (let i = 0; i < this.keys.length; i++) {
+            let key = this.keys[i]
+            if (key.field === fields.state) {
+                key.customizedData = constant.showProgress
+            }
+            else if (key.field === fields.ipAccess) {
+                key.customizedData = constant.getIPAccess
+            }
+        }
+    }
+
+    /**
+    * Customized data block
+    * ** */
+
+    componentWillMount() {
+        this.customizedData()
     }
 
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={this.multiDataRequest}/>
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={this.multiDataRequest} />
         )
     }
 };

@@ -1,5 +1,5 @@
 import { generateUniqueId } from '../serviceMC';
-import {TYPE_JSON} from '../../hoc/constant';
+import {TYPE_JSON} from '../../constant';
 
 export const layouts = [
   {key:'Region', label:'Region'},

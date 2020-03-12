@@ -1,5 +1,5 @@
 import * as formatter from './format'
-import { TYPE_JSON } from '../../hoc/constant';
+import { TYPE_JSON } from '../../constant';
 
 export const SHOW_APP = "ShowApp";
 export const CREATE_APP = "CreateApp";

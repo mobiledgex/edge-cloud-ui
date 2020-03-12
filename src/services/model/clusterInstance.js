@@ -1,6 +1,6 @@
 import * as formatter from './format'
 import * as constant from './shared';
-import { TYPE_JSON } from '../../hoc/constant';
+import { TYPE_JSON } from '../../constant';
 
 let fields = formatter.fields;
 
@@ -15,13 +15,13 @@ export const keys = [
     { field: fields.operatorName, serverField: 'key#OS#cloudlet_key#OS#operator_key#OS#name', sortable: true, label: 'Operator', visible: true },
     { field: fields.cloudletName, serverField: 'key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: true },
     { field: fields.flavorName, serverField: 'flavor#OS#name', sortable: true, label: 'Flavor', visible: true },
-    { field: fields.ipAccess, serverField: 'ip_access', label: 'IP Access', sortable: true, visible: true, customizedData: constant.getIPAccess },
+    { field: fields.ipAccess, serverField: 'ip_access', label: 'IP Access', sortable: true, visible: true },
     { field: fields.cloudletLocation, label: 'Cloudlet Location', dataType: TYPE_JSON },
     { field: fields.nodeFlavor, serverField: 'node_flavor', label: 'Node Flavor' },
     { field: fields.numberOfMasters, serverField: 'num_masters', label: 'Number of Masters' },
     { field: fields.numberOfNodes, serverField: 'num_nodes', label: 'Node of Nodes' },
     { field: fields.deployment, serverField: 'deployment', sortable: true, label: 'Deployment', visible: true },
-    { field: fields.state, serverField: 'state', label: 'Progress', visible: true, customizedData: constant.showProgress, clickable: true },
+    { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
     { field: fields.status, serverField: 'status', label: 'Status', dataType: TYPE_JSON },
     { field: fields.reservable, serverField: 'reservable' },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
