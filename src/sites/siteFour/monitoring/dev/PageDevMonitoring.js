@@ -1057,6 +1057,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
+
         makeGridSizeByType(graphType) {
             if (graphType === GRID_ITEM_TYPE.CLUSTER_LIST) {
                 return 2;
