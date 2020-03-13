@@ -6,6 +6,100 @@ import {sendSyncRequest} from "../../../services/serviceMC";
 import {makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
 import {formatData} from "../../../services/formatter/formatComputeInstance";
 import {makeFormForAppInstance} from "./admin/PageAdminMonitoringService";
+import PageDevMonitoring from "./dev/PageDevMonitoring";
+
+
+export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
+
+    //AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version;
+    console.log("onmessage pCurrentAppInst===>", pCurrentAppInst);
+    let AppName = pCurrentAppInst.split('|')[0].trim()
+    let Cloudlet = pCurrentAppInst.split('|')[1].trim()
+    let ClusterInst = pCurrentAppInst.split('|')[2].trim()
+    let Region = pCurrentAppInst.split('|')[3].trim()
+    let HealthCheck = pCurrentAppInst.split('|')[4].trim()
+    let Version = pCurrentAppInst.split('|')[5].trim()
+    let Operator = pCurrentAppInst.split('|')[6].trim()
+
+    let store = JSON.parse(localStorage.PROJECT_INIT);
+    let token = store ? store.userToken : 'null';
+
+    let organization = localStorage.selectOrg.toString()
+
+    console.log("onmessage Operator=>", Operator);
+
+    /*  this.setState({
+          webSocketLoading: true,
+    })*/
+
+    let prefixUrl = (process.env.REACT_APP_API_ENDPOINT).replace('http', 'ws');
+    console.log("onmessage==REACT_APP_API_ENDPOINT==>", prefixUrl)
+    const webSocket = new WebSocket(`${prefixUrl}/ws/api/v1/auth/ctrl/ShowAppInstClient`)
+
+    webSocket.onopen = () => {
+        try {
+            console.log("onmessage WebSocket is open now.");
+
+            webSocket.send(JSON.stringify({
+                token: token,
+            }))
+            webSocket.send(JSON.stringify({
+                "appinstclientkey": {
+                    "key": {
+                        "app_key": {
+                            "developer_key": {
+                                "name": organization
+                            },
+                            "name": AppName,
+                            "version": Version
+                        },
+                        "cluster_inst_key": {
+                            "cloudlet_key": {
+                                "name": Cloudlet,
+                                "operator_key": {
+                                    "name": Operator
+                                }
+                            },
+                            "cluster_key": {
+                                "name": ClusterInst
+                            },
+                            "developer": organization
+                        }
+                    }
+                },
+                "region": Region
+            }))
+        } catch (e) {
+            alert(e.toString())
+        }
+    }
+
+
+    let appInstCount = 0;
+    webSocket.onmessage = event => {
+        appInstCount++;
+        let data = JSON.parse(event.data);
+        console.log("onmessage=fffff==>", data.data);
+        //console.log("onmessage_event===>", event);
+        //console.log("onmessage===>", data.data.location);
+        _this.setState({
+            currentAppInstCount: appInstCount,
+        }, () => {
+            console.log("onmessage====currentAppInstCount>", _this.state.currentAppInstCount);
+        })
+    }
+
+    webSocket.onerror = (event) => {
+        alert(event.toString())
+    };
+
+    webSocket.onclose = function (event) {
+
+    };
+
+    return webSocket;
+
+}
 
 
 export const getAppInstList = async (pArrayRegion = ['EU', 'US'], type: string = '') => {

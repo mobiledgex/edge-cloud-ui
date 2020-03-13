@@ -3,22 +3,20 @@ import * as React from 'react';
 import {renderPlaceHolderCircular} from "../PageMonitoringCommonService";
 import {convertToClassification, renderLineChartCoreForDev} from "../dev/PageDevMonitoringService";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
-import type {MonitoringContextInterface} from "../PageMonitoringGlobalState";
-import {MonitoringConsumer, PageMonitoringProvider} from "../PageMonitoringGlobalState";
 
 type Props = {
     parent: PageDevMonitoring,
     pHardwareType: string,
     graphType: string,
     chartDataSet: any,
-    isResizeComplete:boolean,
+    isResizeComplete: boolean,
 };
 type State = {
     currentClassification: any,
     themeTitle: string,
     chartDataSet: any,
     pHardwareType: string,
-    isResizeComplete:boolean,
+    isResizeComplete: boolean,
 };
 
 export default class LineChartContainer extends React.Component<Props, State> {
@@ -51,35 +49,26 @@ export default class LineChartContainer extends React.Component<Props, State> {
         }
 
 
-
     }
 
 
     render() {
         return (
 
-            <PageMonitoringProvider>
-                <MonitoringConsumer>
-                    {(context: MonitoringContextInterface) => (
-                        <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
+            <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
 
-                            <div className='page_monitoring_dual_container' style={{flex: 1}}>
-                                <div className='page_monitoring_title_area'>
-                                    <div className='page_monitoring_title'>
-                                        {convertToClassification(this.props.currentClassification)} {this.state.pHardwareType} Usage
+                <div className='page_monitoring_dual_container' style={{flex: 1}}>
+                    <div className='page_monitoring_title_area'>
+                        <div className='page_monitoring_title'>
+                            {convertToClassification(this.props.currentClassification)} {this.state.pHardwareType} Usage
 
-                                    </div>
-                                </div>
-                                <div className='page_monitoring_container'>
-                                    {this.props.loading ? renderPlaceHolderCircular() : renderLineChartCoreForDev(this.props.parent, this.state.chartDataSet, this.state.isResizeComplete)}
-                                </div>
-                            </div>
                         </div>
-                    )}
-                </MonitoringConsumer>
-            </PageMonitoringProvider>
-
-
+                    </div>
+                    <div className='page_monitoring_container'>
+                        {this.props.loading ? renderPlaceHolderCircular() : renderLineChartCoreForDev(this.props.parent, this.state.chartDataSet, this.state.isResizeComplete)}
+                    </div>
+                </div>
+            </div>
 
 
         );

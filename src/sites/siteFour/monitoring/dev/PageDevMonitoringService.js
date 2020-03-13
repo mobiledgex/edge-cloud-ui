@@ -10,7 +10,7 @@ import {Line as ReactChartJsLine} from "react-chartjs-2";
 import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
 import {Select} from "antd";
 import {Responsive, WidthProvider} from "react-grid-layout";
-import type {MonitoringContextInterface} from "../PageMonitoringGlobalState";
+import type {MonitoringContextInterface} from "../PageMonitoringGlobalStore";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const {Option} = Select;

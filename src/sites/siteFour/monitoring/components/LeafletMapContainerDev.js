@@ -105,12 +105,12 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
             pAppInstanceListGroupByCloudlet[key].map((innerItem: TypeAppInstance, index) => {
 
                 if (index === (pAppInstanceListGroupByCloudlet[key].length - 1)) {
-                    AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version;
+                    AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version + " | " + innerItem.Operator
                 } else {
-                    AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version + " , "
+                    AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version + " | " + innerItem.Operator+ " , "
                 }
 
-               // console.log("Version===>", innerItem.Version);
+                console.log("Operator===>", innerItem.Operator);
 
                 CloudletLocation = innerItem.CloudletLocation;
                 Cloudlet = innerItem.Cloudlet;
@@ -232,6 +232,7 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                         let Region = AppFullName.trim().split(" | ")[2].trim()
                                         let HealthCheck = AppFullName.trim().split(" | ")[3].trim()
                                         let Version = AppFullName.trim().split(" | ")[4].trim()
+                                        let Operator = AppFullName.trim().split(" | ")[5].trim()
 
 
                                         return (
@@ -247,7 +248,10 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                                     color='#1cecff' during={500}
                                                     onClick={() => {
 
-                                                        let dataSet = AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version;
+                                                        let dataSet = AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version + " | "+ Operator;
+
+                                                        console.log("dataSet====>", dataSet)
+
                                                         this.props.handleAppInstDropdown(dataSet)
                                                     }}
                                                 >

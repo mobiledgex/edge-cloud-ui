@@ -67,7 +67,8 @@ import {
     getAppLevelUsageList,
     getCloudletList,
     getClusterLevelUsageList,
-    getClusterList
+    getClusterList,
+    requestShowAppInstClientWS
 } from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
@@ -78,16 +79,12 @@ import {Responsive, WidthProvider} from "react-grid-layout";
 import _ from "lodash";
 import PieChartContainer from "../components/PieChartContainer";
 import BigModalGraphContainer from "../components/BigModalGraphContainer";
-import type {MonitoringContextInterface,} from "../PageMonitoringGlobalState";
-import {MonitoringConsumer} from "../PageMonitoringGlobalState";
 import BubbleChartContainer from "../components/BubbleChartContainer";
 import BarChartContainer from "../components/BarChartContainer";
 import LineChartContainer from "../components/LineChartContainer";
 import EventLogListContainer from "../components/EventLogListContainer";
 import PerformanceSummaryTable from "../components/PerformanceSummaryTable";
 import VirtualAppInstEventLogListContainer from "../components/VirtualAppInstEventLogListContainer";
-import AppInstEventLogListContainer from "../components/AppInstEventLogListContainer";
-import uuid from "uuid";
 
 const {Option} = Select;
 
@@ -245,6 +242,7 @@ type State = {
     filteredAppInstEventLogs: any,
     isFixGrid: boolean,
     webSocketLoading: boolean,
+    currentAppInstCount: number,
 
 }
 
@@ -255,6 +253,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         intervalForAppInst = null;
         context: MonitoringContextInterface;
         gridItemHeight = 420;
+        webSocketInst: WebSocket = null;
 
         constructor(props) {
             super(props);
@@ -399,6 +398,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredAppInstEventLogs: [],
                 isFixGrid: false,
                 webSocketLoading: false,
+                currentAppInstCount: 0,
             };
         }
 
@@ -424,6 +424,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         componentWillUnmount(): void {
             clearInterval(this.intervalForAppInst)
+            if (!isEmpty(this.webSocketInst)) {
+                this.webSocketInst.close();
+            }
+
         }
 
         showModalClusterLineChart(lineChartDataOne, index) {
@@ -642,7 +646,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
 
             return (
-                <LineChartContainer isResizeComplete={this.state.isResizeComplete} context={this.context} loading={this.state.loading}
+                <LineChartContainer isResizeComplete={this.state.isResizeComplete} context={this.context}
+                                    loading={this.state.loading}
                                     currentClassification={this.state.currentClassification}
                                     parent={this}
                                     pHardwareType={hwType} chartDataSet={lineChartDataSet}/>
@@ -664,7 +669,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
 
             return (
-                <BarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this} loading={this.state.loading} chartDataSet={barChartDataSet}
+                <BarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this}
+                                   loading={this.state.loading} chartDataSet={barChartDataSet}
                                    pHardwareType={hwType} graphType={graphType}/>
             )
         }
@@ -737,17 +743,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         handleAppInstDropdown = async (pCurrentAppInst) => {
 
+            //@fixme: requestShowAppInstClientWS
+            //@fixme: requestShowAppInstClientWS
+            //@fixme: requestShowAppInstClientWS
+            this.webSocketInst = requestShowAppInstClientWS(pCurrentAppInst, this);
+
             clearInterval(this.intervalForAppInst)
 
-
-            //@fixme: _______makeWebsocketRequest
-            //@fixme: _______makeWebsocketRequest
-            //@fixme: _______makeWebsocketRequest
-
-
-            await this.setState({
+            /*await this.setState({
                 isShowBigGraph: false,
-            })
+            })*/
             await this.setState({
                 currentAppInst: pCurrentAppInst,
                 loading: true,
@@ -766,6 +771,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             console.log("filteredAppList===>", filteredAppList);
 
+            //todo:Terminal
+            //todo:Terminal
             //todo:Terminal
             this.setState({
                 terminalData: null
@@ -790,19 +797,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 this.setState({dropdownRequestLoading: false})
             }
 
-            console.log('allAppInstUsageList===>', allAppInstUsageList)
-            // Cluster | AppInst
 
             let currentCluster = pCurrentAppInst.split("|")[2].trim() + " | " + pCurrentAppInst.split('|')[1].trim()
             pCurrentAppInst = pCurrentAppInst.trim();
             pCurrentAppInst = pCurrentAppInst.split("|")[0].trim() + " | " + pCurrentAppInst.split('|')[1].trim() + " | " + pCurrentAppInst.split('|')[2].trim()
-
-
-            /*   if (!isEmpty(this.state.currentCluster)) {
-                   alert(this.state.currentCluster)
-               } else {
-                   alert('empty')
-               }*/
 
             await this.setState({
                 currentClassification: CLASSIFICATION.APPINST,
@@ -823,9 +821,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: ############################
             //todo: filtered AppInstEventLogList
             //todo: ############################
-
             let _allAppInstEventLog = this.state.allAppInstEventLogs;
-
             let filteredAppInstEventLogList = _allAppInstEventLog.filter(item => {
                 if (item[1] === AppName && item[2] === ClusterInst && item[4] === Cloudlet) {
                     return true;
@@ -837,95 +833,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentTabIndex: 0,
             });
 
+
+            //todo: ############################
+            //todo: setStream
+            //todo: ############################
             if (this.state.isStream) {
                 this.setAppInstInterval(filteredAppList)
             } else {
                 clearInterval(this.intervalForAppInst)
             }
-
-            this._______makeWebsocketRequest(pCurrentAppInst);
-
-        }
-
-        _______makeWebsocketRequest(pCurrentAppInst) {
-
-
-            //AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version;
-            console.log("onmessage 00===>", pCurrentAppInst);
-            /*let AppName = pCurrentAppInst.split('|')[0].trim()
-            let Cloudlet = pCurrentAppInst.split('|')[1].trim()
-            let ClusterInst = pCurrentAppInst.split('|')[2].trim()
-            let Region = pCurrentAppInst.split('|')[3].trim()
-            let HealthCheck = pCurrentAppInst.split('|')[4].trim()
-            let Version = pCurrentAppInst.split('|')[5].trim()*/
-
-            let store = JSON.parse(localStorage.PROJECT_INIT);
-            let token = store ? store.userToken : 'null';
-
-            let organization= localStorage.selectOrg.toString()
-
-            console.log("onmessage 2===>", organization);
-
-          /*  this.setState({
-                webSocketLoading: true,
-            })*/
-            const webSocket = new WebSocket('wss://console-stage.mobiledgex.net:443/ws/api/v1/auth/ctrl/ShowAppInstClient')
-
-            webSocket.onopen = () => {
-
-                console.log("onmessage WebSocket is open now.");
-
-                webSocket.send(JSON.stringify({
-                    token: token,
-                }))
-
-                try{
-                    webSocket.send(JSON.stringify({
-                        "appinstclientkey": {
-                            "key": {
-                                "app_key": {
-                                    "developer_key": {
-                                        "name": "MobiledgeX"
-                                    },
-                                    "name": "MobiledgeX SDK Demo",
-                                    "version": "2.0"
-                                },
-                                "cluster_inst_key": {
-                                    "cloudlet_key": {
-                                        "name": "hamburg-stage",
-                                        "operator_key": {
-                                            "name": "TDG"
-                                        }
-                                    },
-                                    "cluster_key": {
-                                        "name": "autoclustermobiledgexsdkdemo"
-                                    },
-                                    "developer": "MobiledgeX"
-                                }
-                            }
-                        },
-                        "region": "EU"
-                    }))
-                }catch (e) {
-                    alert(e.toString())
-                }
-            }
-
-
-            webSocket.onmessage = event => {
-                let data = JSON.parse(event.data);
-                console.log("onmessage=fffff==>", data.data);
-                //console.log("onmessage_event===>", event);
-                //console.log("onmessage===>", data.data.location);
-            }
-
-            webSocket.onerror = (event) => {
-               alert(event.toString())
-            };
-
-            webSocket.onclose = function (event) {
-
-            };
 
 
         }
@@ -1055,7 +971,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 </>
             )
         }
-
 
 
         makeGridSizeByType(graphType) {
@@ -1188,7 +1103,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
                 return (
-                    this.state.loading ? renderPlaceHolderCircular() : <PerformanceSummaryTable parent={this} clusterUsageList={this.state.filteredClusterUsageList}/>
+                    this.state.loading ? renderPlaceHolderCircular() :
+                        <PerformanceSummaryTable parent={this} clusterUsageList={this.state.filteredClusterUsageList}/>
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PIE) {
                 return (
@@ -1200,7 +1116,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                 return (
-                    <VirtualAppInstEventLogListContainer currentAppInst={this.state.currentAppInst} parent={this} handleAppInstDropdown={this.handleAppInstDropdown}
+                    <VirtualAppInstEventLogListContainer currentAppInst={this.state.currentAppInst} parent={this}
+                                                         handleAppInstDropdown={this.handleAppInstDropdown}
                                                          eventLogList={this.state.filteredAppInstEventLogs}/>
                 )
             }
@@ -1749,7 +1666,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         renderSelectBoxRow2nd() {
 
             return (
-                <div className='page_monitoring_select_row' style={{borderWidth: 1, borderColor: 'grey', marginBottom: 5, marginTop: 6}}>
+                <div className='page_monitoring_select_row'
+                     style={{borderWidth: 1, borderColor: 'grey', marginBottom: 5, marginTop: 6}}>
                     <div className='page_monitoring_select_area'>
                         <>
                             <div className="page_monitoring_dropdown_box">
@@ -1902,7 +1820,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     hoverable
                                     style={{width: '100%', height: '100%'}}
                                     cover={<div style={{marginLeft: 40, marginTop: 5}}>
-                                        <img alt="example" src="/assets/brand/MobiledgeX_Logo_tm_white.svg" width={500} height={250}/>
+                                        <img alt="example" src="/assets/brand/MobiledgeX_Logo_tm_white.svg" width={500}
+                                             height={250}/>
                                     </div>}
                                 >
                                     <div style={{fontSize: 45, fontFamily: 'Roboto Condensed'}}>
@@ -1916,60 +1835,55 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
 
             return (
-                <MonitoringConsumer>
-                    {(context: MonitoringContextInterface) => (
-                        <div
-                            style={{width: '100%', height: '100%',}}
-                            ref={() => this.context = context}
-                        >
-                            <ModalGraph selectedClusterUsageOne={this.state.selectedClusterUsageOne}
-                                        selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
-                                        parent={this}
-                                        modalIsOpen={this.state.modalIsOpen}
-                                        cluster={''} contents={''}/>
 
-                            <BigModalGraphContainer
-                                chartDataForRendering={this.state.chartDataForRendering}
-                                isShowBigGraph={this.state.isShowBigGraph}
+                <div style={{width: '100%', height: '100%',}}>
+
+                    <ModalGraph selectedClusterUsageOne={this.state.selectedClusterUsageOne}
+                                selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
                                 parent={this}
-                                popupGraphHWType={this.state.popupGraphHWType}
-                                graphType={this.state.popupGraphType}
-                                isPopupMap={this.state.isPopupMap}
-                                appInstanceListGroupByCloudlet={this.state.appInstanceListGroupByCloudlet}
-                            />
+                                modalIsOpen={this.state.modalIsOpen}
+                                cluster={''} contents={''}/>
 
-                            <Grid.Row className='view_contents'>
-                                <Grid.Column className='contents_body'>
-                                    {/*todo:---------------------------------*/}
-                                    {/*todo:Content Header                   */}
-                                    {/*todo:---------------------------------*/}
-                                    <SemanticToastContainer position={"top-right"}/>
-                                    {this.renderHeader()}
-                                    <div style={{marginTop: 30, marginLeft: 30, marginBottom: 0}}>
-                                        {this.renderSelectBoxRow()}
-                                        {this.renderSelectBoxRow2nd()}
+                    <BigModalGraphContainer
+                        chartDataForRendering={this.state.chartDataForRendering}
+                        isShowBigGraph={this.state.isShowBigGraph}
+                        parent={this}
+                        popupGraphHWType={this.state.popupGraphHWType}
+                        graphType={this.state.popupGraphType}
+                        isPopupMap={this.state.isPopupMap}
+                        appInstanceListGroupByCloudlet={this.state.appInstanceListGroupByCloudlet}
+                    />
+
+                    <Grid.Row className='view_contents'>
+                        <Grid.Column className='contents_body'>
+                            {/*todo:---------------------------------*/}
+                            {/*todo:Content Header                   */}
+                            {/*todo:---------------------------------*/}
+                            <SemanticToastContainer position={"top-right"}/>
+                            {this.renderHeader()}
+                            <div style={{marginTop: 30, marginLeft: 30, marginBottom: 0}}>
+                                {this.renderSelectBoxRow()}
+                                {this.renderSelectBoxRow2nd()}
+                            </div>
+                            <Grid.Row className='site_content_body' style={{overflowY: 'auto', marginTop: -20}}>
+                                <div className="page_monitoring"
+                                     style={{backgroundColor: 'transparent', height: 3250}}>
+                                    <div className='page_monitoring_dashboard_kyungjoon' style={{}}>
+                                        {this.state.currentClassification === CLASSIFICATION.CLUSTER
+                                            ? this.renderGridLayoutForCluster()
+                                            : this.renderGridLayoutForAppInst()
+                                        }
                                     </div>
-                                    <Grid.Row className='site_content_body' style={{overflowY: 'auto', marginTop: -20}}>
-                                        <div className="page_monitoring" style={{backgroundColor: 'transparent', height: 3250}}>
-                                            <div className='page_monitoring_dashboard_kyungjoon' style={{}}>
-                                                {this.state.currentClassification === CLASSIFICATION.CLUSTER
-                                                    ? this.renderGridLayoutForCluster()
-                                                    : this.renderGridLayoutForAppInst()
-                                                }
-                                            </div>
-                                        </div>
-                                    </Grid.Row>
-                                </Grid.Column>
+                                </div>
                             </Grid.Row>
-                            <Modal style={{width: '100%', height: '100%'}} open={this.state.openTerminal}>
-                                <TerminalViewer data={this.state.terminalData} onClose={() => {
-                                    this.setState({openTerminal: false})
-                                }}/>
-                            </Modal>
-                        </div>
-
-                    )}
-                </MonitoringConsumer>
+                        </Grid.Column>
+                    </Grid.Row>
+                    <Modal style={{width: '100%', height: '100%'}} open={this.state.openTerminal}>
+                        <TerminalViewer data={this.state.terminalData} onClose={() => {
+                            this.setState({openTerminal: false})
+                        }}/>
+                    </Modal>
+                </div>
 
 
             )//return End
