@@ -97,7 +97,114 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
                 console.log("onmessage====currentClientLocationListOnAppInst>", _this.state.selectedClientLocationListOnAppInst);
             })
         } catch (e) {
-            alert(e)
+            //alert(e)
+        }
+    }
+
+    webSocket.onerror = (event) => {
+        alert(event.toString())
+    };
+
+    webSocket.onclose = function (event) {
+
+    };
+
+    return webSocket;
+
+}
+
+
+export const requestShowAppInstClientWS_____TEST = (pCurrentAppInst, _this: PageDevMonitoring) => {
+
+
+    let Operator = pCurrentAppInst.split('|')[6].trim()
+
+    let store = JSON.parse(localStorage.PROJECT_INIT);
+    let token = store ? store.userToken : 'null';
+
+    let organization = localStorage.selectOrg.toString()
+
+    console.log("onmessage Operator=>", Operator);
+
+    /*  this.setState({
+          webSocketLoading: true,
+    })*/
+
+    let prefixUrl = (process.env.REACT_APP_API_ENDPOINT).replace('http', 'ws');
+    console.log("onmessage==REACT_APP_API_ENDPOINT==>", prefixUrl)
+    const webSocket = new WebSocket(`${prefixUrl}/ws/api/v1/auth/ctrl/ShowAppInstClient`)
+
+    webSocket.onopen = () => {
+        try {
+            console.log("onmessage WebSocket is open now.");
+
+            _this.setState({
+                loading: true,
+            })
+
+            webSocket.send(JSON.stringify({
+                token: token,
+            }))
+            webSocket.send(JSON.stringify({
+                "appinstclientkey": {
+                    "key": {
+                        "app_key": {
+                            "developer_key": {
+                                "name": "MobiledgeX"
+                            },
+                            "name": "MobiledgeX SDK Demo",
+                            "version": "2.0"
+                        },
+                        "cluster_inst_key": {
+                            "cloudlet_key": {
+                                "name": "hamburg-stage",
+                                "operator_key": {
+                                    "name": "TDG"
+                                }
+                            },
+                            "cluster_key": {
+                                "name": "autoclustermobiledgexsdkdemo"
+                            },
+                            "developer": "MobiledgeX"
+                        }
+                    }
+                },
+                "region": "EU"
+            }))
+        } catch (e) {
+            alert(e.toString())
+        }
+    }
+
+
+    let appInstCount = 0;
+    webSocket.onmessage = (event) => {
+        try {
+            appInstCount++;
+            let data = JSON.parse(event.data);
+            let uuid = data.data.client_key.uuid;
+            console.log("onmessage==data==>", data);
+
+            let clientLocationOne: TypeClientLocation = data.data.location;
+            if (!isEmpty(uuid)) {
+                clientLocationOne.uuid = uuid;
+                let serverLocation = pCurrentAppInst.split('|')[7].trim()
+                clientLocationOne.serverLocInfo = JSON.parse(serverLocation)
+            }
+            console.log("onmessage====serverInstInfo>", clientLocationOne);
+            _this.setState({
+                selectedClientLocationListOnAppInst: _this.state.selectedClientLocationListOnAppInst.concat(clientLocationOne),
+            }, () => {
+                console.log("onmessage====currentClientLocationListOnAppInst>", _this.state.selectedClientLocationListOnAppInst);
+            })
+
+            setTimeout(() => {
+                _this.setState({
+                    loading: false,
+                })
+            }, 500)
+        } catch (e) {
+            //alert(e)
         }
     }
 

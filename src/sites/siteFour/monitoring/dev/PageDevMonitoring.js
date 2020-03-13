@@ -68,7 +68,7 @@ import {
     getCloudletList,
     getClusterLevelUsageList,
     getClusterList,
-    requestShowAppInstClientWS
+    requestShowAppInstClientWS, requestShowAppInstClientWS_____TEST
 } from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
@@ -443,7 +443,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 clearInterval(this.intervalForAppInst)
 
                 this.setState({dropdownRequestLoading: true})
-                let clusterList = await getClusterList();
+              /*  let clusterList = await getClusterList();
                 let cloudletList = await getCloudletList()
                 let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
                 console.log("appInstanceList===>", appInstanceList);
@@ -451,13 +451,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     this.setState({
                         isNoData: true,
                     })
-                }
+                }*/
 
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
-                /*let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+                let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
                 let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-                let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')*/
+                let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
                 console.log('appInstanceList====>', appInstanceList);
 
                 console.log('clusterUsageList===>', clusterList);
@@ -470,32 +470,41 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //@todo:###############################
                 //@todo: getAllClusterEventLogList
                 //@todo:###############################
-                let allClusterEventLogList = await getAllClusterEventLogList(clusterList);
+             /*   let allClusterEventLogList = await getAllClusterEventLogList(clusterList);
                 console.log("allClusterEventLogList===>", allClusterEventLogList);
                 await this.setState({
                     allClusterEventLogList: allClusterEventLogList,
                     filteredClusterEventLogList: allClusterEventLogList
+                })*/
+
+
+                //FIXME : FAKEDATA
+                //FIXME : FAKEDATA
+                //FIXME : FAKEDATA
+                await this.setState({
+                    allClusterEventLogList: [],
+                    filteredClusterEventLogList: []
                 })
 
 
                 //@todo:###############################
                 //@todo: getAppInstEventLogs
                 //@todo:###############################
-                let allAppInstEventLogs = await getAppInstEventLogs();
+             /*   let allAppInstEventLogs = await getAppInstEventLogs();
                 await this.setState({
                     allAppInstEventLogs: allAppInstEventLogs.values,
                     filteredAppInstEventLogs: allAppInstEventLogs.values,
-                })
+                })*/
 
 
                 //@fixme: fakeData
                 //@fixme: fakeData
                 //@fixme: fakeData
-                /*let __allAppInstEvLogListValues = require('./allAppInstEventLogList')
+                let __allAppInstEvLogListValues = require('./allAppInstEventLogList')
                 await this.setState({
                     allAppInstEventLogs: __allAppInstEvLogListValues,
                     filteredAppInstEventLogs: __allAppInstEvLogListValues,
-                })*/
+                })
 
 
                 let appInstanceListGroupByCloudlet = []
@@ -527,17 +536,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 //fixme: real data
                 //fixme: real data
-                try {
+              /*  try {
                     allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
                 } catch (e) {
 
-                }
+                }*/
 
 
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
-                /*allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
-                console.log('filteredAppInstanceList===>', appInstanceList)*/
+                allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+                console.log('filteredAppInstanceList===>', appInstanceList)
 
                 let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
                 await this.setState({
@@ -743,7 +752,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         handleAppInstDropdown = async (pCurrentAppInst) => {
 
-
+            let serverLocation = pCurrentAppInst.split('|')[7].trim()
+            console.log("serverLocation====>", JSON.parse(serverLocation));
 
             //@fixme: requestShowAppInstClientWS
             //@fixme: requestShowAppInstClientWS
@@ -751,7 +761,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 selectedClientLocationListOnAppInst: [],
             })
-            this.webSocketInst = requestShowAppInstClientWS(pCurrentAppInst, this);
+            this.webSocketInst = requestShowAppInstClientWS_____TEST(pCurrentAppInst, this);
 
             clearInterval(this.intervalForAppInst)
 
@@ -1260,8 +1270,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         x
                     </div>
 
-                    {/*todo:maximize button*/}
-                    {/*todo:maximize button*/}
+                    {/*todo:############################*/}
+                    {/*todo:maximize button             */}
+                    {/*todo:############################*/}
                     {graphType.toUpperCase() !== GRID_ITEM_TYPE.PERFORMANCE_SUM
                     && graphType.toUpperCase() !== GRID_ITEM_TYPE.BUBBLE
                     && graphType.toUpperCase() !== GRID_ITEM_TYPE.APP_INST_EVENT_LOG
@@ -1891,6 +1902,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         graphType={this.state.popupGraphType}
                         isPopupMap={this.state.isPopupMap}
                         appInstanceListGroupByCloudlet={this.state.appInstanceListGroupByCloudlet}
+                        selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
+                        loading={this.state.loading}
                     />
 
                     <Grid.Row className='view_contents'>

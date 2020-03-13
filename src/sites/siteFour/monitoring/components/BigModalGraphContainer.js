@@ -58,6 +58,8 @@ export default class BigModalGraphContainer extends React.Component<Props, State
         if (this.props.isShowBigGraph) {
             this.setState({
                 appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
+                selectedClientLocationListOnAppInst:nextProps.selectedClientLocationListOnAppInst,
+                loading: nextProps.loading,
             }, () => {
                 //alert(JSON.stringify(this.state.appInstanceListGroupByCloudlet))
             })
@@ -190,7 +192,10 @@ export default class BigModalGraphContainer extends React.Component<Props, State
                                         parent={this}
                                         isDraggable={true}
                                         handleAppInstDropdown={this.props.parent.handleAppInstDropdown}
-                                        markerList={this.state.appInstanceListGroupByCloudlet}/>
+                                        markerList={this.state.appInstanceListGroupByCloudlet}
+                                        selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
+                                    />
+
                                 </div>
                                 :
                                 <div></div>

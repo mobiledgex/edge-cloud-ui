@@ -38,6 +38,10 @@ export type TypeClientLocation = {
     speed: number,
     timestamp: any,
     uuid: string,
+    serverLocInfo: {
+        lat: number,
+        long: number,
+    }
 }
 
 
