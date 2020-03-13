@@ -242,7 +242,7 @@ type State = {
     filteredAppInstEventLogs: any,
     isFixGrid: boolean,
     webSocketLoading: boolean,
-    currentAppInstCount: number,
+    selectedClientLocationListOnAppInst: any,
 
 }
 
@@ -398,7 +398,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredAppInstEventLogs: [],
                 isFixGrid: false,
                 webSocketLoading: false,
-                currentAppInstCount: 0,
+                selectedClientLocationListOnAppInst: [],
             };
         }
 
@@ -743,9 +743,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         handleAppInstDropdown = async (pCurrentAppInst) => {
 
+
+
             //@fixme: requestShowAppInstClientWS
             //@fixme: requestShowAppInstClientWS
             //@fixme: requestShowAppInstClientWS
+            await this.setState({
+                selectedClientLocationListOnAppInst: [],
+            })
             this.webSocketInst = requestShowAppInstClientWS(pCurrentAppInst, this);
 
             clearInterval(this.intervalForAppInst)
@@ -924,7 +929,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
         }
 
-        renderMapArea() {
+       /* renderMapArea() {
             return (
                 <>
                     <div className='page_monitoring_title_area' style={{display: 'flex'}}>
@@ -959,18 +964,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }
                         </div>
                     </div>
-                    {/*@todo: LeafletMapWrapperForDev*/}
+                    {/!*@todo: LeafletMapWrapperForDev*!/}
                     <div className='page_monitoring_container'>
-                        <LeafletMapWrapperForDev
-                            mapPopUploading={this.state.mapPopUploading}
-                            parent={this}
-                            isDraggable={this.state.isDraggable}
-                            handleAppInstDropdown={this.handleAppInstDropdown}
-                            markerList={this.state.appInstanceListGroupByCloudlet}/>
+
                     </div>
                 </>
             )
-        }
+        }*/
 
 
         makeGridSizeByType(graphType) {
@@ -1099,7 +1099,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.MAP) {
                 return (
-                    this.renderMapArea()
+                    <LeafletMapWrapperForDev
+                        selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
+                        mapPopUploading={this.state.mapPopUploading}
+                        parent={this}
+                        isDraggable={this.state.isDraggable}
+                        handleAppInstDropdown={this.handleAppInstDropdown}
+                        markerList={this.state.appInstanceListGroupByCloudlet}/>
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
                 return (

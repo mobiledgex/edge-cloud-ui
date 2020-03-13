@@ -29,6 +29,17 @@ export type TypeLineChartData2 = {
 
 }
 
+export type TypeClientLocation = {
+    latitude: number,
+    longitude: number,
+    horizontal_accuracy: number,
+    altitude: number,
+    course: number,
+    speed: number,
+    timestamp: any,
+    uuid: string,
+}
+
 
 export type TypeCloudlet = {
     uuid: string,
@@ -166,7 +177,7 @@ export type TypeLineChartData = {
 }
 
 export type TypeClusterEventLog = {
-    "time" : string,
+    "time": string,
     "cluster": string,
     "dev": string,
     "cloudlet": string,

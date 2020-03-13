@@ -7,6 +7,7 @@ import Ripples from "react-ripples";
 import {CheckCircleOutlined} from '@material-ui/icons';
 import {Map, Marker, Popup, TileLayer, Tooltip} from "../../../../components/react-leaflet_kj/src/index";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
@@ -154,64 +155,99 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
 
 
         return (
-            <div style={{height: '100%', width: '100%', zIndex: 1}}>
-                <Map center={[45.4, 51.7]}
-                     duration={0.9}
-                     zoom={this.state.zoom}
-                     style={{width: '100%', height: '100%', zIndex: 1,}}
-                     easeLinearity={1}
-                     useFlyTo={true}
-                     dragging={true}
-                     boundsOptions={{padding: [50, 50]}}
-                >
-                    <TileLayer
-                        url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
-                        //url={'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'}
-                        minZoom={2}
-                        style={{zIndex: 1}}
-                        //maxZoom={15}
-                    />
-                    {this.state.newCloudLetLocationList.map((outerItem, outerIndex) => {
-                        let listAppName = outerItem.AppNames.split(",")
+            <>
+                <div className='page_monitoring_title_area' style={{display: 'flex'}}>
 
-                        return (
-                            <Marker
-                                ref={c => this.marker1 = c}
-                                icon={greenIcon}
-                                className='marker1'
-                                position={
-                                    [outerItem.CloudletLocation.latitude, outerItem.CloudletLocation.longitude,]
-                                }
-                                onClick={() => {
+                    <div style={{
+                        display: 'flex',
+                        width: '100%',
+                        height: 30
+                    }}>
+                        <div className='page_monitoring_title' style={{
+                            backgroundColor: 'transparent',
+                            flex: .38
+                        }}>
+                            Deployed Instance
+                        </div>
+                    </div>
 
-                                    let toggleNewCloudletLocationList = this.state.newCloudLetLocationList;
-                                    toggleNewCloudletLocationList[outerIndex].isShowCircle = !toggleNewCloudletLocationList[outerIndex].isShowCircle
-                                    this.setState({
-                                        newCloudLetLocationList: toggleNewCloudletLocationList,
-                                        isUpdateEnable: true,
-                                    })
+                    <div className='page_monitoring_title' style={{
+                        backgroundColor: 'transparent',
+                        flex: .65
+                    }}>
+                        {this.props.parent.state.mapPopUploading &&
+                        <div style={{zIndex: 99999999999}}>
+                            <CircularProgress style={{
+                                color: '#1cecff',
+                                marginRight: 0,
+                                marginBottom: -2,
+                                fontWeight: 'bold',
+                            }}
+                                              size={14}/>
+                        </div>
+                        }
+                    </div>
+                </div>
+                {/*@todo: LeafletMapWrapperForDev*/}
+                <div className='page_monitoring_container'>
+                    <div style={{height: '100%', width: '100%', zIndex: 1}}>
+                        <Map center={[45.4, 51.7]}
+                             duration={0.9}
+                             zoom={this.state.zoom}
+                             style={{width: '100%', height: '100%', zIndex: 1,}}
+                             easeLinearity={1}
+                             useFlyTo={true}
+                             dragging={true}
+                             boundsOptions={{padding: [50, 50]}}
+                        >
+                            <TileLayer
+                                url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
+                                //url={'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'}
+                                minZoom={2}
+                                style={{zIndex: 1}}
+                                //maxZoom={15}
+                            />
+                            {this.state.newCloudLetLocationList.map((outerItem, outerIndex) => {
+                                let listAppName = outerItem.AppNames.split(",")
 
-                                    //this.props.handleSelectCloudletForMapkerClicked(item.CloudletName)
-                                }}
-                            >
-                                <Tooltip
-                                    direction='right'
-                                    offset={[0, 0]}
-                                    opacity={0.8}
-                                    permanent
-                                    ref={c => {
-                                        this.toolTip = c;
-                                    }}
-                                    style={{cursor: 'pointer', pointerEvents: 'auto'}}
+                                return (
+                                    <Marker
+                                        ref={c => this.marker1 = c}
+                                        icon={greenIcon}
+                                        className='marker1'
+                                        position={
+                                            [outerItem.CloudletLocation.latitude, outerItem.CloudletLocation.longitude,]
+                                        }
+                                        onClick={() => {
 
-                                >
+                                            let toggleNewCloudletLocationList = this.state.newCloudLetLocationList;
+                                            toggleNewCloudletLocationList[outerIndex].isShowCircle = !toggleNewCloudletLocationList[outerIndex].isShowCircle
+                                            this.setState({
+                                                newCloudLetLocationList: toggleNewCloudletLocationList,
+                                                isUpdateEnable: true,
+                                            })
+
+                                            //this.props.handleSelectCloudletForMapkerClicked(item.CloudletName)
+                                        }}
+                                    >
+                                        <Tooltip
+                                            direction='right'
+                                            offset={[0, 0]}
+                                            opacity={0.8}
+                                            permanent
+                                            ref={c => {
+                                                this.toolTip = c;
+                                            }}
+                                            style={{cursor: 'pointer', pointerEvents: 'auto'}}
+
+                                        >
 
                                         <span
                                             className='toolTip'
                                             style={{color: 'black'}}>{outerItem.Cloudlet}</span>
-                                </Tooltip>
+                                        </Tooltip>
 
-                                {/* {item.isShowCircle &&
+                                        {/* {item.isShowCircle &&
                                 <Circle
                                     center={[item.CloudletLocation.latitude, item.CloudletLocation.longitude,]}
                                     radius={5000000}
@@ -220,86 +256,89 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                     weight={0.1}
                                 />
                                 }*/}
-                                <Popup className='popup1'>
+                                        <Popup className='popup1'>
 
-                                    {listAppName.map(AppFullName => {
+                                            {listAppName.map(AppFullName => {
 
-                                        let AppName = AppFullName.trim().split(" | ")[0].trim()
-                                        let ClusterInst = AppFullName.trim().split(" | ")[1].trim()
-                                        let Region = AppFullName.trim().split(" | ")[2].trim()
-                                        let HealthCheck = AppFullName.trim().split(" | ")[3].trim()
-                                        let Version = AppFullName.trim().split(" | ")[4].trim()
-                                        let Operator = AppFullName.trim().split(" | ")[5].trim()
+                                                let AppName = AppFullName.trim().split(" | ")[0].trim()
+                                                let ClusterInst = AppFullName.trim().split(" | ")[1].trim()
+                                                let Region = AppFullName.trim().split(" | ")[2].trim()
+                                                let HealthCheck = AppFullName.trim().split(" | ")[3].trim()
+                                                let Version = AppFullName.trim().split(" | ")[4].trim()
+                                                let Operator = AppFullName.trim().split(" | ")[5].trim()
 
 
-                                        return (
-                                            <div style={{
-                                                fontSize: 14, cursor: 'crosshair',
-
-                                                flexDirection: 'column',
-                                                marginTop: 5, marginBottom: 5
-                                            }}
-                                            >
-                                                <Ripples
-                                                    style={{marginLeft: 5}}
-                                                    color='#1cecff' during={500}
-                                                    onClick={() => {
-
-                                                        let dataSet = AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version + " | " + Operator;
-
-                                                        console.log("dataSet====>", dataSet)
-
-                                                        this.props.handleAppInstDropdown(dataSet)
-                                                    }}
-                                                >
-                                                    {AppName} [{Version}]
+                                                return (
                                                     <div style={{
-                                                        color: '#77BD25',
-                                                        fontSize: 12
-                                                    }}>
-                                                        &nbsp;&nbsp;{` [${ClusterInst.trim()}]`}
-                                                    </div>
-                                                    <div>
+                                                        fontSize: 14, cursor: 'crosshair',
 
-                                                        {/*todo:HealthCheck value 3 is okay*/}
-                                                        {/*todo:HealthCheck value 3 is okay*/}
-                                                        {/*todo:HealthCheck value 3 is okay*/}
-                                                        {HealthCheck === 3 ?
+                                                        flexDirection: 'column',
+                                                        marginTop: 5, marginBottom: 5
+                                                    }}
+                                                    >
+                                                        <Ripples
+                                                            style={{marginLeft: 5}}
+                                                            color='#1cecff' during={500}
+                                                            onClick={() => {
+
+                                                                let dataSet = AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version + " | " + Operator;
+
+                                                                console.log("dataSet====>", dataSet)
+
+                                                                this.props.handleAppInstDropdown(dataSet)
+                                                            }}
+                                                        >
+                                                            {AppName} [{Version}]
                                                             <div style={{
-                                                                marginLeft: 7,
-                                                                marginBottom: 0,
-                                                                height: 15,
+                                                                color: '#77BD25',
+                                                                fontSize: 12
                                                             }}>
-                                                                <CheckCircleOutlined style={{
-                                                                    color: 'green',
-                                                                    fontSize: 17,
-                                                                    marginBottom: 25
-                                                                }}/>
+                                                                &nbsp;&nbsp;{` [${ClusterInst.trim()}]`}
                                                             </div>
-                                                            :
-                                                            <div style={{
-                                                                marginLeft: 7,
-                                                                marginBottom: 0,
-                                                                height: 15,
-                                                            }}>
-                                                                <CheckCircleOutlined style={{
-                                                                    color: 'red',
-                                                                    fontSize: 17,
-                                                                    marginBottom: 25
-                                                                }}/>
+                                                            <div>
+
+                                                                {/*todo:HealthCheck value 3 is okay*/}
+                                                                {/*todo:HealthCheck value 3 is okay*/}
+                                                                {/*todo:HealthCheck value 3 is okay*/}
+                                                                {HealthCheck === 3 ?
+                                                                    <div style={{
+                                                                        marginLeft: 7,
+                                                                        marginBottom: 0,
+                                                                        height: 15,
+                                                                    }}>
+                                                                        <CheckCircleOutlined style={{
+                                                                            color: 'green',
+                                                                            fontSize: 17,
+                                                                            marginBottom: 25
+                                                                        }}/>
+                                                                    </div>
+                                                                    :
+                                                                    <div style={{
+                                                                        marginLeft: 7,
+                                                                        marginBottom: 0,
+                                                                        height: 15,
+                                                                    }}>
+                                                                        <CheckCircleOutlined style={{
+                                                                            color: 'red',
+                                                                            fontSize: 17,
+                                                                            marginBottom: 25
+                                                                        }}/>
+                                                                    </div>
+                                                                }
                                                             </div>
-                                                        }
+                                                        </Ripples>
                                                     </div>
-                                                </Ripples>
-                                            </div>
-                                        )
-                                    })}
-                                </Popup>
-                            </Marker>
-                        )
-                    })}
-                </Map>
-            </div>
+                                                )
+                                            })}
+                                        </Popup>
+                                    </Marker>
+                                )
+                            })}
+                        </Map>
+                    </div>
+
+                </div>
+            </>
         );
     }
 }

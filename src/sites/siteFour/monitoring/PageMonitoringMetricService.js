@@ -1,9 +1,14 @@
 import axios from "axios";
-import type {TypeCloudlet, TypeCluster} from "../../../shared/Types";
+import type {TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../shared/Types";
 import {SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET} from "../../../services/endPointTypes";
 import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT, REGION, USER_TYPE} from "../../../shared/Constants";
 import {sendSyncRequest} from "../../../services/serviceMC";
-import {makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
+import {
+    isEmpty,
+    makeFormForCloudletLevelMatric,
+    makeFormForClusterLevelMatric,
+    showToast
+} from "./PageMonitoringCommonService";
 import {formatData} from "../../../services/formatter/formatComputeInstance";
 import {makeFormForAppInstance} from "./admin/PageAdminMonitoringService";
 import PageDevMonitoring from "./dev/PageDevMonitoring";
@@ -77,16 +82,23 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
     let appInstCount = 0;
     webSocket.onmessage = event => {
-        appInstCount++;
-        let data = JSON.parse(event.data);
-        console.log("onmessage=fffff==>", data.data);
-        //console.log("onmessage_event===>", event);
-        //console.log("onmessage===>", data.data.location);
-        _this.setState({
-            currentAppInstCount: appInstCount,
-        }, () => {
-            console.log("onmessage====currentAppInstCount>", _this.state.currentAppInstCount);
-        })
+        try {
+            appInstCount++;
+            let data = JSON.parse(event.data);
+            let uuid = data.data.client_key.uuid;
+            let clientLocationOne: TypeClientLocation = data.data.location;
+            if (!isEmpty(uuid)) {
+                clientLocationOne.uuid = uuid;
+            }
+            console.log("onmessage====location>", clientLocationOne);
+            _this.setState({
+                selectedClientLocationListOnAppInst: _this.state.selectedClientLocationListOnAppInst.concat(clientLocationOne),
+            }, () => {
+                console.log("onmessage====currentClientLocationListOnAppInst>", _this.state.selectedClientLocationListOnAppInst);
+            })
+        } catch (e) {
+            alert(e)
+        }
     }
 
     webSocket.onerror = (event) => {
