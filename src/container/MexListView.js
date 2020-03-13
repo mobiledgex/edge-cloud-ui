@@ -177,7 +177,7 @@ class MexListView extends React.Component {
                 this.onDeleteWarning(action, data)
                 break;
             default:
-                action.onClick(data)
+                action.onClick(action, data)
         }
     }
 
@@ -381,6 +381,7 @@ class MexListView extends React.Component {
         if (props.refreshToggle !== state.refresh) {
             return { refresh: props.refreshToggle, dataList : state.dataList }
         }
+        return null
     } 
 
     render() {
@@ -451,7 +452,7 @@ class MexListView extends React.Component {
         let dataList = this.state.dataList
         if (mcRequestList && mcRequestList.length > 0) {
             if (this.props.multiDataRequest) {
-                dataList = [...dataList, ...this.props.multiDataRequest(mcRequestList)]
+                dataList = [...dataList, ...this.props.multiDataRequest(requestInfo.keys, mcRequestList)]
             }
             else {
                 let mcRequest = mcRequestList[0]

@@ -41,7 +41,7 @@ export const getKey = (data) => {
   })
 }
 
-export const multiDataRequest = (mcRequestList) => {
+export const multiDataRequest = (keys, mcRequestList) => {
   let appInstList = [];
   let appList = [];
   for (let i = 0; i < mcRequestList.length; i++) {

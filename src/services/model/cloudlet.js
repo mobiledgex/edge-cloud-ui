@@ -16,15 +16,15 @@ export const getKey = (data) => {
     })
 }
 
-export const multiDataRequest = (mcRequestList) => {
+export const multiDataRequest = (keys, mcRequestList) => {
     let cloudletList = [];
     let cloudletInfoList = [];
     for (let i = 0; i < mcRequestList.length; i++) {
         let mcRequest = mcRequestList[i];
         let request = mcRequest.request;
         if (request.method === SHOW_CLOUDLET || request.method === SHOW_ORG_CLOUDLET) {
-            for (let i = 0; i < this.keys.length > 0; i++) {
-                let key = this.keys[i];
+            for (let i = 0; i < keys.length > 0; i++) {
+                let key = keys[i];
                 if (key.field === fields.cloudletStatus) {
                     key.visible = request.method === SHOW_ORG_CLOUDLET ? false : true;
                     break;
@@ -36,7 +36,7 @@ export const multiDataRequest = (mcRequestList) => {
             cloudletInfoList = mcRequest.response.data
         }
     }
-
+   
     if (cloudletList && cloudletList.length > 0) {
         for (let i = 0; i < cloudletList.length; i++) {
             let cloudlet = cloudletList[i]

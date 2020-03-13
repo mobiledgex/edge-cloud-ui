@@ -9,23 +9,22 @@ import {
     Popup,
     Label,
     Modal,
-    Input,
     Segment,
     Icon,
     Container
 } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
 
-import {withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
-import {Motion, spring} from "react-motion";
-import {Steps, Hints} from 'intro.js-react';
+import { Motion, spring } from "react-motion";
+import { Steps, Hints } from 'intro.js-react';
 
 //redux
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import * as actions from '../../actions';
 
-import {GridLoader, ClipLoader} from "react-spinners";
+import { GridLoader, ClipLoader } from "react-spinners";
 import HeaderGlobalMini from '../../container/headerGlobalMini';
 
 //pages
@@ -36,33 +35,23 @@ import SiteFourPageApps from './apps/appList';
 import SiteFourPageAppInst from './appInst/appInstList';
 import SiteFourPageClusterInst from './clusterInst/clusterInstList';
 import SiteFourPageCloudlet from './cloudlets/cloudletList';
-import SiteFourPageCloudletReg from './cloudlets/siteFour_page_cloudletReg';
-import SiteFourPageFlavorReg from './flavors/siteFour_page_flavorReg';
 import SiteFourPageOrganization from './organization/organizationList';
 import SiteFourPageAppReg from './apps/siteFour_page_appReg';
-import SiteFourPageAppInstReg from './appInst/siteFour_page_appInstReg';
-import SiteFourPageCreateorga from './organization/siteFour_page_createOrga';
 import SiteFourPageAudits from './audits/siteFour_page_audits';
-import SiteFourPageClusterInstReg from './clusterInst/siteFour_page_clusterInstReg';
-import SiteFourPageCloudletPool from './cloudletPool/siteFour_page_cloudletPool';
-import SiteFourPageCloudletPoolReg from './cloudletPool/siteFour_page_cloudletPoolReg';
-import SiteFourPageLinkOrganizeReg from './cloudletPool/siteFour_page_linkOrganizeReg';
-import SiteFourPageCloudletPoolUpdate from './cloudletPool/siteFour_page_cloudletPoolUpdate';
+import SiteFourPageCloudletPool from './cloudletPool/cloudletPoolList';
 import PageMonitoringMain from './monitoring/PageMonitoringMain'
 import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
 import RefreshOutlinedIcon from '@material-ui/icons/RefreshOutlined';
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 import AutoProvPolicy from './policy/autoProvPolicy';
 import AutoPrivacyPolicy from './policy/autoPrivacyPolicy';
-import AutoPrivacyPolicyReg from './policy/autoPrivacyPolicyReg';
-import SiteFourAutoProvPolicyReg from './policy/autoProvPolicyReg';
 
 
 import PopLegendViewer from '../../container/popLegendViewer';
 import * as serviceMC from '../../services/serviceMC';
 import * as reducer from '../../utils'
 
-import {organizationTutor, CloudletTutor} from '../../tutorial';
+import { organizationTutor, CloudletTutor } from '../../tutorial';
 
 import Alert from 'react-s-alert';
 
@@ -72,15 +61,15 @@ import PageAdminMonitoring from "./monitoring/admin/PageAdminMonitoring";
 import PageDevMonitoring from "./monitoring/dev/PageDevMonitoring";
 import PageOperMonitoring from "./monitoring/oper/PageOperMonitoring";
 
-let defaultMotion = {left: window.innerWidth / 2, top: window.innerHeight / 2, opacity: 1}
+let defaultMotion = { left: window.innerWidth / 2, top: window.innerHeight / 2, opacity: 1 }
 
 const orgaSteps = organizationTutor();
 const cloudletSteps = CloudletTutor();
 let _self = null;
 
 const autoPolicy = [
-    {key: 'Auto Provisioning Policy', text: 'Auto Provisioning Policy', value: 'Auto Provisioning Policy'},
-    {key: 'Privacy Policy', text: 'Privacy Policy', value: 'Privacy Policy'}
+    { key: 'Auto Provisioning Policy', text: 'Auto Provisioning Policy', value: 'Auto Provisioning Policy' },
+    { key: 'Privacy Policy', text: 'Privacy Policy', value: 'Privacy Policy' }
 ]
 
 class SiteFour extends React.Component {
@@ -105,7 +94,7 @@ class SiteFour extends React.Component {
             userName: '',
             controllerRegions: null,
             regions: [
-                {key: 1, text: 'All', value: 'All'},
+                { key: 1, text: 'All', value: 'All' },
             ],
             nextPosX: window.innerWidth / 2,
             nextPosY: window.innerHeight / 2,
@@ -145,20 +134,20 @@ class SiteFour extends React.Component {
         //this.menuW = 240;
         this.hgap = 0;
         this.OrgMenu = [
-            {label: 'Organizations', icon: 'people', pg: 0},
-            {label: 'Users & Roles', icon: 'assignment_ind', pg: 1},
-            {label: 'Accounts', icon: 'dvr', pg: 101}
+            { label: 'Organizations', icon: 'people', pg: 0 },
+            { label: 'Users & Roles', icon: 'assignment_ind', pg: 1 },
+            { label: 'Accounts', icon: 'dvr', pg: 101 }
         ]
         this.menuItemsAll = [ //admin menu
-            {label: 'Cloudlets', icon: 'cloud_queue', pg: 2},
-            {label: 'Cloudlet Pools', icon: 'cloud_circle', pg: 7},
-            {label: 'Flavors', icon: 'free_breakfast', pg: 3},
-            {label: 'Cluster Instances', icon: 'storage', pg: 4},
-            {label: 'Apps', icon: 'apps', pg: 5},
-            {label: 'App Instances', icon: 'sports_esports', pg: 6},
-            {label: 'Monitoring', icon: 'tv', pg: 'Monitoring'},
-            {label: 'Policies', icon: 'playlist_play', pg: 8},
-            {label: 'Audit Logs', icon: 'check', pg: 'audits'}
+            { label: 'Cloudlets', icon: 'cloud_queue', pg: 2 },
+            { label: 'Cloudlet Pools', icon: 'cloud_circle', pg: 7 },
+            { label: 'Flavors', icon: 'free_breakfast', pg: 3 },
+            { label: 'Cluster Instances', icon: 'storage', pg: 4 },
+            { label: 'Apps', icon: 'apps', pg: 5 },
+            { label: 'App Instances', icon: 'sports_esports', pg: 6 },
+            { label: 'Monitoring', icon: 'tv', pg: 'Monitoring' },
+            { label: 'Policies', icon: 'playlist_play', pg: 8 },
+            { label: 'Audit Logs', icon: 'check', pg: 'audits' }
         ]
         this.menuItems = [ //developer menu
             reducer.getFindIndex(this.menuItemsAll, 'label', 'Cloudlets'),
@@ -179,13 +168,13 @@ class SiteFour extends React.Component {
         ] //OperatorManager, OperatorContributor, OperatorViewer
 
         this.auth_list = [
-            {role: 'AdminManager', view: []},
-            {role: 'DeveloperManager', view: [2, 3]},
-            {role: 'DeveloperContributor', view: [1, 2, 3]},
-            {role: 'DeveloperViewer', view: [1, 2, 3, 5, 6, 7]},
-            {role: 'OperatorManager', view: []},
-            {role: 'OperatorContributor', view: [1]},
-            {role: 'OperatorViewer', view: [1, 2]}
+            { role: 'AdminManager', view: [] },
+            { role: 'DeveloperManager', view: [2, 3] },
+            { role: 'DeveloperContributor', view: [1, 2, 3] },
+            { role: 'DeveloperViewer', view: [1, 2, 3, 5, 6, 7] },
+            { role: 'OperatorManager', view: [] },
+            { role: 'OperatorContributor', view: [1] },
+            { role: 'OperatorViewer', view: [1, 2] }
         ]
         this.searchOptions = [
             {
@@ -200,8 +189,8 @@ class SiteFour extends React.Component {
             }
         ]
 
-        this.speed = {stiffness: 500, damping: 100}
-        this.speedOpacity = {stiffness: 500, damping: 100}
+        this.speed = { stiffness: 500, damping: 100 }
+        this.speedOpacity = { stiffness: 500, damping: 100 }
 
         this.selectedfilters = [];
     }
@@ -221,10 +210,10 @@ class SiteFour extends React.Component {
         _self.props.history.push({
             pathname: mainPath,
             search: subPath,
-            state: {some: 'state'}
+            state: { some: 'state' }
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath: mainPath, subPath: subPath})
+        _self.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
     }
 
     gotoUrl(site, subPath) {
@@ -234,14 +223,14 @@ class SiteFour extends React.Component {
             search: subPath
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath: mainPath, subPath: subPath})
-        _self.setState({page: subPath})
+        _self.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
+        _self.setState({ page: subPath })
     }
 
     handleItemClick(id, label, pg, role) {
         localStorage.setItem('selectMenu', label)
-        _self.setState({menuClick: true})
-        _self.props.handleDetail({data: null, viewMode: 'listView'})
+        _self.setState({ menuClick: true })
+        _self.props.handleDetail({ data: null, viewMode: 'listView' })
         _self.props.handleChangeViewBtn(false);
         _self.props.handleChangeClickCity([]);
         _self.props.handleChangeComputeItem(label);
@@ -255,44 +244,44 @@ class SiteFour extends React.Component {
         let subPath = 'pg=' + pg;
         _self.props.history.location.search = "pg=" + pg;
         _self.props.handleChangeStep(pg)
-        _self.setState({page: 'pg=' + pg, activeItem: label, headerTitle: label, intoCity: false})
+        _self.setState({ page: 'pg=' + pg, activeItem: label, headerTitle: label, intoCity: false })
     }
 
 
     onHandleRegistry() {
         if (localStorage.selectMenu === 'Organizations') {
-            this.setState({page: 'pg=newOrg'})
+            this.setState({ page: 'pg=newOrg' })
             this.gotoUrl('/site4', 'pg=newOrg')
         } else if (localStorage.selectMenu === 'Cloudlets') {
-            this.setState({page: 'pg='})
+            this.setState({ page: 'pg=' })
             this.gotoUrl('/site4', 'pg=createCloudlet')
         } else if (localStorage.selectMenu === 'Apps') {
-            this.setState({page: 'pg=createApp'})
+            this.setState({ page: 'pg=createApp' })
             this.gotoUrl('/site4', 'pg=createApp')
         } else if (localStorage.selectMenu === 'App Instances') {
-            this.setState({page: 'pg=createAppInst'})
+            this.setState({ page: 'pg=createAppInst' })
             this.gotoUrl('/site4', 'pg=createAppInst')
         } else if (localStorage.selectMenu === '') {
-            this.setState({page: 'pg=createAppInst'})
+            this.setState({ page: 'pg=createAppInst' })
             this.gotoUrl('/site4', 'pg=createAppInst')
         } else if (localStorage.selectMenu === 'Flavors') {
-            this.setState({page: 'pg=createFlavor'})
+            this.setState({ page: 'pg=createFlavor' })
             this.gotoUrl('/site4', 'pg=createFlavor')
         } else if (localStorage.selectMenu === 'Cluster Instances') {
-            this.setState({page: 'pg=createClusterInst'})
+            this.setState({ page: 'pg=createClusterInst' })
             this.gotoUrl('/site4', 'pg=createClusterInst')
         } else if (localStorage.selectMenu === 'Cloudlet Pools') {
-            this.setState({page: 'pg=createCloudletPool'})
+            this.setState({ page: 'pg=createCloudletPool' })
             this.gotoUrl('/site4', 'pg=createCloudletPool')
         } else if (localStorage.selectMenu === 'Policies') {
             let pg = this.state.autoPolicy === 'Auto Provisioning Policy' ? 'createPolicy' : 'createPrivacyPolicy';
-            this.setState({page: `pg=${pg}`})
+            this.setState({ page: `pg=${pg}` })
             this.gotoUrl('/site4', `pg=${pg}`)
         } else {
             this.props.handleInjectDeveloper('newRegist');
         }
         this.props.handleChangeClickCity([])
-        this.setState({intoCity: false})
+        this.setState({ intoCity: false })
     }
 
     receiveControllerResult(mcRequest) {
@@ -312,7 +301,7 @@ class SiteFour extends React.Component {
                 this.props.handleRoleInfo(response.data)
                 response.data.map((item, i) => {
                     if (item.role.indexOf('Admin') > -1) {
-                        this.setState({adminShow: true});
+                        this.setState({ adminShow: true });
                         localStorage.setItem('selectRole', item.role)
                     }
                 })
@@ -343,7 +332,7 @@ class SiteFour extends React.Component {
             <Modal trigger={<Button>Create Control</Button>} centered={false}>
                 <Modal.Header>Select a Photo</Modal.Header>
                 <Modal.Content image>
-                    <Image wrapped size='medium' src='/images/avatar/large/rachel.png'/>
+                    <Image wrapped size='medium' src='/images/avatar/large/rachel.png' />
                     <Modal.Description>
                         <Header>Default Profile Image</Header>
                         <p>We've found the following gravatar image associated with your e-mail address.</p>
@@ -366,14 +355,14 @@ class SiteFour extends React.Component {
 
     getHelpPopup = (key) => (
         <Popup
-            trigger={<Icon name='question circle outline' size='small' style={{marginTop: 0, paddingLeft: 10}}/>}
+            trigger={<Icon name='question circle outline' size='small' style={{ marginTop: 0, paddingLeft: 10 }} />}
             content=
-                {(key == 'Cloudlets') ? 'A Cloudlet is a set of compute resources at a particular location, provided by an Operator.'
-                    : (key == 'Cluster Instances') ? 'ClusterInst is an instance of a Cluster on a Cloudlet. It is defined by a Cluster, Cloudlet, and Developer key.'
-                        : (key == 'Apps') ? 'App belongs to developers and is used to provide information about their application.'
-                            : (key == 'App Instances') ? 'AppInst is an instance of an App on a Cloudlet where it is defined by an App plus a ClusterInst key. Many of the fields here are inherited from the App definition.'
-                                : key
-                }
+            {(key == 'Cloudlets') ? 'A Cloudlet is a set of compute resources at a particular location, provided by an Operator.'
+                : (key == 'Cluster Instances') ? 'ClusterInst is an instance of a Cluster on a Cloudlet. It is defined by a Cluster, Cloudlet, and Developer key.'
+                    : (key == 'Apps') ? 'App belongs to developers and is used to provide information about their application.'
+                        : (key == 'App Instances') ? 'AppInst is an instance of an App on a Cloudlet where it is defined by an App plus a ClusterInst key. Many of the fields here are inherited from the App definition.'
+                            : key
+            }
             inverted
         />
     )
@@ -454,35 +443,35 @@ class SiteFour extends React.Component {
             enable = true;
         }
 
-        this.setState({steps: currentStep})
+        this.setState({ steps: currentStep })
 
         let elmentName = (this.steps) ? currentStep : null;
         //this.steps.props.options.hideNext = true;
         let element = (elmentName) ? document.getElementsByClassName(elmentName[0].element.replace('.', '')) : [];
         if (enable) {
             console.log("elementelement111", element)
-            this.setState({stepsEnabled: true, enable: true})
+            this.setState({ stepsEnabled: true, enable: true })
         }
 
     }
 
-    getAdminInfo = async(token) =>{
+    getAdminInfo = async (token) => {
         serviceMC.sendRequest(_self, {
             token: token,
             method: serviceMC.getEP().SHOW_CONTROLLER
         }, this.receiveControllerResult);
         //serviceMC.sendRequest(_self, {token: token, method: serviceMC.getEP().SHOW_ROLE}, this.receiveAdminInfo)
-        _self.setState({currentVersion: process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'})
+        _self.setState({ currentVersion: process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'v0.0.0' })
     }
 
     onClickBackBtn = () => {
-        this.setState({intoCity: false})
+        this.setState({ intoCity: false })
         this.props.handleChangeClickCity([]);
         this.props.handleResetMap('back')
 
     }
 
-   
+
     componentWillMount() {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         this.setState({
@@ -503,7 +492,7 @@ class SiteFour extends React.Component {
             }
         }, 4000)
 
-        this.setState({steps: orgaSteps.stepsZero, intoCity: false});
+        this.setState({ steps: orgaSteps.stepsZero, intoCity: false });
         //
         if (this.props.params.subPath !== 'pg=audits') {
             this.getDataAudit();
@@ -512,16 +501,16 @@ class SiteFour extends React.Component {
 
     componentWillReceiveProps(nextProps, nextContext) {
         try {
-            this.setState({bodyHeight: (window.innerHeight - this.headerH)})
-            this.setState({contHeight: (nextProps.size.height - this.headerH) / 2 - this.hgap})
-            this.setState({contWidth: (window.innerWidth - this.state.menuW)})
-            this.setState({userToken: nextProps.userToken})
-            this.setState({userName: (nextProps.userInfo && nextProps.userInfo.info) ? nextProps.userInfo.info.Name : null})
+            this.setState({ bodyHeight: (window.innerHeight - this.headerH) })
+            this.setState({ contHeight: (nextProps.size.height - this.headerH) / 2 - this.hgap })
+            this.setState({ contWidth: (window.innerWidth - this.state.menuW) })
+            this.setState({ userToken: nextProps.userToken })
+            this.setState({ userName: (nextProps.userInfo && nextProps.userInfo.info) ? nextProps.userInfo.info.Name : null })
         } catch (e) {
 
         }
         if (nextProps.selectedOrg) {
-            this.setState({selectOrg: nextProps.selectedOrg})
+            this.setState({ selectOrg: nextProps.selectedOrg })
         }
 
         if (nextProps.params && nextProps.params.subPath) {
@@ -533,14 +522,14 @@ class SiteFour extends React.Component {
                 subPath = paths[0];
                 subParam = paths[1];
             }
-            this.setState({page: subPath, OrganizationName: subParam})
+            this.setState({ page: subPath, OrganizationName: subParam })
 
         }
 
         if (nextProps.viewMode && localStorage.selectRole.indexOf('Developer') === -1) {
             this.setState({ viewMode: nextProps.viewMode })
         } else {
-            this.setState({viewMode: 'listView'})
+            this.setState({ viewMode: 'listView' })
         }
 
         if ((nextProps.alertInfo !== this.props.alertInfo) && nextProps.alertInfo.mode) {
@@ -572,9 +561,9 @@ class SiteFour extends React.Component {
 
         //set filters
         if (nextProps.tableHeaders) {
-            this.setState({showItem: false})
+            this.setState({ showItem: false })
             if (nextProps.tableHeaders.length) {
-                this.setState({tableHeaders: nextProps.tableHeaders})
+                this.setState({ tableHeaders: nextProps.tableHeaders })
             } else {
 
             }
@@ -590,7 +579,7 @@ class SiteFour extends React.Component {
         if (formKey.length) {
             if (nextProps.formInfo[formKey[0]]['submitSucceeded']) {
                 if (nextProps.formInfo[formKey[0]]['submitSucceeded'] === true) {
-                    _self.setState({stepsEnabled: false})
+                    _self.setState({ stepsEnabled: false })
                 }
             }
         }
@@ -607,7 +596,7 @@ class SiteFour extends React.Component {
             }
             if (enable && !_self.state.learned && !tutorial) {
                 _self.enalbeSteps();
-                _self.setState({stepsEnabled: true, learned: true})
+                _self.setState({ stepsEnabled: true, learned: true })
                 localStorage.setItem('TUTORIAL', 'done')
             }
 
@@ -615,9 +604,9 @@ class SiteFour extends React.Component {
 
         let site = this.props.siteName;
         if (!this.props.changeStep || this.props.changeStep === '02') {
-            this.setState({enable: true})
+            this.setState({ enable: true })
         } else {
-            this.setState({enable: false})
+            this.setState({ enable: false })
         }
 
 
@@ -625,26 +614,26 @@ class SiteFour extends React.Component {
         if (nextProps.regionInfo.region.length && !this.state.regionToggle) {
 
             let getRegions = []
-            _self.setState({regionToggle: true})
+            _self.setState({ regionToggle: true })
             if (nextProps.regionInfo.region) {
                 nextProps.regionInfo.region.map((region, i) => {
-                    getRegions.push({key: i + 2, text: region, value: region})
+                    getRegions.push({ key: i + 2, text: region, value: region })
                 })
             }
             let newRegions = Object.assign([], _self.state.regions).concat(getRegions)
-            _self.setState({regions: newRegions})
+            _self.setState({ regions: newRegions })
 
         }
         if (nextProps.clickCity.length > 0) {
-            this.setState({intoCity: true})
+            this.setState({ intoCity: true })
         } else {
-            this.setState({intoCity: false})
+            this.setState({ intoCity: false })
         }
 
         //set category
         if (nextProps.detailData !== this.props.detailData) {
             // alert(JSON.stringify(nextProps.detailData))
-            this.setState({detailData: nextProps.detailData})
+            this.setState({ detailData: nextProps.detailData })
         }
 
     }
@@ -653,16 +642,16 @@ class SiteFour extends React.Component {
     componentDidUpdate() {
         if (localStorage.selectRole && this.state.menuClick) {
             this.disableBtn();
-            this.setState({menuClick: false})
+            this.setState({ menuClick: false })
         }
     }
 
     componentWillUnmount() {
-        this.setState({learned: false})
+        this.setState({ learned: false })
     }
 
     menuItemViewHide = (item, i, activeItem, orgMenu) => (
-        (this.state.hideLeftMenu)?
+        (this.state.hideLeftMenu) ?
             <Popup
                 className="table_actions_tooltip"
                 content={item.label}
@@ -685,21 +674,21 @@ class SiteFour extends React.Component {
             onClick={() => this.handleItemClick(i, item.label, item.pg, localStorage.selectRole)}
         >
             <div className="left_menu_item">
-                {orgMenu && <MaterialIcon icon={item.icon}/>}
-                {!orgMenu && (localStorage.selectRole === 'AdminManager') && <MaterialIcon icon={item.icon}/>}
+                {orgMenu && <MaterialIcon icon={item.icon} />}
+                {!orgMenu && (localStorage.selectRole === 'AdminManager') && <MaterialIcon icon={item.icon} />}
                 {!orgMenu && (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer') &&
-                <MaterialIcon icon={item.icon}/>}
+                    <MaterialIcon icon={item.icon} />}
                 {!orgMenu && (localStorage.selectRole === 'OperatorManager' || localStorage.selectRole === 'OperatorContributor' || localStorage.selectRole === 'OperatorViewer') &&
-                <MaterialIcon icon={item.icon}/>}
+                    <MaterialIcon icon={item.icon} />}
                 <div className='label'>{item.label}</div>
                 {(activeItem === item.label) ?
-                    <div style={{position: 'absolute', right: '12px', top: '12px'}}>
+                    <div style={{ position: 'absolute', right: '12px', top: '12px' }}>
                         <ClipLoader
                             size={20}
                             sizeUnit={'px'}
                             color={'rgba(136,221,0,.85)'}
                             loading={this.props.loadingSpinner}
-                            // loading={true}
+                        // loading={true}
                         />
                         {(item.label === 'Audit Log' && this.props.audit > 0) ?
                             <Label circular color={'red'} key={'red'}>
@@ -710,7 +699,7 @@ class SiteFour extends React.Component {
                     : null}
 
 
-                <div style={{position: 'absolute', right: '12px', top: '12px'}}>
+                <div style={{ position: 'absolute', right: '12px', top: '12px' }}>
                     {(item.label === 'Audit Log' && this.props.audit > 0) ?
                         <Label circular color={'red'} key={'red'}>
                             {this.props.audit}
@@ -747,7 +736,7 @@ class SiteFour extends React.Component {
 
     resetMotion() {
         let self = _self;
-        this.setState({setMotion: defaultMotion})
+        this.setState({ setMotion: defaultMotion })
         let nextPosX = 15
         let nextPosY = 180;
         setTimeout(() => self.setState({
@@ -760,15 +749,12 @@ class SiteFour extends React.Component {
         }), 500);
     }
 
-    onChangeRegion = (e, {value}) => {
+    onChangeRegion = (e, { value }) => {
 
         _self.props.handleChangeRegion(value)
     }
 
-    computeRefresh = () => {
-        //this.props.handleLoadingSpinner(true);
-        this.props.handleComputeRefresh(true);
-    }
+    
     disableBtn = () => {
         this.auth_list.map((item, i) => {
             if (item.role == localStorage.selectRole) {
@@ -783,8 +769,8 @@ class SiteFour extends React.Component {
 
     }
 
-    searchChange = (e, {value}) => {
-        this.setState({searchChangeValue: value})
+    searchChange = (e, { value }) => {
+        this.setState({ searchChangeValue: value })
         this.props.handleSearchValue(this.props.searchValue, value)
     }
 
@@ -794,31 +780,31 @@ class SiteFour extends React.Component {
             key: 1,
             text: 'Mobile',
             value: 1,
-            content: <Header icon='mobile' content='Mobile' subheader='The smallest size'/>,
+            content: <Header icon='mobile' content='Mobile' subheader='The smallest size' />,
         },
         {
             key: 2,
             text: 'Tablet',
             value: 2,
-            content: <Header icon='tablet' content='Tablet' subheader='The size in the middle'/>,
+            content: <Header icon='tablet' content='Tablet' subheader='The size in the middle' />,
         },
         {
             key: 3,
             text: 'Desktop',
             value: 3,
-            content: <Header icon='desktop' content='Desktop' subheader='The largest size'/>,
+            content: <Header icon='desktop' content='Desktop' subheader='The largest size' />,
         },
     ]
 
     onExit() {
-        _self.setState({stepsEnabled: false})
+        _self.setState({ stepsEnabled: false })
     }
 
     orgTypeLegendShow = () => {
-        _self.setState({openLegend: true})
+        _self.setState({ openLegend: true })
     }
     closeLegend = () => {
-        this.setState({openLegend: false})
+        this.setState({ openLegend: false })
     }
 
 
@@ -879,7 +865,7 @@ class SiteFour extends React.Component {
     }
     getDataAudit = () => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        this.setState({devData: []})
+        this.setState({ devData: [] })
         _self.loadCount = 0;
         serviceMC.sendRequest(_self, {
             token: store.userToken,
@@ -891,7 +877,7 @@ class SiteFour extends React.Component {
 
     onPolicyChange = (value) => {
         localStorage.setItem('autoPolicy', value)
-        this.setState({autoPolicy: value})
+        this.setState({ autoPolicy: value })
     }
 
     /** audit ********/
@@ -910,8 +896,8 @@ class SiteFour extends React.Component {
 
 
     render() {
-        const {shouldShowBox, shouldShowCircle, viewMode} = this.state;
-        const {stepsEnabled, initialStep, hintsEnabled, hints, steps} = this.state;
+        const { shouldShowBox, shouldShowCircle, viewMode } = this.state;
+        const { stepsEnabled, initialStep, hintsEnabled, hints, steps } = this.state;
         return (
             this.state.fullPage ?
                 this.state.fullPage
@@ -924,7 +910,7 @@ class SiteFour extends React.Component {
                             initialStep={initialStep}
                             onExit={this.onExit}
                             showButtons={true}
-                            options={{hideNext: false}}
+                            options={{ hideNext: false }}
                             ref={steps => (this.steps = steps)}
                         /> : null}
                     {hints ?
@@ -933,7 +919,7 @@ class SiteFour extends React.Component {
                             hints={hints}
                         /> : null}
                     {(this.props.loadingSpinner == true) ?
-                        <div className="loadingBox" style={{zIndex: 9999}}>
+                        <div className="loadingBox" style={{ zIndex: 9999 }}>
                             <GridLoader
                                 sizeUnit={"px"}
                                 size={25}
@@ -944,18 +930,15 @@ class SiteFour extends React.Component {
                     <Grid.Row className='gnb_header'>
                         <Grid.Column width={6} className='navbar_left'>
                             <Header>
-                                <Header.Content onClick={() => this.gotoPreview('/site1')} className='brand'/>
+                                <Header.Content onClick={() => this.gotoPreview('/site1')} className='brand' />
                             </Header>
                         </Grid.Column>
                         <Grid.Column width={10} className='navbar_right'>
-                            <div className='navbar_icon' onClick={this.computeRefresh}>
-                                <RefreshOutlinedIcon fontSize='large'/>
-                            </div>
                             <div className='navbar_icon' onClick={() => this.gotoUrl('/site1', 'pg=0')}>
-                                <PublicOutlinedIcon fontSize='large'/>
+                                <PublicOutlinedIcon fontSize='large' />
                             </div>
-                            <div className='navbar_icon' style={{display: 'none'}}>
-                                <MaterialIcon icon={'notifications_none'}/>
+                            <div className='navbar_icon' style={{ display: 'none' }}>
+                                <MaterialIcon icon={'notifications_none'} />
                             </div>
                             {
                                 (
@@ -965,13 +948,13 @@ class SiteFour extends React.Component {
                                     this.state.headerTitle !== 'Accounts' &&
                                     this.state.headerTitle !== 'Flavors'
                                 ) ? <div className='navbar_icon' onClick={this.enalbeSteps}>
-                                    <HelpOutlineOutlinedIcon fontSize='large'/>
-                                </div> : null
+                                        <HelpOutlineOutlinedIcon fontSize='large' />
+                                    </div> : null
                             }
                             <Popup
                                 trigger={
-                                    <div className='navbar_icon' style={{display: 'none'}}>
-                                        <MaterialIcon icon={'add'}/>
+                                    <div className='navbar_icon' style={{ display: 'none' }}>
+                                        <MaterialIcon icon={'add'} />
                                     </div>
                                 }
                                 content={this.menuAddItem()}
@@ -979,11 +962,11 @@ class SiteFour extends React.Component {
                                 position='bottom center'
                                 className='gnb_logout'
                             />
-                            <HeaderGlobalMini email={this.state.email} data={this.props.userInfo.info} dimmer={false}/>
+                            <HeaderGlobalMini email={this.state.email} data={this.props.userInfo.info} dimmer={false} />
                         </Grid.Column>
                     </Grid.Row>
                     <Container className={['view_left_container', this.state.hideLeftMenu && 'left_menu_hide'].join(' ')}
-                               style={{position: 'relative', width: this.state.menuW}}>
+                        style={{ position: 'relative', width: this.state.menuW }}>
                         <Grid.Row className='view_contents'>
                             <Grid.Column className='view_left'>
                                 <Menu secondary vertical className='view_left_menu org_menu'>
@@ -998,7 +981,7 @@ class SiteFour extends React.Component {
                                     <Grid.Row className="left_authority">
                                         <Segment className="stepOrgDeveloper2">
                                             <Grid>
-                                                <Grid.Row style={{cursor: 'pointer'}} onClick={this.orgTypeLegendShow}>
+                                                <Grid.Row style={{ cursor: 'pointer' }} onClick={this.orgTypeLegendShow}>
                                                     <Grid.Column>
                                                         {localStorage.selectRole ?
                                                             <div className="markBox">
@@ -1037,7 +1020,7 @@ class SiteFour extends React.Component {
                                                         <div>
                                                             {
                                                                 localStorage.selectRole && localStorage.selectRole != 'null' ? localStorage.selectRole :
-                                                                    <strong style={{fontSize: 12}}>Please select an
+                                                                    <strong style={{ fontSize: 12 }}>Please select an
                                                                         organization</strong>
                                                             }
                                                         </div>
@@ -1081,7 +1064,7 @@ class SiteFour extends React.Component {
                                     </div>
                                 </Menu>
                                 <div className='versionView'
-                                     style={{display: this.state.hideLeftMenu ? 'none' : 'block'}}>
+                                    style={{ display: this.state.hideLeftMenu ? 'none' : 'block' }}>
                                     {
                                         (localStorage.selectRole == 'AdminManager') ? this.state.currentVersion : null
                                     }
@@ -1089,24 +1072,24 @@ class SiteFour extends React.Component {
                             </Grid.Column>
                         </Grid.Row>
                         <div className='left_menu_hide_button'
-                             onClick={() => {
+                            onClick={() => {
 
-                                 this.setState({hideLeftMenu: !this.state.hideLeftMenu}, () => {
+                                this.setState({ hideLeftMenu: !this.state.hideLeftMenu }, () => {
 
-                                     if (this.state.hideLeftMenu) {
-                                         this.setState({menuW: 50});
-                                     } else {
-                                         this.setState({menuW: 240});
-                                     }
-                                 });
+                                    if (this.state.hideLeftMenu) {
+                                        this.setState({ menuW: 50 });
+                                    } else {
+                                        this.setState({ menuW: 240 });
+                                    }
+                                });
 
-                             }}
+                            }}
                         >
                             {this.state.hideLeftMenu ?
                                 <i className="material-icons"
-                                   style={{color: 'rgba(255,255,255,.6)', fontSize: 20}}>chevron_right</i>
+                                    style={{ color: 'rgba(255,255,255,.6)', fontSize: 20 }}>chevron_right</i>
                                 : <i className="material-icons"
-                                     style={{color: 'rgba(255,255,255,.6)', fontSize: 20}}>chevron_left</i>}
+                                    style={{ color: 'rgba(255,255,255,.6)', fontSize: 20 }}>chevron_left</i>}
                         </div>
                     </Container>
                     <Container className='contents_body_container' style={{
@@ -1114,13 +1097,13 @@ class SiteFour extends React.Component {
                         left: this.state.menuW,
                         width: window.innerWidth - this.state.menuW
                     }}>
-                        {(this.state.page === 'pg=Monitoring') ? <PageMonitoringMain/> :
-                            (this.state.page === 'pg=PageAdminMonitoring') ? <PageAdminMonitoring/> :
-                                (this.state.page === 'pg=PageDevMonitoring') ? <PageDevMonitoring/> :
-                                    (this.state.page === 'pg=PageOperMonitoring') ? <PageOperMonitoring/> :
+                        {(this.state.page === 'pg=Monitoring') ? <PageMonitoringMain /> :
+                            (this.state.page === 'pg=PageAdminMonitoring') ? <PageAdminMonitoring /> :
+                                (this.state.page === 'pg=PageDevMonitoring') ? <PageDevMonitoring /> :
+                                    (this.state.page === 'pg=PageOperMonitoring') ? <PageOperMonitoring /> :
                                         <Grid.Row className='view_contents'>
                                             <Grid.Column className='contents_body'>
-                                                <Grid.Row className='content_title'>
+                                                {/* <Grid.Row className='content_title'>
                                                     <div className='content_title_wrap'>
                                                         <div
                                                             className='content_title_label'>{this.state.headerTitle}</div>
@@ -1131,25 +1114,25 @@ class SiteFour extends React.Component {
                                                                     <Button
                                                                         onClick={this.onClickBackBtn}>Back</Button> :
                                                                     <Dropdown className='selection'
-                                                                              options={this.state.regions}
-                                                                              defaultValue={this.state.regions[0].value}
-                                                                              onChange={this.onChangeRegion}
+                                                                        options={this.state.regions}
+                                                                        defaultValue={this.state.regions[0].value}
+                                                                        onChange={this.onChangeRegion}
                                                                     />
                                                                 : null
                                                         }
                                                         {
                                                             (viewMode !== 'MexDetailView' && this.state.page.indexOf('pg=8') >= 0 && !this.state.currentPage) ?
                                                                 <Dropdown className='selection'
-                                                                          style={{
-                                                                              position: 'relative',
-                                                                              marginRight: 20,
-                                                                              height: 20
-                                                                          }}
-                                                                          options={autoPolicy}
-                                                                          defaultValue={this.state.autoPolicy}
-                                                                          onChange={(e, {value}) => {
-                                                                              this.onPolicyChange(value)
-                                                                          }}
+                                                                    style={{
+                                                                        position: 'relative',
+                                                                        marginRight: 20,
+                                                                        height: 20
+                                                                    }}
+                                                                    options={autoPolicy}
+                                                                    defaultValue={this.state.autoPolicy}
+                                                                    onChange={(e, { value }) => {
+                                                                        this.onPolicyChange(value)
+                                                                    }}
                                                                 /> : null
                                                         }
                                                         {
@@ -1167,28 +1150,28 @@ class SiteFour extends React.Component {
                                                         {
                                                             (viewMode === 'detailView' || viewMode === 'MexDetailView') ?
                                                                 <Button disabled={this.props.viewBtn.onlyView}
-                                                                        onClick={() => this.props.handleDetail({
-                                                                            data: null,
-                                                                            viewMode: 'listView'
-                                                                        })}>Close Details</Button>
+                                                                    onClick={() => this.props.handleDetail({
+                                                                        data: null,
+                                                                        viewMode: 'listView'
+                                                                    })}>Close Details</Button>
                                                                 : null
                                                         }
                                                         {
                                                             (this.state.headerTitle == 'User Roles') ?
                                                                 <div>
                                                                     <Input icon='search'
-                                                                           placeholder={'Search ' + this.state.searchChangeValue}
-                                                                           style={{marginRight: '20px'}}
-                                                                           onChange={this.searchClick}/>
+                                                                        placeholder={'Search ' + this.state.searchChangeValue}
+                                                                        style={{ marginRight: '20px' }}
+                                                                        onChange={this.searchClick} />
                                                                     <Dropdown defaultValue={this.searchOptions[0].value}
-                                                                              search selection
-                                                                              options={this.searchOptions}
-                                                                              onChange={this.searchChange}/>
+                                                                        search selection
+                                                                        options={this.searchOptions}
+                                                                        onChange={this.searchChange} />
                                                                 </div>
                                                                 : null
                                                         }
                                                     </div>
-                                                </Grid.Row>
+                                                </Grid.Row> */}
 
 
                                                 <Grid.Row className='site_content_body'>
@@ -1216,45 +1199,17 @@ class SiteFour extends React.Component {
                                                                                                     (this.state.page === 'pg=7') ?
                                                                                                         <SiteFourPageCloudletPool></SiteFourPageCloudletPool> :
                                                                                                         (this.state.page === 'pg=8') ? this.state.autoPolicy === 'Auto Provisioning Policy' ?
-                                                                                                            <AutoProvPolicy
-                                                                                                                childPage={this.showChildPage}></AutoProvPolicy> :
-                                                                                                            <AutoPrivacyPolicy
-                                                                                                                childPage={this.showChildPage}></AutoPrivacyPolicy> :
-                                                                                                            (this.state.page === 'pg=newOrg') ?
-                                                                                                                <SiteFourPageCreateorga></SiteFourPageCreateorga> :
-                                                                                                                (this.state.page === 'pg=createApp') ?
+                                                                                                            <AutoProvPolicy /> :
+                                                                                                            <AutoPrivacyPolicy /> :
+                                                                                                            (this.state.page === 'pg=createApp') ?
+                                                                                                                <SiteFourPageAppReg
+                                                                                                                    editable={false}></SiteFourPageAppReg> :
+                                                                                                                (this.state.page === 'pg=editApp') ?
                                                                                                                     <SiteFourPageAppReg
-                                                                                                                        editable={false}></SiteFourPageAppReg> :
-                                                                                                                    (this.state.page === 'pg=editApp') ?
-                                                                                                                        <SiteFourPageAppReg
-                                                                                                                            editable={true}></SiteFourPageAppReg> :
-                                                                                                                        (this.state.page === 'pg=createAppInst') ?
-                                                                                                                            <SiteFourPageAppInstReg
-                                                                                                                                editable={false}></SiteFourPageAppInstReg> :
-                                                                                                                            (this.state.page === 'pg=createCloudletPool') ?
-                                                                                                                                <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
-                                                                                                                                (this.state.page === 'pg=createPolicy') ?
-                                                                                                                                    <SiteFourAutoProvPolicyReg></SiteFourAutoProvPolicyReg> :
-                                                                                                                                    (this.state.page === 'pg=createPrivacyPolicy') ?
-                                                                                                                                        <AutoPrivacyPolicyReg></AutoPrivacyPolicyReg> :
-                                                                                                                                        (this.state.page === 'pg=updateCloudletPool') ?
-                                                                                                                                            <SiteFourPageCloudletPoolUpdate></SiteFourPageCloudletPoolUpdate> :
-                                                                                                                                            (this.state.page === 'pg=linkOrganize') ?
-                                                                                                                                                <SiteFourPageLinkOrganizeReg></SiteFourPageLinkOrganizeReg> :
-                                                                                                                                                (this.state.page === 'pg=createCloudletPool') ?
-                                                                                                                                                    <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
-                                                                                                                                                    (this.state.page === 'pg=editAppInst') ?
-                                                                                                                                                        <SiteFourPageAppInstReg
-                                                                                                                                                            editable={true}></SiteFourPageAppInstReg> :
-                                                                                                                                                        (this.state.page === 'pg=createClusterInst') ?
-                                                                                                                                                            <SiteFourPageClusterInstReg></SiteFourPageClusterInstReg> :
-                                                                                                                                                            (this.state.page === 'pg=createCloudlet') ?
-                                                                                                                                                                <SiteFourPageCloudletReg></SiteFourPageCloudletReg> :
-                                                                                                                                                                (this.state.page === 'pg=createFlavor') ?
-                                                                                                                                                                    <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
-                                                                                                                                                                    (this.state.page === 'pg=audits') ?
-                                                                                                                                                                        <SiteFourPageAudits></SiteFourPageAudits> :
-                                                                                                                                                                        null
+                                                                                                                        editable={true}></SiteFourPageAppReg> :
+                                                                                                                    (this.state.page === 'pg=audits') ?
+                                                                                                                        <SiteFourPageAudits></SiteFourPageAudits> :
+                                                                                                                        null
                                                             }
                                                         </div>
                                                     </Grid.Column>
@@ -1263,7 +1218,7 @@ class SiteFour extends React.Component {
                                         </Grid.Row>}
                     </Container>
                     <PopLegendViewer data={this.state.detailViewData} dimmer={false} open={this.state.openLegend}
-                                     close={this.closeLegend} siteId={this.props.siteId}></PopLegendViewer>
+                        close={this.closeLegend} siteId={this.props.siteId}></PopLegendViewer>
                     <Motion defaultStyle={defaultMotion} style={this.state.setMotion}>
                         {interpolatingStyle => <div style={interpolatingStyle} id='animationWrapper'></div>}
                     </Motion>
@@ -1381,4 +1336,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(SiteFour)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFour)));

@@ -19,13 +19,22 @@ export const sendWSRequest = async (requestData, callback) => {
     serviceMC.sendWSRequest(requestData, callback)
 }
 
+export const sendMultiRequest = (self, requestInfoList, callback) => {
+    let requestDataList = [];
+    for (let i = 0; i < requestInfoList.length; i++) {
+        let requestInfo = requestInfoList[i];
+        requestInfo.token = getToken();
+        requestDataList.push(requestInfo)
+    }
+    serviceMC.sendMultiRequest(self, requestDataList, callback)
+}
+
 export const showDataFromServer = (self, requestType, filter, callback) => {
     let requestDataList = [];
     for (let i = 0; i < requestType.length; i++) {
         let request = requestType[i](Object.assign({}, filter))
         if (request) {
-            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            request.token = store.userToken;
+            request.token = getToken();
             requestDataList.push(request);
         }
     }

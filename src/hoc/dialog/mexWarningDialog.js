@@ -26,7 +26,7 @@ const MexMessageDialog = (props) => {
             <Dialog open={message.length > 0}>
                 <DialogContent style={{ background: '#616161', width: 500 }}>
                     <Typography style={{ color: '#FFF' }}>
-                        <p>{message}</p>
+                        {message}
                     </Typography>
                 </DialogContent>
                 <DialogActions style={{ background: '#616161' }}>

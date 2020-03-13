@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
-import { keys, showOrganizations, deleteOrganization, additionalDetail } from '../../../services/model/organization';
+import { keys, showOrganizations, deleteOrganization } from '../../../services/model/organization';
 import OrganizationReg from './siteFour_page_createOrga';
 import PopAddUserViewer from '../../../container/popAddUserViewer';
 import * as serverData from '../../../services/model/serverData'

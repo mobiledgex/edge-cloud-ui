@@ -11,6 +11,9 @@ import * as AppInstance from './appInstance';
 import * as OrgCloudlet from './orgCloudlet';
 import * as AutoProvPolicy from './autoProvisioningPolicy';
 import * as PrivacyPolicy from './privacyPolicy';
+import * as CloudletPool from './cloudletPool';
+import * as CloudletPoolMember from './cloudletPoolMember';
+import * as CloudletLinkOrg from './cloudletLinkOrg';
 
 
 export const SHOW_ORG = "showOrg";
@@ -73,7 +76,7 @@ export const SHOW_LOGS = "ShowLogs";
 export const SHOW_CONSOLE = "RunConsole";
 export const SHOW_AUTO_PROV_POLICY = "ShowAutoProvPolicy";
 export const CREATE_AUTO_PROV_POLICY = "CreateAutoProvPolicy";
-export const DELETE_AUTO_PROV_POLICY= "DeleteAutoProvPolicy";
+export const DELETE_AUTO_PROV_POLICY = "DeleteAutoProvPolicy";
 export const ADD_AUTO_PROV_POLICY_CLOUDLET = "AddAutoProvPolicyCloudlet";
 export const REMOVE_AUTO_PROV_POLICY_CLOUDLET = "RemoveAutoProvPolicyCloudlet";
 export const SHOW_PRIVACY_POLICY = "ShowPrivacyPolicy";
@@ -213,6 +216,15 @@ export function formatData(request, response) {
             break;
         case SHOW_PRIVACY_POLICY:
             data = PrivacyPolicy.getData(response, request.data)
+            break;
+        case SHOW_CLOUDLET_POOL:
+            data = CloudletPool.getData(response, request.data)
+            break;
+        case SHOW_CLOUDLET_MEMBER:
+            data = CloudletPoolMember.getData(response, request.data)
+            break;
+        case SHOW_CLOUDLET_LINKORG:
+            data = CloudletLinkOrg.getData(response, request.data)
             break;
         default:
             data = undefined;

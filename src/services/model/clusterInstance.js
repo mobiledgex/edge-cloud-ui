@@ -23,7 +23,7 @@ export const keys = [
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
 
-export const multiDataRequest = (mcRequestList) => {
+export const multiDataRequest = (keys, mcRequestList) => {
     let cloudletDataList = [];
     let clusterDataList = [];
     for (let i = 0; i < mcRequestList.length; i++) {

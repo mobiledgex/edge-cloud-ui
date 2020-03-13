@@ -101,7 +101,6 @@ export function sendWSRequest(request, callback) {
     }
 }
 
-
 export function sendMultiRequest(self, requestDataList, callback) {
     
     if (requestDataList && requestDataList.length > 0) {

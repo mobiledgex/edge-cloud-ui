@@ -35,6 +35,7 @@ export const fields = {
     deployClientCount: 'deployClientCount',
     deployIntervalCount: 'deployIntervalCount',
     cloudlets: 'cloudlets',
+    organizations:'organizations',
     appName: 'appName',
     version: 'version',
     uri: 'uri',
@@ -83,10 +84,12 @@ export const fields = {
     locked: 'locked',
     outboundSecurityRulesCount: 'outboundSecurityRulesCount',
     cloudletCount: 'cloudletCount',
+    organizationCount:'organizationCount',
     fullIsolation: 'fullIsolation',
     cloudletStatus: 'cloudletStatus',
     actions: 'actions',
-    manage: 'manage'
+    manage: 'manage',
+    poolName:'poolName'
 
 }
 
