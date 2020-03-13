@@ -7,7 +7,7 @@ import * as actions from '../../../actions';
 
 import { fields } from '../../../services/model/format';
 import { keys, showApps, deleteApp } from '../../../services/model/app';
-import AppReg from './siteFour_page_appReg';
+import AppReg from './appReg';
 
 class AppList extends React.Component {
     constructor(props) {

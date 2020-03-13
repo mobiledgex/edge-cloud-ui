@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { fields } from '../../../services/model/format';
 import { keys, showFlavors, deleteFlavor } from '../../../services/model/flavor';
-import FlavorReg from './siteFour_page_flavorReg';
+import FlavorReg from './flavorReg';
 
 class FlavorList extends React.Component {
     constructor(props) {

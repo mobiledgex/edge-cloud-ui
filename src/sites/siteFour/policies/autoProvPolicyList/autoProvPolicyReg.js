@@ -2,17 +2,17 @@ import React from 'react';
 import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
 import { Item, Step } from 'semantic-ui-react';
-import MexForms from '../../../hoc/forms/MexForms';
+import MexForms from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../../../actions';
-import * as serviceMC from '../../../services/model/serviceMC';
-import * as serverData from '../../../services/model/serverData';
-import { fields } from '../../../services/model/format';
+import * as actions from '../../../../actions';
+import * as serviceMC from '../../../../services/model/serviceMC';
+import * as serverData from '../../../../services/model/serverData';
+import { fields } from '../../../../services/model/format';
 
-import { showOrganizations } from '../../../services/model/organization';
-import { showCloudlets } from '../../../services/model/cloudlet';
-import { CREATE_AUTO_PROV_POLICY, ADD_AUTO_PROV_POLICY_CLOUDLET, REMOVE_AUTO_PROV_POLICY_CLOUDLET } from '../../../services/model/endPointTypes';
+import { showOrganizations } from '../../../../services/model/organization';
+import { showCloudlets } from '../../../../services/model/cloudlet';
+import { CREATE_AUTO_PROV_POLICY, ADD_AUTO_PROV_POLICY_CLOUDLET, REMOVE_AUTO_PROV_POLICY_CLOUDLET } from '../../../../services/model/endPointTypes';
 
 
 const stepData = [

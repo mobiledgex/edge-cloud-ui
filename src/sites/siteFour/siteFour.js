@@ -36,15 +36,15 @@ import SiteFourPageAppInst from './appInst/appInstList';
 import SiteFourPageClusterInst from './clusterInst/clusterInstList';
 import SiteFourPageCloudlet from './cloudlets/cloudletList';
 import SiteFourPageOrganization from './organization/organizationList';
-import SiteFourPageAppReg from './apps/siteFour_page_appReg';
+import SiteFourPageAppReg from './apps/appReg';
 import SiteFourPageAudits from './audits/siteFour_page_audits';
 import SiteFourPageCloudletPool from './cloudletPool/cloudletPoolList';
+import AutoProvPolicy from './policies/autoProvPolicyList/autoProvPolicyList';
+import AutoPrivacyPolicy from './policies/privacyPolicy/privacyPolicyList';
 import PageMonitoringMain from './monitoring/PageMonitoringMain'
+
 import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
-import RefreshOutlinedIcon from '@material-ui/icons/RefreshOutlined';
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
-import AutoProvPolicy from './policy/autoProvPolicy';
-import AutoPrivacyPolicy from './policy/autoPrivacyPolicy';
 
 
 import PopLegendViewer from '../../container/popLegendViewer';

@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
 import { keys, showOrganizations, deleteOrganization } from '../../../services/model/organization';
-import OrganizationReg from './siteFour_page_createOrga';
+import OrganizationReg from './organizationReg';
 import PopAddUserViewer from '../../../container/popAddUserViewer';
 import * as serverData from '../../../services/model/serverData'
 import * as constant from '../../../services/model/shared';

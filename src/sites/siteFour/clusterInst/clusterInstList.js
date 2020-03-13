@@ -14,7 +14,7 @@ import { showCloudlets } from '../../../services/model/cloudlet';
 //list
 import MexListView from '../../../container/MexListView';
 //reg
-import ClusterInstReg from './siteFour_page_clusterInstReg';
+import ClusterInstReg from './clusterInstReg';
 
 class ClusterInstView extends React.Component {
     constructor(props) {
@@ -74,7 +74,7 @@ class ClusterInstView extends React.Component {
     * Customized data block
     * ** */
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.customizedData()
     }
 

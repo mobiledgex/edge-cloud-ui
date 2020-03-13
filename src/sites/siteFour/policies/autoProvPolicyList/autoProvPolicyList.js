@@ -2,14 +2,14 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 //redux
-import * as actions from '../../../actions';
+import * as actions from '../../../../actions';
 //reg
 import AutoProvPolicyReg from './autoProvPolicyReg'
 //model
-import { fields } from '../../../services/model/format';
-import { keys, showAutoProvPolicies, deleteAutoProvPolicy } from '../../../services/model/autoProvisioningPolicy';
+import { fields } from '../../../../services/model/format';
+import { keys, showAutoProvPolicies, deleteAutoProvPolicy } from '../../../../services/model/autoProvisioningPolicy';
 //list
-import MexListView from '../../../container/MexListView';
+import MexListView from '../../../../container/MexListView';
 
 class AutoProvPolicy extends React.Component {
     constructor(props) {

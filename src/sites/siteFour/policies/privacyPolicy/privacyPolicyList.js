@@ -1,13 +1,13 @@
 import _ from 'lodash'
 import React from 'react';
-import MexListView from '../../../container/MexListView';
+import MexListView from '../../../../container/MexListView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../../../actions';
+import * as actions from '../../../../actions';
 
-import PrivacyPolicyReg from './autoPrivacyPolicyReg'
-import { keys, fields, showPrivacyPolicies, deletePrivacyPolicy } from '../../../services/model/privacyPolicy';
+import PrivacyPolicyReg from './privacyPolicyReg'
+import { keys, fields, showPrivacyPolicies, deletePrivacyPolicy } from '../../../../services/model/privacyPolicy';
 
 class PrivacyPolicy extends React.Component {
     constructor(props) {

@@ -1,16 +1,16 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { Item } from 'semantic-ui-react';
-import MexForms from '../../../hoc/forms/MexForms';
+import MexForms from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../../../actions';
+import * as actions from '../../../../actions';
 import uuid from 'uuid';
-import {fields} from '../../../services/model/format';
+import {fields} from '../../../../services/model/format';
 //model
-import {showOrganizations} from '../../../services/model/organization';
-import {updatePrivacyPolicy, createPrivacyPolicy} from '../../../services/model/privacyPolicy';
-import * as serverData from '../../../services/model/serverData';
+import {showOrganizations} from '../../../../services/model/organization';
+import {updatePrivacyPolicy, createPrivacyPolicy} from '../../../../services/model/privacyPolicy';
+import * as serverData from '../../../../services/model/serverData';
 
 class AutoProvPolicyReg extends React.Component {
     constructor(props) {
