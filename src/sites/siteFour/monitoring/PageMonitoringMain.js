@@ -1,17 +1,15 @@
-import 'react-hot-loader'
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../actions';
-import {hot} from "react-hot-loader/root";
 import './PageMonitoring.css'
 import PageMonitoringForOperator from "./oper/PageOperMonitoring";
 import {Grid} from "semantic-ui-react";
 import PageMonitoringForDeveloper from "./dev/PageDevMonitoring";
 import PageMonitoringForAdmin from "./admin/PageAdminMonitoring";
-import {PageMonitoringProvider} from "./PageMonitoringGlobalStore";
+import {hot} from "react-hot-loader/root";
 
 const mapStateToProps = (state) => {
     return {

@@ -1,3 +1,4 @@
+/*
 import {store} from "react-easy-state";
 import * as React from 'react';
 
@@ -9,7 +10,7 @@ type TypeGlobalStore = {
 }
 
 
-export default class GlobalStore extends React.Component {
+export default class MonitoringGlobalStore extends React.Component {
 
     static state: TypeGlobalStore = store({
         num: 0,
@@ -36,3 +37,4 @@ export default class GlobalStore extends React.Component {
 
 
 };
+*/

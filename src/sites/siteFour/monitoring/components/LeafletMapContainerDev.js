@@ -4,12 +4,9 @@ import "../PageMonitoring.css";
 import 'react-leaflet-fullscreen-control'
 import type {TypeAppInstance} from "../../../../shared/Types";
 import Ripples from "react-ripples";
-import {AccessAlarm, Check, CheckCircleOutlined, CheckOutlined} from '@material-ui/icons';
-import {Circle, Map, Marker, Popup, TileLayer, Tooltip} from "../../../../components/react-leaflet_kj/src/index";
+import {CheckCircleOutlined} from '@material-ui/icons';
+import {Map, Marker, Popup, TileLayer, Tooltip} from "../../../../components/react-leaflet_kj/src/index";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
-import {Icon} from "antd";
-import {showToast} from "../PageMonitoringCommonService";
-
 
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
@@ -107,7 +104,7 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                 if (index === (pAppInstanceListGroupByCloudlet[key].length - 1)) {
                     AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version + " | " + innerItem.Operator
                 } else {
-                    AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version + " | " + innerItem.Operator+ " , "
+                    AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version + " | " + innerItem.Operator + " , "
                 }
 
                 console.log("Operator===>", innerItem.Operator);
@@ -248,7 +245,7 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                                     color='#1cecff' during={500}
                                                     onClick={() => {
 
-                                                        let dataSet = AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version + " | "+ Operator;
+                                                        let dataSet = AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version + " | " + Operator;
 
                                                         console.log("dataSet====>", dataSet)
 
@@ -268,12 +265,28 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                                         {/*todo:HealthCheck value 3 is okay*/}
                                                         {/*todo:HealthCheck value 3 is okay*/}
                                                         {HealthCheck === 3 ?
-                                                            <div style={{marginLeft: 7, marginBottom: 0, height: 15,}}>
-                                                                <CheckCircleOutlined style={{color: 'green', fontSize: 17, marginBottom: 25}}/>
+                                                            <div style={{
+                                                                marginLeft: 7,
+                                                                marginBottom: 0,
+                                                                height: 15,
+                                                            }}>
+                                                                <CheckCircleOutlined style={{
+                                                                    color: 'green',
+                                                                    fontSize: 17,
+                                                                    marginBottom: 25
+                                                                }}/>
                                                             </div>
                                                             :
-                                                            <div style={{marginLeft: 7, marginBottom: 0, height: 15,}}>
-                                                                <CheckCircleOutlined style={{color: 'red', fontSize: 17, marginBottom: 25}}/>
+                                                            <div style={{
+                                                                marginLeft: 7,
+                                                                marginBottom: 0,
+                                                                height: 15,
+                                                            }}>
+                                                                <CheckCircleOutlined style={{
+                                                                    color: 'red',
+                                                                    fontSize: 17,
+                                                                    marginBottom: 25
+                                                                }}/>
                                                             </div>
                                                         }
                                                     </div>
