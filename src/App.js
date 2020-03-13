@@ -12,8 +12,8 @@ import * as actions from './actions';
 import * as serviceMC from './services/serviceMC';
 import {LOCAL_STRAGE_KEY} from './components/utils/Settings'
 //insert pages
-import EntranceGlob from './sites/entranceGlob';
-import SiteTwo from "./sites/siteTwo";
+import EntranceGlob from './sites/siteOne/entranceGlob';
+import './app.css';
 import CreateAccount from './components/login/CreateAccont';
 import history from './history';
 import VerifyContent from './container/verifyContent';
@@ -167,7 +167,6 @@ const DashboardContainer = ( props, props2) => {
                 {props.mainPath === '/logout' && <EntranceGlob params={_params} history={(props2.history)?props2.history:null} />}
                 {props.mainPath === '/' && <EntranceGlob params={_params} history={(props2.history)?props2.history:null} />}
                 {props.mainPath === '/site1' && <EntranceGlob params={_params} history={(props2.history)?props2.history:null}/>}
-                {props.mainPath === '/site2' && <SiteTwo params={_params} history={(props2.history)?props2.history:null}/>}
                 {props.mainPath === '/site4' && <SiteFour params={_params} history={(props2.history)?props2.history:null}/>}
                 {props.mainPath === '/createAccount' && <CreateAccount params={_params} history={(props2.history)?props2.history:null}/>}
                 {props.mainPath === '/passwordreset' && <EntranceGlob params={_params} history={(props2.history)?props2.history:null} reset={true}/>}

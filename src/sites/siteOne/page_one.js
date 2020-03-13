@@ -8,11 +8,11 @@ import React from 'react';
 
 import { withRouter } from 'react-router-dom';
 //
-import Datamap from '../libs/datamaps';
+import Datamap from '../../libs/datamaps';
 
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../actions';
+import * as actions from '../../actions';
 
 //speech
 

@@ -2,13 +2,13 @@ import React, {Component} from 'react';
 import {Grid, Button} from 'semantic-ui-react';
 // import React3DGlobe from '../libs/react3dglobe';
 // import { getMockData } from "../libs/react3dglobe/mockData";
-import Login from '../components/login';
+import Login from '../../components/login';
 // API
-import * as MyAPI from '../components/utils/MyAPI';
-import { LOCAL_STRAGE_KEY } from '../components/utils/Settings';
+import * as MyAPI from '../../components/utils/MyAPI';
+import { LOCAL_STRAGE_KEY } from '../../components/utils/Settings';
 import { connect } from 'react-redux';
-import * as actions from '../actions';
-import HeaderGlobalMini from '../container/headerGlobalMini';
+import * as actions from '../../actions';
+import HeaderGlobalMini from '../../container/headerGlobalMini';
 
 import SiteOne from './siteOne';
 

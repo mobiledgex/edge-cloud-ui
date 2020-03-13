@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid } from 'semantic-ui-react';
-import * as actions from "../actions";
+import * as actions from "../../actions";
 import {connect} from "react-redux";
 
 
