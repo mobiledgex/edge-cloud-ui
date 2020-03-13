@@ -12,7 +12,7 @@ import ClouldletReg from './siteFour_page_cloudletReg';
 import * as constant from '../../../services/model/shared';
 import { Button } from 'semantic-ui-react';
 
-class PrivacyPolicy extends React.Component {
+class CloudletList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -114,7 +114,7 @@ class PrivacyPolicy extends React.Component {
     * Customized data block
     * ** */
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.customizedData()
     }
 
@@ -134,4 +134,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(PrivacyPolicy));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(CloudletList));

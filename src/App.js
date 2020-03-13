@@ -300,7 +300,8 @@ class App extends Component {
             self.props.mapDispatchToLoginWithPassword(storage_json)
         }
     }
-    componentWillReceiveProps(nextProps) {
+    
+    UNSAFE_componentWillReceiveProps(nextProps) {
         // let props = nextProps;
         // if(nextProps.clickTab) {
         //     let params = {params:{page:'pg='+nextProps.clickTab}}

@@ -7,7 +7,7 @@ import { fields } from '../../../services/model/format';
 import { keys, showFlavors, deleteFlavor } from '../../../services/model/flavor';
 import FlavorReg from './siteFour_page_flavorReg';
 
-class PrivacyPolicy extends React.Component {
+class FlavorList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -59,4 +59,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(PrivacyPolicy));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(FlavorList));

@@ -68,7 +68,7 @@ class OrganizationList extends React.Component {
         else {
             let lock = data[fields.locked];
             return (
-                <Icon name={lock === true ? 'lock' : 'lock open'} size={20} style={{ color: lock === true ? '#6a6a6a' : 'rgba(136,221,0,.9)' }} onClick={() => this.onLocking(data)} />
+                <Icon name={lock === true ? 'lock' : 'lock open'} style={{ color: lock === true ? '#6a6a6a' : 'rgba(136,221,0,.9)' }} onClick={() => this.onLocking(data)} />
             )
         }
     }
@@ -111,7 +111,7 @@ class OrganizationList extends React.Component {
         }
         else {
             return (
-                (data[fields.emailVerified] === true) ? <Icon name='check' size={20} style={{ color: 'rgba(136,221,0,.9)' }} />
+                (data[fields.emailVerified] === true) ? <Icon name='check' style={{ color: 'rgba(136,221,0,.9)' }} />
                     :
                     <Button onClick={() => this.sendEmailWarning(data[fields.username], data[fields.email])}>Verify</Button>
             )

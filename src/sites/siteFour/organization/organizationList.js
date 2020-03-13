@@ -73,7 +73,7 @@ class OrganizationList extends React.Component {
 
     getManage = (data) => {
         return (
-            <Button size='mini' compact style={{ width: 100, backgroundColor: localStorage.selectOrg === data[fields.organizationName] ? '#559901' : 'grey', color: 'white' }}>
+            <Button  size={'small'} style={{ width: 100, backgroundColor: localStorage.selectOrg === data[fields.organizationName] ? '#559901' : 'grey', color: 'white' }}>
                 <label>Manage</label>
             </Button>)
     }
@@ -154,7 +154,7 @@ class OrganizationList extends React.Component {
     * Customized data block
     * ** */
 
-    componentWillMount() {
+   UNSAFE_componentWillMount() {
         this.customizedData()
     }
 

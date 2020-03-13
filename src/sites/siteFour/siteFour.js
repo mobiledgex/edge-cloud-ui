@@ -472,7 +472,7 @@ class SiteFour extends React.Component {
     }
 
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         this.setState({
             activeItem: (localStorage.selectMenu) ? localStorage.selectMenu : 'Organizations',
@@ -754,7 +754,7 @@ class SiteFour extends React.Component {
         _self.props.handleChangeRegion(value)
     }
 
-    
+
     disableBtn = () => {
         this.auth_list.map((item, i) => {
             if (item.role == localStorage.selectRole) {
