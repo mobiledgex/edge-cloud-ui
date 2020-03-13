@@ -734,6 +734,16 @@ export const showToast2 = (title: string, time = 2) => {
         color: 'black',
     });
 }
+export const showToast3 = (title: string, time = 2) => {
+    toast({
+        type: 'warning',
+        icon: 'star',
+        title: title,
+        animation: 'swing left',
+        time: time * 1000,
+        color: 'black',
+    });
+}
 
 
 function removeDups(names) {

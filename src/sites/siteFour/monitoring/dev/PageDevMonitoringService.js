@@ -1086,8 +1086,8 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, cont
                     //max: 100,//todo max value
                     fontColor: 'white',
                     callback(value, index, label) {
-                        console.log("yAxes===>", hardwareType);
-                        console.log("yAxes===>", _this.state.currentClassification);
+                        /*console.log("yAxes===>", hardwareType);
+                        console.log("yAxes===>", _this.state.currentClassification);*/
                         return addUnitNameForUsage(value, hardwareType, _this,)
 
                     },

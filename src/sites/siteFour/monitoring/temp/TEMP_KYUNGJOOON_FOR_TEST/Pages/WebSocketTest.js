@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {CircularProgress} from "@material-ui/core";
 import FlexBox from "flexbox-react";
-import * as EP from "../../../../../../services/endPointTypes";
-import {clearSockets, getEP} from "../../../../../../services/serviceMC";
 import uuid from "uuid";
+import {showToast3} from "../../../PageMonitoringCommonService";
+import {SemanticToastContainer} from "react-semantic-toasts";
 
 type Props = {
     history: any,
@@ -33,6 +33,13 @@ export default class WebSocketTest extends React.Component<Props, State> {
         const webSocket = new WebSocket('wss://console-stage.mobiledgex.net:443/ws/api/v1/auth/ctrl/ShowAppInstClient')
 
         webSocket.onopen = () => {
+
+            showToast3('opened!!!!')
+            console.log(' webSocket.onopen')
+
+            console.log("lskflksdflkklsd====");
+            console.log("lskflksdflkklsd====>", 'sdlkflsdkflkdsf');
+
             sockets.push({uuid: uuid.v1(), socket: webSocket, isClosed: false});
             webSocket.send(`{"token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODQwNTg5NjYsImlhdCI6MTU4Mzk3MjU2NiwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.e3fY3ARAU0TyVUekNEyP_sYNPH-6AkvtW64rpjMgXEOhDt0BVs2m7HRgqUlov8EPeM1B5767PoUhm_TC0WLsXQ"}`);
             webSocket.send(JSON.stringify({
@@ -71,6 +78,11 @@ export default class WebSocketTest extends React.Component<Props, State> {
 
         }
 
+        webSocket.onerror = (event) =>{
+            alert(event.toString())
+        }
+
+
     }
 
 
@@ -81,6 +93,7 @@ export default class WebSocketTest extends React.Component<Props, State> {
                 {this.state.loading && <FlexBox style={{justifyContent: 'center'}}>
                     <CircularProgress color={'red'} style={{color: 'red'}}/>
                 </FlexBox>}
+                <SemanticToastContainer className={'warning'} position={"top-left"}/>
                 Streaming Request Example ...
 
                 {/* {this.state.results.map((item, index) => {
