@@ -86,12 +86,6 @@ export function sendWSRequest(request, callback) {
         let data = JSON.parse(evt.data);
         let response = {};
         response.data = data;
-        switch (request.method) {
-            case getEP().DELETE_CLUSTER_INST:
-            case getEP().DELETE_CLOUDLET:
-            case getEP().DELETE_APP_INST:
-                clearSockets(request.uuid);
-        }
         callback({request: request, response: response, socket:ws});
     }
 
@@ -170,16 +164,7 @@ export function sendRequest(self, request, callback) {
         })
 }
 
-export function clearSockets(uuid) {
-    sockets.map(item => {
-        let socket = item.socket;
-        if (uuid === item.uuid && socket.readyState === WebSocket.OPEN) {
-            socket.close();
-            item.isClosed = true;
-        }
-    })
 
-}
 
 
 

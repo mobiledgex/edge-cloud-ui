@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 
 import SiteFourOrgaStepView from '../../../container/siteFourOrgaStepView';
-import '../../siteThree.css';
 import * as serviceMC from '../../../services/serviceMC';
 
 

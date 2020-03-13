@@ -5,7 +5,6 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as serviceMC from '../../../services/serviceMC';
-import '../../siteThree.css';
 import RegistryViewer from "../../../container/registryViewer";
 
 

@@ -4,8 +4,6 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import * as serviceMC from '../../../services/serviceMC';
-import '../../siteThree.css';
 
 import RegistryClusterInstViewer from "../../../container/registryClusterInstViewer";
 
