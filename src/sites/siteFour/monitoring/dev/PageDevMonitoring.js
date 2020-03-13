@@ -1518,6 +1518,39 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </div>
                         }
 
+                        {/*isLoading
+                        toggleLoading*/}
+
+                        {this.props.isLoading &&
+                        <div>
+                            <div style={{marginLeft: 15}}>
+                                <CircularProgress
+                                    style={{
+                                        color: 'green',
+                                        zIndex: 9999999,
+                                        fontSize: 10
+                                    }}
+                                    size={20}
+                                />
+                            </div>
+                        </div>
+                        }
+
+                        <MButton
+                            style={{backgroundColor: '#6c6c6c', color: 'white', height: 37}}
+                            onClick={() => {
+                                this.props.toggleLoading(true);
+                            }}>toggleLoadingtrue
+
+                        </MButton>
+                        <MButton
+                            style={{backgroundColor: '#6c6c6c', color: 'white', height: 37}}
+                            onClick={() => {
+                                this.props.toggleLoading(false);
+                            }}>toggleLoadingFalse
+
+                        </MButton>
+
                     </div>
                 </Grid.Row>
             )
