@@ -255,7 +255,7 @@ const createFormat = (data) => (
                     "organization": data['Operator'] ,
                     "name": data['Cloudlet']
                 },
-                "developer": data['Reservable'] ? data['OrganizationName'] === 'mobiledgex' ? 'MobiledgeX' : data['OrganizationName'] : data['OrganizationName']
+                "organization": data['Reservable'] ? data['OrganizationName'] === 'mobiledgex' ? 'MobiledgeX' : data['OrganizationName'] : data['OrganizationName']
             },
             "deployment": data['DeploymentType'],
             "flavor": { "name": data['Flavor'] },

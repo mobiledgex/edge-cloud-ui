@@ -313,7 +313,7 @@ class RegistryInstViewer extends React.Component {
         let data = JSON.parse(JSON.stringify(submitData));
         data.appinst.key.cluster_inst_key.cloudlet_key.name = itemCloudlet;
         data.appinst.key.cluster_inst_key.cluster_key.name = itemCluster;
-        data.appinst.key.cluster_inst_key.developer = data.appinst.key.app_key.organization;
+        data.appinst.key.cluster_inst_key.organization = data.appinst.key.app_key.organization;
         serviceBody.uuid = serviceMC.generateUniqueId()
         serviceBody.data = data;
         this.props.handleLoadingSpinner(true);

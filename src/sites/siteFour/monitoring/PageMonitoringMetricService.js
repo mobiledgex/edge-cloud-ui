@@ -751,7 +751,7 @@ export const getClusterEventLogList = async (clusterList) => {
                     "organization": "TDG",
                     "name": "hamburg-stage"
                 },
-                "developer": selectOrg
+                "organization": selectOrg
             },
             "last": 10
         },

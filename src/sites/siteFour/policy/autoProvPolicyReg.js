@@ -158,7 +158,7 @@ class AutoProvPolicyReg extends React.Component {
             {
                 let data = mcRequest.request.data;
                 let region = data.Region
-                let organization = data.AutoProvPolicy.key.developer;
+                let organization = data.AutoProvPolicy.key.organization;
                 let autoPolicyName = data.AutoProvPolicy.key.name;
                 this.props.handleAlertInfo('success', `Auto Provisioning Policy ${autoPolicyName} created successfully`)
                 this.selectCloudlet(region, organization, autoPolicyName)

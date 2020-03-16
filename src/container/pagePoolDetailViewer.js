@@ -384,7 +384,7 @@ class PagePoolDetailViewer extends React.Component {
                         "organization": inst.Operator,
                         "name": inst.Cloudlet
                     },
-                    "developer": inst.OrganizationName
+                    "organization": inst.OrganizationName
                 },
                 "selector": valid,
                 "last": 1200

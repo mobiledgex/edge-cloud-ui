@@ -74,12 +74,6 @@ class RegistNewItem extends React.Component {
         _self = this;
     }
 
-    componentDidMount() {
-        // developer(Organization)  
-    }
-    componentDidUpdate() {
-
-    }
     componentWillReceiveProps(nextProps, nextContext) {
         if (nextProps.open) {
             this.setState({ open: nextProps.open, dimmer: nextProps.dimmer });
