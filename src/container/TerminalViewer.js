@@ -74,7 +74,7 @@ class MexTerminal extends Component {
                 {
                     cluster_key: { name: ClusterInst },
                     cloudlet_key: { organization: Operator , name: Cloudlet },
-                    developer: OrganizationName
+                    organization: OrganizationName
                 }
             },
             container_id: data.Container,

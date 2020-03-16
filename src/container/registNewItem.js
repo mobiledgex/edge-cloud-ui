@@ -342,7 +342,7 @@ class RegistNewItem extends React.Component {
                         key: {
                             cluster_key: { name: ClusterName },
                             cloudlet_key: { organization: Operator, name: Cloudlet },
-                            developer: OrganizationName
+                            organization: OrganizationName
                         },
                         flavor: { name: Flavor },
                         ip_access: Number(IpAccess),

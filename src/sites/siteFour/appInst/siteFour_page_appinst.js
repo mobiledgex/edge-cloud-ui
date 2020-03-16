@@ -290,7 +290,7 @@ class SiteFourPageAppInst extends React.Component {
                     {
                         cluster_key: { name: ClusterInst },
                         cloudlet_key: { organization: Operator, name: Cloudlet },
-                        //developer: OrganizationName
+                        //organization: OrganizationName
                     }
                 }
             }

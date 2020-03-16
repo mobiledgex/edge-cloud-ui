@@ -84,7 +84,7 @@ export const deleteAutoProvPolicy = async (self, data) => {
 export const getPrivacyPolicy = async (self, data) => {
     if(getOrganization())
     {
-        data.privacypolicy = {key:{developer:getOrganization()}}
+        data.privacypolicy = {key:{organization:getOrganization()}}
     }
     let mcRequest = await sendSyncRequest(self, EP.SHOW_PRIVACY_POLICY, data)
     return processData(mcRequest)

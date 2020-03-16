@@ -274,7 +274,7 @@ class AutoProvPolicyReg extends React.Component {
                 privacypolicy: {
                     key: {
                         name: data.PrivacyPolicyName,
-                        developer: data.OrganizationName
+                        organization: data.OrganizationName
                     },
                     outbound_security_rules: outbound_security_rules
                 }

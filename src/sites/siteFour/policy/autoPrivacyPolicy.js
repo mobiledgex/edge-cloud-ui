@@ -56,7 +56,7 @@ class SiteFourPageFlavor extends React.Component {
    
     onDelete = async (data) => {
         let privacypolicy = {
-            key: { developer: data.OrganizationName, name: data.PrivacyPolicyName },
+            key: { organization: data.OrganizationName, name: data.PrivacyPolicyName },
             outbound_security_rules : data.OutboundSecurityRules
         }
 

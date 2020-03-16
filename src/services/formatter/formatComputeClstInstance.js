@@ -9,7 +9,7 @@ export const getKey = (data) => {
             key: {
                 cluster_key: { name: ClusterName },
                 cloudlet_key: { organization: Operator, name: Cloudlet },
-                developer: OrganizationName
+                organization: OrganizationName
             },
             flavor: { name: Flavor }
         }
