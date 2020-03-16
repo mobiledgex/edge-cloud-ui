@@ -158,9 +158,7 @@ export const requestShowAppInstClientWS_____TEST = (pCurrentAppInst, _this: Page
                         "cluster_inst_key": {
                             "cloudlet_key": {
                                 "name": "hamburg-stage",
-                                "operator_key": {
-                                    "name": "TDG"
-                                }
+                                "organization": "TDG"
                             },
                             "cluster_key": {
                                 "name": "autoclustermobiledgexsdkdemo"

@@ -1,6 +1,6 @@
 import 'react-hot-loader'
 import React from "react";
-import {Map, Marker, Popup, TileLayer, Tooltip} from "react-leaflet";
+import {Map, Marker, Popup, TileLayer, Tooltip, Polyline} from "../../../../components/react-leaflet_kj/src/index";
 import * as L from 'leaflet';
 import "../PageMonitoring.css";
 import {hot} from "react-hot-loader/root";

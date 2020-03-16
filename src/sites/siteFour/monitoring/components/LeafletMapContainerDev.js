@@ -228,7 +228,6 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                 </div>
                 {/*@todo: LeafletMapWrapperForDev*/}
                 <div className='page_monitoring_container'>
-
                     <div style={{height: '100%', width: '100%', zIndex: 1}}>
                         <Map center={[45.4, 51.7]}
                              duration={0.9}
@@ -249,9 +248,6 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                             />
 
 
-                            {/*@todo:라인을 그리는 부분...*/}
-                            {/*@todo:라인을 그리는 부분...*/}
-                            {/*@todo:라인을 그리는 부분...*/}
 
 
                             {/*@todo:clientList...*/}
@@ -290,6 +286,9 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                             </Tooltip>
                                         </Marker>
 
+                                        {/*@todo:라인을 그리는 부분...*/}
+                                        {/*@todo:라인을 그리는 부분...*/}
+                                        {/*@todo:라인을 그리는 부분...*/}
                                         <Polyline
                                             dashArray={['10, 10']}
                                             id="132512"
