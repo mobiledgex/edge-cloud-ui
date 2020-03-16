@@ -69,7 +69,7 @@ export const getCloudletInfo = async (self, data) => {
 export const getAutoProvPolicy = async (self, data) => {
     if(getOrganization())
     {
-        data.AutoProvPolicy = {key:{developer:getOrganization()}}
+        data.AutoProvPolicy = {key:{organization:getOrganization()}}
     }
     let mcRequest = await sendSyncRequest(self, EP.SHOW_AUTO_PROV_POLICY, data)
     return processData(mcRequest)

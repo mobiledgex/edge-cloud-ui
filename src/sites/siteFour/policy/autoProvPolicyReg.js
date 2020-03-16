@@ -128,15 +128,15 @@ class AutoProvPolicyReg extends React.Component {
 
     addCloudletResponse = (mcRequestList)=>
     {
-        let valid = true;
+        let valid = false;
         if(mcRequestList && mcRequestList.length>0)
         {
             for(let i=0;i<mcRequestList.length;i++)
             {
                 let mcRequest = mcRequestList[i];
-                if(mcRequest.response.status !== 200)
+                if(mcRequest.response.status === 200)
                 {
-                    valid = false;
+                    valid = true;
                 }
             }
         }
@@ -186,7 +186,7 @@ class AutoProvPolicyReg extends React.Component {
         let AutoProvPolicy = {
             deploy_client_count: data.DeployClientCount ? parseInt(data.DeployClientCount) : undefined,
             deploy_interval_count: data.DeployIntervalCount ? parseInt(data.DeployIntervalCount) : undefined, 
-            key:{ developer: data.Organization, name: data.AutoPolicyName }
+            key:{ organization: data.Organization, name: data.AutoPolicyName }
         }
 
         let requestData = {
@@ -223,8 +223,8 @@ class AutoProvPolicyReg extends React.Component {
                 let requestData = {
                     Region: data.Region,
                     AutoProvPolicyCloudlet: {
-                        key: { developer: data.Organization, name: data.AutoPolicyName },
-                        cloudlet_key: { name: cloudlet.CloudletName, operator_key: { name: cloudlet.Operator } }
+                        key: { organization: data.Organization, name: data.AutoPolicyName },
+                        cloudlet_key: { name: cloudlet.CloudletName, organization: cloudlet.Operator}
                     }
                 }
                 requestDataList.push({ token: token, method: method, data: requestData })

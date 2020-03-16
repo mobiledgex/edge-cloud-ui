@@ -236,7 +236,7 @@ class SiteFourPoolStepView extends React.Component {
     }
     createPoolMember= () => {
         /**
-         * '{"cloudletpoolmember":{"cloudlet_key":{"name":"frankfurt-eu","operator_key":{"name":"TDG"}},"pool_key":{"name":"TEST1223"}},"region":"EU"}'
+         * '{"cloudletpoolmember":{"cloudlet_key":{"name":"frankfurt-eu","organization":"TDG"},"pool_key":{"name":"TEST1223"}},"region":"EU"}'
          * @type {{pool: *, cloudlet: *, region: *, operator: *}}
          * @private
          */
@@ -255,9 +255,7 @@ class SiteFourPoolStepView extends React.Component {
                         "cloudletpoolmember":{
                             "cloudlet_key":{
                                 "name":cloudlet.cloudlet,
-                                "operator_key":{
-                                    "name":cloudlet.orgaName
-                                }
+                                "organization":cloudlet.orgaName
                             },
                             "pool_key":{
                                 "name":this.state.formValue.poolName

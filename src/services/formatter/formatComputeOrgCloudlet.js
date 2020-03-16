@@ -7,7 +7,7 @@ export const getKey = (data)=>
         region: Region,
         cloudlet: {
             key: {
-                operator_key: { name: Operator },
+                organization: Operator ,
                 name: CloudletName
             }
         }
@@ -55,7 +55,7 @@ export const formatData  = (datas,body) => {
             } else {
                 let Region = body.region || '-';
                 let CloudletName = dataResult.key.name || '-';
-                let Operator = dataResult.key.operator_key.name || '-';
+                let Operator = dataResult.key.organization || '-';
                 let CloudletLocation = dataResult.location || '-';
                 let Ip_support = dataResult.ip_support || '-';
                 let Num_dynamic_ips = dataResult.num_dynamic_ips || '-';
@@ -70,35 +70,3 @@ export const formatData  = (datas,body) => {
     }
     return values
 }
-
-
-/**
- {
-        "config": {}, 
-        "flavor": {}, 
-        "ip_support": 2, 
-        "key": {
-            "name": "mexplat-stage-hamburg-cloudlet", 
-            "operator_key": {
-                "name": "TDG"
-            }
-        }, 
-        "location": {
-            "latitude": 55, 
-            "longitude": 44, 
-            "timestamp": {}
-        }, 
-        "num_dynamic_ips": 5, 
-        "state": 13, 
-        "status": {}, 
-        "time_limits": {
-            "create_app_inst_timeout": 1800000000000, 
-            "create_cluster_inst_timeout": 1800000000000, 
-            "delete_app_inst_timeout": 1200000000000, 
-            "delete_cluster_inst_timeout": 1200000000000, 
-            "update_app_inst_timeout": 1200000000000, 
-            "update_cluster_inst_timeout": 1200000000000
-        }
-    }
- */
-

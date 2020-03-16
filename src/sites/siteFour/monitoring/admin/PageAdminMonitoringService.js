@@ -1,9 +1,9 @@
 import React from 'react';
 import '../PageMonitoring.css';
-import {APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../../shared/Constants";
+import { APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGION } from "../../../../shared/Constants";
 import Lottie from "react-lottie";
 import BubbleChart from "../../../../components/BubbleChart";
-import {TypeAppInstance} from "../../../../shared/Types";
+import { TypeAppInstance } from "../../../../shared/Types";
 import PageAdminMonitoring from "./PageAdminMonitoring";
 import {
     convertByteToMegaByte,
@@ -14,10 +14,10 @@ import {
     PageMonitoringStyles,
     showToast
 } from "../PageMonitoringCommonService";
-import {TabPanel, Tabs} from "react-tabs";
-import {Table} from "semantic-ui-react";
-import type {TypeAppInstanceUsage2, TypeGridInstanceList} from "../../../../shared/Types";
-import {Progress} from "antd";
+import { TabPanel, Tabs } from "react-tabs";
+import { Table } from "semantic-ui-react";
+import type { TypeAppInstanceUsage2, TypeGridInstanceList } from "../../../../shared/Types";
+import { Progress } from "antd";
 
 export const cutArrayList = (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];
@@ -66,15 +66,15 @@ export const makeFormForAppInstance = (dataOne, valid = "*", token, fetchingData
                     "region": dataOne.Region,
                     "appinst": {
                         "app_key": {
-                            "developer_key": {"name": dataOne.OrganizationName},
+                            "organization": dataOne.OrganizationName,
                             "name": dataOne.AppName.toLowerCase().replace(/\s+/g, ''),
                             "version": dataOne.Version
                         },
                         "cluster_inst_key": {
-                            "cluster_key": {"name": dataOne.ClusterInst},
+                            "cluster_key": { "name": dataOne.ClusterInst },
                             "cloudlet_key": {
                                 "name": dataOne.Cloudlet,
-                                "operator_key": {"name": dataOne.Operator}
+                                "organization": dataOne.Operator
                             }
                         }
                     },
@@ -93,15 +93,15 @@ export const makeFormForAppInstance = (dataOne, valid = "*", token, fetchingData
                     "region": dataOne.Region,
                     "appinst": {
                         "app_key": {
-                            "developer_key": {"name": dataOne.OrganizationName},
+                            "organization": dataOne.OrganizationName,
                             "name": dataOne.AppName.toLowerCase().replace(/\s+/g, ''),
                             "version": dataOne.Version
                         },
                         "cluster_inst_key": {
-                            "cluster_key": {"name": dataOne.ClusterInst},
+                            "cluster_key": { "name": dataOne.ClusterInst },
                             "cloudlet_key": {
                                 "name": dataOne.Cloudlet,
-                                "operator_key": {"name": dataOne.Operator}
+                                "organization": dataOne.Operator
                             }
                         }
                     },
@@ -138,7 +138,7 @@ export const filterInstanceCountOnCloutLetOne = (appInstanceListGroupByCloudlet,
  * @param pTypeValue
  * @returns {*}
  */
-export const filterListBykey = (pFilterKey, pTypeValue, usageList,) => {
+export const filterListBykey = (pFilterKey, pTypeValue, usageList, ) => {
     let filteredUsageList = usageList.filter((item) => {
         if (item.instance[pFilterKey] === pTypeValue) {
             return item;
@@ -147,7 +147,7 @@ export const filterListBykey = (pFilterKey, pTypeValue, usageList,) => {
     return filteredUsageList
 }
 
-export const filterListBykeyForCloudlet = (pFilterKey, selectedCloudletOne, usageList,) => {
+export const filterListBykeyForCloudlet = (pFilterKey, selectedCloudletOne, usageList, ) => {
     let filteredUsageList = usageList.filter((item) => {
         if (item[pFilterKey] === selectedCloudletOne) {
             return item;
@@ -340,14 +340,14 @@ export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
     } else {
 
         let chartDataList = [];
-        chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
+        chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", { role: "style" }, { role: 'annotation' }])
 
         usageList.map((item: TypeAppInstanceUsage2, index) => {
             if (index < 5) {
                 let barDataOne = [item.appName.toString().substring(0, 10),
-                    renderUsageByType2(item, hardwareType),
-                    CHART_COLOR_LIST[index],
-                    renderUsageLabelByType(item, hardwareType)]
+                renderUsageByType2(item, hardwareType),
+                CHART_COLOR_LIST[index],
+                renderUsageLabelByType(item, hardwareType)]
                 chartDataList.push(barDataOne);
             }
         })
@@ -393,8 +393,8 @@ export const makeGridInstanceList = (usageList: any) => {
 export const renderPlaceHolder2 = () => {
     let boxWidth = window.innerWidth * 0.3;
     return (
-        <div style={{width: 350, height: 250, backgroundColor: 'black'}}>
-            <div style={{marginTop: 0}}>
+        <div style={{ width: 350, height: 250, backgroundColor: 'black' }}>
+            <div style={{ marginTop: 0 }}>
                 <Lottie
                     options={{
                         loop: true,
@@ -408,7 +408,7 @@ export const renderPlaceHolder2 = () => {
                     width={150}
                     isStopped={false}
                     isPaused={false}
-                    style={{marginTop: 0,}}
+                    style={{ marginTop: 0, }}
                 />
             </div>
         </div>
@@ -497,7 +497,7 @@ export const renderBubbleChart = (_this: PageAdminMonitoring, hardwareType: stri
 
 
         return (
-            <div style={{display: 'flex', flexDirection: 'row'}}>
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <div style={{
                     //backgroundColor: 'blue',
                     backgroundColor: '#1e2124',
@@ -583,7 +583,7 @@ export const renderBubbleChartForCloudlet = (_this: PageAdminMonitoring, hardwar
 
 
         return (
-            <div style={{display: 'flex', flexDirection: 'row', zIndex: 1}}>
+            <div style={{ display: 'flex', flexDirection: 'row', zIndex: 1 }}>
                 <div style={{
                     //backgroundColor: 'blue',
                     backgroundColor: '#1e2124',
@@ -736,7 +736,7 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
 
 export const makeNetworkBarData = (networkUsageList, hwType) => {
     let chartDataList = [];
-    chartDataList.push(["Element", hwType + " USAGE", {role: "style"}, {role: 'annotation'}])
+    chartDataList.push(["Element", hwType + " USAGE", { role: "style" }, { role: 'annotation' }])
 
     for (let index = 0; index < networkUsageList.length; index++) {
         if (index < 5) {
@@ -887,32 +887,32 @@ export const renderBottomGridArea = (_this) => {
                 </Table.Row>
             </Table.Header>
             <Table.Body className="tbBodyList"
-                        ref={(div) => {
-                            this.messageList = div;
-                        }}
+                ref={(div) => {
+                    this.messageList = div;
+                }}
             >
                 {/*-----------------------*/}
                 {/*todo:ROW HEADER        */}
                 {/*-----------------------*/}
                 {!_this.state.isReady &&
-                <Table.Row className='page_monitoring_popup_table_empty'>
-                    <Table.Cell>
-                        <Lottie
-                            options={{
-                                loop: true,
-                                autoplay: true,
-                                animationData: require('../../../../lotties/loader001'),
-                                rendererSettings: {
-                                    preserveAspectRatio: 'xMidYMid slice'
-                                }
-                            }}
-                            height={240}
-                            width={240}
-                            isStopped={false}
-                            isPaused={false}
-                        />
-                    </Table.Cell>
-                </Table.Row>}
+                    <Table.Row className='page_monitoring_popup_table_empty'>
+                        <Table.Cell>
+                            <Lottie
+                                options={{
+                                    loop: true,
+                                    autoplay: true,
+                                    animationData: require('../../../../lotties/loader001'),
+                                    rendererSettings: {
+                                        preserveAspectRatio: 'xMidYMid slice'
+                                    }
+                                }}
+                                height={240}
+                                width={240}
+                                isStopped={false}
+                                isPaused={false}
+                            />
+                        </Table.Cell>
+                    </Table.Row>}
                 {_this.state.isReady && _this.state.filteredGridInstanceList.map((item: TypeGridInstanceList, index) => {
 
                     return (
@@ -930,9 +930,9 @@ export const renderBottomGridArea = (_this) => {
                                         {item.sumCpuUsage.toFixed(2) + '%'}
                                     </div>
                                     <div>
-                                        <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
-                                                  percent={(item.sumCpuUsage / _this.state.gridInstanceListCpuMax) * 100}
-                                                  strokeColor={'#29a1ff'} status={'normal'}/>
+                                        <Progress style={{ width: '100%' }} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                            percent={(item.sumCpuUsage / _this.state.gridInstanceListCpuMax) * 100}
+                                            strokeColor={'#29a1ff'} status={'normal'} />
                                     </div>
                                 </div>
                             </Table.Cell>
@@ -942,9 +942,9 @@ export const renderBottomGridArea = (_this) => {
                                         {numberWithCommas(item.sumMemUsage) + ' Byte'}
                                     </div>
                                     <div>
-                                        <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
-                                                  percent={(item.sumMemUsage / _this.state.gridInstanceListMemMax) * 100}
-                                                  strokeColor={'#29a1ff'} status={'normal'}/>
+                                        <Progress style={{ width: '100%' }} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                            percent={(item.sumMemUsage / _this.state.gridInstanceListMemMax) * 100}
+                                            strokeColor={'#29a1ff'} status={'normal'} />
                                     </div>
 
                                 </div>
@@ -1117,26 +1117,26 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
                 {/*todo:하단의 dot paging ..*/}
                 {/*todo:#####################..*/}
                 {cloudletListLength > 6 &&
-                <div className='page_monitoring_pager_row'>
-                    {chunkedCloudletListOfColSize.map((item, index) => {
-                        return (
-                            <div
-                                style={{display: 'flex', margin: '0 5px'}}
-                                onClick={() => {
-                                    _this.setState({
-                                        currentSixGridIndex: index,
-                                    })
-                                }}
-                            >
-                                {/*todo:#####################..*/}
-                                {/*todo:선택된 index는 그린Color */}
-                                {/*todo:#####################..*/}
-                                <div className='page_monitoring_pager_btn'
-                                     style={{backgroundColor: _this.state.currentSixGridIndex === index ? 'rgba(136,221,0,.9)' : 'rgba(255,255,255,.5)'}}/>
-                            </div>
-                        )
-                    })}
-                </div>
+                    <div className='page_monitoring_pager_row'>
+                        {chunkedCloudletListOfColSize.map((item, index) => {
+                            return (
+                                <div
+                                    style={{ display: 'flex', margin: '0 5px' }}
+                                    onClick={() => {
+                                        _this.setState({
+                                            currentSixGridIndex: index,
+                                        })
+                                    }}
+                                >
+                                    {/*todo:#####################..*/}
+                                    {/*todo:선택된 index는 그린Color */}
+                                    {/*todo:#####################..*/}
+                                    <div className='page_monitoring_pager_btn'
+                                        style={{ backgroundColor: _this.state.currentSixGridIndex === index ? 'rgba(136,221,0,.9)' : 'rgba(255,255,255,.5)' }} />
+                                </div>
+                            )
+                        })}
+                    </div>
                 }
 
             </Tabs>
