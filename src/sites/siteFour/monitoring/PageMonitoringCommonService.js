@@ -642,28 +642,32 @@ export const numberWithCommas = (x) => {
 
 
 export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
-    return (
-        {
-            "token": token,
-            "params": {
-                "region": dataOne.Region,
-                "clusterinst": {
-                    "cluster_key": {
-                        "name": dataOne.ClusterName
-                    },
-                    "cloudlet_key": {
-                        "organization": dataOne.Operator,
-                        "name": dataOne.Cloudlet
-                    },
-                    "organization": dataOne.OrganizationName,
+
+
+    console.log("makeFormForClusterLevelMatric====>", dataOne);
+
+    let dataForm =  {
+        "token": token,
+        "params": {
+            "region": dataOne.Region,
+            "clusterinst": {
+                "cluster_key": {
+                    "name": dataOne.ClusterName
                 },
-                "last": fetchingDataNo,
-                "selector": "*"
-            }
+                "cloudlet_key": {
+                    "organization": dataOne.Operator,
+                    "name": dataOne.Cloudlet
+                },
+                "organization": dataOne.OrganizationName,
+            },
+            "last": fetchingDataNo,
+            "selector": "*"
         }
+    }
 
+    console.log("dataForm====>", dataForm);
 
-    )
+    return dataForm;
 }
 
 export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {

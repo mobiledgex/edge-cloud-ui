@@ -587,3 +587,26 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODQwNTg5N
 }
 
 ###
+
+POST https://console-stage.mobiledgex.net:443/api/v1/auth/metrics/cluster
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODQ0Mzc5NzUsImlhdCI6MTU4NDM1MTU3NSwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.oxvDOS1v22DNbnkSrXtCdQOtSDmlXV8mc2Y33-33dVVmZXakfWKwxBTPJNXMRtp18OUd9_Yrusb-bYo-lzKqqQ
+
+{
+  "region": "EU",
+  "clusterinst": {
+    "cluster_key": {
+      "name": "venky-test"
+    },
+    "cloudlet_key": {
+      "organization": "TDG",
+      "name": "hamburg-stage"
+    },
+    "organization": "MobiledgeX"
+  },
+  "last": 100,
+  "selector": "*"
+}
+
+###
+

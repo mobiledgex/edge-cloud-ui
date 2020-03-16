@@ -239,6 +239,7 @@ export const getAppInstList = async (pArrayRegion = ['EU', 'US'], type: string =
                 }
             }
 
+
             let responseResult = await axios({
                 url: '/api/v1/auth/ctrl/ShowAppInst',
                 method: 'post',
