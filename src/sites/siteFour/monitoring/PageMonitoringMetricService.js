@@ -1054,39 +1054,8 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster) => 
         })
         return result;
     } catch (e) {
-
+        showToast(e)
     }
-    let result = await axios({
-        url: '/api/v1/auth/events/cluster',
-        method: 'post',
-        data: {
-            "region": "EU",
-            "clusterinst": {
-                "cluster_key": {
-                    "name": "venky-test"
-                },
-                "cloudlet_key": {
-                    "organization": "TDG",
-                    "name": "hamburg-stage"
-                },
-                "organization": selectOrg
-            },
-            "last": 10
-        },
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + store.userToken
-        },
-        timeout: 30 * 1000
-    }).then(async response => {
-        return response.data;
-    }).catch(e => {
-        //throw new Error(e)
-        //showToast(e.toString())
-    })
-    return result;
-}
-
 }
 
 /*export const getAppInstanceAllEventLogList = async (appInstList) => {

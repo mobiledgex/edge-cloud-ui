@@ -443,7 +443,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 clearInterval(this.intervalForAppInst)
 
                 this.setState({dropdownRequestLoading: true})
-              /*  let clusterList = await getClusterList();
+                let clusterList = await getClusterList();
                 let cloudletList = await getCloudletList()
                 let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
                 console.log("appInstanceList===>", appInstanceList);
@@ -451,14 +451,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     this.setState({
                         isNoData: true,
                     })
-                }*/
+                }
 
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
-                let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+                /*let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
                 let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
                 let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
-                console.log('appInstanceList====>', appInstanceList);
+                console.log('appInstanceList====>', appInstanceList);*/
 
                 console.log('clusterUsageList===>', clusterList);
 
@@ -468,7 +468,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 console.log("clusterDropdownList===>", clusterDropdownList);
 
                 //@todo:###############################
-                //@todo: getAllClusterEventLogList
+                //@todo: getAllClusterEventLogList:realdata
                 //@todo:###############################
              /*   let allClusterEventLogList = await getAllClusterEventLogList(clusterList);
                 console.log("allClusterEventLogList===>", allClusterEventLogList);
@@ -478,9 +478,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })*/
 
 
-                //FIXME : FAKEDATA
-                //FIXME : FAKEDATA
-                //FIXME : FAKEDATA
+                //FIXME : FAKEDATA ClusterEventLog
+                //FIXME : FAKEDATA ClusterEventLog
+                //FIXME : FAKEDATA ClusterEventLog
                 await this.setState({
                     allClusterEventLogList: [],
                     filteredClusterEventLogList: []
@@ -488,9 +488,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
                 //@todo:###############################
-                //@todo: getAppInstEventLogs
+                //@todo: getAppInst Event Logs : realdata
                 //@todo:###############################
-             /*   let allAppInstEventLogs = await getAppInstEventLogs();
+               /* let allAppInstEventLogs = await getAppInstEventLogs();
                 await this.setState({
                     allAppInstEventLogs: allAppInstEventLogs.values,
                     filteredAppInstEventLogs: allAppInstEventLogs.values,
@@ -536,17 +536,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 //fixme: real data
                 //fixme: real data
-              /*  try {
+                try {
                     allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
                 } catch (e) {
 
-                }*/
+                }
 
 
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
-                allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
-                console.log('filteredAppInstanceList===>', appInstanceList)
+                /*allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+                console.log('filteredAppInstanceList===>', appInstanceList)*/
 
                 let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
                 await this.setState({
