@@ -419,7 +419,7 @@ class RegistryViewer extends React.Component {
                     // reset submitValues as use the editData and the submitValues
                     newBodyData = createFormat(nextProps.editData);
                     let key = {
-                        "developer_key":{"name":nextProps.editData['OrganizationName']},
+                        "organization":nextProps.editData['OrganizationName'],
                         "name":nextProps.editData['AppName'],
                         "version":nextProps.editData['Version']
                     }
@@ -573,7 +573,7 @@ const createFormat = (data) => (
         "region":data['Region'],
         "app":
             {
-                "key":{"developer_key":{"name":data['OrganizationName']},"name":data['AppName'],"version":data['Version']},
+                "key":{"organization":data['OrganizationName'],"name":data['AppName'],"version":data['Version']},
                 "scale_with_cluster":data['ScaleWithCluster'],
                 "deployment":data['DeploymentType'],
                 "image_type":itData,
@@ -623,9 +623,6 @@ const deleteport = (data) => {
     return portSum;
 }
 
-//'{"region":"US","app":{"key":{"developer_key":{"name":"kgh0505"},"name":"kghtest22","version":"1.0.0"},
-//"image_path":"registry.mobiledgex.net:5000/mobiledgex/simapp",
-//"image_type":1,"access_ports":"udp:12001,tcp:80,http:7777","default_flavor":{"name":"x1.medium"},"cluster":{"name":""},"ipaccess":"IpAccessShared","command":"test","deployment_manifest":"test1111"}}'
 const mapStateToProps = (state) => {
 
 

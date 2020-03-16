@@ -54,7 +54,7 @@ export const formatData = (datas, body) => {
           })
         } else {
           let Region = body.region || body.params.region || '-';
-          let DeveloperName = dataResult.data.key.developer || '-';
+          let DeveloperName = dataResult.data.key.organization || '-';
           let AutoPolicyName = dataResult.data.key.name || '-';
           let DeployClientCount = dataResult.data.deploy_client_count || 0;
           let DeployIntervalCount = dataResult.data.deploy_interval_count || 0;
@@ -67,7 +67,7 @@ export const formatData = (datas, body) => {
             {
                 let data = dataResult.data.cloudlets[i];
                 let CloudletName = data.key.name;
-                let Operator = data.key.operator_key.name;
+                let Operator = data.key.organization;
                 let Location = data.loc;
                 cloudlets.push({ CloudletName: CloudletName, Operator: Operator, Location: Location })
             }

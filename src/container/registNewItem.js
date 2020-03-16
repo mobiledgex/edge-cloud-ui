@@ -11,188 +11,184 @@ class RegistNewItem extends React.Component {
     constructor() {
         super();
         this.state = {
-            dummyData:[],
-            selected:{},
-            open:false,
-            dimmer:'',
-            locationLong:null,
-            locationLat:null,
-            locationLongLat:[],
-            toggle:false,
-            operList:[],
-            cloudletList:[],
-            devOptionsOperator:[],
-            devOptionsDeveloper:[],
-            devOptionsCloudlet:[],
-            devOptionsFour:[],
-            devOptionsFive:[],
-            devOptionsSix:[],
-            devOptionsCF:[],
-            dropdownValueOne:'',
-            dropdownValueTwo:'',
-            dropdownValueThree:'',
-            dropdownValueFour:'',
-            dropdownValueFive:'',
-            dropdownValueSix:'',
-            dropdownValueOrgType:'',
-            dropdownValueOrgRole:'',
-            cloudletResult:null,
-            cloudlets:null,
-            appResult:null,
-            validateError:[],
-            devOptionsOrgType:[
+            dummyData: [],
+            selected: {},
+            open: false,
+            dimmer: '',
+            locationLong: null,
+            locationLat: null,
+            locationLongLat: [],
+            toggle: false,
+            operList: [],
+            cloudletList: [],
+            devOptionsOperator: [],
+            devOptionsDeveloper: [],
+            devOptionsCloudlet: [],
+            devOptionsFour: [],
+            devOptionsFive: [],
+            devOptionsSix: [],
+            devOptionsCF: [],
+            dropdownValueOne: '',
+            dropdownValueTwo: '',
+            dropdownValueThree: '',
+            dropdownValueFour: '',
+            dropdownValueFive: '',
+            dropdownValueSix: '',
+            dropdownValueOrgType: '',
+            dropdownValueOrgRole: '',
+            cloudletResult: null,
+            cloudlets: null,
+            appResult: null,
+            validateError: [],
+            devOptionsOrgType: [
                 {
-                    key:'Developer',
-                    value:'Developer',
-                    text:'Developer',
+                    key: 'Developer',
+                    value: 'Developer',
+                    text: 'Developer',
                 },
                 {
-                    key:'Operator',
-                    value:'Operator',
-                    text:'Operator',
+                    key: 'Operator',
+                    value: 'Operator',
+                    text: 'Operator',
                 }
             ],
-            devOptionsOrgRole:[
+            devOptionsOrgRole: [
                 {
-                    key:'Manager',
-                    value:'Manager',
-                    text:'Manager',
+                    key: 'Manager',
+                    value: 'Manager',
+                    text: 'Manager',
                 },
                 {
-                    key:'Contributor',
-                    value:'Contributor',
-                    text:'Contributor',
+                    key: 'Contributor',
+                    value: 'Contributor',
+                    text: 'Contributor',
                 },
                 {
-                    key:'Viewer',
-                    value:'Viewer',
-                    text:'Viewer',
+                    key: 'Viewer',
+                    value: 'Viewer',
+                    text: 'Viewer',
                 },
             ],
         }
-        
+
         _self = this;
     }
 
-    componentDidMount() {
-        // developer(Organization)  
-    }
-    componentDidUpdate(){
-        
-    }
     componentWillReceiveProps(nextProps, nextContext) {
-        if(nextProps.open) {
-            this.setState({open:nextProps.open, dimmer:nextProps.dimmer});
+        if (nextProps.open) {
+            this.setState({ open: nextProps.open, dimmer: nextProps.dimmer });
         }
-        
-        if(nextProps.submitData.registNewInput) {
-            
+
+        if (nextProps.submitData.registNewInput) {
+
             let cnArr = [];
             let locObj = null;
-            const operValue = (nextProps.submitData.registNewInput.values)?nextProps.submitData.registNewInput.values.Operator:null;
-            if(operValue) {
-                this.state.operList.map((item,i) => {
-                    if(item.Operator === operValue) {
+            const operValue = (nextProps.submitData.registNewInput.values) ? nextProps.submitData.registNewInput.values.Operator : null;
+            if (operValue) {
+                this.state.operList.map((item, i) => {
+                    if (item.Operator === operValue) {
                         cnArr.push(item.CloudletName);
                     }
                 })
 
-                this.setState({cloudletList: cnArr.map((item, i) => (
-                    { key: i, value: item, text: item }
-                ))})
+                this.setState({
+                    cloudletList: cnArr.map((item, i) => (
+                        { key: i, value: item, text: item }
+                    ))
+                })
             }
-            const cloudletValue = (nextProps.submitData.registNewInput.values)?nextProps.submitData.registNewInput.values.Cloudlet:null;
-            if(cloudletValue) {
-                this.state.operList.map((item,i) => {
-                    if(item.CloudletName === cloudletValue) {
+            const cloudletValue = (nextProps.submitData.registNewInput.values) ? nextProps.submitData.registNewInput.values.Cloudlet : null;
+            if (cloudletValue) {
+                this.state.operList.map((item, i) => {
+                    if (item.CloudletName === cloudletValue) {
                         locObj = item.CloudletLocation;
                     }
                 })
-                this.setState({locationLong:locObj.longitude,locationLat:locObj.latitude,locationLongLat:[Number(locObj.longitude),Number(locObj.latitude)]});
+                this.setState({ locationLong: locObj.longitude, locationLat: locObj.latitude, locationLongLat: [Number(locObj.longitude), Number(locObj.latitude)] });
             }
         }
-        if(nextProps.data) {
+        if (nextProps.data) {
             let groupByOper = aggregate.groupBy(nextProps.data, 'CloudletName')
             this.setCloudletList(Object.keys(groupByOper))
         }
-        if(this.state.open && !this.state.toggle){
+        if (this.state.open && !this.state.toggle) {
             let long = (nextProps.locLong.loc) ? nextProps.locLong.loc.props.placeholder : null;
             let lat = (nextProps.locLat.loc) ? nextProps.locLat.loc.props.placeholder : null;
-            if(long && lat) {
-                this.locationValue(long,lat)
+            if (long && lat) {
+                this.locationValue(long, lat)
             }
-            this.setState({toggle:true});
+            this.setState({ toggle: true });
         }
     }
-    handleChangeOne = (e, {value}) => {
+    handleChangeOne = (e, { value }) => {
         this.setState({ dropdownValueOne: value })
         //reset list of sub dropwDown
         this.setCloudletList(value)
     }
-    handleChangeTwo = (e, {value}) => {
+    handleChangeTwo = (e, { value }) => {
         this.setState({ dropdownValueTwo: value })
         this.setAppList(value)
     }
-    handleChangeThree = (e, {value}) => {
+    handleChangeThree = (e, { value }) => {
         this.setState({ dropdownValueThree: value })
     }
-    handleChangeFour = (e, {value}) => {
+    handleChangeFour = (e, { value }) => {
         this.setState({ dropdownValueFour: value })
     }
-    handleChangeFive = (e, {value}) => {
+    handleChangeFive = (e, { value }) => {
         this.setState({ dropdownValueFive: value })
     }
-    handleChangeSix = (e, {value}) => {
+    handleChangeSix = (e, { value }) => {
         this.setState({ dropdownValueSix: value })
     }
-    handleChangeOrgType = (e, {value}) => {
+    handleChangeOrgType = (e, { value }) => {
         this.setState({ dropdownValueOrgType: value })
     }
-    handleChangeOrgRole = (e, {value}) => {
+    handleChangeOrgRole = (e, { value }) => {
         this.setState({ dropdownValueOrgRole: value })
     }
-    handleChangeLong = (e, {value}) => {
-        if(value === '-') {
+    handleChangeLong = (e, { value }) => {
+        if (value === '-') {
             this.setState({ locationLong: value })
             return
         }
         let onlyNum = value;
-        if(onlyNum > 180 || onlyNum < -180) {
-            this.props.handleAlertInfo('error',"-180 ~ 180")
-            e.target.value=null;
+        if (onlyNum > 180 || onlyNum < -180) {
+            this.props.handleAlertInfo('error', "-180 ~ 180")
+            e.target.value = null;
             return
         }
         this.setState({ locationLong: onlyNum })
-        this.locationValue(onlyNum,this.state.locationLat)
+        this.locationValue(onlyNum, this.state.locationLat)
     }
-    handleChangeLat = (e, {value}) => {
-        if(value === '-') {
+    handleChangeLat = (e, { value }) => {
+        if (value === '-') {
             this.setState({ locationLat: value })
             return
         }
         let onlyNum = value;
-        if(onlyNum > 90 || onlyNum < -90) {
-            this.props.handleAlertInfo('error',"-90 ~ 90")
-            e.target.value=null;
+        if (onlyNum > 90 || onlyNum < -90) {
+            this.props.handleAlertInfo('error', "-90 ~ 90")
+            e.target.value = null;
             return
         }
         this.setState({ locationLat: onlyNum })
-        this.locationValue(this.state.locationLong,onlyNum)
+        this.locationValue(this.state.locationLong, onlyNum)
     }
-    locationValue = (long,lat) => {
-        if(long && lat){
-            this.setState({ locationLongLat: [Number(long),Number(lat)] })
+    locationValue = (long, lat) => {
+        if (long && lat) {
+            this.setState({ locationLongLat: [Number(long), Number(lat)] })
         } else {
             this.setState({ locationLongLat: null })
         }
         //this.setState({ locationLongLat: [Number(long),Number(lat)] })
     }
 
-    handleChangeLocate = (e, {value}) => {
+    handleChangeLocate = (e, { value }) => {
 
     }
     resetLoc = () => {
-        this.setState({ locationLat: null,locationLong:null,toggle:false })
+        this.setState({ locationLat: null, locationLong: null, toggle: false })
     }
     /*
     setCloudletList = (operNm) => {
@@ -210,33 +206,33 @@ class RegistNewItem extends React.Component {
         let cl = [];
 
         list.map((item, i) => {
-            if(i === 0) _self.setState({dropdownValueThree: item})
+            if (i === 0) _self.setState({ dropdownValueThree: item })
             cl.push({ key: i, value: item, text: item })
         })
 
-        _self.setState({devOptionsCloudlet: cl})
+        _self.setState({ devOptionsCloudlet: cl })
     }
     setOrgList = (list) => {
         let cl = [];
 
         list.map((item, i) => {
-            if(i === 0) _self.setState({dropdownValueOne: item})
+            if (i === 0) _self.setState({ dropdownValueOne: item })
             cl.push({ key: i, value: item, text: item })
         })
 
-        _self.setState({devOptionsOperator: cl})
+        _self.setState({ devOptionsOperator: cl })
     }
     setAppList = (devNm) => {
         let cl = [];
         let vr = [];
         _self.state.appResult[devNm].map((oper, i) => {
-            if(i === 0) _self.setState({dropdownValueFour: oper.AppName})
+            if (i === 0) _self.setState({ dropdownValueFour: oper.AppName })
             cl.push({ key: i, value: oper.AppName, text: oper.AppName })
             vr.push({ key: i, value: oper.Version, text: oper.Version })
 
         })
 
-        _self.setState({devOptionsFour: cl, devOptionsFive: vr})
+        _self.setState({ devOptionsFour: cl, devOptionsFive: vr })
     }
     //Show Option Operator(19.04.25)
     receiveOper(mcRequest) {
@@ -254,9 +250,9 @@ class RegistNewItem extends React.Component {
                 })
             }
 
-        } 
+        }
     }
-    
+
     //Show Option clusterFlavor(19.04.25)
     receiveCF(mcRequest) {
         if (mcRequest) {
@@ -305,7 +301,7 @@ class RegistNewItem extends React.Component {
         }
     }
     receiveSubmit(mcRequest) {
-        
+
     }
 
     receiveSubmitCloudlet = (mcRequest) => {
@@ -327,8 +323,8 @@ class RegistNewItem extends React.Component {
         //     this.props.handleLoadingSpinner(false);
         // },3000);
         //TODO: 20190410 메뉴 별 구분 필요
-        if(localStorage.selectMenu === 'Cluster Instances'){
-            const {Cloudlet, Flavor, ClusterName, OrganizationName, Operator, Region, IpAccess, Number_of_Master, Number_of_Node} = this.props.submitData.registNewInput.values
+        if (localStorage.selectMenu === 'Cluster Instances') {
+            const { Cloudlet, Flavor, ClusterName, OrganizationName, Operator, Region, IpAccess, Number_of_Master, Number_of_Node } = this.props.submitData.registNewInput.values
             // this.props.handleLoadingSpinner(true);
             serviceBody = {
                 uuid: serviceMC.generateUniqueId(),
@@ -339,8 +335,8 @@ class RegistNewItem extends React.Component {
                     clusterinst: {
                         key: {
                             cluster_key: { name: ClusterName },
-                            cloudlet_key: { operator_key: { name: Operator }, name: Cloudlet },
-                            developer: OrganizationName
+                            cloudlet_key: { organization: Operator, name: Cloudlet },
+                            organization: OrganizationName
                         },
                         flavor: { name: Flavor },
                         ip_access: Number(IpAccess),
@@ -351,26 +347,26 @@ class RegistNewItem extends React.Component {
             }
             this.props.handleLoadingSpinner(true);
             serviceMC.sendWSRequest(serviceBody, this.receiveSubmit)
-        } else if(localStorage.selectMenu === 'Cloudlets') {
-            const cloudlet = ['Region','CloudletName','OperatorName','Latitude','Longitude','Num_dynamic_ips']
+        } else if (localStorage.selectMenu === 'Cloudlets') {
+            const cloudlet = ['Region', 'CloudletName', 'OperatorName', 'Latitude', 'Longitude', 'Num_dynamic_ips']
             let error = [];
             cloudlet.map((item) => {
-                if(!this.props.cloudletValue.values[item]) {
+                if (!this.props.cloudletValue.values[item]) {
                     error.push(item)
                 }
             })
 
-            const {CloudletName, OperatorName, Latitude, Longitude, IpSupport, Num_dynamic_ips, Region} = this.props.submitData.registNewInput.values
-            
+            const { CloudletName, OperatorName, Latitude, Longitude, IpSupport, Num_dynamic_ips, Region } = this.props.submitData.registNewInput.values
+
             serviceBody = {
-                uuid:serviceMC.generateUniqueId(),
+                uuid: serviceMC.generateUniqueId(),
                 method: serviceMC.getEP().CREATE_CLOUDLET,
                 token: store ? store.userToken : 'null',
                 data: {
                     region: Region,
                     cloudlet: {
                         key: {
-                            operator_key: { name: OperatorName },
+                            organization: OperatorName ,
                             name: CloudletName
                         },
                         location: {
@@ -383,56 +379,56 @@ class RegistNewItem extends React.Component {
                     }
                 }
             }
-            if(error.length === 0) {
+            if (error.length === 0) {
                 this.close();
                 this.props.handleLoadingSpinner(true);
                 serviceMC.sendWSRequest(serviceBody, this.receiveSubmitCloudlet)
             }
-            this.setState({validateError:error})
+            this.setState({ validateError: error })
 
         }
         //close
         //this.close();
-        
+
     }
     close = () => {
-        this.setState({ open: false, validateError:[] })
+        this.setState({ open: false, validateError: [] })
         this.props.close()
     }
 
     longLocProps = (refVal) => {
-        if(refVal) this.props.handleMapLong(refVal);
+        if (refVal) this.props.handleMapLong(refVal);
     }
     latLocProps = (refVal) => {
-        if(refVal) this.props.handleMapLat(refVal);
+        if (refVal) this.props.handleMapLat(refVal);
     }
     getOptionData = (region) => {
-        if(localStorage.selectMenu === "Cluster Instances") {
+        if (localStorage.selectMenu === "Cluster Instances") {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             // operator, cloudlet
-            if(localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
-                serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: region } }, _self.receiveOper)
+            if (localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
+                serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: region } }, _self.receiveOper)
             } else {
-                serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: region, org: localStorage.selectOrg } }, _self.receiveOper)
+                serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: region, org: localStorage.selectOrg } }, _self.receiveOper)
             }
-            
+
             // Flavor
-            setTimeout(() => serviceMC.sendRequest(_self,{ token: store.userToken, method: serviceMC.getEP().SHOW_FLAVOR, data: { region: region } }, _self.receiveCF), 500);
+            setTimeout(() => serviceMC.sendRequest(_self, { token: store.userToken, method: serviceMC.getEP().SHOW_FLAVOR, data: { region: region } }, _self.receiveCF), 500);
         }
     }
 
     getOrgData = () => {
-            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            // Organization
-            serviceMC.sendRequest(_self,{token:store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ORG}, this.receiveOrg)
-        
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        // Organization
+        serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ORG }, this.receiveOrg)
+
     }
-    
+
 
     render() {
-        let {data, dimmer, selected} = this.props;
-        const cloudletArr = ['Region','CloudletName','OperatorName','CloudletLocation','Ip_support','Num_dynamic_ips'];
-        let regKeys = (data[0])?data[0]['Edit']:(this.props.siteId==='Cloudlet')?cloudletArr:[];
+        let { data, dimmer, selected } = this.props;
+        const cloudletArr = ['Region', 'CloudletName', 'OperatorName', 'CloudletLocation', 'Ip_support', 'Num_dynamic_ips'];
+        let regKeys = (data[0]) ? data[0]['Edit'] : (this.props.siteId === 'Cloudlet') ? cloudletArr : [];
         let optionArr = [this.state.devOptionsOperator, this.state.devOptionsDeveloper, this.state.devOptionsCloudlet, this.state.devOptionsFour, this.state.devOptionsSix, this.state.devOptionsFive, this.state.devOptionsOrgType, this.state.devOptionsOrgRole, this.state.devOptionsCF]
         let valueArr = [this.state.dropdownValueOne, this.state.dropdownValueTwo, this.state.dropdownValueThree, this.state.dropdownValueFour, this.state.dropdownValueSix, this.state.dropdownValueFive, this.state.handleChangeOrgType, this.state.handleChangeOrgRole, this.state.handleChangeCF]
         let changeArr = [this.handleChangeOne, this.handleChangeTwo, this.handleChangeThree, this.handleChangeFour, this.handleChangeSix, this.handleChangeFive, this.handleChangeOrgType, this.handleChangeOrgRole]
@@ -469,29 +465,29 @@ class RegistNewItem extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    let formCloudlet= state.form.registNewInput
-    ? {
-        values: state.form.registNewInput.values
-    }
-    : {};
+    let formCloudlet = state.form.registNewInput
+        ? {
+            values: state.form.registNewInput.values
+        }
+        : {};
     return {
-        locLong : state.mapCoordinatesLong?state.mapCoordinatesLong:null,
-        locLat : state.mapCoordinatesLat?state.mapCoordinatesLat:null,
-        submitData : state.form?state.form : null,
-        computeItem : state.computeItem?state.computeItem.item:null,
-        selectOrg : state.selectOrg.org?state.selectOrg.org:null,
-        userRole : state.showUserRole?state.showUserRole.role:null,
-        cloudletValue:formCloudlet,
+        locLong: state.mapCoordinatesLong ? state.mapCoordinatesLong : null,
+        locLat: state.mapCoordinatesLat ? state.mapCoordinatesLat : null,
+        submitData: state.form ? state.form : null,
+        computeItem: state.computeItem ? state.computeItem.item : null,
+        selectOrg: state.selectOrg.org ? state.selectOrg.org : null,
+        userRole: state.showUserRole ? state.showUserRole.role : null,
+        cloudletValue: formCloudlet,
         selectOrg: state.selectOrg.org ? state.selectOrg.org['Organization'] : null,
     }
 };
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleMapLong: (data) => { dispatch(actions.mapCoordinatesLong(data))},
-        handleMapLat: (data) => { dispatch(actions.mapCoordinatesLat(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
+        handleMapLong: (data) => { dispatch(actions.mapCoordinatesLong(data)) },
+        handleMapLat: (data) => { dispatch(actions.mapCoordinatesLat(data)) },
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
 
         // handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
     };

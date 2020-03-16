@@ -232,7 +232,7 @@ export const getAppInstList = async (pArrayRegion = ['EU', 'US'], type: string =
                     "appinst": {
                         "key": {
                             "app_key": {
-                                "developer_key": {"name": localStorage.selectOrg},
+                                "organization": localStorage.selectOrg,
                             }
                         }
                     }
@@ -913,9 +913,7 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
             data: {
                 "region": pRegion,
                 "cloudlet": {
-                    "operator_key": {
-                        "name": selectOrg
-                    },
+                    "organization": selectOrg,
                     "name": cloudletSelectedOne
                 },
                 "last": 10
@@ -926,7 +924,6 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
             },
             timeout: 15 * 1000
         }).then(async response => {
-            // "time",                "cloudlet",                "operator",                "event",                "status"
             if (response.data.data["0"].Series !== null) {
                 let values = response.data.data["0"].Series["0"].values
                 return values;
@@ -1059,6 +1056,36 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster) => 
     } catch (e) {
 
     }
+    let result = await axios({
+        url: '/api/v1/auth/events/cluster',
+        method: 'post',
+        data: {
+            "region": "EU",
+            "clusterinst": {
+                "cluster_key": {
+                    "name": "venky-test"
+                },
+                "cloudlet_key": {
+                    "organization": "TDG",
+                    "name": "hamburg-stage"
+                },
+                "organization": selectOrg
+            },
+            "last": 10
+        },
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + store.userToken
+        },
+        timeout: 30 * 1000
+    }).then(async response => {
+        return response.data;
+    }).catch(e => {
+        //throw new Error(e)
+        //showToast(e.toString())
+    })
+    return result;
+}
 
 }
 

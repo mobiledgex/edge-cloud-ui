@@ -70,7 +70,7 @@ class SiteFourPageFlavor extends React.Component {
 
     onDelete = async (data) => {
         let AutoProvPolicy = {
-            key: { developer: data.OrganizationName, name: data.AutoPolicyName }
+            key: { organization: data.OrganizationName, name: data.AutoPolicyName }
         }
 
         let requestData = {

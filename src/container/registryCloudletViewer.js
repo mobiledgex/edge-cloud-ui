@@ -314,7 +314,7 @@ const createFormat = (data,loc) => (
         "region":data['Region'],
         "cloudlet":{
             "key":{
-                "operator_key":{"name":data['OperatorName']},
+                "organization":data['OperatorName'],
                 "name":data['CloudletName']
             },
             "location":{
