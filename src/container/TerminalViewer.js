@@ -1,11 +1,11 @@
 
-import React, { Component} from 'react';
+import React, { Component } from 'react';
 import Terminal from '../hoc/terminal/mexTerminal'
 import * as serviceMC from '../services/serviceMC'
 import stripAnsi from 'strip-ansi'
 import * as actions from "../actions";
-import {withRouter} from "react-router-dom";
-import {connect} from "react-redux";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
 import { Image, Label } from 'semantic-ui-react';
 import * as style from '../hoc/terminal/TerminalStyle';
 import { Paper, Box } from '@material-ui/core';
@@ -26,16 +26,16 @@ class MexTerminal extends Component {
             statusColor: this.props.data.vm ? 'green' : 'red',
             path: '#',
             open: false,
-            forms:[],
+            forms: [],
             cmd: '',
             optionView: true,
-            editable : false,
+            editable: false,
         })
         this.containerIds = [];
         if (props.data.Runtime && props.data.Runtime.container_ids) {
             this.containerIds = props.data.Runtime.container_ids;
         }
-        this.request='Run Command'
+        this.request = 'Run Command'
         this.requestTypes = ['Run Command', 'Show Logs']
         this.success = false;
         this.localConnection = null;
@@ -66,15 +66,15 @@ class MexTerminal extends Component {
             {
                 app_key:
                 {
-                    developer_key: { name: OrganizationName },
+                    organization: OrganizationName,
                     name: AppName,
                     version: Version
                 },
                 cluster_inst_key:
                 {
                     cluster_key: { name: ClusterInst },
-                    cloudlet_key: { operator_key: { name: Operator }, name: Cloudlet },
-                    developer: OrganizationName
+                    cloudlet_key: { organization: Operator , name: Cloudlet },
+                    organization: OrganizationName
                 }
             },
             container_id: data.Container,
@@ -82,21 +82,19 @@ class MexTerminal extends Component {
         }
 
         let method = '';
-        if(data.Request === 'Run Command')
-        {
+        if (data.Request === 'Run Command') {
             method = serviceMC.getEP().RUN_COMMAND;
-            ExecRequest.cmd = {command:data.Command}
+            ExecRequest.cmd = { command: data.Command }
         }
-        else if(data.Request === 'Show Logs')
-        {
+        else if (data.Request === 'Show Logs') {
             method = serviceMC.getEP().SHOW_LOGS;
             let showLogs = data.ShowLogs
             let tail = showLogs.Tail ? parseInt(showLogs.Tail) : undefined
-            ExecRequest.log = showLogs ?  { since: showLogs.Since, tail: tail, timestamps: showLogs.Timestamps, follow: showLogs.Follow } : {} 
+            ExecRequest.log = showLogs ? { since: showLogs.Since, tail: tail, timestamps: showLogs.Timestamps, follow: showLogs.Follow } : {}
         }
         let requestedData = {
             Region: Region,
-            ExecRequest:ExecRequest
+            ExecRequest: ExecRequest
         }
 
         let store = JSON.parse(localStorage.PROJECT_INIT);
@@ -131,11 +129,11 @@ class MexTerminal extends Component {
         if (!this.success) {
             this.success = true;
             this.setState({
-                statusColor:'green',
+                statusColor: 'green',
                 status: 'Connected'
             })
             this.setState({
-                editable:data.Request === 'Run Command' ? true : false
+                editable: data.Request === 'Run Command' ? true : false
             })
         }
         var textDecoder = new TextDecoder("utf-8");
@@ -167,10 +165,10 @@ class MexTerminal extends Component {
 
             this.sendChannel.onclose = () => {
                 this.setState({
-                    editable:false
+                    editable: false
                 })
             }
-            this.sendChannel.onopen = () => {   
+            this.sendChannel.onopen = () => {
             }
 
             this.sendChannel.onmessage = e => { this.onRemoteMessage(e, data) }
@@ -178,10 +176,9 @@ class MexTerminal extends Component {
             this.localConnection.oniceconnectionstatechange = e => {
 
                 let connectionState = this.localConnection.iceConnectionState
-                if(connectionState !== 'connected')
-                {
+                if (connectionState !== 'connected') {
                     this.setState({
-                        statusColor:'orange',
+                        statusColor: 'orange',
                         status: connectionState
                     })
                 }
@@ -207,8 +204,7 @@ class MexTerminal extends Component {
     }
 
 
-    onTerminalClose = ()=>
-    {
+    onTerminalClose = () => {
         this.close()
         if (this.state.optionView && this.props.onClose) {
             this.props.onClose()
@@ -229,9 +225,9 @@ class MexTerminal extends Component {
 
         this.setState({
             optionView: true,
-            history:[],
+            history: [],
             path: '#',
-            statusColor:'red',
+            statusColor: 'red',
             status: 'Not Connected'
         })
     }
@@ -248,12 +244,10 @@ class MexTerminal extends Component {
                 this.close()
             }
             else {
-                if(this.sendChannel && this.sendChannel.readyState === 'open')
-                {
+                if (this.sendChannel && this.sendChannel.readyState === 'open') {
                     this.sendChannel.send(cmd + '\n')
                 }
-                else
-                {
+                else {
                     this.props.handleAlertInfo('error', 'Terminal not connected, please try again')
                     this.close();
                 }
@@ -279,8 +273,7 @@ class MexTerminal extends Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
             if (form.field) {
-                if(form.forms)
-                {
+                if (form.forms) {
                     data[form.uuid] = {};
                     let subForms = form.forms
                     for (let j = 0; j < subForms.length; j++) {
@@ -289,8 +282,7 @@ class MexTerminal extends Component {
                     }
 
                 }
-                else
-                {
+                else {
                     data[form.field] = form.value;
                 }
             }
@@ -300,15 +292,15 @@ class MexTerminal extends Component {
 
     onConnect = () => {
         this.setState({
-            forms : this.getForms()
+            forms: this.getForms()
         })
         let data = this.formattedData()
         this.setState({
-            statusColor:'orange',
+            statusColor: 'orange',
             status: "connecting",
             optionView: false
         })
-        this.openTerminal(data) 
+        this.openTerminal(data)
     }
 
     getOptions = (dataList) => {
@@ -317,12 +309,12 @@ class MexTerminal extends Component {
         })
     }
 
-    getLogOptions = ()=>(
+    getLogOptions = () => (
         [
-            { field: 'Since', label: 'Since', type: 'Input', visible: true,labelStyle: style.label, style: style.logs },
-            { field: 'Tail', label: 'Tail', type: 'Input', rules: {type: 'number' }, visible: true,labelStyle: style.label, style: style.logs },
-            { field: 'Timestamps', label: 'Timestamps', type: 'Checkbox', visible: true,labelStyle: style.label, style: {color:'green'}  },
-            { field: 'Follow', label: 'Follow', type: 'Checkbox', visible: true,labelStyle: style.label, style: {color:'green'} }
+            { field: 'Since', label: 'Since', type: 'Input', visible: true, labelStyle: style.label, style: style.logs },
+            { field: 'Tail', label: 'Tail', type: 'Input', rules: { type: 'number' }, visible: true, labelStyle: style.label, style: style.logs },
+            { field: 'Timestamps', label: 'Timestamps', type: 'Checkbox', visible: true, labelStyle: style.label, style: { color: 'green' } },
+            { field: 'Follow', label: 'Follow', type: 'Checkbox', visible: true, labelStyle: style.label, style: { color: 'green' } }
         ]
     )
 
@@ -330,15 +322,15 @@ class MexTerminal extends Component {
         [
             { field: 'Request', label: 'Request', type: 'Select', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions(this.requestTypes), value: this.request },
             { field: 'Container', label: 'Container', type: 'Select', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions(this.containerIds), value: this.containerIds[0] },
-            { field: 'Command', label: 'Command', type: 'Input', rules: { required: true }, visible: this.request==='Run Command' ? true:false, labelStyle: style.label, style: style.cmdLine },
-            { uuid:'ShowLogs', field: 'LogOptions', type:'MultiForm', visible: this.request==='Show Logs' ? true:false, forms:this.getLogOptions(),width:4 },
+            { field: 'Command', label: 'Command', type: 'Input', rules: { required: true }, visible: this.request === 'Run Command' ? true : false, labelStyle: style.label, style: style.cmdLine },
+            { uuid: 'ShowLogs', field: 'LogOptions', type: 'MultiForm', visible: this.request === 'Show Logs' ? true : false, forms: this.getLogOptions(), width: 4 },
             { label: 'Connect', type: 'Button', style: style.button, onClick: this.onConnect, validate: true }
         ])
 
     onValueChange = (currentForm) => {
         let forms = this.state.forms;
         if (currentForm.field === 'Request') {
-            this.request=currentForm.value
+            this.request = currentForm.value
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i];
                 if (form.field === 'Command') {
@@ -359,30 +351,29 @@ class MexTerminal extends Component {
         })
     }
 
-    loadVMPage = () =>
-    {
+    loadVMPage = () => {
         return <iframe ref={this.vmPage} src={this.props.data.vm.url} style={{ width: '100%', height: '100%' }}></iframe>
     }
 
     render() {
         return (
-            
-                <div style={{ backgroundColor: 'black', height: '100%' }}>
-                    <Box display="flex" p={1}>
-                        <Box p={1} flexGrow={1}>
-                            <Image wrapped size='small' src='/assets/brand/logo_mex.svg' />
-                        </Box>
-                        <Box p={1} alignSelf="flex-center">
-                            <Label color={this.state.statusColor} style={{ color: 'white', fontFamily: 'Inconsolata, monospace', marginRight: 10 }}>{this.state.status}</Label>
-                        </Box>
-                        <Box p={1}>
-                            <div onClick={() => { this.onTerminalClose() }} style={{ cursor: 'pointer' }}>
-                                <Label color='grey' style={{ color: 'white', fontFamily: 'Inconsolata, monospace', marginRight: 10 }}>{this.state.optionView ? 'CLOSE' : 'BACK'}</Label>
-                            </div>
-                        </Box>
-                    </Box>
 
-                    {
+            <div style={{ backgroundColor: 'black', height: '100%' }}>
+                <Box display="flex" p={1}>
+                    <Box p={1} flexGrow={1}>
+                        <Image wrapped size='small' src='/assets/brand/logo_mex.svg' />
+                    </Box>
+                    <Box p={1} alignSelf="flex-center">
+                        <Label color={this.state.statusColor} style={{ color: 'white', fontFamily: 'Inconsolata, monospace', marginRight: 10 }}>{this.state.status}</Label>
+                    </Box>
+                    <Box p={1}>
+                        <div onClick={() => { this.onTerminalClose() }} style={{ cursor: 'pointer' }}>
+                            <Label color='grey' style={{ color: 'white', fontFamily: 'Inconsolata, monospace', marginRight: 10 }}>{this.state.optionView ? 'CLOSE' : 'BACK'}</Label>
+                        </div>
+                    </Box>
+                </Box>
+
+                {
                     this.props.data.vm ?
                         this.loadVMPage()
                         :
@@ -400,16 +391,15 @@ class MexTerminal extends Component {
                                     <Terminal editable={this.state.editable} open={this.state.open} close={this.close} path={this.state.path} onEnter={this.onEnter} history={this.state.history} />
                                 </div> : null
                 }
-                    </div>)
+            </div>)
     }
 
-    componentDidMount(){
-        if(this.vmPage && this.vmPage.current)
-        {
+    componentDidMount() {
+        if (this.vmPage && this.vmPage.current) {
             this.vmPage.current.focus()
         }
         this.setState({
-            forms : this.getForms()
+            forms: this.getForms()
         })
     }
 
@@ -422,11 +412,11 @@ class MexTerminal extends Component {
 
 
 const mapStateToProps = (state) => {
-    
+
 };
 const mapDispatchProps = (dispatch) => {
     return {
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
     };
 };
 

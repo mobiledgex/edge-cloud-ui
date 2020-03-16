@@ -6,7 +6,7 @@ export const getKey = (data) => {
         region: Region,
         cloudlet: {
             key: {
-                operator_key: { name: Operator },
+                organization: Operator ,
                 name: CloudletName
             }
         }

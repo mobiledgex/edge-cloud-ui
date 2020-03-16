@@ -268,12 +268,12 @@ const createFormat = (data) => (
         "region":data['Region'],
         "appinst":{
             "key":{
-                "app_key":{"developer_key":{"name":data['DeveloperName']},"name":data['AppName'],"version":data['Version']},
-                "cloudlet_key":{"operator_key":{"name":data['Operator']},"name":data['Cloudlet']}
+                "app_key":{"organization":data['DeveloperName'],"name":data['AppName'],"version":data['Version']},
+                "cloudlet_key":{"organization":data['Operator'],"name":data['Cloudlet']}
             },
             "cluster_inst_key":{
                 "cluster_key":{"name":data['ClusterInst']},
-                "cloudlet_key":{"operator_key":{"name":data['Operator']},"name":data['Cloudlet']}
+                "cloudlet_key":{"organization":data['Operator'],"name":data['Cloudlet']}
             }
         }
     }
