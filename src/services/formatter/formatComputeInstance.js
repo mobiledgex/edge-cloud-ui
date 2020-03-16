@@ -50,7 +50,6 @@ export const formatData = (datas, body) => {
     ];
     if (toJson && toJson.length) {
       toJson.map((dataResult, i) => {
-
                 if (dataResult.error || dataResult.message || !dataResult.data) {
                     values.push({
                         Region: '',
@@ -78,10 +77,10 @@ export const formatData = (datas, body) => {
                 } else {
                     let Index = i;
                     let Region = body.region || body.params.region || '-';
-                    let DeveloperName = dataResult.data.key.app_key.developer_key.name || '-';
+                    let DeveloperName = dataResult.data.key.app_key.organization || '-';
                     let AppName = dataResult.data.key.app_key.name || '-';
                     let Version = dataResult.data.key.app_key.version || '-';
-                    let Operator = dataResult.data.key.cluster_inst_key.cloudlet_key.operator_key.name || '-';
+                    let Operator = dataResult.data.key.cluster_inst_key.cloudlet_key.organization || '-';
                     let Cloudlet = dataResult.data.key.cluster_inst_key.cloudlet_key.name || '-';
                     let CloudletLocation = dataResult.data.cloudlet_loc || '-';
                     let ClusterInst = dataResult.data.key.cluster_inst_key.cluster_key.name || '-';
