@@ -352,7 +352,7 @@ const createFormat = (data,loc) => (
         "region":data['Region'],
         "cloudlet":{
             "key":{
-                "operator_key":{"name":data['OperatorName']},
+                "organization":data['OperatorName'],
                 "name":data['CloudletName']
             },
             "location":{
@@ -461,4 +461,3 @@ const mapDispatchProps = (dispatch) => {
 
 export default withRouter(connect(mapStateToProps, mapDispatchProps)(RegistryLinkOrganizeViewer));
 
-//http --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/ctrl/CreateCloudletPoolMember <<< '{"region":"US", "cloudlet_key":{"name":"frankfurt-eu","operator_key":{"name":"TDG"}},"pool":{"name": "TEST123"}}'

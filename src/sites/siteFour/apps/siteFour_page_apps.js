@@ -73,7 +73,7 @@ class SiteFourPageApps extends React.Component {
         this.setState({ bodyHeight: (window.innerHeight - this.headerH) })
         this.setState({ contHeight: (window.innerHeight - this.headerH) / 2 - this.hgap })
     }
-   
+
     componentWillUnmount() {
         this.setState({ devData: [] })
     }
@@ -137,7 +137,7 @@ class SiteFourPageApps extends React.Component {
     }
 
     getDataDeveloper = (token, region, regionArr) => {
-        this.setState({ devData: [] }) 
+        this.setState({ devData: [] })
         this.requestCount = 0;
         this.multiRequestData = [];
 
@@ -159,7 +159,7 @@ class SiteFourPageApps extends React.Component {
                         "region": item,
                         "app": {
                             "key": {
-                                "developer_key": { "name": localStorage.selectOrg },
+                                "organization": localStorage.selectOrg,
                             }
                         }
                     }
@@ -182,7 +182,7 @@ class SiteFourPageApps extends React.Component {
                 <InsideListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'App'} randomId={randomId} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></InsideListView>
                 :
                 <PageDetailViewer className="ttt" data={detailData} page='App' />
-                //<ListDetailViewer data={detailData} dimmer={false} open={this.state.openDetail} siteId={'App'} close={this.closeDetail} siteId={this.props.siteId}></ListDetailViewer>
+            //<ListDetailViewer data={detailData} dimmer={false} open={this.state.openDetail} siteId={'App'} close={this.closeDetail} siteId={this.props.siteId}></ListDetailViewer>
         );
     }
 

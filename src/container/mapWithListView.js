@@ -67,7 +67,7 @@ class MapWithListView extends React.Component {
             changeRegion: null,
             viewMode: null,
             _resetMap: null,
-            anchorEl : null,
+            anchorEl: null,
             steps: [],
             stepsArray: [],
             uuid: 0
@@ -293,7 +293,7 @@ class MapWithListView extends React.Component {
     requestResponse = (mcRequest) => {
         let request = mcRequest.request;
         let responseData = null;
-        let stepsArray =this.state.stepsArray;
+        let stepsArray = this.state.stepsArray;
         if (stepsArray && stepsArray.length > 0) {
             stepsArray.map((item, i) => {
                 if (request.uuid === item.uuid) {
@@ -329,7 +329,7 @@ class MapWithListView extends React.Component {
                         item.steps.push(step)
                     }
                 })
-               
+
             }
         }
 
@@ -470,13 +470,11 @@ class MapWithListView extends React.Component {
     }
 
     onActionClose = (action) => {
-        if(action.label === 'Delete')
-        {
+        if (action.label === 'Delete') {
             this.setState({ openDelete: true })
         }
-        else if(action.label === 'Terminal')
-        {
-            this.props.onTerminal(this.state.selected)  
+        else if (action.label === 'Terminal') {
+            this.props.onTerminal(this.state.selected)
         }
         this.setState({
             anchorEl: null
@@ -486,13 +484,13 @@ class MapWithListView extends React.Component {
     showAction = (item, field) => {
         return (
             String(item[field]) === 'null' ? '' :
-                <IconButton aria-label="Action" onClick={e => this.setState({ anchorEl: e.currentTarget, selected: item  })}>
+                <IconButton aria-label="Action" onClick={e => this.setState({ anchorEl: e.currentTarget, selected: item })}>
                     <ListIcon style={{ color: '#76ff03' }} />
                 </IconButton>
         )
     }
 
-   
+
 
     getCloudletInfoState = (id) => {
 
@@ -537,7 +535,7 @@ class MapWithListView extends React.Component {
         return (
             field === 'Progress' ?
                 this.onProgressClick(item, this.props.siteId, '', item['State']) :
-                field === 'Actions'?
+                field === 'Actions' ?
                     null :
                     this.detailView(item)
         )
@@ -564,21 +562,21 @@ class MapWithListView extends React.Component {
                 let field = header.field;
                 return <Table.Cell key={j} textAlign='center' ref={cell => this.tableCell = cell} onClick={() => this.getCellClick(field, item)} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
                     {
-                            field === 'Actions' ?
-                                this.showAction(item, field) :
-                                field === 'Progress' ?
-                                    this.showProgress(item) :
-                                    (field === 'State' && item[field]) ?
-                                        this.getStateStatus(item[field]) :
-                                        (field === 'CloudletLocation' && item[field]) ?
-                                            item[field].latitude && item[field].longitude ? <div> {`Latitude : ${item[field].latitude}`} <br /> {`Longitude : ${item[field].longitude}`} </div> : '' :
-                                            (field === 'CloudletInfoState' && item[field]) ?
-                                                this.getCloudletInfoState(item[field]) :
-                                                (field === 'IpAccess' && item[field]) ?
-                                                    this.getIPAccessState(item[field]) :
-                                                    <div style={{ display: 'flex', alignContent: 'Column', justifyContent: 'center', alignItems: 'center', wordBreak: 'break-all' }}>
-                                                        <div>{String(item[field])}</div>{(this.compareDate(item['Created']).new && field === 'Region') ? <div className="userNewMark" style={{ marginLeft: 5, fontSize: 10, padding: '0 5px' }}>{`New`}</div> : null}
-                                                    </div>
+                        field === 'Actions' ?
+                            this.showAction(item, field) :
+                            field === 'Progress' ?
+                                this.showProgress(item) :
+                                (field === 'State' && item[field]) ?
+                                    this.getStateStatus(item[field]) :
+                                    (field === 'CloudletLocation' && item[field]) ?
+                                        item[field].latitude && item[field].longitude ? <div> {`Latitude : ${item[field].latitude}`} <br /> {`Longitude : ${item[field].longitude}`} </div> : '' :
+                                        (field === 'CloudletInfoState' && item[field]) ?
+                                            this.getCloudletInfoState(item[field]) :
+                                            (field === 'IpAccess' && item[field]) ?
+                                                this.getIPAccessState(item[field]) :
+                                                <div style={{ display: 'flex', alignContent: 'Column', justifyContent: 'center', alignItems: 'center', wordBreak: 'break-all' }}>
+                                                    <div>{String(item[field])}</div>{(this.compareDate(item['Created']).new && field === 'Region') ? <div className="userNewMark" style={{ marginLeft: 5, fontSize: 10, padding: '0 5px' }}>{`New`}</div> : null}
+                                                </div>
                     }</Table.Cell>
             }
         })
@@ -716,12 +714,12 @@ class MapWithListView extends React.Component {
                     {
                         app_key:
                         {
-                            developer_key: { name: item.OrganizationName }, name: item.AppName, version: item.Version
+                            organization: item.OrganizationName, name: item.AppName, version: item.Version
                         },
                         cluster_inst_key:
                         {
                             cluster_key: { name: item.ClusterInst },
-                            cloudlet_key: { operator_key: { name: item.Operator }, name: item.Cloudlet }
+                            cloudlet_key: { organization: item.Operator, name: item.Cloudlet }
                         }
                     }
                 }
@@ -733,7 +731,7 @@ class MapWithListView extends React.Component {
         if (action && action.label === 'Terminal') {
             visible = this.state.selected.Runtime.container_ids || this.state.selected.DeploymentType === 'vm'
         } else {
-            if(!action) visible = false;
+            if (!action) visible = false;
         }
         return visible
     }
@@ -770,14 +768,14 @@ class MapWithListView extends React.Component {
                                     {...TransitionProps}
                                     style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center right' }}
                                 >
-                                    <Paper style={{ backgroundColor: '#212121', color: 'white'}}>
+                                    <Paper style={{ backgroundColor: '#212121', color: 'white' }}>
                                         <ClickAwayListener onClickAway={this.onActionClose}>
                                             <MenuList autoFocusItem={Boolean(this.state.anchorEl)} id="menu-list-grow" >
                                                 {this.props.actionMenu.map((action, i) => {
-                                                    return this.showMenu(action) ? 
-                                                        <MenuItem  key={i} onClick={(e) => { this.onActionClose(action) }}>
+                                                    return this.showMenu(action) ?
+                                                        <MenuItem key={i} onClick={(e) => { this.onActionClose(action) }}>
                                                             {/* <MaterialIcon color='white' icon={action.icon}/> */}
-                                                            <label>{action.label}</label> 
+                                                            <label>{action.label}</label>
                                                         </MenuItem> : null
                                                 })}
                                             </MenuList>

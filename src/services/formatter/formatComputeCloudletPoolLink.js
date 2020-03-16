@@ -7,7 +7,7 @@ export const getKey = (data)=>
         region: Region,
         cloudlet: {
             key: {
-                operator_key: { name: Operator },
+                organization: Operator ,
                 name: CloudletName
             }
         }
@@ -36,8 +36,7 @@ export const formatData = (datas,body) => {
     /*
     pool_key: {name: "cloudletPool_bictest_1223-01"}
     cloudlet_key:
-        operator_key:
-        name: "TDG"
+        organization:"TDG"
     name: "automationBerlinCloudletStage"
      */
     let newRegistKey = ['Region', 'PoolName', 'OperatorName'];
@@ -52,7 +51,7 @@ export const formatData = (datas,body) => {
                 })
             } else {
                 let Index = i;
-                let Operator = dataResult.data.cloudlet_key.operator_key.name || '-';
+                let Operator = dataResult.data.cloudlet_key.organization || '-';
                 let PoolName = dataResult.data.pool_key.name || '-';
                 let Cloudlet = dataResult.data.cloudlet_key.name || '-';
                 let Region = body.region || '-';

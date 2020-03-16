@@ -51,7 +51,7 @@ export const formatData = (datas, body) => {
           })
         } else {
           let Region = body.region || body.params.region || '-';
-          let DeveloperName = dataResult.data.key.developer || '-';
+          let DeveloperName = dataResult.data.key.organization || '-';
           let PrivacyPolicyName = dataResult.data.key.name || '-';
           let OutboundSecurityRules = [];
 

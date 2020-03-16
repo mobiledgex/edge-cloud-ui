@@ -42,7 +42,7 @@ export const formatData = (datas,body) => {
                 })
             } else {
                 let Index = i;
-                let Cloudletpool = dataResult.data.cloudlet_key.operator_key.name || '-';
+                let Cloudletpool = dataResult.data.cloudlet_key.organization || '-';
                 let Org = dataResult.data.pool_key.name || '-';
                 let Region = body.region || '-';
 

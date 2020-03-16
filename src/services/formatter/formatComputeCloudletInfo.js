@@ -6,7 +6,7 @@ export const getKey = (data) => {
         region: Region,
         cloudlet: {
             key: {
-                operator_key: { name: Operator },
+                organization: Operator ,
                 name: CloudletName
             }
         }
@@ -52,7 +52,7 @@ export const formatData = (datas, body) => {
                 } else {
                     let Region = body.region || '-';
                     let CloudletName = dataResult.data.key.name || '-';
-                    let Operator = dataResult.data.key.operator_key.name || '-';
+                    let Operator = dataResult.data.key.organization || '-';
                     let State = dataResult.data.state || '-';
                     let NotifyId = dataResult.data.notify_id || '-';
                     let Controller = dataResult.data.controller || '-';

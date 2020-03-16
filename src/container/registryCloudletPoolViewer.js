@@ -410,13 +410,8 @@ const createFormat = (data,loc) => (
         "cloudletpool":{"key": {"name":data['poolName']}}
     }
 )
-//http --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/ctrl/CreateCloudletPoolMember <<< '{"cloudletpoolmember":{"cloudlet_key":{"name":"frankfurt-eu","operator_key":{"name":"TDG"}},"pool_key":{"name":"TEST1223"}},"region":"EU"}'
 const createFormatMember = (data,loc) => (
-    // {
-    //     "region":data['Region'],
-    //     "cloudletpool":{"key": {"name":data['poolName']}}
-    // }
-    {"cloudletpoolmember":{"cloudlet_key":{"name":"frankfurt-eu","operator_key":{"name":"TDG"}},"pool_key":{"name":"TEST1223"}},"region":"EU"}
+    {"cloudletpoolmember":{"cloudlet_key":{"name":"frankfurt-eu","organization":"TDG"},"pool_key":{"name":"TEST1223"}},"region":"EU"}
 )
 const mapStateToProps = (state) => {
     let account = state.registryAccount.account;
