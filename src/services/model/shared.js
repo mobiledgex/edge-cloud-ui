@@ -37,6 +37,7 @@ export const additionalDetail = (data) => {
             </div> : null)
 }
 
+
 export const getIPAccess = (data) => {
     let id = data[fields.ipAccess]
     switch (id) {

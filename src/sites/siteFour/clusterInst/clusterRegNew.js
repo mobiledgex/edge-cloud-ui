@@ -1,19 +1,23 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { Item, Grid } from 'semantic-ui-react';
+import { Grid } from 'semantic-ui-react';
 //Mex
 import MexForms from '../../../hoc/forms/MexForms';
 import MexTab from '../../../hoc/forms/MexTab';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
+import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 //model
 import * as serverData from '../../../services/model/serverData';
 import { formKeys } from '../../../services/model/clusterInstance';
 import { showOrganizations } from '../../../services/model/organization';
+import { showCloudlets } from '../../../services/model/cloudlet';
+import { showFlavors } from '../../../services/model/flavor';
+import { showPrivacyPolicies } from '../../../services/model/privacyPolicy';
 //Map
-import ClustersMap from '../../../libs/simpleMaps/with-react-motion/index_clusters';
+import Map from '../../../libs/simpleMaps/with-react-motion/index_clusters_new';
 
 class ClusterInstReg extends React.Component {
     constructor(props) {
@@ -25,12 +29,12 @@ class ClusterInstReg extends React.Component {
         }
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
         this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
+        //To avoid refecthing data from server
+        this.requestedRegionList = [];
         this.organizationList = []
         this.cloudletList = []
-    }
-
-    onValueChange = (form) => {
-
+        this.flavorList = []
+        this.privacyPolicyList = []
     }
 
     getOptions = (dataList, form) => {
@@ -47,6 +51,155 @@ class ClusterInstReg extends React.Component {
             })
         }
     }
+
+    getSelectData = (currentForm, dataList, dataType) => {
+        if (dataList && dataList.length > 0) {
+            let filteredList = []
+            for (let i = 0; i < dataList.length; i++) {
+                let data = dataList[i];
+                if (data[currentForm.field] === currentForm.value) {
+                    filteredList.push(data[dataType])
+                }
+            }
+            filteredList = [...new Set(filteredList)];
+            return this.getOptions(filteredList);
+        }
+    }
+
+    deploymentValueChange = (currentForm, forms) => {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i];
+            if (form.field === fields.numberOfMasters || form.field === fields.numberOfNodes) {
+                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_DOCKER ? false : true
+            }
+        }
+
+        this.setState({
+            forms: forms
+        })
+    }
+
+    IPAccessValueChange = (currentForm, forms) => {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i];
+            if (form.field === fields.privacyPolicyName) {
+                form.value = undefined
+                form.visible = currentForm.value === constant.IP_ACCESS_DEDICATED ? true : false
+            }
+        }
+
+        this.setState({
+            forms: forms
+        })
+    }
+
+    cloudletValueChange = (form, forms) => {
+        let mapData = [];
+        let couldlets = this.cloudletList;
+        for (let i = 0; i < couldlets.length; i++) {
+            let cloudlet = couldlets[i];
+            if (form.value && form.value.includes(cloudlet[fields.cloudletName])) {
+                mapData.push(cloudlet)
+            }
+        }
+        this.setState({
+            mapData: mapData
+        })
+    }
+
+    updateUIOptions = (currentForm, forms, data) => {
+        let updateForm = false;
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (currentForm.field === fields.region) {
+                if (form.field === fields.operatorName) {
+                    form.options = this.getSelectData(currentForm, this.cloudletList, form.field)
+                    form.value = data ? data[form.field] : null
+                    this.updateUIOptions(form, forms, data)
+                }
+                else if (form.field === fields.flavorName) {
+                    form.options = this.getSelectData(currentForm, this.flavorList, form.field)
+                    form.value = data ? data[form.field] : null
+                }
+                else if (form.field === fields.privacyPolicyName) {
+                    form.options = this.getSelectData(currentForm, this.privacyPolicyList, form.field)
+                    form.value = data ? data[form.field] : null
+                }
+                updateForm = true
+            }
+            else if (currentForm.field === fields.operatorName) {
+                if (form.field === fields.cloudletName) {
+                    this.setState({ mapData: [] })
+                    form.options = this.getSelectData(currentForm, this.cloudletList, form.field)
+                    form.value = data ? data[form.field] : null
+                    this.cloudletValueChange(form, forms)
+                }
+                updateForm = true
+            }
+            else if (currentForm.field === fields.deployment) {
+                if (form.field === fields.ipAccess) {
+                    let IPAccessList = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED] : [constant.IP_ACCESS_DEDICATED];
+                    form.options = this.getOptions(IPAccessList)
+                    form.value = data ? data[form.field] : null
+                }
+                updateForm = true
+            }
+        }
+
+        if (updateForm) {
+            this.setState({
+                forms: forms
+            })
+        }
+    }
+
+    getCloudletInfo = async (form, forms) => {
+        this.cloudletList = [...this.cloudletList, ...await serverData.showDataFromServer(this, showCloudlets({ region: form.value }))]
+        this.updateUIOptions(form, forms);
+    }
+
+    getFlavorInfo = async (form, forms, data) => {
+        this.flavorList = [...this.flavorList, ...await serverData.showDataFromServer(this, showFlavors({ region: form.value }))]
+        this.updateUIOptions(form, forms, data);
+    }
+
+    getPrivacyPolicy = async (form, forms, data) => {
+        this.privacyPolicyList = [...this.privacyPolicyList, ...await serverData.showDataFromServer(this, showPrivacyPolicies({ region: form.value }))]
+        this.updateUIOptions(form, forms, data);
+    }
+
+    getOptionsFromServer = (currentFrom, forms) => {
+        let updateOptionUI = true
+        if (currentFrom.field === fields.region && this.requestedRegionList) {
+            if (!this.requestedRegionList.includes(currentFrom.value)) {
+                this.requestedRegionList.push(currentFrom.value)
+                this.getCloudletInfo(currentFrom, forms)
+                this.getFlavorInfo(currentFrom, forms)
+                this.getPrivacyPolicy(currentFrom, forms)
+                updateOptionUI = false
+            }
+        }
+        return updateOptionUI
+    }
+    /**Required */
+    onValueChange = (form) => {
+        let forms = this.state.forms;
+        if (this.getOptionsFromServer(form, forms)) {
+            this.updateUIOptions(form, forms);
+        }
+
+        if (form.field === fields.deployment) {
+            this.deploymentValueChange(form, forms)
+        }
+        else if (form.field === fields.ipAccess) {
+            this.IPAccessValueChange(form, forms)
+        }
+        else if (form.field === fields.cloudletName) {
+            this.cloudletValueChange(form, forms)
+        }
+    }
+
+
 
     /***
      * Map values from form to field
@@ -77,7 +230,7 @@ class ClusterInstReg extends React.Component {
     onCreate = async () => {
         let data = this.formattedData()
         if (data) {
-
+            console.log('Rahul1234', data)
         }
     }
 
@@ -87,7 +240,7 @@ class ClusterInstReg extends React.Component {
     getMap = () =>
         (
             <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
-                <ClustersMap parentProps={{ locData: this.state.mapData, reg: 'cloudletAndClusterMap', zoomIn: () => console.log('zoomin'), zoomOut: () => console.log('zoomout'), resetMap: () => console.log('resetmap') }} icon={'cloudlet'} zoomControl={{ center: [0, 0], zoom: 1.5 }}></ClustersMap>
+                <Map locData={this.state.mapData} id={'ClusterInst'} reg='cloudletAndClusterMap' zoomControl={{ center: [0, 0], zoom: 1.5 }}></Map>
             </div>
         )
 
@@ -150,6 +303,9 @@ class ClusterInstReg extends React.Component {
                             break;
                         case fields.region:
                             form.options = this.getOptions(this.regions);
+                            break;
+                        case fields.deployment:
+                            form.options = this.getOptions([constant.DEPLOYMENT_TYPE_DOCKER, constant.DEPLOYMENT_TYPE_KUBERNETES]);
                             break;
                         default:
                             form.options = undefined;

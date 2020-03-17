@@ -74,7 +74,6 @@ class ClustersMap extends Component {
         this.handleZoomIn = this.handleZoomIn.bind(this)
         this.handleZoomOut = this.handleZoomOut.bind(this)
         this.handleCityClick = this.handleCityClick.bind(this)
-        this.handleGotoAnalysis = this.handleGotoAnalysis.bind(this)
         this.handleReset = this.handleReset.bind(this)
         this.fetchCities = this.fetchCities.bind(this)
         this.handleLeave = this.handleLeave.bind(this)
@@ -99,12 +98,6 @@ class ClustersMap extends Component {
             zoom: 3,
             detailMode: false
         })
-        try {
-            this.props.parentProps.resetMap(false)
-        } catch (e) {
-
-        }
-
     }
 
     // Todo: Need to reimplement
@@ -135,12 +128,6 @@ class ClustersMap extends Component {
 
     // map marker text click
     handleAnnoteClick(city) {
-    }
-
-    //-blink
-
-    handleGotoAnalysis(country) {
-        if (this.props.parentProps) this.props.parentProps.gotoNext(country);
     }
 
     /**************
@@ -285,7 +272,6 @@ class ClustersMap extends Component {
             names = makeList(marker.name)
         }
 
-        //this.setState({tooltipMsg:(names.length>0) ? names : (this.props.parentProps.condition === 'two')?marker.name[0]:marker.name})
         _self.setState({ tooltipMsg: (typeof names === 'object') ? names : marker.name })
         if (!_self.moveMouse) {
             ReactTooltip.rebuild()
@@ -352,10 +338,10 @@ class ClustersMap extends Component {
         let initialData = (nextProps.dataList) ? nextProps.dataList : nextProps.locData;
         let data = nextProps.locData ? initialData : initialData.filter((item) => item[fields.state] == 5);
 
-
         function reduceUp(value) {
             return Math.round(value)
         }
+        
         const mapName = (item) => {
             let id = nextProps.id
             if (id === "Cloudlets") {

@@ -185,12 +185,12 @@ class ClusterInstReg extends React.Component {
         })
     }
 
-    cloudletValueChange = (form, forms) => {
+    cloudletValueChange = (currentForm, forms) => {
         let mapData = [];
         let couldlets = this.cloudletList;
         for (let i = 0; i < couldlets.length; i++) {
             let cloudlet = couldlets[i];
-            if (form.value && form.value.includes(cloudlet[fields.cloudletName])) {
+            if (currentForm.value && currentForm.value.includes(cloudlet[fields.cloudletName])) {
                 mapData.push({ CloudletLocation: cloudlet.CloudletLocation })
             }
         }
@@ -301,6 +301,7 @@ class ClusterInstReg extends React.Component {
 
     onUpdate = async ()=>{
         let data = this.formattedData();
+        console.log('Rahul1234', data)
         let requestData = {
             region: data[fields.region],
             clusterinst: {

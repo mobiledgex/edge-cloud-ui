@@ -3,8 +3,15 @@ export const ADD_CLOUDLET = 'AddCloudlet'
 export const DELETE_CLOUDLET = 'DeleteCloudlet'
 export const ADD_ORGANIZATION = 'AddOrganization'
 export const DELETE_ORGANIZATION = 'DeleteOrganization'
+export const DEPLOYMENT_TYPE_DOCKER = 'docker';
+export const DEPLOYMENT_TYPE_KUBERNETES = 'kubernetes';
+export const IP_ACCESS_DEDICATED = 'Dedicated';
+export const IP_ACCESS_SHARED = 'Shared';
 export const DELETE = 'Delete'
 export const SELECT = 'Select'
+export const CLOUDLET = 'Cloudlet'
+export const CLUSTER_INST = 'ClusterInst'
+export const APP_INST = 'AppInst'
 
 /**
  * Filter Data

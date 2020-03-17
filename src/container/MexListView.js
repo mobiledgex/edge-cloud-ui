@@ -16,7 +16,7 @@ import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, AC
 import MexDetailViewer from '../hoc/dataViewer/DetailViewer';
 import MexMessageStream, { CODE_FINISH } from '../hoc/stepper/mexMessageStream';
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
-import ClustersMap from '../libs/simpleMaps/with-react-motion/index_clusters_new';
+import Map from '../libs/simpleMaps/with-react-motion/index_clusters_new';
 
 const regions = ['US', 'EU']
 
@@ -216,7 +216,7 @@ class MexListView extends React.Component {
             <div className="mexListView">
                 {isMap ?
                     <div className='panel_worldmap' style={{ height: '40%' }}>
-                        <ClustersMap dataList={this.state.dataList} id={this.props.requestInfo.id} />
+                        <Map dataList={this.state.dataList} id={this.props.requestInfo.id} />
                     </div> : null}
                 <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing style={{ height: isMap ? '55%' : '97%' }}>
                     <Table.Header className="viewListTableHeader">
