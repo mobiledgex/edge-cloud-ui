@@ -34,9 +34,8 @@ class SiteFourPageAppInst extends React.Component {
         this.headerH = 70;
         this.hgap = 0;
         this.loadCount = 0;
-
-        this.headerLayout = [2, 2, 2, 1, 1, 2, 2, 2, 1, 4];
         this._AppInstDummy = [];
+        this.socket = null;
         this._diffRev = []
 
         this.headerInfo = [
@@ -55,8 +54,8 @@ class SiteFourPageAppInst extends React.Component {
         ]
 
         this.actionMenu = [
-            { label: 'Delete', icon:'delete_outline'},
-            { label: 'Terminal', icon:'code'}
+            { label: 'Delete', icon: 'delete_outline' },
+            { label: 'Terminal', icon: 'code' }
         ]
     }
     gotoUrl(site, subPath) {
@@ -132,9 +131,6 @@ class SiteFourPageAppInst extends React.Component {
         }
         if (nextProps.viewMode) {
             if (nextProps.viewMode === 'listView') {
-
-                //alert('viewmode..'+nextProps.viewMode+':'+ this.state.devData)
-                //this.getDataDeveloper(this.props.changeRegion)
                 this.setState({ viewMode: nextProps.viewMode })
             } else {
                 this.setState({ detailData: nextProps.detailData })
@@ -154,8 +150,8 @@ class SiteFourPageAppInst extends React.Component {
     }
 
     receiveResult = (mcRequestList) => {
-         _self.requestCount -= 1;
-         if (mcRequestList && mcRequestList.length > 0) {
+        _self.requestCount -= 1;
+        if (mcRequestList && mcRequestList.length > 0) {
             let appInstList = [];
             let appList = [];
             mcRequestList.map(mcRequest => {
@@ -181,21 +177,22 @@ class SiteFourPageAppInst extends React.Component {
                 }
                 _self.multiRequestData = [..._self.multiRequestData, ...appInstList]
             }
-        
 
-        if (_self.requestCount === 0) {
-            if (_self.multiRequestData.length > 0) {
-                let sortedData = _.orderBy(_self.multiRequestData, ['Region', 'AppName'])
-                _self.setState({
-                    devData: sortedData
-                })
-                _self.multiRequestData = [];
-            } else {
-                _self.props.handleComputeRefresh(false);
-                _self.props.handleAlertInfo('error', 'Requested data is empty')
+
+            if (_self.requestCount === 0) {
+                if (_self.multiRequestData.length > 0) {
+                    let sortedData = _.orderBy(_self.multiRequestData, ['Region', 'AppName'])
+                    _self.setState({
+                        devData: sortedData
+                    })
+                    _self.multiRequestData = [];
+                } else {
+                    _self.props.handleComputeRefresh(false);
+                    _self.props.handleAlertInfo('error', 'Requested data is empty')
+                }
             }
-         }
-    }}
+        }
+    }
 
     getDataDeveloper = (region, regionArr) => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -224,7 +221,7 @@ class SiteFourPageAppInst extends React.Component {
                         appinst: {
                             key: {
                                 app_key: {
-                                    developer_key: { name: localStorage.selectOrg },
+                                    organization: localStorage.selectOrg,
                                 }
                             }
                         }
@@ -242,44 +239,41 @@ class SiteFourPageAppInst extends React.Component {
         this.getDataDeveloper(_region);
     }
 
-    onTermialClose = ()=>
-    {
+    onTermialClose = () => {
+        if (this.socket) {
+            this.socket.close();
+            this.socket = null;
+        }
         this.gotoUrl('/site4', 'pg=6')
     }
 
     setRemote = (mcRequest) => {
+        this.socket = mcRequest.socket;
         this.props.handleLoadingSpinner(false)
-        let mcurl = process.env.REACT_APP_API_ENDPOINT;
-        mcurl  = mcurl.replace('https://', '')
-        mcurl  = mcurl.replace('http://', '')
-        let ipAddress = (mcurl.substring(0,mcurl.indexOf(':')))
-        if (mcRequest && mcRequest.response)
-        {
-            let response  = mcRequest.response;
+        let mcurl = process.env.REACT_APP_API_VM_ENDPOINT;
+        if (mcRequest && mcRequest.response) {
+            let response = mcRequest.response;
             let responseData = response.data
-            if(responseData.code === 200)
-            {
+            if (responseData.code === 200) {
                 let vmURL = responseData.data;
-                vmURL = vmURL.replace('127.0.0.1', ipAddress)
+                let vmURLs = vmURL.split('/')
+                vmURL = mcurl + '/' + vmURLs[vmURLs.length - 1];
                 _self.setState({ viewMode: 'detailView' })
                 let vm = {}
-                vm.vmURL = vmURL
+                vm.url = vmURL
                 let data = {}
                 data.vm = vm;
-                this.props.childPage(<TerminalViewer data={data} onClose={this.onTermialClose}></TerminalViewer>)  
+                this.props.childPage(<TerminalViewer data={data} onClose={this.onTermialClose}></TerminalViewer>)
             }
-            else
-            {
-                if(responseData.data)
-                {
+            else {
+                if (responseData.data) {
                     this.props.handleAlertInfo('error', responseData.data.message)
                 }
             }
         }
     }
 
-    onTerminal = (data)=>
-    {
+    onTerminal = (data) => {
         if (data.DeploymentType === 'vm') {
             const { Region, OrganizationName, AppName, Version, ClusterInst, Cloudlet, Operator } = data;
             let execrequest =
@@ -288,15 +282,15 @@ class SiteFourPageAppInst extends React.Component {
                 {
                     app_key:
                     {
-                        developer_key: { name: OrganizationName },
+                        organization: OrganizationName,
                         name: AppName,
                         version: Version
                     },
                     cluster_inst_key:
                     {
                         cluster_key: { name: ClusterInst },
-                        cloudlet_key: { operator_key: { name: Operator }, name: Cloudlet },
-                        //developer: OrganizationName
+                        cloudlet_key: { organization: Operator, name: Cloudlet },
+                        //organization: OrganizationName
                     }
                 }
             }
@@ -324,9 +318,9 @@ class SiteFourPageAppInst extends React.Component {
     render() {
         const { viewMode, devData, detailData } = this.state;
         return (
-            
+
             (viewMode === 'listView') ?
-                <MapWithListView actionMenu={this.actionMenu} devData={devData} headerLayout={this.headerLayout} headerInfo={this.headerInfo} siteId='appinst' dataRefresh={this.getDataDeveloperSub} onTerminal={this.onTerminal} dataSort={this.state.dataSort}></MapWithListView>
+                <MapWithListView actionMenu={this.actionMenu} devData={devData} headerInfo={this.headerInfo} siteId='appinst' dataRefresh={this.getDataDeveloperSub} onTerminal={this.onTerminal} dataSort={this.state.dataSort}></MapWithListView>
                 :
                 <PageDetailViewer data={detailData} page='appInst' />
         );

@@ -24,7 +24,7 @@ export const getAppInstList = async (pArrayRegion = ['EU', 'US']) => {
                     "appinst": {
                         "key": {
                             "app_key": {
-                                "developer_key": {"name": localStorage.selectOrg},
+                                "organization": localStorage.selectOrg,
                             }
                         }
                     }
@@ -681,9 +681,7 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
             data: {
                 "region": pRegion,
                 "cloudlet": {
-                    "operator_key": {
-                        "name": selectOrg
-                    },
+                    "organization": selectOrg,
                     "name": cloudletSelectedOne
                 },
                 "last": 10
@@ -694,7 +692,6 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
             },
             timeout: 15 * 1000
         }).then(async response => {
-            // "time",                "cloudlet",                "operator",                "event",                "status"
             if (response.data.data["0"].Series !== null) {
                 let values = response.data.data["0"].Series["0"].values
                 return values;
@@ -751,12 +748,10 @@ export const getClusterEventLogList = async (clusterList) => {
                     "name": "venky-test"
                 },
                 "cloudlet_key": {
-                    "operator_key": {
-                        "name": "TDG"
-                    },
+                    "organization": "TDG",
                     "name": "hamburg-stage"
                 },
-                "developer": selectOrg
+                "organization": selectOrg
             },
             "last": 10
         },

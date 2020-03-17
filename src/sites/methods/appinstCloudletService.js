@@ -75,7 +75,7 @@ export const getDataofAppinst = (region,regionArr) => {
                     "appinst":{
                         "key":{
                             "app_key": {
-                                "developer_key":{"name":localStorage.selectOrg},
+                                "organization":localStorage.selectOrg,
                             }
                         }
                     }

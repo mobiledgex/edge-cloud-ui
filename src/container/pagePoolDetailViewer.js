@@ -1,5 +1,5 @@
-import React, {Fragment} from 'react';
-import {Button, Divider, Table, Grid, Header, Tab, Icon, Segment, Container} from "semantic-ui-react";
+import React, { Fragment } from 'react';
+import { Button, Divider, Table, Grid, Header, Tab, Icon, Segment, Container } from "semantic-ui-react";
 import ContainerDimensions from 'react-container-dimensions';
 import * as moment from 'moment';
 import RGL, { WidthProvider } from "react-grid-layout";
@@ -20,17 +20,17 @@ const pane = [
 ]
 const panes = [
     { menuItem: 'Details', render: (props) => <Tab.Pane>{detailViewer(props, 'detailViewer')}</Tab.Pane> },
-    { menuItem: 'Monitoring', render: (props) => <Tab.Pane><MonitoringViewer data={props}/></Tab.Pane> }
+    { menuItem: 'Monitoring', render: (props) => <Tab.Pane><MonitoringViewer data={props} /></Tab.Pane> }
 ]
 const panesCommand = [
     { menuItem: 'Details', render: (props) => <Tab.Pane>{detailViewer(props, 'detailViewer')}</Tab.Pane> },
-    { menuItem: 'Monitoring', render: (props) => <Tab.Pane><MonitoringViewer data={props}/></Tab.Pane> },
-    { menuItem: 'Command', render: (props) => <Tab.Pane><CommandViewer data={props}/></Tab.Pane> }
+    { menuItem: 'Monitoring', render: (props) => <Tab.Pane><MonitoringViewer data={props} /></Tab.Pane> },
+    { menuItem: 'Command', render: (props) => <Tab.Pane><CommandViewer data={props} /></Tab.Pane> }
 ]
 
 const detailViewer = (props, type) => (
     <Fragment>
-        {(type === 'detailViewer')?
+        {(type === 'detailViewer') ?
             <Table className='page_cloudletPool_table' celled collapsing style={{ width: '100%', height: '100%', border: 'none', display: 'flex', flexDirection: 'column' }}>
                 <Table.Header>
                     <Table.Row>
@@ -55,9 +55,9 @@ const detailViewer = (props, type) => (
 const returnReWord = (label) => {
     let newName = '';
     switch (label) {
-        case 'PoolName' : newName = 'Pool Name'; break;
-        case 'NumOfCloudlets' : newName = 'Number of Cloudlets'; break;
-        case 'NumOfOrganizations' : newName = 'Number of Organizations'; break;
+        case 'PoolName': newName = 'Pool Name'; break;
+        case 'NumOfCloudlets': newName = 'Number of Cloudlets'; break;
+        case 'NumOfOrganizations': newName = 'Number of Organizations'; break;
         default: newName = label; break;
     }
     return newName;
@@ -65,7 +65,7 @@ const returnReWord = (label) => {
 }
 
 const makeCloudletTable = (values, label, i) => (
-    (label !== 'Edit' && label !== 'uuid')?
+    (label !== 'Edit' && label !== 'uuid') ?
         <Table.Row key={i}>
             <Table.Cell>
                 <Header as='h4' image>
@@ -76,15 +76,15 @@ const makeCloudletTable = (values, label, i) => (
                 </Header>
             </Table.Cell>
             <Table.Cell>
-                {(label === 'Cloudlets')? tableCloudletPool(values[label])
-                    :(label === 'Organizations')? tableCloudletPoolOrg(values[label])
-                        :(typeof values[label] === 'object')? jsonView(values[label],label)
-                            :String(values[label])}
+                {(label === 'Cloudlets') ? tableCloudletPool(values[label])
+                    : (label === 'Organizations') ? tableCloudletPoolOrg(values[label])
+                        : (typeof values[label] === 'object') ? jsonView(values[label], label)
+                            : String(values[label])}
             </Table.Cell>
         </Table.Row> : null
 )
 const makeLinkTable = (values, label, i) => (
-    (label !== 'Edit')?
+    (label !== 'Edit') ?
         <Table.Row key={i}>
             <Table.Cell>
                 <Header as='h4' image>Link</Header>
@@ -92,11 +92,11 @@ const makeLinkTable = (values, label, i) => (
         </Table.Row>
         : null
 )
-const jsonView = (jsonObj,_label) => {
-    if(_label === 'Mapped_port'){
+const jsonView = (jsonObj, _label) => {
+    if (_label === 'Mapped_port') {
         jsonObj.map((item) => {
-            if(item.proto == 1) item.proto = 'TCP'
-            else if(item.proto == 2) item.proto = 'UDP'
+            if (item.proto == 1) item.proto = 'TCP'
+            else if (item.proto == 2) item.proto = 'UDP'
         })
     }
     return <ReactJson src={jsonObj} {..._self.jsonViewProps} />
@@ -126,7 +126,7 @@ const tableCloudletPool = (jsonObj) => {
 
 }
 const makeDeleteIcon = (_item, _type) => (
-    <Button onClick={_self.onHandleDelete} item={_item} type={_type} size='mini'><Icon name='trash' style={{cursor:'pointer'}}></Icon></Button>
+    <Button onClick={_self.onHandleDelete} item={_item} type={_type} size='mini'><Icon name='trash' style={{ cursor: 'pointer' }}></Icon></Button>
 )
 const makeCloudletGroup = (item, i) => (
     <Table.Row key={i}>
@@ -144,9 +144,9 @@ const tableCloudletPoolOrg = (jsonObj) => {
         <Table className="viewListTable cloudletPoolGroup" basic='very' striped celled>
             <Table.Header className="viewListTableHeader">
                 <Table.Row>
-                    <Table.HeaderCell  textAlign='left' >Region</Table.HeaderCell>
-                    <Table.HeaderCell  textAlign='left' >Organization</Table.HeaderCell>
-                    <Table.HeaderCell  textAlign='right'></Table.HeaderCell>
+                    <Table.HeaderCell textAlign='left' >Region</Table.HeaderCell>
+                    <Table.HeaderCell textAlign='left' >Organization</Table.HeaderCell>
+                    <Table.HeaderCell textAlign='right'></Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
             <Table.Body className="tbBodyList">
@@ -169,40 +169,40 @@ const makeOrganizGroup = (item, i) => (
 
 
 const makeUTC = (time) => (
-    moment.unix( time.replace('seconds : ', '') ).utc().format('YYYY-MM-DD HH:mm:ss') + ' UTC'
+    moment.unix(time.replace('seconds : ', '')).utc().format('YYYY-MM-DD HH:mm:ss') + ' UTC'
 )
 
 const makePFT = (value) => (
-    (value == 0)? 'Fake':
-    (value == 1)? 'Docker in Docker':
-    (value == 2)? 'Openstack':
-    (value == 3)? 'Azure':
-    (value == 4)? 'GCP':
-    (value == 5)? 'Mobiledgex Docker in Docker': '-'
+    (value == 0) ? 'Fake' :
+        (value == 1) ? 'Docker in Docker' :
+            (value == 2) ? 'Openstack' :
+                (value == 3) ? 'Azure' :
+                    (value == 4) ? 'GCP' :
+                        (value == 5) ? 'Mobiledgex Docker in Docker' : '-'
 )
 
 const _status = {
-    "0" : "Tracked State Unknown",
-    "1" : "Not Present",
-    "2" : "Create Requested",
-    "3" : "Creating",
-    "4" : "Create Error",
-    "5" : "Ready",
-    "6" : "Update Requested",
-    "7" : "Updating",
-    "8" : "Update Error",
-    "9" : "Delete Requested",
-    "10" : "Deleting",
-    "11" : "Delete Error",
-    "12" : "Delete Prepare",
-    "13" : "CRM Init"
+    "0": "Tracked State Unknown",
+    "1": "Not Present",
+    "2": "Create Requested",
+    "3": "Creating",
+    "4": "Create Error",
+    "5": "Ready",
+    "6": "Update Requested",
+    "7": "Updating",
+    "8": "Update Error",
+    "9": "Delete Requested",
+    "10": "Deleting",
+    "11": "Delete Error",
+    "12": "Delete Prepare",
+    "13": "CRM Init"
 }
 const _liveness = {
-    "1" : "Static",
-    "2" : "Dynamic"
+    "1": "Static",
+    "2": "Dynamic"
 }
 var layout = [
-    {"w":19,"x":0,"y":0,"i":"0", "minW":8, "moved":false,"static":false, "title":"Developer"}
+    { "w": 19, "x": 0, "y": 0, "i": "0", "minW": 8, "moved": false, "static": false, "title": "Developer" }
 ]
 let _self = null;
 class PagePoolDetailViewer extends React.Component {
@@ -211,36 +211,36 @@ class PagePoolDetailViewer extends React.Component {
         const layout = this.generateLayout();
         this.state = {
             layout,
-            listData:[],
-            monitorData:[],
-            selected:{},
-            open:false,
-            dimmer:'',
-            devOptionsOne:[],
-            devOptionsTwo:[],
-            devOptionsThree:[],
-            devOptionsFour:[],
-            devOptionsFive:[],
-            dropdownValueOne:'',
-            dropdownValueTwo:'',
-            dropdownValueThree:'',
-            dropdownValueFour:'',
-            dropdownValueFive:'',
-            cloudletResult:null,
-            appResult:null,
-            listOfDetail:null,
-            clusterName:null,
-            activeIndex:0,
-            page:'',
-            user:'AdminManager',
-            refreshId:0
+            listData: [],
+            monitorData: [],
+            selected: {},
+            open: false,
+            dimmer: '',
+            devOptionsOne: [],
+            devOptionsTwo: [],
+            devOptionsThree: [],
+            devOptionsFour: [],
+            devOptionsFive: [],
+            dropdownValueOne: '',
+            dropdownValueTwo: '',
+            dropdownValueThree: '',
+            dropdownValueFour: '',
+            dropdownValueFive: '',
+            cloudletResult: null,
+            appResult: null,
+            listOfDetail: null,
+            clusterName: null,
+            activeIndex: 0,
+            page: '',
+            user: 'AdminManager',
+            refreshId: 0
         }
         _self = this;
         this.initData = null;
         this.activeInterval = null;
 
         this.jsonViewProps = {
-            name:null,
+            name: null,
             theme: "monokai",
             collapsed: false,
             collapseStringsAfter: 15,
@@ -258,10 +258,10 @@ class PagePoolDetailViewer extends React.Component {
         Valid selectors for app api: “cpu”, “mem”, “network”, "connections"
          */
         this.resources = {
-            clusterInst:['cpu', 'mem', 'disk', 'network', 'tcp', 'udp'],
-            appInst:['cpu', 'mem', 'network','connections'],
+            clusterInst: ['cpu', 'mem', 'disk', 'network', 'tcp', 'udp'],
+            appInst: ['cpu', 'mem', 'network', 'connections'],
             //cloudlet:['utilization']
-            cloudlet:['ipusage', 'utilization']
+            cloudlet: ['ipusage', 'utilization']
 
         }
 
@@ -276,8 +276,8 @@ class PagePoolDetailViewer extends React.Component {
         //this.props.onLayoutChange(layout);
     }
     onChangeTab = (e, data) => {
-        console.log('20190923 on change tab ..data --- ',data)
-        if(data.activeIndex === 1 && _self.state.page) {
+        console.log('20190923 on change tab ..data --- ', data)
+        if (data.activeIndex === 1 && _self.state.page) {
 
         } else {
             _self.clearInterval();
@@ -286,32 +286,32 @@ class PagePoolDetailViewer extends React.Component {
     }
     removeSelectedItems = (item) => {
 
-            // 데이터에서 아이템 제거
-            let groupData = null;
-            let filterDefine = null;
-            let cloneListData = _.cloneDeep(_self.state.listData)
-            if(item.type === 'delete member') {
-                groupData = _self.state.listData['Cloudlets'];
-                filterDefine = groupData.filter( data => data['Cloudlet'] !== item.item['Cloudlet']);
-                cloneListData['Cloudlets'] = filterDefine;
-                cloneListData['NumOfCloudlets'] = parseInt(cloneListData['NumOfCloudlets']) - 1;
-            } else if(item.type === 'delete link') {
-                groupData = _self.state.listData['Organizations'];
-                filterDefine = groupData.filter( data => data['Org'] !== item.item['Org']);
-                cloneListData['Organizations'] = filterDefine;
-                cloneListData['NumOfOrganizations'] = parseInt(cloneListData['NumOfOrganizations']) - 1;
-            }
-            
-            
-            if(filterDefine){
-                _self.setState({listData: cloneListData})
-            }
-    
+        // 데이터에서 아이템 제거
+        let groupData = null;
+        let filterDefine = null;
+        let cloneListData = _.cloneDeep(_self.state.listData)
+        if (item.type === 'delete member') {
+            groupData = _self.state.listData['Cloudlets'];
+            filterDefine = groupData.filter(data => data['Cloudlet'] !== item.item['Cloudlet']);
+            cloneListData['Cloudlets'] = filterDefine;
+            cloneListData['NumOfCloudlets'] = parseInt(cloneListData['NumOfCloudlets']) - 1;
+        } else if (item.type === 'delete link') {
+            groupData = _self.state.listData['Organizations'];
+            filterDefine = groupData.filter(data => data['Org'] !== item.item['Org']);
+            cloneListData['Organizations'] = filterDefine;
+            cloneListData['NumOfOrganizations'] = parseInt(cloneListData['NumOfOrganizations']) - 1;
+        }
+
+
+        if (filterDefine) {
+            _self.setState({ listData: cloneListData })
+        }
+
     }
     httpResponse = (result) => {
-        if(result) {
+        if (result) {
             console.log(JSON.stringify(result))
-            if(result.response && result.response.data) {
+            if (result.response && result.response.data) {
                 _self.props.handleAlertInfo('success', result.response.data.message ? result.response.data.message : 'deleted successfully')
             }
             /** remove item from list */
@@ -325,10 +325,10 @@ class PagePoolDetailViewer extends React.Component {
     onHandleDelete = (e, _data) => {
         console.log('on handle delete ...', e, _data)
         // TODO: delete cloudlet in pool
-        if(_data.type === 'delete member') {
+        if (_data.type === 'delete member') {
 
-        } else if(_data.type === 'delete link') {
-            
+        } else if (_data.type === 'delete link') {
+
         }
         //////
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -348,16 +348,16 @@ class PagePoolDetailViewer extends React.Component {
 
     generateDOM(open, dimmer, data, keysData, hideHeader, region, page, rfId) {
 
-        let panelParams = {data:data, keys:keysData, page:page, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole, rfId:rfId}
+        let panelParams = { data: data, keys: keysData, page: page, region: region, handleLoadingSpinner: this.props.handleLoadingSpinner, userrole: localStorage.selectRole, rfId: rfId }
         return layout.map((item, i) => (
 
-            (i === 0)?
+            (i === 0) ?
                 <div className="round_panel" key={i} >
 
                     <div className="grid_table tabs">
                         <Tab className="grid_tabs" menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }}
-                             panes={(this.state.userRole === 'AdminManager' && page === 'appInst')?panesCommand:((this.state.userRole === 'DeveloperManager' || this.state.userRole === 'DeveloperContributor' || this.state.userRole === 'DeveloperViewer') && page === 'cloudlet')?pane:(page === 'appInst')?panesCommand:pane}{...panelParams}
-                             gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} onTabChange={this.onChangeTab}/>
+                            panes={(this.state.userRole === 'AdminManager' && page === 'appInst') ? panesCommand : ((this.state.userRole === 'DeveloperManager' || this.state.userRole === 'DeveloperContributor' || this.state.userRole === 'DeveloperViewer') && page === 'cloudlet') ? pane : (page === 'appInst') ? panesCommand : pane}{...panelParams}
+                            gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} onTabChange={this.onChangeTab} />
                     </div>
                 </div>
                 :
@@ -370,24 +370,24 @@ class PagePoolDetailViewer extends React.Component {
     }
 
     clearInterval() {
-        if(_self.activeInterval) clearInterval(_self.activeInterval);
+        if (_self.activeInterval) clearInterval(_self.activeInterval);
     }
 
     makeFormCluster = (inst, valid, store) => (
         {
-            "token":store,
-            "params":{
-                "region":inst.Region,
-                "clusterinst":{
-                    "cluster_key":{"name":inst.ClusterName},
-                    "cloudlet_key":{
-                        "operator_key":{"name":inst.Operator},
-                        "name":inst.Cloudlet
+            "token": store,
+            "params": {
+                "region": inst.Region,
+                "clusterinst": {
+                    "cluster_key": { "name": inst.ClusterName },
+                    "cloudlet_key": {
+                        "organization": inst.Operator,
+                        "name": inst.Cloudlet
                     },
-                    "developer":inst.OrganizationName
+                    "organization": inst.OrganizationName
                 },
-                "selector":valid,
-                "last":1200
+                "selector": valid,
+                "last": 1200
 
             }
 
@@ -400,41 +400,41 @@ class PagePoolDetailViewer extends React.Component {
     }
     makeFormApp = (inst, valid, store) => (
         {
-            "token":store,
-            "params":{
-                "region":inst.Region,
-                "appinst":{
-                    "app_key":{
-                        "developer_key":{"name":inst.OrganizationName},
-                        "name":this.getAppName(inst.AppName),
-                        "version":inst.Version
+            "token": store,
+            "params": {
+                "region": inst.Region,
+                "appinst": {
+                    "app_key": {
+                        "organization": inst.OrganizationName,
+                        "name": this.getAppName(inst.AppName),
+                        "version": inst.Version
                     },
-                    "cluster_inst_key":{
-                        "cluster_key":{"name":inst.ClusterInst},
-                        "cloudlet_key":{
-                            "name":inst.Cloudlet,
-                            "operator_key":{"name":inst.Operator}
+                    "cluster_inst_key": {
+                        "cluster_key": { "name": inst.ClusterInst },
+                        "cloudlet_key": {
+                            "name": inst.Cloudlet,
+                            "organization": inst.Operator
                         }
                     }
                 },
-                "selector":valid,
-                "last":1200
+                "selector": valid,
+                "last": 1200
             }
         }
     )
 
-    makeFormCloudlet =(inst, valid, store) => (
+    makeFormCloudlet = (inst, valid, store) => (
         {
-            'token':store,
-            'params':{
-                "region":inst.Region,
-                "cloudlet":{
-                    "operator_key":{"name":inst.Operator},
-                    "name":inst.CloudletName
+            'token': store,
+            'params': {
+                "region": inst.Region,
+                "cloudlet": {
+                    "organization": inst.Operator,
+                    "name": inst.CloudletName
                 },
-                "selector":valid,
+                "selector": valid,
                 //"last":200
-                "last":200
+                "last": 200
             }
         }
 
@@ -442,7 +442,7 @@ class PagePoolDetailViewer extends React.Component {
 
     componentDidMount() {
         let userRole = localStorage.getItem('selectRole');
-        this.setState({userRole:localStorage.selectRole})
+        this.setState({ userRole: localStorage.selectRole })
         this.props.handleLoadingSpinner(true)
 
     }
@@ -450,15 +450,15 @@ class PagePoolDetailViewer extends React.Component {
         let regKeys = [];
         let component = null;
         let data = [];
-        if(nextProps.data && !this.initData){
-            setTimeout(() => this.setState({listData:nextProps.data, page:nextProps.page}), 2000)
+        if (nextProps.data && !this.initData) {
+            setTimeout(() => this.setState({ listData: nextProps.data, page: nextProps.page }), 2000)
             this.initData = true;
             this.props.handleLoadingSpinner(false)
         }
 
-        if(nextProps.loading) {
+        if (nextProps.loading) {
             console.log('20200113 refresh view')
-            this.setState({refreshId: Math.random() * 300})
+            this.setState({ refreshId: Math.random() * 300 })
             this.forceUpdate();
         }
 
@@ -475,7 +475,7 @@ class PagePoolDetailViewer extends React.Component {
                 <div>{label}</div>
             </Grid.Column>
             <Grid.Column width={11}>
-                <div style={{wordWrap: 'break-word'}}>{(typeof values[label] === 'object')? JSON.stringify(values[label]):String(values[label])}</div>
+                <div style={{ wordWrap: 'break-word' }}>{(typeof values[label] === 'object') ? JSON.stringify(values[label]) : String(values[label])}</div>
             </Grid.Column>
             <Divider vertical></Divider>
         </Grid.Row>
@@ -492,7 +492,7 @@ class PagePoolDetailViewer extends React.Component {
         let { loading } = this.props;
         return (
             <div className="regis_container">
-                {this.generateDOM(open, dimmer, listData, this.state.keysData, hiddenKeys, this.props.region, this.props.page, refreshId={refreshId})}
+                {this.generateDOM(open, dimmer, listData, this.state.keysData, hiddenKeys, this.props.region, this.props.page, refreshId = { refreshId })}
             </div>
 
         )
@@ -505,14 +505,14 @@ const mapStateToProps = (state) => {
         viewMode = state.changeViewMode.mode.viewMode;
     }
     return {
-        viewMode:viewMode,
-        loading:(state.loadingSpinner)?state.loadingSpinner.loading:null
+        viewMode: viewMode,
+        loading: (state.loadingSpinner) ? state.loadingSpinner.loading : null
     }
 }
 const mapDispatchProps = (dispatch) => {
     return {
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
     };
 };
 

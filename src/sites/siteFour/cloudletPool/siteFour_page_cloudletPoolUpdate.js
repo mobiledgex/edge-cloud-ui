@@ -154,9 +154,7 @@ class SiteFourPageCloudletPoolUpdate extends React.Component {
                             "cloudletpoolmember":{
                                 "cloudlet_key":{
                                     "name":cloudlet.cloudlet,
-                                    "operator_key":{
-                                        "name":cloudlet.orgaName
-                                    }
+                                    "organization":cloudlet.orgaName
                                 },
                                 "pool_key":{
                                     "name":nextProps.formClusterInst.values.poolName
