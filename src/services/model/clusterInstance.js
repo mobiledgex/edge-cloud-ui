@@ -7,8 +7,8 @@ let fields = formatter.fields;
 export const keys = [
     { field: fields.region, label: 'Region', sortable: true, visible: true },
     { field: fields.clusterName, serverField: 'key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster', visible: true },
-    { field: fields.organizationName, serverField: 'key#OS#developer', sortable: true, label: 'Organization', visible: true },
-    { field: fields.operatorName, serverField: 'key#OS#cloudlet_key#OS#operator_key#OS#name', sortable: true, label: 'Operator', visible: true },
+    { field: fields.organizationName, serverField: 'key#OS#organization', sortable: true, label: 'Organization', visible: true },
+    { field: fields.operatorName, serverField: 'key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: true },
     { field: fields.cloudletName, serverField: 'key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: true },
     { field: fields.flavorName, serverField: 'flavor#OS#name', sortable: true, label: 'Flavor', visible: true },
     { field: fields.ipAccess, serverField: 'ip_access', label: 'IP Access', sortable: true, visible: true },
@@ -81,7 +81,7 @@ export const getKey = (data) => {
         clusterinst: {
             key: {
                 cluster_key: { name: data[fields.clusterName] },
-                cloudlet_key: { operator_key: { name: data[fields.operatorName] }, name: data[fields.cloudletName] },
+                cloudlet_key: { organization : data[fields.operatorName], name: data[fields.cloudletName] },
                 developer: data[fields.organizationName]
             },
             flavor: { name: data[fields.flavorName] }

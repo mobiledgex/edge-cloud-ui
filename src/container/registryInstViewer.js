@@ -12,7 +12,7 @@ import * as reducer from '../utils'
 import * as serviceMC from '../services/serviceMC';
 import SiteFourCreateFormAppInstDefault from "./siteFourCreateFormAppInstDefault";
 import { withRouter } from "react-router-dom";
-import MexMultiStepper, {updateStepper} from '../hoc/stepper/mexMessageMultiStream'
+import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiStream'
 
 
 var layout = [
@@ -51,7 +51,7 @@ class RegistryInstViewer extends React.Component {
             validateError: [],
             regSuccess: true,
             autoClusterDisable: false,
-            stepsArray:[],
+            stepsArray: [],
             keysData: [
                 {
                     'Region': { label: 'Region', type: 'RenderSelect', necessary: true, tip: 'Select region where you want to deploy.', disable: (Object.keys(this.props.appLaunch).length == 0) ? true : false, active: true, items: [] },
@@ -231,7 +231,7 @@ class RegistryInstViewer extends React.Component {
         _self.props.history.location.search = pg;
         if (state !== 'error' && _self.props.submitData.createAppFormDefault && _self.props.submitData.createAppFormDefault.values) {
             let values = _self.props.submitData.createAppFormDefault.values;
-            if (values && values.AutoClusterInst && values.AppName && values.Cloudlet && values.Cloudlet.length>0 && values.Operator) {
+            if (values && values.AutoClusterInst && values.AppName && values.Cloudlet && values.Cloudlet.length > 0 && values.Operator) {
                 _self.props.history.location.pgname = 'appinst';
                 _self.props.history.location.pgnameData = {
                     AppName: values.AppName,
@@ -313,7 +313,7 @@ class RegistryInstViewer extends React.Component {
         let data = JSON.parse(JSON.stringify(submitData));
         data.appinst.key.cluster_inst_key.cloudlet_key.name = itemCloudlet;
         data.appinst.key.cluster_inst_key.cluster_key.name = itemCluster;
-        data.appinst.key.cluster_inst_key.developer = data.appinst.key.app_key.developer_key.name;
+        data.appinst.key.cluster_inst_key.developer = data.appinst.key.app_key.organization;
         serviceBody.uuid = serviceMC.generateUniqueId()
         serviceBody.data = data;
         this.props.handleLoadingSpinner(true);
@@ -497,17 +497,16 @@ class RegistryInstViewer extends React.Component {
             let data = undefined;
             let request = mcRequest.request;
             let cloudletName = request.data.appinst.key.cluster_inst_key.cloudlet_key.name;
-            if(mcRequest.response && mcRequest.response.data)
-            {
-                data  = mcRequest.response.data;
+            if (mcRequest.response && mcRequest.response.data) {
+                data = mcRequest.response.data;
             }
-            this.setState({stepsArray:updateStepper(this.state.stepsArray, cloudletName, data)})
+            this.setState({ stepsArray: updateStepper(this.state.stepsArray, cloudletName, data) })
         }
     }
 
     stepperClose = () => {
         this.setState({
-            stepsArray:[]
+            stepsArray: []
         })
         this.gotoUrl('submit');
     }
@@ -533,7 +532,7 @@ class RegistryInstViewer extends React.Component {
                 <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
                 <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
                 <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>
-                <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose}/>
+                <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
             </div>
 
         );
@@ -552,10 +551,10 @@ const createFormat = (data) => (
         "region": data['Region'],
         "appinst": {
             "key": {
-                "app_key": { "developer_key": { "name": data['DeveloperName'] }, "name": data['AppName'], "version": data['Version'] },
+                "app_key": { "organization": data['DeveloperName'], "name": data['AppName'], "version": data['Version'] },
                 "cluster_inst_key": {
                     "cluster_key": { "name": data['ClusterInst'] },
-                    "cloudlet_key": { "operator_key": { "name": data['Operator'] }, "name": data['Cloudlet'] }
+                    "cloudlet_key": { "organization": data['Operator'], "name": data['Cloudlet'] }
                 }
             },
         }

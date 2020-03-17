@@ -1,9 +1,9 @@
 import React from 'react';
-import {Tab} from 'semantic-ui-react';
+import { Tab } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import RGL, { WidthProvider } from "react-grid-layout";
-import {withRouter} from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import PopDetailViewer from './popDetailViewer';
 import PopUserViewer from './popUserViewer';
 import PopAddUserViewer from './popAddUserViewer';
@@ -13,7 +13,7 @@ import * as reducer from '../utils'
 
 import * as serviceMC from '../services/serviceMC';
 import SiteFourCreateInstForm from "./siteFourCreateInstForm";
-import MexMultiStepper, {updateStepper} from '../hoc/stepper/mexMessageMultiStream'
+import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiStream'
 const ReactGridLayout = WidthProvider(RGL);
 
 
@@ -23,12 +23,12 @@ const headerStyle = {
 var horizon = 6;
 var vertical = 20;
 var layout = [
-    {"w":19,"x":0,"y":0,"i":"0", "minW":8, "moved":false,"static":false, "title":"Developer"}
+    { "w": 19, "x": 0, "y": 0, "i": "0", "minW": 8, "moved": false, "static": false, "title": "Developer" }
 ]
 let _self = null;
 
 const panes = [
-    { menuItem: 'Cloudlet Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateInstForm data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'Cloudlet Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateInstForm data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')} /></Tab.Pane> },
     // { menuItem: 'Docker deployment', render: () => <Tab.Pane  attached={false} pId={1}>None</Tab.Pane> },
     // { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> }
 ]
@@ -41,7 +41,7 @@ Type needs to send the following in the create cloudlet message:for openstack: "
 
 Location needs to send the following in the create cloudlet message:"physical_name":"hamburg""physical_name":"bonn"
  */
-const ipaccessArr = ['Dedicated','Shared'];
+const ipaccessArr = ['Dedicated', 'Shared'];
 class RegistryCloudletViewer extends React.Component {
     constructor(props) {
         super(props);
@@ -52,65 +52,65 @@ class RegistryCloudletViewer extends React.Component {
             layout,
             open: false,
             openAdd: false,
-            openDetail:false,
-            dimmer:false,
-            activeItem:'',
-            dummyData : [],
-            detailViewData:null,
-            selected:{},
-            openUser:false,
-            orgData:{},
-            selectUse:null,
-            resultData:null,
-            cloudlets:[],
-            operators:[],
-            clustinst:[],
-            apps:[],
-            clusterInstCreate:true,
-            toggleSubmit:false,
-            validateError:[],
-            regSuccess:true,
-            errorClose:false,
-            stepsArray:[],
-            keysData:[
+            openDetail: false,
+            dimmer: false,
+            activeItem: '',
+            dummyData: [],
+            detailViewData: null,
+            selected: {},
+            openUser: false,
+            orgData: {},
+            selectUse: null,
+            resultData: null,
+            cloudlets: [],
+            operators: [],
+            clustinst: [],
+            apps: [],
+            clusterInstCreate: true,
+            toggleSubmit: false,
+            validateError: [],
+            regSuccess: true,
+            errorClose: false,
+            stepsArray: [],
+            keysData: [
                 {
-                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy.', active:true, items:[]},
-                    'CloudletName':{label:'Cloudlet Name', type:'RenderInputCluster', necessary:true, tip:'Name of the cloudlet.', active:true},
-                    'OperatorName':{label:'Operator Name', type:'RenderInputDisabled', necessary:true, tip:'Name of the organization you are currently managing.', active:true, items:['','']},
-                    'CloudletLocation':{label:'Cloudlet Location', type:'CloudletLocation', necessary:true, tip:'Cloudlet Location', active:true, items:['','']},
-                    'IPSupport':{label:'IP Support', type:'RenderSelect', necessary:true, tip:'Ip Support indicates the type of public IP support provided by the Cloudlet. Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.', active:true, items:['Dynamic']},
-                    'NumberOfDynamicIPs':{label:'Number of Dynamic IPs', type:'RenderInput', necessary:true, tip:'Number of dynamic IPs available for dynamic IP support.'},
-                    'PhysicalName':{label:'Physical Name', type:'RenderInput', necessary:true, tip:'Physical infrastructure cloudlet name.', active:true},
-                    'PlatformType':{label:'Platform Type', type:'RenderSelect', necessary:true, tip:'Supported list of cloudlet types.', active:true, items:['Openstack']}
+                    'Region': { label: 'Region', type: 'RenderSelect', necessary: true, tip: 'Select region where you want to deploy.', active: true, items: [] },
+                    'CloudletName': { label: 'Cloudlet Name', type: 'RenderInputCluster', necessary: true, tip: 'Name of the cloudlet.', active: true },
+                    'OperatorName': { label: 'Operator Name', type: 'RenderInputDisabled', necessary: true, tip: 'Name of the organization you are currently managing.', active: true, items: ['', ''] },
+                    'CloudletLocation': { label: 'Cloudlet Location', type: 'CloudletLocation', necessary: true, tip: 'Cloudlet Location', active: true, items: ['', ''] },
+                    'IPSupport': { label: 'IP Support', type: 'RenderSelect', necessary: true, tip: 'Ip Support indicates the type of public IP support provided by the Cloudlet. Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.', active: true, items: ['Dynamic'] },
+                    'NumberOfDynamicIPs': { label: 'Number of Dynamic IPs', type: 'RenderInput', necessary: true, tip: 'Number of dynamic IPs available for dynamic IP support.' },
+                    'PhysicalName': { label: 'Physical Name', type: 'RenderInput', necessary: true, tip: 'Physical infrastructure cloudlet name.', active: true },
+                    'PlatformType': { label: 'Platform Type', type: 'RenderSelect', necessary: true, tip: 'Supported list of cloudlet types.', active: true, items: ['Openstack'] }
                 },
                 {
 
                 }
             ],
-            fakeData:[
+            fakeData: [
                 {
-                    'Region':'',
-                    'CloudletName':'',
-                    'OperatorName':'',
-                    'CloudletLocation':'',
-                    'IPSupport':'',
-                    'NumberOfDynamicIPs':'',
-                    'PhysicalName':'',
-                    'PlatformType':'',
-                    'OpenRCData':'',
-                    'CACertData':''
+                    'Region': '',
+                    'CloudletName': '',
+                    'OperatorName': '',
+                    'CloudletLocation': '',
+                    'IPSupport': '',
+                    'NumberOfDynamicIPs': '',
+                    'PhysicalName': '',
+                    'PlatformType': '',
+                    'OpenRCData': '',
+                    'CACertData': ''
                 }
             ]
 
 
         };
 
-        this.pauseRender =false;
+        this.pauseRender = false;
 
     }
 
-    
-    show = (dim) => this.setState({ dimmer:dim, openDetail: true })
+
+    show = (dim) => this.setState({ dimmer: dim, openDetail: true })
     close = () => {
         this.setState({ open: false })
         this.props.handleInjectDeveloper(null)
@@ -131,17 +131,17 @@ class RegistryCloudletViewer extends React.Component {
             search: 'pg=2'
         });
         _self.props.history.location.search = 'pg=2';
-        _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=2'})
+        _self.props.handleChangeSite({ mainPath: '/site4', subPath: 'pg=2' })
     }
 
 
     generateDOM(open, dimmer, data, keysData, hideHeader, region) {
 
-        let panelParams = {data:data, keys:keysData, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole}
+        let panelParams = { data: data, keys: keysData, region: region, handleLoadingSpinner: this.props.handleLoadingSpinner, userrole: localStorage.selectRole }
 
         return layout.map((item, i) => (
 
-            (i === 0)?
+            (i === 0) ?
                 <div className="round_panel" key={i}>
                     <div className="grid_table">
                         <Tab className="grid_tabs" menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} />
@@ -168,25 +168,24 @@ class RegistryCloudletViewer extends React.Component {
 
     setFildData() {
         //
-        if(_self.props.devData.length > 0) {
-            _self.setState({dummyData:_self.props.devData, resultData:(!_self.state.resultData)?_self.props.devData:_self.state.resultData})
+        if (_self.props.devData.length > 0) {
+            _self.setState({ dummyData: _self.props.devData, resultData: (!_self.state.resultData) ? _self.props.devData : _self.state.resultData })
         } else {
-            _self.setState({dummyData:_self.state.fakeData, resultData:(!_self.state.resultData)?_self.props.devData:_self.state.resultData})
+            _self.setState({ dummyData: _self.state.fakeData, resultData: (!_self.state.resultData) ? _self.props.devData : _self.state.resultData })
         }
     }
 
 
     receiveSubmit = (mcRequest) => {
-            if (mcRequest) {
-                let data = undefined;
-                let request = mcRequest.request;
-                let cloudletName = request.data.cloudlet.key.name;
-                if(mcRequest.response && mcRequest.response.data)
-                {
-                    data  = mcRequest.response.data;
-                }
-                this.setState({stepsArray:updateStepper(this.state.stepsArray, cloudletName, data)})
+        if (mcRequest) {
+            let data = undefined;
+            let request = mcRequest.request;
+            let cloudletName = request.data.cloudlet.key.name;
+            if (mcRequest.response && mcRequest.response.data) {
+                data = mcRequest.response.data;
             }
+            this.setState({ stepsArray: updateStepper(this.state.stepsArray, cloudletName, data) })
+        }
     }
 
     componentDidMount() {
@@ -198,51 +197,50 @@ class RegistryCloudletViewer extends React.Component {
          * **********/
         let assObj = Object.assign([], this.state.fakeData);
         assObj[0].OperatorName = localStorage.selectOrg;
-        this.setState({fakeData:assObj});
+        this.setState({ fakeData: assObj });
 
     }
     componentWillUnmount() {
         _self.props.handleGetRegion(null)
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        if(nextProps.regionInfo.region.length){
+        if (nextProps.regionInfo.region.length) {
             let assObj = Object.assign([], this.state.keysData);
             assObj[0].Region.items = nextProps.regionInfo.region;
         }
-        if(nextProps.accountInfo){
-            this.setState({ dimmer:'blurring', open: true })
+        if (nextProps.accountInfo) {
+            this.setState({ dimmer: 'blurring', open: true })
         }
-        if(nextProps.devData.length > 1) {
-            this.setState({dummyData:nextProps.devData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
+        if (nextProps.devData.length > 1) {
+            this.setState({ dummyData: nextProps.devData, resultData: (!this.state.resultData) ? nextProps.devData : this.state.resultData })
         } else {
-            this.setState({dummyData:this.state.fakeData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
+            this.setState({ dummyData: this.state.fakeData, resultData: (!this.state.resultData) ? nextProps.devData : this.state.resultData })
         }
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        this.setState({toggleSubmit:false});
-        if(nextProps.submitValues && !this.state.toggleSubmit) {
-            const cluster = ['Region','CloudletName','OperatorName','IPSupport','NumberOfDynamicIPs','PhysicalName','PlatformType','Latitude','Longitude'];
-             //add if platform_type is openstack  (placement should be better)
-            if(nextProps.submitValues.cloudlet.platform_type !== 2)
-            {
+        this.setState({ toggleSubmit: false });
+        if (nextProps.submitValues && !this.state.toggleSubmit) {
+            const cluster = ['Region', 'CloudletName', 'OperatorName', 'IPSupport', 'NumberOfDynamicIPs', 'PhysicalName', 'PlatformType', 'Latitude', 'Longitude'];
+            //add if platform_type is openstack  (placement should be better)
+            if (nextProps.submitValues.cloudlet.platform_type !== 2) {
                 nextProps.submitValues.cloudlet.accessvars = undefined
             }
             let error = [];
             cluster.map((item) => {
-                if(!nextProps.validateValue[item]) {
+                if (!nextProps.validateValue[item]) {
                     error.push(item)
                 }
             })
             //close tutorial
             this.props.handleStateTutor('done');
-            if(!this.pauseRender && nextProps.formClusterInst.submitSucceeded && error.length == 0){
-                this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
-                serviceMC.sendWSRequest({ uuid:serviceMC.generateUniqueId(),token: store.userToken, method: serviceMC.getEP().CREATE_CLOUDLET, data: nextProps.submitValues }, this.receiveSubmit)
+            if (!this.pauseRender && nextProps.formClusterInst.submitSucceeded && error.length == 0) {
+                this.setState({ toggleSubmit: true, validateError: error, regSuccess: true });
+                serviceMC.sendWSRequest({ uuid: serviceMC.generateUniqueId(), token: store.userToken, method: serviceMC.getEP().CREATE_CLOUDLET, data: nextProps.submitValues }, this.receiveSubmit)
                 this.pauseRender = true;
             } else {
-                this.setState({validateError:error,toggleSubmit:true})
+                this.setState({ validateError: error, toggleSubmit: true })
             }
-            
+
         }
 
 
@@ -250,7 +248,7 @@ class RegistryCloudletViewer extends React.Component {
 
     stepperClose = () => {
         this.setState({
-            stepsArray:[]
+            stepsArray: []
         })
         this.props.gotoUrl();
     }
@@ -266,7 +264,7 @@ class RegistryCloudletViewer extends React.Component {
                     layout={this.state.layout}
                     onLayoutChange={this.onLayoutChange}
                     {...this.props}
-                    style={{overflowY:'visible'}}
+                    style={{ overflowY: 'visible' }}
                     useCSSTransforms={false}
                 >
                     {this.generateDOM(open, dimmer, dummyData, this.state.keysData, hiddenKeys, this.props.region)}
@@ -274,7 +272,7 @@ class RegistryCloudletViewer extends React.Component {
                 <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
                 <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
                 <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>
-                <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose}/>
+                <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
             </div>
 
         );
@@ -301,89 +299,89 @@ class RegistryCloudletViewer extends React.Component {
 }
  */
 const getInteger = (str) => (
-    (str === 'Openstack')? 2 :
-    (str === 'Azure')? 3 :
-    (str === 'GCP')? 4 : false
+    (str === 'Openstack') ? 2 :
+        (str === 'Azure') ? 3 :
+            (str === 'GCP') ? 4 : false
 )
 const getInteger_ip = (str) => (
-    (str === 'Static')? 1 :
-    (str === 'Dynamic')? 2 : false
+    (str === 'Static') ? 1 :
+        (str === 'Dynamic') ? 2 : false
 )
-const createFormat = (data,loc) => (
+const createFormat = (data, loc) => (
     {
-        "region":data['Region'],
-        "cloudlet":{
-            "key":{
-                "operator_key":{"name":data['OperatorName']},
-                "name":data['CloudletName']
+        "region": data['Region'],
+        "cloudlet": {
+            "key": {
+                "organization": data['OperatorName'],
+                "name": data['CloudletName']
             },
-            "location":{
+            "location": {
                 // "latitude":Number((loc)?loc.lat:0),
                 // "longitude":Number((loc)?loc.long:0),
-                "latitude":Number(data['Latitude']),
-                "longitude":Number(data['Longitude']),
-                "timestamp":{}
+                "latitude": Number(data['Latitude']),
+                "longitude": Number(data['Longitude']),
+                "timestamp": {}
             },
-            "ip_support":getInteger_ip(data['IPSupport']),
-            "num_dynamic_ips":Number(data['NumberOfDynamicIPs']),
-            "physical_name":data['PhysicalName'],
-            "platform_type":getInteger(data['PlatformType']),
-            "accessvars":{
-            "OPENRC_DATA":data['OpenRCData'],
-            "CACERT_DATA":data['CACertData']
+            "ip_support": getInteger_ip(data['IPSupport']),
+            "num_dynamic_ips": Number(data['NumberOfDynamicIPs']),
+            "physical_name": data['PhysicalName'],
+            "platform_type": getInteger(data['PlatformType']),
+            "accessvars": {
+                "OPENRC_DATA": data['OpenRCData'],
+                "CACERT_DATA": data['CACertData']
             }
         }
     }
 )
 const mapStateToProps = (state) => {
     let account = state.registryAccount.account;
-    let dimm =  state.btnMnmt;
-    let accountInfo = account ? account + Math.random()*10000 : null;
+    let dimm = state.btnMnmt;
+    let accountInfo = account ? account + Math.random() * 10000 : null;
     let dimmInfo = dimm ? dimm : null;
     let submitVal = null;
     let validateValue = {};
-    
-    if(state.form.createAppFormDefault)
-    if(state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.getRegion.region){
-        state.form.createAppFormDefault.values.Latitude = state.getRegion.region.lat;
-        state.form.createAppFormDefault.values.Longitude = state.getRegion.region.long;
-    }
-    
-    if(state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
+
+    if (state.form.createAppFormDefault)
+        if (state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.getRegion.region) {
+            state.form.createAppFormDefault.values.Latitude = state.getRegion.region.lat;
+            state.form.createAppFormDefault.values.Longitude = state.getRegion.region.long;
+        }
+
+    if (state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
         let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
-        submitVal = createFormat(enableValue,state.getRegion.region);
+        submitVal = createFormat(enableValue, state.getRegion.region);
         validateValue = state.form.createAppFormDefault.values;
     }
-    
+
     let region = state.changeRegion
         ? {
             value: state.changeRegion.region
         }
         : {};
 
-    let formClusterInst= state.form.createAppFormDefault
+    let formClusterInst = state.form.createAppFormDefault
         ? {
             values: state.form.createAppFormDefault.values,
             submitSucceeded: state.form.createAppFormDefault.submitSucceeded
         }
         : {};
-    let regionInfo = (state.regionInfo)?state.regionInfo:null;
+    let regionInfo = (state.regionInfo) ? state.regionInfo : null;
     return {
         accountInfo,
         dimmInfo,
         itemLabel: state.computeItem.item,
-        userToken : (state.user.userToken) ? state.userToken: null,
+        userToken: (state.user.userToken) ? state.userToken : null,
         submitValues: submitVal,
         region: region.value,
         flavors: (state.showFlavor) ? state.showFlavor.flavor : null,
-        selectOrg : state.selectOrg.org?state.selectOrg.org:null,
-        userRole : state.showUserRole?state.showUserRole.role:null,
-        validateValue:validateValue,
-        formClusterInst : formClusterInst,
-        getRegion : (state.getRegion)?state.getRegion.region:null,
+        selectOrg: state.selectOrg.org ? state.selectOrg.org : null,
+        userRole: state.showUserRole ? state.showUserRole.role : null,
+        validateValue: validateValue,
+        formClusterInst: formClusterInst,
+        getRegion: (state.getRegion) ? state.getRegion.region : null,
         regionInfo: regionInfo
     }
-    
+
     // return (dimm) ? {
     //     dimmInfo : dimm
     // } : (account)? {
@@ -393,13 +391,13 @@ const mapStateToProps = (state) => {
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
-        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
-        handleStateTutor: (data) => { dispatch(actions.tutorStatus(data))},
+        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
+        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data)) },
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
+        handleStateTutor: (data) => { dispatch(actions.tutorStatus(data)) },
         handleGetRegion: (data) => { dispatch(actions.getRegion(data)) },
-        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
+        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data)) },
     };
 };
 

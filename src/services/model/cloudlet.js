@@ -9,7 +9,7 @@ export const getKey = (data) => {
         region: data[fields.region],
         cloudlet: {
             key: {
-                operator_key: { name: data[fields.operatorName] },
+                organization: data[fields.operatorName],
                 name: data[fields.cloudletName]
             }
         }
@@ -78,7 +78,7 @@ export const streamCloudlet = (data) => {
 export const keys = [
     { field: fields.region, label: 'Region', sortable: true, visible: true },
     { field: fields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet Name', sortable: true, visible: true },
-    { field: fields.operatorName, serverField: 'key#OS#operator_key#OS#name', label: 'Operator', sortable: true, visible: true },
+    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true },
     { field: fields.cloudletLocation, serverField: 'location', label: 'Cloudlet Location', dataType: TYPE_JSON },
     { field: fields.ipSupport, serverField: 'ip_support', label: 'IP Support' },
     { field: fields.numDynamicIPs, serverField: 'num_dynamic_ips', label: 'Number of Dynamic IPs' },

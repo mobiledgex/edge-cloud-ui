@@ -15,7 +15,7 @@ export const keys = [
   {
     field: fields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets',
     keys: [{ field: fields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet Name' },
-    { field: fields.operatorName, serverField: 'key#OS#operator_key#OS#name', label: 'Operator' },
+    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator' },
     { field: fields.cloudletLocation, serverField: 'loc', label: 'Location', dataType: TYPE_JSON }]
   },
   { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true }

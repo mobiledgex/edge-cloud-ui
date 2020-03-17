@@ -6,7 +6,7 @@ let fields = formatter.fields;
 
 const keys = [
     { field: fields.cloudletName, serverField: 'key#OS#name' },
-    { field: fields.operatorName, serverField: 'key#OS#operator_key#OS#name' },
+    { field: fields.operatorName, serverField: 'key#OS#organization' },
     { field: fields.state, serverField: 'state' },
     { field: fields.notifyId, serverField: 'notify_id' },
     { field: fields.controller, serverField: 'controller' },
@@ -35,7 +35,7 @@ export const getKey = (data) => {
         region: Region,
         cloudlet: {
             key: {
-                operator_key: { name: Operator },
+                organization: Operator,
                 name: CloudletName
             }
         }

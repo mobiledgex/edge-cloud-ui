@@ -252,7 +252,7 @@ const createFormat = (data) => (
             {
                 "cluster_key": { "name": data['ClusterName'] },
                 "cloudlet_key": {
-                    "operator_key": { "name": data['Operator'] },
+                    "organization": data['Operator'],
                     "name": data['Cloudlet']
                 },
                 "developer": data['Reservable'] ? data['OrganizationName'] === 'mobiledgex' ? 'MobiledgeX' : data['OrganizationName'] : data['OrganizationName']

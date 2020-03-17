@@ -7,7 +7,7 @@ export const keys = [
     { field: fields.region, label: 'Region' },
     { field: fields.poolName, serverField: 'pool_key#OS#name' },
     { field: fields.cloudletName, serverField: 'cloudlet_key#OS#name' },
-    { field: fields.operatorName, serverField: 'cloudlet_key#OS#operator_key#OS#name' }
+    { field: fields.operatorName, serverField: 'cloudlet_key#OS#organization' }
 ]
 
 export const getKey = (data) => {
@@ -16,9 +16,7 @@ export const getKey = (data) => {
         cloudletpoolmember: {
             cloudlet_key: {
                 name: data[fields.cloudletName],
-                operator_key: {
-                    name: data[fields.operatorName]
-                }
+                organization: data[fields.operatorName]
             },
             pool_key: {
                 name: data[fields.poolName]

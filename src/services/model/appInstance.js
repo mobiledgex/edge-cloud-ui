@@ -6,10 +6,10 @@ let fields = formatter.fields;
 
 export const keys = [
   { field: fields.region, label: 'Region', sortable: true, visible: true },
-  { field: fields.organizationName, serverField: 'key#OS#app_key#OS#developer_key#OS#name', sortable: true, label: 'Organization', visible: true },
+  { field: fields.organizationName, serverField: 'key#OS#app_key#OS#organization', sortable: true, label: 'Organization', visible: true },
   { field: fields.appName, serverField: 'key#OS#app_key#OS#name', sortable: true, label: 'App', visible: true },
   { field: fields.version, serverField: 'key#OS#app_key#OS#version', label: 'Version', visible: true },
-  { field: fields.operatorName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#operator_key#OS#name', sortable: true, label: 'Operator', visible: true },
+  { field: fields.operatorName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: true },
   { field: fields.cloudletName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: true },
   { field: fields.cloudletLocation, serverField: 'cloudlet_loc', label: 'Cloudlet Location', dataType: TYPE_JSON },
   { field: fields.clusterName, serverField: 'key#OS#cluster_inst_key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster Instance', visible: true },
@@ -30,11 +30,11 @@ export const getKey = (data) => {
     region: data[fields.region],
     appinst: {
       key: {
-        app_key: { developer_key: { name: data[fields.organizationName] }, name: data[fields.appName], version: data[fields.version] },
+        app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] },
         cluster_inst_key: {
-          cloudlet_key: { name: data[fields.cloudletName], operator_key: { name: data[fields.operatorName] } },
+          cloudlet_key: { name: data[fields.cloudletName], organization: data[fields.operatorName] },
           cluster_key: { name: data[fields.clusterName] },
-          developer: data[fields.organizationName]
+          organization: data[fields.organizationName]
         }
       },
     }
@@ -45,27 +45,27 @@ export const multiDataRequest = (keys, mcRequestList) => {
   let appInstList = [];
   let appList = [];
   for (let i = 0; i < mcRequestList.length; i++) {
-      let mcRequest = mcRequestList[i];
-      let request = mcRequest.request;
-      if (request.method === SHOW_APP_INST) {
-          appInstList = mcRequest.response.data
-      }
-      else if (request.method === SHOW_APP) {
-          appList = mcRequest.response.data
-      }
+    let mcRequest = mcRequestList[i];
+    let request = mcRequest.request;
+    if (request.method === SHOW_APP_INST) {
+      appInstList = mcRequest.response.data
+    }
+    else if (request.method === SHOW_APP) {
+      appList = mcRequest.response.data
+    }
   }
 
   if (appInstList && appInstList.length > 0) {
-      for (let i = 0; i < appInstList.length; i++) {
-          let appInst = appInstList[i]
-          for (let j = 0; j < appList.length; j++) {
-              let app = appList[j]
-              if (appInst[fields.appName] === app[fields.appName]) {
-                  appInst[fields.deployment] = app[fields.deployment];
-                  break;
-              }
-          }
+    for (let i = 0; i < appInstList.length; i++) {
+      let appInst = appInstList[i]
+      for (let j = 0; j < appList.length; j++) {
+        let app = appList[j]
+        if (appInst[fields.appName] === app[fields.appName]) {
+          appInst[fields.deployment] = app[fields.deployment];
+          break;
+        }
       }
+    }
   }
   return appInstList;
 }
@@ -76,7 +76,7 @@ export const showAppInsts = (data) => {
       data.appinst = {
         key: {
           app_key: {
-            developer_key: { name: formatter.getOrganization() },
+            organization: formatter.getOrganization(),
           }
         }
       }

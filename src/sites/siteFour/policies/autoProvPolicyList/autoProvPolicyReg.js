@@ -132,7 +132,7 @@ class AutoProvPolicyReg extends React.Component {
     addCloudletResponse = (mcRequestList) => {
         let valid = true;
         if (mcRequestList && mcRequestList.length > 0) {
-            
+
             for (let i = 0; i < mcRequestList.length; i++) {
                 let mcRequest = mcRequestList[i];
                 if (mcRequest.response.status !== 200) {
@@ -214,7 +214,7 @@ class AutoProvPolicyReg extends React.Component {
                     Region: data[fields.region],
                     AutoProvPolicyCloudlet: {
                         key: { developer: data[fields.organizationName], name: data[fields.autoPolicyName] },
-                        cloudlet_key: { name: cloudlet[fields.cloudletName], operator_key: { name: cloudlet[fields.operatorName] } }
+                        cloudlet_key: { name: cloudlet[fields.cloudletName], organization: cloudlet[fields.operatorName] }
                     }
                 }
                 requestDataList.push({ token: token, method: method, data: requestData })
@@ -258,7 +258,7 @@ class AutoProvPolicyReg extends React.Component {
         )
     }
 
-    
+
 
     onAddCancel = () => {
         this.props.onClose(false)
@@ -294,8 +294,7 @@ class AutoProvPolicyReg extends React.Component {
         }
         else {
             let mcRequest = await serverData.sendRequest(this, showOrganizations())
-            if(mcRequest && mcRequest.response)
-            {
+            if (mcRequest && mcRequest.response) {
                 this.organizationList = mcRequest.response.data;
             }
             let step1 = [

@@ -6,7 +6,7 @@ let fields = formatter.fields
 
 export const keys = [
     { field: fields.region, label: 'Region', sortable: true, visible: true },
-    { field: fields.organizationName, serverField: 'key#OS#developer_key#OS#name', sortable: true, label: 'Organization', visible: true },
+    { field: fields.organizationName, serverField: 'key#OS#organization', sortable: true, label: 'Organization', visible: true },
     { field: fields.appName, serverField: 'key#OS#name', label: 'App', sortable: true, visible: true },
     { field: fields.version, serverField: 'key#OS#version', label: 'Version', visible: true },
     { field: fields.deployment, serverField: 'deployment', label: 'Deployment', sortable: true, visible: true },
@@ -31,9 +31,7 @@ export const getKey = (data) => {
         region: data[fields.region],
         app: {
             key: {
-                developer_key: {
-                    name: data[fields.organizationName]
-                },
+                organization: data[fields.organizationName],
                 name: data[fields.appName],
                 version: data[fields.version]
             }
@@ -46,7 +44,7 @@ export const showApps = (data) => {
         {
             data.app = {
                 key: {
-                    developer_key: { name: formatter.getOrganization() },
+                    organization: formatter.getOrganization(),
                 }
             }
         }
