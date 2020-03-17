@@ -486,11 +486,11 @@ class MexListView extends React.Component {
             if (filterList && filterList.length > 0) {
                 for (let i = 0; i < filterList.length; i++) {
                     let filter = filterList[i];
-                    serverData.showDataFromServer(this, requestInfo.requestType, filter, this.onServerResponse)
+                    serverData.showMultiDataFromServer(this, requestInfo.requestType, filter, this.onServerResponse)
                 }
             }
             else {
-                serverData.showDataFromServer(this, requestInfo.requestType, this.onServerResponse)
+                serverData.showMultiDataFromServer(this, requestInfo.requestType, this.onServerResponse)
             }
         }
     }

@@ -3,13 +3,19 @@ import { withRouter } from 'react-router-dom';
 import { Item, Grid } from 'semantic-ui-react';
 import MexForms from '../../../hoc/forms/MexForms';
 import MexTab from '../../../hoc/forms/MexTab';
-import MexMessageDialog from '../../../hoc/mexDialogMessage';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import * as serverData from '../../../services/ServerData';
 import ClustersMap from '../../../libs/simpleMaps/with-react-motion/index_clusters';
 import {fields} from '../../../services/model/format'
+
+//model
+
+import * as serverData from '../../../services/model/serverData';
+import {showOrganizations} from '../../../services/model/organization';
+import {showCloudlets} from '../../../services/model/cloudlet';
+import {showFlavors} from '../../../services/model/flavor';
+import {showPrivacyPolicies} from '../../../services/model/privacyPolicy';
 
 const DEPLOYMENT_TYPE_DOCKER = 'docker';
 const DEPLOYMENT_TYPE_KUBERNETES = 'kubernetes';
@@ -52,17 +58,18 @@ class ClusterInstReg extends React.Component {
     }
 
     getOptions = (dataList, form) => {
-        if (dataList && dataList.length > 0)
+        if (dataList && dataList.length > 0) {
             if (dataList[0].isDefault) {
                 form.value = dataList[0][form.field];
                 let rules = form.rules ? form.rules : {}
                 rules.disabled = true;
                 form.rules = rules;
             }
-        return dataList.map(data => {
-            let info = form ? data[form.field] : data
-            return { key: info, value: info, text: info }
-        })
+            return dataList.map(data => {
+                let info = form ? data[form.field] : data
+                return { key: info, value: info, text: info }
+            })
+        }
     }
 
     getSelectData = (currentForm, dataList, dataType) => {
@@ -125,17 +132,17 @@ class ClusterInstReg extends React.Component {
     }
 
     getCloudletInfo = async (form, forms) => {
-        this.cloudletList = [...this.cloudletList, ...await serverData.getCloudletInfo(this, { region: form.value })]
+        this.cloudletList = [...this.cloudletList, ...await serverData.sendRequest(this, showCloudlets({ region: form.value }))]
         this.updateOptions(form, forms);
     }
 
     getFlavorInfo = async (form, forms, data) => {
-        this.flavorList = [...this.flavorList, ...await serverData.getFlavorInfo(this, { region: form.value })]
+        this.flavorList = [...this.flavorList, ...await serverData.sendRequest(this, showFlavors({ region: form.value }))]
         this.updateOptions(form, forms, data);
     }
 
     getPrivacyPolicy = async (form, forms, data) => {
-        this.privacyPolicyList = [...this.privacyPolicyList, ...await serverData.getPrivacyPolicy(this, { region: form.value })]
+        this.privacyPolicyList = [...this.privacyPolicyList, ...await serverData.sendRequest(this, showPrivacyPolicies({ region: form.value }))]
         this.updateOptions(form, forms, data);
     }
 
@@ -311,7 +318,7 @@ class ClusterInstReg extends React.Component {
                 num_nodes: parseInt(data[fields.numberOfNodes]),
             }
         }
-        serverData.updateClusterInst(this, requestData, this.onCreateResponse)
+        //serverData.updateClusterInst(this, requestData, this.onCreateResponse)
     }
 
     onCreate = async () => {
@@ -346,7 +353,7 @@ class ClusterInstReg extends React.Component {
                                 num_nodes: parseInt(data[fields.numberOfNodes]),
                             }
                         }
-                        serverData.createClusterInst(requestData, this.onCreateResponse)
+                        //serverData.createClusterInst(requestData, this.onCreateResponse)
                     }
                 }
             }
@@ -380,7 +387,6 @@ class ClusterInstReg extends React.Component {
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
-                <MexMessageDialog close={this.closeDialog} message={this.state.dialogMessage} />
             </div>
         )
     }
@@ -477,7 +483,7 @@ class ClusterInstReg extends React.Component {
             this.loadData(forms, data)
         }
         else {
-            this.organizationList = await serverData.getOrganizationInfo(this)
+            this.organizationList = await serverData.sendRequest(this, showOrganizations())
             this.loadData(forms)
         }
 

@@ -63,11 +63,11 @@ class AutoProvPolicyReg extends React.Component {
                         let outBoundRulesForm = form.forms[j]
                         if(currentForm.value === 'icmp' && (outBoundRulesForm.field === fields.portRangeMin || outBoundRulesForm.field === fields.portRangeMax))
                         {
-                            outBoundRulesForm.editable = false;
+                            outBoundRulesForm.visible = false;
                         }
                         else
                         {
-                            outBoundRulesForm.editable = true; 
+                            outBoundRulesForm.visible = true; 
                         }
                     }
                     break;
@@ -86,7 +86,7 @@ class AutoProvPolicyReg extends React.Component {
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i];
                 if (form.label === 'Outbound Security Rules' || form.field === fields.outboundSecurityRules) {
-                    form.editable = !currentForm.value;
+                    form.visible = !currentForm.value;
                 }
             }
             this.setState({
@@ -161,24 +161,24 @@ class AutoProvPolicyReg extends React.Component {
     }
 
     getOutBoundRules = ()=>([ 
-            { field: fields.protocol, label: 'Protocol', formType: 'Select', rules: { required: true, formType: 'number' },editable: true, options:this.getProtocolData(),serverField:'protocol'},
-            { field: fields.portRangeMin, label: 'Port Range Min', formType: 'Input', rules: { required: true, formType: 'number' }, editable: true,serverField:'port_range_min', dataValidateFunc:this.validatePortRange },
-            { field: fields.portRangeMax, label: 'Port Range Max', formType: 'Input', rules: { required: true, formType: 'number' }, editable: true,serverField:'port_range_max', dataValidateFunc:this.validatePortRange },
-            { field: fields.remoteCIDR, label: 'Remote CIDR', formType: 'Input', rules: { required: true },editable: true,serverField:'remote_cidr', dataValidateFunc:this.validateRemoteCIDR },
-        { icon: 'delete', formType: 'IconButton', editable: true, color: 'white', onClick: this.removeRulesForm }
+            { field: fields.protocol, label: 'Protocol', formType: 'Select', rules: { required: true, formType: 'number' },visible: true, options:this.getProtocolData(),serverField:'protocol'},
+            { field: fields.portRangeMin, label: 'Port Range Min', formType: 'Input', rules: { required: true, formType: 'number' }, visible: true,serverField:'port_range_min', dataValidateFunc:this.validatePortRange },
+            { field: fields.portRangeMax, label: 'Port Range Max', formType: 'Input', rules: { required: true, formType: 'number' }, visible: true,serverField:'port_range_max', dataValidateFunc:this.validatePortRange },
+            { field: fields.remoteCIDR, label: 'Remote CIDR', formType: 'Input', rules: { required: true },visible: true,serverField:'remote_cidr', dataValidateFunc:this.validateRemoteCIDR },
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', onClick: this.removeRulesForm }
     ])
 
     getOutboundSecurityForm = (outBoundRules)=>(
-        { uuid: uuid(), field: fields.outboundSecurityRules, formType: 'MultiForm', forms: outBoundRules, width:3, editable: true }
+        { uuid: uuid(), field: fields.outboundSecurityRules, formType: 'MultiForm', forms: outBoundRules, width:3, visible: true }
     )
 
     getForms = () => ([
         { label: 'Create Privacy Policy', formType: 'Header' },
-        { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, editable: true, serverField: 'region' },
-        { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: true }, editable: true, serverField: 'privacypolicy#OS#key#OS#developer' },
-        { field: fields.privacyPolicyName, label: 'Privacy Policy Name', formType: 'Input', placeholder: 'Enter Privacy Policy Name', rules: { required: true }, editable: true, serverField: 'privacypolicy#OS#key#OS#name' },
-        { field: fields.fullIsolation, label: 'Full Isolation', formType: 'Checkbox', editable: true, value: false },
-        { label: 'Outbound Security Rules', formType: 'Header', forms: { formType: 'Button', icon: 'Add', onClick: this.addRulesForm }, editable: true },
+        { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region' },
+        { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: true }, visible: true, serverField: 'privacypolicy#OS#key#OS#developer' },
+        { field: fields.privacyPolicyName, label: 'Privacy Policy Name', formType: 'Input', placeholder: 'Enter Privacy Policy Name', rules: { required: true }, visible: true, serverField: 'privacypolicy#OS#key#OS#name' },
+        { field: fields.fullIsolation, label: 'Full Isolation', formType: 'Checkbox', visible: true, value: false },
+        { label: 'Outbound Security Rules', formType: 'Header', forms: { formType: 'Button', icon: 'Add', onClick: this.addRulesForm }, visible: true },
     ])
 
     addRulesForm = () => {
@@ -327,7 +327,7 @@ class AutoProvPolicyReg extends React.Component {
             {
                 if (data) {
                     if (form.label === 'Outbound Security Rules') {
-                        form.editable = data[fields.outboundSecurityRules] && data[fields.outboundSecurityRules].length > 0 ? true : false
+                        form.visible = data[fields.outboundSecurityRules] && data[fields.outboundSecurityRules].length > 0 ? true : false
                     }
                 }
             }
@@ -360,7 +360,7 @@ class AutoProvPolicyReg extends React.Component {
                             isICMP = outboundRule.value === 'icmp' ? true : false;
                         }
                         if ((outboundRule.field === fields.portRangeMin || outboundRule.field === fields.portRangeMax) && isICMP) {
-                            outboundRule.editable = false;
+                            outboundRule.visible = false;
                         }
                     }
                     forms.push(this.getOutboundSecurityForm(outboundRules))
@@ -384,6 +384,7 @@ class AutoProvPolicyReg extends React.Component {
     }
 
 };
+
 const mapStateToProps = (state) => {
 
     let region = state.changeRegion

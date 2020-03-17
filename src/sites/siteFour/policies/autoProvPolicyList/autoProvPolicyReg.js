@@ -112,10 +112,10 @@ class AutoProvPolicyReg extends React.Component {
                 }
                 this.filterCloudlets();
                 let step2 = [
-                    { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, editable: true, options: [{ key: region, value: region, text: region }], value: region },
-                    { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { disabled: true }, editable: true, options: [{ key: organization, value: organization, text: organization }], value: organization },
-                    { field: fields.autoPolicyName, label: 'Auto Policy Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { disabled: true }, editable: true, value: autoPolicyName },
-                    { field: fields.cloudlets, label: 'Clouldets', formType: 'DualList', rules: { required: true }, editable: true, options: this.getCloudletData(this.cloudletList) },
+                    { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible: true, options: [{ key: region, value: region, text: region }], value: region },
+                    { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { disabled: true }, visible: true, options: [{ key: organization, value: organization, text: organization }], value: organization },
+                    { field: fields.autoPolicyName, label: 'Auto Policy Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { disabled: true }, visible: true, value: autoPolicyName },
+                    { field: fields.cloudlets, label: 'Clouldets', formType: 'DualList', rules: { required: true }, visible: true, options: this.getCloudletData(this.cloudletList) },
                     { label: `${action} Cloudlets`, formType: 'Button', onClick: this.onAddCloudlets },
                     { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
                 ]
@@ -298,11 +298,11 @@ class AutoProvPolicyReg extends React.Component {
                 this.organizationList = mcRequest.response.data;
             }
             let step1 = [
-                { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, editable: true },
-                { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: true }, editable: true },
-                { field: fields.autoPolicyName, label: 'Auto Policy Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { required: true }, editable: true },
-                { field: fields.deployClientCount, label: 'Deploy Client Count', formType: 'Input', rules: { formType: 'number' }, editable: true },
-                { field: fields.deployIntervalCount, label: 'Deploy Interval Count (s)', formType: 'Input', rules: { formType: 'number' }, editable: true },
+                { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
+                { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: true }, visible: true },
+                { field: fields.autoPolicyName, label: 'Auto Policy Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { required: true }, visible: true },
+                { field: fields.deployClientCount, label: 'Deploy Client Count', formType: 'Input', rules: { formType: 'number' }, visible: true },
+                { field: fields.deployIntervalCount, label: 'Deploy Interval Count (s)', formType: 'Input', rules: { formType: 'number' }, visible: true },
                 { label: 'Create Policy', formType: 'Button', onClick: this.onCreateAutoProvPolicy, validate: true },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
             ]

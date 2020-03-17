@@ -47,7 +47,7 @@ const MexForms = (props) => {
                     }
                 }
             }
-            else if (form.editable && !isDisabled(form)) {
+            else if (form.visible && !isDisabled(form)) {
                 let rules = form.rules;
                 if (rules) {
                     if (rules.required) {
@@ -73,7 +73,7 @@ const MexForms = (props) => {
         if (form.validate) {
             for (let i = 0; i < props.forms.length; i++) {
                 let form = forms[i]
-                valid = form.editable ? validateRules(form, valid) : valid
+                valid = form.visible ? validateRules(form, valid) : valid
                 if (!valid) {
                     break;
                 }
@@ -130,7 +130,7 @@ const MexForms = (props) => {
                 disabled = rules.disabled ? rules.disabled : false;
             }
             return (
-                form.editable ?
+                form.visible ?
                     <Grid.Column width={parentForm.width} key={key}>
                         <label style={form.labelStyle}>{form.label}{required ? ' *' : ''}</label>
                         {
@@ -197,7 +197,7 @@ const MexForms = (props) => {
                     <Grid columns={2}>
                         {forms.map((form, i) => {
                             return (
-                                form.editable ?
+                                form.visible ?
                                     form.formType === HEADER ?
                                         loadHeader(i, form) :
                                         form.formType === 'MultiForm' ?

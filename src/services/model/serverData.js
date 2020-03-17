@@ -29,7 +29,18 @@ export const sendMultiRequest = (self, requestInfoList, callback) => {
     serviceMC.sendMultiRequest(self, requestDataList, callback)
 }
 
-export const showDataFromServer = (self, requestType, filter, callback) => {
+export const showDataFromServer = async (self, requestData) => {
+    let dataList = []
+    requestData.token = getToken();
+    let mcRequest =  await serviceMC.sendSyncRequest(self, requestData)
+    if(mcRequest && mcRequest.response && mcRequest.response.data)
+    {
+        dataList = mcRequest.response.data;
+    }
+    return dataList;
+}
+
+export const showMultiDataFromServer = (self, requestType, filter, callback) => {
     let requestDataList = [];
     for (let i = 0; i < requestType.length; i++) {
         let request = requestType[i](Object.assign({}, filter))

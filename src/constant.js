@@ -4,6 +4,7 @@ export const DELETE_CLOUDLET = 'DeleteCloudlet'
 export const ADD_ORGANIZATION = 'AddOrganization'
 export const DELETE_ORGANIZATION = 'DeleteOrganization'
 export const DELETE = 'Delete'
+export const SELECT = 'Select'
 
 /**
  * Filter Data

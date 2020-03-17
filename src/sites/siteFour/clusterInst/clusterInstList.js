@@ -14,7 +14,7 @@ import { showCloudlets } from '../../../services/model/cloudlet';
 //list
 import MexListView from '../../../container/MexListView';
 //reg
-import ClusterInstReg from './clusterInstReg';
+import ClusterInstReg from './clusterRegNew';
 
 class ClusterInstView extends React.Component {
     constructor(props) {

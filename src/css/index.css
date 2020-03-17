@@ -1002,7 +1002,7 @@ body, button, input, textarea, optgroup, select, textarea,
     border-radius: 6px;
     padding: 1.071em;
     overflow: hidden;
-    height: calc(100vh - 149px);
+    /* height: calc(100vh - 149px); */
     width: 100%;
 }
 .ui.header.panel_title {
