@@ -251,7 +251,7 @@ export default hot(
 
 
                             </Select>
-                            <div style={{position: 'absolute', top: 75, left: 12, zIndex:99999}}>
+                            <div style={{position: 'absolute', top: 80, left: 12, zIndex:99999}}>
                                 <Icon
 
                                     onClick={() => {
@@ -263,6 +263,7 @@ export default hot(
                                     style={{
                                         color: 'black',
                                         fontSize: 20,
+                                        borderRadius:5,
                                         backgroundColor: 'white',
                                         height: 30,
                                         width: 30
