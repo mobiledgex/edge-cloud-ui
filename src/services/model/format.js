@@ -90,7 +90,8 @@ export const fields = {
     cloudletStatus: 'cloudletStatus',
     actions: 'actions',
     manage: 'manage',
-    poolName:'poolName'
+    poolName:'poolName',
+    clusterinst:'clusterinst'
 
 }
 

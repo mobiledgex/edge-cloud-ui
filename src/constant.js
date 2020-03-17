@@ -12,6 +12,20 @@ export const SELECT = 'Select'
 export const CLOUDLET = 'Cloudlet'
 export const CLUSTER_INST = 'ClusterInst'
 export const APP_INST = 'AppInst'
+export const YES = 'YES'
+
+export const IPAccessLabel = (id) => {
+    switch (id) {
+        case 1:
+            return 'Dedicated'
+        case 3:
+            return 'Shared'
+        case 'Dedicated':
+            return 1
+        case 'Shared':
+            return 3
+    }
+}
 
 /**
  * Filter Data

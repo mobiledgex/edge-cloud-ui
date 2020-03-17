@@ -14,7 +14,7 @@ import { showCloudlets } from '../../../services/model/cloudlet';
 //list
 import MexListView from '../../../container/MexListView';
 //reg
-import ClusterInstReg from './clusterRegNew';
+import ClusterInstReg from './clusterInstReg';
 
 class ClusterInstView extends React.Component {
     constructor(props) {
@@ -27,12 +27,19 @@ class ClusterInstView extends React.Component {
         this.keys = Object.assign([], keys);
     }
 
-    onAdd = () => {
-        this.setState({ currentView: <ClusterInstReg /> })
+    onRegClose = (isEdited)=>
+    {
+        this.setState({ currentView: null })
+    }
+
+
+    onAdd = (action, data) => {
+        this.setState({ currentView: <ClusterInstReg data={data} action={action ? action.label : null} onClose={this.onRegClose}/> })
     }
 
     actionMenu = () => {
         return [
+            { label: 'Update', onClick: this.onAdd },
             { label: 'Delete', onClick: deleteClusterInst, ws: true }
         ]
     }

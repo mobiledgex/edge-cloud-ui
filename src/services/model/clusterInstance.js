@@ -1,6 +1,7 @@
 import * as formatter from './format'
-import { SHOW_CLUSTER_INST, STREAM_CLUSTER_INST, DELETE_CLUSTER_INST, SHOW_CLOUDLET, SHOW_ORG_CLOUDLET} from './endPointTypes'
-import { TYPE_JSON } from '../../constant';
+import uuid from 'uuid'
+import { SHOW_CLUSTER_INST, STREAM_CLUSTER_INST, CREATE_CLUSTER_INST, DELETE_CLUSTER_INST, SHOW_CLOUDLET, SHOW_ORG_CLOUDLET} from './endPointTypes'
+import { TYPE_JSON, IPAccessLabel } from '../../constant';
 
 let fields = formatter.fields;
 
@@ -91,28 +92,51 @@ export const showClusterInsts = (data) => {
     return { method: SHOW_CLUSTER_INST, data: data }
 }
 
+export const clusterKey = (data, isCreate) => {
+    let clusterinst = {}
+    clusterinst.key = {
+        cluster_key: { name: data[fields.clusterName] },
+        cloudlet_key: { organization: data[fields.operatorName], name: data[fields.cloudletName] },
+        organization: data[fields.organizationName]
+    }
+    clusterinst.flavor = { name: data[fields.flavorName] }
+    if (isCreate) {
+        clusterinst.deployment = data[fields.deployment]
+        if (data[fields.ipAccess]) {
+            clusterinst.ip_access = parseInt(IPAccessLabel(data[fields.ipAccess]))
+        }
+        clusterinst.reservable = data[fields.reservable]
+        if (data[fields.reservedBy]) {
+            clusterinst.reserved_by = data[fields.reservedBy]
+        }
+        if (data[fields.numberOfMasters]) {
+            clusterinst.num_masters = parseInt(data[fields.numberOfMasters])
+        }
+        if (data[fields.num_nodes]) {
+            clusterinst.num_nodes = parseInt(data[fields.num_nodes])
+        }
+    }
+    return ({
+        region: data[fields.region],
+        clusterinst: clusterinst
+    })
+}
+
+export const createClusterInst = (data) => {
+    let requestData = clusterKey(data, true)
+    return { uuid: data.uuid ? data.uuid : uuid(), method: CREATE_CLUSTER_INST, data: requestData }
+}
+
 export const deleteClusterInst = (data) => {
-    let requestData = getKey(data)
+    let requestData = clusterKey(data)
     return { uuid: data.uuid, method: DELETE_CLUSTER_INST, data: requestData, success: `Cluster Instance ${data[fields.appName]}` }
 }
 
 export const streamClusterInst = (data) => {
-    let requestData = getKey(data)
+    let requestData = clusterKey(data)
     return { uuid: data.uuid, method: STREAM_CLUSTER_INST, data: requestData }
 }
-export const getKey = (data) => {
-    return ({
-        region: data[fields.region],
-        clusterinst: {
-            key: {
-                cluster_key: { name: data[fields.clusterName] },
-                cloudlet_key: { organization : data[fields.operatorName], name: data[fields.cloudletName] },
-                developer: data[fields.organizationName]
-            },
-            flavor: { name: data[fields.flavorName] }
-        }
-    })
-}
+
 
 const customData = (value) => {
 }

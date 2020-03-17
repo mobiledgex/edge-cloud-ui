@@ -1,4 +1,5 @@
 import React from 'react'
+import uuid from 'uuid';
 import MexSelect from './MexSelect';
 import MexMultiSelect from './MexMultiSelect'
 import MexInput from './MexInput';
@@ -53,7 +54,7 @@ const MexForms = (props) => {
                 let rules = form.rules;
                 if (rules) {
                     if (rules.required) {
-                        if (form.value === undefined || form.value.length === 0) {
+                        if (form.value === null || form.value === undefined || form.value.length === 0) {
                             form.error = `${form.label} is mandatory`
                             valid = false;
                         }
@@ -162,7 +163,7 @@ const MexForms = (props) => {
         }
         return (
             form.field ?
-                <Grid.Row columns={3} key={index}>
+                <Grid.Row columns={3} key={uuid() + '' + index}>
                     <Grid.Column width={4} className='detail_item'>
                         <div style={form.labelStyle}>{form.label}{required ? ' *' : ''}</div>
                     </Grid.Column>
