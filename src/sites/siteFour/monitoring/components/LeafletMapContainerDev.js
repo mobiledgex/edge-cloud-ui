@@ -5,7 +5,7 @@ import 'react-leaflet-fullscreen-control'
 import type {TypeAppInstance, TypeClientLocation} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 import {CheckCircleOutlined} from '@material-ui/icons';
-import {Map, Marker, Popup, TileLayer, Tooltip, Polyline} from "../../../../components/react-leaflet_kj/src/index";
+import {Map, Marker, Popup, TileLayer, Tooltip, Polyline} from "react-leaflet";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {renderPlaceHolderLottiePinJump2, showToast} from "../PageMonitoringCommonService";

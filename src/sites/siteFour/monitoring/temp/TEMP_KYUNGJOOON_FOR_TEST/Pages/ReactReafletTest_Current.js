@@ -7,7 +7,7 @@ import {
     TileLayer,
     Tooltip,
     Polyline
-} from "../../../../../../components/react-leaflet_kj/src/index";
+} from "react-leaflet";
 import L from 'leaflet';
 import {hot} from "react-hot-loader/root";
 
@@ -15,7 +15,8 @@ import '../../../PageMonitoring.css'
 import {Button} from "antd";
 import {Select} from "antd";
 import {Icon} from "semantic-ui-react";
-
+import MarkerClusterGroup from 'leaflet-make-cluster-group'
+import 'leaflet-make-cluster-group/LeafletMakeCluster.css'
 
 type Props = {};
 type State = {
@@ -27,7 +28,8 @@ type State = {
     whiteTileLayer: any,
     currentTyleLayer: any,
     currentZoomLevel: number,
-    currentHeight:number,
+    currentHeight: number,
+    currentWidth: number,
 };
 let greenIcon = new L.Icon({
     iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
@@ -79,7 +81,8 @@ export default hot(
             /*darkTileLayer: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
             whiteTileLayer: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png',*/
             currentTyleLayer: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
-            currentHeight:'80%'
+            currentHeight: '80%',
+            currentWidth: '100%',
         }
 
         mapTileList = [
@@ -123,7 +126,7 @@ export default hot(
                     <div style={{height: this.state.currentHeight, width: '100%', zIndex: 1}}>
                         <Map center={[45.4, 51.7]}
                              duration={0.9}
-                            style={{width: '100%', height:  this.state.currentHeight, zIndex: 1,}}
+                             style={{width: '100%', height: this.state.currentHeight, zIndex: 1,}}
                              zoom={this.state.currentZoomLevel}
                              onZoomEnd={(e) => {
 
@@ -133,6 +136,7 @@ export default hot(
                                      currentZoomLevel: zoomLevel,
                                  })
                              }}
+                             maxZoom={7}
                              ref={(ref) => {
                                  this.map = ref;
                              }}
@@ -141,6 +145,31 @@ export default hot(
                              dragging={true}
                              boundsOptions={{padding: [50, 50]}}
                         >
+                            <MarkerClusterGroup>
+                                <Marker
+
+                                    position={[37.2411, 127.1776]}
+                                    icon={cell_phone}
+
+                                >
+                                    <Popup>용인 jessica.</Popup>
+                                </Marker>
+                                <Marker
+                                    position={[37.5665, 126.9780]}
+                                    icon={cell_phone}
+                                >
+                                    <Popup>seoul WeWork.</Popup>
+                                </Marker>
+                                <Marker
+
+                                    position={[37.3947, 127.1112]}
+                                    icon={cell_phone}
+
+                                >
+                                    <Popup>성남 고경준.</Popup>
+                                </Marker>
+                            </MarkerClusterGroup>
+
                             <TileLayer
                                 url={this.state.currentTyleLayer}
                                 //url={'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'}
@@ -149,44 +178,23 @@ export default hot(
                                 //maxZoom={15}
                             />
 
+                            {/*todo:클라우드렛*/}
+                            {/*todo:클라우드렛*/}
+                            {/*todo:클라우드렛*/}
                             <Marker
                                 position={[50.1109, 8.6821]}
                                 icon={cloud}
                             >
                                 <Popup>Frankfurutu eu.</Popup>
                             </Marker>
-
                             <Marker
                                 position={[35.1796, 129.0756]}
                                 icon={cloud}
                             >
                                 <Popup>부산 클라우드렛.</Popup>
                             </Marker>
-                            <Marker
-                                position={[37.5665, 126.9780]}
-                                icon={cell_phone}
-                            >
-                                <Popup>seoul WeWork.</Popup>
-                            </Marker>
-                            <Marker
 
-                                position={[37.3947, 127.1112]}
-                                icon={cell_phone}
 
-                            >
-                                <Popup>성남 고경준.</Popup>
-                            </Marker>
-
-                            {/*°*/}
-
-                            <Marker
-
-                                position={[37.2411, 127.1776]}
-                                icon={cell_phone}
-
-                            >
-                                <Popup>용인 jessica.</Popup>
-                            </Marker>
                             <Polyline
                                 dashArray={['8, 8']}
                                 positions={[
@@ -242,18 +250,21 @@ export default hot(
                                     onClick={() => {
                                         this.setState({
                                             currentHeight: '50%',
+                                            currentWidth: '50%',
                                         })
                                     }}
-                            >size change</Button>
+                            >size small</Button>
                             <div style={{width: 30}}/>
                             <Button type="primary"
                                     style={{backgroundColor: 'red', borderColor: 'red'}}
                                     onClick={() => {
                                         this.setState({
+
                                             currentHeight: '80%',
+                                            currentWidth: '100%',
                                         })
                                     }}
-                            >size change</Button>
+                            >size big</Button>
 
                             <div style={{width: 30}}/>
                             <Select defaultValue={this.mapTileList[0].name} style={{width: 120}} onChange={(value) => {
@@ -271,7 +282,7 @@ export default hot(
 
 
                             </Select>
-                            <div style={{position: 'absolute', top: 80, left: 12, zIndex:99999}}>
+                            <div style={{position: 'absolute', top: 80, left: 12, zIndex: 99999}}>
                                 <Icon
 
                                     onClick={() => {
@@ -283,11 +294,14 @@ export default hot(
                                     style={{
                                         color: 'black',
                                         fontSize: 20,
-                                        borderRadius:5,
+                                        borderRadius: 5,
                                         backgroundColor: 'white',
                                         height: 30,
                                         width: 30
                                     }}/>
+                            </div>
+                            <div style={{margin:20, fontSize:30, fontWeight:'bold'}}>
+                                {this.state.currentZoomLevel.toString()}
                             </div>
                         </div>
                     </div>
