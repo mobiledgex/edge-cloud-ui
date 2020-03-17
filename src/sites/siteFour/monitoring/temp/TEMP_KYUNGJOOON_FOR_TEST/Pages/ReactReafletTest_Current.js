@@ -27,6 +27,7 @@ type State = {
     whiteTileLayer: any,
     currentTyleLayer: any,
     currentZoomLevel: number,
+    currentHeight:number,
 };
 let greenIcon = new L.Icon({
     iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
@@ -78,6 +79,7 @@ export default hot(
             /*darkTileLayer: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
             whiteTileLayer: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png',*/
             currentTyleLayer: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
+            currentHeight:'80%'
         }
 
         mapTileList = [
@@ -118,10 +120,10 @@ export default hot(
 
             return (
                 <div className='page_monitoring_container'>
-                    <div style={{height: '70%', width: '100%', zIndex: 1}}>
+                    <div style={{height: this.state.currentHeight, width: '100%', zIndex: 1}}>
                         <Map center={[45.4, 51.7]}
                              duration={0.9}
-                            //style={{width: '100%', height: '100%', zIndex: 1,}}
+                            style={{width: '100%', height:  this.state.currentHeight, zIndex: 1,}}
                              zoom={this.state.currentZoomLevel}
                              onZoomEnd={(e) => {
 
@@ -234,6 +236,24 @@ export default hot(
                                         })
                                     }}
                             >reset zoom level</Button>
+                            <div style={{width: 30}}/>
+                            <Button type="primary"
+                                    style={{backgroundColor: 'blue', borderColor: 'blue'}}
+                                    onClick={() => {
+                                        this.setState({
+                                            currentHeight: '50%',
+                                        })
+                                    }}
+                            >size change</Button>
+                            <div style={{width: 30}}/>
+                            <Button type="primary"
+                                    style={{backgroundColor: 'red', borderColor: 'red'}}
+                                    onClick={() => {
+                                        this.setState({
+                                            currentHeight: '80%',
+                                        })
+                                    }}
+                            >size change</Button>
 
                             <div style={{width: 30}}/>
                             <Select defaultValue={this.mapTileList[0].name} style={{width: 120}} onChange={(value) => {
