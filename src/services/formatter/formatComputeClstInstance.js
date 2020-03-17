@@ -8,7 +8,7 @@ export const getKey = (data) => {
         clusterinst: {
             key: {
                 cluster_key: { name: ClusterName },
-                cloudlet_key: { operator_key: { name: Operator }, name: Cloudlet },
+                cloudlet_key: { organization: Operator, name: Cloudlet },
                 developer: OrganizationName
             },
             flavor: { name: Flavor }
@@ -49,7 +49,7 @@ export const formatData = (datas, body) => {
                         State: '',
                         Progress: '',
                         Status: '',
-                        Reservable:'',
+                        Reservable: '',
                         Edit: null
                     })
                 } else {
@@ -57,7 +57,7 @@ export const formatData = (datas, body) => {
                     let Region = body.region || body.params.region || '-';
                     let ClusterName = dataResult.data.key.cluster_key.name || '-';
                     let DeveloperName = dataResult.data.key.developer || '-';
-                    let Operator = dataResult.data.key.cloudlet_key.operator_key.name || '-';
+                    let Operator = dataResult.data.key.cloudlet_key.organization || '-';
                     let Cloudlet = dataResult.data.key.cloudlet_key.name || '-';
                     let Flavor = dataResult.data.flavor.name || '-';
                     let IpAccess = dataResult.data.ip_access || '-';
@@ -71,7 +71,7 @@ export const formatData = (datas, body) => {
                     let Deployment = dataResult.data.deployment;
 
 
-                    values.push({ uuid: generateUniqueId(), Region: Region, ClusterName: ClusterName, OrganizationName: DeveloperName, Operator: Operator, Cloudlet: Cloudlet, Flavor: Flavor, IpAccess: IpAccess, CloudletLocation: CloudletLocation, State: State, Progress: '', Status: Status, Reservable:Reservable,Deployment: Deployment, Edit: newRegistKey })
+                    values.push({ uuid: generateUniqueId(), Region: Region, ClusterName: ClusterName, OrganizationName: DeveloperName, Operator: Operator, Cloudlet: Cloudlet, Flavor: Flavor, IpAccess: IpAccess, CloudletLocation: CloudletLocation, State: State, Progress: '', Status: Status, Reservable: Reservable, Deployment: Deployment, Edit: newRegistKey })
 
                 }
             })

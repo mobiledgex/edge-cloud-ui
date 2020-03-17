@@ -6,9 +6,9 @@ export const getKey = (data) => {
     region: Region,
     appinst: {
       key: {
-        app_key: { developer_key: { name: OrganizationName }, name: AppName, version: Version },
+        app_key: { organization: OrganizationName, name: AppName, version: Version },
         cluster_inst_key: {
-          cloudlet_key: { name: Cloudlet, operator_key: { name: Operator } },
+          cloudlet_key: { name: Cloudlet, organization: Operator },
           cluster_key: { name: ClusterInst },
           developer: OrganizationName
         }
@@ -16,53 +16,6 @@ export const getKey = (data) => {
     }
   })
 }
-/*
-{
-  "data": {
-    "key": {
-      "app_key": {
-        "developer_key": {
-          "name": "MobiledgeX"
-        },
-        "name": "MEXPrometheusAppName",
-        "version": "1.0"
-      },
-      "cluster_inst_key": {
-        "cluster_key": {
-          "name": "bickh123"
-        },
-        "cloudlet_key": {
-          "operator_key": {
-            "name": "TDG"
-          },
-          "name": "mexplat-stage-hamburg-cloudlet"
-        },
-        "developer": "MobiledgeX"
-      }
-    },
-    "cloudlet_loc": {
-      "latitude": 55,
-      "longitude": 44,
-      "timestamp": {}
-    },
-    "uri": "bickh123.mexplat-stage-hamburg-cloudlet.tdg.mobiledgex.net",
-    "liveness": "LivenessStatic",
-    "mapped_ports": null,
-    "flavor": {
-      "name": "x1.medium"
-    },
-    "state": "DeleteError",
-    "errors": [
-      "Delete App Inst failed: error deleting helm chart, KUBECONFIG=bickh123.TDG.kubeconfig helm delete --purge mexprometheusappname, Error: release: \"mexprometheusappname\" not found, Process exited with status 1"
-    ],
-    "runtime_info": {},
-    "created_at": {
-      "seconds": 1558940545,
-      "nanos": 950911983
-    }
-  }
-}
- */
 
 export const formatData = (datas, body) => {
 
@@ -124,10 +77,10 @@ export const formatData = (datas, body) => {
         } else {
           let Index = i;
           let Region = body.region || body.params.region || '-';
-          let DeveloperName = dataResult.data.key.app_key.developer_key.name || '-';
+          let DeveloperName = dataResult.data.key.app_key.organization || '-';
           let AppName = dataResult.data.key.app_key.name || '-';
           let Version = dataResult.data.key.app_key.version || '-';
-          let Operator = dataResult.data.key.cluster_inst_key.cloudlet_key.operator_key.name || '-';
+          let Operator = dataResult.data.key.cluster_inst_key.cloudlet_key.organization || '-';
           let Cloudlet = dataResult.data.key.cluster_inst_key.cloudlet_key.name || '-';
           let CloudletLocation = dataResult.data.cloudlet_loc || '-';
           let ClusterInst = dataResult.data.key.cluster_inst_key.cluster_key.name || '-';
