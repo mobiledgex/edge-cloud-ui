@@ -41,12 +41,20 @@ export const multiDataRequest = (keys, mcRequestList) => {
 
     if (clusterDataList && clusterDataList.length > 0) {
         for (let i = 0; i < clusterDataList.length; i++) {
+            let found = false
             let clusterData = clusterDataList[i]
             for (let j = 0; j < cloudletDataList.length; j++) {
                 let cloudletData = cloudletDataList[j]
                 if (clusterData[fields.cloudletName] === cloudletData[fields.cloudletName]) {
+                    found = true;
                     clusterData[fields.cloudletLocation] = cloudletData[fields.cloudletLocation];
+                    break;
                 }
+            }
+            if(!found)
+            {
+                //Remove cluster if cloudlet not found
+                clusterDataList.splice(i,1)
             }
         }
     }
