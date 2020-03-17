@@ -136,12 +136,13 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
             let ClusterInst = '';
             pAppInstanceListGroupByCloudlet[key].map((innerItem: TypeAppInstance, index) => {
 
+                console.log("setCloudletLocation====>", innerItem);
+
                 if (index === (pAppInstanceListGroupByCloudlet[key].length - 1)) {
                     AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version + " | " + innerItem.Operator
                 } else {
                     AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version + " | " + innerItem.Operator + " , "
                 }
-
                 console.log("Operator===>", innerItem.Operator);
 
                 CloudletLocation = innerItem.CloudletLocation;
@@ -248,6 +249,8 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                             />
 
 
+
+
                             {/*@todo:clientList...*/}
                             {/*@todo:clientList...*/}
                             {/*@todo:clientList...*/}
@@ -314,7 +317,8 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                 let listAppName = outerItem.AppNames.split(",")
                                 console.log("outerItem====>", outerItem);
 
-                                if (outerItem.CloudletLocation.latitude != undefined) {
+
+                                if ( outerItem.CloudletLocation.latitude !=undefined){
                                     return (
                                         <Marker
                                             ref={c => this.marker1 = c}

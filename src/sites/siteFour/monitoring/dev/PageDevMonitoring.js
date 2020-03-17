@@ -443,10 +443,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 clearInterval(this.intervalForAppInst)
 
                 this.setState({dropdownRequestLoading: true})
-                let clusterList = await getClusterList();
                 let cloudletList = await getCloudletList()
+                let clusterList = await getClusterList();
+
                 let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
-                console.log("appInstanceList===>", appInstanceList);
+                console.log("loadInitDataForCluster..appInstanceList===>", appInstanceList);
+
+                console.log("loadInitDataForCluster..clusterList===>", clusterList);
+                console.log("loadInitDataForCluster..scloudletList===>", cloudletList);
+
                 if (appInstanceList.length === 0) {
                     this.setState({
                         isNoData: true,

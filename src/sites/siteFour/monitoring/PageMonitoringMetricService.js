@@ -251,6 +251,10 @@ export const getAppInstList = async (pArrayRegion = ['EU', 'US'], type: string =
                 timeout: 15 * 1000
             }).then(async response => {
                 let parseData = JSON.parse(JSON.stringify(response));
+
+                console.log("getAppInstList====>", parseData);
+
+
                 if (parseData.data === '') {
                     return null;
                 } else {
@@ -368,14 +372,21 @@ export const getCloudletList = async () => {
             }
         })
 
+        console.log("mergedCloudletList====>", mergedCloudletList);
+
+        console.log("mergedCloudletList====selectOrg>", localStorage.selectOrg)
+
         //todo: current org에 관한것만 flitering
-        let mergedOrgCloudletList = []
+       /* let mergedOrgCloudletList = []
         mergedCloudletList.map(item => {
             if (item.Operator === localStorage.selectOrg) {
                 mergedOrgCloudletList.push(item)
             }
         })
-        return mergedOrgCloudletList;
+
+        console.log("mergedOrgCloudletList====>", mergedOrgCloudletList);*/
+
+        return mergedCloudletList;
     } catch (e) {
         showToast('getCloudletList===>' + e.toString())
     }
