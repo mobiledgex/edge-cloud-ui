@@ -16,6 +16,7 @@ export const fields = {
     state: 'state',
     status: 'status',
     reservable: 'reservable',
+    reservedBy:'reservedBy',
     deployment: 'deployment',
     cloudletLocation: 'cloudletLocation',
     ipSupport: 'ipSupport',
