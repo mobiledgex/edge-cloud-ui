@@ -136,7 +136,7 @@ export default hot(
                                      currentZoomLevel: zoomLevel,
                                  })
                              }}
-                             maxZoom={7}
+                             maxZoom={15}
                              ref={(ref) => {
                                  this.map = ref;
                              }}
@@ -155,10 +155,96 @@ export default hot(
                                     <Popup>용인 jessica.</Popup>
                                 </Marker>
                                 <Marker
+
+                                    position={[37.2411, 127.1776]}
+                                    icon={cell_phone}
+
+                                >
+                                    <Popup>용인 jessica2123.</Popup>
+                                </Marker>
+                                <Marker
+
+                                    position={[37.2411, 127.1776]}
+                                    icon={cell_phone}
+
+                                >
+                                    <Popup>용인 jessica3.</Popup>
+                                </Marker>
+                                <Marker
+
+                                    position={[37.2411, 127.1776]}
+                                    icon={cell_phone}
+
+                                >
+                                    <Popup>용인 jessica4.</Popup>
+                                </Marker>
+                                <Marker
+
+                                    position={[37.2411, 127.1776]}
+                                    icon={cell_phone}
+
+                                >
+                                    <Popup>용인 jessica5.</Popup>
+                                </Marker>
+                                <Marker
+
+                                    position={[37.2411, 127.1776]}
+                                    icon={cell_phone}
+
+                                >
+                                    <Popup>용인 jessica6.</Popup>
+                                </Marker>
+                                <Marker
+
+                                    position={[37.2411, 127.1776]}
+                                    icon={cell_phone}
+
+                                >
+                                    <Popup>용인 jessica7.</Popup>
+                                </Marker>
+                                <Marker
+
+                                    position={[37.2411, 127.1776]}
+                                    icon={cell_phone}
+
+                                >
+                                    <Popup>용인 jessica8.</Popup>
+                                </Marker>
+                                <Marker
                                     position={[37.5665, 126.9780]}
                                     icon={cell_phone}
                                 >
                                     <Popup>seoul WeWork.</Popup>
+                                </Marker>
+                                <Marker
+                                    position={[37.5665, 126.9780]}
+                                    icon={cell_phone}
+                                >
+                                    <Popup>seoul WeWork2.</Popup>
+                                </Marker>
+                                <Marker
+                                    position={[37.5665, 126.9780]}
+                                    icon={cell_phone}
+                                >
+                                    <Popup>seoul WeWork3.</Popup>
+                                </Marker>
+                                <Marker
+                                    position={[37.5665, 126.9780]}
+                                    icon={cell_phone}
+                                >
+                                    <Popup>seoul WeWork4.</Popup>
+                                </Marker>
+                                <Marker
+                                    position={[37.5665, 126.9780]}
+                                    icon={cell_phone}
+                                >
+                                    <Popup>seoul WeWork5</Popup>
+                                </Marker>
+                                <Marker
+                                    position={[37.5665, 126.9780]}
+                                    icon={cell_phone}
+                                >
+                                    <Popup>seoul WeWork6.</Popup>
                                 </Marker>
                                 <Marker
 
