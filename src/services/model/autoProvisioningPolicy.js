@@ -7,7 +7,7 @@ let fields = formatter.fields
 
 export const keys = [
   { field: fields.region, label: 'Region', sortable: true, visible: true },
-  { field: fields.organizationName, serverField: 'key#OS#developer', label: 'Organization Name', sortable: true, visible: true },
+  { field: fields.organizationName, serverField: 'key#OS#organization', label: 'Organization Name', sortable: true, visible: true },
   { field: fields.autoPolicyName, serverField: 'key#OS#name', label: 'Auto Policy Name', sortable: false, visible: true },
   { field: fields.deployClientCount, serverField: 'deploy_client_count', label: 'Deploy Client Count', sortable: false, visible: true, dataType: 'Integer', defaultValue: 0 },
   { field: fields.deployIntervalCount, serverField: 'deploy_interval_count', label: 'Deploy Interval Count', sortable: false, visible: true, dataType: 'Integer', defaultValue: 0 },
@@ -21,10 +21,33 @@ export const keys = [
   { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
 
-export const getKey = (data) => {
+const getKey = (data)=>
+{
+  return { organization: data[fields.organizationName], name: data[fields.autoPolicyName] }
+}
+
+const getAutoProvCloudletKey = (data, isCreate) => {
+  let autoProvPolicyCloudlet = {}
+  autoProvPolicyCloudlet.key = getKey(data)
+  if (isCreate) {
+    autoProvPolicyCloudlet.cloudlet_key = { name: data[fields.cloudletName], organization: data[fields.operatorName] }
+  }
   return ({
     region: data[fields.region],
-    AutoProvPolicy: { key: { developer: data[fields.organizationName], name: data[fields.autoPolicyName] } }
+    autoProvPolicyCloudlet: autoProvPolicyCloudlet
+  })
+}
+
+const getAutoProvKey = (data, isCreate) => {
+  let autoProvPolicy = {}
+  autoProvPolicy.key = getKey(data)
+  if (isCreate) {
+    autoProvPolicy.deploy_client_count = data[fields.deployClientCount] ? parseInt(data[fields.deployClientCount]) : undefined
+    autoProvPolicy.deploy_interval_count = data[fields.deployIntervalCount] ? parseInt(data[fields.deployIntervalCount]) : undefined
+  }
+  return ({
+    region: data[fields.region],
+    autoProvPolicy: autoProvPolicy
   })
 }
 
@@ -33,7 +56,7 @@ export const showAutoProvPolicies = (data) => {
     {
       data.AutoProvPolicy = {
         key: {
-          developer: formatter.getOrganization()
+          organization: formatter.getOrganization()
         }
       }
     }
@@ -42,8 +65,23 @@ export const showAutoProvPolicies = (data) => {
 }
 
 export const deleteAutoProvPolicy = (data) => {
-  let requestData = getKey(data)
+  let requestData = getAutoProvKey(data)
   return { method: DELETE_AUTO_PROV_POLICY, data: requestData, success: `Auto Provisioning Policy ${data[fields.autoPolicyName]}` }
+}
+
+export const createAutoProvPolicy = (data) => {
+  let requestData = getAutoProvKey(data, true)
+  return { method: CREATE_AUTO_PROV_POLICY, data: requestData}
+}
+
+export const addAutoProvCloudletKey = (data) => {
+  let requestData = getAutoProvCloudletKey(data, true)
+  return { method: ADD_AUTO_PROV_POLICY_CLOUDLET, data: requestData}
+}
+
+export const deleteAutoProvCloudletKey = (data) => {
+  let requestData = getAutoProvCloudletKey(data, true)
+  return { method: REMOVE_AUTO_PROV_POLICY_CLOUDLET, data: requestData}
 }
 
 /** 

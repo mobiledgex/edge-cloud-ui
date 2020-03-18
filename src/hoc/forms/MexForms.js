@@ -188,13 +188,12 @@ const MexForms = (props) => {
     const loadForms = (index, form) => {
         form.id = { id: index }
         let required = false;
-        let disabled = false;
+        let disabled = disableFields(form);
         if (form.rules) {
             let rules = form.rules;
             required = rules.required ? rules.required : false;
             disabled = rules.disabled ? rules.disabled : false;
         }
-        disabled = disableFields(form)
         return (
             form.field ?
                 <Grid.Row columns={3} key={uuid() + '' + index}>

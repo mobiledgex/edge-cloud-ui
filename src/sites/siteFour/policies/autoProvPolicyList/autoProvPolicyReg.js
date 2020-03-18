@@ -2,17 +2,16 @@ import React from 'react';
 import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
 import { Item, Step } from 'semantic-ui-react';
-import MexForms from '../../../../hoc/forms/MexForms';
+import MexForms, {SELECT, DUALLIST} from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-import * as serviceMC from '../../../../services/model/serviceMC';
 import * as serverData from '../../../../services/model/serverData';
 import { fields } from '../../../../services/model/format';
 
 import { showOrganizations } from '../../../../services/model/organization';
 import { showCloudlets } from '../../../../services/model/cloudlet';
-import { CREATE_AUTO_PROV_POLICY, ADD_AUTO_PROV_POLICY_CLOUDLET, REMOVE_AUTO_PROV_POLICY_CLOUDLET } from '../../../../services/model/endPointTypes';
+import { createAutoProvPolicy, addAutoProvCloudletKey, deleteAutoProvCloudletKey } from '../../../../services/model/autoProvisioningPolicy';
 
 
 const stepData = [
@@ -39,37 +38,15 @@ class AutoProvPolicyReg extends React.Component {
         this.cloudletList = []
     }
 
-    onValueChange = (currentForm, data) => {
-    }
-
-    getRegionData = () => {
-        if (this.regions && this.regions.length > 0)
-            return this.regions.map(region => {
-                return { key: region, value: region, text: region }
-            })
-    }
-
-    getOrganizationData = (form, dataList) => {
-        if (dataList && dataList.length > 0)
-            return dataList.map(data => {
-                let organizationName = data[fields.organizationName];
-                if (data.isDefault) {
-                    organizationName = data[fields.organizationName];
-                    form.value = organizationName;
-                    let rules = form.rules ? form.rules : {}
-                    rules.disabled = true;
-                    form.rules = rules;
-                }
-                return { key: organizationName, value: organizationName, text: organizationName }
-            })
-    }
-
     getCloudletData = (dataList) => {
         if (dataList && dataList.length > 0)
             return dataList.map(data => {
                 let cloudletName = data[fields.cloudletName];
                 return { value: JSON.stringify(data), label: cloudletName }
             })
+    }
+
+    onValueChange = (form) => {
     }
 
     filterCloudlets = () => {
@@ -98,45 +75,46 @@ class AutoProvPolicyReg extends React.Component {
     }
 
 
-    selectCloudlet = async (region, organization, autoPolicyName) => {
-        let mcRequest = await serverData.sendRequest(this, showCloudlets({ region: region }))
-        if (mcRequest && mcRequest.response) {
-            this.cloudletList = mcRequest.response.data
+    selectCloudlet = async (data) => {
 
-            if (this.cloudletList.length > 0) {
-                let action = 'Add'
-                if (this.props.action === 'Add') {
-                }
-                else if (this.props.action === 'Delete') {
-                    action = 'Delete'
-                }
-                this.filterCloudlets();
-                let step2 = [
-                    { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible: true, options: [{ key: region, value: region, text: region }], value: region },
-                    { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { disabled: true }, visible: true, options: [{ key: organization, value: organization, text: organization }], value: organization },
-                    { field: fields.autoPolicyName, label: 'Auto Policy Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { disabled: true }, visible: true, value: autoPolicyName },
-                    { field: fields.cloudlets, label: 'Clouldets', formType: 'DualList', rules: { required: true }, visible: true, options: this.getCloudletData(this.cloudletList) },
-                    { label: `${action} Cloudlets`, formType: 'Button', onClick: this.onAddCloudlets },
-                    { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
-                ]
-                this.loadData(step2)
-                this.setState({
-                    step: 1,
-                    forms: step2
-                })
+        let region = data[fields.region]
+        let organization = data[fields.organizationName]
+        let autoPolicyName = data[fields.autoPolicyName]
+
+        this.cloudletList = await serverData.showDataFromServer(this, showCloudlets({ region: region }))
+        if (this.cloudletList && this.cloudletList.length > 0) {
+            let action = 'Add'
+            if (this.props.action === 'Add') {
             }
+            else if (this.props.action === 'Delete') {
+                action = 'Delete'
+            }
+            this.filterCloudlets();
+            let forms = [
+                { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible: true, options: [{ key: region, value: region, text: region }], value: region },
+                { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { disabled: true }, visible: true, options: [{ key: organization, value: organization, text: organization }], value: organization },
+                { field: fields.autoPolicyName, label: 'Auto Policy Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { disabled: true }, visible: true, value: autoPolicyName },
+                { field: fields.cloudlets, label: 'Clouldets', formType: 'DualList', rules: { required: true }, visible: true },
+                { label: `${action} Cloudlets`, formType: 'Button', onClick: this.onAddCloudlets },
+                { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
+            ]
+            this.updateUI(forms)
+            this.setState({
+                step: 1,
+                forms: forms
+            })
         }
 
     }
 
     addCloudletResponse = (mcRequestList) => {
-        let valid = true;
+        let valid = false;
         if (mcRequestList && mcRequestList.length > 0) {
 
             for (let i = 0; i < mcRequestList.length; i++) {
                 let mcRequest = mcRequestList[i];
-                if (mcRequest.response.status !== 200) {
-                    valid = false;
+                if (mcRequest.response.status === 200) {
+                    valid = true;
                 }
             }
         }
@@ -148,79 +126,36 @@ class AutoProvPolicyReg extends React.Component {
         }
     }
 
-
-
-    formattedData = () => {
-        let data = {};
-        let forms = this.state.forms;
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i];
-            if (form.field) {
-                data[form.field] = form.value;
-            }
-        }
-        return data
-    }
-
-    onCreateAutoProvPolicy = async () => {
-        let data = this.formattedData()
-        let AutoProvPolicy = {
-            deploy_client_count: data[fields.deployClientCount] ? parseInt(data[fields.deployClientCount]) : undefined,
-            deploy_interval_count: data[fields.deployIntervalCount] ? parseInt(data[fields.deployIntervalCount]) : undefined,
-            key: { developer: data[fields.organizationName], name: data[fields.autoPolicyName] }
-        }
-
-        let requestData = {
-            Region: data[fields.region],
-            AutoProvPolicy: AutoProvPolicy
-        }
-
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let token = store.userToken;
-        if (token) {
-            let method = CREATE_AUTO_PROV_POLICY;
-            let mcRequest = await serverData.sendRequest(this, { method: method, data: requestData })
+    onCreateAutoProvPolicy = async (data) => {
+            let mcRequest = await serverData.sendRequest(this, createAutoProvPolicy(data))
             if (mcRequest && mcRequest.response) {
                 let response = mcRequest.response;
                 if (response.status === 200) {
-                    let data = mcRequest.request.data;
-                    let region = data.Region
-                    let organization = data.AutoProvPolicy.key.developer;
-                    let autoPolicyName = data.AutoProvPolicy.key.name;
-                    this.props.handleAlertInfo('success', `Auto Provisioning Policy ${autoPolicyName} created successfully`)
-                    this.selectCloudlet(region, organization, autoPolicyName)
+                    this.props.handleAlertInfo('success', `Auto Provisioning Policy ${data[fields.autoPolicyName]} created successfully`)
+                    this.selectCloudlet(data)
                 }
             }
-        }
+        
     }
 
-    onAddCloudlets = () => {
-        let data = this.formattedData()
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let token = store.userToken;
-
-        let method = ADD_AUTO_PROV_POLICY_CLOUDLET;
-
-        if (this.props.action === 'Delete') {
-            method = REMOVE_AUTO_PROV_POLICY_CLOUDLET;
-        }
-
+    onAddCloudlets = (data) => {
         let requestDataList = []
         let cloudletList = data[fields.cloudlets]
         if (cloudletList && cloudletList.length > 0) {
             for (let i = 0; i < cloudletList.length; i++) {
                 let cloudlet = JSON.parse(cloudletList[i])
-                let requestData = {
-                    Region: data[fields.region],
-                    AutoProvPolicyCloudlet: {
-                        key: { developer: data[fields.organizationName], name: data[fields.autoPolicyName] },
-                        cloudlet_key: { name: cloudlet[fields.cloudletName], organization: cloudlet[fields.operatorName] }
-                    }
+                data.cloudletName = cloudlet[fields.cloudletName]
+                data.operatorName = cloudlet[fields.operatorName]
+                if (this.props.action === 'Delete') {
+                    requestDataList.push(deleteAutoProvCloudletKey(data)) 
                 }
-                requestDataList.push({ token: token, method: method, data: requestData })
+                else
+                {
+                    requestDataList.push(addAutoProvCloudletKey(data)) 
+                }
             }
         }
-        serviceMC.sendMultiRequest(this, requestDataList, this.addCloudletResponse)
+        serverData.sendMultiRequest(this, requestDataList, this.addCloudletResponse)
     }
 
     /*Required*/
@@ -265,17 +200,20 @@ class AutoProvPolicyReg extends React.Component {
     }
 
 
-    loadData(forms, data) {
+    updateUI(forms) {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
             if (form.field) {
-                if (form.formType === 'Select') {
+                if (form.formType === SELECT || form.formType === DUALLIST ) {
                     switch (form.field) {
                         case fields.organizationName:
-                            form.options = this.getOrganizationData(form, this.organizationList)
+                            form.options = this.organizationList
                             break;
                         case fields.region:
-                            form.options = this.getRegionData();
+                            form.options = this.regions;
+                            break;
+                        case fields.cloudlets:
+                            form.options = this.getCloudletData(this.cloudletList);
                             break;
                         default:
                             form.options = undefined;
@@ -285,19 +223,23 @@ class AutoProvPolicyReg extends React.Component {
         }
 
     }
-    getFormData = async (data) => {
+
+    loadDefaultData = async (data) => {
         if (data) {
             let organization = {}
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
-            this.selectCloudlet(data[fields.region], data[fields.organizationName], data[fields.autoPolicyName])
+        }
+    }
+
+    getFormData = async (data) => {
+        if (data) {
+            this.loadDefaultData(data)
+            this.selectCloudlet(data)
         }
         else {
-            let mcRequest = await serverData.sendRequest(this, showOrganizations())
-            if (mcRequest && mcRequest.response) {
-                this.organizationList = mcRequest.response.data;
-            }
-            let step1 = [
+            this.organizationList = await serverData.showDataFromServer(this, showOrganizations());
+            let forms = [
                 { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
                 { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: true }, visible: true },
                 { field: fields.autoPolicyName, label: 'Auto Policy Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { required: true }, visible: true },
@@ -306,9 +248,9 @@ class AutoProvPolicyReg extends React.Component {
                 { label: 'Create Policy', formType: 'Button', onClick: this.onCreateAutoProvPolicy, validate: true },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
             ]
-            this.loadData(step1)
+            this.updateUI(forms)
             this.setState({
-                forms: step1
+                forms: forms
             })
         }
 
