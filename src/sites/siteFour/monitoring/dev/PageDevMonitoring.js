@@ -85,7 +85,7 @@ import LineChartContainer from "../components/LineChartContainer";
 import EventLogListContainer from "../components/EventLogListContainer";
 import PerformanceSummaryTable from "../components/PerformanceSummaryTable";
 import VirtualAppInstEventLogListContainer from "../components/VirtualAppInstEventLogListContainer";
-
+import MarkerClusterGroup from 'leaflet-make-cluster-group'
 const {Option} = Select;
 
 const CheckboxGroup = Checkbox.Group;

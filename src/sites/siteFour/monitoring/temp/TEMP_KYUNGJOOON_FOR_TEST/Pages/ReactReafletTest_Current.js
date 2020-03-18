@@ -124,7 +124,8 @@ export default hot(
             return (
                 <div className='page_monitoring_container'>
                     <div style={{height: this.state.currentHeight, width: '100%', zIndex: 1}}>
-                        <Map center={[45.4, 51.7]}
+                        <Map
+                            center={[45.4, 51.7]}
                              duration={0.9}
                              style={{width: '100%', height: this.state.currentHeight, zIndex: 1,}}
                              zoom={this.state.currentZoomLevel}

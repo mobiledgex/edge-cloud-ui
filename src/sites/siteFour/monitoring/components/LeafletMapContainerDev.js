@@ -10,6 +10,8 @@ import PageDevMonitoring from "../dev/PageDevMonitoring";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {renderPlaceHolderLottiePinJump2, showToast} from "../PageMonitoringCommonService";
 import Button from "@material-ui/core/Button";
+import MarkerClusterGroup from 'leaflet-make-cluster-group'
+
 
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
@@ -26,6 +28,14 @@ let greenIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
+var cellphoneIcon2 = L.icon({
+    iconUrl: require('../images/cellhone_white003.png'),
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
 
 let cellphoneIcon = new L.Icon({
     iconUrl: require('../images/mobile-icon-66.png'),
@@ -33,6 +43,14 @@ let cellphoneIcon = new L.Icon({
     iconSize: [41, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+let cloudIcon = L.icon({
+    iconUrl: require('../images/cloud_green.png'),
+    //shadowUrl : 'https://leafletjs.com/examples/custom-icons/leaf-shadow.png',
+    iconSize: [40, 21],
+    iconAnchor: [20, 21],
     shadowSize: [41, 41]
 });
 
@@ -56,7 +74,7 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
     constructor(props: Props) {
         super(props);
         this.state = {
-            zoom: 0.9,//mapZoom
+            zoom: 3,//mapZoom
             appInstanceListGroupByCloudlet: '',
             cloudletKeys: [],
             newCloudLetLocationList: [],
@@ -238,6 +256,16 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                              useFlyTo={true}
                              dragging={true}
                              boundsOptions={{padding: [50, 50]}}
+                             onZoomEnd={(e) => {
+                                 let zoomLevel = e.target._zoom;
+                                 this.setState({
+                                     zoom: zoomLevel,
+                                 })
+                             }}
+                             maxZoom={15}
+                             ref={(ref) => {
+                                 this.map = ref;
+                             }}
                         >
                             {/*{this.props.parent.state.loading && renderPlaceHolderLottiePinJump2()}*/}
                             <TileLayer
@@ -249,59 +277,83 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                             />
 
 
+                            {/*   <MarkerClusterGroup>
+                                <Marker
+
+                                    position={[37.2411, 127.1776]}
+                                    icon={cellphoneIcon}
+
+                                >
+                                    <Popup>용인 jessica.</Popup>
+                                </Marker>
+                                <Marker
+
+                                    position={[37.2411, 127.1776]}
+                                    icon={cellphoneIcon}
+
+                                >
+                                    <Popup>용인 jessica2123.</Popup>
+                                </Marker>
+                            </MarkerClusterGroup>*/}
 
 
                             {/*@todo:clientList...*/}
                             {/*@todo:clientList...*/}
                             {/*@todo:clientList...*/}
-                            {this.state.clientList.map((item: TypeClientLocation, index) => {
+                            <MarkerClusterGroup>
+                                {this.state.clientList.map((item: TypeClientLocation, index) => {
 
-                                console.log("clientList333====>", item);
+                                    console.log("clientList333====>", item);
 
-                                let offset = (index * 0.1);
+                                    let offset = (index * 0.1);
 
-                                console.log("offset====>", offset);
+                                    console.log("offset====>", offset);
 
-                                return (
-                                    <React.Fragment>
-                                        <Marker
-                                            icon={cellphoneIcon}
-                                            position={
-                                                [item.latitude + offset, item.longitude]
-                                            }
-                                        >
-                                            <Tooltip
-                                                direction='right'
-                                                offset={[0, 0]}
-                                                opacity={0.8}
-                                                permanent
-
-                                                style={{cursor: 'pointer', pointerEvents: 'auto'}}
-
+                                    return (
+                                        <React.Fragment>
+                                            <Marker
+                                                icon={cellphoneIcon2}
+                                                position={
+                                                    //[item.latitude + offset, item.longitude]
+                                                    [item.latitude, item.longitude]
+                                                }
                                             >
-                                              <span
-                                                  className='toolTip'
-                                                  style={{color: 'black'}}>
-                                                  {item.uuid}
-                                              </span>
-                                            </Tooltip>
-                                        </Marker>
+                                               {/* <Tooltip
+                                                    direction='right'
+                                                    offset={[0, 0]}
+                                                    opacity={0.8}
+                                                    permanent
 
-                                        {/*@todo:라인을 그리는 부분...*/}
-                                        {/*@todo:라인을 그리는 부분...*/}
-                                        {/*@todo:라인을 그리는 부분...*/}
-                                        <Polyline
-                                            dashArray={['10, 10']}
-                                            id="132512"
-                                            positions={[
-                                                [item.latitude + offset, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
-                                            ]}
-                                            color={'yellow'}
-                                        />
+                                                    style={{cursor: 'pointer', pointerEvents: 'auto'}}
 
-                                    </React.Fragment>
-                                )
-                            })}
+                                                >
+                                                  <span
+                                                      className='toolTip'
+                                                      style={{color: 'black'}}>
+                                                      {item.uuid}
+                                                  </span>
+                                                </Tooltip>*/}
+                                                <Popup className='leaflet-popup-content-wrapper2' style={{fontSize:11}}>{item.uuid}</Popup>
+                                            </Marker>
+
+                                            {/*@todo:라인을 그리는 부분...*/}
+                                            {/*@todo:라인을 그리는 부분...*/}
+                                            {/*@todo:라인을 그리는 부분...*/}
+                                            <Polyline
+                                                dashArray={['10, 10']}
+                                                id="132512"
+                                                positions={[
+                                                    //[item.latitude + offset, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
+
+                                                    [item.latitude , item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
+                                                ]}
+                                                color={'yellow'}
+                                            />
+
+                                        </React.Fragment>
+                                    )
+                                })}
+                            </MarkerClusterGroup>
 
                             {/*  <Marker
                                 //ref={c => this.marker1 = c}
@@ -318,11 +370,11 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                 console.log("outerItem====>", outerItem);
 
 
-                                if ( outerItem.CloudletLocation.latitude !=undefined){
+                                if (outerItem.CloudletLocation.latitude != undefined) {
                                     return (
                                         <Marker
                                             ref={c => this.marker1 = c}
-                                            icon={greenIcon}
+                                            icon={cloudIcon}
                                             className='marker1'
                                             position={
                                                 [outerItem.CloudletLocation.latitude, outerItem.CloudletLocation.longitude,]
@@ -341,7 +393,7 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                         >
                                             <Tooltip
                                                 direction='right'
-                                                offset={[0, 0]}
+                                                offset={[14, -10]}//x,y
                                                 opacity={0.8}
                                                 permanent
                                                 ref={c => {
