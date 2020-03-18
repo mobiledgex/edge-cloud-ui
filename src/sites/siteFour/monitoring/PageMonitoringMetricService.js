@@ -146,28 +146,29 @@ export const requestShowAppInstClientWS_____TEST = (pCurrentAppInst, _this: Page
                 token: token,
             }))
             webSocket.send(JSON.stringify({
-                "appinstclientkey": {
+                "Region": "EU",
+                "AppInstClientKey": {
                     "key": {
                         "app_key": {
-                            "developer_key": {
-                                "name": "MobiledgeX"
-                            },
                             "name": "MobiledgeX SDK Demo",
+                            "organization": "MobiledgeX",
                             "version": "2.0"
                         },
                         "cluster_inst_key": {
-                            "cloudlet_key": {
-                                "name": "hamburg-stage",
-                                "organization": "TDG"
-                            },
                             "cluster_key": {
                                 "name": "autoclustermobiledgexsdkdemo"
                             },
-                            "developer": "MobiledgeX"
+                            "organization": "MobiledgeX",
+                            "cloudlet_key": {
+                                "name": "hamburg-stage",
+                                "organization": "TDG"
+                            }
                         }
                     }
-                },
-                "region": "EU"
+                }
+
+
+
             }))
         } catch (e) {
             alert(e.toString())
