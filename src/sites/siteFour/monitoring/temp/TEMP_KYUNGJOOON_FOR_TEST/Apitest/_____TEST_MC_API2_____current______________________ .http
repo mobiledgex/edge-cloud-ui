@@ -650,26 +650,22 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODQ1ODM3O
   "appinst": {
     "app_key": {
       "organization": "MobiledgeX",
-      "developer_key": {
-        "name": "MobiledgeX"
-      },
-      "name": "MEXPrometheusAppName",
-      "version": "1.0"
+      "name": "MobiledgeX SDK Demo",
+      "version": "docker"
     },
     "cluster_inst_key": {
       "cluster_key": {
-        "name": "bibin-k8scluster"
+        "name": "venky-test"
       },
       "cloudlet_key": {
-        "name": "cloudops-bibintest",
-        "organization": "cloudops-test"
+        "name": "hamburg-stage",
+        "organization": "TDG"
       }
     }
   },
   "selector": "*",
-  "last": 10,
-  "starttime": "2019-03-20T11:18:00Z",
-  "endtime": "2020-03-18T11:18:00Z"
+  "last": 10
+
 }
 
 ###
