@@ -239,7 +239,7 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                              dragging={true}
                              boundsOptions={{padding: [50, 50]}}
                         >
-                            {this.props.parent.state.loading && renderPlaceHolderLottiePinJump2()}
+                            {/*{this.props.parent.state.loading && renderPlaceHolderLottiePinJump2()}*/}
                             <TileLayer
                                 url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
                                 //url={'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'}

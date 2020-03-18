@@ -766,7 +766,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 selectedClientLocationListOnAppInst: [],
             })
-            this.webSocketInst = requestShowAppInstClientWS_____TEST(pCurrentAppInst, this);
+            //this.webSocketInst = requestShowAppInstClientWS_____TEST(pCurrentAppInst, this);
 
             clearInterval(this.intervalForAppInst)
 
