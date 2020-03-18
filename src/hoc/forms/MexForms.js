@@ -19,26 +19,33 @@ export const INPUT = 'Input'
 export const CHECKBOX = 'Checkbox'
 export const ICON_BUTTON = 'IconButton'
 
-
-const getIcon = (id) => {
-    switch (id) {
-        case 'delete':
-            return <DeleteOutlineOutlinedIcon />
-
-    }
-}
-
-const isDisabled = (form) => {
-    let disabled = false;
-    if (form.rules) {
-        let rules = form.rules;
-        return rules.disabled === undefined ? false : rules.disabled;
-    }
-    return disabled;
-}
-
-
 const MexForms = (props) => {
+    let forms = props.forms
+
+    const getIcon = (id) => {
+        switch (id) {
+            case 'delete':
+                return <DeleteOutlineOutlinedIcon />
+    
+        }
+    }
+
+    const disableFields = (form) => {
+        let disable = false
+        if (props.isUpdate) {
+            disable = form.update ? false : true;
+        }
+        return disable
+    }
+    
+    const isDisabled = (form) => {
+        let disabled = false;
+        if (form.rules) {
+            let rules = form.rules;
+            return rules.disabled === undefined ? false : rules.disabled;
+        }
+        return disabled;
+    }
 
     const validateRules = (form, valid) => {
         if (valid) {
@@ -71,6 +78,32 @@ const MexForms = (props) => {
         return valid
     }
 
+    /***
+     * Map values from form to field
+     * ***/
+    const formattedData = () => {
+        let data = {};
+        let forms = props.forms
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i];
+            if (form.field) {
+                if (form.forms) {
+                    data[form.uuid] = {};
+                    let subForms = form.forms
+                    for (let j = 0; j < subForms.length; j++) {
+                        let subForm = subForms[j];
+                        data[form.uuid][subForm.field] = subForm.value;
+                    }
+
+                }
+                else {
+                    data[form.field] = form.value;
+                }
+            }
+        }
+        return data
+    }
+
     const onSubmit = (form) => {
         let valid = true;
         if (form.validate) {
@@ -83,7 +116,7 @@ const MexForms = (props) => {
             }
         }
         if (valid && form.onClick) {
-            form.onClick();
+            form.onClick(formattedData());
         }
         else if (props.reloadForms) {
             props.reloadForms()
@@ -161,6 +194,7 @@ const MexForms = (props) => {
             required = rules.required ? rules.required : false;
             disabled = rules.disabled ? rules.disabled : false;
         }
+        disabled = disableFields(form)
         return (
             form.field ?
                 <Grid.Row columns={3} key={uuid() + '' + index}>
@@ -170,9 +204,9 @@ const MexForms = (props) => {
                     <Grid.Column width={11}>
                         {
                             form.formType === SELECT ?
-                                <MexSelect form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                                <MexSelect form={form} forms={forms} required={required} disabled={disabled} onChange={onValueSelect} /> :
                                 form.formType === MULTI_SELECT ?
-                                    <MexMultiSelect form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                                    <MexMultiSelect form={form} forms={forms} required={required} disabled={disabled} onChange={onValueSelect} /> :
                                     form.formType === DUALLIST ?
                                         <MexDualList form={form} onChange={onValueSelect} /> :
                                         form.formType === INPUT ?
@@ -194,7 +228,6 @@ const MexForms = (props) => {
         )
     }
 
-    let forms = props.forms
     return (
         forms ?
             <Form>
@@ -223,7 +256,6 @@ const MexForms = (props) => {
                                     onClick={onSubmit} />
                                 : null)
                         })}
-
                     </Form.Group>
                 </Form.Group>
             </Form> : null

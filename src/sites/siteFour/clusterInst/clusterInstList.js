@@ -34,7 +34,7 @@ class ClusterInstView extends React.Component {
 
 
     onAdd = (action, data) => {
-        this.setState({ currentView: <ClusterInstReg data={data} action={action ? action.label : null} onClose={this.onRegClose}/> })
+        this.setState({ currentView: <ClusterInstReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose}/> })
     }
 
     actionMenu = () => {

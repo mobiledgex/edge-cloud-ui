@@ -301,7 +301,6 @@ class ClusterInstReg extends React.Component {
 
     onUpdate = async ()=>{
         let data = this.formattedData();
-        console.log('Rahul1234', data)
         let requestData = {
             region: data[fields.region],
             clusterinst: {
