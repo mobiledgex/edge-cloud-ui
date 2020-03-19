@@ -44,6 +44,7 @@ export const formKeys = [
 export const multiDataRequest = (keys, mcRequestList) => {
     let cloudletDataList = [];
     let clusterDataList = [];
+    let dataList = [];
     for (let i = 0; i < mcRequestList.length; i++) {
         let mcRequest = mcRequestList[i];
         if (mcRequest.response) {
@@ -69,13 +70,13 @@ export const multiDataRequest = (keys, mcRequestList) => {
                     break;
                 }
             }
-            if (!found) {
-                //Remove cluster if cloudlet not found
-                clusterDataList.splice(i, 1)
+            //Filter cluster if cloudlet not found
+            if (found) {
+                dataList.push(clusterData)
             }
         }
     }
-    return clusterDataList;
+    return dataList;
 }
 
 export const showClusterInsts = (data) => {
