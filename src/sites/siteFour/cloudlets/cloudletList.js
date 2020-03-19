@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { fields } from '../../../services/model/format';
 import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/model/cloudlet';
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
-import ClouldletReg from './cloudletReg';
+import ClouldletReg from './cloudletRegNew';
 
 import * as constant from '../../../services/model/shared';
 import { Button } from 'semantic-ui-react';
