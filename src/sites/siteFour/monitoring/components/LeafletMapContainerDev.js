@@ -246,9 +246,9 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                         }}>
                             Deployed Instance
                         </div>
-                        <Button>
+                        {/*<Button>
                             add marker
-                        </Button>
+                        </Button>*/}
                     </div>
 
                     <div className='page_monitoring_title' style={{
@@ -287,7 +287,7 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                              }}
                         >
 
-                            <div style={{position: 'absolute', right: 0,zIndex:999999}}>
+                          {/*  <div style={{position: 'absolute', right: 0,zIndex:999999}}>
                                 <Select defaultValue={this.mapTileList[0].name} style={{width: 120}}
                                         onChange={(value) => {
 
@@ -302,7 +302,7 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                         )
                                     })}
                                 </Select>
-                            </div>
+                            </div>*/}
 
                             <TileLayer
                                 url={this.state.currentTyleLayer}
@@ -336,25 +336,24 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                             {/*@todo:clientList...*/}
                             {/*@todo:clientList...*/}
                             {/*@todo:clientList...*/}
-                            <MarkerClusterGroup>
-                                {this.state.clientList.map((item: TypeClientLocation, index) => {
+                            {this.state.clientList.map((item: TypeClientLocation, index) => {
 
-                                    console.log("clientList333====>", item);
+                                console.log("clientList333====>", item);
 
-                                    let offset = (index * 0.1);
+                                let offset = (index * 0.1);
 
-                                    console.log("offset====>", offset);
+                                console.log("offset====>", offset);
 
-                                    return (
-                                        <React.Fragment>
-                                            <Marker
-                                                icon={cellphoneIcon2}
-                                                position={
-                                                    //[item.latitude + offset, item.longitude]
-                                                    [item.latitude, item.longitude]
-                                                }
-                                            >
-                                                {/* <Tooltip
+                                return (
+                                    <React.Fragment>
+                                        <Marker
+                                            icon={cellphoneIcon2}
+                                            position={
+                                                [item.latitude + offset, item.longitude]
+                                                //[item.latitude, item.longitude]
+                                            }
+                                        >
+                                            {/* <Tooltip
                                                     direction='right'
                                                     offset={[0, 0]}
                                                     opacity={0.8}
@@ -369,28 +368,27 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                                       {item.uuid}
                                                   </span>
                                                 </Tooltip>*/}
-                                                <Popup className='leaflet-popup-content-wrapper2'
-                                                       style={{fontSize: 11}}>{item.uuid}</Popup>
-                                            </Marker>
+                                            <Popup className='leaflet-popup-content-wrapper2'
+                                                   style={{fontSize: 11}}>{item.uuid}</Popup>
+                                        </Marker>
 
-                                            {/*@todo:라인을 그리는 부분...*/}
-                                            {/*@todo:라인을 그리는 부분...*/}
-                                            {/*@todo:라인을 그리는 부분...*/}
-                                            <Polyline
-                                                dashArray={['10, 10']}
-                                                id="132512"
-                                                positions={[
-                                                    //[item.latitude + offset, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
+                                        {/*@todo:라인을 그리는 부분...*/}
+                                        {/*@todo:라인을 그리는 부분...*/}
+                                        {/*@todo:라인을 그리는 부분...*/}
+                                        <Polyline
+                                            dashArray={['10, 10']}
+                                            id="132512"
+                                            positions={[
+                                                [item.latitude + offset, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
 
-                                                    [item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
-                                                ]}
-                                                color={'yellow'}
-                                            />
+                                                //[item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
+                                            ]}
+                                            color={'yellow'}
+                                        />
 
-                                        </React.Fragment>
-                                    )
-                                })}
-                            </MarkerClusterGroup>
+                                    </React.Fragment>
+                                )
+                            })}
 
                             {/*  <Marker
                                 //ref={c => this.marker1 = c}

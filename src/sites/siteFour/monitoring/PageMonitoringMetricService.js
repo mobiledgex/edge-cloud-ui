@@ -15,7 +15,6 @@ import PageDevMonitoring from "./dev/PageDevMonitoring";
 
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
-
     //AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version;
     console.log("onmessage pCurrentAppInst===>", pCurrentAppInst);
     let AppName = pCurrentAppInst.split('|')[0].trim()
@@ -37,7 +36,7 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
     console.log("onmessage==REACT_APP_API_ENDPOINT==>", prefixUrl)
     const webSocket = new WebSocket(`${prefixUrl}/ws/api/v1/auth/ctrl/ShowAppInstClient`)
 
-    let form = {
+    let showAppInstClientRequestForm = {
         "Region": Region,
         "AppInstClientKey": {
             "key": {
@@ -60,7 +59,7 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
         }
     }
 
-    let testForm={
+    let testForm = {
         "Region": "EU",
         "AppInstClientKey": {
             "key": {
@@ -76,14 +75,14 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
                     "organization": "MobiledgeX",
                     "cloudlet_key": {
                         "name": "hamburg-stage",
-                        "organization": "TDG"
+                        "organization": "TDG"//operator
                     }
                 }
             }
         }
     }
 
-    console.log("requestShowAppInstClientWS====>", form)
+    console.log("requestShowAppInstClientWS====>", showAppInstClientRequestForm)
     console.log("requestShowAppInstClientWS====>", testForm)
 
     webSocket.onopen = () => {
@@ -93,7 +92,7 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
             webSocket.send(JSON.stringify({
                 token: token,
             }))
-            webSocket.send(JSON.stringify(form))
+            webSocket.send(JSON.stringify(showAppInstClientRequestForm))
         } catch (e) {
             alert(e.toString())
         }
@@ -121,11 +120,8 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
                 console.log("onmessage====currentClientLocationListOnAppInst>", _this.state.selectedClientLocationListOnAppInst);
             })
 
-            setTimeout(() => {
-                _this.setState({
-                    loading: false,
-                })
-            }, 500)
+
+            console.log("onmessage.....appInstCount====>", appInstCount);
         } catch (e) {
             //alert(e)
         }
@@ -133,112 +129,12 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
 
     webSocket.onerror = (event) => {
-        alert(event.toString())
+        //alert(event.toString())
     };
 
     webSocket.onclose = function (event) {
 
-    };
-
-    return webSocket;
-
-}
-
-
-export const requestShowAppInstClientWS_____TEST = (pCurrentAppInst, _this: PageDevMonitoring) => {
-
-
-    let Operator = pCurrentAppInst.split('|')[6].trim()
-
-    let store = JSON.parse(localStorage.PROJECT_INIT);
-    let token = store ? store.userToken : 'null';
-
-    let organization = localStorage.selectOrg.toString()
-
-    console.log("onmessage Operator=>", Operator);
-
-    let prefixUrl = (process.env.REACT_APP_API_ENDPOINT).replace('http', 'ws');
-    console.log("onmessage==REACT_APP_API_ENDPOINT==>", prefixUrl)
-    const webSocket = new WebSocket(`${prefixUrl}/ws/api/v1/auth/ctrl/ShowAppInstClient`)
-
-    webSocket.onopen = () => {
-        try {
-            console.log("onmessage WebSocket is open now.");
-
-            _this.setState({
-                loading: true,
-            })
-
-            webSocket.send(JSON.stringify({
-                token: token,
-            }))
-            webSocket.send(JSON.stringify({
-                "Region": "EU",
-                "AppInstClientKey": {
-                    "key": {
-                        "app_key": {
-                            "name": "MobiledgeX SDK Demo",
-                            "organization": "MobiledgeX",
-                            "version": "2.0"
-                        },
-                        "cluster_inst_key": {
-                            "cluster_key": {
-                                "name": "autoclustermobiledgexsdkdemo"
-                            },
-                            "organization": "MobiledgeX",
-                            "cloudlet_key": {
-                                "name": "hamburg-stage",
-                                "organization": "TDG"
-                            }
-                        }
-                    }
-                }
-
-
-            }))
-        } catch (e) {
-            alert(e.toString())
-        }
-    }
-
-
-    let appInstCount = 0;
-    webSocket.onmessage = (event) => {
-        try {
-            appInstCount++;
-            let data = JSON.parse(event.data);
-            let uuid = data.data.client_key.uuid;
-            console.log("onmessage==data==>", data);
-
-            let clientLocationOne: TypeClientLocation = data.data.location;
-            if (!isEmpty(uuid)) {
-                clientLocationOne.uuid = uuid;
-                let serverLocation = pCurrentAppInst.split('|')[7].trim()
-                clientLocationOne.serverLocInfo = JSON.parse(serverLocation)
-            }
-            console.log("onmessage====serverInstInfo>", clientLocationOne);
-            _this.setState({
-                selectedClientLocationListOnAppInst: _this.state.selectedClientLocationListOnAppInst.concat(clientLocationOne),
-            }, () => {
-                console.log("onmessage====currentClientLocationListOnAppInst>", _this.state.selectedClientLocationListOnAppInst);
-            })
-
-            setTimeout(() => {
-                _this.setState({
-                    loading: false,
-                })
-            }, 500)
-        } catch (e) {
-            //alert(e)
-        }
-    }
-
-    webSocket.onerror = (event) => {
         alert(event.toString())
-    };
-
-    webSocket.onclose = function (event) {
-
     };
 
     return webSocket;

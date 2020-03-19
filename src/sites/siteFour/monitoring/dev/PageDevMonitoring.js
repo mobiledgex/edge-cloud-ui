@@ -756,24 +756,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         handleAppInstDropdown = async (pCurrentAppInst) => {
+            clearInterval(this.intervalForAppInst)
 
-            let serverLocation = pCurrentAppInst.split('|')[7].trim()
-            console.log("serverLocation====>", JSON.parse(serverLocation));
-
+            //@fixme: ################################
             //@fixme: requestShowAppInstClientWS
-            //@fixme: requestShowAppInstClientWS
-            //@fixme: requestShowAppInstClientWS
+            //@fixme: ################################
             await this.setState({
                 selectedClientLocationListOnAppInst: [],
             })
 
             this.webSocketInst = requestShowAppInstClientWS(pCurrentAppInst, this);
 
-            clearInterval(this.intervalForAppInst)
-
-            /*await this.setState({
-                isShowBigGraph: false,
-            })*/
             await this.setState({
                 currentAppInst: pCurrentAppInst,
                 loading: true,
@@ -1559,7 +1552,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </div>
                         }
 
-                        <MButton
+                      {/*  <MButton
                             style={{backgroundColor: '#6c6c6c', color: 'white', height: 37}}
                             onClick={() => {
                                 this.props.toggleLoading(true);
@@ -1572,7 +1565,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 this.props.toggleLoading(false);
                             }}>toggleLoadingFalse
 
-                        </MButton>
+                        </MButton>*/}
 
                     </div>
                 </Grid.Row>
