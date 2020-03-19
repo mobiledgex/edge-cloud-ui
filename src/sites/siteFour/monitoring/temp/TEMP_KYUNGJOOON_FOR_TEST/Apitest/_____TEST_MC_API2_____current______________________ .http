@@ -724,19 +724,15 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODQ2NzAzN
   "region": "EU",
   "appinst": {
     "app_key": {
-      "developer_key": {
-        "name": "MobiledgeX"
-      }
+      "organization": "MobiledgeX"
     },
     "cluster_inst_key": {
       "cluster_key": {
         "name": ""
       },
       "cloudlet_key": {
-        "operator_key": {
-          "name": ""
-        },
-        "name": ""
+        "name": "",
+        "organization": ""
       }
     }
   }

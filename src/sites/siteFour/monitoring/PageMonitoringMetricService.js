@@ -929,14 +929,6 @@ export const getAllClusterEventLogList = async (clusterList) => {
 
         let completedEventLogList = []
         allClusterEventLogs.map((item, index) => {
-            /*
-            if (index === 0) {
-                completedEventLogList.push([
-                    "time",                    "cluster",                    "dev",                    "cloudlet",                    "operator",
-                     "flavor",                    "vcpu",                    "ram",                    "disk",                    "other",
-                     "event",                    "status",
-                ])
-            }*/
 
             if (item.Series !== null) {
                 let eventLogList = item.Series["0"].values;
@@ -963,7 +955,7 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster) => 
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
-        let form ={
+        let form = {
             "region": Region,
             "clusterinst": {
                 "cluster_key": {
@@ -1031,34 +1023,28 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster) => 
 }*/
 
 
-export const getAppInstEventLogs = async (region = ['EU', 'US']) => {
+export const getAppInstEventLogByRegion = async (region = 'EU') => {
     try {
 
         let selectOrg = localStorage.getItem('selectOrg')
 
-
         let form = {
-            "region": 'EU',
+            "region": region,
             "appinst": {
                 "app_key": {
-                    "developer_key": {
-                        "name": selectOrg
-                    },
+                    "organization": selectOrg
                 },
                 "cluster_inst_key": {
                     "cluster_key": {
                         "name": ""
                     },
                     "cloudlet_key": {
-                        "operator_key": {
-                            "name": ""
-                        },
-                        "name": ""
+                        "name": "",
+                        "organization": ""
                     }
                 }
             }
         }
-
 
         console.log("getAppInstEventLogs====>", form)
 
@@ -1076,10 +1062,15 @@ export const getAppInstEventLogs = async (region = ['EU', 'US']) => {
             timeout: 30 * 1000
         }).then(async response => {
 
-            console.log("getAppInstEventLogListOne===>", response.data.data[0].Series[0]);
+            console.log("getAppInstEventLogListOne===22=>", response);
 
-            return response.data.data[0].Series[0];
-            //return response.data;
+            if (isEmpty(response.data.data[0].Series)) {
+                return [];
+            } else {
+                console.log("getAppInstEventLogListOne===>", response.data.data[0].Series[0]);
+                return response.data.data[0];
+            }
+
         }).catch(e => {
             //throw new Error(e)
             showToast(e.toString())
@@ -1090,3 +1081,39 @@ export const getAppInstEventLogs = async (region = ['EU', 'US']) => {
     }
 
 }
+
+
+export const getAllAppInstEventLogs = async () => {
+    try {
+        let appInstEventLogByRegion = []
+        appInstEventLogByRegion.push(getAppInstEventLogByRegion(REGION.EU))
+        appInstEventLogByRegion.push(getAppInstEventLogByRegion(REGION.US))
+
+        let allAppInstEventLogList = await Promise.all(appInstEventLogByRegion);
+
+
+        ///////
+        let completedEventLogList = []
+        allAppInstEventLogList.map((item, index) => {
+
+            if (!isEmpty(item)) {
+                console.log("allAppInstEventLogList====>", item);
+
+                if (item.Series !== null) {
+                    let eventLogList = item.Series["0"].values;
+                    eventLogList.map(item => {
+                        completedEventLogList.push(item)
+                    })
+                }
+            }
+
+
+        })
+
+        console.log("getAllAppInstEventLogs===>", completedEventLogList);
+        return completedEventLogList;
+    } catch (e) {
+        showToast(e.toString())
+    }
+}
+

@@ -61,8 +61,9 @@ import {
     showToast
 } from "../PageMonitoringCommonService";
 import {
+    getAllAppInstEventLogs,
     getAllClusterEventLogList,
-    getAppInstEventLogs,
+    getAppInstEventLogByRegion,
     getAppInstList,
     getAppLevelUsageList,
     getCloudletList,
@@ -500,20 +501,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //@todo:###############################
                 //@todo: getAppInst Event Logs : realdata
                 //@todo:###############################
-                let allAppInstEventLogs = await getAppInstEventLogs();
+                let allAppInstEventLogs = await getAllAppInstEventLogs();
+
+                console.log("allAppInstEventLogs====>", allAppInstEventLogs);
+
                 await this.setState({
-                    allAppInstEventLogs: allAppInstEventLogs.values,
-                    filteredAppInstEventLogs: allAppInstEventLogs.values,
+                    allAppInstEventLogs: allAppInstEventLogs,
+                    filteredAppInstEventLogs: allAppInstEventLogs,
                 })
 
-                //@fixme: fakeData
-                //@fixme: fakeData
-                //@fixme: fakeData
-             /*   let __allAppInstEvLogListValues = require('./allAppInstEventLogList')
-                await this.setState({
-                    allAppInstEventLogs: __allAppInstEvLogListValues,
-                    filteredAppInstEventLogs: __allAppInstEvLogListValues,
-                })*/
+                //@fixme: fakeData __allAppInstEvLogListValues
+                //@fixme: fakeData __allAppInstEvLogListValues
+                //@fixme: fakeData __allAppInstEvLogListValues
+                /*    let __allAppInstEvLogListValues = require('./allAppInstEventLogList')
+                    await this.setState({
+                        allAppInstEventLogs: __allAppInstEvLogListValues,
+                        filteredAppInstEventLogs: __allAppInstEvLogListValues,
+                    })*/
 
 
                 let appInstanceListGroupByCloudlet = []
