@@ -64,36 +64,44 @@ class ClusterInstReg extends React.Component {
         this.setState({ forms: forms })
     }
 
-    regionValueChange = (currentForm, forms) => {
+    regionValueChange = (currentForm, forms, isInit) => {
         let region = currentForm.value;
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.operatorName) {
-                this.operatorValueChange(form, forms)
-                this.getCloudletInfo(region, form, forms)
+                this.operatorValueChange(form, forms, isInit)
+                if (isInit === undefined || isInit === false) {
+                    this.getCloudletInfo(region, form, forms)
+                }
             }
             else if (form.field === fields.flavorName) {
-                this.getFlavorInfo(region, form, forms)
+                if (isInit === undefined || isInit === false) {
+                    this.getFlavorInfo(region, form, forms)
+                }
             }
             else if (form.field === fields.privacyPolicyName) {
-                this.getPrivacyPolicy(region, form, forms)
+                if (isInit === undefined || isInit === false) {
+                    this.getPrivacyPolicy(region, form, forms)
+                }
             }
         }
         this.requestedRegionList.push(region)
     }
 
-    operatorValueChange = (currentForm, forms) => {
+    operatorValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.cloudletName) {
                 this.updateUI(form)
-                this.setState({ forms: forms })
+                if (isInit === undefined || isInit === false) {
+                    this.setState({ forms: forms })
+                }
                 break;
             }
         }
     }
 
-    deploymentValueChange = (currentForm, forms) => {
+    deploymentValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
             if (form.field === fields.numberOfMasters || form.field === fields.numberOfNodes) {
@@ -105,10 +113,12 @@ class ClusterInstReg extends React.Component {
                 this.updateUI(form)
             }
         }
-        this.setState({ forms: forms })
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
+        }
     }
 
-    ipAccessValueChange = (currentForm, forms) => {
+    ipAccessValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
             if (form.field === fields.privacyPolicyName) {
@@ -116,7 +126,9 @@ class ClusterInstReg extends React.Component {
                 form.visible = currentForm.value === constant.IP_ACCESS_DEDICATED ? true : false
             }
         }
-        this.setState({ forms: forms })
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
+        }
     }
 
     cloudletValueChange = (form, forms) => {
@@ -133,22 +145,21 @@ class ClusterInstReg extends React.Component {
         })
     }
 
-    checkForms = (form, forms)=>
-    {
+    checkForms = (form, forms, isInit) => {
         if (form.field === fields.region) {
-            this.regionValueChange(form, forms)
+            this.regionValueChange(form, forms, isInit)
         }
         else if (form.field === fields.operatorName) {
-            this.operatorValueChange(form, forms)
+            this.operatorValueChange(form, forms, isInit)
         }
         else if (form.field === fields.deployment) {
-            this.deploymentValueChange(form, forms)
+            this.deploymentValueChange(form, forms, isInit)
         }
         else if (form.field === fields.ipAccess) {
-            this.ipAccessValueChange(form, forms)
+            this.ipAccessValueChange(form, forms, isInit)
         }
         else if (form.field === fields.cloudletName) {
-            this.cloudletValueChange(form, forms)
+            this.cloudletValueChange(form, forms, isInit)
         }
     }
 
@@ -319,7 +330,7 @@ class ClusterInstReg extends React.Component {
             cloudlet[fields.cloudletLocation] = data[fields.cloudletLocation]
             this.cloudletList = [cloudlet]
 
-            this.setState({mapData : [cloudlet]})
+            this.setState({ mapData: [cloudlet] })
 
             let flavor = {}
             flavor[fields.region] = data[fields.region]
@@ -352,7 +363,7 @@ class ClusterInstReg extends React.Component {
             this.updateUI(form)
             if (data) {
                 form.value = data[form.field]
-                this.checkForms(form, forms)
+                this.checkForms(form, forms, true)
             }
         }
 
