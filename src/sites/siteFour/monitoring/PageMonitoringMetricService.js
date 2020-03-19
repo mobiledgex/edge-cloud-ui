@@ -33,13 +33,58 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
     console.log("onmessage Operator=>", Operator);
 
-    /*  this.setState({
-          webSocketLoading: true,
-    })*/
-
     let prefixUrl = (process.env.REACT_APP_API_ENDPOINT).replace('http', 'ws');
     console.log("onmessage==REACT_APP_API_ENDPOINT==>", prefixUrl)
     const webSocket = new WebSocket(`${prefixUrl}/ws/api/v1/auth/ctrl/ShowAppInstClient`)
+
+    let form = {
+        "Region": Region,
+        "AppInstClientKey": {
+            "key": {
+                "app_key": {
+                    "name": AppName,
+                    "organization": organization,
+                    "version": Version,
+                },
+                "cluster_inst_key": {
+                    "cluster_key": {
+                        "name": ClusterInst,
+                    },
+                    "organization": organization,
+                    "cloudlet_key": {
+                        "name": Cloudlet,
+                        "organization": Operator
+                    }
+                }
+            }
+        }
+    }
+
+    let testForm={
+        "Region": "EU",
+        "AppInstClientKey": {
+            "key": {
+                "app_key": {
+                    "name": "MobiledgeX SDK Demo",
+                    "organization": "MobiledgeX",
+                    "version": "2.0"
+                },
+                "cluster_inst_key": {
+                    "cluster_key": {
+                        "name": "autoclustermobiledgexsdkdemo"
+                    },
+                    "organization": "MobiledgeX",
+                    "cloudlet_key": {
+                        "name": "hamburg-stage",
+                        "organization": "TDG"
+                    }
+                }
+            }
+        }
+    }
+
+    console.log("requestShowAppInstClientWS====>", form)
+    console.log("requestShowAppInstClientWS====>", testForm)
 
     webSocket.onopen = () => {
         try {
@@ -48,32 +93,7 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
             webSocket.send(JSON.stringify({
                 token: token,
             }))
-            webSocket.send(JSON.stringify({
-                "appinstclientkey": {
-                    "key": {
-                        "app_key": {
-                            "developer_key": {
-                                "name": organization
-                            },
-                            "name": AppName,
-                            "version": Version
-                        },
-                        "cluster_inst_key": {
-                            "cloudlet_key": {
-                                "name": Cloudlet,
-                                "operator_key": {
-                                    "name": Operator
-                                }
-                            },
-                            "cluster_key": {
-                                "name": ClusterInst
-                            },
-                            "developer": organization
-                        }
-                    }
-                },
-                "region": Region
-            }))
+            webSocket.send(JSON.stringify(form))
         } catch (e) {
             alert(e.toString())
         }
@@ -81,25 +101,36 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
 
     let appInstCount = 0;
-    webSocket.onmessage = event => {
+    webSocket.onmessage = (event) => {
         try {
             appInstCount++;
             let data = JSON.parse(event.data);
             let uuid = data.data.client_key.uuid;
+            console.log("onmessage==data==>", data);
+
             let clientLocationOne: TypeClientLocation = data.data.location;
             if (!isEmpty(uuid)) {
                 clientLocationOne.uuid = uuid;
+                let serverLocation = pCurrentAppInst.split('|')[7].trim()
+                clientLocationOne.serverLocInfo = JSON.parse(serverLocation)
             }
-            console.log("onmessage====location>", clientLocationOne);
+            console.log("onmessage====serverInstInfo>", clientLocationOne);
             _this.setState({
                 selectedClientLocationListOnAppInst: _this.state.selectedClientLocationListOnAppInst.concat(clientLocationOne),
             }, () => {
                 console.log("onmessage====currentClientLocationListOnAppInst>", _this.state.selectedClientLocationListOnAppInst);
             })
+
+            setTimeout(() => {
+                _this.setState({
+                    loading: false,
+                })
+            }, 500)
         } catch (e) {
             //alert(e)
         }
     }
+
 
     webSocket.onerror = (event) => {
         alert(event.toString())
@@ -125,10 +156,6 @@ export const requestShowAppInstClientWS_____TEST = (pCurrentAppInst, _this: Page
     let organization = localStorage.selectOrg.toString()
 
     console.log("onmessage Operator=>", Operator);
-
-    /*  this.setState({
-          webSocketLoading: true,
-    })*/
 
     let prefixUrl = (process.env.REACT_APP_API_ENDPOINT).replace('http', 'ws');
     console.log("onmessage==REACT_APP_API_ENDPOINT==>", prefixUrl)
@@ -166,7 +193,6 @@ export const requestShowAppInstClientWS_____TEST = (pCurrentAppInst, _this: Page
                         }
                     }
                 }
-
 
 
             }))
@@ -378,14 +404,14 @@ export const getCloudletList = async () => {
         console.log("mergedCloudletList====selectOrg>", localStorage.selectOrg)
 
         //todo: current org에 관한것만 flitering
-       /* let mergedOrgCloudletList = []
-        mergedCloudletList.map(item => {
-            if (item.Operator === localStorage.selectOrg) {
-                mergedOrgCloudletList.push(item)
-            }
-        })
+        /* let mergedOrgCloudletList = []
+         mergedCloudletList.map(item => {
+             if (item.Operator === localStorage.selectOrg) {
+                 mergedOrgCloudletList.push(item)
+             }
+         })
 
-        console.log("mergedOrgCloudletList====>", mergedOrgCloudletList);*/
+         console.log("mergedOrgCloudletList====>", mergedOrgCloudletList);*/
 
         return mergedCloudletList;
     } catch (e) {

@@ -1,12 +1,13 @@
 // @flow
 import * as React from 'react';
-import {Modal as AModal} from "antd";
+import {Modal as AModal, Select} from "antd";
 import {CLASSIFICATION, GRID_ITEM_TYPE, lineGraphOptions} from "../../../../shared/Constants";
 import {Line} from "react-chartjs-2";
 import {Chart as Bar_Column_Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {barChartOption, columnChartOption} from "../PageMonitoringUtils";
 import LeafletMapWrapperForDev from "./LeafletMapContainerDev";
+import MarkerClusterGroup from 'leaflet-make-cluster-group'
 
 const FA = require('react-fontawesome')
 type Props = {
@@ -26,6 +27,8 @@ type State = {
 };
 
 export default class BigModalGraphContainer extends React.Component<Props, State> {
+
+
     constructor(props: Props) {
         super(props)
         this.state = {
@@ -58,7 +61,7 @@ export default class BigModalGraphContainer extends React.Component<Props, State
         if (this.props.isShowBigGraph) {
             this.setState({
                 appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
-                selectedClientLocationListOnAppInst:nextProps.selectedClientLocationListOnAppInst,
+                selectedClientLocationListOnAppInst: nextProps.selectedClientLocationListOnAppInst,
                 loading: nextProps.loading,
             }, () => {
                 //alert(JSON.stringify(this.state.appInstanceListGroupByCloudlet))
@@ -115,14 +118,17 @@ export default class BigModalGraphContainer extends React.Component<Props, State
 
                         </div>
                         {this.state.graphType === GRID_ITEM_TYPE.MAP ?
-                            <div style={{
-                                color: 'white',
-                                fontSize: 35,
-                                flex: .9,
-                                marginLeft: 25,
-                            }}> Deployed Instance
-                            </div>
-                            : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER?
+
+                            <React.Fragment>
+                                <div style={{
+                                    color: 'white',
+                                    fontSize: 35,
+                                    flex: .2,
+                                    marginLeft: 25,
+                                }}> Deployed Instance
+                                </div>
+                            </React.Fragment>
+                            : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER ?
                                 <div style={{
                                     color: 'white',
                                     fontSize: 35,
@@ -130,7 +136,7 @@ export default class BigModalGraphContainer extends React.Component<Props, State
                                     marginLeft: 25,
                                 }}> Cluster {this.props.popupGraphHWType} Usage
                                 </div>
-                                : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.APPINST?
+                                : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ?
                                     <div style={{
                                         color: 'white',
                                         fontSize: 35,
@@ -154,7 +160,8 @@ export default class BigModalGraphContainer extends React.Component<Props, State
                                             fontSize: 35,
                                             flex: .9,
                                             marginLeft: 25,
-                                        }}> Top 5 {this.props.popupGraphHWType} Usage of {this.props.parent.state.currentClassification}
+                                        }}> Top 5 {this.props.popupGraphHWType} Usage
+                                            of {this.props.parent.state.currentClassification}
                                         </div>
                         }
 
@@ -186,17 +193,22 @@ export default class BigModalGraphContainer extends React.Component<Props, State
                                 />
                             </div>
                             : this.state.graphType === GRID_ITEM_TYPE.MAP ?
-                                <div style={{height: window.innerHeight * 0.92}}>
-                                    <LeafletMapWrapperForDev
-                                        mapPopUploading={false}
-                                        parent={this}
-                                        isDraggable={true}
-                                        handleAppInstDropdown={this.props.parent.handleAppInstDropdown}
-                                        markerList={this.state.appInstanceListGroupByCloudlet}
-                                        selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
-                                    />
 
-                                </div>
+                                <React.Fragment>
+                                    <div>
+
+                                    </div>
+                                    <div style={{height: window.innerHeight * 0.92}}>
+                                        <LeafletMapWrapperForDev
+                                            mapPopUploading={false}
+                                            parent={this}
+                                            isDraggable={true}
+                                            handleAppInstDropdown={this.props.parent.handleAppInstDropdown}
+                                            markerList={this.state.appInstanceListGroupByCloudlet}
+                                            selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
+                                        />
+                                    </div>
+                                </React.Fragment>
                                 :
                                 <div></div>
 

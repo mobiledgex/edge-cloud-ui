@@ -11,6 +11,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import {renderPlaceHolderLottiePinJump2, showToast} from "../PageMonitoringCommonService";
 import Button from "@material-ui/core/Button";
 import MarkerClusterGroup from 'leaflet-make-cluster-group'
+import {Select} from "antd";
 
 
 const DEFAULT_VIEWPORT = {
@@ -66,10 +67,32 @@ type State = {
     newCloudLetLocationList: Array,
     isUpdateEnable: boolean,
     clientList: any,
+    currentTyleLayer: any,
 
 };
 
 export default class LeafletMapWrapperForDev extends React.Component<Props, State> {
+    mapTileList = [
+        {
+            url: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
+            name: 'dark1',
+        },
+        {
+            url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
+            name: 'dark2',
+        },
+
+        {
+            url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+            name: 'white1',
+        },
+        {
+            url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+            name: 'white2',
+        },
+
+    ]
+
 
     constructor(props: Props) {
         super(props);
@@ -91,6 +114,7 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
             ],
             popupLoading: false,
             clientList: [],
+            currentTyleLayer: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
 
 
         };
@@ -251,25 +275,37 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                         <Map center={[45.4, 51.7]}
                              duration={0.9}
                              zoom={this.state.zoom}
+
                              style={{width: '100%', height: '100%', zIndex: 1,}}
                              easeLinearity={1}
                              useFlyTo={true}
                              dragging={true}
                              boundsOptions={{padding: [50, 50]}}
-                             onZoomEnd={(e) => {
-                                 let zoomLevel = e.target._zoom;
-                                 this.setState({
-                                     zoom: zoomLevel,
-                                 })
-                             }}
                              maxZoom={15}
                              ref={(ref) => {
                                  this.map = ref;
                              }}
                         >
-                            {/*{this.props.parent.state.loading && renderPlaceHolderLottiePinJump2()}*/}
+
+                            <div style={{position: 'absolute', right: 0,zIndex:999999}}>
+                                <Select defaultValue={this.mapTileList[0].name} style={{width: 120}}
+                                        onChange={(value) => {
+
+                                            this.setState({
+                                                currentTyleLayer: this.mapTileList[value].url
+                                            })
+
+                                        }}>
+                                    {this.mapTileList.map((item, index) => {
+                                        return (
+                                            <Select.Option value={index}>{item.name}</Select.Option>
+                                        )
+                                    })}
+                                </Select>
+                            </div>
+
                             <TileLayer
-                                url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
+                                url={this.state.currentTyleLayer}
                                 //url={'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'}
                                 minZoom={2}
                                 style={{zIndex: 1}}
@@ -318,7 +354,7 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                                     [item.latitude, item.longitude]
                                                 }
                                             >
-                                               {/* <Tooltip
+                                                {/* <Tooltip
                                                     direction='right'
                                                     offset={[0, 0]}
                                                     opacity={0.8}
@@ -333,7 +369,8 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                                       {item.uuid}
                                                   </span>
                                                 </Tooltip>*/}
-                                                <Popup className='leaflet-popup-content-wrapper2' style={{fontSize:11}}>{item.uuid}</Popup>
+                                                <Popup className='leaflet-popup-content-wrapper2'
+                                                       style={{fontSize: 11}}>{item.uuid}</Popup>
                                             </Marker>
 
                                             {/*@todo:라인을 그리는 부분...*/}
@@ -345,7 +382,7 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                                                 positions={[
                                                     //[item.latitude + offset, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
 
-                                                    [item.latitude , item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
+                                                    [item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
                                                 ]}
                                                 color={'yellow'}
                                             />

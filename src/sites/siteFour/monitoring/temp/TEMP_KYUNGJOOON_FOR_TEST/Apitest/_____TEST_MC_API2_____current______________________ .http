@@ -640,11 +640,17 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODQ1ODM3O
 
 }
 
+###
+
+
+
 ### ShowAppInstClient as stream
 
 POST https://console-stage.mobiledgex.net:443/api/v1/auth/ctrl/ShowAppInstClient
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODQ1ODM3ODIsImlhdCI6MTU4NDQ5NzM4MiwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.QAtg0gPXGooXEPrZRvYaa04UmELps18HDLMGgZC7sVu8ZWPyYLQBnOmENmCxVuyg2pDmRmmQut4-hefKIQ42AQ
+
+
 
 {
   "Region": "EU",

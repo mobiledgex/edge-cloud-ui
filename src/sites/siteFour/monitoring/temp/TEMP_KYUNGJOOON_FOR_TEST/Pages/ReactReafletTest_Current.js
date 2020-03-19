@@ -126,25 +126,25 @@ export default hot(
                     <div style={{height: this.state.currentHeight, width: '100%', zIndex: 1}}>
                         <Map
                             center={[45.4, 51.7]}
-                             duration={0.9}
-                             style={{width: '100%', height: this.state.currentHeight, zIndex: 1,}}
-                             zoom={this.state.currentZoomLevel}
-                             onZoomEnd={(e) => {
+                            duration={0.9}
+                            style={{width: '100%', height: this.state.currentHeight, zIndex: 1,}}
+                            zoom={this.state.currentZoomLevel}
+                            onZoomEnd={(e) => {
 
-                                 let zoomLevel = e.target._zoom;
+                                let zoomLevel = e.target._zoom;
 
-                                 this.setState({
-                                     currentZoomLevel: zoomLevel,
-                                 })
-                             }}
-                             maxZoom={15}
-                             ref={(ref) => {
-                                 this.map = ref;
-                             }}
-                             easeLinearity={1}
-                             useFlyTo={true}
-                             dragging={true}
-                             boundsOptions={{padding: [50, 50]}}
+                                this.setState({
+                                    currentZoomLevel: zoomLevel,
+                                })
+                            }}
+                            maxZoom={15}
+                            ref={(ref) => {
+                                this.map = ref;
+                            }}
+                            easeLinearity={1}
+                            useFlyTo={true}
+                            dragging={true}
+                            boundsOptions={{padding: [50, 50]}}
                         >
                             <MarkerClusterGroup>
                                 <Marker
@@ -387,7 +387,7 @@ export default hot(
                                         width: 30
                                     }}/>
                             </div>
-                            <div style={{margin:20, fontSize:30, fontWeight:'bold'}}>
+                            <div style={{margin: 20, fontSize: 30, fontWeight: 'bold'}}>
                                 {this.state.currentZoomLevel.toString()}
                             </div>
                         </div>
