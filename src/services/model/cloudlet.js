@@ -1,4 +1,5 @@
 import * as formatter from './format'
+import * as serverData from './serverData'
 import { TYPE_JSON } from '../../constant';
 import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, STREAM_CLOUDLET, DELETE_CLOUDLET, SHOW_CLOUDLET_INFO} from './endPointTypes'
 
@@ -61,6 +62,10 @@ export const showCloudlets = (data) => {
         data.org = formatter.getOrganization()
     }
     return { method: method, data: data }
+}
+
+export const getCloudletList = async (self, data) => {
+   return await serverData.showDataFromServer(self, showCloudlets(data))
 }
 
 export const deleteCloudlet = (data) => {

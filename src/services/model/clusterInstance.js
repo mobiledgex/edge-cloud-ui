@@ -1,4 +1,5 @@
 import * as formatter from './format'
+import * as serverData from './serverData'
 import uuid from 'uuid'
 import { SHOW_CLUSTER_INST, STREAM_CLUSTER_INST, CREATE_CLUSTER_INST, DELETE_CLUSTER_INST, SHOW_CLOUDLET, SHOW_ORG_CLOUDLET } from './endPointTypes'
 import { TYPE_JSON, IPAccessLabel } from '../../constant';
@@ -122,9 +123,10 @@ export const clusterKey = (data, isCreate) => {
     })
 }
 
-export const createClusterInst = (data) => {
+export const createClusterInst = (data, callback) => {
     let requestData = clusterKey(data, true)
-    return { uuid: data.uuid ? data.uuid : uuid(), method: CREATE_CLUSTER_INST, data: requestData }
+    let request =  { uuid: data.uuid ? data.uuid : uuid(), method: CREATE_CLUSTER_INST, data: requestData }
+    return serverData.sendWSRequest(request, callback)
 }
 
 export const deleteClusterInst = (data) => {

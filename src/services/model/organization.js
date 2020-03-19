@@ -1,6 +1,8 @@
-import { fields, formatData } from './format'
+import * as formatter from './format'
+import * as serverData from './serverData'
 import { SHOW_ORG, DELETE_ORG } from './endPointTypes'
 
+let fields = formatter.fields;
 
 export const keys = [
     { field: fields.organizationName, serverField: 'Name', label: 'Organization', sortable: true, visible: true },
@@ -24,6 +26,20 @@ export const showOrganizations = (data) => {
     return { method: SHOW_ORG, data: data }
 }
 
+export const getOrganizationList = async (self, data) => {
+    let dataList = []
+    if (formatter.getOrganization()) {
+        let organization = {}
+        organization[fields.organizationName] = formatter.getOrganization();
+        organization.isDefault = true;
+        dataList = [organization]
+    }
+    else {
+        dataList = await serverData.showDataFromServer(self, showOrganizations(data))
+    }
+    return dataList;
+}
+
 export const deleteOrganization = (data) => {
     let requestData = getKey(data);
     return { method: DELETE_ORG, data: requestData, success: `Organization ${data[fields.organizationName]}` }
@@ -33,5 +49,5 @@ const customData = (value) => {
 }
 
 export const getData = (response, body) => {
-    return formatData(response, body, keys, customData)
+    return formatter.formatData(response, body, keys, customData)
 }

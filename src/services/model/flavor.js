@@ -1,6 +1,9 @@
 
-import { fields, formatData } from './format'
+import * as formatter from './format'
+import * as serverData from './serverData'
 import { SHOW_FLAVOR, CREATE_FLAVOR, DELETE_FLAVOR } from './endPointTypes'
+
+let fields = formatter.fields
 
 export const keys = [ 
     { field: fields.region, label: 'Region', sortable: true, visible: true },
@@ -27,6 +30,10 @@ export const showFlavors = (data) => {
     return { method: SHOW_FLAVOR, data: data }
 }
 
+export const getFlavorList = async (self, data) => {
+    return await serverData.showDataFromServer(self, showFlavors(data))
+}
+
 export const deleteFlavor = (data) => {
     let requestData = getKey(data);
     return { method: DELETE_FLAVOR, data: requestData, success: `Flavor ${data[fields.organizationName]}` }
@@ -37,5 +44,5 @@ const customData = (value) => {
 }
 
 export const getData = (response, body) => {
-    return formatData(response, body, keys, customData)
+    return formatter.formatData(response, body, keys, customData)
 }

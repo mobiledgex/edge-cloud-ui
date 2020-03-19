@@ -10,12 +10,11 @@ import * as actions from '../../../actions';
 import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 //model
-import * as serverData from '../../../services/model/serverData';
 import { formKeys, createClusterInst } from '../../../services/model/clusterInstance';
-import { showOrganizations } from '../../../services/model/organization';
-import { showCloudlets } from '../../../services/model/cloudlet';
-import { showFlavors } from '../../../services/model/flavor';
-import { showPrivacyPolicies } from '../../../services/model/privacyPolicy';
+import { getOrganizationList } from '../../../services/model/organization';
+import { getCloudletList } from '../../../services/model/cloudlet';
+import { getFlavorList } from '../../../services/model/flavor';
+import { getPrivacyPolicyList } from '../../../services/model/privacyPolicy';
 //Map
 import Map from '../../../libs/simpleMaps/with-react-motion/index_clusters_new';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
@@ -43,7 +42,7 @@ class ClusterInstReg extends React.Component {
 
     getCloudletInfo = async (region, form, forms) => {
         if (!this.requestedRegionList.includes(region)) {
-            this.cloudletList = [...this.cloudletList, ...await serverData.showDataFromServer(this, showCloudlets({ region: region }))]
+            this.cloudletList = [...this.cloudletList, ...await getCloudletList(this, { region: region })]
         }
         this.updateUI(form)
         this.setState({ forms: forms })
@@ -51,7 +50,7 @@ class ClusterInstReg extends React.Component {
 
     getFlavorInfo = async (region, form, forms) => {
         if (!this.requestedRegionList.includes(region)) {
-            this.flavorList = [...this.flavorList, ...await serverData.showDataFromServer(this, showFlavors({ region: region }))]
+            this.flavorList = [...this.flavorList, ...await getFlavorList(this, { region: region })]
         }
         this.updateUI(form)
         this.setState({ forms: forms })
@@ -59,7 +58,7 @@ class ClusterInstReg extends React.Component {
 
     getPrivacyPolicy = async (region, form, forms) => {
         if (!this.requestedRegionList.includes(region)) {
-            this.privacyPolicyList = [...this.privacyPolicyList, ...await serverData.showDataFromServer(this, showPrivacyPolicies({ region: region }))]
+            this.privacyPolicyList = [...this.privacyPolicyList, ...await getPrivacyPolicyList(this, { region: region })]
         }
         this.updateUI(form)
         this.setState({ forms: forms })
@@ -100,8 +99,7 @@ class ClusterInstReg extends React.Component {
             if (form.field === fields.numberOfMasters || form.field === fields.numberOfNodes) {
                 form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_DOCKER ? false : true
             }
-            else if(form.field === fields.ipAccess)
-            {
+            else if (form.field === fields.ipAccess) {
                 this.ipAccessList = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED] : [constant.IP_ACCESS_DEDICATED];
                 this.updateUI(form)
             }
@@ -175,7 +173,7 @@ class ClusterInstReg extends React.Component {
                 for (let i = 0; i < cloudlets.length; i++) {
                     let cloudlet = cloudlets[i];
                     data[fields.cloudletName] = cloudlet;
-                    serverData.sendWSRequest(createClusterInst(data), this.onCreateResponse)
+                    createClusterInst(data, this.onCreateResponse)
                 }
 
             }
@@ -286,10 +284,6 @@ class ClusterInstReg extends React.Component {
         }
     }
 
-    getDataFromServer = async (requestType) => {
-        return await serverData.showDataFromServer(this, requestType())
-    }
-
     loadDefaultData = async (data) => {
         if (data) {
             let organization = {}
@@ -310,7 +304,7 @@ class ClusterInstReg extends React.Component {
             data[fields.ipAccess] = constant.IPAccessLabel(data[fields.ipAccess])
             this.ipAccessList = data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES ? [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED] : [constant.IP_ACCESS_DEDICATED];
 
-            this.privacyPolicyList = await serverData.showDataFromServer(this, showPrivacyPolicies({ region: data[fields.region] }))
+            this.privacyPolicyList = await getPrivacyPolicyList(this, { region: data[fields.region] })
         }
     }
 
@@ -324,7 +318,7 @@ class ClusterInstReg extends React.Component {
             await this.loadDefaultData(data)
         }
         else {
-            this.organizationList = await serverData.showDataFromServer(this, showOrganizations())
+            this.organizationList = await getOrganizationList()
         }
 
         for (let i = 0; i < forms.length; i++) {

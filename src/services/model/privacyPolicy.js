@@ -1,4 +1,5 @@
 import * as formatter from './format'
+import * as serverData from './serverData'
 import { SHOW_PRIVACY_POLICY, UPDATE_PRIVACY_POLICY, CREATE_PRIVACY_POLICY, DELETE_PRIVACY_POLICY } from './endPointTypes'
 export const fields = formatter.fields;
 
@@ -43,6 +44,10 @@ export const showPrivacyPolicies = (data) => {
     }
   }
   return { method: SHOW_PRIVACY_POLICY, data: data }
+}
+
+export const getPrivacyPolicyList = async (self, data) => {
+  return await serverData.showDataFromServer(self, showPrivacyPolicies(data))
 }
 
 export const updatePrivacyPolicy = (data) => {
