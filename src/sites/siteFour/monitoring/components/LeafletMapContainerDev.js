@@ -5,14 +5,11 @@ import 'react-leaflet-fullscreen-control'
 import type {TypeAppInstance, TypeClientLocation} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 import {CheckCircleOutlined} from '@material-ui/icons';
-import {Map, Marker, Popup, TileLayer, Tooltip, Polyline} from "react-leaflet";
+import {Map, Marker, Polyline, Popup, TileLayer, Tooltip} from "react-leaflet";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {renderPlaceHolderLottiePinJump2, showToast} from "../PageMonitoringCommonService";
-import Button from "@material-ui/core/Button";
-import MarkerClusterGroup from 'leaflet-make-cluster-group'
-import {Select} from "antd";
-
+import {renderPlaceHolderLottiePinJump3} from "../PageMonitoringCommonService";
+import ContainerDimensions from 'react-container-dimensions'
 
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
@@ -59,6 +56,8 @@ type Props = {
     parent: PageDevMonitoring,
     markerList: Array,
     selectedClientLocationListOnAppInst: any,
+    isMapUpdate: boolean,
+    currentWidgetWidth: number,
 
 };
 type State = {
@@ -68,6 +67,7 @@ type State = {
     isUpdateEnable: boolean,
     clientList: any,
     currentTyleLayer: any,
+    currentWidgetWidth: number,
 
 };
 
@@ -115,6 +115,7 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
             popupLoading: false,
             clientList: [],
             currentTyleLayer: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
+            currentWidgetWidth: window.innerWidth / 3,
 
 
         };
@@ -137,9 +138,13 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
             this.setCloudletLocation(appInstanceListGroupByCloudlet)
         }
 
+
+        //@desc : clientListOnCloudlet
+        //@desc : clientListOnCloudlet
+        //@desc : clientListOnCloudlet
         if (this.props.selectedClientLocationListOnAppInst !== nextProps.selectedClientLocationListOnAppInst) {
 
-            console.log("componentWillReceiveProps==nextProps==>", nextProps.selectedClientLocationListOnAppInst);
+            console.log("selectedClientLocationListOnAppInst==nextProps==>", nextProps.selectedClientLocationListOnAppInst);
 
             let clientList = nextProps.selectedClientLocationListOnAppInst;
 
@@ -148,22 +153,30 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
             }, () => {
                 console.log("selectedClientLocationListOnAppInst====>", this.state.clientList);
             })
+        }
 
-            /*   clientList.map((item: TypeClientLocation) => {
-                   console.log("selectedClientLocationListOnAppInst====>", item.uuid);
-                   console.log("selectedClientLocationListOnAppInst====>", item.longitude);
-                   console.log("selectedClientLocationListOnAppInst====>", item.latitude);
-               })*/
+        if (this.props.currentWidgetWidth !== nextProps.currentWidgetWidth) {
+
+
+            //alert('lksdlfksdf===>' + nextProps.currentWidgetWidth.toString())
+
+          /*  let w = window.innerWidth/3 * nextProps.currentWidgetWidth;
+            alert(w.toString())
+            this.setState({
+                currentWidgetWidth: w,
+            })*/
         }
     }
 
-    /* shouldComponentUpdate(nextProps, nextState) {
-           if (this.props.selectedClientLocationListOnAppInst !== nextProps.selectedClientLocationListOnAppInst || this.props.markerList !== nextProps.markerList ) {
-               return true;
-           } else {
-               return false;
-           }
-     }*/
+    /*  shouldComponentUpdate(nextProps, nextState) {
+            if (this.props.markerList !== nextProps.markerList &&  nextProps.isMapUpdate ) {
+
+ //               alert('update')
+                return true;
+            } else {
+                return false;
+            }
+      }*/
 
     setCloudletLocation(pAppInstanceListGroupByCloudlet) {
 
@@ -230,11 +243,9 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
 
     render() {
 
-
         return (
-            <React.Fragment>
+            <React.Fragment style={{width: '100%'}}>
                 <div className='page_monitoring_title_area' style={{display: 'flex'}}>
-
                     <div style={{
                         display: 'flex',
                         width: '100%',
@@ -246,6 +257,7 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                         }}>
                             Deployed Instance
                         </div>
+                        {/**/}
                         {/*<Button>
                             add marker
                         </Button>*/}
@@ -275,35 +287,22 @@ export default class LeafletMapWrapperForDev extends React.Component<Props, Stat
                         <Map center={[45.4, 51.7]}
                              duration={0.9}
                              zoom={this.state.zoom}
-
                              style={{width: '100%', height: '100%', zIndex: 1,}}
                              easeLinearity={1}
                              useFlyTo={true}
                              dragging={true}
                              boundsOptions={{padding: [50, 50]}}
                              maxZoom={15}
+                             onResize={() => {
+
+                             }}
                              ref={(ref) => {
                                  this.map = ref;
                              }}
                         >
 
-                          {/*  <div style={{position: 'absolute', right: 0,zIndex:999999}}>
-                                <Select defaultValue={this.mapTileList[0].name} style={{width: 120}}
-                                        onChange={(value) => {
 
-                                            this.setState({
-                                                currentTyleLayer: this.mapTileList[value].url
-                                            })
-
-                                        }}>
-                                    {this.mapTileList.map((item, index) => {
-                                        return (
-                                            <Select.Option value={index}>{item.name}</Select.Option>
-                                        )
-                                    })}
-                                </Select>
-                            </div>*/}
-
+                            {this.props.parent.state.loading && renderPlaceHolderLottiePinJump3()}
                             <TileLayer
                                 url={this.state.currentTyleLayer}
                                 //url={'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'}

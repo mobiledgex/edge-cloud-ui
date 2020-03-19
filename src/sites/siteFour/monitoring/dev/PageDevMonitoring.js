@@ -75,7 +75,7 @@ import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraph from "../components/ModalGraph";
 import {reactLocalStorage} from "reactjs-localstorage";
 import LeafletMapWrapperForDev from "../components/LeafletMapContainerDev";
-import {Responsive, WidthProvider} from "react-grid-layout";
+import {LayoutItem, Responsive, WidthProvider} from "react-grid-layout";
 import _ from "lodash";
 import PieChartContainer from "../components/PieChartContainer";
 import BigModalGraphContainer from "../components/BigModalGraphContainer";
@@ -86,6 +86,7 @@ import EventLogListContainer from "../components/EventLogListContainer";
 import PerformanceSummaryTable from "../components/PerformanceSummaryTable";
 import VirtualAppInstEventLogListContainer from "../components/VirtualAppInstEventLogListContainer";
 import MarkerClusterGroup from 'leaflet-make-cluster-group'
+
 const {Option} = Select;
 
 const CheckboxGroup = Checkbox.Group;
@@ -243,6 +244,8 @@ type State = {
     isFixGrid: boolean,
     webSocketLoading: boolean,
     selectedClientLocationListOnAppInst: any,
+    isMapUpdate: boolean,
+    currentWidgetWidth:number,
 
 }
 
@@ -399,6 +402,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isFixGrid: false,
                 webSocketLoading: false,
                 selectedClientLocationListOnAppInst: [],
+                isMapUpdate: true,
+                currentWidgetWidth:1,
             };
         }
 
@@ -475,12 +480,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //@todo:###############################
                 //@todo: getAllClusterEventLogList:realdata
                 //@todo:###############################
-             /*   let allClusterEventLogList = await getAllClusterEventLogList(clusterList);
-                console.log("allClusterEventLogList===>", allClusterEventLogList);
-                await this.setState({
-                    allClusterEventLogList: allClusterEventLogList,
-                    filteredClusterEventLogList: allClusterEventLogList
-                })*/
+                /*   let allClusterEventLogList = await getAllClusterEventLogList(clusterList);
+                   console.log("allClusterEventLogList===>", allClusterEventLogList);
+                   await this.setState({
+                       allClusterEventLogList: allClusterEventLogList,
+                       filteredClusterEventLogList: allClusterEventLogList
+                   })*/
 
 
                 //FIXME : FAKEDATA ClusterEventLog
@@ -495,11 +500,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //@todo:###############################
                 //@todo: getAppInst Event Logs : realdata
                 //@todo:###############################
-               /* let allAppInstEventLogs = await getAppInstEventLogs();
-                await this.setState({
-                    allAppInstEventLogs: allAppInstEventLogs.values,
-                    filteredAppInstEventLogs: allAppInstEventLogs.values,
-                })*/
+                /* let allAppInstEventLogs = await getAppInstEventLogs();
+                 await this.setState({
+                     allAppInstEventLogs: allAppInstEventLogs.values,
+                     filteredAppInstEventLogs: allAppInstEventLogs.values,
+                 })*/
 
 
                 //@fixme: fakeData
@@ -775,10 +780,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let AppName = pCurrentAppInst.split('|')[0].trim()
             let Cloudlet = pCurrentAppInst.split('|')[1].trim()
             let ClusterInst = pCurrentAppInst.split('|')[2].trim()
-            //let Region = pCurrentAppInst.split('|')[3].trim()
-            //alert(JSON.stringify(__appInstEventLogListOne));
-
-
             let filteredAppList = filterByClassification(this.state.appInstanceList, Cloudlet, 'Cloudlet');
             filteredAppList = filterByClassification(filteredAppList, ClusterInst, 'ClusterInst');
             filteredAppList = filterByClassification(filteredAppList, AppName, 'AppName');
@@ -864,6 +865,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         async handleClusterDropdown(value) {
             clearInterval(this.intervalForAppInst)
 
+            await this.setState({
+                selectedClientLocationListOnAppInst: [],
+            })
+
             let selectData = value.split("|")
             let selectedCluster = selectData[0].trim();
             let selectedCloudlet = selectData[1].trim();
@@ -938,48 +943,48 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
         }
 
-       /* renderMapArea() {
-            return (
-                <>
-                    <div className='page_monitoring_title_area' style={{display: 'flex'}}>
+        /* renderMapArea() {
+             return (
+                 <>
+                     <div className='page_monitoring_title_area' style={{display: 'flex'}}>
 
-                        <div style={{
-                            display: 'flex',
-                            width: '100%',
-                            height: 30
-                        }}>
-                            <div className='page_monitoring_title' style={{
-                                backgroundColor: 'transparent',
-                                flex: .38
-                            }}>
-                                Deployed Instance
-                            </div>
-                        </div>
+                         <div style={{
+                             display: 'flex',
+                             width: '100%',
+                             height: 30
+                         }}>
+                             <div className='page_monitoring_title' style={{
+                                 backgroundColor: 'transparent',
+                                 flex: .38
+                             }}>
+                                 Deployed Instance
+                             </div>
+                         </div>
 
-                        <div className='page_monitoring_title' style={{
-                            backgroundColor: 'transparent',
-                            flex: .65
-                        }}>
-                            {this.state.mapPopUploading &&
-                            <div style={{zIndex: 99999999999}}>
-                                <CircularProgress style={{
-                                    color: '#1cecff',
-                                    marginRight: 0,
-                                    marginBottom: -2,
-                                    fontWeight: 'bold',
-                                }}
-                                                  size={14}/>
-                            </div>
-                            }
-                        </div>
-                    </div>
-                    {/!*@todo: LeafletMapWrapperForDev*!/}
-                    <div className='page_monitoring_container'>
+                         <div className='page_monitoring_title' style={{
+                             backgroundColor: 'transparent',
+                             flex: .65
+                         }}>
+                             {this.state.mapPopUploading &&
+                             <div style={{zIndex: 99999999999}}>
+                                 <CircularProgress style={{
+                                     color: '#1cecff',
+                                     marginRight: 0,
+                                     marginBottom: -2,
+                                     fontWeight: 'bold',
+                                 }}
+                                                   size={14}/>
+                             </div>
+                             }
+                         </div>
+                     </div>
+                     {/!*@todo: LeafletMapWrapperForDev*!/}
+                     <div className='page_monitoring_container'>
 
-                    </div>
-                </>
-            )
-        }*/
+                     </div>
+                 </>
+             )
+         }*/
 
 
         makeGridSizeByType(graphType) {
@@ -1023,12 +1028,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     }),
                     layoutMapperForCluster: mapperList.concat(itemOne),
                 })
-                ;
 
                 console.log("layoutMapperForCluster===>", this.state.layoutMapperForCluster)
-
                 reactLocalStorage.setObject(getUserId() + "_layout", this.state.layoutForCluster)
                 reactLocalStorage.setObject(getUserId() + "_layout_mapper", this.state.layoutMapperForCluster)
+
+
             } else {//@TODO: APPINST LEVEL
 
                 let currentItems = this.state.layoutForAppInst;
@@ -1083,7 +1088,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-        ____makeGridItemOneByType(hwType, graphType) {
+        __makeGridItemOneByType(hwType, graphType) {
 
             if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                 return (
@@ -1109,6 +1114,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.MAP) {
                 return (
                     <LeafletMapWrapperForDev
+                        currentWidgetWidth={this.state.currentWidgetWidth}
+                        isMapUpdate={this.state.isMapUpdate}
                         selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
                         mapPopUploading={this.state.mapPopUploading}
                         parent={this}
@@ -1187,8 +1194,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         showBigModal = (hwType, graphType,) => {
 
-            //alert(this.state.currentClassification)
-
             let chartDataForRendering = []
             if (graphType.toUpperCase() == GRID_ITEM_TYPE.LINE) {
 
@@ -1212,6 +1217,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 popupGraphHWType: hwType,
                 popupGraphType: graphType,
                 isPopupMap: !this.state.isPopupMap,
+                isMapUpdate: true,
             });
         }
 
@@ -1242,9 +1248,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_column_kyungjoon1'
                         //onMouseDown={ e => e.stopPropagation() }
                          style={{height: this.gridItemHeight}}>
-                        {/*@todo:_makeGridItemOneByType      */}
-                        {/*@todo:_makeGridItemOneByType      */}
-                        {this.____makeGridItemOneByType(hwType, graphType.toUpperCase())}
+                        {/*@desc:_makeGridItemOneByType      */}
+                        {/*@desc:_makeGridItemOneByType      */}
+                        {this.__makeGridItemOneByType(hwType, graphType.toUpperCase())}
                     </div>
 
                     <div className="remove"
@@ -1269,9 +1275,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         x
                     </div>
 
-                    {/*todo:############################*/}
-                    {/*todo:maximize button             */}
-                    {/*todo:############################*/}
+                    {/*desc:############################*/}
+                    {/*desc:    maximize button         */}
+                    {/*desc:############################*/}
                     {graphType.toUpperCase() !== GRID_ITEM_TYPE.PERFORMANCE_SUM
                     && graphType.toUpperCase() !== GRID_ITEM_TYPE.BUBBLE
                     && graphType.toUpperCase() !== GRID_ITEM_TYPE.APP_INST_EVENT_LOG
@@ -1312,10 +1318,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     cols={{lg: 3, md: 3, sm: 3, xs: 3, xxs: 3}}
                     layout={this.state.layoutForCluster}
                     rowHeight={this.gridItemHeight}
-                    onResizeStop={() => {
-
+                    onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
+                        console.log("newItem====>", newItem.w);
+                        let width=newItem.w;
                         this.setState({
                             isResizeComplete: !this.state.isResizeComplete,
+                            currentWidgetWidth: width,
                         })
                     }}
 
@@ -1552,7 +1560,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </div>
                         }
 
-                      {/*  <MButton
+                        {/*  <MButton
                             style={{backgroundColor: '#6c6c6c', color: 'white', height: 37}}
                             onClick={() => {
                                 this.props.toggleLoading(true);

@@ -291,6 +291,29 @@ export const renderPlaceHolderLottiePinJump2 = (type: string = '') => {
         </div>
     )
 }
+
+export const renderPlaceHolderLottiePinJump3 = (type: string = '') => {
+    return (
+        <div className='page_monitoring_blank_box'
+             style={{zIndex: 999999999999, position: 'absolute', top: '1%', left: '1%'}}>
+            <Lottie
+                options={{
+                    loop: true,
+                    autoplay: true,
+                    animationData: require('../../../lotties/10045-loading-gradient-strokes1234'),
+                    rendererSettings: {
+                        preserveAspectRatio: 'xMidYMid slice'
+                    }
+                }}
+                speed={2.9}
+                height={30}
+                width={30}
+                isStopped={false}
+                isPaused={false}
+            />
+        </div>
+    )
+}
 /*
 export const renderPlaceHolderLottie = (type: string = '') => {
     return (

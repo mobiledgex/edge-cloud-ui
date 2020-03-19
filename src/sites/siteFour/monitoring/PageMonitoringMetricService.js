@@ -94,7 +94,7 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
             }))
             webSocket.send(JSON.stringify(showAppInstClientRequestForm))
         } catch (e) {
-            alert(e.toString())
+            //alert(e.toString())
         }
     }
 
@@ -102,6 +102,9 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
     let appInstCount = 0;
     webSocket.onmessage = (event) => {
         try {
+            _this.setState({
+                loading: true,
+            })
             appInstCount++;
             let data = JSON.parse(event.data);
             let uuid = data.data.client_key.uuid;
@@ -121,6 +124,12 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
             })
 
 
+            setTimeout(() => {
+                _this.setState({
+                    loading: false,
+                })
+            }, 11)
+
             console.log("onmessage.....appInstCount====>", appInstCount);
         } catch (e) {
             //alert(e)
@@ -133,8 +142,7 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
     };
 
     webSocket.onclose = function (event) {
-
-        alert(event.toString())
+        //alert(event.toString())
     };
 
     return webSocket;
