@@ -963,26 +963,29 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster) => 
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
+        let form ={
+            "region": Region,
+            "clusterinst": {
+                "cluster_key": {
+                    "name": ClusterName
+                },
+                "cloudlet_key": {
+                    "name": Cloudlet,
+                    "organization": Operator,
+
+                },
+                "organization": selectOrg
+            },
+            //"last": 10
+        }
+
+        console.log("getClusterEventLogListOne====>", form);
+
 
         let result = await axios({
             url: '/api/v1/auth/events/cluster',
             method: 'post',
-            data: {
-                "region": Region,
-                "clusterinst": {
-                    "cluster_key": {
-                        "name": ClusterName
-                    },
-                    "cloudlet_key": {
-                        "operator_key": {
-                            "name": Operator
-                        },
-                        "name": Cloudlet
-                    },
-                    "developer": selectOrg
-                },
-                //"last": 10
-            },
+            data: form,
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + store.userToken
@@ -1034,7 +1037,7 @@ export const getAppInstEventLogs = async (region = ['EU', 'US']) => {
         let selectOrg = localStorage.getItem('selectOrg')
 
 
-        let body = {
+        let form = {
             "region": 'EU',
             "appinst": {
                 "app_key": {
@@ -1057,12 +1060,15 @@ export const getAppInstEventLogs = async (region = ['EU', 'US']) => {
         }
 
 
+        console.log("getAppInstEventLogs====>", form)
+
+
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
         let result = await axios({
             url: '/api/v1/auth/events/app',
             method: 'post',
-            data: body,
+            data: form,
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + store.userToken

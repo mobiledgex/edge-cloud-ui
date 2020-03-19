@@ -245,7 +245,7 @@ type State = {
     webSocketLoading: boolean,
     selectedClientLocationListOnAppInst: any,
     isMapUpdate: boolean,
-    currentWidgetWidth:number,
+    currentWidgetWidth: number,
 
 }
 
@@ -403,7 +403,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 webSocketLoading: false,
                 selectedClientLocationListOnAppInst: [],
                 isMapUpdate: true,
-                currentWidgetWidth:1,
+                currentWidgetWidth: 1,
             };
         }
 
@@ -463,8 +463,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     })
                 }
 
-                //fixme: fakeData22222222222
-                //fixme: fakeData22222222222
+                //@desc: fakeData22222222222
+                //@desc: fakeData22222222222
                 /*let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
                 let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
                 let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
@@ -480,41 +480,40 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //@todo:###############################
                 //@todo: getAllClusterEventLogList:realdata
                 //@todo:###############################
-                /*   let allClusterEventLogList = await getAllClusterEventLogList(clusterList);
-                   console.log("allClusterEventLogList===>", allClusterEventLogList);
-                   await this.setState({
-                       allClusterEventLogList: allClusterEventLogList,
-                       filteredClusterEventLogList: allClusterEventLogList
-                   })*/
-
-
-                //FIXME : FAKEDATA ClusterEventLog
-                //FIXME : FAKEDATA ClusterEventLog
-                //FIXME : FAKEDATA ClusterEventLog
+                let allClusterEventLogList = await getAllClusterEventLogList(clusterList);
+                console.log("allClusterEventLogList===>", allClusterEventLogList);
                 await this.setState({
-                    allClusterEventLogList: [],
-                    filteredClusterEventLogList: []
+                    allClusterEventLogList: allClusterEventLogList,
+                    filteredClusterEventLogList: allClusterEventLogList
                 })
+
+
+                //FIXME : FAKEDATA ClusterEventLog
+                //FIXME : FAKEDATA ClusterEventLog
+                //FIXME : FAKEDATA ClusterEventLog
+                /*    await this.setState({
+                        allClusterEventLogList: [],
+                        filteredClusterEventLogList: []
+                    })*/
 
 
                 //@todo:###############################
                 //@todo: getAppInst Event Logs : realdata
                 //@todo:###############################
-                /* let allAppInstEventLogs = await getAppInstEventLogs();
-                 await this.setState({
-                     allAppInstEventLogs: allAppInstEventLogs.values,
-                     filteredAppInstEventLogs: allAppInstEventLogs.values,
-                 })*/
+                let allAppInstEventLogs = await getAppInstEventLogs();
+                await this.setState({
+                    allAppInstEventLogs: allAppInstEventLogs.values,
+                    filteredAppInstEventLogs: allAppInstEventLogs.values,
+                })
 
-
                 //@fixme: fakeData
                 //@fixme: fakeData
                 //@fixme: fakeData
-                let __allAppInstEvLogListValues = require('./allAppInstEventLogList')
+             /*   let __allAppInstEvLogListValues = require('./allAppInstEventLogList')
                 await this.setState({
                     allAppInstEventLogs: __allAppInstEvLogListValues,
                     filteredAppInstEventLogs: __allAppInstEvLogListValues,
-                })
+                })*/
 
 
                 let appInstanceListGroupByCloudlet = []
@@ -1320,7 +1319,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     rowHeight={this.gridItemHeight}
                     onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
                         console.log("newItem====>", newItem.w);
-                        let width=newItem.w;
+                        let width = newItem.w;
                         this.setState({
                             isResizeComplete: !this.state.isResizeComplete,
                             currentWidgetWidth: width,

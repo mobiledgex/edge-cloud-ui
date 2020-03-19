@@ -637,7 +637,6 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODQ2ODA2M
   },
   "selector": "*",
   "last": 10
-
 }
 
 ###
@@ -696,3 +695,51 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODQ1ODM3O
 
 ###
 
+POST https://console-stage.mobiledgex.net:443/api/v1/auth/events/cluster
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODQ2NzAzNjEsImlhdCI6MTU4NDU4Mzk2MSwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.qMa9KfVlI_F2D7P2PJHry2CJMZwugDZvkRM0Gdg-fngwfGw7pE5Juow7piy8UqRQzO5mtFpp5O7W-XXf60Dztg
+
+{
+  "region": "EU",
+  "clusterinst": {
+    "cluster_key": {
+      "name": "venky-test"
+    },
+    "cloudlet_key": {
+      "name": "berlin-staging",
+      "organization": "TDG"
+    },
+    "organization": "MobiledgeX"
+  }
+
+}
+
+
+###
+POST https://console-stage.mobiledgex.net:443/api/v1/auth/events/app
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODQ2NzAzNjEsImlhdCI6MTU4NDU4Mzk2MSwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.qMa9KfVlI_F2D7P2PJHry2CJMZwugDZvkRM0Gdg-fngwfGw7pE5Juow7piy8UqRQzO5mtFpp5O7W-XXf60Dztg
+
+{
+  "region": "EU",
+  "appinst": {
+    "app_key": {
+      "developer_key": {
+        "name": "MobiledgeX"
+      }
+    },
+    "cluster_inst_key": {
+      "cluster_key": {
+        "name": ""
+      },
+      "cloudlet_key": {
+        "operator_key": {
+          "name": ""
+        },
+        "name": ""
+      }
+    }
+  }
+}
+
+###
