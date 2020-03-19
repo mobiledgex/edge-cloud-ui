@@ -26,18 +26,40 @@ const MexForms = (props) => {
         switch (id) {
             case 'delete':
                 return <DeleteOutlineOutlinedIcon />
-    
+
         }
     }
 
-    const disableFields = (form) => {
-        let disable = false
-        if (props.isUpdate) {
-            disable = form.update ? false : true;
+    //Disable field if options is default
+    const isValueDefault = (form, disabled)=>
+    {
+        if(form.formType === SELECT)
+        {
+            let dataList = form.options
+            if(dataList.length === 1)
+            {
+                form.value = dataList[0][form.field]
+                disabled = dataList[0].isDefault ? true : disabled
+            }
         }
-        return disable
+        return disabled;
     }
-    
+
+    //Validate form before loading
+    const initValidateRules = (form) => {
+        let rules = form.rules ? form.rules : {};
+        let disabled = rules.disabled ? rules.disabled : false;
+        if(disabled === false)
+        {
+            if (props.isUpdate) {
+                disabled = form.update ? disabled : true;
+            }
+            disabled = isValueDefault(form, disabled)
+        }
+        rules.disabled = disabled;
+        form.rules = rules;
+    }
+
     const isDisabled = (form) => {
         let disabled = false;
         if (form.rules) {
@@ -185,10 +207,21 @@ const MexForms = (props) => {
         })
     }
 
+    const loadDropDownForms = (form, required, disabled) => {
+        if (form.formType === SELECT || form.formType === MULTI_SELECT)
+            return (form.formType === SELECT ?
+                <MexSelect form={form} forms={forms} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                form.formType === MULTI_SELECT ?
+                    <MexMultiSelect form={form} forms={forms} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                    form.formType === DUALLIST ?
+                        <MexDualList form={form} onChange={onValueSelect} /> : null)
+    }
+
     const loadForms = (index, form) => {
         form.id = { id: index }
         let required = false;
-        let disabled = disableFields(form);
+        let disabled = false;
+
         if (form.rules) {
             let rules = form.rules;
             required = rules.required ? rules.required : false;
@@ -202,17 +235,13 @@ const MexForms = (props) => {
                     </Grid.Column>
                     <Grid.Column width={11}>
                         {
-                            form.formType === SELECT ?
-                                <MexSelect form={form} forms={forms} required={required} disabled={disabled} onChange={onValueSelect} /> :
-                                form.formType === MULTI_SELECT ?
-                                    <MexMultiSelect form={form} forms={forms} required={required} disabled={disabled} onChange={onValueSelect} /> :
-                                    form.formType === DUALLIST ?
-                                        <MexDualList form={form} onChange={onValueSelect} /> :
-                                        form.formType === INPUT ?
-                                            <MexInput form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
-                                            form.formType === CHECKBOX ?
-                                                <MexCheckbox form={form} onChange={onValueSelect} /> :
-                                                null
+                            form.formType === SELECT || form.formType === MULTI_SELECT || form.formType === DUALLIST ?
+                                loadDropDownForms(form, required, disabled) :
+                                form.formType === INPUT ?
+                                    <MexInput form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                                    form.formType === CHECKBOX ?
+                                        <MexCheckbox form={form} onChange={onValueSelect} /> :
+                                        null
                         }
                     </Grid.Column>
                 </Grid.Row> : null
@@ -233,6 +262,7 @@ const MexForms = (props) => {
                 <Form.Group widths="equal" style={{ flexDirection: 'column', marginLeft: 10, marginRight: 10, alignContent: 'space-around' }}>
                     <Grid columns={2}>
                         {forms.map((form, i) => {
+                            initValidateRules(form);
                             return (
                                 form.visible ?
                                     form.formType === HEADER ?
