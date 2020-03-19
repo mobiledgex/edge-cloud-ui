@@ -25,11 +25,12 @@ export const keys = [
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
 
-export const formKeys = [
+export const formKeys = () => {
+    return [
         { label: 'Cluster Instance', formType: 'Header', visible: true },
         { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
         { field: fields.clusterName, label: 'Cluster Name', formType: 'Input', placeholder: 'Enter Cluster Inst Name', rules: { required: true }, visible: true, },
-        { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: true }, visible: true },
+        { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: true, disabled: formatter.getOrganization() ? true : false }, visible: true, value: formatter.getOrganization() },
         { field: fields.operatorName, label: 'Operator', formType: 'Select', placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
         { field: fields.cloudletName, label: 'Cloudlet', formType: 'MultiSelect', placeholder: 'Select Cloudlet', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 4, field: fields.operatorName }] },
         { field: fields.deployment, label: 'Deployment Type', formType: 'Select', placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, update: true },
@@ -39,8 +40,9 @@ export const formKeys = [
         { field: fields.numberOfMasters, label: 'Number of Masters', formType: 'Input', placeholder: 'Enter Number of Masters', rules: { type: 'number', disabled: true }, visible: false, value: 1, update: true },
         { field: fields.numberOfNodes, label: 'Number of Nodes', formType: 'Input', placeholder: 'Enter Number of Nodes', rules: { type: 'number' }, visible: false, update: true },
         { field: fields.reservable, label: 'Reservable', formType: 'Checkbox', visible: true, roles: ['AdminManager'], value: false, update: true },
-        { field: fields.reservedBy, label: 'Reserved By', formType: 'Input', placeholder: 'Enter Reserved By', visible: true, roles: ['AdminManager'], update: true },
+        { field: fields.reservedBy, label: 'Reserved By', formType: 'Input', placeholder: 'Enter Reserved By', visible: true, roles: ['AdminManager'], update: true }
     ]
+}
 
 export const multiDataRequest = (keys, mcRequestList) => {
     let cloudletDataList = [];
@@ -125,7 +127,7 @@ export const clusterKey = (data, isCreate) => {
 
 export const createClusterInst = (data, callback) => {
     let requestData = clusterKey(data, true)
-    let request =  { uuid: data.uuid ? data.uuid : uuid(), method: CREATE_CLUSTER_INST, data: requestData }
+    let request = { uuid: data.uuid ? data.uuid : uuid(), method: CREATE_CLUSTER_INST, data: requestData }
     return serverData.sendWSRequest(request, callback)
 }
 

@@ -14,7 +14,7 @@ const MexMultiSelect = (props) => {
         let forms = props.forms
         let dependentData = form.dependentData
         let dataList = form.options
-        if (dependentData && dependentData.length > 0) {
+        if (dataList && dataList.length > 0 && dependentData && dependentData.length > 0) {
             for (let i = 0; i < dependentData.length; i++) {
                 let filteredList = []
                 let dependentForm = forms[dependentData[i].index]
@@ -41,13 +41,15 @@ const MexMultiSelect = (props) => {
 
     //Convert data to semantic select format
     const getData = (form) => {
+        let optionList = []
         let dataList = getFilteredData(form)
         if (dataList && dataList.length > 0) {
-            return dataList.map(data => {
+            optionList =  dataList.map(data => {
                 let info = data[form.field] ? data[form.field] : data
                 return { key: info, value: info, text: info }
             })
         }
+        return optionList
     }
 
     const getForm = () => (

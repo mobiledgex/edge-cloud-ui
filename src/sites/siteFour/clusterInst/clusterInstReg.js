@@ -100,6 +100,7 @@ class ClusterInstReg extends React.Component {
                 form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_DOCKER ? false : true
             }
             else if (form.field === fields.ipAccess) {
+                this.ipAccessValueChange(currentForm, forms)
                 this.ipAccessList = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED] : [constant.IP_ACCESS_DEDICATED];
                 this.updateUI(form)
             }
@@ -132,11 +133,8 @@ class ClusterInstReg extends React.Component {
         })
     }
 
-    /**Required */
-    /*Trigged when form value changes */
-    onValueChange = (form) => {
-        let forms = this.state.forms;
-
+    checkForms = (form, forms)=>
+    {
         if (form.field === fields.region) {
             this.regionValueChange(form, forms)
         }
@@ -154,6 +152,13 @@ class ClusterInstReg extends React.Component {
         }
     }
 
+    /**Required */
+    /*Trigged when form value changes */
+    onValueChange = (form) => {
+        let forms = this.state.forms;
+        this.checkForms(form, forms)
+    }
+
     onCreateResponse = (mcRequest) => {
         if (mcRequest) {
             let data = undefined;
@@ -169,13 +174,18 @@ class ClusterInstReg extends React.Component {
     onCreate = async (data) => {
         if (data) {
             let cloudlets = data[fields.cloudletName];
-            if (cloudlets && cloudlets.length > 0) {
-                for (let i = 0; i < cloudlets.length; i++) {
-                    let cloudlet = cloudlets[i];
-                    data[fields.cloudletName] = cloudlet;
-                    createClusterInst(data, this.onCreateResponse)
-                }
+            if (this.props.isUpdate) {
+                //update cluster data
+            }
+            else {
+                if (cloudlets && cloudlets.length > 0) {
+                    for (let i = 0; i < cloudlets.length; i++) {
+                        let cloudlet = cloudlets[i];
+                        data[fields.cloudletName] = cloudlet;
+                        createClusterInst(data, this.onCreateResponse)
+                    }
 
+                }
             }
         }
     }
@@ -247,38 +257,50 @@ class ClusterInstReg extends React.Component {
         }
     }
 
+
+    resetFormValue = (form) => {
+        let rules = form.rules
+        if (rules) {
+            let disabled = rules.disabled ? rules.disabled : false
+            if (!disabled) {
+                form.value = undefined;
+            }
+        }
+    }
+
     updateUI(form) {
-        //Reset form value
-        form.value = undefined;
-        if (form.field) {
-            if (form.formType === SELECT || form.formType === MULTI_SELECT) {
-                switch (form.field) {
-                    case fields.organizationName:
-                        form.options = this.organizationList
-                        break;
-                    case fields.region:
-                        form.options = this.regions;
-                        break;
-                    case fields.operatorName:
-                        form.options = this.cloudletList
-                        break;
-                    case fields.cloudletName:
-                        form.options = this.cloudletList
-                        break;
-                    case fields.flavorName:
-                        form.options = this.flavorList
-                        break;
-                    case fields.deployment:
-                        form.options = [constant.DEPLOYMENT_TYPE_DOCKER, constant.DEPLOYMENT_TYPE_KUBERNETES]
-                        break;
-                    case fields.privacyPolicyName:
-                        form.options = this.privacyPolicyList
-                        break;
-                    case fields.ipAccess:
-                        form.options = this.ipAccessList;
-                        break;
-                    default:
-                        form.options = undefined;
+        if (form) {
+            this.resetFormValue(form)
+            if (form.field) {
+                if (form.formType === SELECT || form.formType === MULTI_SELECT) {
+                    switch (form.field) {
+                        case fields.organizationName:
+                            form.options = this.organizationList
+                            break;
+                        case fields.region:
+                            form.options = this.regions;
+                            break;
+                        case fields.operatorName:
+                            form.options = this.cloudletList
+                            break;
+                        case fields.cloudletName:
+                            form.options = this.cloudletList
+                            break;
+                        case fields.flavorName:
+                            form.options = this.flavorList
+                            break;
+                        case fields.deployment:
+                            form.options = [constant.DEPLOYMENT_TYPE_DOCKER, constant.DEPLOYMENT_TYPE_KUBERNETES]
+                            break;
+                        case fields.privacyPolicyName:
+                            form.options = this.privacyPolicyList
+                            break;
+                        case fields.ipAccess:
+                            form.options = this.ipAccessList;
+                            break;
+                        default:
+                            form.options = undefined;
+                    }
                 }
             }
         }
@@ -297,7 +319,10 @@ class ClusterInstReg extends React.Component {
             cloudlet[fields.cloudletLocation] = data[fields.cloudletLocation]
             this.cloudletList = [cloudlet]
 
+            this.setState({mapData : [cloudlet]})
+
             let flavor = {}
+            flavor[fields.region] = data[fields.region]
             flavor[fields.flavorName] = data[fields.flavorName]
             this.flavorList = [flavor]
 
@@ -309,11 +334,6 @@ class ClusterInstReg extends React.Component {
     }
 
     getFormData = async (data) => {
-        let forms = Object.assign([], formKeys);
-        forms.push(
-            { label: this.isUpdate ? 'Update' : 'Create', formType: 'Button', onClick: this.onCreate, validate: true },
-            { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel })
-
         if (data) {
             await this.loadDefaultData(data)
         }
@@ -321,11 +341,18 @@ class ClusterInstReg extends React.Component {
             this.organizationList = await getOrganizationList()
         }
 
+        let forms = formKeys()
+        forms.push(
+            { label: this.isUpdate ? 'Update' : 'Create', formType: 'Button', onClick: this.onCreate, validate: true },
+            { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel })
+
+
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             this.updateUI(form)
             if (data) {
                 form.value = data[form.field]
+                this.checkForms(form, forms)
             }
         }
 

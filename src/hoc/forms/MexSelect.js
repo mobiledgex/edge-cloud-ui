@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { Form, Popup, Icon } from 'semantic-ui-react';
 
 
@@ -10,27 +10,35 @@ const MexSelect = (props) => {
 
     //Filter data based on dependData definition for given form
     const getFilteredData = (form) => {
+        let filteredList = []
         let forms = props.forms
         let dependentData = form.dependentData
         let dataList = form.options
-        if (dependentData && dependentData.length > 0) {
-            for (let i = 0; i < dependentData.length; i++) {
-                let filteredList = []
-                let dependentForm = forms[dependentData[i].index]
-                for (let j = 0; j < dataList.length; j++) {
-                    let data = dataList[j];
-                    if (data[dependentForm.field] === dependentForm.value) {
-                        if (data[form.field]) {
-                            if(i === dependentData.length-1)
-                            {
-                                filteredList.push(data[form.field])
-                            }
-                            else
-                            {
-                                filteredList.push(data)
+        if (dataList && dataList.length > 0) {
+            if (dependentData && dependentData.length > 0) {
+                for (let i = 0; i < dependentData.length; i++) {
+                    filteredList = []
+                    let dependentForm = forms[dependentData[i].index]
+                    for (let j = 0; j < dataList.length; j++) {
+                        let data = dataList[j];
+                        if (data[dependentForm.field] === dependentForm.value) {
+                            if (data[form.field]) {
+                                if (i === dependentData.length - 1) {
+                                    filteredList.push(data[form.field])
+                                }
+                                else {
+                                    filteredList.push(data)
+                                }
                             }
                         }
                     }
+                    dataList = filteredList
+                }
+            }
+            else {
+                for (let j = 0; j < dataList.length; j++) {
+                    let data = dataList[j];
+                    filteredList.push(data[form.field] ? data[form.field] : data)
                 }
                 dataList = filteredList
             }
@@ -39,15 +47,16 @@ const MexSelect = (props) => {
     }
 
     //Convert data to semantic select format
-    const getData = (form)=>
-    {
+    const getData = (form) => {
+        let optionList = []
         let dataList = getFilteredData(form)
         if (dataList && dataList.length > 0) {
-            return dataList.map(data => {
+            optionList = dataList.map(data => {
                 let info = data[form.field] ? data[form.field] : data
                 return { key: info, value: info, text: info }
             })
         }
+        return optionList
     }
 
     const onSelected = (value) => {
@@ -55,7 +64,7 @@ const MexSelect = (props) => {
         props.onChange(form, value, props.parentForm)
     }
 
-    
+
     const getBasicForm = () => (
         <select style={form.style}
             onChange={(e) => { onSelected(e.target.value) }}
@@ -70,18 +79,18 @@ const MexSelect = (props) => {
         </select>
     )
     const getForm = () => (
-        form.style ? 
-        getBasicForm() :
-        <Form.Select
-            icon={form.error ? <Icon color='red' name='times circle outline' style={{marginRight:10, position:'absolute',right: '0px'}}/> : null}
-            placeholder={form.placeholder ? form.placeholder : null}
-            label={props.label ? props.label : null}
-            required={props.required}
-            disabled={props.disabled}
-            options={getData(form)}
-            onChange={(e, { value }) => onSelected(value)}
-            value={selected}
-        />
+        form.style ?
+            getBasicForm() :
+            <Form.Select
+                icon={form.error ? <Icon color='red' name='times circle outline' style={{ marginRight: 10, position: 'absolute', right: '0px' }} /> : null}
+                placeholder={form.placeholder ? form.placeholder : null}
+                label={props.label ? props.label : null}
+                required={props.required}
+                disabled={props.disabled}
+                options={getData(form)}
+                onChange={(e, { value }) => onSelected(value)}
+                value={selected}
+            />
     )
 
     return (

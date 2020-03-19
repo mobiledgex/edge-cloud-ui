@@ -26,12 +26,11 @@ export const showOrganizations = (data) => {
     return { method: SHOW_ORG, data: data }
 }
 
-export const getOrganizationList = async (self, data) => {
+export const getOrganizationList = async(self, data) => {
     let dataList = []
     if (formatter.getOrganization()) {
         let organization = {}
         organization[fields.organizationName] = formatter.getOrganization();
-        organization.isDefault = true;
         dataList = [organization]
     }
     else {

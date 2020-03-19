@@ -5,13 +5,13 @@ const MexCheckbox = (props) => {
     let form = props.form
 
     const getPanes = () => {
-        return form.panes.map(pane => {
-            return { menuItem: <Menu.Item><label style={{color:'#74AA19'}}>{pane.label}</label></Menu.Item>, render: () => <Tab.Pane>{pane.tab}</Tab.Pane> }
+        return form.panes.map((pane, i) => {
+            return { menuItem: <Menu.Item key={i}><label style={{color:'#74AA19'}}>{pane.label}</label></Menu.Item>, render: () => <Tab.Pane>{pane.tab}</Tab.Pane> }
         })
     }
     const getForm = () => (
         <Tab
-            menu = {{color:'#26272C', inverted:'true', attached:'true', tabular:'true'}}  
+            menu = {{inverted:true, attached:true, tabular:true}}  
             panes={getPanes()} 
             style={{ width: '100%', height:'100%'}} />
     )

@@ -30,31 +30,12 @@ const MexForms = (props) => {
         }
     }
 
-    //Disable field if options is default
-    const isValueDefault = (form, disabled)=>
-    {
-        if(form.formType === SELECT)
-        {
-            let dataList = form.options
-            if(dataList.length === 1)
-            {
-                form.value = dataList[0][form.field]
-                disabled = dataList[0].isDefault ? true : disabled
-            }
-        }
-        return disabled;
-    }
-
     //Validate form before loading
     const initValidateRules = (form) => {
         let rules = form.rules ? form.rules : {};
         let disabled = rules.disabled ? rules.disabled : false;
-        if(disabled === false)
-        {
-            if (props.isUpdate) {
-                disabled = form.update ? disabled : true;
-            }
-            disabled = isValueDefault(form, disabled)
+        if (props.isUpdate) {
+            disabled = form.update ? disabled : true;
         }
         rules.disabled = disabled;
         form.rules = rules;
