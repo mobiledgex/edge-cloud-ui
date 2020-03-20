@@ -75,7 +75,7 @@ type State = {
 
 };
 
-export default class LeafletMapContainerDev extends React.Component<Props, State> {
+export default class LeafletMapContainerDev__Clustering extends React.Component<Props, State> {
     mapTileList = [
         {
             url: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',

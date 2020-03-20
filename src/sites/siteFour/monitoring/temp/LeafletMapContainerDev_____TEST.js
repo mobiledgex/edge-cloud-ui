@@ -8,11 +8,9 @@ import {CheckCircleOutlined} from '@material-ui/icons';
 import {Map, Marker, Polyline, Popup, TileLayer, Tooltip} from "react-leaflet";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {groupByKey_, renderPlaceHolderLottiePinJump3} from "../PageMonitoringCommonService";
+import {renderPlaceHolderLottiePinJump3} from "../PageMonitoringCommonService";
 import ContainerDimensions from 'react-container-dimensions'
 import MarkerClusterGroup from "leaflet-make-cluster-group";
-import _ from "lodash";
-
 
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
@@ -71,11 +69,11 @@ type State = {
     clientList: any,
     currentTyleLayer: any,
     currentWidgetWidth: number,
-    clientObjKeys: any,
+    objKeys: any,
 
 };
 
-export default class LeafletMapContainerDev extends React.Component<Props, State> {
+export default class LeafletMapContainerDev_____TEST extends React.Component<Props, State> {
     mapTileList = [
         {
             url: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
@@ -96,8 +94,6 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
         },
 
     ]
-
-
 
 
     constructor(props: Props) {
@@ -134,6 +130,20 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
         console.log('componentDidMount===>', this.props.markerList);
         let appInstanceListGroupByCloudlet = this.props.markerList
         this.setCloudletLocation(appInstanceListGroupByCloudlet)
+
+
+    };
+
+    groupBy = (array, key) => {
+        // Return the end result
+        return array.reduce((result, currentValue) => {
+            // If an array already present for key, push it to the array. Else create an array and push the object
+            (result[currentValue[key]] = result[currentValue[key]] || []).push(
+                currentValue
+            );
+            // Return the current iteration `result` value, this will be taken as next iteration `result` value and accumulate
+            return result;
+        }, {}); // empty object is the initial value for result object
     };
 
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
@@ -154,25 +164,36 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
 
             let clientList = nextProps.selectedClientLocationListOnAppInst;
 
-            console.log("clientList===length=>", clientList.length);
-            //desc: duplication remove by client cellphone uuid
-            clientList = _.uniq(clientList, 'uuid');
-
-            console.log("clientList===lengt22====>", clientList.length);
-
             let newClientList = []
             clientList.map((item: TypeClient, index) => {
-                let clientLocation = parseFloat(item.latitude).toFixed(2).toString() + parseFloat(item.longitude).toFixed(2).toString();
-                console.log("clientLocation====>", clientLocation);
+                let clientLocation = item.latitude.toString() + item.longitude.toString();
                 item.clientLocation = clientLocation;
                 newClientList.push(item);
             })
 
-            let groupedClientList = groupByKey_(newClientList, 'clientLocation')
-            let clientObjKeys = Object.keys(groupedClientList)
+            /*console.log("newClientList====>", newClientList);
+            let __newClientList = this.groupBy(newClientList, newClientListOne=>newClientList.clentLocation)*/
+            //console.log("__newClientList====>", __newClientList);
+
+            console.log("newClientList====>", newClientList);
+
+            let groupedClientList = this.groupBy(newClientList, 'clientLocation')
+
+            console.log("__newClientList02====>", groupedClientList);
+
+            let objKeys = Object.keys(groupedClientList)
+
+            console.log("clientObjKeys====>", objKeys);
+
+            objKeys.map(item => {
+                console.log("lskflksdflkklsd====>", groupedClientList[item]);
+
+            })
+
+
             await this.setState({
                 clientList: groupedClientList,
-                clientObjKeys: clientObjKeys,
+                clientObjKeys: objKeys,
             }, () => {
                 console.log("selectedClientLocationListOnAppInst====>", this.state.clientList);
             })
@@ -180,7 +201,18 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
 
     }
 
+    /*  shouldComponentUpdate(nextProps, nextState) {
+            if (this.props.markerList !== nextProps.markerList &&  nextProps.isMapUpdate ) {
+
+ //               alert('update')
+                return true;
+            } else {
+                return false;
+            }
+      }*/
+
     setCloudletLocation(pAppInstanceListGroupByCloudlet) {
+
         let cloudletKeys = Object.keys(pAppInstanceListGroupByCloudlet)
 
         let newCloudLetLocationList = []
@@ -312,11 +344,12 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
                                 //maxZoom={15}
                             />
 
-                            {/*@desc:clientList...*/}
-                            {/*@desc:clientList...*/}
-                            {/*@desc:clientList...*/}
-                            {this.state.clientObjKeys.map((objkeyOne, index) => {
+                            {/*@todo:clientList...*/}
+                            {/*@todo:clientList...*/}
+                            {/*@todo:clientList...*/}
+                            {this.state.objKeys.map((objkeyOne, index) => {
                                 let groupedClientList = this.state.clientList;
+
 
                                 return (
                                     <MarkerClusterGroup>

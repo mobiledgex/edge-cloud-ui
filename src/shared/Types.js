@@ -21,6 +21,19 @@ export type TypeGridInstanceList = {
     "sumSendBytes": number,
 }
 
+export type TypeClient = {
+    latitude: number,
+    longitude: number,
+    horizontal_accuracy: number,
+    altitude: number,
+    timestamp: any,
+    uuid: string,
+    serverLocInfo: {
+        lat: number,
+        long: number,
+    }
+}
+
 export type TypeLineChartData2 = {
     levelTypeNameList: Array,
     usageSetList: Array,

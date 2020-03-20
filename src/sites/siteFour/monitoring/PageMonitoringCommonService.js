@@ -155,6 +155,18 @@ export const isEmpty = (value) => {
     }
 };
 
+export const groupByKey_ = (array, key) => {
+    // Return the end result
+    return array.reduce((result, currentValue) => {
+        // If an array already present for key, push it to the array. Else create an array and push the object
+        (result[currentValue[key]] = result[currentValue[key]] || []).push(
+            currentValue
+        );
+        // Return the current iteration `result` value, this will be taken as next iteration `result` value and accumulate
+        return result;
+    }, {}); // empty object is the initial value for result object
+};
+
 
 export const renderLoaderArea = (_this) => (
     <Grid.Row className='view_contents'>
@@ -300,14 +312,14 @@ export const renderPlaceHolderLottiePinJump3 = (type: string = '') => {
                 options={{
                     loop: true,
                     autoplay: true,
-                    animationData: require('../../../lotties/10045-loading-gradient-strokes1234'),
+                    animationData: require('../../../lotties/pinjump'),
                     rendererSettings: {
                         preserveAspectRatio: 'xMidYMid slice'
                     }
                 }}
                 speed={2.9}
-                height={30}
-                width={30}
+                height={50}
+                width={50}
                 isStopped={false}
                 isPaused={false}
             />
@@ -669,7 +681,7 @@ export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, fetch
 
     console.log("makeFormForClusterLevelMatric====>", dataOne);
 
-    let dataForm =  {
+    let dataForm = {
         "token": token,
         "params": {
             "region": dataOne.Region,
@@ -695,7 +707,7 @@ export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, fetch
 
 export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
 
-    let formBody= {
+    let formBody = {
         "token": token,
         "params": {
             "region": dataOne.Region,

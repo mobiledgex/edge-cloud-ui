@@ -100,23 +100,33 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
 
     let appInstCount = 0;
-    webSocket.onmessage = (event) => {
+    let interval;
+    webSocket.onmessage = async (event) => {
         try {
-            _this.setState({
+
+            console.log("readyState====>", webSocket.readyState);
+
+            await _this.setState({
                 loading: true,
+                //selectedClientLocationListOnAppInst:[],
             })
             appInstCount++;
             let data = JSON.parse(event.data);
             let uuid = data.data.client_key.uuid;
             console.log("onmessage==data==>", data);
-
+            if (data.code === 200) {
+                _this.setState({
+                    loading: true,
+                })
+            }
             let clientLocationOne: TypeClientLocation = data.data.location;
             if (!isEmpty(uuid)) {
                 clientLocationOne.uuid = uuid;
                 let serverLocation = pCurrentAppInst.split('|')[7].trim()
                 clientLocationOne.serverLocInfo = JSON.parse(serverLocation)
             }
-            console.log("onmessage====serverInstInfo>", clientLocationOne);
+            console.log("onmessage====clientLocationOne>", clientLocationOne);
+
             _this.setState({
                 selectedClientLocationListOnAppInst: _this.state.selectedClientLocationListOnAppInst.concat(clientLocationOne),
             }, () => {
@@ -128,7 +138,7 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
                 _this.setState({
                     loading: false,
                 })
-            }, 11)
+            }, 15)
 
             console.log("onmessage.....appInstCount====>", appInstCount);
         } catch (e) {
@@ -142,7 +152,7 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
     };
 
     webSocket.onclose = function (event) {
-        //alert(event.toString())
+        alert(event.toString())
     };
 
     return webSocket;
