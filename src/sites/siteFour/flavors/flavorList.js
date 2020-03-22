@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { fields } from '../../../services/model/format';
 import { keys, showFlavors, deleteFlavor } from '../../../services/model/flavor';
-import FlavorReg from './flavorRegNew';
+import FlavorReg from './flavorReg';
 
 class FlavorList extends React.Component {
     constructor(props) {
@@ -17,8 +17,13 @@ class FlavorList extends React.Component {
         this.data = {}
     }
 
+    onRegClose = (isEdited)=>
+    {
+        this.setState({ currentView: null })
+    }
+
     onAdd = () => {
-        this.setState({ currentView: <FlavorReg /> })
+        this.setState({ currentView: <FlavorReg onClose={this.onRegClose}/> })
     }
 
     /**Action menu block */

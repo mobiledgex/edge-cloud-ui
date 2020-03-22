@@ -15,14 +15,23 @@ export const keys = [
     { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
 
-export const getKey = (data) => {
+export const getKey = (data, isCreate) => {
+    let flavor  = {}
+    flavor.key = {name: data[fields.flavorName]}
+
+    if(isCreate)
+    {
+        flavor.ram = parseInt(data[fields.ram])
+        flavor.vcpus = parseInt(data[fields.vCPUs])
+        flavor.disk = parseInt(data[fields.disk])
+        if(data[fields.gpu])
+        {
+            flavor.opt_res_map = {gpu:"gpu:1"}
+        }
+    }
     return ({
         region: data[fields.region],
-        flavor: {
-            key: {
-                name: data[fields.flavorName]
-            }
-        }
+        flavor: flavor
     })
 }
 
@@ -34,9 +43,15 @@ export const getFlavorList = async (self, data) => {
     return await serverData.showDataFromServer(self, showFlavors(data))
 }
 
+export const createFlavor = async (self, data) => {
+    let requestData = getKey(data, true)
+    let request = { method: CREATE_FLAVOR, data: requestData }
+    return await serverData.sendRequest(self, request)
+}
+
 export const deleteFlavor = (data) => {
     let requestData = getKey(data);
-    return { method: DELETE_FLAVOR, data: requestData, success: `Flavor ${data[fields.organizationName]}` }
+    return { method: DELETE_FLAVOR, data: requestData, success: `Flavor ${data[fields.flavorName]}` }
 }
 
 const customData = (value) => {
