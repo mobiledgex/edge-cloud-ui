@@ -91,6 +91,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
+
 const options = [
     { label: 'Organizations', icon: <SupervisorAccountOutlinedIcon />, pg: 0, page: <SiteFourPageOrganization />, roles: ['AdminManager', 'DeveloperManager'] },
     { label: 'Users & Roles', icon: <AssignmentIndOutlinedIcon />, pg: 1, page: <SiteFourPageUser />, roles: ['AdminManager'] },
@@ -112,12 +113,25 @@ const options = [
     { label: 'Audit Logs', icon: <FeaturedPlayListOutlinedIcon />, pg: 'audits', page: <SiteFourPageAudits />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] }
 ]
 
+const defaultPage = () => {
+    let path = window.location + '';
+    let currentPage = path.substring(path.indexOf('pg='))
+    for (let i = 0; i < options.length; i++) {
+        let option = options[i]
+        if (currentPage === 'pg='+option.pg) {
+            return option.page
+        }
+    }
+    return <SiteFourPageOrganization/>
+}
+
 export default function MiniDrawer(props) {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const [expand, setExpand] = React.useState(false);
-    const [page, setPage] = React.useState(<SiteFourPageOrganization />);
+    
+    const [page, setPage] = React.useState(defaultPage());
 
     const handleDrawerOpen = () => {
         setOpen(true);
