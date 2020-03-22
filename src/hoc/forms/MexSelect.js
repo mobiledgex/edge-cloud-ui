@@ -19,6 +19,11 @@ const MexSelect = (props) => {
                 for (let i = 0; i < dependentData.length; i++) {
                     filteredList = []
                     let dependentForm = forms[dependentData[i].index]
+                    if(dependentForm.value === undefined)
+                    {
+                        dataList = []
+                        break;
+                    }
                     for (let j = 0; j < dataList.length; j++) {
                         let data = dataList[j];
                         if (data[dependentForm.field] === dependentForm.value) {

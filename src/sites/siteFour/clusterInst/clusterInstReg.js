@@ -257,18 +257,6 @@ class ClusterInstReg extends React.Component {
         this.props.onClose(false)
     }
 
-
-
-    getOptions = (dataList, form) => {
-        if (dataList && dataList.length > 0) {
-            return dataList.map(data => {
-                let info = form ? data[form.field] : data
-                return { key: info, value: info, text: info }
-            })
-        }
-    }
-
-
     resetFormValue = (form) => {
         let rules = form.rules
         if (rules) {

@@ -1,5 +1,6 @@
 import * as formatter from './format'
 import { TYPE_JSON } from '../../constant';
+import * as serverData from './serverData'
 import { SHOW_APP, CREATE_APP, UPDATE_APP, DELETE_APP } from './endPointTypes'
 
 let fields = formatter.fields
@@ -51,6 +52,10 @@ export const showApps = (data) => {
     }
     return { method: SHOW_APP, data: data }
 }
+
+export const getAppList = async (self, data) => {
+    return await serverData.showDataFromServer(self, showApps(data))
+ }
 
 export const deleteApp = (data) => {
     let requestData = getKey(data)

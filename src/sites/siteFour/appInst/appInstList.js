@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { fields } from '../../../services/model/format';
 import { keys, showAppInsts, deleteAppInst, streamAppInst, multiDataRequest } from '../../../services/model/appInstance';
 import { showApps } from '../../../services/model/app';
-import AppInstReg from './appInstRegNew';
+import AppInstReg from './appInstReg';
 import * as constant from '../../../services/model/shared';
 
 class AppInstList extends React.Component {
@@ -21,8 +21,13 @@ class AppInstList extends React.Component {
         this.keys = Object.assign([], keys);
     }
 
+    onRegClose = (isEdited)=>
+    {
+        this.setState({ currentView: null })
+    }
+
     onAdd = () => {
-        this.setState({ currentView: <AppInstReg /> })
+        this.setState({ currentView: <AppInstReg onClose={this.onRegClose}/> })
     }
 
     actionMenu = () => {

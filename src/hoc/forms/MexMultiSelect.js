@@ -11,27 +11,40 @@ const MexMultiSelect = (props) => {
 
     //Filter data based on dependData definition for given form
     const getFilteredData = (form) => {
+        let filteredList = []
         let forms = props.forms
         let dependentData = form.dependentData
         let dataList = form.options
-        if (dataList && dataList.length > 0 && dependentData && dependentData.length > 0) {
-            for (let i = 0; i < dependentData.length; i++) {
-                let filteredList = []
-                let dependentForm = forms[dependentData[i].index]
-                for (let j = 0; j < dataList.length; j++) {
-                    let data = dataList[j];
-                    if (data[dependentForm.field] === dependentForm.value) {
-                        if (data[form.field]) {
-                            if(i === dependentData.length-1)
-                            {
-                                filteredList.push(data[form.field])
-                            }
-                            else
-                            {
-                                filteredList.push(data)
+        if (dataList && dataList.length > 0) {
+            if (dependentData && dependentData.length > 0) {
+                for (let i = 0; i < dependentData.length; i++) {
+                    filteredList = []
+                    let dependentForm = forms[dependentData[i].index]
+                    if(dependentForm.value === undefined)
+                    {
+                        dataList = []
+                        break;
+                    }
+                    for (let j = 0; j < dataList.length; j++) {
+                        let data = dataList[j];
+                        if (data[dependentForm.field] === dependentForm.value) {
+                            if (data[form.field]) {
+                                if (i === dependentData.length - 1) {
+                                    filteredList.push(data[form.field])
+                                }
+                                else {
+                                    filteredList.push(data)
+                                }
                             }
                         }
                     }
+                    dataList = filteredList
+                }
+            }
+            else {
+                for (let j = 0; j < dataList.length; j++) {
+                    let data = dataList[j];
+                    filteredList.push(data[form.field] ? data[form.field] : data)
                 }
                 dataList = filteredList
             }
@@ -41,12 +54,14 @@ const MexMultiSelect = (props) => {
 
     //Convert data to semantic select format
     const getData = (form) => {
+        let rules = form.rules
+        let allCaps = rules ? rules.allCaps ? rules.allCaps : false : false
         let optionList = []
         let dataList = getFilteredData(form)
         if (dataList && dataList.length > 0) {
-            optionList =  dataList.map(data => {
+            optionList = dataList.map(data => {
                 let info = data[form.field] ? data[form.field] : data
-                return { key: info, value: info, text: info }
+                return { key: info, value: info, text: allCaps ? info.toUpperCase() : info }
             })
         }
         return optionList

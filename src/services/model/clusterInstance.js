@@ -106,6 +106,10 @@ export const clusterKey = (data, isCreate) => {
     })
 }
 
+export const getClusterInstList = async (self, data) => {
+    return await serverData.showDataFromServer(self, showClusterInsts(data))
+ }
+
 export const createClusterInst = (data, callback) => {
     let requestData = clusterKey(data, true)
     let request = { uuid: data.uuid ? data.uuid : uuid(), method: CREATE_CLUSTER_INST, data: requestData }

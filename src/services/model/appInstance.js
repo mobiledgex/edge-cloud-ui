@@ -1,5 +1,7 @@
 import * as formatter from './format'
-import { TYPE_JSON } from '../../constant';
+import uuid from 'uuid'
+import { TYPE_JSON } from '../../constant'
+import * as serverData from './serverData'
 import { SHOW_APP_INST, CREATE_APP_INST, UPDATE_APP_INST, DELETE_APP_INST, STREAM_APP_INST, SHOW_APP } from './endPointTypes'
 
 let fields = formatter.fields;
@@ -25,7 +27,7 @@ export const keys = [
   { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
 
-export const getKey = (data) => {
+export const getKey = (data, isCreate) => {
   return ({
     region: data[fields.region],
     appinst: {
@@ -83,6 +85,12 @@ export const showAppInsts = (data) => {
     }
   }
   return { method: SHOW_APP_INST, data: data }
+}
+
+export const createAppInst = (data, callback) => {
+  let requestData = getKey(data, true)
+  let request = { uuid: data.uuid ? data.uuid : uuid(), method: CREATE_APP_INST, data: requestData }
+  return serverData.sendWSRequest(request, callback)
 }
 
 export const deleteAppInst = (data) => {

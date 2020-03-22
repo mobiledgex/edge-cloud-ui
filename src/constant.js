@@ -1,3 +1,5 @@
+import { fields } from "./services/model/format"
+
 export const TYPE_JSON = 'JSON'
 export const ADD_CLOUDLET = 'AddCloudlet'
 export const DELETE_CLOUDLET = 'DeleteCloudlet'
@@ -30,6 +32,30 @@ export const IPAccessLabel = (id) => {
             return 1
         case 'Shared':
             return 3
+    }
+}
+
+export const getTip = (field) => {
+    switch(field)
+    {
+        case fields.region:
+            return 'Select region where you want to deploy.'
+        case fields.organizationName:
+            return 'The name of the organization you are currently managing.'
+        case fields.appName:
+            return 'The name of the application to deploy.'
+        case fields.version:
+            return 'The version of the application to deploy.'
+        case fields.operatorName:
+            return 'Which operator do you want to deploy this applicaton? Please select one.'
+        case fields.cloudletName:
+            return 'Which cloudlet(s) do you want to deploy this application ?'
+        case fields.autoClusterInstance:
+            return 'If you have yet to create a cluster, you can select this to auto create cluster instance.'
+        case fields.clusterName:
+            return 'Name of cluster instance to deploy this application.'
+        default:
+            return null
     }
 }
 
