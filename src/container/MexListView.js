@@ -30,9 +30,9 @@ class MexListView extends React.Component {
             isDetail: false,
             stepsArray: [],
             showMap: true,
-            dialogMessageInfo:{},
+            dialogMessageInfo: {},
             uuid: 0,
-            refresh:true,
+            refresh: true,
         };
         this.wsResponseCount = 0;
         this.requestCount = 0;
@@ -77,11 +77,10 @@ class MexListView extends React.Component {
         })
     }
 
-    detailView = (data)=>
-    {
+    detailView = (data) => {
         let additionalDetail = this.props.requestInfo.additionalDetail
         return (
-            <Card style={{ height: '90%', backgroundColor:'#2A2C33', overflowY:'auto' }}>
+            <Card style={{ height: '90%', backgroundColor: '#2A2C33', overflowY: 'auto' }}>
                 <MexDetailViewer detailData={data} keys={this.keys} />
                 {additionalDetail ? additionalDetail(data) : null}
             </Card>
@@ -100,7 +99,7 @@ class MexListView extends React.Component {
                 this.props.onClick(key, data)
             }
         }
-        else{
+        else {
             this.setState(
                 {
                     isDetail: true,
@@ -110,11 +109,10 @@ class MexListView extends React.Component {
         }
     }
 
-    onDeleteWSResponse = (mcRequest)=>
-    {
+    onDeleteWSResponse = (mcRequest) => {
         this.wsResponseCount += 1;
         let code = 200;
-        let message  = '';
+        let message = '';
         if (mcRequest) {
             if (mcRequest.response) {
                 let response = mcRequest.response.data
@@ -163,7 +161,7 @@ class MexListView extends React.Component {
     }
 
     onDeleteWarning = async (action, data) => {
-        this.setState({ dialogMessageInfo: {message:`Are you sure you want to delete ${data[this.props.requestInfo.nameField]}?`, action:action} }); 
+        this.setState({ dialogMessageInfo: { message: `Are you sure you want to delete ${data[this.props.requestInfo.nameField]}?`, action: action } });
     }
 
     /***Action Block */
@@ -181,9 +179,9 @@ class MexListView extends React.Component {
         }
     }
 
-    
 
-    
+
+
     /*Action Block*/
 
     getAction = (item) => {
@@ -210,21 +208,25 @@ class MexListView extends React.Component {
         })
     }
 
+    getHeight = () => {
+        return window.innerHeight - 204
+    }
+
     listView = () => {
         let isMap = this.props.requestInfo.isMap && this.state.showMap
-        return (this.state.dataList.length > 0 ?
+        return (
             <div className="mexListView">
                 {isMap ?
-                    <div className='panel_worldmap' style={{ height: '40%' }}>
+                    <div className='panel_worldmap' style={{ height: 300 }}>
                         <Map dataList={this.state.dataList} id={this.props.requestInfo.id} />
                     </div> : null}
                 <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing style={{ height: isMap ? '55%' : '97%' }}>
-                    <Table.Header className="viewListTableHeader">
+                    <Table.Header>
                         <Table.Row>
                             {this.makeHeader()}
                         </Table.Row>
                     </Table.Header>
-                    <Table.Body className="tbBodyList" onScroll={this.onHandleScroll}>
+                    <Table.Body style={{ "overflow": "auto", height: isMap ? this.getHeight() - 315 : this.getHeight() }}>
                         {
                             this.state.dataList.map((item, i) => (
                                 <Table.Row key={i}>
@@ -233,8 +235,7 @@ class MexListView extends React.Component {
                             ))
                         }
                     </Table.Body>
-                </Table> </div> :
-            null)
+                </Table> </div>)
     }
 
     getActionMenu = () => (
@@ -246,7 +247,7 @@ class MexListView extends React.Component {
                         style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center right' }}
                     >
                         <Paper style={{ backgroundColor: '#212121', color: 'white' }}>
-                            <ClickAwayListener onClickAway={()=>this.setState({ anchorEl: null})}>
+                            <ClickAwayListener onClickAway={() => this.setState({ anchorEl: null })}>
                                 <MenuList autoFocusItem={Boolean(this.state.anchorEl)} id="menu-list-grow" >
                                     {this.props.actionMenu.map((action, i) => {
                                         return <MenuItem key={i} onClick={(e) => { this.onActionClose(action) }}>{action.label}</MenuItem>
@@ -379,15 +380,15 @@ class MexListView extends React.Component {
 
     static getDerivedStateFromProps(props, state) {
         if (props.refreshToggle !== state.refresh) {
-            return { refresh: props.refreshToggle, dataList : state.dataList }
+            return { refresh: props.refreshToggle, dataList: state.dataList }
         }
         return null
-    } 
+    }
 
     render() {
         return (
             <Card style={{ width: '100%', height: '100%', backgroundColor: '#292c33', padding: 10, color: 'white' }}>
-                <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose}/>
+                <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} stepsArray={this.state.stepsArray} />
                 <MexToolbar requestInfo={this.props.requestInfo} onAction={this.onToolbarAction} isDetail={this.state.isDetail} />
                 {this.state.currentView ? this.state.currentView : this.listView()}
@@ -494,7 +495,7 @@ class MexListView extends React.Component {
             }
         }
     }
-    
+
 
     componentDidMount() {
         this.dataFromServer(REGION_ALL)

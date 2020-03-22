@@ -2,6 +2,7 @@ import React from 'react';
 import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
 import { Item, Step } from 'semantic-ui-react';
+import * as constant from '../../../../constant';
 import MexForms, {SELECT, DUALLIST} from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
@@ -168,7 +169,7 @@ class AutoProvPolicyReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <div className="grid_table" style={{ overflow: 'auto' }}>
+                <div className="grid_table" style={{ height: constant.getHeight(), overflow: 'auto' }}>
                     <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
                         {this.props.action ? null :
                             <div>
@@ -243,8 +244,8 @@ class AutoProvPolicyReg extends React.Component {
                 { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
                 { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: true }, visible: true },
                 { field: fields.autoPolicyName, label: 'Auto Policy Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { required: true }, visible: true },
-                { field: fields.deployClientCount, label: 'Deploy Client Count', formType: 'Input', rules: { formType: 'number' }, visible: true },
-                { field: fields.deployIntervalCount, label: 'Deploy Interval Count (s)', formType: 'Input', rules: { formType: 'number' }, visible: true },
+                { field: fields.deployClientCount, label: 'Deploy Client Count', formType: 'Input', rules: { type: 'number' }, visible: true },
+                { field: fields.deployIntervalCount, label: 'Deploy Interval Count (s)', formType: 'Input', rules: { type: 'number' }, visible: true },
                 { label: 'Create Policy', formType: 'Button', onClick: this.onCreateAutoProvPolicy, validate: true },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
             ]

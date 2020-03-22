@@ -5,6 +5,7 @@ export const ADD_ORGANIZATION = 'AddOrganization'
 export const DELETE_ORGANIZATION = 'DeleteOrganization'
 export const DEPLOYMENT_TYPE_DOCKER = 'docker';
 export const DEPLOYMENT_TYPE_KUBERNETES = 'kubernetes';
+export const DEPLOYMENT_TYPE_VM = 'VM';
 export const IP_ACCESS_DEDICATED = 'Dedicated';
 export const IP_ACCESS_SHARED = 'Shared';
 export const DELETE = 'Delete'
@@ -12,7 +13,12 @@ export const SELECT = 'Select'
 export const CLOUDLET = 'Cloudlet'
 export const CLUSTER_INST = 'ClusterInst'
 export const APP_INST = 'AppInst'
+export const APP = 'App'
 export const YES = 'YES'
+
+export const getHeight = () => {
+    return window.innerHeight - 85
+}
 
 export const IPAccessLabel = (id) => {
     switch (id) {

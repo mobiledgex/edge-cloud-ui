@@ -161,7 +161,7 @@ class OrganizationList extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <div style={{ width: '100%' }}>
+                <div style={{ width: '100%'}}>
                     <PopAddUserViewer data={this.data} open={this.state.openAddUserView}
                         close={this.onCloseAddUser}></PopAddUserViewer>
                     <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} onClick={this.onListViewClick} />

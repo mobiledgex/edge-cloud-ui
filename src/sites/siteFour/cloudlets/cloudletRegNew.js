@@ -2,7 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { Grid } from 'semantic-ui-react';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, INPUT } from '../../../hoc/forms/MexForms';
 import MexTab from '../../../hoc/forms/MexTab';
 //redux
 import { connect } from 'react-redux';
@@ -11,7 +11,7 @@ import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 //model
 import { getOrganizationList } from '../../../services/model/organization';
-import { formKeys } from '../../../services/model/cloudlet';
+import {  } from '../../../services/model/cloudlet';
 //Map
 import Map from '../../../libs/simpleMaps/with-react-motion/index_clusters_new';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
@@ -110,11 +110,12 @@ class ClusterInstReg extends React.Component {
         this.props.onClose(true)
     }
 
+    
 
     render() {
         return (
             <div className="round_panel">
-                <div className="grid_table" style={{ height: '100%', overflow: 'auto' }}>
+                <div className="grid_table" style={{ height: constant.getHeight(), overflow: 'auto' }}>
                     <Grid>
                         <Grid.Row>
                             <Grid.Column width={8}>
@@ -213,6 +214,26 @@ class ClusterInstReg extends React.Component {
         }
     }
 
+    locationForm = () => ([
+        { field: fields.portRangeMin, label:'Latitude', formType: INPUT, placeholder: '-90 ~ 90', rules: { required: true }, width: 8, visible: true },
+        { field: fields.portRangeMin, label:'Longitude', formType: INPUT, placeholder: '-180 ~ 180', rules: { required: true }, width: 8, visible: true }
+    ])
+
+    formKeys = () => {
+        return [
+            { label: 'Cloudlet', formType: 'Header', visible: true },
+            { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
+            { field: fields.cloudletName, label: 'Cloudlet Name', formType: 'Input', placeholder: 'Enter cloudlet Name', rules: { required: true }, visible: true, },
+            { field: fields.operatorName, label: 'Operator', formType: 'Select', placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
+            { field: fields.cloudletLocation, label: 'Cloudlet Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm() },
+            { field: fields.ipSupport, label: 'IP Support', formType: 'Select', placeholder: 'Select IP Support', rules: { required: true }, visible: true },
+            { field: fields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: 'Input', placeholder: 'Enter Number of Dynamic IPs', rules: { required: true }, visible: true, },
+            { field: fields.physicalName, label: 'Physical Name', formType: 'Input', placeholder: 'Enter Physical Name', rules: { required: true }, visible: true, },
+            { field: fields.platformType, label: 'Platform Type', formType: 'Select', placeholder: 'Select Platform Type', rules: { required: true }, visible: true },
+            
+        ]
+    }
+
     getFormData = async (data) => {
         if (data) {
             await this.loadDefaultData(data)
@@ -221,7 +242,7 @@ class ClusterInstReg extends React.Component {
             this.organizationList = await getOrganizationList()
         }
 
-        let forms = formKeys()
+        let forms = this.formKeys()
         forms.push(
             { label: this.isUpdate ? 'Update' : 'Create', formType: 'Button', onClick: this.onCreate, validate: true },
             { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel })

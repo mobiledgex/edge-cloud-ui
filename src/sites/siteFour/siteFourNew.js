@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-    Grid,
     Image,
     Header,
     Menu,
@@ -9,9 +8,7 @@ import {
     Popup,
     Label,
     Modal,
-    Segment,
-    Icon,
-    Container
+    Icon
 } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
 
@@ -25,26 +22,8 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 
 import { GridLoader, ClipLoader } from "react-spinners";
-import HeaderGlobalMini from '../../container/headerGlobalMini';
 
-//pages
-import SiteFourPageFlavor from './flavors/flavorList';
-import SiteFourPageUser from './userRole/userList';
-import SiteFourPageAccount from './accounts/accountList';
-import SiteFourPageApps from './apps/appList';
-import SiteFourPageAppInst from './appInst/appInstList';
-import SiteFourPageClusterInst from './clusterInst/clusterInstList';
-import SiteFourPageCloudlet from './cloudlets/cloudletList';
-import SiteFourPageOrganization from './organization/organizationList';
-import SiteFourPageAppReg from './apps/appReg';
-import SiteFourPageAudits from './audits/siteFour_page_audits';
-import SiteFourPageCloudletPool from './cloudletPool/cloudletPoolList';
-import AutoProvPolicy from './policies/autoProvPolicyList/autoProvPolicyList';
-import AutoPrivacyPolicy from './policies/privacyPolicy/privacyPolicyList';
-import PageMonitoringMain from './monitoring/PageMonitoringMain'
-
-import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
-import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
+import SideNav from './defaultLayout/sideNav'
 
 
 import PopLegendViewer from '../../container/popLegendViewer';
@@ -57,6 +36,7 @@ import Alert from 'react-s-alert';
 
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
+
 import PageAdminMonitoring from "./monitoring/admin/PageAdminMonitoring";
 import PageDevMonitoring from "./monitoring/dev/PageDevMonitoring";
 import PageOperMonitoring from "./monitoring/oper/PageOperMonitoring";
@@ -66,11 +46,6 @@ let defaultMotion = { left: window.innerWidth / 2, top: window.innerHeight / 2, 
 const orgaSteps = organizationTutor();
 const cloudletSteps = CloudletTutor();
 let _self = null;
-
-const autoPolicy = [
-    { key: 'Auto Provisioning Policy', text: 'Auto Provisioning Policy', value: 'Auto Provisioning Policy' },
-    { key: 'Privacy Policy', text: 'Privacy Policy', value: 'Privacy Policy' }
-]
 
 class SiteFour extends React.Component {
     constructor(props) {
@@ -87,12 +62,9 @@ class SiteFour extends React.Component {
             activeItem: 'Organizations',
             page: 'pg=0',
             email: store ? store.email : 'Administrator',
-            role: '', //db에서
-            onlyView: false,
+            role: '',
             userToken: null,
-            profileViewData: null,
             userName: '',
-            controllerRegions: null,
             regions: [
                 { key: 1, text: 'All', value: 'All' },
             ],
@@ -102,10 +74,7 @@ class SiteFour extends React.Component {
             setMotion: defaultMotion,
             OrganizationName: '',
             adminShow: false,
-            createState: '',
-            noData: false,
             viewMode: 'listView',
-            toggleDisable: true,
             currentVersion: 'v-',
             searchChangeValue: 'Username',
             menuClick: false,
@@ -122,7 +91,6 @@ class SiteFour extends React.Component {
             camBtnStat: 'leave',
             regionToggle: false,
             intoCity: false,
-            currentPage: null,
             fullPage: null,
             menuW: 240,
             hideLeftMenu: false,
@@ -146,7 +114,7 @@ class SiteFour extends React.Component {
             { label: 'Apps', icon: 'apps', pg: 5 },
             { label: 'App Instances', icon: 'sports_esports', pg: 6 },
             { label: 'Monitoring', icon: 'tv', pg: 'Monitoring' },
-            { label: 'Policies', icon: 'playlist_play', pg: 8 },
+            { label: 'Policies', icon: 'playlist_play', pg: 8, dropdown: [{ label: 'Auto Provisioning Policy' }] },
             { label: 'Audit Logs', icon: 'check', pg: 'audits' }
         ]
         this.menuItems = [ //developer menu
@@ -240,8 +208,6 @@ class SiteFour extends React.Component {
             pathname: '/site4',
             search: "pg=" + pg
         });
-        let mainPath = '/site4';
-        let subPath = 'pg=' + pg;
         _self.props.history.location.search = "pg=" + pg;
         _self.props.handleChangeStep(pg)
         _self.setState({ page: 'pg=' + pg, activeItem: label, headerTitle: label, intoCity: false })
@@ -666,48 +632,61 @@ class SiteFour extends React.Component {
 
     //compute page menu view
     menuItemView = (item, i, activeItem, orgMenu) => (
-        <Menu.Item
-            className={'leftMenu_' + item.label}
-            key={i}
-            name={item.label}
-            active={activeItem === item.label}
-            onClick={() => this.handleItemClick(i, item.label, item.pg, localStorage.selectRole)}
-        >
-            <div className="left_menu_item">
-                {orgMenu && <MaterialIcon icon={item.icon} />}
-                {!orgMenu && (localStorage.selectRole === 'AdminManager') && <MaterialIcon icon={item.icon} />}
-                {!orgMenu && (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer') &&
-                    <MaterialIcon icon={item.icon} />}
-                {!orgMenu && (localStorage.selectRole === 'OperatorManager' || localStorage.selectRole === 'OperatorContributor' || localStorage.selectRole === 'OperatorViewer') &&
-                    <MaterialIcon icon={item.icon} />}
-                <div className='label'>{item.label}</div>
-                {(activeItem === item.label) ?
+        item.dropdown ?
+            <div className="left_menu_item" style={{ marginLeft: 14 }}><MaterialIcon icon={item.icon} />
+                <Dropdown className={'leftMenu_' + item.label} text={item.label} pointing='left'>
+                    <Dropdown.Menu >
+                        {item.dropdown.map((drop, i) => {
+                            return (
+                                <Dropdown.Item key={i}>{drop.label}</Dropdown.Item>
+                            )
+                        })
+                        }
+                    </Dropdown.Menu>
+                </Dropdown>
+            </div> :
+            <Menu.Item
+                className={'leftMenu_' + item.label}
+                key={i}
+                name={item.label}
+                active={activeItem === item.label}
+                onClick={() => this.handleItemClick(i, item.label, item.pg, localStorage.selectRole)}
+            >
+                <div className="left_menu_item">
+                    {orgMenu && <MaterialIcon icon={item.icon} />}
+                    {!orgMenu && (localStorage.selectRole === 'AdminManager') && <MaterialIcon icon={item.icon} />}
+                    {!orgMenu && (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer') &&
+                        <MaterialIcon icon={item.icon} />}
+                    {!orgMenu && (localStorage.selectRole === 'OperatorManager' || localStorage.selectRole === 'OperatorContributor' || localStorage.selectRole === 'OperatorViewer') &&
+                        <MaterialIcon icon={item.icon} />}
+                    <div className='label'>{item.label}</div>
+                    {(activeItem === item.label) ?
+                        <div style={{ position: 'absolute', right: '12px', top: '12px' }}>
+                            <ClipLoader
+                                size={20}
+                                sizeUnit={'px'}
+                                color={'rgba(136,221,0,.85)'}
+                                loading={this.props.loadingSpinner}
+                            // loading={true}
+                            />
+                            {(item.label === 'Audit Log' && this.props.audit > 0) ?
+                                <Label circular color={'red'} key={'red'}>
+                                    {this.props.audit}
+                                </Label> : null}
+                        </div>
+
+                        : null}
+
+
                     <div style={{ position: 'absolute', right: '12px', top: '12px' }}>
-                        <ClipLoader
-                            size={20}
-                            sizeUnit={'px'}
-                            color={'rgba(136,221,0,.85)'}
-                            loading={this.props.loadingSpinner}
-                        // loading={true}
-                        />
                         {(item.label === 'Audit Log' && this.props.audit > 0) ?
                             <Label circular color={'red'} key={'red'}>
                                 {this.props.audit}
                             </Label> : null}
                     </div>
 
-                    : null}
-
-
-                <div style={{ position: 'absolute', right: '12px', top: '12px' }}>
-                    {(item.label === 'Audit Log' && this.props.audit > 0) ?
-                        <Label circular color={'red'} key={'red'}>
-                            {this.props.audit}
-                        </Label> : null}
                 </div>
-
-            </div>
-        </Menu.Item>
+            </Menu.Item>
 
     )
 
@@ -882,11 +861,7 @@ class SiteFour extends React.Component {
 
     /** audit ********/
 
-    showChildPage = (currentPage) => {
-        this.setState({
-            currentPage: currentPage
-        })
-    }
+    
 
     showFullPage = (fullPage) => {
         this.setState({
@@ -902,7 +877,7 @@ class SiteFour extends React.Component {
             this.state.fullPage ?
                 this.state.fullPage
                 :
-                <Grid className='view_body'>
+                <div className='view_body'>
                     {steps ?
                         <Steps
                             enabled={stepsEnabled}
@@ -927,252 +902,24 @@ class SiteFour extends React.Component {
                                 loading={this.props.loadingSpinner}
                             />
                         </div> : null}
-                    <Grid.Row className='gnb_header'>
-                        <Grid.Column width={6} className='navbar_left'>
-                            <Header>
-                                <Header.Content onClick={() => this.gotoPreview('/site1')} className='brand' />
-                            </Header>
-                        </Grid.Column>
-                        <Grid.Column width={10} className='navbar_right'>
-                            <div className='navbar_icon' onClick={() => this.gotoUrl('/site1', 'pg=0')}>
-                                <PublicOutlinedIcon fontSize='large' />
-                            </div>
-                            <div className='navbar_icon' style={{ display: 'none' }}>
-                                <MaterialIcon icon={'notifications_none'} />
-                            </div>
-                            {
-                                (
-                                    this.state.page !== 'pg=editApp' &&
-                                    this.props.viewMode !== 'detailView' &&
-                                    this.state.headerTitle !== 'User Roles' &&
-                                    this.state.headerTitle !== 'Accounts' &&
-                                    this.state.headerTitle !== 'Flavors'
-                                ) ? <div className='navbar_icon' onClick={this.enalbeSteps}>
-                                        <HelpOutlineOutlinedIcon fontSize='large' />
-                                    </div> : null
-                            }
-                            <Popup
-                                trigger={
-                                    <div className='navbar_icon' style={{ display: 'none' }}>
-                                        <MaterialIcon icon={'add'} />
-                                    </div>
-                                }
-                                content={this.menuAddItem()}
-                                on='click'
-                                position='bottom center'
-                                className='gnb_logout'
-                            />
-                            <HeaderGlobalMini email={this.state.email} data={this.props.userInfo.info} dimmer={false} />
-                        </Grid.Column>
-                    </Grid.Row>
-                    <Container className={['view_left_container', this.state.hideLeftMenu && 'left_menu_hide'].join(' ')}
-                        style={{ position: 'relative', width: this.state.menuW }}>
-                        <Grid.Row className='view_contents'>
-                            <Grid.Column className='view_left'>
-                                <Menu secondary vertical className='view_left_menu org_menu'>
-                                    {/* show name of organization */}
-                                    <Grid.Column className="left_org">
-                                        <div
-                                            className="left_org_title">{this.state.hideLeftMenu ? 'Org' : 'Organization'}</div>
-                                        <div
-                                            className="left_org_selected">{localStorage.selectOrg ? localStorage.selectOrg : 'No organization selected'}</div>
-                                    </Grid.Column>
-                                    {/* show role of user */}
-                                    <Grid.Row className="left_authority">
-                                        <Segment className="stepOrgDeveloper2">
-                                            <Grid>
-                                                <Grid.Row style={{ cursor: 'pointer' }} onClick={this.orgTypeLegendShow}>
-                                                    <Grid.Column>
-                                                        {localStorage.selectRole ?
-                                                            <div className="markBox">
-                                                                {
-                                                                    (localStorage.selectRole === 'AdminManager') ?
-                                                                        <div className="mark markA markS">S</div>
-                                                                        :
-                                                                        (localStorage.selectRole === 'DeveloperManager') ?
-                                                                            <div className="mark markD markM">M</div>
-                                                                            :
-                                                                            (localStorage.selectRole === 'DeveloperContributor') ?
-                                                                                <div
-                                                                                    className="mark markD markC">C</div>
-                                                                                :
-                                                                                (localStorage.selectRole === 'DeveloperViewer') ?
-                                                                                    <div
-                                                                                        className="mark markD markV">V</div>
-                                                                                    :
-                                                                                    (localStorage.selectRole === 'OperatorManager') ?
-                                                                                        <div
-                                                                                            className="mark markO markM">M</div>
-                                                                                        :
-                                                                                        (localStorage.selectRole === 'OperatorContributor') ?
-                                                                                            <div
-                                                                                                className="mark markO markC">C</div>
-                                                                                            :
-                                                                                            (localStorage.selectRole === 'OperatorViewer') ?
-                                                                                                <div
-                                                                                                    className="mark markO markV">V</div>
-                                                                                                :
-                                                                                                <span></span>
-                                                                }
-                                                            </div>
-                                                            : null
-                                                        }
-                                                        <div>
-                                                            {
-                                                                localStorage.selectRole && localStorage.selectRole != 'null' ? localStorage.selectRole :
-                                                                    <strong style={{ fontSize: 12 }}>Please select an
-                                                                        organization</strong>
-                                                            }
-                                                        </div>
-                                                    </Grid.Column>
-                                                </Grid.Row>
-                                            </Grid>
-                                        </Segment>
-                                    </Grid.Row>
 
 
-                                </Menu>
-                                <Menu secondary vertical className='view_left_menu main_menu'>
-                                    <div className='menuPart'>
-                                        {
-                                            this.OrgMenu.map((item, i) => (
-                                                (item.label === 'Accounts' && localStorage.selectRole !== 'AdminManager') ? null
-                                                    : this.menuItemViewHide(item, i, localStorage.selectMenu, true)
-                                            ))
-                                        }
-                                    </div>
+                    {this.state.page === 'pg=PageAdminMonitoring' || this.state.page === 'pg=PageDevMonitoring' || this.state.page === 'pg=PageOperMonitoring' ?
+                        <main style={{ margin: 65, width: '97%', height: '87%' }}>
+                                {(this.state.page === 'pg=PageAdminMonitoring') ? <PageAdminMonitoring /> :
+                                    (this.state.page === 'pg=PageDevMonitoring') ? <PageDevMonitoring /> :
+                                        (this.state.page === 'pg=PageOperMonitoring') ? <PageOperMonitoring /> :
+                                            null}
+                        </main> :
+                        <SideNav onOptionClick={this.handleItemClick} email={this.state.email} data={this.props.userInfo.info} helpClick={this.enalbeSteps} gotoUrl={this.gotoUrl}/>
+                    }
 
-                                    <div className='menuPart'>
-                                        {
-                                            (localStorage.selectRole === 'AdminManager') ?
-                                                this.menuItemsAll.map((item, i) => (
-                                                    this.menuItemViewHide(item, i, localStorage.selectMenu, false)
-                                                ))
-                                                :
-                                                (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer') ?
-                                                    this.menuItems.map((item, i) => (
-                                                        this.menuItemViewHide(item, i, localStorage.selectMenu, false)
-                                                    ))
-                                                    :
-                                                    (localStorage.selectRole === 'OperatorManager' || localStorage.selectRole === 'OperatorContributor' || localStorage.selectRole === 'OperatorViewer') ?
-                                                        this.auth_three.map((item, i) => (
-                                                            this.menuItemViewHide(item, i, localStorage.selectMenu, false)
-                                                        ))
-                                                        :
-                                                        null
-                                        }
-                                    </div>
-                                </Menu>
-                                <div className='versionView'
-                                    style={{ display: this.state.hideLeftMenu ? 'none' : 'block' }}>
-                                    {
-                                        (localStorage.selectRole == 'AdminManager') ? this.state.currentVersion : null
-                                    }
-                                </div>
-                            </Grid.Column>
-                        </Grid.Row>
-                        <div className='left_menu_hide_button'
-                            onClick={() => {
-
-                                this.setState({ hideLeftMenu: !this.state.hideLeftMenu }, () => {
-
-                                    if (this.state.hideLeftMenu) {
-                                        this.setState({ menuW: 50 });
-                                    } else {
-                                        this.setState({ menuW: 240 });
-                                    }
-                                });
-
-                            }}
-                        >
-                            {this.state.hideLeftMenu ?
-                                <i className="material-icons"
-                                    style={{ color: 'rgba(255,255,255,.6)', fontSize: 20 }}>chevron_right</i>
-                                : <i className="material-icons"
-                                    style={{ color: 'rgba(255,255,255,.6)', fontSize: 20 }}>chevron_left</i>}
-                        </div>
-                    </Container>
-                    <Container className='contents_body_container' style={{
-                        top: this.headerH,
-                        left: this.state.menuW,
-                        width: window.innerWidth - this.state.menuW
-                    }}>
-                        {(this.state.page === 'pg=Monitoring') ? <PageMonitoringMain /> :
-                            (this.state.page === 'pg=PageAdminMonitoring') ? <PageAdminMonitoring /> :
-                                (this.state.page === 'pg=PageDevMonitoring') ? <PageDevMonitoring /> :
-                                    (this.state.page === 'pg=PageOperMonitoring') ? <PageOperMonitoring /> :
-                                        <Grid.Row className='view_contents'>
-                                            <Grid.Column className='contents_body'>
-                                                <Grid.Row className='content_title'>
-                                                    <div className='content_title_wrap'>
-                                                        {
-                                                            (viewMode !== 'MexDetailView' && this.state.page.indexOf('pg=8') >= 0 && !this.state.currentPage) ?
-                                                                <Dropdown className='selection'
-                                                                    style={{
-                                                                        position: 'relative',
-                                                                        marginRight: 20,
-                                                                        height: 20
-                                                                    }}
-                                                                    options={autoPolicy}
-                                                                    defaultValue={this.state.autoPolicy}
-                                                                    onChange={(e, { value }) => {
-                                                                        this.onPolicyChange(value)
-                                                                    }}
-                                                                /> : null
-                                                        }
-                                                    </div>
-                                                </Grid.Row>
-
-
-                                                <Grid.Row className='site_content_body'>
-                                                    <Grid.Column>
-                                                        <div className="table-no-resized">
-                                                            {
-                                                                this.state.currentPage ? this.state.currentPage :
-                                                                    (this.state.page === 'pg=0') ?
-                                                                        <SiteFourPageOrganization></SiteFourPageOrganization> :
-                                                                        (this.state.page === 'pg=1') ?
-                                                                            <SiteFourPageUser></SiteFourPageUser> :
-                                                                            (this.state.page === 'pg=101') ?
-                                                                                <SiteFourPageAccount></SiteFourPageAccount> :
-                                                                                (this.state.page === 'pg=2') ?
-                                                                                    <SiteFourPageCloudlet></SiteFourPageCloudlet> :
-                                                                                    (this.state.page === 'pg=3') ?
-                                                                                        <SiteFourPageFlavor></SiteFourPageFlavor> :
-                                                                                        (this.state.page === 'pg=4') ?
-                                                                                            <SiteFourPageClusterInst></SiteFourPageClusterInst> :
-                                                                                            (this.state.page === 'pg=5') ?
-                                                                                                <SiteFourPageApps></SiteFourPageApps> :
-                                                                                                (this.state.page === 'pg=6') ?
-                                                                                                    <SiteFourPageAppInst
-                                                                                                        childPage={this.showFullPage}></SiteFourPageAppInst> :
-                                                                                                    (this.state.page === 'pg=7') ?
-                                                                                                        <SiteFourPageCloudletPool></SiteFourPageCloudletPool> :
-                                                                                                        (this.state.page === 'pg=8') ? this.state.autoPolicy === 'Auto Provisioning Policy' ?
-                                                                                                            <AutoProvPolicy /> :
-                                                                                                            <AutoPrivacyPolicy /> :
-                                                                                                            (this.state.page === 'pg=createApp') ?
-                                                                                                                <SiteFourPageAppReg
-                                                                                                                    editable={false}></SiteFourPageAppReg> :
-                                                                                                                (this.state.page === 'pg=editApp') ?
-                                                                                                                    <SiteFourPageAppReg
-                                                                                                                        editable={true}></SiteFourPageAppReg> :
-                                                                                                                    (this.state.page === 'pg=audits') ?
-                                                                                                                        <SiteFourPageAudits></SiteFourPageAudits> :
-                                                                                                                        null
-                                                            }
-                                                        </div>
-                                                    </Grid.Column>
-                                                </Grid.Row>
-                                            </Grid.Column>
-                                        </Grid.Row>}
-                    </Container>
                     <PopLegendViewer data={this.state.detailViewData} dimmer={false} open={this.state.openLegend}
                         close={this.closeLegend} siteId={this.props.siteId}></PopLegendViewer>
                     <Motion defaultStyle={defaultMotion} style={this.state.setMotion}>
                         {interpolatingStyle => <div style={interpolatingStyle} id='animationWrapper'></div>}
                     </Motion>
-                </Grid>
+                </div>
         );
     }
 

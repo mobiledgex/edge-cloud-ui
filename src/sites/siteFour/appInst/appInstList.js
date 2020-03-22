@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { fields } from '../../../services/model/format';
 import { keys, showAppInsts, deleteAppInst, streamAppInst, multiDataRequest } from '../../../services/model/appInstance';
 import { showApps } from '../../../services/model/app';
-import AppInstReg from './appInstReg';
+import AppInstReg from './appInstRegNew';
 import * as constant from '../../../services/model/shared';
 
 class AppInstList extends React.Component {

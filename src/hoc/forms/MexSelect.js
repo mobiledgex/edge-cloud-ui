@@ -48,12 +48,14 @@ const MexSelect = (props) => {
 
     //Convert data to semantic select format
     const getData = (form) => {
+        let rules = form.rules
+        let allCaps = rules ? rules.allCaps ? rules.allCaps : false : false
         let optionList = []
         let dataList = getFilteredData(form)
         if (dataList && dataList.length > 0) {
             optionList = dataList.map(data => {
                 let info = data[form.field] ? data[form.field] : data
-                return { key: info, value: info, text: info }
+                return { key: info, value: info, text: allCaps ? info.toUpperCase() : info }
             })
         }
         return optionList
@@ -61,7 +63,7 @@ const MexSelect = (props) => {
 
     const onSelected = (value) => {
         setSelected(value)
-        props.onChange(form, value, props.parentForm)
+        props.onChange(form, value)
     }
 
 

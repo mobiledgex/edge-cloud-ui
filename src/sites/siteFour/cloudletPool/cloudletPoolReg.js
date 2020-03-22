@@ -51,35 +51,6 @@ class CloudletPoolReg extends React.Component {
     onValueChange = (currentForm, data) => {
     }
 
-    getRegionData = () => {
-        if (this.regions && this.regions.length > 0)
-            return this.regions.map(region => {
-                return { key: region, value: region, text: region }
-            })
-    }
-
-    getOrganizationData = (form, dataList) => {
-        if (dataList && dataList.length > 0)
-            return dataList.map(data => {
-                let organizationName = data[fields.organizationName];
-                if (data.isDefault) {
-                    organizationName = data[fields.organizationName];
-                    form.value = organizationName;
-                    let rules = form.rules ? form.rules : {}
-                    rules.disabled = true;
-                    form.rules = rules;
-                }
-                return { key: organizationName, value: organizationName, text: organizationName }
-            })
-    }
-
-    getData = (dataList, field) => {
-        if (dataList && dataList.length > 0)
-            return dataList.map(data => {
-                return { value: JSON.stringify(data), label: data[field] }
-            })
-    }
-
     /**
      * Organization Block
      * * */
@@ -138,9 +109,9 @@ class CloudletPoolReg extends React.Component {
         if (this.organizationList.length > 0) {
             let label = this.action === constant.DELETE_ORGANIZATION ? 'Unlink' : 'Link'
             let step = [
-                { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, editable: true, options: [{ key: region, value: region, text: region }], value: region },
+                { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, editable: true, options: [region ], value: region },
                 { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { disabled: true }, editable: true, value: data[fields.poolName] },
-                { field: fields.organizations, label: 'Organizations', formType: 'DualList', rules: { required: true }, editable: true, options: this.getData(this.organizationList, fields.organizationName) },
+                { field: fields.organizations, label: 'Organizations', formType: 'DualList', rules: { required: true }, editable: true, options: this.organizationList },
                 { label: `${label} Organizations`, formType: 'Button', onClick: this.onAddOrganizations },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
             ]
@@ -235,9 +206,9 @@ class CloudletPoolReg extends React.Component {
             let label = this.action === constant.DELETE_CLOUDLET ? 'Delete' : 'Add'
 
             let step2 = [
-                { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, editable: true, options: [{ key: region, value: region, text: region }], value: region },
+                { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, editable: true, options: [region], value: region },
                 { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { disabled: true }, editable: true, value: data[fields.poolName] },
-                { field: fields.cloudlets, label: 'Clouldets', formType: 'DualList', rules: { required: true }, editable: true, options: this.getData(this.cloudletList, fields.cloudletName) },
+                { field: fields.cloudlets, label: 'Clouldets', formType: 'DualList', rules: { required: true }, editable: true, options: this.cloudletList },
                 { label: `${label} Cloudlets`, formType: 'Button', onClick: this.onAddCloudlets },
                 { label: this.props.action ? 'Cancel' : 'Skip', formType: 'Button', onClick: this.onCloudletCancel }
             ]
@@ -326,10 +297,10 @@ class CloudletPoolReg extends React.Component {
                 if (form.formType === 'Select') {
                     switch (form.field) {
                         case fields.organizationName:
-                            form.options = this.getOrganizationData(form, this.organizationList)
+                            form.options = this.organizationList
                             break;
                         case fields.region:
-                            form.options = this.getRegionData();
+                            form.options = this.regions;
                             break;
                         default:
                             form.options = undefined;

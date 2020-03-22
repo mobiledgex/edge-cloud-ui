@@ -95,14 +95,7 @@ export const keys = [
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
 
-export const formKeys = () => {
-    return [
-        { label: 'Cloudlet', formType: 'Header', visible: true },
-        { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
-        { field: fields.cloudletName, label: 'cloudlet Name', formType: 'Input', placeholder: 'Enter cloudlet Name', rules: { required: true }, visible: true, },
-        { field: fields.operatorName, label: 'Operator', formType: 'Select', placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
-    ]
-}
+
 
 
 

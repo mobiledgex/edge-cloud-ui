@@ -43,7 +43,7 @@ body, button, input, textarea, optgroup, select, textarea,
 }
 
 .table-no-resized {
-    height: 100%;
+    height: '100%';
     display: flex;
     overflow: hidden;
 }
@@ -850,9 +850,8 @@ body, button, input, textarea, optgroup, select, textarea,
     padding: 0 !important;
     margin: 0 !important;
     position: absolute;
-    display: flex;
-    width: calc(100% - 240px);
-    height: calc(100% - 70px);
+    width: calc(100% - 100px);
+    height: calc(100% - 80px);
 }
 
 .view_contents {
@@ -954,8 +953,8 @@ body, button, input, textarea, optgroup, select, textarea,
 }
 
 .contents_body {
-    height: 100%;
-    padding: 10px;
+    height: '100%';
+    padding: 0px;
 }
 
 
@@ -999,10 +998,8 @@ body, button, input, textarea, optgroup, select, textarea,
 
 .round_panel {
     background-color: #292c33;
-    border-radius: 6px;
-    padding: 1.071em;
+    padding: 0.5em;
     overflow: hidden;
-    /* height: calc(100vh - 149px); */
     width: 100%;
 }
 .ui.header.panel_title {

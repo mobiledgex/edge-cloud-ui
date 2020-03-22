@@ -26,7 +26,7 @@ const getKey = (data) => {
   return {
     region: data[fields.region],
     privacypolicy: {
-      key: { developer: data[fields.organizationName], name: data[fields.privacyPolicyName] },
+      key: { organization: data[fields.organizationName], name: data[fields.privacyPolicyName] },
       outbound_security_rules: data[fields.outboundSecurityRules]
     }
   }
@@ -38,7 +38,7 @@ export const showPrivacyPolicies = (data) => {
     {
       data.privacypolicy = {
         key: {
-          developer: formatter.getOrganization()
+          organization: formatter.getOrganization()
         }
       }
     }

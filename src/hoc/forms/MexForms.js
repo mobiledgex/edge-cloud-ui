@@ -3,13 +3,17 @@ import uuid from 'uuid';
 import MexSelect from './MexSelect';
 import MexMultiSelect from './MexMultiSelect'
 import MexInput from './MexInput';
+import MexTextArea from './MexTextArea';
 import MexDualList from './MexDualList';
 import MexCheckbox from './MexCheckbox';
 import MexButton from './MexButton';
 import { Form, Grid, Divider } from 'semantic-ui-react';
-import { IconButton } from '@material-ui/core';
+import { IconButton, Tooltip } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
+import FolderOpenIcon from '@material-ui/icons/FolderOpen';
+import ClearIcon from '@material-ui/icons/Clear';
+import ContactSupportOutlinedIcon from '@material-ui/icons/ContactSupportOutlined';
 
 export const HEADER = 'Header'
 export const SELECT = 'Select'
@@ -18,6 +22,9 @@ export const DUALLIST = 'DualList'
 export const INPUT = 'Input'
 export const CHECKBOX = 'Checkbox'
 export const ICON_BUTTON = 'IconButton'
+export const TEXT_AREA = 'TextArea'
+export const BUTTON = 'Button'
+export const MULTI_FORM = 'MultiForm'
 
 const MexForms = (props) => {
     let forms = props.forms
@@ -26,6 +33,17 @@ const MexForms = (props) => {
         switch (id) {
             case 'delete':
                 return <DeleteOutlineOutlinedIcon />
+            case 'add':
+                return <AddIcon/>
+            case 'browse':
+                return <FolderOpenIcon/>
+            case 'clear':
+                return <ClearIcon/>
+            case 'help':
+                return <ContactSupportOutlinedIcon/>
+            default:
+                return id
+
 
         }
     }
@@ -126,28 +144,57 @@ const MexForms = (props) => {
         }
     }
 
-    const onValueSelect = (form, value, parentForm) => {
+    const onValueSelect = (form, value) => {
         form.value = value;
         if (props.onValueChange) {
-            props.onValueChange(form, parentForm)
+            props.onValueChange(form)
         }
 
     }
 
+    const loadInputForms = (form, required, disabled) => {
+        return (
+            form.formType === INPUT ?
+                <MexInput form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                form.formType === TEXT_AREA ?
+                    <MexTextArea form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                    null
+        )
+    }
+
+    const loadDropDownForms = (form, required, disabled) => {
+        return (form.formType === SELECT ?
+            <MexSelect form={form} forms={forms} required={required} disabled={disabled} onChange={onValueSelect} /> :
+            form.formType === MULTI_SELECT ?
+                <MexMultiSelect form={form} forms={forms} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                form.formType === DUALLIST ?
+                    <MexDualList form={form} onChange={onValueSelect} /> : null)
+    }
+
+    const loadButton = (form, index) => {
+        return (
+            form.formType === ICON_BUTTON ?
+                <IconButton style={form.style} onClick={() => { form.onClick(form) }}>{getIcon(form.icon)}</IconButton>
+                 :
+                form.formType === BUTTON?
+                    <MexButton
+                        form={form}
+                        key={index}
+                        onClick={onSubmit} /> :
+                    null)
+    }
+
     const loadHeader = (index, form) => {
         form.id = { id: index }
-        let subForm = form.forms
+        let subForms = form.forms
         return (
             <div key={index} style={{ width: '100%' }}>
                 <h2 style={{ color: "white", display: 'inline' }}>{form.label}
-                    {
-                        subForm ? subForm.formType === 'Button' ?
-                            <IconButton style={{ color: "white", display: 'inline' }} onClick={subForm.onClick}>
-                                <AddIcon />
-                            </IconButton> :
-                            null :
-                            null
-                    }
+                {
+                    subForms ? subForms.map((subForm, i) => {
+                        return loadButton(subForm, i)
+                    }) : null
+                }
                 </h2>
                 <Divider />
             </div>
@@ -170,17 +217,17 @@ const MexForms = (props) => {
             }
             return (
                 form.visible ?
-                    <Grid.Column width={parentForm.width} key={key}>
-                        <label style={form.labelStyle}>{form.label}{required ? ' *' : ''}</label>
+                    <Grid.Column width={form.width ? form.width : parentForm.width} key={key}>
+                        { form.label ? <label style={form.labelStyle}>{form.label}{required ? ' *' : ''}</label> : null}
                         {
-                            form.formType === INPUT ?
-                                <MexInput parentForm={parentForm} form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                            form.formType === INPUT || form.formType === TEXT_AREA ?
+                                    loadInputForms(form, required, disabled) :
                                 form.formType === SELECT ?
-                                    <MexSelect parentForm={parentForm} form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                                    loadDropDownForms(form, required, disabled) :
                                     form.formType === CHECKBOX ?
                                         <MexCheckbox horizontal={true} form={form} onChange={onValueSelect} /> :
-                                        form.formType === ICON_BUTTON ?
-                                            <IconButton onClick={() => { form.onClick(form) }} style={{ color: form.color, top: 15 }}>{getIcon(form.icon)}</IconButton> :
+                                        form.formType === ICON_BUTTON || form.formType === BUTTON ?
+                                            loadButton(form) :
                                             null
                         }
                     </Grid.Column> : null
@@ -188,15 +235,7 @@ const MexForms = (props) => {
         })
     }
 
-    const loadDropDownForms = (form, required, disabled) => {
-        if (form.formType === SELECT || form.formType === MULTI_SELECT)
-            return (form.formType === SELECT ?
-                <MexSelect form={form} forms={forms} required={required} disabled={disabled} onChange={onValueSelect} /> :
-                form.formType === MULTI_SELECT ?
-                    <MexMultiSelect form={form} forms={forms} required={required} disabled={disabled} onChange={onValueSelect} /> :
-                    form.formType === DUALLIST ?
-                        <MexDualList form={form} onChange={onValueSelect} /> : null)
-    }
+    
 
     const loadForms = (index, form) => {
         form.id = { id: index }
@@ -216,24 +255,35 @@ const MexForms = (props) => {
                     </Grid.Column>
                     <Grid.Column width={11}>
                         {
+                            form.forms ? 
+                            loadMultiForm(index, form): 
                             form.formType === SELECT || form.formType === MULTI_SELECT || form.formType === DUALLIST ?
                                 loadDropDownForms(form, required, disabled) :
-                                form.formType === INPUT ?
-                                    <MexInput form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                                form.formType === INPUT || form.formType === TEXT_AREA ?
+                                    loadInputForms(form, required, disabled) :
                                     form.formType === CHECKBOX ?
                                         <MexCheckbox form={form} onChange={onValueSelect} /> :
                                         null
                         }
                     </Grid.Column>
+                    {
+                        form.tip ?
+                            <Grid.Column width={1}>
+                                <Tooltip title={form.tip} aria-label="tip">
+                                    {getIcon('help')}
+                                </Tooltip>
+                            </Grid.Column> :
+                            null
+                    }
                 </Grid.Row> : null
         )
     }
 
     const loadMultiForm = (index, form) => {
         return (
-            <Grid.Row columns={2} key={index} id={form.field}>
+            <Grid key={index} id={form.field} style={{marginLeft:-13, width:'100%'}}>
                 {loadHorizontalForms(index, form.forms)}
-            </Grid.Row>
+            </Grid>
         )
     }
 
@@ -248,10 +298,10 @@ const MexForms = (props) => {
                                 form.visible ?
                                     form.formType === HEADER ?
                                         loadHeader(i, form) :
-                                        form.formType === 'MultiForm' ?
+                                        form.formType === MULTI_FORM ?
                                             form.forms ? loadMultiForm(i, form) : null :
                                             loadForms(i, form) :
-                                    null
+                                        null
                             )
                         })}
                     </Grid>
@@ -259,11 +309,8 @@ const MexForms = (props) => {
                 <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{ flexDirection: 'row', marginLeft: 10, marginRight: 10 }}>
                     <Form.Group inline>
                         {forms.map((form, i) => {
-                            return (form.formType === 'Button' ?
-                                <MexButton
-                                    form={form}
-                                    key={i}
-                                    onClick={onSubmit} />
+                            return (form.formType === BUTTON ?
+                                loadButton(form)
                                 : null)
                         })}
                     </Form.Group>

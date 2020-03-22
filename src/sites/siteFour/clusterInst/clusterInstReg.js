@@ -8,9 +8,9 @@ import MexTab from '../../../hoc/forms/MexTab';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
-import { fields } from '../../../services/model/format';
+import { fields, getOrganization } from '../../../services/model/format';
 //model
-import { formKeys, createClusterInst } from '../../../services/model/clusterInstance';
+import { createClusterInst } from '../../../services/model/clusterInstance';
 import { getOrganizationList } from '../../../services/model/organization';
 import { getCloudletList } from '../../../services/model/cloudlet';
 import { getFlavorList } from '../../../services/model/flavor';
@@ -236,7 +236,7 @@ class ClusterInstReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <div className="grid_table" style={{ height: '100%', overflow: 'auto' }}>
+                <div className="grid_table" style={{ height: constant.getHeight(), overflow: 'auto' }}>
                     <Grid>
                         <Grid.Row>
                             <Grid.Column width={8}>
@@ -344,6 +344,25 @@ class ClusterInstReg extends React.Component {
         }
     }
 
+    formKeys = () => {
+        return [
+            { label: 'Cluster Instance', formType: 'Header', visible: true },
+            { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
+            { field: fields.clusterName, label: 'Cluster Name', formType: 'Input', placeholder: 'Enter Cluster Inst Name', rules: { required: true }, visible: true, },
+            { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: true, disabled: getOrganization() ? true : false }, visible: true, value: getOrganization() },
+            { field: fields.operatorName, label: 'Operator', formType: 'Select', placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
+            { field: fields.cloudletName, label: 'Cloudlet', formType: 'MultiSelect', placeholder: 'Select Cloudlet', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 4, field: fields.operatorName }] },
+            { field: fields.deployment, label: 'Deployment Type', formType: 'Select', placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, update: true },
+            { field: fields.ipAccess, label: 'IP Access', formType: 'Select', placeholder: 'Select IP Access', visible: true, update: true },
+            { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: 'Select', placeholder: 'Select Privacy Policy Name', visible: false, update: true, dependentData: [{ index: 1, field: fields.region }] },
+            { field: fields.flavorName, label: 'Flavor', formType: 'Select', placeholder: 'Select Flavor', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
+            { field: fields.numberOfMasters, label: 'Number of Masters', formType: 'Input', placeholder: 'Enter Number of Masters', rules: { type: 'number', disabled: true }, visible: false, value: 1, update: true },
+            { field: fields.numberOfNodes, label: 'Number of Nodes', formType: 'Input', placeholder: 'Enter Number of Nodes', rules: { type: 'number' }, visible: false, update: true },
+            { field: fields.reservable, label: 'Reservable', formType: 'Checkbox', visible: true, roles: ['AdminManager'], value: false, update: true },
+            { field: fields.reservedBy, label: 'Reserved By', formType: 'Input', placeholder: 'Enter Reserved By', visible: true, roles: ['AdminManager'], update: true }
+        ]
+    }
+
     getFormData = async (data) => {
         if (data) {
             await this.loadDefaultData(data)
@@ -352,7 +371,7 @@ class ClusterInstReg extends React.Component {
             this.organizationList = await getOrganizationList()
         }
 
-        let forms = formKeys()
+        let forms = this.formKeys()
         forms.push(
             { label: this.isUpdate ? 'Update' : 'Create', formType: 'Button', onClick: this.onCreate, validate: true },
             { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel })

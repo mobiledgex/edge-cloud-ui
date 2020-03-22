@@ -13,6 +13,7 @@ export const fields = {
     nodeFlavor: 'nodeFlavor',
     numberOfMasters: 'numberOfMasters',
     numberOfNodes: 'numberOfNodes',
+    autoClusterInstance:'autoClusterInstance',
     state: 'state',
     status: 'status',
     reservable: 'reservable',
@@ -63,6 +64,7 @@ export const fields = {
     imageType: 'imageType',
     imagePath: 'imagePath',
     defaultFlavorName: 'defaultFlavorName',
+    defaultPrivacyPolicy:'defaultPrivacyPolicy',
     ports: 'ports',
     authPublicKey: 'authPublicKey',
     scaleWithCluster: 'scaleWithCluster',
@@ -93,6 +95,10 @@ export const fields = {
     poolName:'poolName',
     clusterinst:'clusterinst'
 
+}
+
+export const getUserRole = () => {
+    return localStorage.selectRole
 }
 
 export const isAdmin = () => {
