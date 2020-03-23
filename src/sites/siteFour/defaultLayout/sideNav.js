@@ -173,26 +173,21 @@ export default function MiniDrawer(props) {
                                 <div className="mark markD markM">M</div>
                                 :
                                 (localStorage.selectRole === 'DeveloperContributor') ?
-                                    <div
-                                        className="mark markD markC">C</div>
+                                    <div className="mark markD markC">C</div>
                                     :
                                     (localStorage.selectRole === 'DeveloperViewer') ?
-                                        <div
-                                            className="mark markD markV">V</div>
+                                        <div className="mark markD markV">V</div>
                                         :
                                         (localStorage.selectRole === 'OperatorManager') ?
-                                            <div
-                                                className="mark markO markM">M</div>
+                                            <div className="mark markO markM">M</div>
                                             :
                                             (localStorage.selectRole === 'OperatorContributor') ?
-                                                <div
-                                                    className="mark markO markC">C</div>
+                                                <div className="mark markO markC">C</div>
                                                 :
                                                 (localStorage.selectRole === 'OperatorViewer') ?
-                                                    <div
-                                                        className="mark markO markV">V</div>
+                                                    <div className="mark markO markV">V</div>
                                                     :
-                                                    <span></span>
+                                                    <div className="mark markA markS">?</div>
                     }
                 </div>
                 : null

@@ -200,7 +200,7 @@ class MexListView extends React.Component {
                     {
                         field === fields.actions ? this.getAction(item)
                             :
-                            <div>
+                            <div style={{wordBreak:'break-all'}}>
                                 {header.customizedData ? header.customizedData(item) : item[field]}
                             </div>
                     }</Table.Cell>
