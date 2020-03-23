@@ -1055,7 +1055,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-        __makeGridItemBodyByType(hwType, graphType) {
+        ___makeGridItemBodyByType(hwType, graphType) {
 
             if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                 return (
@@ -1088,7 +1088,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         parent={this}
                         isDraggable={this.state.isDraggable}
                         handleAppInstDropdown={this.handleAppInstDropdown}
-                        markerList={this.state.appInstanceListGroupByCloudlet}/>
+                        markerList={this.state.appInstanceListGroupByCloudlet}
+                    />
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
                 return (
@@ -1105,9 +1106,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                 return (
-                    <VirtualAppInstEventLogListContainer currentAppInst={this.state.currentAppInst} parent={this}
-                                                         handleAppInstDropdown={this.handleAppInstDropdown}
-                                                         eventLogList={this.state.filteredAppInstEventLogs}/>
+                    <VirtualAppInstEventLogListContainer
+                        currentAppInst={this.state.currentAppInst}
+                        parent={this}
+                        handleAppInstDropdown={this.handleAppInstDropdown}
+                        eventLogList={this.state.filteredAppInstEventLogs}
+                    />
                 )
             }
         }
@@ -1189,7 +1193,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        _makeGridItemOne(uniqueIndex, hwType, graphType, item,) {
+        _makeGridItemOne(uniqueIndex, hwType, graphType, item) {
             return (
                 <div
                     key={uniqueIndex} data-grid={item} style={{margin: 0, backgroundColor: 'black'}}
@@ -1240,9 +1244,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     </div>
                     }
 
-                    {/*fixme:edit*/}
-                    {/*fixme:edit*/}
-                    {/*fixme:edit*/}
+                    {/*desc:############################*/}
+                    {/*desc:edit btn*/}
+                    {/*desc:############################*/}
                     {/*  <div className="edit"
                          onClick={() => {
                              this.removeGridItem(uniqueIndex)
@@ -1287,13 +1291,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <MaterialIcon color='#fff' icon='delete'/>
                     </div>
 
-                    {/*@desc:_makeGridItemOneByType      */}
-                    {/*@desc:_makeGridItemOneByType      */}
-                    {/*@desc:_makeGridItemOneByType      */}
+                    {/*@desc:__makeGridItem BodyByType      */}
+                    {/*@desc:__makeGridItem BodyByType      */}
+                    {/*@desc:__makeGridItem BodyByType      */}
                     <div className='page_monitoring_column_kyungjoon1'
                         //onMouseDown={ e => e.stopPropagation() }
                          style={{height: this.gridItemHeight}}>
-                        {this.__makeGridItemBodyByType(hwType, graphType.toUpperCase())}
+                        {this.___makeGridItemBodyByType(hwType, graphType.toUpperCase())}
                     </div>
                 </div>
             )
