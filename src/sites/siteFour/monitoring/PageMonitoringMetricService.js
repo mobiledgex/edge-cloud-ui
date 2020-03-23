@@ -29,11 +29,9 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
     let token = store ? store.userToken : 'null';
 
     let organization = localStorage.selectOrg.toString()
-
-    console.log("onmessage Operator=>", Operator);
-
     let prefixUrl = (process.env.REACT_APP_API_ENDPOINT).replace('http', 'ws');
     console.log("onmessage==REACT_APP_API_ENDPOINT==>", prefixUrl)
+
     const webSocket = new WebSocket(`${prefixUrl}/ws/api/v1/auth/ctrl/ShowAppInstClient`)
 
     let showAppInstClientRequestForm = {
@@ -100,12 +98,8 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
 
     let appInstCount = 0;
-    let interval;
     webSocket.onmessage = async (event) => {
         try {
-
-            console.log("readyState====>", webSocket.readyState);
-
             await _this.setState({
                 loading: true,
                 //selectedClientLocationListOnAppInst:[],
