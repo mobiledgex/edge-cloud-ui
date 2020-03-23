@@ -517,7 +517,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //@fixme: fakeData __allAppInstEvLogListValues
                 //@fixme: fakeData __allAppInstEvLogListValues
                 //@fixme: fakeData __allAppInstEvLogListValues
-                let __allAppInstEvLogListValues = require('./allAppInstEventLogList')
+                let __allAppInstEvLogListValues = require('../temp/allAppInstEventLogList')
                 await this.setState({
                     allAppInstEventLogs: __allAppInstEvLogListValues,
                     filteredAppInstEventLogs: __allAppInstEvLogListValues,
