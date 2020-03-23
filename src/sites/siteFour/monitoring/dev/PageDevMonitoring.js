@@ -87,7 +87,7 @@ import PerformanceSummaryTable from "../components/PerformanceSummaryTable";
 import VirtualAppInstEventLogListContainer from "../components/VirtualAppInstEventLogListContainer";
 import MaterialIcon from "material-icons-react";
 import '../PageMonitoring.css'
-import MonitoringEditViewContainer from "../components/MonitoringEditViewContainer";
+import EditViewPopupContainer from "../components/EditViewPopupContainer";
 
 const {Option} = Select;
 
@@ -1633,8 +1633,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             }}
                                         >
                                             <Checkbox
-                                                checked={this.state.isDraggable}
-
+                                                checked={!this.state.isDraggable}
                                                 onChange={async () => {
                                                     await this.setState({
                                                         isDraggable: !this.state.isDraggable,
@@ -1776,7 +1775,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 <div style={{width: '100%', height: '100%',}}>
 
-                    <MonitoringEditViewContainer parent={this} isOpenEditView={this.state.isOpenEditView}/>
+                    <EditViewPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}/>
 
                     <ModalGraph selectedClusterUsageOne={this.state.selectedClusterUsageOne}
                                 selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}

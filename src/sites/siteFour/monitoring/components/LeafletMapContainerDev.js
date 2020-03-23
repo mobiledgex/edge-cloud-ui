@@ -10,6 +10,7 @@ import PageDevMonitoring from "../dev/PageDevMonitoring";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {groupByKey_, removeDuplicates, renderPlaceHolderLottiePinJump3} from "../PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
+import {Icon} from "semantic-ui-react";
 
 
 const DEFAULT_VIEWPORT = {
@@ -283,6 +284,11 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
                         <Map center={[45.4, 51.7]}
                              duration={0.9}
                              zoom={this.state.zoom}
+                             onZoomEnd={(e) => {
+                                 this.setState({
+                                     zoom: e.target._zoom,
+                                 })
+                             }}
                              style={{width: '100%', height: '100%', zIndex: 1,}}
                              easeLinearity={1}
                              useFlyTo={true}
@@ -296,6 +302,24 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
                                  this.map = ref;
                              }}
                         >
+                            <div style={{position: 'absolute',  top: 70, left: 10, zIndex: 99999}}>
+                                <Icon
+                                    onClick={() => {
+                                        this.setState({
+                                            zoom: 3,
+                                        })
+                                    }}
+                                    name='redo'
+                                    style={{
+                                        color: 'black',
+                                        fontSize: 18,
+                                        borderRadius: 5,
+                                        backgroundColor: 'white',
+                                        height: 26,
+                                        width: 27,
+                                        cursor:'pointer'
+                                    }}/>
+                            </div>
 
 
                             {this.props.parent.state.loading && renderPlaceHolderLottiePinJump3()}
@@ -372,15 +396,6 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
 
                             })}
 
-                            {/*  <Marker
-                                //ref={c => this.marker1 = c}
-                                icon={cellphoneIcon}
-                                //className='marker1'
-                                //lat, long
-                                position={
-                                    [37.3454,127.1167, ]
-                                }
-                            />*/}
 
                             {this.state.newCloudLetLocationList.map((outerItem, outerIndex) => {
                                 let listAppName = outerItem.AppNames.split(",")

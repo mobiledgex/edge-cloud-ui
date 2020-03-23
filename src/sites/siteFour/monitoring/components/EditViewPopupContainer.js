@@ -30,7 +30,7 @@ type State = {
 
 };
 
-export default class MonitoringEditViewContainer extends React.Component<Props, State> {
+export default class EditViewPopupContainer extends React.Component<Props, State> {
 
 
     constructor(props: Props) {
@@ -106,7 +106,7 @@ export default class MonitoringEditViewContainer extends React.Component<Props, 
                                         fontSize: 35,
                                         flex: .2,
                                         marginLeft: 25,
-                                    }}> Add Grid Item
+                                    }}> Add Item
                                     </div>
                                 </React.Fragment>
 
