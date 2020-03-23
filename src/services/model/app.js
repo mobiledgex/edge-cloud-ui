@@ -57,6 +57,12 @@ export const getAppList = async (self, data) => {
     return await serverData.showDataFromServer(self, showApps(data))
  }
 
+ export const createApp = async (self, data) => {
+    let requestData = getKey(data, true)
+    let request = { method: CREATE_APP, data: requestData }
+    return await serverData.sendRequest(self, request)
+}
+
 export const deleteApp = (data) => {
     let requestData = getKey(data)
     return { uuid: data.uuid, method: DELETE_APP, data: requestData, success: `App ${data[fields.appName]}` }

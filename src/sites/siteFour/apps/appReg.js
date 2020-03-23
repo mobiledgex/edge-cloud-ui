@@ -13,7 +13,7 @@ import { getOrganizationList } from '../../../services/model/organization';
 import { getFlavorList } from '../../../services/model/flavor';
 import { getPrivacyPolicyList } from '../../../services/model/privacyPolicy';
 import { getAutoProvPolicyList } from '../../../services/model/autoProvisioningPolicy';
-import { } from '../../../services/model/app';
+import { createApp } from '../../../services/model/app';
 
 class ClusterInstReg extends React.Component {
     constructor(props) {
@@ -228,6 +228,11 @@ class ClusterInstReg extends React.Component {
                 if (ports.length > 0) {
                     data[fields.accessPorts] = ports
                 }
+            }
+
+            if (await createApp(this, data)) {
+                this.props.handleAlertInfo('success', `App ${data[fields.appName]} created successfully`)
+                this.props.onClose(true)
             }
         }
     }
