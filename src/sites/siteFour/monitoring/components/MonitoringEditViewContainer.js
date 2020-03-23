@@ -24,7 +24,7 @@ type State = {
 
 };
 
-export default class PageDevMonitoringEditView extends React.Component<Props, State> {
+export default class MonitoringEditViewContainer extends React.Component<Props, State> {
 
 
     constructor(props: Props) {

@@ -87,7 +87,7 @@ import PerformanceSummaryTable from "../components/PerformanceSummaryTable";
 import VirtualAppInstEventLogListContainer from "../components/VirtualAppInstEventLogListContainer";
 import MaterialIcon from "material-icons-react";
 import '../PageMonitoring.css'
-import PageDevMonitoringEditView from "../components/PageDevMonitoringEditView";
+import MonitoringEditViewContainer from "../components/MonitoringEditViewContainer";
 
 const {Option} = Select;
 
@@ -1951,7 +1951,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 <div style={{width: '100%', height: '100%',}}>
 
-                    <PageDevMonitoringEditView parent={this} isOpenEditView={this.state.isOpenEditView}/>
+                    <MonitoringEditViewContainer parent={this} isOpenEditView={this.state.isOpenEditView}/>
 
                     <ModalGraph selectedClusterUsageOne={this.state.selectedClusterUsageOne}
                                 selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
