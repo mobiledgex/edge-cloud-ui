@@ -448,8 +448,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 clearInterval(this.intervalForAppInst)
 
                 this.setState({dropdownRequestLoading: true})
-
-
                 //@todo:#####################################################################
                 //@todo: real_data (cloudletList ,clusterList, appnInstList)
                 //@todo:#####################################################################
@@ -467,13 +465,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     })
                 }
 
-
                 console.log('clusterUsageList===>', clusterList);
 
                 let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
 
                 //@todo:#############################################
-                //@todo: getAllClusterEventLogList : realdata
+                //@todo: getAllClusterEventLogList : real data
                 //@todo:#############################################
                 let allClusterEventLogList = await getAllClusterEventLogList(clusterList);
                 console.log("allClusterEventLogList===>", allClusterEventLogList);
@@ -484,7 +481,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
                 //@todo:#############################################
-                //@todo: getAppInst Event Logs : realdata
+                //@todo: getAppInst Event Logs : real data
                 //@todo:#############################################
                 let allAppInstEventLogs = await getAllAppInstEventLogs();
                 console.log("allAppInstEventLogs====>", allAppInstEventLogs);
@@ -542,8 +539,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 let maxMem = Math.max.apply(Math, allClusterUsageList.map(function (o) {
                     return o.sumMemUsage;
                 }));
-
-                console.log('allClusterUsageList333====>', allClusterUsageList);
 
                 await this.setState({
                     clusterListLoading: false,
