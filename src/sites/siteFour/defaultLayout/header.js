@@ -12,7 +12,6 @@ import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 
 import { Image } from 'semantic-ui-react';
-import { Button } from '@material-ui/core';
 
 const drawerWidth = 250;
 
@@ -61,6 +60,12 @@ export default function Header(props) {
             })}
         >
             <Toolbar style={{ backgroundColor: '#3B3F47' }}>
+
+                {props.open ? null :
+                    <Typography variant="h6" noWrap style={{marginRight:20}}>
+                        <Image wrapped size='small' src='/assets/brand/logo_mex.svg' />
+                    </Typography>
+                }
                 <IconButton
                     color="inherit"
                     aria-label="open drawer"
@@ -72,11 +77,6 @@ export default function Header(props) {
                 >
                     <MenuIcon />
                 </IconButton>
-                {props.open ? null :
-                    <Typography variant="h6" noWrap>
-                        <Image wrapped size='small' src='/assets/brand/logo_mex.svg' />
-                    </Typography>
-                }
                 <div className={classes.grow} />
                 <div className={classes.sectionDesktop}>
                     <IconButton aria-label="show 4 new mails" color="inherit" onClick={(e) => props.gotoUrl('/site1', 'pg=0')}>
