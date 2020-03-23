@@ -7,7 +7,8 @@ import * as actions from '../../../actions';
 import './PageMonitoring.css'
 import PageMonitoringForOperator from "./oper/PageOperMonitoring";
 import {Grid} from "semantic-ui-react";
-import PageMonitoringForDeveloper from "./dev/PageDevMonitoring";
+//import PageMonitoringForDeveloper from "./dev/PageDevMonitoring";
+import PageMonitoringForDeveloper from "./dev/PageDevMonitoring____DEV";  //@fixme : for dev...
 import PageMonitoringForAdmin from "./admin/PageAdminMonitoring";
 import {hot} from "react-hot-loader/root";
 

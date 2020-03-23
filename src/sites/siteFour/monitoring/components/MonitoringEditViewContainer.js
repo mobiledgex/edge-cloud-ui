@@ -112,10 +112,7 @@ export default class MonitoringEditViewContainer extends React.Component<Props, 
 
                             </div>
                         </div>
-                        <div style={{height: 100}}/>
-
-                        {/*todo:theme*/}
-                        {/*todo:theme*/}
+                        <div style={{height: 45}}/>
                         {/*todo:theme*/}
                         {/*todo:theme*/}
                         <div style={{display: 'flex'}}>
@@ -199,7 +196,7 @@ export default class MonitoringEditViewContainer extends React.Component<Props, 
                                             <img src={require('../images/graph001.png')}/>
                                         </div>
                                         <div className='center002'>
-                                            <Radio value={GRID_ITEM_TYPE.LINE}>LineChart</Radio>
+                                            <Radio value={GRID_ITEM_TYPE.LINE}>Line Chart</Radio>
                                         </div>
                                     </div>
                                     <div style={{width: 25}}/>
@@ -218,7 +215,7 @@ export default class MonitoringEditViewContainer extends React.Component<Props, 
                                             <img src={require('../images/bar001.png')}/>
                                         </div>
                                         <div className='center002'>
-                                            <Radio value={GRID_ITEM_TYPE.BAR}>BarChart</Radio>
+                                            <Radio value={GRID_ITEM_TYPE.BAR}>Bar Chart</Radio>
                                         </div>
                                     </div>
                                     {/*todo:itemOne*/}
@@ -237,7 +234,7 @@ export default class MonitoringEditViewContainer extends React.Component<Props, 
                                             <img src={require('../images/bar001.png')}/>
                                         </div>
                                         <div className='center002'>
-                                            <Radio value={GRID_ITEM_TYPE.COLUMN}>ColumnChart</Radio>
+                                            <Radio value={GRID_ITEM_TYPE.COLUMN}>Column Chart</Radio>
                                         </div>
                                     </div>
                                     <div style={{width: 25}}/>
@@ -259,7 +256,7 @@ export default class MonitoringEditViewContainer extends React.Component<Props, 
                                             <img src={require('../images/log001.png')}/>
                                         </div>
                                         <div className='center002'>
-                                            <Radio value={GRID_ITEM_TYPE.APP_INST_EVENT_LOG}>AppInst EventLog</Radio>
+                                            <Radio value={GRID_ITEM_TYPE.APP_INST_EVENT_LOG}>App Inst Event Log</Radio>
                                         </div>
                                     </div>
                                     <div style={{width: 25}}/>

@@ -2,14 +2,14 @@ import 'react-hot-loader';
 import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Button, Checkbox, Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
+import {Button, Dropdown, Grid, Modal, Tab, Checkbox} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {Button as MButton, CircularProgress} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
-import {Card, DatePicker, Select, Tooltip} from 'antd';
+import {Button as AButton, Card, DatePicker, Select, Tooltip} from 'antd';
 
 
 import {
@@ -252,8 +252,10 @@ type State = {
 
 }
 
+let sockets = [];
+
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
-    class PageDevMonitoring extends Component<Props, State> {
+    class PageDevMonitoring____DEV extends Component<Props, State> {
         intervalForAppInst = null;
         context: MonitoringContextInterface;
         gridItemHeight = 420;
@@ -342,9 +344,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
                 allConnectionsUsageList: [],
                 filteredConnectionsUsageList: [],
+
                 connectionsTabIndex: 0,
                 tcpTabIndex: 0,
                 udpTabIndex: 0,
+
                 dropdownCloudletList: [],
                 allUsageList: [],
                 maxCpu: 0,
@@ -442,61 +446,42 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 selectedClusterUsageOneIndex: index,
             })
         }
-
         async loadInitDataForCluster(isInterval: boolean = false) {
             try {
                 clearInterval(this.intervalForAppInst)
-
                 this.setState({dropdownRequestLoading: true})
-
-
-                //@todo:#####################################################################
-                //@todo: real_data (cloudletList ,clusterList, appnInstList)
-                //@todo:#####################################################################
-                let cloudletList = await getCloudletList()
-                let clusterList = await getClusterList();
-                let appInstList: Array<TypeAppInstance> = await getAppInstList();
-                console.log("loadInitDataForCluster..appInstanceList===>", appInstList);
-
-                console.log("loadInitDataForCluster..clusterList===>", clusterList);
-                console.log("loadInitDataForCluster..scloudletList===>", cloudletList);
-
-                if (appInstList.length === 0) {
-                    this.setState({
-                        isNoData: true,
-                    })
-                }
-
-
+                //@FIXME: fakeData22222222222
+                //@FIXME: fakeData22222222222
+                let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+                let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
+                let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
+                console.log('appInstanceList====>', appInstanceList);
                 console.log('clusterUsageList===>', clusterList);
-
                 let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
+                console.log("clusterDropdownList===>", clusterDropdownList);
 
-                //@todo:#############################################
-                //@todo: getAllClusterEventLogList : realdata
-                //@todo:#############################################
-                let allClusterEventLogList = await getAllClusterEventLogList(clusterList);
-                console.log("allClusterEventLogList===>", allClusterEventLogList);
+
+                //FIXME : FAKEDATA ClusterEventLog
+                //FIXME : FAKEDATA ClusterEventLog
+                //FIXME : FAKEDATA ClusterEventLog
                 await this.setState({
-                    allClusterEventLogList: allClusterEventLogList,
-                    filteredClusterEventLogList: allClusterEventLogList
+                    allClusterEventLogList: [],
+                    filteredClusterEventLogList: []
                 })
 
-
-                //@todo:#############################################
-                //@todo: getAppInst Event Logs : realdata
-                //@todo:#############################################
-                let allAppInstEventLogs = await getAllAppInstEventLogs();
-                console.log("allAppInstEventLogs====>", allAppInstEventLogs);
+                //@fixme: fakeData __allAppInstEvLogListValues
+                //@fixme: fakeData __allAppInstEvLogListValues
+                //@fixme: fakeData __allAppInstEvLogListValues
+                let __allAppInstEvLogListValues = require('../temp/allAppInstEventLogList')
                 await this.setState({
-                    allAppInstEventLogs: allAppInstEventLogs,
-                    filteredAppInstEventLogs: allAppInstEventLogs,
+                    allAppInstEventLogs: __allAppInstEvLogListValues,
+                    filteredAppInstEventLogs: __allAppInstEvLogListValues,
                 })
 
 
                 let appInstanceListGroupByCloudlet = []
                 try {
-                    appInstanceListGroupByCloudlet = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
+                    appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
                 } catch (e) {
                     showToast(e.toString())
                 }
@@ -508,8 +493,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     dropDownCloudletList: cloudletList,
                     clusterList: clusterList,
                     isAppInstaceDataReady: true,
-                    appInstanceList: appInstList,
-                    filteredAppInstanceList: appInstList,
+                    appInstanceList: appInstanceList,
+                    filteredAppInstanceList: appInstanceList,
                     dropdownRequestLoading: false,
 
                 });
@@ -519,16 +504,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                     })
                 }
+                //fixme: fakeData22222222222
+                //fixme: fakeData22222222222
                 let allClusterUsageList = []
-
-                //@todo:#############################################
-                //todo: real data (allClusterUsageList)
-                //@todo:#############################################
-                try {
-                    allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
-                } catch (e) {
-
-                }
+                allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+                console.log('filteredAppInstanceList===>', appInstanceList)
 
                 let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
                 await this.setState({
@@ -1248,7 +1228,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*fixme:edit*/}
                     {/*fixme:edit*/}
                     {/*fixme:edit*/}
-                    {/*  <div className="edit"
+                  {/*  <div className="edit"
                          onClick={() => {
                              this.removeGridItem(uniqueIndex)
                          }}
