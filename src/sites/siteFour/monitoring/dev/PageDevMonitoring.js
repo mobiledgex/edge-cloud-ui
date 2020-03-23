@@ -11,7 +11,6 @@ import {Button as MButton, CircularProgress} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
 import {Card, DatePicker, Select, Tooltip} from 'antd';
 
-
 import {
     defaultHwMapperListForCluster,
     defaultLayoutForAppInst,
@@ -910,50 +909,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
         }
 
-        /* renderMapArea() {
-             return (
-                 <>
-                     <div className='page_monitoring_title_area' style={{display: 'flex'}}>
-
-                         <div style={{
-                             display: 'flex',
-                             width: '100%',
-                             height: 30
-                         }}>
-                             <div className='page_monitoring_title' style={{
-                                 backgroundColor: 'transparent',
-                                 flex: .38
-                             }}>
-                                 Deployed Instance
-                             </div>
-                         </div>
-
-                         <div className='page_monitoring_title' style={{
-                             backgroundColor: 'transparent',
-                             flex: .65
-                         }}>
-                             {this.state.mapPopUploading &&
-                             <div style={{zIndex: 99999999999}}>
-                                 <CircularProgress style={{
-                                     color: '#1cecff',
-                                     marginRight: 0,
-                                     marginBottom: -2,
-                                     fontWeight: 'bold',
-                                 }}
-                                                   size={14}/>
-                             </div>
-                             }
-                         </div>
-                     </div>
-                     {/!*@todo: LeafletMapWrapperForDev*!/}
-                     <div className='page_monitoring_container'>
-
-                     </div>
-                 </>
-             )
-         }*/
-
-
         makeGridSizeByType(graphType) {
             if (graphType === GRID_ITEM_TYPE.CLUSTER_LIST) {
                 return 2;
@@ -1394,24 +1349,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             )
         }
-
-        /* renderAddItemSelectOptions() {
-
-             if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                 return this.state.hwListForCluster.map(item => {
-                     return (
-                         <Option value={item.value}>{item.text}</Option>
-                     )
-                 });
-             } else {
-                 return this.state.hwListForAppInst.map(item => {
-                     return (
-                         <Option value={item.value}>{item.text}</Option>
-                     )
-                 });
-             }
-
-         }*/
 
         renderHeader = () => {
 
