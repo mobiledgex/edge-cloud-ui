@@ -2,16 +2,14 @@ import React from "react";
 import * as L from 'leaflet';
 import "../PageMonitoring.css";
 import 'react-leaflet-fullscreen-control'
-import type {TypeAppInstance, TypeClient, TypeClientLocation} from "../../../../shared/Types";
+import type {TypeAppInstance, TypeClient} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 import {CheckCircleOutlined} from '@material-ui/icons';
 import {Map, Marker, Polyline, Popup, TileLayer, Tooltip} from "react-leaflet";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {groupByKey_, renderPlaceHolderLottiePinJump3} from "../PageMonitoringCommonService";
-import ContainerDimensions from 'react-container-dimensions'
+import {groupByKey_, removeDuplicates, renderPlaceHolderLottiePinJump3} from "../PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
-import _ from "lodash";
 
 
 const DEFAULT_VIEWPORT = {
@@ -98,8 +96,6 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
     ]
 
 
-
-
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -136,6 +132,7 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
         this.setCloudletLocation(appInstanceListGroupByCloudlet)
     };
 
+
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
         if (this.props.markerList !== nextProps.markerList) {
             console.log('markerList2222 nextProps_markerList===>', nextProps.markerList);
@@ -156,9 +153,7 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
 
             console.log("clientList===length=>", clientList.length);
             //desc: duplication remove by client cellphone uuid
-            clientList = _.uniq(clientList, 'uuid');
-
-            console.log("clientList===lengt22====>", clientList.length);
+            clientList = removeDuplicates(clientList, "uuid")
 
             let newClientList = []
             clientList.map((item: TypeClient, index) => {

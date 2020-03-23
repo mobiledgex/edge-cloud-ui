@@ -152,7 +152,7 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
     };
 
     webSocket.onclose = function (event) {
-        alert(event.toString())
+        //alert(event.toString())
     };
 
     return webSocket;

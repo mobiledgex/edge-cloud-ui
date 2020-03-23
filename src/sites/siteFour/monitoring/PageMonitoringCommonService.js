@@ -281,6 +281,23 @@ export const renderPlaceHolderLottiePinJump = (type: string = '') => {
     )
 }
 
+
+export const removeDuplicates = (paramArrayList, key) => {
+    let newArray = [];
+    let uniqueObject = {};
+    for (let i in paramArrayList) {
+
+        let objTitle = paramArrayList[i][key];
+        uniqueObject[objTitle] = paramArrayList[i];
+    }
+    for (let i in uniqueObject) {
+        newArray.push(uniqueObject[i]);
+    }
+
+    console.log(newArray);
+    return newArray;
+}
+
 export const renderPlaceHolderLottiePinJump2 = (type: string = '') => {
     return (
         <div className='page_monitoring_blank_box'
