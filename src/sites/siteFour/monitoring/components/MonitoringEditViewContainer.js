@@ -6,7 +6,7 @@ import {PageMonitoringStyles, showToast} from "../PageMonitoringCommonService";
 import {
     ADD_ITEM_LIST, CHART_COLOR_APPLE,
     CHART_COLOR_LIST, CHART_COLOR_LIST2, CHART_COLOR_LIST3, CHART_COLOR_LIST4, CHART_COLOR_MONOKAI,
-    CLASSIFICATION,
+    CLASSIFICATION, EVENT_LOG_ITEM_LIST,
     GRID_ITEM_TYPE, HARDWARE_TYPE,
     THEME_OPTIONS
 } from "../../../../shared/Constants";
@@ -25,6 +25,8 @@ type State = {
     isOpenEditView: any,
     currentItemType: number,
     currentHwType: string,
+    isShowHWDropDown: boolean,
+    isShowEventLog: boolean,
 
 };
 
@@ -37,6 +39,8 @@ export default class MonitoringEditViewContainer extends React.Component<Props, 
             //isOpenEditView: [],
             currentItemType: GRID_ITEM_TYPE.LINE,
             currentHwType: HARDWARE_TYPE.CPU,
+            isShowHWDropDown: true,
+            isShowEventLog: false,
         }
     }
 
@@ -110,107 +114,247 @@ export default class MonitoringEditViewContainer extends React.Component<Props, 
                         </div>
                         <div style={{height: 100}}/>
 
-                        <Radio.Group
-                            onChange={(e) => {
-                                console.log('radio checked',);
-
-                                let selectedItem = e.target.value;
-
-                                this.setState({
-                                    currentItemType: selectedItem,
-                                });
-                            }}
-                            value={this.state.currentItemType}
-                        >
-                            <div style={{display: 'flex'}}>
-
-                                {/*todo:itemOne*/}
-                                <div>
-                                    <div
-                                        className='center001'
-                                        onClick={() => {
-                                            this.setState({
-                                                currentItemType: GRID_ITEM_TYPE.LINE,
-                                            })
-                                        }}
-                                    >
-                                        <img src={require('../images/graph001.png')}/>
-                                    </div>
-                                    <div className='center001'>
-                                        <Radio value={GRID_ITEM_TYPE.LINE}>LineChart</Radio>
-                                    </div>
-                                </div>
-                                <div style={{width: 25}}/>
-                                {/*todo:itemOne*/}
-                                <div>
-                                    <div
-                                        className='center001'
-                                        onClick={() => {
-                                            this.setState({
-                                                currentItemType: GRID_ITEM_TYPE.BAR,
-                                            })
-                                        }}
-                                    >
-                                        <img src={require('../images/bar001.png')}/>
-                                    </div>
-                                    <div className='center001'>
-                                        <Radio value={GRID_ITEM_TYPE.BAR}>BarChart</Radio>
-                                    </div>
-                                </div>
-                                {/*todo:itemOne*/}
-                                <div style={{width: 25}}/>
-                                <div>
-                                    <div
-                                        className='center001'
-                                        onClick={() => {
-                                            this.setState({
-                                                currentItemType: GRID_ITEM_TYPE.COLUMN,
-                                            })
-                                        }}
-                                    >
-                                        <img src={require('../images/bar001.png')}/>
-                                    </div>
-                                    <div className='center001'>
-                                        <Radio value={GRID_ITEM_TYPE.COLUMN}>ColumnChart</Radio>
-                                    </div>
-                                </div>
-                                <div style={{width: 25}}/>
-                                {/*todo:itemOne*/}
-                                <div>
-                                    <div
-                                        className='center001'
-                                        onClick={() => {
-                                            this.setState({
-                                                currentItemType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
-                                            })
-                                        }}
-                                    >
-                                        <img src={require('../images/log001.png')}/>
-                                    </div>
-                                    <div className='center001'>
-                                        <Radio value={GRID_ITEM_TYPE.APP_INST_EVENT_LOG}>EventLog</Radio>
-                                    </div>
-                                </div>
-                                <div style={{width: 25}}/>
-
+                        {/*todo:theme*/}
+                        {/*todo:theme*/}
+                        {/*todo:theme*/}
+                        {/*todo:theme*/}
+                        <div style={{display: 'flex'}}>
+                            <div className="page_monitoring_dropdown_label" style={{marginLeft: 0, marginRight: 67}}>
+                                Theme
                             </div>
-                        </Radio.Group>
+                            <div style={{marginBottom: 10,}}>
+                                <Dropdown
+                                    selectOnBlur={false}
+                                    placeholder="Select Theme"
+                                    selection
+                                    value={this.props.parent.state.themeTitle}
+                                    //style={{width: 190, marginBottom: 10, marginLeft: 5}}
+                                    onChange={async (e, {value}) => {
+                                        await this.props.parent.setState({
+                                            themeTitle: value,
+                                        })
+                                        this.props.parent.handleThemeChanges(value)
+                                        let selectedChartColorList = [];
+                                        if (value === THEME_OPTIONS.EUNDEW) {
+                                            selectedChartColorList = CHART_COLOR_LIST;
+                                        }
+                                        if (value === THEME_OPTIONS.BLUE) {
+                                            selectedChartColorList = CHART_COLOR_LIST2;
+                                        }
+                                        if (value === THEME_OPTIONS.GREEN) {
+                                            selectedChartColorList = CHART_COLOR_LIST3;
+                                        }
+                                        if (value === THEME_OPTIONS.RED) {
+                                            selectedChartColorList = CHART_COLOR_LIST4;
+                                        }
+
+                                        if (value === THEME_OPTIONS.MONOKAI) {
+                                            selectedChartColorList = CHART_COLOR_MONOKAI;
+                                        }
+
+                                        if (value === THEME_OPTIONS.APPLE) {
+                                            selectedChartColorList = CHART_COLOR_APPLE;
+                                        }
+
+                                        reactLocalStorage.setObject(getUserId() + "_mon_theme", selectedChartColorList)
+                                        reactLocalStorage.set(getUserId() + "_mon_theme_title", value)
+                                    }}
+                                    options={this.props.parent.state.themeOptions}
+                                />
+                            </div>
+                        </div>
+
+                        <div style={{height: 25}}/>
+                        {/*todo:Radio.Group*/}
+                        {/*todo:Radio.Group*/}
+                        {/*todo:Radio.Group*/}
+                        <div style={{display: 'flex'}}>
+                            <div className="page_monitoring_dropdown_label" style={{marginLeft: 0, marginRight: 50}}>
+                                Item Type
+                            </div>
+                            <Radio.Group
+                                onChange={(e) => {
+                                    console.log('radio checked',);
+
+                                    let selectedItem = e.target.value;
+
+                                    this.setState({
+                                        currentItemType: selectedItem,
+                                    });
+                                }}
+                                value={this.state.currentItemType}
+                            >
+                                <div style={{display: 'flex'}}>
+                                    <div>
+                                        <div
+                                            className='center002'
+                                            onClick={() => {
+                                                this.setState({
+                                                    currentItemType: GRID_ITEM_TYPE.LINE,
+                                                    isShowHWDropDown: true,
+                                                    isShowEventLog: false,
+                                                })
+                                            }}
+                                        >
+                                            <img src={require('../images/graph001.png')}/>
+                                        </div>
+                                        <div className='center002'>
+                                            <Radio value={GRID_ITEM_TYPE.LINE}>LineChart</Radio>
+                                        </div>
+                                    </div>
+                                    <div style={{width: 25}}/>
+                                    {/*todo:itemOne*/}
+                                    <div>
+                                        <div
+                                            className='center002'
+                                            onClick={() => {
+                                                this.setState({
+                                                    currentItemType: GRID_ITEM_TYPE.BAR,
+                                                    isShowHWDropDown: true,
+                                                    isShowEventLog: false,
+                                                })
+                                            }}
+                                        >
+                                            <img src={require('../images/bar001.png')}/>
+                                        </div>
+                                        <div className='center002'>
+                                            <Radio value={GRID_ITEM_TYPE.BAR}>BarChart</Radio>
+                                        </div>
+                                    </div>
+                                    {/*todo:itemOne*/}
+                                    <div style={{width: 25}}/>
+                                    <div>
+                                        <div
+                                            className='center002'
+                                            onClick={() => {
+                                                this.setState({
+                                                    currentItemType: GRID_ITEM_TYPE.COLUMN,
+                                                    isShowHWDropDown: true,
+                                                    isShowEventLog: false,
+                                                })
+                                            }}
+                                        >
+                                            <img src={require('../images/bar001.png')}/>
+                                        </div>
+                                        <div className='center002'>
+                                            <Radio value={GRID_ITEM_TYPE.COLUMN}>ColumnChart</Radio>
+                                        </div>
+                                    </div>
+                                    <div style={{width: 25}}/>
+                                    {/*todo:######################################*/}
+                                    {/*todo:APP_INST_EVENT_LOG*/}
+                                    {/*todo:######################################*/}
+                                    <div>
+                                        <div
+                                            className='center002'
+                                            onClick={() => {
+
+                                                this.setState({
+                                                    currentItemType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
+                                                    isShowHWDropDown: false,
+                                                    isShowEventLog: true,
+                                                })
+                                            }}
+                                        >
+                                            <img src={require('../images/log001.png')}/>
+                                        </div>
+                                        <div className='center002'>
+                                            <Radio value={GRID_ITEM_TYPE.APP_INST_EVENT_LOG}>AppInst EventLog</Radio>
+                                        </div>
+                                    </div>
+                                    <div style={{width: 25}}/>
+                                    {/*map and bubble chart*/}
+                                    {/*map and bubble chart*/}
+                                    {/*map and bubble chart*/}
+                                    <div>
+                                        <div
+                                            className='center002'
+                                            onClick={() => {
+                                                this.setState({
+                                                    currentItemType: GRID_ITEM_TYPE.MAP,
+                                                    isShowHWDropDown: false,
+                                                    isShowEventLog: false,
+                                                })
+                                            }}
+                                        >
+                                            <img src={require('../images/map001.png')}/>
+                                        </div>
+                                        <div className='center002'>
+                                            <Radio value={GRID_ITEM_TYPE.MAP}>Map</Radio>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div
+                                            className='center002'
+                                            onClick={() => {
+                                                this.setState({
+                                                    currentItemType: GRID_ITEM_TYPE.BUBBLE,
+                                                    isShowHWDropDown: false,
+                                                    isShowEventLog: false,
+                                                })
+                                            }}
+                                        >
+                                            <img src={require('../images/map001.png')}/>
+                                        </div>
+                                        <div className='center002'>
+                                            <Radio value={GRID_ITEM_TYPE.BUBBLE}>Bubble</Radio>
+                                        </div>
+                                    </div>
+                                    <div style={{width: 25}}/>
+                                </div>
+                            </Radio.Group>
+                        </div>
+                        {/*todo:Radio.Group End*/}
+                        {/*todo:Radio.Group End*/}
+                        {/*todo:Radio.Group End*/}
+
                         <div style={{height: 50}}/>
-                        <div>
+                        {this.state.isShowHWDropDown && <div>
+                            <div style={{display: 'flex'}}>
+                                <div className="page_monitoring_dropdown_label" style={{marginLeft: 0, marginRight: 50}}>
+                                    HW Type
+                                </div>
+                                <Dropdown
+                                    selectOnBlur={false}
+                                    onClick={e => e.stopPropagation()}
+                                    placeholder="Select HW Type"
+                                    selection
+                                    onChange={async (e, {value}) => {
+                                        this.setState({
+                                            currentHwType: value,
+                                        })
+                                    }}
+                                    value={this.state.currentHwType}
+                                    options={this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER ? this.props.parent.state.hwListForCluster : this.props.parent.state.hwListForAppInst}
+                                />
+                            </div>
+
+                        </div>}
+                        {this.state.isShowEventLog &&
+                        <div style={{display: 'flex'}}>
+                            <div className="page_monitoring_dropdown_label" style={{marginLeft: 0, marginRight: 12}}>
+                                Event Log Type
+                            </div>
                             <Dropdown
                                 selectOnBlur={false}
-                                onClick={e => e.stopPropagation()}
-                                placeholder="Select HW Type"
+                                placeholder="Select Item"
                                 selection
                                 onChange={async (e, {value}) => {
                                     this.setState({
-                                        currentHwType: value,
+                                        currentItemType: value,
                                     })
                                 }}
-                                value={this.state.currentHwType}
-                                options={this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER ? this.props.parent.state.hwListForCluster : this.props.parent.state.hwListForAppInst}
+                                style={PageMonitoringStyles.dropDown2}
+                                options={EVENT_LOG_ITEM_LIST}
                             />
                         </div>
+
+                        }
+
+
+                        {/*todo:Buttons*/}
+                        {/*todo:Buttons*/}
+                        {/*todo:Buttons*/}
                         <div style={{height: 50}}/>
                         <div style={{display: 'flex'}}>
                             <Button
@@ -218,13 +362,9 @@ export default class MonitoringEditViewContainer extends React.Component<Props, 
                                 onClick={async () => {
                                     // __addGridItem(hwType, graphType = 'line') {
 
-                                    if (this.state.currentItemType === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
-                                        alert('no implementation')
-                                    } else {
-
-                                        await this.props.parent.__addGridItem(this.state.currentHwType, this.state.currentItemType);
-                                        this.closePopupWindow();
-                                    }
+                                    await this.props.parent.__addGridItem(this.state.currentHwType, this.state.currentItemType);
+                                    this.closePopupWindow();
+                                    showToast('added Item!! [' + this.state.currentHwType + "]")
 
 
                                 }}
@@ -238,6 +378,7 @@ export default class MonitoringEditViewContainer extends React.Component<Props, 
                             >Cancel
                             </Button>
                         </div>
+
                     </div>
 
 
