@@ -47,6 +47,16 @@ export const THEME_OPTIONS_LIST = [
     //CHART_COLOR_APPLE
 ]
 
+export const ITEM_TYPE = [
+    {text: 'LINE_CHART', value: 'LINE_CHART'},
+    {text: 'BAR_CHART', value: 'BAR_CHART'},
+    {text: 'COLUMN_CHART', value: 'COLUMN_CHART'},
+    {text: 'EVENT_LOG', value: 'EVENT_LOG'},
+    {text: 'MAP', value: 'MAP'},
+
+    //CHART_COLOR_APPLE
+]
+
 
 export const lineGraphOptions = {
     animation: {
