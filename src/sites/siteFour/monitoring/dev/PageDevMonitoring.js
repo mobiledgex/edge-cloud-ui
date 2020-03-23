@@ -1270,7 +1270,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                              justifyContent: 'center',
                              //backgroundColor: 'red',
                              position: "absolute",
-                             right: "75px",
+                             right: "40px",
                              top: 7,
                              fontWeight: 'bold',
                              cursor: "pointer"
@@ -1280,7 +1280,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     </div>
                     }
 
-                    <div className="edit"
+                    {/*fixme:edit*/}
+                    {/*fixme:edit*/}
+                    {/*fixme:edit*/}
+                  {/*  <div className="edit"
                          onClick={() => {
                              this.removeGridItem(uniqueIndex)
                          }}
@@ -1300,7 +1303,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                          }}
                     >
                         <MaterialIcon icon='create' color={'#fff'}/>
-                    </div>
+                    </div>*/}
 
                     <div className="remove"
                          onClick={() => {
