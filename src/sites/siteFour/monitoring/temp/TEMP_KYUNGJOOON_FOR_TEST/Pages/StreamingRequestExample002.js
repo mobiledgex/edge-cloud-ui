@@ -1,3 +1,4 @@
+/*
 import * as React from 'react';
 import {CircularProgress} from "@material-ui/core";
 import ndjsonStream from "can-ndjson-stream";
@@ -88,7 +89,7 @@ export default class StreamingRequestExample002 extends React.Component<Props, S
                 </FlexBox>}
                 Streaming Request Example ...
 
-               {/* {this.state.results.map((item, index) => {
+               {/!* {this.state.results.map((item, index) => {
                     return (
                         <FlexBox style={{marginRight: 23}} key={index}
                                  style={{alignItems: 'center', justifyContent: 'flex-start'}}>
@@ -105,14 +106,14 @@ export default class StreamingRequestExample002 extends React.Component<Props, S
                             </FlexBox>
                         </FlexBox>
                     )
-                })}*/}
+                })}*!/}
             </div>
         );
     };
 };
 
 
-/*
+/!*
 
 axios({
     method: 'POST',
@@ -151,4 +152,5 @@ axios({
         //todo:다음 Stream 데이터를 읽어온다..
         reader.read().then(read);
     });
-});*/
+});*!/
+*/
