@@ -113,7 +113,7 @@ class AutoProvPolicyReg extends React.Component {
         return count;
     }
 
-    removeRulesForm = (form) => {
+    removeRulesForm = (e, form) => {
         if (this.getOutboundRulesCount() > 1) {
             if (form.parent) {
                 let updateForms = Object.assign([], this.state.forms)
@@ -150,7 +150,7 @@ class AutoProvPolicyReg extends React.Component {
         { label: 'Outbound Security Rules', formType: 'Header', forms: [{ formType: 'IconButton', icon: 'add', style:{ color: "white", display: 'inline' }, onClick: this.addRulesForm }], visible: true },
     ])
 
-    addRulesForm = () => {
+    addRulesForm = (e, form) => {
         this.setState(prevState => ({ forms: [...prevState.forms, this.getOutboundSecurityForm(this.getOutBoundRules())] }))
     }
     

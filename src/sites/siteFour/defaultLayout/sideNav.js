@@ -187,9 +187,9 @@ export default function MiniDrawer(props) {
                 }}>
                     {options.map((option, i) => (
                         option.divider ?
-                            <Divider /> :
+                            <Divider key={i}/> :
                             option.roles.includes(getUserRole()) ?
-                                <div>
+                                <div key={i}>
                                     {showOptionForm(i, option)}
                                     {option.subOptions ?
                                         <Collapse in={expand} timeout="auto" unmountOnExit>

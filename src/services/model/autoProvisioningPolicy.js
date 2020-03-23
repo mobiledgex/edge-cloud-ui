@@ -1,5 +1,6 @@
-import { TYPE_JSON } from '../../constant';
+import { TYPE_JSON } from '../../constant'
 import * as formatter from './format'
+import * as serverData from './serverData'
 import { SHOW_AUTO_PROV_POLICY, CREATE_AUTO_PROV_POLICY, DELETE_AUTO_PROV_POLICY, ADD_AUTO_PROV_POLICY_CLOUDLET, REMOVE_AUTO_PROV_POLICY_CLOUDLET } from './endPointTypes'
 
 let fields = formatter.fields
@@ -62,6 +63,10 @@ export const showAutoProvPolicies = (data) => {
     }
   }
   return { method: SHOW_AUTO_PROV_POLICY, data: data }
+}
+
+export const getAutoProvPolicyList = async (self, data) => {
+  return await serverData.showDataFromServer(self, showAutoProvPolicies(data))
 }
 
 export const deleteAutoProvPolicy = (data) => {

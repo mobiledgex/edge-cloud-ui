@@ -7,7 +7,7 @@ import * as actions from '../../../actions';
 import * as constant from '../../../constant'
 import { fields } from '../../../services/model/format';
 import { keys, showApps, deleteApp } from '../../../services/model/app';
-import AppReg from './appRegNew';
+import AppReg from './appReg';
 
 class AppList extends React.Component {
     constructor(props) {
@@ -19,8 +19,13 @@ class AppList extends React.Component {
         this.data = {}
     }
 
+    onRegClose = (isEdited)=>
+    {
+        this.setState({ currentView: null })
+    }
+
     onAdd = () => {
-        this.setState({ currentView: <AppReg /> })
+        this.setState({ currentView: <AppReg onClose={this.onRegClose}/> })
     }
 
     /***Action Block */

@@ -1,141 +1,397 @@
 import React from 'react';
-import sizeMe from 'react-sizeme';
+import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
+//Mex
+import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX, TEXT_AREA } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import * as serviceMC from '../../../services/serviceMC';
-import RegistryViewer from "../../../container/registryViewer";
+import * as constant from '../../../constant';
+import { fields } from '../../../services/model/format';
+//model
+import { getOrganizationList } from '../../../services/model/organization';
+import { getFlavorList } from '../../../services/model/flavor';
+import { getPrivacyPolicyList } from '../../../services/model/privacyPolicy';
+import { getAutoProvPolicyList } from '../../../services/model/autoProvisioningPolicy';
+import { } from '../../../services/model/app';
 
-
-
-let _self = null;
-
-class SiteFourPageAppReg extends React.Component {
+class ClusterInstReg extends React.Component {
     constructor(props) {
         super(props);
-        _self = this;
         this.state = {
-            shouldShowBox: true,
-            shouldShowCircle: false,
-            contHeight:0,
-            contWidth:0,
-            bodyHeight:0,
-            activeItem: 'Developers',
-            devData:[],
-            edit:false
+            step: 0,
+            forms: [],
+        }
+        this.isUpdate = this.props.isUpdate
+        let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
+        this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
+        this.flavorList = []
+        this.privacyPolicyList = []
+        this.autoProvPolicyList = []
+        this.requestedRegionList = []
+        //To avoid refecthing data from server
+    }
+
+
+
+    /**Deployment manifest block */
+
+    clearManifestData = (e, form) => {
+        let manifestForm = form.parent.form.forms[0]
+        manifestForm.value = undefined;
+        this.reloadForms()
+    }
+
+    addManifestData = (e, form) => {
+        e.preventDefault();
+        let input = document.createElement("input");
+        input.type = "file";
+        input.accept = "*";
+        input.onchange = (event) => {
+            let file = event.target.files[0];
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = () => {
+                    let manifestForm = form.parent.form.forms[0]
+                    manifestForm.value = reader.result;
+                    this.reloadForms()
+                };
+                reader.readAsText(file)
+            }
         };
-        this.headerH = 70;
-        this.hgap = 0;
-        this.userToken = null;
+        input.click();
     }
-    gotoUrl(site, subPath) {
-        let mainPath = site;
-        _self.props.history.push({
-            pathname: site,
-            search: subPath
-        });
-        _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+
+    deploymentManifestForm = () => ([
+        { field: fields.deploymentManifest, formType: TEXT_AREA, rules: { required: false }, width: 14, visible: true },
+        { icon: 'browse', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.addManifestData },
+        { icon: 'clear', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.clearManifestData }
+    ])
+
+    /**Deployment manifest block */
+
+    /**port block */
+
+    portForm = () => ([
+        { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number' }, width: 9, visible: true },
+        { field: fields.protocol, label: 'Protocol', formType: SELECT, rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp'] },
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removePortForms }
+    ])
+
+    multiPortForm = () => ([
+        { field: fields.portRangeMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number' }, width: 4, visible: true },
+        { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
+        { field: fields.portRangeMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number' }, width: 4, visible: true },
+        { field: fields.protocol, label: 'Protocol', formType: SELECT, rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp'] },
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removePortForms }
+    ])
+
+    getPortForm = (form) => (
+        { uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form, width: 3, visible: true }
+    )
+
+    getMultiPortForm = (form) => (
+        { uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form, width: 3, visible: true }
+    )
+
+
+    removePortForms = (form) => {
+        if (form.parent) {
+            let updateForms = Object.assign([], this.state.forms)
+            updateForms.splice(form.parent.id, 1);
+            this.setState({
+                forms: updateForms
+            })
+        }
 
     }
-    gotoApp() {
-        let mainPath = '/site4';
-        let subPath = 'pg=6';
-        _self.props.history.push({
-            pathname: mainPath,
-            search: subPath
-        });
-        _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
-    }
-    //go to
-    gotoPreview(site) {
-        //브라우져 입력창에 주소 기록
-        let mainPath = site;
-        let subPath = 'pg=0';
-        _self.props.history.push({
-            pathname: mainPath,
-            search: subPath,
-            state: { some: 'state' }
-        });
-        _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
 
+    addPortForms = () => {
+        this.setState(prevState => ({ forms: [...prevState.forms, this.getPortForm(this.portForm())] }))
     }
-    handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
-    onHandleRegistry() {
-        this.props.handleInjectDeveloper('userInfo');
+    addMultiPortForms = () => {
+        this.setState(prevState => ({ forms: [...prevState.forms, this.getMultiPortForm(this.multiPortForm())] }))
     }
-    componentWillMount() {
-        this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-        this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
+    /**port block */
 
-        if(this.props.editable) {
-            this.setState({edit:this.props.editable})
+
+    deploymentValueChange = (currentForm, forms, isInit) => {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i];
+            if (form.field === fields.imageType) {
+                form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? 'Qcow' : 'Docker'
+            }
+            else if (form.field === fields.scaleWithCluster) {
+                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? true : false
+            }
+        }
+        this.setState({
+            forms: forms
+        })
+    }
+
+    getFlavorInfo = async (region, form, forms) => {
+        if (!this.requestedRegionList.includes(region)) {
+            this.flavorList = [...this.flavorList, ...await getFlavorList(this, { region: region })]
+        }
+        this.updateUI(form)
+        this.setState({ forms: forms })
+    }
+
+    getPrivacyPolicy = async (region, form, forms) => {
+        if (!this.requestedRegionList.includes(region)) {
+            this.privacyPolicyList = [...this.privacyPolicyList, ...await getPrivacyPolicyList(this, { region: region })]
+        }
+        this.updateUI(form)
+        this.setState({ forms: forms })
+    }
+
+    getAutoProvPolicy = async (region, form, forms) => {
+        if (!this.requestedRegionList.includes(region)) {
+            this.autoProvPolicyList = [...this.autoProvPolicyList, ...await getAutoProvPolicyList(this, { region: region })]
+        }
+        this.updateUI(form)
+        this.setState({ forms: forms })
+    }
+
+    regionValueChange = (currentForm, forms, isInit) => {
+        let region = currentForm.value;
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (form.field === fields.autoPolicyName) {
+                if (isInit === undefined || isInit === false) {
+                    this.getAutoProvPolicy(region, form, forms)
+                }
+            }
+            else if (form.field === fields.flavorName) {
+                if (isInit === undefined || isInit === false) {
+                    this.getFlavorInfo(region, form, forms)
+                }
+            }
+            else if (form.field === fields.privacyPolicyName) {
+                if (isInit === undefined || isInit === false) {
+                    this.getPrivacyPolicy(region, form, forms)
+                }
+            }
+        }
+        this.requestedRegionList.push(region)
+    }
+
+    checkForms = (form, forms, isInit) => {
+        if (form.field === fields.region) {
+            this.regionValueChange(form, forms, isInit)
+        }
+        else if (form.field === fields.deployment) {
+            this.deploymentValueChange(form, forms, isInit)
         }
     }
-    componentWillUnmount() {
-        
-    }
-    componentDidMount() {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
-        this.getDataDeveloper(store ? store.userToken : 'null', this.props.region.value)
-    }
-    componentWillReceiveProps(nextProps) {
-        this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-        this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
-
-
+    /**Required */
+    /*Trigged when form value changes */
+    onValueChange = (form) => {
+        let forms = this.state.forms;
+        this.checkForms(form, forms)
     }
 
-    receiveResult(mcRequest) {
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let response = mcRequest.response;
-                _self.setState({ devData: response })
+
+
+    onCreate = async (data) => {
+        if (data) {
+            if (this.props.isUpdate) {
+                //update cluster data
+            }
+            else {
+                let forms = this.state.forms;
+                let ports = ''
+                for (let i = 0; i < forms.length; i++) {
+                    let form = forms[i];
+                    if (form.uuid) {
+                        let uuid = form.uuid;
+                        let multiFormData = data[uuid]
+                        if (multiFormData) {
+                            if (multiFormData[fields.portRangeMin] && multiFormData[fields.portRangeMax]) {
+                                ports = ports.length > 0 ? ports + ',' : ports
+                                ports = ports + multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMin] + '-' + multiFormData[fields.portRangeMax]
+                            }
+                            else if (multiFormData[fields.portRangeMax]) {
+                                ports = ports.length > 0 ? ports + ',' : ports
+                                ports = ports + multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMax]
+                            }
+                            else if (form.field === fields.deploymentManifest) {
+                                data[fields.deploymentManifest] = multiFormData[fields.deploymentManifest]
+                            }
+                        }
+                        data[uuid] = undefined
+                    }
+                }
+                if (ports.length > 0) {
+                    data[fields.accessPorts] = ports
+                }
             }
         }
     }
 
-    getDataDeveloper(token, region) {
-        serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_APP, data: { region: (region === 'All') ? 'US' : region } }, _self.receiveResult)
+
+    /*Required*/
+    reloadForms = () => {
+        this.setState({
+            forms: this.state.forms
+        })
     }
 
-    /*
-     */
+    stepperClose = () => {
+        this.setState({
+            stepsArray: []
+        })
+        this.props.onClose(true)
+    }
+
+    onAddCancel = () => {
+        this.props.onClose(false)
+    }
+
+    resetFormValue = (form) => {
+        let rules = form.rules
+        if (rules) {
+            let disabled = rules.disabled ? rules.disabled : false
+            if (!disabled) {
+                form.value = undefined;
+            }
+        }
+    }
+
+    updateUI(form) {
+        if (form) {
+            this.resetFormValue(form)
+            if (form.field) {
+                if (form.formType === SELECT || form.formType === MULTI_SELECT) {
+                    switch (form.field) {
+                        case fields.region:
+                            form.options = this.regions;
+                            break;
+                        case fields.organizationName:
+                            form.options = this.organizationList
+                            break;
+                        case fields.flavorName:
+                            form.options = this.flavorList
+                            break;
+                        case fields.privacyPolicyName:
+                            form.options = this.privacyPolicyList
+                            break;
+                        case fields.autoPolicyName:
+                            form.options = this.autoProvPolicyList
+                            break;
+                        case fields.deployment:
+                            form.options = [constant.DEPLOYMENT_TYPE_DOCKER, constant.DEPLOYMENT_TYPE_KUBERNETES, constant.DEPLOYMENT_TYPE_VM]
+                            break;
+                        default:
+                            form.options = undefined;
+                    }
+                }
+            }
+        }
+    }
+
+    loadDefaultData = async (data) => {
+        if (data) {
+            let organization = {}
+            organization[fields.organizationName] = data[fields.organizationName];
+            this.organizationList = [organization]
+        }
+    }
+
+    formKeys = () => {
+        return [
+            { label: 'Apps', formType: 'Header', visible: true },
+            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
+            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: true, disabled: false }, visible: true, tip: 'Organization or Company Name that a Developer is part of' },
+            { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true }, visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
+            { field: fields.version, label: 'App Version', formType: INPUT, placeholder: 'Enter App Version', rules: { required: true }, visible: true, tip: 'App version' },
+            { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, update: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
+            { field: fields.imageType, label: 'Image Type', formType: INPUT, placeholder: 'Select Deployment Type', rules: { required: true, disabled: true }, visible: true, tip: 'ImageType specifies image type of an App' },
+            { field: fields.imagePath, label: 'Image Path', formType: INPUT, placeholder: 'Enter Image Path', rules: { required: true }, visible: true, tip: 'URI of where image resides' },
+            { field: fields.authPublicKey, label: 'Auth Public Key', formType: TEXT_AREA, placeholder: 'Enter Auth Public Key', rules: { required: false }, visible: true, tip: 'auth_public_key' },
+            { field: fields.flavorName, label: 'Default Flavor', formType: SELECT, placeholder: 'Select Flavor', rules: { required: true }, visible: true, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: fields.region }] },
+            { field: fields.privacyPolicyName, label: 'Default Privacy Policy', formType: SELECT, placeholder: 'Select Privacy Policy', rules: { required: true }, visible: true, tip: 'Privacy policy when creating auto cluster', dependentData: [{ index: 1, field: fields.region }] },
+            { field: fields.autoPolicyName, label: 'Auto Provisioning Policy', formType: SELECT, placeholder: 'Select Auto Provisioning Policy', rules: { required: true }, visible: true, tip: 'Select Auto Provisioning Policy', dependentData: [{ index: 1, field: fields.region }] },
+            { field: fields.officialFQDN, label: 'Official FQDN', formType: INPUT, placeholder: 'Enter Official FQDN', rules: { required: false }, visible: true, tip: 'Official FQDN' },
+            { field: fields.androidPackageName, label: 'Android Package Name', formType: INPUT, placeholder: 'Enter Package Name', rules: { required: false }, visible: true, tip: 'Package Name' },
+            { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: CHECKBOX, visible: false, value: false },
+            { field: fields.command, label: 'Command', formType: INPUT, placeholder: 'Enter Command', rules: { required: false }, visible: true, tip: 'Command that the container runs to start service' },
+            { uuid: uuid(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
+            { label: 'Ports', formType: 'Header', forms: [{ formType: BUTTON, label: 'Add Port Mapping', visible: true, onClick: this.addPortForms }, { formType: BUTTON, label: 'Add Multiport Mapping', visible: true, onClick: this.addMultiPortForms }], visible: true, tip: 'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443' },
+        ]
+    }
+
+    getFormData = async (data) => {
+        if (data) {
+            await this.loadDefaultData(data)
+        }
+        else {
+            this.organizationList = await getOrganizationList()
+        }
+
+        let forms = this.formKeys()
+        forms.push(
+            { label: this.isUpdate ? 'Update' : 'Create', formType: BUTTON, onClick: this.onCreate, validate: true },
+            { label: 'Cancel', formType: BUTTON, onClick: this.onAddCancel })
+
+
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            this.updateUI(form)
+            if (data) {
+                form.value = data[form.field]
+                this.checkForms(form, forms, true)
+            }
+        }
+
+        this.setState({
+            forms: forms
+        })
+
+    }
+
     render() {
-        const {shouldShowBox, shouldShowCircle} = this.state;
-        const { activeItem } = this.state
         return (
-
-            <RegistryViewer devData={this.state.devData} gotoApp={this.gotoApp} editMode={this.state.edit}/>
-        );
+            <div className="round_panel">
+                <div className="grid_table" style={{ height: constant.getHeight(), overflow: 'auto' }}>
+                    <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                </div>
+            </div>
+        )
     }
 
+    componentDidMount() {
+        this.getFormData(this.props.data)
+    }
 };
+
 const mapStateToProps = (state) => {
+
     let region = state.changeRegion
         ? {
             value: state.changeRegion.region
         }
         : {};
+    let regionInfo = (state.regionInfo) ? state.regionInfo : null;
+    let _changedRegion = (state.form && state.form.createAppFormDefault && state.form.createAppFormDefault.values) ? state.form.createAppFormDefault.values.Region : null;
     return {
-
-        region:region
+        getRegion: (state.getRegion) ? state.getRegion.region : null,
+        regionInfo: regionInfo,
+        region: region,
+        changeRegion: state.changeRegion ? state.changeRegion.region : null,
+        changedRegion: _changedRegion
     }
 };
 
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
-        handleInjectData: (data) => { dispatch(actions.injectData(data))},
-        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageAppReg)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(ClusterInstReg));
