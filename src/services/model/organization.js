@@ -1,6 +1,6 @@
 import * as formatter from './format'
 import * as serverData from './serverData'
-import { SHOW_ORG, DELETE_ORG } from './endPointTypes'
+import { SHOW_ORG, CREATE_ORG, DELETE_ORG } from './endPointTypes'
 
 let fields = formatter.fields;
 
@@ -37,6 +37,12 @@ export const getOrganizationList = async(self, data) => {
         dataList = await serverData.showDataFromServer(self, showOrganizations(data))
     }
     return dataList;
+}
+
+export const createOrganization = async (self, data) => {
+    let requestData = getKey(data, true)
+    let request = { method: CREATE_ORG, data: requestData }
+    return await serverData.sendRequest(self, request)
 }
 
 export const deleteOrganization = (data) => {

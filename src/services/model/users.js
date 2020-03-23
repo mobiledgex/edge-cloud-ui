@@ -1,5 +1,6 @@
 import { fields, formatData } from './format'
-import { SHOW_USERS, DELETE_USER} from './endPointTypes'
+import * as serverData from './serverData'
+import { SHOW_USERS, DELETE_USER, ADD_USER_ROLE} from './endPointTypes'
 
 
 
@@ -12,7 +13,7 @@ export const keys = [
 
 export const getKey = (data) => {
     return ({
-        org: data[fields.username],
+        org: data[fields.organizationName],
         username: data[fields.username],
         role: data[fields.role]
     })
@@ -20,6 +21,12 @@ export const getKey = (data) => {
 
 export const showUsers = (data) => {
     return { method: SHOW_USERS, data: data }
+}
+
+export const addUser = async (self, data) => {
+    let requestData = getKey(data, true)
+    let request = { method: ADD_USER_ROLE, data: requestData }
+    return await serverData.sendRequest(self, request)
 }
 
 export const deleteUser = (data) => {

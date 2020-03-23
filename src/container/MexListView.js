@@ -16,7 +16,7 @@ import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, AC
 import MexDetailViewer from '../hoc/dataViewer/DetailViewer';
 import MexMessageStream, { CODE_FINISH } from '../hoc/stepper/mexMessageStream';
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
-import Map from '../libs/simpleMaps/with-react-motion/index_clusters_new';
+import Map from '../libs/simpleMaps/with-react-motion/index_clusters';
 
 const regions = ['US', 'EU']
 

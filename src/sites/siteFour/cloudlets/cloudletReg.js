@@ -14,7 +14,7 @@ import { fields } from '../../../services/model/format';
 import { getOrganizationList } from '../../../services/model/organization';
 import { } from '../../../services/model/cloudlet';
 //Map
-import Map from '../../../libs/simpleMaps/with-react-motion/index_clusters_new';
+import Map from '../../../libs/simpleMaps/with-react-motion/index_clusters';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 
 class ClusterInstReg extends React.Component {
@@ -59,7 +59,6 @@ class ClusterInstReg extends React.Component {
 
     onCreate = async (data) => {
         if (data) {
-            let cloudlets = data[fields.cloudletName];
             if (this.props.isUpdate) {
                 //update cluster data
             }

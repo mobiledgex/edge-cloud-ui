@@ -7,7 +7,6 @@ import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
 import { keys, showOrganizations, deleteOrganization } from '../../../services/model/organization';
 import OrganizationReg from './organizationReg';
-import PopAddUserViewer from '../../../container/popAddUserViewer';
 import * as serverData from '../../../services/model/serverData'
 import * as constant from '../../../services/model/shared';
 
@@ -17,8 +16,7 @@ class OrganizationList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentView: null,
-            openAddUserView: false,
+            currentView: null
         }
 
         this.action = '';
@@ -26,8 +24,13 @@ class OrganizationList extends React.Component {
         this.keys = Object.assign([], keys);
     }
 
-    onAdd = () => {
-        this.setState({ currentView: <OrganizationReg /> })
+    onRegClose = (isEdited)=>
+    {
+        this.setState({ currentView: null })
+    }
+
+    onAdd = (action, data) => {
+        this.setState({ currentView: <OrganizationReg data={data} action={action ? 'AddUser' : null} onClose={this.onRegClose}/> })
     }
 
     /**Action menu block */
@@ -47,20 +50,10 @@ class OrganizationList extends React.Component {
         this.gotoUrl('/site4', 'pg=audits&org=' + orgName)
     }
 
-    onAddUser = (data) => {
-        this.data = data;
-        this.setState({ openAddUserView: true })
-    }
-
-    onCloseAddUser = () => {
-        this.data = null;
-        this.setState({ openAddUserView: false })
-    }
-
     actionMenu = () => {
         return [
             { label: 'Audit', onClick: this.onAudit },
-            { label: 'Add User', onClick: this.onAddUser },
+            { label: 'Add User', onClick: this.onAdd },
             { label: 'Delete', onClick: deleteOrganization }
         ]
     }
@@ -162,8 +155,6 @@ class OrganizationList extends React.Component {
         return (
             this.state.currentView ? this.state.currentView :
                 <div style={{ width: '100%'}}>
-                    <PopAddUserViewer data={this.data} open={this.state.openAddUserView}
-                        close={this.onCloseAddUser}></PopAddUserViewer>
                     <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} onClick={this.onListViewClick} />
                 </div>
         )

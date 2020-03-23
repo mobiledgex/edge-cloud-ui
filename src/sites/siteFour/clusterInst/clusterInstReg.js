@@ -16,7 +16,7 @@ import { getCloudletList } from '../../../services/model/cloudlet';
 import { getFlavorList } from '../../../services/model/flavor';
 import { getPrivacyPolicyList } from '../../../services/model/privacyPolicy';
 //Map
-import Map from '../../../libs/simpleMaps/with-react-motion/index_clusters_new';
+import Map from '../../../libs/simpleMaps/with-react-motion/index_clusters';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 
 class ClusterInstReg extends React.Component {

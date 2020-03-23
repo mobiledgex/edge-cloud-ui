@@ -1,180 +1,426 @@
-import React from 'react';
-import sizeMe from 'react-sizeme';
+import React, { Fragment } from "react";
 import { withRouter } from 'react-router-dom';
-
+import { Item, Step, Grid, Card, List, Form, Header, Button } from 'semantic-ui-react';
+//Mex
+import MexForms, { SELECT, INPUT } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
+import * as constant from '../../../constant';
+import { fields } from '../../../services/model/format';
+//model
+import { createOrganization } from '../../../services/model/organization';
+import { addUser } from '../../../services/model/users';
+import { } from '../../../services/model/cloudlet';
 
-import SiteFourOrgaStepView from '../../../container/siteFourOrgaStepView';
-import * as serviceMC from '../../../services/serviceMC';
+const stepData = [
+    {
+        step: "Step 1",
+        description: "Create Organization"
+    },
+    {
+        step: "Step 2",
+        description: "Add User"
+    },
+    {
+        step: "Step 3",
+        description: "Review your Organization"
+    }
+]
 
+const roles =
+{
+    Developer: [
+        { Users: 'Manage', Cloudlets: 'View', Flavor: 'View', 'Cluster Instance': 'Manage', Apps: 'Manage', 'App Instance': 'Manage' },
+        { Users: 'View', Cloudlets: 'View', Flavor: 'View', 'Cluster Instance': 'Manage', Apps: 'Manage', 'App Instance': 'Manage' },
+        { Users: 'View', Cloudlets: 'View', Flavor: 'View', 'Cluster Instance': 'View', Apps: 'View', 'App Instance': 'View' }
+    ],
+    Operator: [
+        { Users: 'Manage', Cloudlets: 'Manage', Flavor: 'disabled', 'Cluster Instance': 'disabled', Apps: 'disabled', 'App Instance': 'disabled' },
+        { Users: 'View', Cloudlets: 'Manage', Flavor: 'disabled', 'Cluster Instance': 'disabled', Apps: 'disabled', 'App Instance': 'disabled' },
+        { Users: 'View', Cloudlets: 'View', Flavor: 'disabled', 'Cluster Instance': 'disabled', Apps: 'disabled', 'App Instance': 'disabled' },
+    ]
+}
 
-let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
+const items = [
+    {
+        header: 'Manager',
+        description: `Leverage agile frameworks to provide a robust synopsis \n\r for high level overviews.`,
+        meta: 'ROI: 30%',
+    },
+    {
+        header: 'Contributor',
+        description: 'Bring to the table win-win survival strategies to ensure proactive domination.',
+        meta: 'ROI: 34%',
+    },
+    {
+        header: 'Viewer',
+        description:
+            'Capitalise on low hanging fruit to identify a ballpark value added activity to beta test.',
+        meta: 'ROI: 27%',
+    },
+]
 
-let _self = null;
-class SiteFourPageCreateorga extends React.Component {
+class OrganizationReg extends React.Component {
     constructor(props) {
         super(props);
-        _self = this;
         this.state = {
-            shouldShowBox: true,
-            shouldShowCircle: false,
-            contHeight:0,
-            contWidth:0,
-            bodyHeight:0,
-            activeItem: 'Developers',
-            devData:[],
-            step:1,
-            toggleSubmit:false,
-            toggleSubmitTwo:false
-        };
-        this.headerH = 70;
-        this.hgap = 0;
-        this.headerLayout = [3,3,3,3,4]
-        //this.hideHeader = ['Address','Phone']
-    }
-    gotoUrl(site, subPath) {
-        let mainPath = site;
-        _self.props.history.push({
-            pathname: site,
-            search: subPath
-        });
-        _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
-
-    }
-    //go to
-    gotoPreview(site) {
-        //브라우져 입력창에 주소 기록
-        let mainPath = site;
-        let subPath = 'pg=0';
-        _self.props.history.push({
-            pathname: mainPath,
-            search: subPath,
-            state: { some: 'state' }
-        });
-        _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
-
-    }
-    handleItemClick = (e, { name }) => this.setState({ activeItem: name })
-
-    onHandleRegistry() {
-        this.props.handleInjectDeveloper('userInfo');
-    }
-    componentWillMount() {
-        this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-        this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
-    }
-    componentDidMount() {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store && store.userToken) this.getDataDeveloper(store.userToken);
-    }
-    componentWillReceiveProps(nextProps) {
-        this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-        this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
-        if(nextProps.userToken) {
-            this.getDataDeveloper(nextProps.userToken);
+            step: 0,
+            forms: [],
         }
+        this.type = null
+        this.organizationName = null
+        //To avoid refecthing data from server
+    }
+
+    makeRoleList = (selectedType, i) => {
+        return (
+            <List divided verticalAlign='middle'>
+                <List.Item>
+                    <List.Content>
+                        {
+                            Object.keys(roles[selectedType][i]).map((key) => (
+                                <List.Header key={key}><div style={{ color: ((roles[selectedType][i][key] === 'Manage') ? 'rgba(255,255,255,.6)' : 'rgba(255,255,255,.6)') }}>{key + " : " + (roles[selectedType][i][key])}</div></List.Header>
+                            ))
+                        }
+
+                    </List.Content>
+                </List.Item>
+            </List>
+        )
+    }
+
+    makeCardContent = (item, i, type) => (
+        <Grid.Row key={i}>
+            <Card style={{ backgroundColor: '#18191E' }}>
+                <Card.Content>
+                    <Card.Header style={{ color: '#A3A3A5' }}>{item['header']}</Card.Header>
+                    <Card.Meta style={{ color: '#A3A3A5' }}>{type}</Card.Meta>
+                    <Card.Description>
+                        {this.makeRoleList(type, i)}
+                    </Card.Description>
+                </Card.Content>
+            </Card>
+            <br />
+        </Grid.Row>
+    )
 
 
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
-        if(nextProps.stepOne && nextProps.stepOne.submitSucceeded && !this.state.toggleSubmit) {
-            this.setState({toggleSubmit:true});
-            _self.props.handleLoadingSpinner(true);
-            let data = {name:nextProps.stepOne.values.name, type:nextProps.stepOne.values.type.toLowerCase(), address:nextProps.stepOne.values.address, phone:nextProps.stepOne.values.phone}
-            serviceMC.sendRequest(_self, {token:store ? store.userToken : 'null', method:serviceMC.getEP().CREATE_ORG, data:data}, this.resultCreateOrg, this)
-        }
-        /*
-        org=bigorg username=worker1 role=DeveloperContributor
-         */
-        if(nextProps.stepTwo && nextProps.stepTwo.submitSucceeded && !this.state.toggleSubmitTwo) {
-            this.setState({toggleSubmitTwo:true});
-            this.props.handleLoadingSpinner(true);
-            let _username = nextProps.stepTwo.values && nextProps.stepTwo.values.username || '';
-            let _org = nextProps.stepTwo.values && nextProps.stepTwo.values.orgName || '';
-            let _role = nextProps.stepTwo.values && nextProps.stepTwo.values.orgType+nextProps.stepTwo.values.selectRole || '';
-            let data = { username: _username, org: _org, role: _role };
-            serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().ADD_USER_ROLE, data: data }, this.resultGiveToRole, this)
-        }
+    checkForms = (form, forms, isInit) => {
 
     }
-    resultCreateOrg = (mcRequest) => {
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let request = mcRequest.request;
-                this.setState({ toggleSubmit: false })
-                this.props.handleAlertInfo('success', 'Your organization ' + request.data.name + ' created successfully')
-                this.props.handleChangeStep('02')
-                this.setState({ step: 2 })
+
+    /**Required */
+    /*Trigged when form value changes */
+    onValueChange = (form) => {
+        let forms = this.state.forms;
+        this.checkForms(form, forms)
+    }
+
+    onFinalStep = () => {
+        if (this.props.action === 'AddUser') {
+            this.props.onClose()
+        }
+        else {
+            this.setState({ step: 2 })
+        }
+    }
+
+    onAddUser = async (data) => {
+        if (data) {
+            data[fields.role] = this.type + data[fields.role] 
+            let mcRequest = await addUser(this, data)
+            if (mcRequest && mcRequest.response && mcRequest.response.data) {
+                let message = mcRequest.response.data.message
+                if (message === 'Role added to user') {
+                    this.props.handleAlertInfo('success', `User ${data[fields.username]} added successfully`)
+                }
             }
         }
-        _self.props.handleLoadingSpinner(false);
-    }
-    resultGiveToRole = (mcRequest) => {
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let request = mcRequest.request;
-                this.setState({ toggleSubmitTwo: false })
-                this.props.handleAlertInfo('success', 'User ' + request.data.username + ' added to organization ' + request.data.org + ' successfully')
-            }
-        }
-        _self.props.handleLoadingSpinner(false);
-    }
-    receiveResult(mcRequest) {
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let response = mcRequest.response;
-                _self.setState({ devData: response.data })
-            }
-        }
-        _self.props.handleLoadingSpinner(false);
     }
 
-    getDataDeveloper(token) {
-        serviceMC.sendRequest(_self, {token:token, method:serviceMC.getEP().SHOW_ORG}, _self.receiveResult)
+    addUserForm = (data) => {
+        let forms = this.step2(data)
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            this.updateUI(form)
+            if (data) {
+                form.value = data[form.field]
+                this.checkForms(form, forms, true)
+            }
+        }
+        forms.push(
+            { label: 'Add User', formType: 'Button', onClick: this.onAddUser, validate: true },
+            { label: this.props.action === 'AddUser' ? 'Close' : 'Skip', formType: 'Button', onClick: this.onFinalStep })
+        this.setState({
+            type: data[fields.type],
+            step: 1,
+            forms: forms
+        })
     }
+
+
+    onCreateOrganization = async (data) => {
+        if (data) {
+            this.organizationName = data[fields.organizationName]
+            this.type = data[fields.type]
+            data[fields.type] = data[fields.type].toLowerCase()
+            let mcRequest = await createOrganization(this, data)
+            if (mcRequest && mcRequest.response && mcRequest.response.data) {
+                let message = mcRequest.response.data.message
+                if (message === 'Organization created') {
+                    this.props.handleAlertInfo('success', `Organization ${data[fields.organizationName]} created successfully`)
+                    this.addUserForm(data)
+                }
+            }
+        }
+    }
+
+    /*Required*/
+    reloadForms = () => {
+        this.setState({
+            forms: this.state.forms
+        })
+    }
+
+    getStep3 = () => {
+        let org = this.organizationName
+        let type = this.type
+        return (
+            <Fragment>
+                <Grid>
+                    <Grid.Column width={11}>
+                        <Form>
+                            <Header className="newOrg3-1">{`Organization "` + org + `" has been created.`}</Header>
+
+                            <Form.Group widths="equal" style={{ flexDirection: 'column', alignContent: 'space-around' }}>
+                                <Grid>
+                                    <Grid.Row>
+                                        {
+                                            (type === 'Developer') ?
+                                                <Grid.Column>
+                                                    <div className="newOrg3-2">
+                                                        <div>
+                                                            If your image is docker, please upload your image with your MobiledgeX Account Credentials to our docker registry using the following docker commands.
+                                                    </div>
+                                                        <br></br>
+                                                        <div>
+                                                            {`$ docker login -u <username> docker.mobiledgex.net`}
+                                                        </div>
+                                                        <div>
+                                                            {`$ docker tag <your application> docker.mobiledgex.net/` + String(org).toLowerCase() + `/images/<application name>:<version>`}
+                                                        </div>
+                                                        <div>
+                                                            {`$ docker push docker.mobiledgex.net/` + String(org).toLowerCase() + `/images/<application name>:<version>`}
+                                                        </div>
+                                                        <div>
+                                                            $ docker logout docker.mobiledgex.net
+                                                    </div>
+                                                    </div>
+                                                    <br></br>
+                                                    <div className="newOrg3-3">
+                                                        <div>
+                                                            If you image is VM, please upload your image with your MobiledgeX Account Credentials to our VM registry using the following curl command.
+                                                    </div>
+                                                        <br />
+                                                        <div>
+                                                            {`$ curl -u<username> -T <path_to_file> "https://artifactory.mobiledgex.net/artifactory/repo-` + org + `/<target_file_path>" --progress-bar -o <upload status filename>`}
+                                                        </div>
+                                                    </div>
+                                                </Grid.Column>
+                                                :
+                                                <Grid.Column></Grid.Column>
+                                        }
+
+                                    </Grid.Row>
+                                </Grid>
+                            </Form.Group>
+                            <Form.Group className='orgButton' style={{ width: '100%' }}>
+                                <Button className="newOrg3-4" onClick={(e) => { this.props.onClose() }} type='submit' positive style={{ width: '100%' }}>Check your Organization</Button>
+                            </Form.Group>
+                        </Form>
+                    </Grid.Column>
+                    <Grid.Column width={5}>
+                    </Grid.Column>
+                </Grid>
+            </Fragment>
+        )
+    }
+
     render() {
         return (
-            <SiteFourOrgaStepView devData={this.state.devData} headerLayout={this.headerLayout} hideHeader={this.hideHeader} stepMove={this.state.step} toggleSubmit={this.state.toggleSubmit} toggleSubmitTwo={this.state.toggleSubmitTwo}></SiteFourOrgaStepView>
-        );
+            <div className="round_panel">
+                <div className="grid_table" style={{ height: constant.getHeight(), overflow: 'auto' }}>
+
+                    <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
+                        {this.props.action ? null :
+                            <div>
+                                <div className='content_title' style={{ padding: '0px 0px 10px 0' }}>Create Auto Provisioning Policy</div>
+                                <Step.Group stackable='tablet' style={{ width: '100%' }}>
+                                    {
+                                        stepData.map((item, i) => (
+                                            <Step active={this.state.step === i} key={i} >
+                                                <Step.Content>
+                                                    <Step.Title>{item.step}</Step.Title>
+                                                    <Step.Description>{item.description}</Step.Description>
+                                                </Step.Content>
+                                            </Step>
+                                        ))
+                                    }
+                                </Step.Group>
+                            </div>}
+                        {this.state.step === 2 ?
+                            this.getStep3() :
+                            <Grid>
+                                <Grid.Row>
+                                    <Grid.Column width={this.state.step === 1 ? 12 : 16}>
+                                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} />
+                                    </Grid.Column>
+                                    {this.state.step === 1 ?
+                                        <Grid.Column width={4}>
+                                            {items.map((item, i) => (
+                                                this.makeCardContent(item, i, this.type)
+                                            ))}
+                                        </Grid.Column> : null}
+                                </Grid.Row>
+                            </Grid>}
+                    </Item>
+                </div>
+            </div>
+        )
     }
 
+    onAddCancel = () => {
+        this.props.onClose(false)
+    }
+
+
+
+    getOptions = (dataList, form) => {
+        if (dataList && dataList.length > 0) {
+            return dataList.map(data => {
+                let info = form ? data[form.field] : data
+                return { key: info, value: info, text: info }
+            })
+        }
+    }
+
+
+    resetFormValue = (form) => {
+        let rules = form.rules
+        if (rules) {
+            let disabled = rules.disabled ? rules.disabled : false
+            if (!disabled) {
+                form.value = undefined;
+            }
+        }
+    }
+
+    updateUI(form) {
+        if (form) {
+            this.resetFormValue(form)
+            if (form.field) {
+                if (form.formType === SELECT) {
+                    switch (form.field) {
+                        case fields.type:
+                            form.options = ['Developer', 'Operator']
+                            break;
+                        case fields.role:
+                            form.options = ['Manager', 'Contributor', 'Viewer']
+                            break;
+                    }
+                }
+            }
+        }
+    }
+
+
+
+    step2 = (data) => {
+        return [
+            { field: fields.username, label: 'Username', formType: INPUT, placeholder: 'Select Username', rules: { required: true }, visible: true },
+            { field: fields.organizationName, label: 'Organization', formType: INPUT, placeholder: 'Enter Organization Name', rules: { disabled: true }, visible: true, value: data[fields.organizationName] },
+            { field: fields.type, label: 'Type', formType: INPUT, placeholder: 'Enter Type', rules: { disabled: true }, visible: true, value: data[fields.type] },
+            { field: fields.role, label: 'Role', formType: 'Select', placeholder: 'Select Role', rules: { required: true }, visible: true },
+        ]
+    }
+
+    step1 = () => {
+        return [
+            { field: fields.type, label: 'Type', formType: 'Select', placeholder: 'Select Type', rules: { required: true }, visible: true },
+            { field: fields.organizationName, label: 'Organization Name', formType: INPUT, placeholder: 'Enter Organization Name', rules: { required: true }, visible: true, },
+            { field: fields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: true }, visible: true, },
+            { field: fields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: true }, visible: true, },
+        ]
+    }
+
+    loadDefaultData = async (data) => {
+        if (data) {
+
+        }
+    }
+
+    getFormData = (data) => {
+        if (data) {
+            this.type = data[fields.type] === 'developer' ? 'Developer' : 'Operator'
+            this.organizationName = data[fields.organizationName]
+            this.addUserForm(data)
+            this.setState({ step: 1 })
+        }
+        else {
+
+
+            let forms = this.step1()
+            forms.push(
+                { label: 'Create Organization', formType: 'Button', onClick: this.onCreateOrganization, validate: true },
+                { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel })
+
+            for (let i = 0; i < forms.length; i++) {
+                let form = forms[i]
+                this.updateUI(form)
+                if (data) {
+                    form.value = data[form.field]
+                    this.checkForms(form, forms, true)
+                }
+            }
+
+            this.setState({
+                forms: forms
+            })
+        }
+
+    }
+
+    componentDidMount() {
+        this.getFormData(this.props.data)
+    }
 };
 
 const mapStateToProps = (state) => {
-    let formStepOne= state.form.orgaStepOne
+
+    let region = state.changeRegion
         ? {
-            values: state.form.orgaStepOne.values,
-            submitSucceeded: state.form.orgaStepOne.submitSucceeded,
-            submitFailed: state.form.orgaStepOne.submitFailed
+            value: state.changeRegion.region
         }
         : {};
-    let formStepTwo= state.form.orgaStepTwo
-        ? {
-            values: state.form.orgaStepTwo.values,
-            submitSucceeded: state.form.orgaStepTwo.submitSucceeded
-        }
-        : {};
+    let regionInfo = (state.regionInfo) ? state.regionInfo : null;
+    let _changedRegion = (state.form && state.form.createAppFormDefault && state.form.createAppFormDefault.values) ? state.form.createAppFormDefault.values.Region : null;
     return {
-        userToken : (state.user.userToken) ? state.userToken: null,
-        userInfo: state.user.user,
-        stepOne:formStepOne, stepTwo:formStepTwo
+        getRegion: (state.getRegion) ? state.getRegion.region : null,
+        regionInfo: regionInfo,
+        region: region,
+        changeRegion: state.changeRegion ? state.changeRegion.region : null,
+        changedRegion: _changedRegion
     }
 };
+
+
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
-        handleChangeStep: (data) => { dispatch(actions.changeStep(data))},
-        handleInjectData: (data) => { dispatch(actions.injectData(data))},
-        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageCreateorga)));
-
-
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(OrganizationReg));
