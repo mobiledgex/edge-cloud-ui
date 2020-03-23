@@ -14,6 +14,18 @@ import {Grid} from "semantic-ui-react";
 import {barChartOption, columnChartOption} from "./PageMonitoringUtils";
 
 export const PageMonitoringStyles = {
+    icon : {
+        fontSize: 29,
+        width: 37,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        //backgroundColor: 'red',
+        position: "absolute",
+        top: 7,
+        fontWeight: 'bold',
+        cursor: "pointer"
+    },
     gridTitle2: {
         flex: .87,
         marginLeft: 0, alignItems: 'flex-start', marginTop: 8, alignSelf: 'center', justifyContent: 'flex-start'

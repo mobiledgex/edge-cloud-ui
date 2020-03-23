@@ -82,7 +82,7 @@
     background-color: #575757;
 }
 
-.leaflet-popup-content{
+.leaflet-popup-content {
     font-size: 14px;
 }
 
@@ -320,6 +320,44 @@
 .viewListTableHeader2 {
     flex: 1;
     display: flex;
+}
+
+/*semantics ui overriding css*/
+
+.ui.toggle.checkbox input:focus ~ .box:before, .ui.toggle.checkbox input:focus ~ label:before {
+    background-color: gray;
+    border: none;
+}
+
+.ui.toggle.checkbox input:focus:checked ~ .box:before, .ui.toggle.checkbox input:focus:checked ~ label:before {
+    background-color: green !important;
+}
+
+.ui.toggle.checkbox input:checked ~ .box:before, .ui.toggle.checkbox input:checked ~ label:before {
+    background-color: green !important;
+}
+
+.ui.toggle.checkbox .box:before, .ui.toggle.checkbox label:before {
+    display: block;
+    position: absolute;
+    content: '';
+    z-index: 1;
+    transform: none;
+    border: none;
+    top: 0;
+    background: grey;
+    box-shadow: none;
+    width: 3.5rem;
+    height: 1.5rem;
+    border-radius: 500rem;
+}
+
+.center001 {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
 }
 
 
