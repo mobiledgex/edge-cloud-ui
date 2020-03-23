@@ -12,7 +12,7 @@ import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 //model
 import { getOrganizationList } from '../../../services/model/organization';
-import { } from '../../../services/model/cloudlet';
+import { createCloudlet} from '../../../services/model/cloudlet';
 //Map
 import Map from '../../../libs/simpleMaps/with-react-motion/index_clusters';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
@@ -49,7 +49,7 @@ class ClusterInstReg extends React.Component {
         if (mcRequest) {
             let data = undefined;
             let request = mcRequest.request;
-            let cloudletName = request.data.clusterinst.key.cloudlet_key.name;
+            let cloudletName = request.data.cloudlet.name;
             if (mcRequest.response && mcRequest.response.data) {
                 data = mcRequest.response.data;
             }
@@ -58,11 +58,29 @@ class ClusterInstReg extends React.Component {
     }
 
     onCreate = async (data) => {
+        let forms = this.state.forms
         if (data) {
             if (this.props.isUpdate) {
                 //update cluster data
             }
             else {
+                for (let i = 0; i < forms.length; i++) {
+                    let form = forms[i];
+                    if (form.uuid) {
+                        let uuid = form.uuid;
+                        let multiFormData = data[uuid]
+                        if (multiFormData) {
+                            if (form.field === fields.cloudletLocation) {
+                                multiFormData.timestamp = {}
+                                data[fields.cloudletLocation] = multiFormData
+                            }
+                        }
+                        data[fields.ipSupport] = constant.IPSupport(data[fields.ipSupport])
+                        data[fields.platformType] = constant.PlatformType(data[fields.platformType])
+                        data[uuid] = undefined
+                    }
+                }
+                createCloudlet(data, this.onCreateResponse)
             }
         }
     }
@@ -212,11 +230,11 @@ class ClusterInstReg extends React.Component {
             { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
             { field: fields.cloudletName, label: 'Cloudlet Name', formType: 'Input', placeholder: 'Enter cloudlet Name', rules: { required: true }, visible: true, },
             { field: fields.operatorName, label: 'Operator', formType: 'Select', placeholder: 'Select Operator', rules: { required: true }, visible: true },
-            { uuid:uuid(), field: fields.cloudletLocation, label: 'Cloudlet Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm() },
+            { uuid: uuid(), field: fields.cloudletLocation, label: 'Cloudlet Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm() },
             { field: fields.ipSupport, label: 'IP Support', formType: 'Select', placeholder: 'Select IP Support', rules: { required: true }, visible: true },
-            { field: fields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: 'Input', placeholder: 'Enter Number of Dynamic IPs', rules: { required: true, type:'number' }, visible: true, },
+            { field: fields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: 'Input', placeholder: 'Enter Number of Dynamic IPs', rules: { required: true, type: 'number' }, visible: true, },
             { field: fields.physicalName, label: 'Physical Name', formType: 'Input', placeholder: 'Enter Physical Name', rules: { required: true }, visible: true, },
-            { field: fields.platformType, label: 'Platform Type', formType: 'Select', placeholder: 'Select Platform Type', rules: { required: true }, visible: true},
+            { field: fields.platformType, label: 'Platform Type', formType: 'Select', placeholder: 'Select Platform Type', rules: { required: true }, visible: true },
 
         ]
     }

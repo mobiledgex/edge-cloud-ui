@@ -35,6 +35,24 @@ export const IPAccessLabel = (id) => {
     }
 }
 
+export const IPSupport = (id) => {
+    switch (id) {
+        case 2:
+            return 'Dynamic'
+        case 'Dynamic':
+            return 2
+    }
+}
+
+
+export const PlatformType = (id) => {
+    switch (id) {
+        case 2:
+            return 'Openstack'
+        case 'Openstack':
+            return 2
+    }
+}
 
 
 export const getTip = (field) => {

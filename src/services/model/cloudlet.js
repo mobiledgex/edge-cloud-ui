@@ -1,19 +1,27 @@
 import * as formatter from './format'
+import uuid from 'uuid'
 import * as serverData from './serverData'
 import { TYPE_JSON } from '../../constant';
-import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, STREAM_CLOUDLET, DELETE_CLOUDLET, SHOW_CLOUDLET_INFO} from './endPointTypes'
+import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, CREATE_CLOUDLET, STREAM_CLOUDLET, DELETE_CLOUDLET, SHOW_CLOUDLET_INFO } from './endPointTypes'
 
 const fields = formatter.fields;
 
-export const getKey = (data) => {
+export const getKey = (data, isCreate) => {
+    let cloudlet = {}
+    cloudlet.key = {
+        organization: data[fields.operatorName],
+        name: data[fields.cloudletName]
+    }
+    if (isCreate) {
+        cloudlet.location = data[fields.cloudletLocation]
+        cloudlet.ip_support = data[fields.ipSupport]
+        cloudlet.num_dynamic_ips = parseInt(data[fields.numDynamicIPs])
+        cloudlet.physical_name = data[fields.physicalName]
+        cloudlet.platform_type = data[fields.platformType]
+    }
     return ({
         region: data[fields.region],
-        cloudlet: {
-            key: {
-                organization: data[fields.operatorName],
-                name: data[fields.cloudletName]
-            }
-        }
+        cloudlet: cloudlet
     })
 }
 
@@ -37,7 +45,7 @@ export const multiDataRequest = (keys, mcRequestList) => {
             cloudletInfoList = mcRequest.response.data
         }
     }
-   
+
     if (cloudletList && cloudletList.length > 0) {
         for (let i = 0; i < cloudletList.length; i++) {
             let cloudlet = cloudletList[i]
@@ -64,8 +72,14 @@ export const showCloudlets = (data) => {
     return { method: method, data: data }
 }
 
+export const createCloudlet = (data, callback) => {
+    let requestData = getKey(data, true)
+    let request = { uuid: data.uuid ? data.uuid : uuid(), method: CREATE_CLOUDLET, data: requestData }
+    return serverData.sendWSRequest(request, callback)
+}
+
 export const getCloudletList = async (self, data) => {
-   return await serverData.showDataFromServer(self, showCloudlets(data))
+    return await serverData.showDataFromServer(self, showCloudlets(data))
 }
 
 export const deleteCloudlet = (data) => {
