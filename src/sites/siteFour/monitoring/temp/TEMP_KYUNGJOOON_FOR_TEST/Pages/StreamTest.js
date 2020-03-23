@@ -1,3 +1,4 @@
+/*
 import * as React from 'react';
 import {CircularProgress} from "@material-ui/core";
 
@@ -87,3 +88,4 @@ export default class StreamTest extends React.Component<Props, State> {
         );
     };
 };
+*/

@@ -254,7 +254,6 @@ type State = {
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class PageDevMonitoring extends Component<Props, State> {
         intervalForAppInst = null;
-        context: MonitoringContextInterface;
         gridItemHeight = 420;
         webSocketInst: WebSocket = null;
 
