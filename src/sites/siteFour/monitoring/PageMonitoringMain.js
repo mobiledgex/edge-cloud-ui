@@ -12,6 +12,7 @@ import PageMonitoringForDeveloper from "./dev/PageDevMonitoring____DEV";  //@fix
 import PageMonitoringForAdmin from "./admin/PageAdminMonitoring";
 import {hot} from "react-hot-loader/root";
 
+
 const mapStateToProps = (state) => {
     return {
         isLoading: state.LoadingReducer.isLoading,

@@ -256,7 +256,7 @@ export default class MonitoringEditViewContainer extends React.Component<Props, 
                                             <img src={require('../images/log001.png')}/>
                                         </div>
                                         <div className='center002'>
-                                            <Radio value={GRID_ITEM_TYPE.APP_INST_EVENT_LOG}>App Inst Event Log</Radio>
+                                            <Radio value={GRID_ITEM_TYPE.APP_INST_EVENT_LOG}>Event Log</Radio>
                                         </div>
                                     </div>
                                     <div style={{width: 25}}/>
@@ -280,6 +280,7 @@ export default class MonitoringEditViewContainer extends React.Component<Props, 
                                             <Radio value={GRID_ITEM_TYPE.MAP}>Map</Radio>
                                         </div>
                                     </div>
+                                    <div style={{width: 25}}/>
                                     <div>
                                         <div
                                             className='center002'
