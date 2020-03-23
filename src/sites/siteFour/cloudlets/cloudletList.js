@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { fields } from '../../../services/model/format';
 import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/model/cloudlet';
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
-import ClouldletReg from './cloudletRegNew';
+import ClouldletReg from './cloudletReg';
 
 import * as constant from '../../../services/model/shared';
 import { Button } from 'semantic-ui-react';
@@ -23,8 +23,13 @@ class CloudletList extends React.Component {
         this.keys = Object.assign([], keys);
     }
 
+    onRegClose = (isEdited)=>
+    {
+        this.setState({ currentView: null })
+    }
+
     onAdd = () => {
-        this.setState({ currentView: <ClouldletReg /> })
+        this.setState({ currentView: <ClouldletReg onClose={this.onRegClose}/> })
     }
 
     actionMenu = () => {

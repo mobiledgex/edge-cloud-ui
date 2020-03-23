@@ -20,6 +20,8 @@ export const fields = {
     reservedBy:'reservedBy',
     deployment: 'deployment',
     cloudletLocation: 'cloudletLocation',
+    latitude: 'latitude',
+    longitude: 'longitude',
     ipSupport: 'ipSupport',
     numDynamicIPs: 'numDynamicIPs',
     physicalName: 'physicalName',

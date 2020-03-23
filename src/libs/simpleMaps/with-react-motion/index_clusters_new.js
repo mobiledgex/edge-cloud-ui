@@ -291,7 +291,6 @@ class ClustersMap extends Component {
         let _long = '';
         countries.map((country) => {
             if (country.alpha2 === a.properties["ISO_A2"]) {
-                console.log('20190830 country code = ', country)
                 _lat = country['latitude'];
                 _long = country['longitude'];
             }
@@ -307,6 +306,8 @@ class ClustersMap extends Component {
                     "population": 17843000,
                     "cost": 3
                 }]
+            
+            this.props.onMapClick(location)
             _self.setState({ cities: locationData, detailMode: false })
             _self.forceUpdate();
         }
