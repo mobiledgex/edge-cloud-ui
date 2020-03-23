@@ -72,18 +72,20 @@ export default function Header(props) {
                 >
                     <MenuIcon />
                 </IconButton>
-                <Typography variant="h6" noWrap>
-                    <Image wrapped size='small' src='/assets/brand/logo_mex.svg' />
-                </Typography>
+                {props.open ? null :
+                    <Typography variant="h6" noWrap>
+                        <Image wrapped size='small' src='/assets/brand/logo_mex.svg' />
+                    </Typography>
+                }
                 <div className={classes.grow} />
                 <div className={classes.sectionDesktop}>
-                    <IconButton aria-label="show 4 new mails" color="inherit" onClick={(e)=>props.gotoUrl('/site1', 'pg=0')}>
-                        <PublicOutlinedIcon fontSize='large'/>
+                    <IconButton aria-label="show 4 new mails" color="inherit" onClick={(e) => props.gotoUrl('/site1', 'pg=0')}>
+                        <PublicOutlinedIcon fontSize='large' />
                     </IconButton>
-                    <IconButton aria-label="show 17 new notifications" color="inherit" onClick={(e)=>props.helpClick()}>
-                        <HelpOutlineOutlinedIcon fontSize='large'/>
+                    <IconButton aria-label="show 17 new notifications" color="inherit" onClick={(e) => props.helpClick()}>
+                        <HelpOutlineOutlinedIcon fontSize='large' />
                     </IconButton>
-                    <HeaderGlobalMini email={props.email} data={props.data}/>
+                    <HeaderGlobalMini email={props.email} data={props.data} />
                 </div>
             </Toolbar>
         </AppBar>

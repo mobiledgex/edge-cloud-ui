@@ -45,6 +45,7 @@ import PrivacyPolicy from '../policies/privacyPolicy/privacyPolicyList';
 import PageMonitoringMain from '../monitoring/PageMonitoringMain'
 
 import { Collapse } from '@material-ui/core';
+import { Grid, Menu, Segment, Image } from 'semantic-ui-react';
 
 const drawerWidth = 250;
 
@@ -118,11 +119,11 @@ const defaultPage = () => {
     let currentPage = path.substring(path.indexOf('pg='))
     for (let i = 0; i < options.length; i++) {
         let option = options[i]
-        if (currentPage === 'pg='+option.pg) {
+        if (currentPage === 'pg=' + option.pg) {
             return option.page
         }
     }
-    return <SiteFourPageOrganization/>
+    return <SiteFourPageOrganization />
 }
 
 export default function MiniDrawer(props) {
@@ -130,7 +131,7 @@ export default function MiniDrawer(props) {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const [expand, setExpand] = React.useState(false);
-    
+
     const [page, setPage] = React.useState(defaultPage());
 
     const handleDrawerOpen = () => {
@@ -160,6 +161,45 @@ export default function MiniDrawer(props) {
         )
     }
 
+    const organizationInfo = () => {
+        return (
+            localStorage.selectRole ?
+                <div className="markBox">
+                    {
+                        (localStorage.selectRole === 'AdminManager') ?
+                            <div className="mark markA markS">S</div>
+                            :
+                            (localStorage.selectRole === 'DeveloperManager') ?
+                                <div className="mark markD markM">M</div>
+                                :
+                                (localStorage.selectRole === 'DeveloperContributor') ?
+                                    <div
+                                        className="mark markD markC">C</div>
+                                    :
+                                    (localStorage.selectRole === 'DeveloperViewer') ?
+                                        <div
+                                            className="mark markD markV">V</div>
+                                        :
+                                        (localStorage.selectRole === 'OperatorManager') ?
+                                            <div
+                                                className="mark markO markM">M</div>
+                                            :
+                                            (localStorage.selectRole === 'OperatorContributor') ?
+                                                <div
+                                                    className="mark markO markC">C</div>
+                                                :
+                                                (localStorage.selectRole === 'OperatorViewer') ?
+                                                    <div
+                                                        className="mark markO markV">V</div>
+                                                    :
+                                                    <span></span>
+                    }
+                </div>
+                : null
+
+        )
+    }
+
     return (
         <div className={classes.root}>
             <CssBaseline />
@@ -178,6 +218,7 @@ export default function MiniDrawer(props) {
                 }}
             >
                 <div className={classes.toolbar}>
+                    <Image wrapped size='small' src='/assets/brand/logo_mex.svg' />
                     <IconButton style={{ color: '#B1B2B4' }} onClick={handleDrawerClose}>
                         {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                     </IconButton>
@@ -185,9 +226,17 @@ export default function MiniDrawer(props) {
                 <List style={{
                     backgroundColor: '#292c33', height: '100%'
                 }}>
+                    <ListItem>
+                        <ListItemIcon>
+                            {organizationInfo()}
+                        </ListItemIcon>
+                        <ListItemText>
+                            <strong style={{ color:'#BFC0C2', fontSize: 15 }}> {localStorage.selectRole && localStorage.selectRole != 'null' ? localStorage.selectRole : 'Select Organization'}</strong>
+                        </ListItemText>
+                    </ListItem>
                     {options.map((option, i) => (
                         option.divider ?
-                            <Divider key={i}/> :
+                            <Divider key={i} /> :
                             option.roles.includes(getUserRole()) ?
                                 <div key={i}>
                                     {showOptionForm(i, option)}
