@@ -5,9 +5,10 @@ import 'react-leaflet-fullscreen-control'
 import type {TypeAppInstance, TypeClient} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 import {CheckCircleOutlined} from '@material-ui/icons';
-import {Map, Marker, Polyline, Popup, TileLayer, Tooltip} from "react-leaflet";
+import {Map, Marker, Polyline, Popup, TileLayer, Tooltip, ZoomControl} from "react-leaflet";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Control from 'react-leaflet-control';
 import {
     groupByKey_,
     removeDuplicates, renderCircleLoaderForMap,
@@ -313,7 +314,16 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
                                  this.map = ref;
                              }}
                         >
-                            <div style={{position: 'absolute', top: 80, left: 14, zIndex: 99999}}>
+
+                            {this.props.parent.state.loading && renderPlaceHolderLottiePinJump3()}
+                            <TileLayer
+                                url={this.state.currentTyleLayer}
+                                //url={'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'}
+                                minZoom={2}
+                                style={{zIndex: 1}}
+                                //maxZoom={15}
+                            />
+                            <Control position="topleft">
                                 <Icon
                                     onClick={() => {
                                         this.setState({
@@ -324,23 +334,13 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
                                     style={{
                                         color: 'black',
                                         fontSize: 18,
-                                        //borderRadius: 5,
+                                        borderRadius: 3,
                                         backgroundColor: 'white',
                                         height: 26,
                                         width: 27,
                                         cursor: 'pointer'
                                     }}/>
-                            </div>
-
-
-                            {this.props.parent.state.loading && renderPlaceHolderLottiePinJump3()}
-                            <TileLayer
-                                url={this.state.currentTyleLayer}
-                                //url={'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'}
-                                minZoom={2}
-                                style={{zIndex: 1}}
-                                //maxZoom={15}
-                            />
+                            </Control>
 
 
                             {/*@desc:#####################################..*/}
