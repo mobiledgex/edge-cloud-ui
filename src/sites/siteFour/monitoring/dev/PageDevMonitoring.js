@@ -423,9 +423,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.loadInitDataForCluster__FOR__DEV();
 
 
-            /*//DESC: REAL DATA
-            //DESC: REAL DATA
-            await this.loadInitDataForCluster();*/
+            /*
+            DESC: REAL DATA
+            DESC: REAL DATA
+            */
+            //await this.loadInitDataForCluster();
 
             this.setState({
                 loading: false,
