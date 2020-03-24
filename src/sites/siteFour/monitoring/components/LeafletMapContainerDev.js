@@ -43,20 +43,19 @@ var cellphoneIcon2 = L.icon({
 });
 
 
-let cellphoneIcon = new L.Icon({
-    iconUrl: require('../images/mobile-icon-66.png'),
-    //shadowUrl: '',
-    iconSize: [41, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
-
-let cloudIcon = L.icon({
+let cloudGreenIcon = L.icon({
     iconUrl: require('../images/cloud_green.png'),
     //shadowUrl : 'https://leafletjs.com/examples/custom-icons/leaf-shadow.png',
     iconSize: [40, 21],
     iconAnchor: [20, 21],
+    shadowSize: [41, 41]
+});
+
+let cloudBlueIcon = L.icon({
+    iconUrl: require('../images/cloud_blue2.png'),
+    //shadowUrl : 'https://leafletjs.com/examples/custom-icons/leaf-shadow.png',
+    iconSize: [45, 39],//todo: width, height
+    iconAnchor: [24, 30],//x,y
     shadowSize: [41, 41]
 });
 
@@ -78,6 +77,9 @@ type State = {
     currentTyleLayer: any,
     currentWidgetWidth: number,
     clientObjKeys: any,
+    lineColor: string,
+    cloudIcon: string,
+    cloudletIconColor: string,
 
 };
 
@@ -127,6 +129,8 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
             currentTyleLayer: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
             currentWidgetWidth: window.innerWidth / 3,
             clientObjKeys: [],
+            lineColor: 'yellow',
+            cloudletIconColor: 'green',
 
 
         };
@@ -339,16 +343,25 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
                             />
 
 
-                            {/*@desc:changing mapTyles...*/}
-                            {/*@desc:changing mapTyles...*/}
-                            {/*@desc:changing mapTyles...*/}
+                            {/*@desc:#####################################..*/}
+                            {/*@desc: radio Btns changing MapTyle        ...*/}
+                            {/*@desc:#####################################..*/}
                             {this.props.isFullScreenMap &&
                             <div style={{position: 'absolute', top: 10, right: 5, zIndex: 99999}}>
                                 <Radio.Group defaultValue="0" buttonStyle="solid"
                                              onChange={(e) => {
                                                  let index = e.target.value
+
+                                                 let lineColor = 'yellow';
+                                                 let cloudletIconColor = 'green'
+                                                 if (Number(index) >= 2) {
+                                                     lineColor = 'black';
+                                                     cloudletIconColor = 'blue'
+                                                 }
                                                  this.setState({
-                                                     currentTyleLayer: this.mapTileList[index].url
+                                                     currentTyleLayer: this.mapTileList[index].url,
+                                                     lineColor: lineColor,
+                                                     cloudletIconColor: cloudletIconColor,
                                                  })
 
                                              }}
@@ -362,9 +375,9 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
                             }
 
 
-                            {/*@desc:clientList...*/}
-                            {/*@desc:clientList...*/}
-                            {/*@desc:clientList...*/}
+                            {/*@desc:#####################################..*/}
+                            {/*@desc:client Markers                      ...*/}
+                            {/*@desc:#####################################..*/}
                             {this.state.clientObjKeys.map((objkeyOne, index) => {
                                 let groupedClientList = this.state.clientList;
 
@@ -390,14 +403,14 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
                                                     {/*@todo:Render lines....*/}
                                                     {/*@todo:Render lines....*/}
                                                     <Polyline
-                                                        dashArray={['10, 18']}
+                                                        dashArray={['3,5,8']}
                                                         id={index}
                                                         positions={[
                                                             [item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
 
                                                             //[item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
                                                         ]}
-                                                        color={'yellow'}
+                                                        color={this.state.lineColor}
                                                     />
 
                                                 </React.Fragment>
@@ -413,6 +426,9 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
                             })}
 
 
+                            {/*@desc:#####################################..*/}
+                            {/*@desc:cloudlet Markers                    ...*/}
+                            {/*@desc:#####################################..*/}
                             {this.state.newCloudLetLocationList.map((outerItem, outerIndex) => {
                                 let listAppName = outerItem.AppNames.split(",")
                                 console.log("outerItem====>", outerItem);
@@ -422,7 +438,7 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
                                     return (
                                         <Marker
                                             ref={c => this.marker1 = c}
-                                            icon={cloudIcon}
+                                            icon={this.state.cloudletIconColor === 'green' ? cloudGreenIcon : cloudBlueIcon}
                                             className='marker1'
                                             position={
                                                 [outerItem.CloudletLocation.latitude, outerItem.CloudletLocation.longitude,]
