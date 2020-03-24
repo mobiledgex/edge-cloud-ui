@@ -38,19 +38,16 @@ export default function MapTyleLayerReducer(state = initialState, action) {
             return Object.assign({}, state, {
                 currentTyleLayer: action.currentTyleLayer
             })
-            break;
 
         case SET_LINE_COLOR :
             return Object.assign({}, state, {
                 lineColor: action.lineColor
             })
-            break;
 
         case SET_CLOUDLET_ICON_COLOR :
             return Object.assign({}, state, {
                 cloudletIconColor: action.cloudletIconColor
             })
-            break;
 
         default:
             return state

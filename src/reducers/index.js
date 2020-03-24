@@ -89,7 +89,7 @@ const reducers = combineReducers({
     alertInfo,
     dataExist,
     LoadingReducer,
-    MapTyleLayerReducer,
+    MapTyleLayerReducer ,
     form: formReducer
 });
 
