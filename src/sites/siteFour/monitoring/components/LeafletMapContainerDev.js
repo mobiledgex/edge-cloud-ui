@@ -1,5 +1,4 @@
 import React from "react";
-import {reactLocalStorage} from "reactjs-localstorage";
 import * as L from 'leaflet';
 import "../PageMonitoring.css";
 import 'react-leaflet-fullscreen-control'
@@ -16,7 +15,6 @@ import {Icon} from "semantic-ui-react";
 import {Radio} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
-
 
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
@@ -93,11 +91,12 @@ type Props = {
     currentWidgetWidth: number,
     isFullScreenMap: boolean,
     currentTyleLayer: string,
-    lineColor:  string,
-    cloudletIconColor:  string,
+    lineColor: string,
+    cloudletIconColor: string,
     setMapTyleLayer: Function,
     setLineColor: Function,
     setCloudletIconColor: Function,
+    isLoading: boolean,
 
 };
 type State = {
@@ -349,8 +348,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                      this.map = ref;
                                  }}
                             >
-
-                                {/*{this.props.parent.state.loading && renderPlaceHolderLottiePinJump3()}*/}
+                                {this.props.isLoading && renderPlaceHolderLottiePinJump3()}
                                 <TileLayer
                                     url={this.props.currentTyleLayer}
                                     //url={'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'}
@@ -376,28 +374,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                             cursor: 'pointer'
                                         }}/>
                                 </Control>
-                              {/*  <Control position="topleft">
-                                    <Icon
-                                        onClick={() => {
-
-                                            let tyleOne = this.mapTileList[2].url;
-
-                                            this.props.setMapTyleLayer(tyleOne)
-
-                                        }}
-                                        name='star'
-                                        style={{
-                                            color: 'black',
-                                            fontSize: 18,
-                                            borderRadius: 3,
-                                            backgroundColor: 'white',
-                                            height: 26,
-                                            width: 27,
-                                            cursor: 'pointer'
-                                        }}/>
-                                </Control>*/}
-
-
                                 {/*@desc:#####################################..*/}
                                 {/*@desc: topRight Radio Btns changing MapTyle...*/}
                                 {/*@desc:#####################################..*/}
@@ -417,7 +393,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                      this.props.setMapTyleLayer(this.mapTileList[index].url);
                                                      this.props.setLineColor(lineColor);
                                                      this.props.setCloudletIconColor(cloudletIconColor);
-
 
 
                                                  }}
