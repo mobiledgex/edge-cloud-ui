@@ -150,8 +150,6 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                                                 bubbleChartLoader: false,
                                                             })
                                                         }
-
-
                                                     }}
                                                     value={this.props.parent.state.currentHardwareType}
                                                 />
