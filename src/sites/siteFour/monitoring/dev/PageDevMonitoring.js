@@ -420,14 +420,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             //DESC: FAKEDATA
             //DESC: FAKEDATA
-            await this.loadInitDataForCluster__FOR__DEV();
+            //await this.loadInitDataForCluster__FOR__DEV();
 
 
             /*
-            DESC: REAL DATA
-            DESC: REAL DATA
+            TODO: REAL DATA
+            TODO: REAL DATA
             */
-            //await this.loadInitDataForCluster();
+            await this.loadInitDataForCluster();
 
             this.setState({
                 loading: false,
