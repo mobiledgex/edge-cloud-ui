@@ -8,6 +8,7 @@ import * as constant from '../../../constant'
 import { fields } from '../../../services/model/format';
 import { keys, showApps, deleteApp } from '../../../services/model/app';
 import AppReg from './appReg';
+import AppInstReg from '../appInst/appInstReg';
 
 class AppList extends React.Component {
     constructor(props) {
@@ -24,8 +25,8 @@ class AppList extends React.Component {
         this.setState({ currentView: null })
     }
 
-    onAdd = () => {
-        this.setState({ currentView: <AppReg onClose={this.onRegClose}/> })
+    onAdd = (action , data) => {
+        this.setState({ currentView: <AppReg isUpdate={action ? true : false} data={data} onClose={this.onRegClose}/> })
     }
 
     /***Action Block */
@@ -41,21 +42,15 @@ class AppList extends React.Component {
     }
 
 
-    onLaunch = (data) => {
-        this.gotoUrl('/site4', 'pg=createAppInst', 'pg=5')
-        this.props.handleAppLaunch(data)
-    }
-
-    onUpdate = (data) => {
-        this.props.handleEditInstance(data);
-        this.gotoUrl('/site4', 'pg=editApp')
+    onLaunch = (action, data) => {
+        this.setState({ currentView: <AppInstReg isLaunch={action ? true : false} data={data} onClose={this.onRegClose}/> })
     }
 
     actionMenu = () => {
         return [
-            { label: 'Launch', onClick: this.onLaunch },
-            { label: 'Update', onClick: this.onUpdate },
-            { label: 'Delete', onClick: deleteApp }
+            { label: 'Update', onClick: this.onAdd },
+            { label: 'Delete', onClick: deleteApp },
+            { label: 'Create Instance', onClick: this.onLaunch }
         ]
     }
     /***Action Block */

@@ -1,5 +1,4 @@
 import React from 'react';
-import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
 //Mex
 import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX } from '../../../hoc/forms/MexForms';
@@ -22,11 +21,9 @@ class ClusterInstReg extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            step: 0,
             forms: [],
             stepsArray: [],
         }
-        this.isUpdate = this.props.isUpdate
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
         this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
         this.requestedRegionList = []
@@ -192,24 +189,16 @@ class ClusterInstReg extends React.Component {
     onCreate = async (data) => {
         if (data) {
             let cloudlets = data[fields.cloudletName];
-            if (this.props.isUpdate) {
-                //update cluster data
-            }
-            else {
-                
-                data[fields.clusterName] = data[fields.autoClusterInstance] ? 'autocluster' + data[fields.appName].toLowerCase().replace(/ /g,"") : data[fields].clusterName
-                if (cloudlets && cloudlets.length > 0) {
-                    for (let i = 0; i < cloudlets.length; i++) {
-                        let cloudlet = cloudlets[i];
-                        data[fields.cloudletName] = cloudlet;
-                        createAppInst(data, this.onCreateResponse)
-                    }
-
+            data[fields.clusterName] = data[fields.autoClusterInstance] ? 'autocluster' + data[fields.appName].toLowerCase().replace(/ /g, "") : data[fields].clusterName
+            if (cloudlets && cloudlets.length > 0) {
+                for (let i = 0; i < cloudlets.length; i++) {
+                    let cloudlet = cloudlets[i];
+                    data[fields.cloudletName] = cloudlet;
+                    createAppInst(data, this.onCreateResponse)
                 }
             }
         }
     }
-
 
     /*Required*/
     reloadForms = () => {
@@ -274,32 +263,46 @@ class ClusterInstReg extends React.Component {
         }
     }
 
-    loadDefaultData = async (data) => {
+    loadDefaultData = async (forms, data) => {
         if (data) {
             let organization = {}
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
+            if (this.props.isLaunch) {
+                this.cloudletList = await getCloudletList(this, { region: data[fields.region] })
+                this.clusterInstList = await getClusterInstList(this, { region: data[fields.region] })
+                let app = {}
+                app[fields.appName] = data[fields.appName]
+                app[fields.region] = data[fields.region]
+                app[fields.organizationName] = data[fields.organizationName]
+                app[fields.version] = data[fields.version]
+                this.appList = [app];
 
-            let cloudlet = {}
-            cloudlet[fields.region] = data[fields.region]
-            cloudlet[fields.cloudletName] = data[fields.cloudletName]
-            cloudlet[fields.operatorName] = data[fields.operatorName]
-            cloudlet[fields.cloudletLocation] = data[fields.cloudletLocation]
-            this.cloudletList = [cloudlet]
+                let disabledFields = [fields.region, fields.organizationName, fields.appName, fields.version]
+
+                for(let i=0;i<forms.length;i++)
+                {
+                    let form = forms[i];
+                    if(disabledFields.includes(form.field))
+                    {
+                        form.rules.disabled = true;
+                    }
+                }
+            }
         }
     }
 
     getFormData = async (data) => {
+        let forms = this.formKeys()
         if (data) {
-            await this.loadDefaultData(data)
+            await this.loadDefaultData(forms, data)
         }
         else {
             this.organizationList = await getOrganizationList()
         }
 
-        let forms = this.formKeys()
         forms.push(
-            { label: this.isUpdate ? 'Update' : 'Create', formType: BUTTON, onClick: this.onCreate, validate: true },
+            { label: 'Create', formType: BUTTON, onClick: this.onCreate, validate: true },
             { label: 'Cancel', formType: BUTTON, onClick: this.onAddCancel })
 
 
@@ -330,7 +333,7 @@ class ClusterInstReg extends React.Component {
         return (
             <div className="round_panel">
                 <div className="grid_table" style={{ height: constant.getHeight(), overflow: 'auto' }}>
-                    <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                    <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} />
                 </div>
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
             </div>

@@ -16,7 +16,7 @@ export const keys = [
     { field: fields.deploymentGenerator, serverField: 'deployment_generator', label: 'Deployment Generator' },
     { field: fields.imageType, serverField: 'image_type', label: 'Image Type' },
     { field: fields.imagePath, serverField: 'image_path', label: 'Image Path' },
-    { field: fields.defaultFlavorName, serverField: 'default_flavor#OS#name', sortable: true, label: 'Default Flavor', visible: true },
+    { field: fields.flavorName, serverField: 'default_flavor#OS#name', sortable: true, label: 'Default Flavor', visible: true },
     { field: fields.accessPorts, serverField: 'access_ports', label: 'Ports', visible: true },
     { field: fields.accessType, serverField: 'access_type', label: 'Access Type' },
     { field: fields.authPublicKey, serverField: 'auth_public_key', label: 'Auth Public Key' },
@@ -27,16 +27,43 @@ export const keys = [
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
 
-export const getKey = (data) => {
+export const getKey = (data, isCreate) => {
+
+    let app = {}
+
+    app.key = {
+        organization: data[fields.organizationName],
+        name: data[fields.appName],
+        version: data[fields.version]
+    }
+
+    if (isCreate) {
+        app.scale_with_cluster = data[fields.scaleWithCluster]
+        app.deployment = data[fields.deployment]
+        app.image_type = data[fields.imageType]
+        app.image_path = data[fields.imagePath]
+        if (data[fields.accessPorts]) {
+            app.access_ports = data[fields.accessPorts]
+        }
+        app.delete_ports = []
+        app.default_flavor = { name: data[fields.flavorName] }
+        app.auth_public_key = data[fields.authPublicKey]
+        if (data[fields.officialFQDN]) {
+            app.official_fqdn = data[fields.officialFQDN]
+        }
+        if (data[fields.androidPackageName]) {
+            app.android_package_name = data[fields.androidPackageName]
+        }
+        if (data[fields.command]) {
+            app.command = data[fields.command]
+        }
+        if (data[fields.command]) {
+            app.deployment_manifest = data[fields.deploymentManifest]
+        }
+    }
     return ({
         region: data[fields.region],
-        app: {
-            key: {
-                organization: data[fields.organizationName],
-                name: data[fields.appName],
-                version: data[fields.version]
-            }
-        }
+        app: app
     })
 }
 
@@ -55,11 +82,18 @@ export const showApps = (data) => {
 
 export const getAppList = async (self, data) => {
     return await serverData.showDataFromServer(self, showApps(data))
- }
+}
 
- export const createApp = async (self, data) => {
+export const createApp = async (self, data) => {
     let requestData = getKey(data, true)
     let request = { method: CREATE_APP, data: requestData }
+    return await serverData.sendRequest(self, request)
+}
+
+export const updateApp = async (self, data) => {
+    let requestData = getKey(data, true)
+    requestData.app.fields = ['4', '7', '9.1']
+    let request = { method: UPDATE_APP, data: requestData }
     return await serverData.sendRequest(self, request)
 }
 

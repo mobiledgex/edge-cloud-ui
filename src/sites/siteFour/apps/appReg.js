@@ -13,14 +13,13 @@ import { getOrganizationList } from '../../../services/model/organization';
 import { getFlavorList } from '../../../services/model/flavor';
 import { getPrivacyPolicyList } from '../../../services/model/privacyPolicy';
 import { getAutoProvPolicyList } from '../../../services/model/autoProvisioningPolicy';
-import { createApp } from '../../../services/model/app';
+import { createApp, updateApp } from '../../../services/model/app';
 
 class ClusterInstReg extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            step: 0,
-            forms: [],
+            forms: []
         }
         this.isUpdate = this.props.isUpdate
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
@@ -95,7 +94,7 @@ class ClusterInstReg extends React.Component {
     )
 
 
-    removePortForms = (form) => {
+    removePortForms = (e, form) => {
         if (form.parent) {
             let updateForms = Object.assign([], this.state.forms)
             updateForms.splice(form.parent.id, 1);
@@ -197,11 +196,7 @@ class ClusterInstReg extends React.Component {
 
 
     onCreate = async (data) => {
-        if (data) {
-            if (this.props.isUpdate) {
-                //update cluster data
-            }
-            else {
+        if (data) { 
                 let forms = this.state.forms;
                 let ports = ''
                 for (let i = 0; i < forms.length; i++) {
@@ -228,10 +223,13 @@ class ClusterInstReg extends React.Component {
                 if (ports.length > 0) {
                     data[fields.accessPorts] = ports
                 }
-            }
 
-            if (await createApp(this, data)) {
-                this.props.handleAlertInfo('success', `App ${data[fields.appName]} created successfully`)
+            
+            let isUpdate = this.props.isUpdate;
+            let valid = isUpdate ? await updateApp(this, data) : await createApp(this, data)
+            if(valid)
+            {
+                this.props.handleAlertInfo('success', `App ${data[fields.appName]} ${isUpdate ? 'updated': 'created'} successfully` )
                 this.props.onClose(true)
             }
         }
@@ -243,13 +241,6 @@ class ClusterInstReg extends React.Component {
         this.setState({
             forms: this.state.forms
         })
-    }
-
-    stepperClose = () => {
-        this.setState({
-            stepsArray: []
-        })
-        this.props.onClose(true)
     }
 
     onAddCancel = () => {
@@ -298,11 +289,48 @@ class ClusterInstReg extends React.Component {
         }
     }
 
-    loadDefaultData = async (data) => {
+    loadDefaultData = async (forms, data) => {
         if (data) {
             let organization = {}
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
+
+            this.flavorList = await getFlavorList(this, { region: data[fields.region] })
+            this.privacyPolicyList = await getPrivacyPolicyList(this, { region: data[fields.region] })
+            this.autoProvPolicyList = await getAutoProvPolicyList(this, { region: data[fields.region] })
+
+            if (data[fields.accessPorts]) {
+                let portArray = data[fields.accessPorts].split(',')
+                for (let i = 0; i < portArray.length; i++) {
+                    let portInfo = portArray[i].split(':')
+                    let protocol = portInfo[0];
+                    let portMaxNo = portInfo[1];
+                    let portMinNo = undefined
+
+                    let portForms = this.portForm()
+
+                    if (portMaxNo.includes('-')) {
+                        portForms = this.multiPortForm()
+                        let portNos = portMaxNo.split('-')
+                        portMinNo = portNos[0]
+                        portMaxNo = portNos[1]
+                    }
+
+                    for (let j = 0; j < portForms.length; j++) {
+                        let portForm = portForms[j];
+                        if (portForm.field === fields.protocol) {
+                            portForm.value = protocol.toLowerCase()
+                        }
+                        else if (portForm.field === fields.portRangeMax) {
+                            portForm.value = portMaxNo
+                        }
+                        else if (portForm.field === fields.portRangeMin) {
+                            portForm.value = portMinNo
+                        }
+                    }
+                    forms.push(this.getPortForm(portForms))
+                }
+            }
         }
     }
 
@@ -313,31 +341,31 @@ class ClusterInstReg extends React.Component {
             { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: true, disabled: false }, visible: true, tip: 'Organization or Company Name that a Developer is part of' },
             { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true }, visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
             { field: fields.version, label: 'App Version', formType: INPUT, placeholder: 'Enter App Version', rules: { required: true }, visible: true, tip: 'App version' },
-            { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, update: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
+            { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
             { field: fields.imageType, label: 'Image Type', formType: INPUT, placeholder: 'Select Deployment Type', rules: { required: true, disabled: true }, visible: true, tip: 'ImageType specifies image type of an App' },
-            { field: fields.imagePath, label: 'Image Path', formType: INPUT, placeholder: 'Enter Image Path', rules: { required: true }, visible: true, tip: 'URI of where image resides' },
-            { field: fields.authPublicKey, label: 'Auth Public Key', formType: TEXT_AREA, placeholder: 'Enter Auth Public Key', rules: { required: false }, visible: true, tip: 'auth_public_key' },
-            { field: fields.flavorName, label: 'Default Flavor', formType: SELECT, placeholder: 'Select Flavor', rules: { required: true }, visible: true, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: fields.region }] },
-            { field: fields.privacyPolicyName, label: 'Default Privacy Policy', formType: SELECT, placeholder: 'Select Privacy Policy', rules: { required: true }, visible: true, tip: 'Privacy policy when creating auto cluster', dependentData: [{ index: 1, field: fields.region }] },
-            { field: fields.autoPolicyName, label: 'Auto Provisioning Policy', formType: SELECT, placeholder: 'Select Auto Provisioning Policy', rules: { required: true }, visible: true, tip: 'Select Auto Provisioning Policy', dependentData: [{ index: 1, field: fields.region }] },
-            { field: fields.officialFQDN, label: 'Official FQDN', formType: INPUT, placeholder: 'Enter Official FQDN', rules: { required: false }, visible: true, tip: 'Official FQDN' },
-            { field: fields.androidPackageName, label: 'Android Package Name', formType: INPUT, placeholder: 'Enter Package Name', rules: { required: false }, visible: true, tip: 'Package Name' },
-            { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: CHECKBOX, visible: false, value: false },
-            { field: fields.command, label: 'Command', formType: INPUT, placeholder: 'Enter Command', rules: { required: false }, visible: true, tip: 'Command that the container runs to start service' },
-            { uuid: uuid(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
-            { label: 'Ports', formType: 'Header', forms: [{ formType: BUTTON, label: 'Add Port Mapping', visible: true, onClick: this.addPortForms }, { formType: BUTTON, label: 'Add Multiport Mapping', visible: true, onClick: this.addMultiPortForms }], visible: true, tip: 'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443' },
+            { field: fields.imagePath, label: 'Image Path', formType: INPUT, placeholder: 'Enter Image Path', rules: { required: true }, visible: true, update: true, tip: 'URI of where image resides' },
+            { field: fields.authPublicKey, label: 'Auth Public Key', formType: TEXT_AREA, placeholder: 'Enter Auth Public Key', rules: { required: false }, visible: true, update: true, tip: 'auth_public_key' },
+            { field: fields.flavorName, label: 'Default Flavor', formType: SELECT, placeholder: 'Select Flavor', rules: { required: true }, visible: true, update: true, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: fields.region }] },
+            { field: fields.privacyPolicyName, label: 'Default Privacy Policy', formType: SELECT, placeholder: 'Select Privacy Policy', rules: { required: true }, visible: true, update: true, tip: 'Privacy policy when creating auto cluster', dependentData: [{ index: 1, field: fields.region }] },
+            { field: fields.autoPolicyName, label: 'Auto Provisioning Policy', formType: SELECT, placeholder: 'Select Auto Provisioning Policy', rules: { required: true }, visible: true, update: true, tip: 'Select Auto Provisioning Policy', dependentData: [{ index: 1, field: fields.region }] },
+            { field: fields.officialFQDN, label: 'Official FQDN', formType: INPUT, placeholder: 'Enter Official FQDN', rules: { required: false }, visible: true, update: true, tip: 'Official FQDN' },
+            { field: fields.androidPackageName, label: 'Android Package Name', formType: INPUT, placeholder: 'Enter Package Name', rules: { required: false }, visible: true, update: true, tip: 'Package Name' },
+            { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: CHECKBOX, visible: false, value: false, update: true },
+            { field: fields.command, label: 'Command', formType: INPUT, placeholder: 'Enter Command', rules: { required: false }, visible: true, update: true, tip: 'Command that the container runs to start service' },
+            { uuid: uuid(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, update: true, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
+            { label: 'Ports', formType: 'Header', forms: [{ formType: BUTTON, label: 'Add Port Mapping', visible: true, update: true, onClick: this.addPortForms }, { formType: BUTTON, label: 'Add Multiport Mapping', visible: true, onClick: this.addMultiPortForms }], visible: true, tip: 'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443' },
         ]
     }
 
     getFormData = async (data) => {
+        let forms = this.formKeys()
         if (data) {
-            await this.loadDefaultData(data)
+            await this.loadDefaultData(forms, data)
         }
         else {
             this.organizationList = await getOrganizationList()
         }
 
-        let forms = this.formKeys()
         forms.push(
             { label: this.isUpdate ? 'Update' : 'Create', formType: BUTTON, onClick: this.onCreate, validate: true },
             { label: 'Cancel', formType: BUTTON, onClick: this.onAddCancel })

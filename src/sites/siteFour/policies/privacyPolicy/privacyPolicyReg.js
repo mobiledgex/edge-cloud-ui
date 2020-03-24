@@ -321,7 +321,7 @@ class AutoProvPolicyReg extends React.Component {
                     let OutboundSecurityRule = data[fields.outboundSecurityRules][i]
                     let outboundRules = this.getOutBoundRules();
                     let isICMP = false;
-                    for (let j = 0; j < outboundRules.length > 0; j++) {
+                    for (let j = 0; j < outboundRules.length; j++) {
                         let outboundRule = outboundRules[j];
                         outboundRule.value = OutboundSecurityRule[outboundRule.field]
                         if(outboundRule.field === fields.protocol)
