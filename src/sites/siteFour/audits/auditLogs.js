@@ -251,15 +251,16 @@ class SiteFourPageAudits extends React.Component {
     }
 
     render() {
-        const {shouldShowBox, shouldShowCircle} = this.state;
-        const {activeItem, viewMode} = this.state;
+        const {viewMode} = this.state;
         let randomValue = Math.round(Math.random() * 100);
         return (
             (viewMode === 'listView') ?
                 <TimelineAuditView data={this.state.devData} randomValue={randomValue}
                                       headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Audit'}
                                       userToken={this.userToken} mounted={this.state.auditMounted}
-                                      handleSelectedAudit={this.selectedAudit}></TimelineAuditView>
+                                      handleSelectedAudit={this.selectedAudit}>
+                                    
+                </TimelineAuditView>
                 :
                 <div></div>
 

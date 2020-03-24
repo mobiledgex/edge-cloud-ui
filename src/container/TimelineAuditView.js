@@ -335,10 +335,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         close = () => this.setState({ openSendEmail: false })
 
 
+        getHeight = () => {
+            return window.innerHeight - 72
+        }
+
         render() {
             const state = this.state;
             return (
-                <div className="page_audit">
+                <div className="page_audit" style={{height:this.getHeight()}}>
                     <div className="page_audit_history">
                         <div className="page_audit_history_option">
                             <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
@@ -354,7 +358,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 />
                             </div>
                         </div>
-                        <div className="page_audit_history_timeline">
+                        <div className="page_audit_history_timeline" >
 
                             <div
                                 style={{

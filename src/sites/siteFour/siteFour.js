@@ -37,7 +37,7 @@ import SiteFourPageClusterInst from './clusterInst/clusterInstList';
 import SiteFourPageCloudlet from './cloudlets/cloudletList';
 import SiteFourPageOrganization from './organization/organizationList';
 import SiteFourPageAppReg from './apps/appReg';
-import SiteFourPageAudits from './audits/siteFour_page_audits';
+import SiteFourPageAudits from './audits/auditLogs';
 import SiteFourPageCloudletPool from './cloudletPool/cloudletPoolList';
 import AutoProvPolicy from './policies/autoProvPolicyList/autoProvPolicyList';
 import AutoPrivacyPolicy from './policies/privacyPolicy/privacyPolicyList';

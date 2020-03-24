@@ -39,7 +39,7 @@ import SiteFourPageFlavor from '../flavors/flavorList';
 import SiteFourPageApps from '../apps/appList';
 import SiteFourPageAppInst from '../appInst/appInstList';
 import SiteFourPageClusterInst from '../clusterInst/clusterInstList';
-import SiteFourPageAudits from '../audits/siteFour_page_audits';
+import SiteFourPageAudits from '../audits/auditLogs';
 import AutoProvPolicy from '../policies/autoProvPolicyList/autoProvPolicyList';
 import PrivacyPolicy from '../policies/privacyPolicy/privacyPolicyList';
 import PageMonitoringMain from '../monitoring/PageMonitoringMain'
