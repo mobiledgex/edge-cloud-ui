@@ -248,6 +248,7 @@ type State = {
     isMapUpdate: boolean,
     currentWidgetWidth: number,
     isOpenEditView: boolean,
+    isFullScreenMap: boolean,
 
 }
 
@@ -402,6 +403,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isMapUpdate: true,
                 currentWidgetWidth: 1,
                 isOpenEditView: false,
+                isFullScreenMap: false,
             };
         }
 
@@ -1148,6 +1150,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         isDraggable={this.state.isDraggable}
                         handleAppInstDropdown={this.handleAppInstDropdown}
                         markerList={this.state.appInstanceListGroupByCloudlet}
+                        isFullScreenMap={false}
                     />
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
@@ -1540,7 +1543,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </div>
                         }
 
-                        {/*  <MButton
+                        <MButton
                             style={{backgroundColor: '#6c6c6c', color: 'white', height: 37}}
                             onClick={() => {
                                 this.props.toggleLoading(true);
@@ -1553,7 +1556,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 this.props.toggleLoading(false);
                             }}>toggleLoadingFalse
 
-                        </MButton>*/}
+                        </MButton>
 
                     </div>
                 </Grid.Row>

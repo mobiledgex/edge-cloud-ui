@@ -8,7 +8,12 @@ import {CheckCircleOutlined} from '@material-ui/icons';
 import {Map, Marker, Polyline, Popup, TileLayer, Tooltip} from "react-leaflet";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {groupByKey_, removeDuplicates, renderPlaceHolderLottiePinJump3} from "../PageMonitoringCommonService";
+import {
+    groupByKey_,
+    removeDuplicates, renderCircleLoaderForMap,
+    renderGridLoader2,
+    renderPlaceHolderLottiePinJump3
+} from "../PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
 
@@ -60,6 +65,7 @@ type Props = {
     selectedClientLocationListOnAppInst: any,
     isMapUpdate: boolean,
     currentWidgetWidth: number,
+    isFullScreenMap: boolean,
 
 };
 type State = {
@@ -243,6 +249,8 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
         return (
             <React.Fragment>
                 <div className='page_monitoring_title_area' style={{display: 'flex'}}>
+
+                    {!this.props.isFullScreenMap &&
                     <div style={{
                         display: 'flex',
                         width: '100%',
@@ -254,11 +262,9 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
                         }}>
                             Deployed Instance
                         </div>
-                        {/**/}
-                        {/*<Button>
-                            add marker
-                        </Button>*/}
+
                     </div>
+                    }
 
                     <div className='page_monitoring_title' style={{
                         backgroundColor: 'transparent',
@@ -302,7 +308,7 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
                                  this.map = ref;
                              }}
                         >
-                            <div style={{position: 'absolute',  top: 80, left: 14, zIndex: 99999}}>
+                            <div style={{position: 'absolute', top: 80, left: 14, zIndex: 99999}}>
                                 <Icon
                                     onClick={() => {
                                         this.setState({
@@ -317,7 +323,7 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
                                         backgroundColor: 'white',
                                         height: 26,
                                         width: 27,
-                                        cursor:'pointer'
+                                        cursor: 'pointer'
                                     }}/>
                             </div>
 

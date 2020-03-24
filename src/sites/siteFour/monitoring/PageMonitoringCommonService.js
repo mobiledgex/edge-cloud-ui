@@ -9,12 +9,12 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import {makeCompleteDateTime} from "./admin/PageAdminMonitoringService";
 import moment from "moment";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
-import {GridLoader} from "react-spinners";
+import {BarLoader, CircleLoader, GridLoader, PulseLoader} from "react-spinners";
 import {Grid} from "semantic-ui-react";
 import {barChartOption, columnChartOption} from "./PageMonitoringUtils";
 
 export const PageMonitoringStyles = {
-    icon : {
+    icon: {
         fontSize: 29,
         width: 37,
         display: 'flex',
@@ -207,6 +207,21 @@ export const renderGridLoader2 = (width, height) => {
     )
 }
 
+export const renderCircleLoaderForMap = (width, height) => {
+    return (
+        <div style={{zIndex: 99999999999, marginLeft: -180, marginTop: 15, height: 30,}}>
+            <PulseLoader
+                sizeUnit={"px"}
+                size={20}
+                color={'#70b2bc'}
+                loading={true}
+                style={{zIndex: 999999999999999, marginLeft: -30}}
+            />
+        </div>
+
+    )
+}
+
 export const renderGridLoader = () => {
     return (
         <GridLoader
@@ -347,8 +362,8 @@ export const renderPlaceHolderLottiePinJump3 = (type: string = '') => {
                     }
                 }}
                 speed={2.9}
-                height={50}
-                width={50}
+                height={75}
+                width={75}
                 isStopped={false}
                 isPaused={false}
             />
