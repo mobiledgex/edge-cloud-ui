@@ -1279,7 +1279,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     }}
                 >
                     {/*desc:############################*/}
-                    {/*desc:    fullScreen button         */}
+                    {/*desc:    maximize button         */}
                     {/*desc:############################*/}
                     {graphType.toUpperCase() !== GRID_ITEM_TYPE.PERFORMANCE_SUM
                     && graphType.toUpperCase() !== GRID_ITEM_TYPE.BUBBLE
