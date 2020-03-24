@@ -10,15 +10,11 @@ import {Map, Marker, Polyline, Popup, TileLayer, Tooltip} from "react-leaflet";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {isEmpty, showToast} from "../PageMonitoringCommonService";
 import {groupByKey_, removeDuplicates, renderPlaceHolderLottiePinJump3} from "../PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
 import {Radio} from 'antd'
-import {hot} from "react-hot-loader/root";
-import {withRouter} from "react-router-dom";
 import {connect} from "react-redux";
-import sizeMe from "react-sizeme";
 import * as actions from "../../../../actions";
 
 
@@ -61,16 +57,32 @@ let cloudBlueIcon = L.icon({
     iconAnchor: [24, 30],//x,y
     shadowSize: [41, 41]
 });
+
+
 const mapStateToProps = (state) => {
     return {
         isLoading: state.LoadingReducer.isLoading,
+        currentTyleLayer: state.MapTyleLayerReducer.currentTyleLayer,
+        lineColor: state.MapTyleLayerReducer.lineColor,
+        cloudletIconColor: state.MapTyleLayerReducer.cloudletIconColor,
     }
 };
 const mapDispatchProps = (dispatch) => {
     return {
         toggleLoading: (data) => {
             dispatch(actions.toggleLoading(data))
-        }
+        },
+        setMapTyleLayer: (data) => {
+            dispatch(actions.setMapTyleLayer(data))
+        },
+
+        setLineColor: (data) => {
+            dispatch(actions.setLineColor(data))
+        },
+
+        setCloudletIconColor: (data) => {
+            dispatch(actions.setCloudletIconColor(data))
+        },
     };
 };
 type Props = {
@@ -80,6 +92,12 @@ type Props = {
     isMapUpdate: boolean,
     currentWidgetWidth: number,
     isFullScreenMap: boolean,
+    currentTyleLayer: string,
+    lineColor:  string,
+    cloudletIconColor:  string,
+    setMapTyleLayer: Function,
+    setLineColor: Function,
+    setCloudletIconColor: Function,
 
 };
 type State = {
@@ -332,9 +350,9 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                  }}
                             >
 
-                                {this.props.parent.state.loading && renderPlaceHolderLottiePinJump3()}
+                                {/*{this.props.parent.state.loading && renderPlaceHolderLottiePinJump3()}*/}
                                 <TileLayer
-                                    url={this.state.currentTyleLayer}
+                                    url={this.props.currentTyleLayer}
                                     //url={'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'}
                                     minZoom={2}
                                     style={{zIndex: 1}}
@@ -358,6 +376,26 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                             cursor: 'pointer'
                                         }}/>
                                 </Control>
+                              {/*  <Control position="topleft">
+                                    <Icon
+                                        onClick={() => {
+
+                                            let tyleOne = this.mapTileList[2].url;
+
+                                            this.props.setMapTyleLayer(tyleOne)
+
+                                        }}
+                                        name='star'
+                                        style={{
+                                            color: 'black',
+                                            fontSize: 18,
+                                            borderRadius: 3,
+                                            backgroundColor: 'white',
+                                            height: 26,
+                                            width: 27,
+                                            cursor: 'pointer'
+                                        }}/>
+                                </Control>*/}
 
 
                                 {/*@desc:#####################################..*/}
@@ -366,7 +404,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {this.props.isFullScreenMap &&
                                 <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
                                     <Radio.Group defaultValue="0" buttonStyle="solid"
-                                                 onChange={(e) => {
+                                                 onChange={async (e) => {
                                                      let index = e.target.value
 
                                                      let lineColor = 'yellow';
@@ -374,15 +412,13 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                      if (Number(index) >= 2) {
                                                          lineColor = 'black';
                                                          cloudletIconColor = 'blue'
-                                                         reactLocalStorage.set('map_lineColor', lineColor)
-                                                         reactLocalStorage.set('map_cloudletIconColor', cloudletIconColor)
-
                                                      }
-                                                     this.setState({
-                                                         currentTyleLayer: this.mapTileList[index].url,
-                                                         lineColor: lineColor,
-                                                         cloudletIconColor: cloudletIconColor,
-                                                     })
+
+                                                     this.props.setMapTyleLayer(this.mapTileList[index].url);
+                                                     this.props.setLineColor(lineColor);
+                                                     this.props.setCloudletIconColor(cloudletIconColor);
+
+
 
                                                  }}
                                     >
@@ -430,7 +466,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
                                                                 //[item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
                                                             ]}
-                                                            color={this.state.lineColor}
+                                                            color={this.props.lineColor}
                                                         />
 
                                                     </React.Fragment>
@@ -458,7 +494,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                         return (
                                             <Marker
                                                 ref={c => this.marker1 = c}
-                                                icon={this.state.cloudletIconColor === 'green' ? cloudGreenIcon : cloudBlueIcon}
+                                                icon={this.props.cloudletIconColor === 'green' ? cloudGreenIcon : cloudBlueIcon}
                                                 className='marker1'
                                                 position={
                                                     [outerItem.CloudletLocation.latitude, outerItem.CloudletLocation.longitude,]

@@ -43,6 +43,7 @@ import stateStream from './stateStream';
 import resetMap from './resetMap';
 import submitObj from './submitObj';
 import LoadingReducer from "./LoadingReducer";
+import MapTyleLayerReducer from "./MapTyleLayerReducer";
 
 const reducers = combineReducers({
     videoControl,
@@ -88,6 +89,7 @@ const reducers = combineReducers({
     alertInfo,
     dataExist,
     LoadingReducer,
+    MapTyleLayerReducer,
     form: formReducer
 });
 
