@@ -16,7 +16,6 @@ class AutoProvPolicyReg extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            step: 0,
             forms: []
         }
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;

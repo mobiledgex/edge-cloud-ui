@@ -9,6 +9,7 @@ import * as actions from '../../../actions';
 import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 //model
+import { additionalDetail } from '../../../services/model/shared'
 import { createOrganization } from '../../../services/model/organization';
 import { addUser } from '../../../services/model/users';
 import { } from '../../../services/model/cloudlet';
@@ -129,7 +130,7 @@ class OrganizationReg extends React.Component {
 
     onAddUser = async (data) => {
         if (data) {
-            data[fields.role] = this.type + data[fields.role] 
+            data[fields.role] = this.type + data[fields.role]
             let mcRequest = await addUser(this, data)
             if (mcRequest && mcRequest.response && mcRequest.response.data) {
                 let message = mcRequest.response.data.message
@@ -185,57 +186,17 @@ class OrganizationReg extends React.Component {
     }
 
     getStep3 = () => {
-        let org = this.organizationName
+        let organizationName = this.organizationName
         let type = this.type
         return (
             <Fragment>
                 <Grid>
                     <Grid.Column width={11}>
                         <Form>
-                            <Header className="newOrg3-1">{`Organization "` + org + `" has been created.`}</Header>
-
-                            <Form.Group widths="equal" style={{ flexDirection: 'column', alignContent: 'space-around' }}>
-                                <Grid>
-                                    <Grid.Row>
-                                        {
-                                            (type === 'Developer') ?
-                                                <Grid.Column>
-                                                    <div className="newOrg3-2">
-                                                        <div>
-                                                            If your image is docker, please upload your image with your MobiledgeX Account Credentials to our docker registry using the following docker commands.
-                                                    </div>
-                                                        <br></br>
-                                                        <div>
-                                                            {`$ docker login -u <username> docker.mobiledgex.net`}
-                                                        </div>
-                                                        <div>
-                                                            {`$ docker tag <your application> docker.mobiledgex.net/` + String(org).toLowerCase() + `/images/<application name>:<version>`}
-                                                        </div>
-                                                        <div>
-                                                            {`$ docker push docker.mobiledgex.net/` + String(org).toLowerCase() + `/images/<application name>:<version>`}
-                                                        </div>
-                                                        <div>
-                                                            $ docker logout docker.mobiledgex.net
-                                                    </div>
-                                                    </div>
-                                                    <br></br>
-                                                    <div className="newOrg3-3">
-                                                        <div>
-                                                            If you image is VM, please upload your image with your MobiledgeX Account Credentials to our VM registry using the following curl command.
-                                                    </div>
-                                                        <br />
-                                                        <div>
-                                                            {`$ curl -u<username> -T <path_to_file> "https://artifactory.mobiledgex.net/artifactory/repo-` + org + `/<target_file_path>" --progress-bar -o <upload status filename>`}
-                                                        </div>
-                                                    </div>
-                                                </Grid.Column>
-                                                :
-                                                <Grid.Column></Grid.Column>
-                                        }
-
-                                    </Grid.Row>
-                                </Grid>
-                            </Form.Group>
+                            <Header className="newOrg3-1">{`Organization "` + organizationName + `" has been created.`}</Header>
+                            {
+                                additionalDetail({ type: type, organizationName: organizationName })
+                            }
                             <Form.Group className='orgButton' style={{ width: '100%' }}>
                                 <Button className="newOrg3-4" onClick={(e) => { this.props.onClose() }} type='submit' positive style={{ width: '100%' }}>Check your Organization</Button>
                             </Form.Group>
@@ -256,7 +217,6 @@ class OrganizationReg extends React.Component {
                     <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
                         {this.props.action ? null :
                             <div>
-                                <div className='content_title' style={{ padding: '0px 0px 10px 0' }}>Create Auto Provisioning Policy</div>
                                 <Step.Group stackable='tablet' style={{ width: '100%' }}>
                                     {
                                         stepData.map((item, i) => (
@@ -339,6 +299,7 @@ class OrganizationReg extends React.Component {
 
     step2 = (data) => {
         return [
+            { label: 'Add User', formType: 'Header', visible: true },
             { field: fields.username, label: 'Username', formType: INPUT, placeholder: 'Select Username', rules: { required: true }, visible: true },
             { field: fields.organizationName, label: 'Organization', formType: INPUT, placeholder: 'Enter Organization Name', rules: { disabled: true }, visible: true, value: data[fields.organizationName] },
             { field: fields.type, label: 'Type', formType: INPUT, placeholder: 'Enter Type', rules: { disabled: true }, visible: true, value: data[fields.type] },
@@ -348,6 +309,7 @@ class OrganizationReg extends React.Component {
 
     step1 = () => {
         return [
+            { label: 'Create Organization', formType: 'Header', visible: true },
             { field: fields.type, label: 'Type', formType: 'Select', placeholder: 'Select Type', rules: { required: true }, visible: true },
             { field: fields.organizationName, label: 'Organization Name', formType: INPUT, placeholder: 'Enter Organization Name', rules: { required: true }, visible: true, },
             { field: fields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: true }, visible: true, },

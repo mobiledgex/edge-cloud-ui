@@ -4,7 +4,7 @@ import { fields } from './format';
 
 export const additionalDetail = (data) => {
     return (
-        data[fields.type] === 'developer' ?
+        data[fields.type] === 'developer' || 'Developer' ?
             <div style={{ margin: 20, color: 'white' }}>
                 <div className="newOrg3-2">
                     <div>

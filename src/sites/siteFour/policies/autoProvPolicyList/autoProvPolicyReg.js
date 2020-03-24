@@ -3,7 +3,7 @@ import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
 import { Item, Step } from 'semantic-ui-react';
 import * as constant from '../../../../constant';
-import MexForms, {SELECT, DUALLIST} from '../../../../hoc/forms/MexForms';
+import MexForms, { SELECT, DUALLIST } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
@@ -92,11 +92,12 @@ class AutoProvPolicyReg extends React.Component {
             }
             this.filterCloudlets();
             let forms = [
+                { label: `${action} Cloudlets`, formType: 'Header', visible: true },
                 { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible: true, options: [{ key: region, value: region, text: region }], value: region },
                 { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { disabled: true }, visible: true, options: [{ key: organization, value: organization, text: organization }], value: organization },
                 { field: fields.autoPolicyName, label: 'Auto Policy Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { disabled: true }, visible: true, value: autoPolicyName },
                 { field: fields.cloudlets, label: 'Clouldets', formType: 'DualList', rules: { required: true }, visible: true },
-                { label: `${action} Cloudlets`, formType: 'Button', onClick: this.onAddCloudlets },
+                { label: `${action}`, formType: 'Button', onClick: this.onAddCloudlets },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
             ]
             this.updateUI(forms)
@@ -128,15 +129,15 @@ class AutoProvPolicyReg extends React.Component {
     }
 
     onCreateAutoProvPolicy = async (data) => {
-            let mcRequest = await serverData.sendRequest(this, createAutoProvPolicy(data))
-            if (mcRequest && mcRequest.response) {
-                let response = mcRequest.response;
-                if (response.status === 200) {
-                    this.props.handleAlertInfo('success', `Auto Provisioning Policy ${data[fields.autoPolicyName]} created successfully`)
-                    this.selectCloudlet(data)
-                }
+        let mcRequest = await serverData.sendRequest(this, createAutoProvPolicy(data))
+        if (mcRequest && mcRequest.response) {
+            let response = mcRequest.response;
+            if (response.status === 200) {
+                this.props.handleAlertInfo('success', `Auto Provisioning Policy ${data[fields.autoPolicyName]} created successfully`)
+                this.selectCloudlet(data)
             }
-        
+        }
+
     }
 
     onAddCloudlets = (data) => {
@@ -148,11 +149,10 @@ class AutoProvPolicyReg extends React.Component {
                 data.cloudletName = cloudlet[fields.cloudletName]
                 data.operatorName = cloudlet[fields.operatorName]
                 if (this.props.action === 'Delete') {
-                    requestDataList.push(deleteAutoProvCloudletKey(data)) 
+                    requestDataList.push(deleteAutoProvCloudletKey(data))
                 }
-                else
-                {
-                    requestDataList.push(addAutoProvCloudletKey(data)) 
+                else {
+                    requestDataList.push(addAutoProvCloudletKey(data))
                 }
             }
         }
@@ -172,21 +172,18 @@ class AutoProvPolicyReg extends React.Component {
                 <div className="grid_table" style={{ height: constant.getHeight(), overflow: 'auto' }}>
                     <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
                         {this.props.action ? null :
-                            <div>
-                                <div className='content_title' style={{ padding: '0px 0px 10px 0' }}>Create Auto Provisioning Policy</div>
-
-                                <Step.Group stackable='tablet' style={{ width: '100%' }}>
-                                    {
-                                        stepData.map((item, i) => (
-                                            <Step active={this.state.step === i} key={i} >
-                                                <Step.Content>
-                                                    <Step.Title>{item.step}</Step.Title>
-                                                    <Step.Description>{item.description}</Step.Description>
-                                                </Step.Content>
-                                            </Step>
-                                        ))
-                                    }
-                                </Step.Group></div>}
+                            <Step.Group stackable='tablet' style={{ width: '100%' }}>
+                                {
+                                    stepData.map((item, i) => (
+                                        <Step active={this.state.step === i} key={i} >
+                                            <Step.Content>
+                                                <Step.Title>{item.step}</Step.Title>
+                                                <Step.Description>{item.description}</Step.Description>
+                                            </Step.Content>
+                                        </Step>
+                                    ))
+                                }
+                            </Step.Group>}
                         <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} />
                     </Item>
                 </div>
@@ -205,7 +202,7 @@ class AutoProvPolicyReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
             if (form.field) {
-                if (form.formType === SELECT || form.formType === DUALLIST ) {
+                if (form.formType === SELECT || form.formType === DUALLIST) {
                     switch (form.field) {
                         case fields.organizationName:
                             form.options = this.organizationList
@@ -241,12 +238,13 @@ class AutoProvPolicyReg extends React.Component {
         else {
             this.organizationList = await serverData.showDataFromServer(this, showOrganizations());
             let forms = [
+                { label: 'Create Auto Provisioning Policy', formType: 'Header', visible: true },
                 { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
                 { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: true }, visible: true },
                 { field: fields.autoPolicyName, label: 'Auto Policy Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { required: true }, visible: true },
                 { field: fields.deployClientCount, label: 'Deploy Client Count', formType: 'Input', rules: { type: 'number' }, visible: true },
                 { field: fields.deployIntervalCount, label: 'Deploy Interval Count (s)', formType: 'Input', rules: { type: 'number' }, visible: true },
-                { label: 'Create Policy', formType: 'Button', onClick: this.onCreateAutoProvPolicy, validate: true },
+                { label: 'Create', formType: 'Button', onClick: this.onCreateAutoProvPolicy, validate: true },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
             ]
             this.updateUI(forms)
