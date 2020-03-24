@@ -302,7 +302,7 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
                                  this.map = ref;
                              }}
                         >
-                            <div style={{position: 'absolute',  top: 70, left: 10, zIndex: 99999}}>
+                            <div style={{position: 'absolute',  top: 80, left: 14, zIndex: 99999}}>
                                 <Icon
                                     onClick={() => {
                                         this.setState({
@@ -313,7 +313,7 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
                                     style={{
                                         color: 'black',
                                         fontSize: 18,
-                                        borderRadius: 5,
+                                        //borderRadius: 5,
                                         backgroundColor: 'white',
                                         height: 26,
                                         width: 27,
