@@ -344,10 +344,10 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
 
 
                             {/*@desc:#####################################..*/}
-                            {/*@desc: radio Btns changing MapTyle        ...*/}
+                            {/*@desc: topRight Radio Btns changing MapTyle...*/}
                             {/*@desc:#####################################..*/}
                             {this.props.isFullScreenMap &&
-                            <div style={{position: 'absolute', top: 10, right: 5, zIndex: 99999}}>
+                            <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
                                 <Radio.Group defaultValue="0" buttonStyle="solid"
                                              onChange={(e) => {
                                                  let index = e.target.value
