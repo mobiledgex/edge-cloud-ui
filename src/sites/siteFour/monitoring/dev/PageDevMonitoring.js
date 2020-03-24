@@ -1524,11 +1524,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         }
-
-                        {/*isLoading
-                        toggleLoading*/}
-
-                        {this.props.isLoading &&
+                        {/*
+                       {this.props.isLoading &&
                         <div>
                             <div style={{marginLeft: 15}}>
                                 <CircularProgress
@@ -1557,6 +1554,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }}>toggleLoadingFalse
 
                         </MButton>
+                        */}
 
                     </div>
                 </Grid.Row>
@@ -1703,7 +1701,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </Button>
                         </div>
                         {this.state.currentClassification === CLASSIFICATION.APPINST &&
-                        <div>
+                        <div style={{marginLeft: 20, marginBottom: 12,}}>
                             <MButton
                                 style={{
                                     backgroundColor: this.state.isStream ? 'green' : '#6c6c6c',
@@ -1726,7 +1724,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                         }
                         {this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?
-                            <div style={{}}>
+                            <div style={{marginLeft: 20, marginBottom: 12,}}>
                                 <MButton
                                     style={{backgroundColor: '#6c6c6c', color: 'white', height: 37}}
                                     onClick={() => this.setState({openTerminal: true})}>Terminal</MButton>

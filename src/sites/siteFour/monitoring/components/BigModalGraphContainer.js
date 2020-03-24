@@ -151,16 +151,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     }}> Deployed Instance
                                     </div>
                                     {this.props.isLoading && renderCircleLoaderForMap()}
-                                 {/*   <Button onClick={() => {
-                                        this.props.toggleLoading(true)
-                                    }}>
-                                        T
-                                    </Button>
-                                    <Button onClick={() => {
-                                        this.props.toggleLoading(false)
-                                    }}>
-                                        F
-                                    </Button>*/}
                                 </React.Fragment>
                                 : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER ?
                                     <div style={{

@@ -84,6 +84,7 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
     webSocket.onopen = () => {
         try {
+            _this.props.toggleLoading(false)
             console.log("onmessage WebSocket is open now.");
 
             webSocket.send(JSON.stringify({
@@ -132,7 +133,7 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
                     loading: false,
                 })
                 _this.props.toggleLoading(false)
-            }, 12)
+            }, 20)
 
             console.log("onmessage.....appInstCount====>", appInstCount);
         } catch (e) {
@@ -146,11 +147,13 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
             _this.setState({
                 loading: false,
             })
+            _this.props.toggleLoading(false)
         }, 15)
     };
 
     webSocket.onclose = function (event) {
         //alert(event.toString())
+        _this.props.toggleLoading(false)
     };
 
     return webSocket;

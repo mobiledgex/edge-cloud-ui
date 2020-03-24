@@ -16,6 +16,7 @@ import {
 } from "../PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
+import {Radio} from 'antd'
 
 
 const DEFAULT_VIEWPORT = {
@@ -336,6 +337,30 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
                                 style={{zIndex: 1}}
                                 //maxZoom={15}
                             />
+
+
+                            {/*@desc:changing mapTyles...*/}
+                            {/*@desc:changing mapTyles...*/}
+                            {/*@desc:changing mapTyles...*/}
+                            {this.props.isFullScreenMap &&
+                            <div style={{position: 'absolute', top: 10, right: 5, zIndex: 99999}}>
+                                <Radio.Group defaultValue="0" buttonStyle="solid"
+                                             onChange={(e) => {
+                                                 let index = e.target.value
+                                                 this.setState({
+                                                     currentTyleLayer: this.mapTileList[index].url
+                                                 })
+
+                                             }}
+                                >
+                                    <Radio.Button defaultChecked={true} value="0">Dark1</Radio.Button>
+                                    <Radio.Button value="1">Dark2</Radio.Button>
+                                    <Radio.Button value="2">White1</Radio.Button>
+                                    <Radio.Button value="3">White2</Radio.Button>
+                                </Radio.Group>
+                            </div>
+                            }
+
 
                             {/*@desc:clientList...*/}
                             {/*@desc:clientList...*/}
