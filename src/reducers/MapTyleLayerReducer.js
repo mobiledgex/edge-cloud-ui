@@ -3,6 +3,7 @@ import {
     SET_LINE_COLOR,
     SET_MAP_TYLE_LAYER
 } from "../actions/ActionTypes";
+import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR} from "../shared/Constants";
 
 const mapTileList = [
     {
@@ -27,8 +28,8 @@ const mapTileList = [
 
 const initialState = {
     currentTyleLayer: mapTileList[0].url,
-    lineColor: 'yellow',
-    cloudletIconColor: 'green',
+    lineColor: DARK_LINE_COLOR,
+    cloudletIconColor: DARK_CLOUTLET_ICON_COLOR,
 };
 
 export default function MapTyleLayerReducer(state = initialState, action) {

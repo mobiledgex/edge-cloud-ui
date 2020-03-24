@@ -15,12 +15,18 @@ import {Icon} from "semantic-ui-react";
 import {Radio} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
+import {
+    DARK_CLOUTLET_ICON_COLOR,
+    DARK_LINE_COLOR,
+    WHITE_CLOUTLET_ICON_COLOR,
+    WHITE_LINE_COLOR
+} from "../../../../shared/Constants";
 
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
     zoom: 13,
 }
-let greenIcon = new L.Icon({
+/*let greenIcon = new L.Icon({
     iconUrl: require('../../../../assets/leaflet_markers/marker-icon-2x-green.png'),
     //iconUrl: require('../images/cloud003.png'),
     //iconUrl: 'https://cdn4.iconfinder.com/data/icons/social-messaging-ui-color-and-shapes-1/177800/11-512.png',
@@ -29,7 +35,7 @@ let greenIcon = new L.Icon({
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
     shadowSize: [41, 41]
-});
+});*/
 
 var cellphoneIcon2 = L.icon({
     iconUrl: require('../images/cellhone_white003.png'),
@@ -140,7 +146,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
         constructor(props: Props) {
             super(props);
-
 
             this.state = {
                 zoom: 3,//mapZoom
@@ -324,7 +329,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                         </div>
 
                     </div>
-                    {/*@todo: LeafletMapWrapperForDev*/}
                     <div className='page_monitoring_container'>
                         <div style={{height: '100%', width: '100%', zIndex: 1}}>
                             <Map center={[45.4, 51.7]}
@@ -383,17 +387,16 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                  onChange={async (e) => {
                                                      let index = e.target.value
 
-                                                     let lineColor = 'yellow';
-                                                     let cloudletIconColor = 'green'
+                                                     let lineColor = DARK_LINE_COLOR;
+                                                     let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
                                                      if (Number(index) >= 2) {
-                                                         lineColor = 'black';
-                                                         cloudletIconColor = 'blue'
+                                                         lineColor = WHITE_LINE_COLOR;
+                                                         cloudletIconColor = WHITE_CLOUTLET_ICON_COLOR
                                                      }
 
                                                      this.props.setMapTyleLayer(this.mapTileList[index].url);
                                                      this.props.setLineColor(lineColor);
                                                      this.props.setCloudletIconColor(cloudletIconColor);
-
 
                                                  }}
                                     >
