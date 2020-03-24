@@ -85,6 +85,9 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
     webSocket.onopen = () => {
         try {
+            _this.setState({
+                loading: true,
+            })
             console.log("onmessage WebSocket is open now.");
 
             webSocket.send(JSON.stringify({
@@ -98,27 +101,19 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
 
     let appInstCount = 0;
+    let interval = null;
     webSocket.onmessage = async (event) => {
         try {
-            await _this.setState({
-                loading: true,
-                //selectedClientLocationListOnAppInst:[],
-            })
             appInstCount++;
             let data = JSON.parse(event.data);
             let uuid = data.data.client_key.uuid;
-            console.log("onmessage==data==>", data);
-            if (data.code === 200) {
-                _this.setState({
-                    loading: true,
-                })
-            }
             let clientLocationOne: TypeClientLocation = data.data.location;
             if (!isEmpty(uuid)) {
                 clientLocationOne.uuid = uuid;
                 let serverLocation = pCurrentAppInst.split('|')[7].trim()
                 clientLocationOne.serverLocInfo = JSON.parse(serverLocation)
             }
+
             console.log("onmessage====clientLocationOne>", clientLocationOne);
 
             _this.setState({
@@ -126,13 +121,6 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
             }, () => {
                 console.log("onmessage====currentClientLocationListOnAppInst>", _this.state.selectedClientLocationListOnAppInst);
             })
-
-
-            setTimeout(() => {
-                _this.setState({
-                    loading: false,
-                })
-            }, 15)
 
             console.log("onmessage.....appInstCount====>", appInstCount);
         } catch (e) {
@@ -142,7 +130,11 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
 
     webSocket.onerror = (event) => {
-        //alert(event.toString())
+        setTimeout(() => {
+            _this.setState({
+                loading: false,
+            })
+        }, 15)
     };
 
     webSocket.onclose = function (event) {

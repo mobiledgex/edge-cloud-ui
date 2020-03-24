@@ -141,9 +141,9 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
             this.setCloudletLocation(appInstanceListGroupByCloudlet)
         }
 
+        //@desc : #############################
         //@desc : clientList
-        //@desc : clientList
-        //@desc : clientList
+        //@desc : #############################
         if (this.props.selectedClientLocationListOnAppInst !== nextProps.selectedClientLocationListOnAppInst) {
             await this.setState({
                 clientObjKeys: [],
@@ -158,7 +158,7 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
 
             let newClientList = []
             clientList.map((item: TypeClient, index) => {
-                let clientLocation = parseFloat(item.latitude).toFixed(2).toString() + parseFloat(item.longitude).toFixed(2).toString();
+                let clientLocation = parseFloat(item.latitude).toFixed(3).toString() + parseFloat(item.longitude).toFixed(2).toString();
                 console.log("clientLocation====>", clientLocation);
                 item.clientLocation = clientLocation;
                 newClientList.push(item);
@@ -339,7 +339,7 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
 
                                 return (
                                     <MarkerClusterGroup>
-                                        {groupedClientList[objkeyOne].map(item => {
+                                        {groupedClientList[objkeyOne].map((item, index) => {
                                             console.log("groupedClientList====>", item)
 
                                             return (
@@ -351,31 +351,16 @@ export default class LeafletMapContainerDev extends React.Component<Props, State
                                                             //[item.latitude, item.longitude]
                                                         }
                                                     >
-                                                        {/* <Tooltip
-                                                    direction='right'
-                                                    offset={[0, 0]}
-                                                    opacity={0.8}
-                                                    permanent
-
-                                                    style={{cursor: 'pointer', pointerEvents: 'auto'}}
-
-                                                >
-                                                  <span
-                                                      className='toolTip'
-                                                      style={{color: 'black'}}>
-                                                      {item.uuid}
-                                                  </span>
-                                                </Tooltip>*/}
                                                         <Popup className='leaflet-popup-content-wrapper2'
                                                                style={{fontSize: 11}}>{item.uuid}</Popup>
                                                     </Marker>
 
-                                                    {/*@todo:라인을 그리는 부분...*/}
-                                                    {/*@todo:라인을 그리는 부분...*/}
-                                                    {/*@todo:라인을 그리는 부분...*/}
+                                                    {/*@todo:Render lines....*/}
+                                                    {/*@todo:Render lines....*/}
+                                                    {/*@todo:Render lines....*/}
                                                     <Polyline
-                                                        dashArray={['10, 10']}
-                                                        id="132512"
+                                                        dashArray={['10, 18']}
+                                                        id={index}
                                                         positions={[
                                                             [item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
 
