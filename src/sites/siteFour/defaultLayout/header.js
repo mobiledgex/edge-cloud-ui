@@ -62,8 +62,8 @@ export default function Header(props) {
             <Toolbar style={{ backgroundColor: '#3B3F47' }}>
 
                 {props.open ? null :
-                    <Typography variant="h6" noWrap style={{marginRight:20}}>
-                        <Image wrapped size='small' src='/assets/brand/logo_mex.svg' />
+                    <Typography variant="h6" noWrap style={{marginLeft:-14, marginRight:20}}>
+                        <Image  size='mini' src='/assets/brand/X_Logo_green.svg' />
                     </Typography>
                 }
                 <IconButton
