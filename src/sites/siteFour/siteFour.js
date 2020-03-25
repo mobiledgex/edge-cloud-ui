@@ -65,7 +65,6 @@ let defaultMotion = { left: window.innerWidth / 2, top: window.innerHeight / 2, 
 
 const orgaSteps = organizationTutor();
 const cloudletSteps = CloudletTutor();
-let _self = null;
 
 const autoPolicy = [
     { key: 'Auto Provisioning Policy', text: 'Auto Provisioning Policy', value: 'Auto Provisioning Policy' },
@@ -75,7 +74,6 @@ const autoPolicy = [
 class SiteFour extends React.Component {
     constructor(props) {
         super(props);
-        _self = this;
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.state = {
             shouldShowBox: true,
@@ -201,50 +199,48 @@ class SiteFour extends React.Component {
         //브라우져 입력창에 주소 기록
         let mainPath = site;
         let subPath = 'pg=0';
-        _self.props.handleChangeViewBtn(false)
+        this.props.handleChangeViewBtn(false)
 
-        //_self.props.handleChangeClickCity([]);
-        _self.props.handleSelectOrg('')
-        _self.props.handleUserRole('')
+        //this.props.handleChangeClickCity([]);
+        this.props.handleSelectOrg('')
+        this.props.handleUserRole('')
 
-        _self.props.history.push({
+        this.props.history.push({
             pathname: mainPath,
             search: subPath,
             state: { some: 'state' }
         });
-        _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
+        this.props.history.location.search = subPath;
+        this.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
     }
 
     gotoUrl(site, subPath) {
         let mainPath = site;
-        _self.props.history.push({
+        this.props.history.push({
             pathname: site,
             search: subPath
         });
-        _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
-        _self.setState({ page: subPath })
+        this.props.history.location.search = subPath;
+        this.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
+        this.setState({ page: subPath })
     }
 
     handleItemClick(id, label, pg, role) {
         localStorage.setItem('selectMenu', label)
-        _self.setState({ menuClick: true })
-        _self.props.handleDetail({ data: null, viewMode: 'listView' })
-        _self.props.handleChangeViewBtn(false);
-        _self.props.handleChangeClickCity([]);
-        _self.props.handleChangeComputeItem(label);
-        _self.props.handleSearchValue('')
-        _self.props.handleChangeRegion('All')
-        _self.props.history.push({
+        this.setState({ menuClick: true })
+        this.props.handleDetail({ data: null, viewMode: 'listView' })
+        this.props.handleChangeViewBtn(false);
+        this.props.handleChangeClickCity([]);
+        this.props.handleChangeComputeItem(label);
+        this.props.handleSearchValue('')
+        this.props.handleChangeRegion('All')
+        this.props.history.push({
             pathname: '/site4',
             search: "pg=" + pg
         });
-        let mainPath = '/site4';
-        let subPath = 'pg=' + pg;
-        _self.props.history.location.search = "pg=" + pg;
-        _self.props.handleChangeStep(pg)
-        _self.setState({ page: 'pg=' + pg, activeItem: label, headerTitle: label, intoCity: false })
+        this.props.history.location.search = "pg=" + pg;
+        this.props.handleChangeStep(pg)
+        this.setState({ page: 'pg=' + pg, activeItem: label, headerTitle: label, intoCity: false })
     }
 
 
@@ -288,8 +284,8 @@ class SiteFour extends React.Component {
         if (mcRequest) {
             if (mcRequest.response) {
                 let response = mcRequest.response;
-                _self.props.handleLoadingSpinner();
-                _self.controllerOptions(response.data);
+                this.props.handleLoadingSpinner();
+                this.controllerOptions(response.data);
             }
         }
     }
@@ -323,7 +319,7 @@ class SiteFour extends React.Component {
             })
         }
         //잠시 막음 : superuser 일 때만 데이터 불러옴.
-        //if(arr.length > 0) _self.setState({regions: arr})
+        //if(arr.length > 0) this.setState({regions: arr})
     }
 
     menuAddItem = () => (
@@ -456,12 +452,12 @@ class SiteFour extends React.Component {
     }
 
     getAdminInfo = async (token) => {
-        serviceMC.sendRequest(_self, {
+        serviceMC.sendRequest(this, {
             token: token,
             method: serviceMC.getEP().SHOW_CONTROLLER
         }, this.receiveControllerResult);
-        //serviceMC.sendRequest(_self, {token: token, method: serviceMC.getEP().SHOW_ROLE}, this.receiveAdminInfo)
-        _self.setState({ currentVersion: process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'v0.0.0' })
+        //serviceMC.sendRequest(this, {token: token, method: serviceMC.getEP().SHOW_ROLE}, this.receiveAdminInfo)
+        this.setState({ currentVersion: process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'v0.0.0' })
     }
 
     onClickBackBtn = () => {
@@ -579,24 +575,24 @@ class SiteFour extends React.Component {
         if (formKey.length) {
             if (nextProps.formInfo[formKey[0]]['submitSucceeded']) {
                 if (nextProps.formInfo[formKey[0]]['submitSucceeded'] === true) {
-                    _self.setState({ stepsEnabled: false })
+                    this.setState({ stepsEnabled: false })
                 }
             }
         }
         if (tutorial === 'done') {
-            //_self.setState({stepsEnabled:false})
+            //this.setState({stepsEnabled:false})
         }
         //
         let enable = true;
         setTimeout(() => {
             let elem = document.getElementById('animationWrapper')
             if (elem) {
-                //_self.makeGhost(elem, _self)
+                //this.makeGhost(elem, this)
 
             }
-            if (enable && !_self.state.learned && !tutorial) {
-                _self.enalbeSteps();
-                _self.setState({ stepsEnabled: true, learned: true })
+            if (enable && !this.state.learned && !tutorial) {
+                this.enalbeSteps();
+                this.setState({ stepsEnabled: true, learned: true })
                 localStorage.setItem('TUTORIAL', 'done')
             }
 
@@ -614,14 +610,14 @@ class SiteFour extends React.Component {
         if (nextProps.regionInfo.region.length && !this.state.regionToggle) {
 
             let getRegions = []
-            _self.setState({ regionToggle: true })
+            this.setState({ regionToggle: true })
             if (nextProps.regionInfo.region) {
                 nextProps.regionInfo.region.map((region, i) => {
                     getRegions.push({ key: i + 2, text: region, value: region })
                 })
             }
-            let newRegions = Object.assign([], _self.state.regions).concat(getRegions)
-            _self.setState({ regions: newRegions })
+            let newRegions = Object.assign([], this.state.regions).concat(getRegions)
+            this.setState({ regions: newRegions })
 
         }
         if (nextProps.clickCity.length > 0) {
@@ -650,7 +646,8 @@ class SiteFour extends React.Component {
         this.setState({ learned: false })
     }
 
-    menuItemViewHide = (item, i, activeItem, orgMenu) => (
+    menuItemViewHide = (item, i, activeItem, orgMenu) => {
+        return(
         (this.state.hideLeftMenu) ?
             <Popup
                 className="table_actions_tooltip"
@@ -662,10 +659,12 @@ class SiteFour extends React.Component {
             />
             :
             this.menuItemView(item, i, activeItem, orgMenu)
-    )
+    )}
 
     //compute page menu view
-    menuItemView = (item, i, activeItem, orgMenu) => (
+    menuItemView = (item, i, activeItem, orgMenu) => {
+        
+        return(
         <Menu.Item
             className={'leftMenu_' + item.label}
             key={i}
@@ -709,7 +708,7 @@ class SiteFour extends React.Component {
             </div>
         </Menu.Item>
 
-    )
+    )}
 
     searchClick = (e) => {
         this.props.handleSearchValue(e.target.value, this.state.searchChangeValue)
@@ -735,7 +734,7 @@ class SiteFour extends React.Component {
     }
 
     resetMotion() {
-        let self = _self;
+        let self = this;
         this.setState({ setMotion: defaultMotion })
         let nextPosX = 15
         let nextPosY = 180;
@@ -751,7 +750,7 @@ class SiteFour extends React.Component {
 
     onChangeRegion = (e, { value }) => {
 
-        _self.props.handleChangeRegion(value)
+        this.props.handleChangeRegion(value)
     }
 
 
@@ -797,11 +796,11 @@ class SiteFour extends React.Component {
     ]
 
     onExit() {
-        _self.setState({ stepsEnabled: false })
+        this.setState({ stepsEnabled: false })
     }
 
     orgTypeLegendShow = () => {
-        _self.setState({ openLegend: true })
+        this.setState({ openLegend: true })
     }
     closeLegend = () => {
         this.setState({ openLegend: false })
@@ -866,13 +865,13 @@ class SiteFour extends React.Component {
     getDataAudit = () => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({ devData: [] })
-        _self.loadCount = 0;
-        serviceMC.sendRequest(_self, {
+        this.loadCount = 0;
+        serviceMC.sendRequest(this, {
             token: store.userToken,
             method: serviceMC.getEP().SHOW_SELF,
             data: '{}',
             showMessage: false
-        }, _self.receiveResult)
+        }, this.receiveResult)
     }
 
     onPolicyChange = (value) => {
@@ -1050,7 +1049,8 @@ class SiteFour extends React.Component {
                                                 ))
                                                 :
                                                 (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer') ?
-                                                    this.menuItems.map((item, i) => (
+                                                   
+                                                this.menuItems.map((item, i) => (
                                                         this.menuItemViewHide(item, i, localStorage.selectMenu, false)
                                                     ))
                                                     :

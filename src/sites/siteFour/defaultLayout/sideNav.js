@@ -45,7 +45,8 @@ import PrivacyPolicy from '../policies/privacyPolicy/privacyPolicyList';
 import PageMonitoringMain from '../monitoring/PageMonitoringMain'
 
 import { Collapse } from '@material-ui/core';
-import { Grid, Menu, Segment, Image } from 'semantic-ui-react';
+import { Image } from 'semantic-ui-react';
+import PopLegendViewer from '../../../container/popLegendViewer';
 
 const drawerWidth = 250;
 
@@ -131,6 +132,7 @@ export default function MiniDrawer(props) {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const [expand, setExpand] = React.useState(false);
+    const [openLegend, setOpenLegend] = React.useState(false);
 
     const [page, setPage] = React.useState(defaultPage());
 
@@ -163,36 +165,76 @@ export default function MiniDrawer(props) {
 
     const organizationInfo = () => {
         return (
-            localStorage.selectRole ?
-                <div className="markBox">
-                    {
-                        (localStorage.selectRole === 'AdminManager') ?
-                            <div className="mark markA markS">S</div>
-                            :
-                            (localStorage.selectRole === 'DeveloperManager') ?
-                                <div className="mark markD markM">M</div>
-                                :
-                                (localStorage.selectRole === 'DeveloperContributor') ?
-                                    <div className="mark markD markC">C</div>
+            <ListItem onClick={(e)=>{setOpenLegend(true)}}>
+                <ListItemIcon>
+                    {localStorage.selectRole ?
+                        <div className="markBox">
+                            {
+                                (localStorage.selectRole === 'AdminManager') ?
+                                    <div className="mark markA markS">S</div>
                                     :
-                                    (localStorage.selectRole === 'DeveloperViewer') ?
-                                        <div className="mark markD markV">V</div>
+                                    (localStorage.selectRole === 'DeveloperManager') ?
+                                        <div className="mark markD markM">M</div>
                                         :
-                                        (localStorage.selectRole === 'OperatorManager') ?
-                                            <div className="mark markO markM">M</div>
+                                        (localStorage.selectRole === 'DeveloperContributor') ?
+                                            <div className="mark markD markC">C</div>
                                             :
-                                            (localStorage.selectRole === 'OperatorContributor') ?
-                                                <div className="mark markO markC">C</div>
+                                            (localStorage.selectRole === 'DeveloperViewer') ?
+                                                <div className="mark markD markV">V</div>
                                                 :
-                                                (localStorage.selectRole === 'OperatorViewer') ?
-                                                    <div className="mark markO markV">V</div>
+                                                (localStorage.selectRole === 'OperatorManager') ?
+                                                    <div className="mark markO markM">M</div>
                                                     :
-                                                    <div className="mark markA markS">?</div>
-                    }
-                </div>
-                : null
+                                                    (localStorage.selectRole === 'OperatorContributor') ?
+                                                        <div className="mark markO markC">C</div>
+                                                        :
+                                                        (localStorage.selectRole === 'OperatorViewer') ?
+                                                            <div className="mark markO markV">V</div>
+                                                            :
+                                                            <div className="mark markA markS">?</div>
+                            }
+                        </div> : null}
+                </ListItemIcon>
+                <ListItemText>
+                    <strong style={{ color: '#BFC0C2', fontSize: 15 }}> {localStorage.selectRole && localStorage.selectRole != 'null' ? localStorage.selectRole : 'Select Organization'}</strong>
+                </ListItemText>
+            </ListItem>
 
         )
+    }
+
+    const menuList = () => {
+        return options.map((option, i) => (
+            option.divider ?
+                <Divider key={i} /> :
+                option.roles.includes(getUserRole()) ?
+                    <div key={i}>
+                        {showOptionForm(i, option)}
+                        {option.subOptions ?
+                            <Collapse in={expand} timeout="auto" unmountOnExit>
+                                <List component="div" disablePadding>
+                                    {option.subOptions.map((subOption, j) => (
+                                        showOptionForm(j, subOption)
+                                    ))}
+
+                                </List>
+                            </Collapse> : null}
+                    </div> : null
+        ))
+    }
+
+    const versionInfo = () => (
+        <div style={{ position: 'absolute', bottom: 5, marginLeft: 10, color: '#B1B2B4' }}>
+            {process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'}
+        </div>
+    )
+
+    /**
+     * Legend Block
+     * * */
+
+    const closeLegend = () => {
+        setOpenLegend(false)
     }
 
     return (
@@ -218,39 +260,10 @@ export default function MiniDrawer(props) {
                         {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                     </IconButton>
                 </div>
-                <List style={{
-                    backgroundColor: '#292c33', height: '100%'
-                }}>
-                    <ListItem>
-                        <ListItemIcon>
-                            {organizationInfo()}
-                        </ListItemIcon>
-                        <ListItemText>
-                            <strong style={{ color:'#BFC0C2', fontSize: 15 }}> {localStorage.selectRole && localStorage.selectRole != 'null' ? localStorage.selectRole : 'Select Organization'}</strong>
-                        </ListItemText>
-                    </ListItem>
-                    {options.map((option, i) => (
-                        option.divider ?
-                            <Divider key={i} /> :
-                            option.roles.includes(getUserRole()) ?
-                                <div key={i}>
-                                    {showOptionForm(i, option)}
-                                    {option.subOptions ?
-                                        <Collapse in={expand} timeout="auto" unmountOnExit>
-                                            <List component="div" disablePadding>
-                                                {option.subOptions.map((subOption, j) => (
-                                                    showOptionForm(j, subOption)
-                                                ))}
-
-                                            </List>
-                                        </Collapse> : null}
-                                </div> : null
-                    ))}
-
-
-                    <div style={{ position: 'absolute', bottom: 5, marginLeft: 10, color: '#B1B2B4' }}>
-                        {process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'}
-                    </div>
+                <List style={{backgroundColor: '#292c33', height: '100%'}}>
+                    {organizationInfo()}
+                    {menuList()}
+                    {versionInfo()}
                 </List>
             </Drawer>
             <main className={classes.content}>
@@ -259,6 +272,7 @@ export default function MiniDrawer(props) {
                     {page}
                 </div>
             </main>
+            <PopLegendViewer dimmer={false} open={openLegend} close={closeLegend}></PopLegendViewer>
         </div>
     );
 }

@@ -1,19 +1,16 @@
 import React from 'react';
 import {
-    Image,
     Header,
     Menu,
     Dropdown,
     Button,
     Popup,
     Label,
-    Modal,
     Icon
 } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
 
 import { withRouter } from 'react-router-dom';
-import MaterialIcon from 'material-icons-react';
 import { Motion, spring } from "react-motion";
 import { Steps, Hints } from 'intro.js-react';
 
@@ -21,14 +18,12 @@ import { Steps, Hints } from 'intro.js-react';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 
-import { GridLoader, ClipLoader } from "react-spinners";
+import { GridLoader } from "react-spinners";
 
 import SideNav from './defaultLayout/sideNav'
 
 
-import PopLegendViewer from '../../container/popLegendViewer';
 import * as serviceMC from '../../services/serviceMC';
-import * as reducer from '../../utils'
 
 import { organizationTutor, CloudletTutor } from '../../tutorial';
 
@@ -45,12 +40,10 @@ let defaultMotion = { left: window.innerWidth / 2, top: window.innerHeight / 2, 
 
 const orgaSteps = organizationTutor();
 const cloudletSteps = CloudletTutor();
-let _self = null;
 
 class SiteFour extends React.Component {
     constructor(props) {
         super(props);
-        _self = this;
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.state = {
             shouldShowBox: true,
@@ -68,9 +61,6 @@ class SiteFour extends React.Component {
             regions: [
                 { key: 1, text: 'All', value: 'All' },
             ],
-            nextPosX: window.innerWidth / 2,
-            nextPosY: window.innerHeight / 2,
-            nextOpacity: 1,
             setMotion: defaultMotion,
             OrganizationName: '',
             adminShow: false,
@@ -83,57 +73,22 @@ class SiteFour extends React.Component {
             stepsEnabled: false,
             initialStep: 0,
             steps: [],
-            autoPolicy: localStorage.getItem('autoPolicy') ? localStorage.getItem('autoPolicy') : 'Auto Provisioning Policy',
-            openLegend: false,
-
             enable: false,
             hideNext: true,
-            camBtnStat: 'leave',
             regionToggle: false,
             intoCity: false,
             fullPage: null,
             menuW: 240,
-            hideLeftMenu: false,
-            animate: false,
             selectRole: ''
         };
 
         this.headerH = 70;
-        //this.menuW = 240;
         this.hgap = 0;
-        this.OrgMenu = [
-            { label: 'Organizations', icon: 'people', pg: 0 },
-            { label: 'Users & Roles', icon: 'assignment_ind', pg: 1 },
-            { label: 'Accounts', icon: 'dvr', pg: 101 }
-        ]
-        this.menuItemsAll = [ //admin menu
-            { label: 'Cloudlets', icon: 'cloud_queue', pg: 2 },
-            { label: 'Cloudlet Pools', icon: 'cloud_circle', pg: 7 },
-            { label: 'Flavors', icon: 'free_breakfast', pg: 3 },
-            { label: 'Cluster Instances', icon: 'storage', pg: 4 },
-            { label: 'Apps', icon: 'apps', pg: 5 },
-            { label: 'App Instances', icon: 'sports_esports', pg: 6 },
-            { label: 'Monitoring', icon: 'tv', pg: 'Monitoring' },
-            { label: 'Policies', icon: 'playlist_play', pg: 8, dropdown: [{ label: 'Auto Provisioning Policy' }] },
-            { label: 'Audit Logs', icon: 'check', pg: 'audits' }
-        ]
-        this.menuItems = [ //developer menu
-            reducer.getFindIndex(this.menuItemsAll, 'label', 'Cloudlets'),
-            reducer.getFindIndex(this.menuItemsAll, 'label', 'Flavors'),
-            reducer.getFindIndex(this.menuItemsAll, 'label', 'Cluster Instances'),
-            reducer.getFindIndex(this.menuItemsAll, 'label', 'Apps'),
-            reducer.getFindIndex(this.menuItemsAll, 'label', 'App Instances'),
-            reducer.getFindIndex(this.menuItemsAll, 'label', 'Monitoring'),
-            reducer.getFindIndex(this.menuItemsAll, 'label', 'Policies'),
-            reducer.getFindIndex(this.menuItemsAll, 'label', 'Audit Logs'),
-        ]
+       
+       
 
         this.menuArr = ['Organization', 'User Roles', 'Cloudlets', 'Cloudlet Pools', 'Flavors', 'Cluster Instances', 'Apps', 'App Instances']
-        this.auth_three = [ //operator menu
-            reducer.getFindIndex(this.menuItemsAll, 'label', 'Cloudlets'),
-            reducer.getFindIndex(this.menuItemsAll, 'label', 'Monitoring'),
-            reducer.getFindIndex(this.menuItemsAll, 'label', 'Audit Logs'),
-        ] //OperatorManager, OperatorContributor, OperatorViewer
+       
 
         this.auth_list = [
             { role: 'AdminManager', view: [] },
@@ -164,98 +119,41 @@ class SiteFour extends React.Component {
     }
 
 
-    //go to
-    gotoPreview(site) {
-        //브라우져 입력창에 주소 기록
-        let mainPath = site;
-        let subPath = 'pg=0';
-        _self.props.handleChangeViewBtn(false)
-
-        //_self.props.handleChangeClickCity([]);
-        _self.props.handleSelectOrg('')
-        _self.props.handleUserRole('')
-
-        _self.props.history.push({
-            pathname: mainPath,
-            search: subPath,
-            state: { some: 'state' }
-        });
-        _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
-    }
-
     gotoUrl(site, subPath) {
         let mainPath = site;
-        _self.props.history.push({
+        this.props.history.push({
             pathname: site,
             search: subPath
         });
-        _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
-        _self.setState({ page: subPath })
+        this.props.history.location.search = subPath;
+        this.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
+        this.setState({ page: subPath })
     }
 
     handleItemClick(id, label, pg, role) {
         localStorage.setItem('selectMenu', label)
-        _self.setState({ menuClick: true })
-        _self.props.handleDetail({ data: null, viewMode: 'listView' })
-        _self.props.handleChangeViewBtn(false);
-        _self.props.handleChangeClickCity([]);
-        _self.props.handleChangeComputeItem(label);
-        _self.props.handleSearchValue('')
-        _self.props.handleChangeRegion('All')
-        _self.props.history.push({
+        this.setState({ menuClick: true })
+        this.props.handleDetail({ data: null, viewMode: 'listView' })
+        this.props.handleChangeViewBtn(false);
+        this.props.handleChangeClickCity([]);
+        this.props.handleChangeComputeItem(label);
+        this.props.handleSearchValue('')
+        this.props.handleChangeRegion('All')
+        this.props.history.push({
             pathname: '/site4',
             search: "pg=" + pg
         });
-        _self.props.history.location.search = "pg=" + pg;
-        _self.props.handleChangeStep(pg)
-        _self.setState({ page: 'pg=' + pg, activeItem: label, headerTitle: label, intoCity: false })
-    }
-
-
-    onHandleRegistry() {
-        if (localStorage.selectMenu === 'Organizations') {
-            this.setState({ page: 'pg=newOrg' })
-            this.gotoUrl('/site4', 'pg=newOrg')
-        } else if (localStorage.selectMenu === 'Cloudlets') {
-            this.setState({ page: 'pg=' })
-            this.gotoUrl('/site4', 'pg=createCloudlet')
-        } else if (localStorage.selectMenu === 'Apps') {
-            this.setState({ page: 'pg=createApp' })
-            this.gotoUrl('/site4', 'pg=createApp')
-        } else if (localStorage.selectMenu === 'App Instances') {
-            this.setState({ page: 'pg=createAppInst' })
-            this.gotoUrl('/site4', 'pg=createAppInst')
-        } else if (localStorage.selectMenu === '') {
-            this.setState({ page: 'pg=createAppInst' })
-            this.gotoUrl('/site4', 'pg=createAppInst')
-        } else if (localStorage.selectMenu === 'Flavors') {
-            this.setState({ page: 'pg=createFlavor' })
-            this.gotoUrl('/site4', 'pg=createFlavor')
-        } else if (localStorage.selectMenu === 'Cluster Instances') {
-            this.setState({ page: 'pg=createClusterInst' })
-            this.gotoUrl('/site4', 'pg=createClusterInst')
-        } else if (localStorage.selectMenu === 'Cloudlet Pools') {
-            this.setState({ page: 'pg=createCloudletPool' })
-            this.gotoUrl('/site4', 'pg=createCloudletPool')
-        } else if (localStorage.selectMenu === 'Policies') {
-            let pg = this.state.autoPolicy === 'Auto Provisioning Policy' ? 'createPolicy' : 'createPrivacyPolicy';
-            this.setState({ page: `pg=${pg}` })
-            this.gotoUrl('/site4', `pg=${pg}`)
-        } else {
-            this.props.handleInjectDeveloper('newRegist');
-        }
-        this.props.handleChangeClickCity([])
-        this.setState({ intoCity: false })
+        this.props.history.location.search = "pg=" + pg;
+        this.props.handleChangeStep(pg)
+        this.setState({ page: 'pg=' + pg, activeItem: label, headerTitle: label, intoCity: false })
     }
 
     receiveControllerResult(mcRequest) {
         if (mcRequest) {
             if (mcRequest.response) {
                 let response = mcRequest.response;
-                _self.props.handleLoadingSpinner();
-                _self.controllerOptions(response.data);
+                this.props.handleLoadingSpinner();
+                this.controllerOptions(response.data);
             }
         }
     }
@@ -288,50 +186,7 @@ class SiteFour extends React.Component {
                 })
             })
         }
-        //잠시 막음 : superuser 일 때만 데이터 불러옴.
-        //if(arr.length > 0) _self.setState({regions: arr})
     }
-
-    menuAddItem = () => (
-        <Button.Group vertical>
-
-            <Modal trigger={<Button>Create Control</Button>} centered={false}>
-                <Modal.Header>Select a Photo</Modal.Header>
-                <Modal.Content image>
-                    <Image wrapped size='medium' src='/images/avatar/large/rachel.png' />
-                    <Modal.Description>
-                        <Header>Default Profile Image</Header>
-                        <p>We've found the following gravatar image associated with your e-mail address.</p>
-                        <p>Is it okay to use this photo?</p>
-                    </Modal.Description>
-                </Modal.Content>
-            </Modal>
-            <Button>Create User</Button>
-            <Button>New Organization</Button>
-        </Button.Group>
-
-    )
-
-    menuSupport = () => (
-        <Button.Group vertical>
-            <Button>Send Email to : support@mobiledgex.com</Button>
-        </Button.Group>
-
-    )
-
-    getHelpPopup = (key) => (
-        <Popup
-            trigger={<Icon name='question circle outline' size='small' style={{ marginTop: 0, paddingLeft: 10 }} />}
-            content=
-            {(key == 'Cloudlets') ? 'A Cloudlet is a set of compute resources at a particular location, provided by an Operator.'
-                : (key == 'Cluster Instances') ? 'ClusterInst is an instance of a Cluster on a Cloudlet. It is defined by a Cluster, Cloudlet, and Developer key.'
-                    : (key == 'Apps') ? 'App belongs to developers and is used to provide information about their application.'
-                        : (key == 'App Instances') ? 'AppInst is an instance of an App on a Cloudlet where it is defined by an App plus a ClusterInst key. Many of the fields here are inherited from the App definition.'
-                            : key
-            }
-            inverted
-        />
-    )
 
     enalbeSteps = () => {
         let enable = false;
@@ -422,21 +277,13 @@ class SiteFour extends React.Component {
     }
 
     getAdminInfo = async (token) => {
-        serviceMC.sendRequest(_self, {
+        serviceMC.sendRequest(this, {
             token: token,
             method: serviceMC.getEP().SHOW_CONTROLLER
         }, this.receiveControllerResult);
-        //serviceMC.sendRequest(_self, {token: token, method: serviceMC.getEP().SHOW_ROLE}, this.receiveAdminInfo)
-        _self.setState({ currentVersion: process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'v0.0.0' })
+        //serviceMC.sendRequest(this, {token: token, method: serviceMC.getEP().SHOW_ROLE}, this.receiveAdminInfo)
+        this.setState({ currentVersion: process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'v0.0.0' })
     }
-
-    onClickBackBtn = () => {
-        this.setState({ intoCity: false })
-        this.props.handleChangeClickCity([]);
-        this.props.handleResetMap('back')
-
-    }
-
 
     UNSAFE_componentWillMount() {
         let store = JSON.parse(localStorage.PROJECT_INIT);
@@ -445,7 +292,6 @@ class SiteFour extends React.Component {
             headerTitle: (localStorage.selectMenu) ? localStorage.selectMenu : 'Organizations'
         })
 
-        this.disableBtn();
 
         if (store) {
             this.getAdminInfo(store.userToken);
@@ -545,24 +391,19 @@ class SiteFour extends React.Component {
         if (formKey.length) {
             if (nextProps.formInfo[formKey[0]]['submitSucceeded']) {
                 if (nextProps.formInfo[formKey[0]]['submitSucceeded'] === true) {
-                    _self.setState({ stepsEnabled: false })
+                    this.setState({ stepsEnabled: false })
                 }
             }
         }
         if (tutorial === 'done') {
-            //_self.setState({stepsEnabled:false})
+            //this.setState({stepsEnabled:false})
         }
         //
         let enable = true;
-        setTimeout(() => {
-            let elem = document.getElementById('animationWrapper')
-            if (elem) {
-                //_self.makeGhost(elem, _self)
-
-            }
-            if (enable && !_self.state.learned && !tutorial) {
-                _self.enalbeSteps();
-                _self.setState({ stepsEnabled: true, learned: true })
+        setTimeout(() => { 
+            if (enable && !this.state.learned && !tutorial) {
+                this.enalbeSteps();
+                this.setState({ stepsEnabled: true, learned: true })
                 localStorage.setItem('TUTORIAL', 'done')
             }
 
@@ -580,14 +421,14 @@ class SiteFour extends React.Component {
         if (nextProps.regionInfo.region.length && !this.state.regionToggle) {
 
             let getRegions = []
-            _self.setState({ regionToggle: true })
+            this.setState({ regionToggle: true })
             if (nextProps.regionInfo.region) {
                 nextProps.regionInfo.region.map((region, i) => {
                     getRegions.push({ key: i + 2, text: region, value: region })
                 })
             }
-            let newRegions = Object.assign([], _self.state.regions).concat(getRegions)
-            _self.setState({ regions: newRegions })
+            let newRegions = Object.assign([], this.state.regions).concat(getRegions)
+            this.setState({ regions: newRegions })
 
         }
         if (nextProps.clickCity.length > 0) {
@@ -604,150 +445,14 @@ class SiteFour extends React.Component {
 
     }
 
-
-    componentDidUpdate() {
-        if (localStorage.selectRole && this.state.menuClick) {
-            this.disableBtn();
-            this.setState({ menuClick: false })
-        }
-    }
-
     componentWillUnmount() {
         this.setState({ learned: false })
     }
 
-    menuItemViewHide = (item, i, activeItem, orgMenu) => (
-        (this.state.hideLeftMenu) ?
-            <Popup
-                className="table_actions_tooltip"
-                content={item.label}
-                position='right center'
-                trigger={
-                    this.menuItemView(item, i, activeItem, orgMenu)
-                }
-            />
-            :
-            this.menuItemView(item, i, activeItem, orgMenu)
-    )
-
-    //compute page menu view
-    menuItemView = (item, i, activeItem, orgMenu) => (
-        item.dropdown ?
-            <div className="left_menu_item" style={{ marginLeft: 14 }}><MaterialIcon icon={item.icon} />
-                <Dropdown className={'leftMenu_' + item.label} text={item.label} pointing='left'>
-                    <Dropdown.Menu >
-                        {item.dropdown.map((drop, i) => {
-                            return (
-                                <Dropdown.Item key={i}>{drop.label}</Dropdown.Item>
-                            )
-                        })
-                        }
-                    </Dropdown.Menu>
-                </Dropdown>
-            </div> :
-            <Menu.Item
-                className={'leftMenu_' + item.label}
-                key={i}
-                name={item.label}
-                active={activeItem === item.label}
-                onClick={() => this.handleItemClick(i, item.label, item.pg, localStorage.selectRole)}
-            >
-                <div className="left_menu_item">
-                    {orgMenu && <MaterialIcon icon={item.icon} />}
-                    {!orgMenu && (localStorage.selectRole === 'AdminManager') && <MaterialIcon icon={item.icon} />}
-                    {!orgMenu && (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer') &&
-                        <MaterialIcon icon={item.icon} />}
-                    {!orgMenu && (localStorage.selectRole === 'OperatorManager' || localStorage.selectRole === 'OperatorContributor' || localStorage.selectRole === 'OperatorViewer') &&
-                        <MaterialIcon icon={item.icon} />}
-                    <div className='label'>{item.label}</div>
-                    {(activeItem === item.label) ?
-                        <div style={{ position: 'absolute', right: '12px', top: '12px' }}>
-                            <ClipLoader
-                                size={20}
-                                sizeUnit={'px'}
-                                color={'rgba(136,221,0,.85)'}
-                                loading={this.props.loadingSpinner}
-                            // loading={true}
-                            />
-                            {(item.label === 'Audit Log' && this.props.audit > 0) ?
-                                <Label circular color={'red'} key={'red'}>
-                                    {this.props.audit}
-                                </Label> : null}
-                        </div>
-
-                        : null}
-
-
-                    <div style={{ position: 'absolute', right: '12px', top: '12px' }}>
-                        {(item.label === 'Audit Log' && this.props.audit > 0) ?
-                            <Label circular color={'red'} key={'red'}>
-                                {this.props.audit}
-                            </Label> : null}
-                    </div>
-
-                </div>
-            </Menu.Item>
-
-    )
-
-    searchClick = (e) => {
-        this.props.handleSearchValue(e.target.value, this.state.searchChangeValue)
-    }
-
-    makeGhost(elem, self) {
-
-        let child = document.createElement('div')
-        child.style.cssText = 'position:absolute; width:100px; height:30px; line-height:30px; text-align:center; opacity:0.8; left:0px; z-index:100; background:#aaaaaa; border-radius:5px';
-        child.innerHTML = '<div>Cloudlet Name</div>'
-        elem.appendChild(child);
-        //
-        let nextPosX = 15
-        let nextPosY = 90;
-        setTimeout(() => self.setState({
-            setMotion: {
-                left: spring(nextPosX, self.speed),
-                top: spring(nextPosY, self.speed),
-                position: 'absolute',
-                opacity: 0
-            }
-        }), 200);
-    }
-
-    resetMotion() {
-        let self = _self;
-        this.setState({ setMotion: defaultMotion })
-        let nextPosX = 15
-        let nextPosY = 180;
-        setTimeout(() => self.setState({
-            setMotion: {
-                left: spring(nextPosX, self.speed),
-                top: spring(nextPosY, self.speed),
-                position: 'absolute',
-                opacity: spring(0, self.speedOpacity)
-            }
-        }), 500);
-    }
-
     onChangeRegion = (e, { value }) => {
 
-        _self.props.handleChangeRegion(value)
+        this.props.handleChangeRegion(value)
     }
-
-
-    disableBtn = () => {
-        this.auth_list.map((item, i) => {
-            if (item.role == localStorage.selectRole) {
-                item.view.map((view) => {
-                    if (this.menuArr[view] == localStorage.selectMenu) {
-                        this.props.handleChangeViewBtn(true);
-                    }
-                })
-            }
-        })
-
-
-    }
-
     searchChange = (e, { value }) => {
         this.setState({ searchChangeValue: value })
         this.props.handleSearchValue(this.props.searchValue, value)
@@ -776,14 +481,7 @@ class SiteFour extends React.Component {
     ]
 
     onExit() {
-        _self.setState({ stepsEnabled: false })
-    }
-
-    orgTypeLegendShow = () => {
-        _self.setState({ openLegend: true })
-    }
-    closeLegend = () => {
-        this.setState({ openLegend: false })
+        this.setState({ stepsEnabled: false })
     }
 
 
@@ -845,13 +543,13 @@ class SiteFour extends React.Component {
     getDataAudit = () => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({ devData: [] })
-        _self.loadCount = 0;
-        serviceMC.sendRequest(_self, {
+        this.loadCount = 0;
+        serviceMC.sendRequest(this, {
             token: store.userToken,
             method: serviceMC.getEP().SHOW_SELF,
             data: '{}',
             showMessage: false
-        }, _self.receiveResult)
+        }, this.receiveResult)
     }
 
     onPolicyChange = (value) => {
@@ -914,8 +612,6 @@ class SiteFour extends React.Component {
                         <SideNav onOptionClick={this.handleItemClick} email={this.state.email} data={this.props.userInfo.info} helpClick={this.enalbeSteps} gotoUrl={this.gotoUrl}/>
                     }
 
-                    <PopLegendViewer data={this.state.detailViewData} dimmer={false} open={this.state.openLegend}
-                        close={this.closeLegend} siteId={this.props.siteId}></PopLegendViewer>
                     <Motion defaultStyle={defaultMotion} style={this.state.setMotion}>
                         {interpolatingStyle => <div style={interpolatingStyle} id='animationWrapper'></div>}
                     </Motion>
@@ -930,7 +626,6 @@ const mapStateToProps = (state) => {
     if (state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
         viewMode = state.changeViewMode.mode.viewMode;
     }
-    let action = state.action;
     let tutorState = (state.tutorState) ? state.tutorState.state : null;
     let formInfo = (state.form) ? state.form : null;
     let submitInfo = (state.submitInfo) ? state.submitInfo : null;
@@ -981,9 +676,6 @@ const mapDispatchProps = (dispatch) => {
         },
         handleInjectData: (data) => {
             dispatch(actions.injectData(data))
-        },
-        handleInjectDeveloper: (data) => {
-            dispatch(actions.registDeveloper(data))
         },
         handleChangeViewBtn: (data) => {
             dispatch(actions.btnManagement(data))

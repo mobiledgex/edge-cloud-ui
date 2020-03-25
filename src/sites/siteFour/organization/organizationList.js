@@ -132,6 +132,10 @@ class OrganizationList extends React.Component {
             key.visible = true;
             key.customizedData = this.getManage;
         }
+        else
+        {
+            key.visible = false;
+        }
     }
 
     customizedData = () => {

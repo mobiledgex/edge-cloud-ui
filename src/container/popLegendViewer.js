@@ -1,7 +1,6 @@
 import React from 'react';
-import {Button, Divider, Modal, Grid, Table, Menu, Label, Icon} from "semantic-ui-react";
+import {Button, Divider, Modal, Grid, Table, Icon} from "semantic-ui-react";
 import TextareaAutosize from "react-textarea-autosize";
-import * as moment from 'moment';
 
 
 const roles =
@@ -231,14 +230,6 @@ export default class PopLegendViewer extends React.Component {
                             </Grid.Row>
                             <Grid.Row>
                                 <Table celled inverted selectable>
-                                    {/* <Table.Header>
-                                        <Table.Row>
-                                            <Table.HeaderCell>Name</Table.HeaderCell>
-                                            <Table.HeaderCell>Status</Table.HeaderCell>
-
-                                        </Table.Row>
-                                    </Table.Header> */}
-
                                     <Table.Body>
                                         <Table.Row>
                                             <Table.Cell style={{width:'35%'}}>Users</Table.Cell>
