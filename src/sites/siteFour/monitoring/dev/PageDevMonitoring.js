@@ -408,11 +408,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         componentDidMount = async () => {
-            /*  notification.info({
-                  message: 'To release or freeze a grid item,, double click the item!',
-                  placement: 'topLeft',
-                  top:100,
-              });*/
+
             this.setState({
                 loading: true,
                 bubbleChartLoader: true,
@@ -423,7 +419,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             /*DESC: FAKEDATA
             DESC: FAKEDATA*/
             //await this.loadInitDataForCluster__FOR__DEV();
-
 
             /*
             TODO: REAL DATA
