@@ -75,13 +75,13 @@ class SiteFour extends React.Component {
 
     gotoUrl(site, subPath) {
         let mainPath = site;
-        this.props.history.push({
+        _self.props.history.push({
             pathname: site,
             search: subPath
         });
-        this.props.history.location.search = subPath;
-        this.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
-        this.setState({ page: subPath })
+        _self.props.history.location.search = subPath;
+        _self.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
+        _self.setState({ page: subPath })
     }
 
     handleItemClick(id, label, pg, role) {
@@ -120,8 +120,8 @@ class SiteFour extends React.Component {
         if (mcRequest) {
             if (mcRequest.response) {
                 let response = mcRequest.response;
-                this.props.handleLoadingSpinner();
-                this.controllerOptions(response.data);
+                _self.props.handleLoadingSpinner();
+                _self.controllerOptions(response.data);
             }
         }
     }
@@ -130,18 +130,18 @@ class SiteFour extends React.Component {
         serviceMC.sendRequest(this, {
             token: token,
             method: serviceMC.getEP().SHOW_CONTROLLER
-        }, this.receiveControllerResult);
-        this.setState({ currentVersion: process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'v0.0.0' })
+        }, _self.receiveControllerResult);
+        _self.setState({ currentVersion: process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'v0.0.0' })
     }
 
     receiveAdminInfo = (mcRequest) => {
         if (mcRequest) {
             if (mcRequest.response) {
                 let response = mcRequest.response;
-                this.props.handleRoleInfo(response.data)
+                _self.props.handleRoleInfo(response.data)
                 response.data.map((item, i) => {
                     if (item.role.indexOf('Admin') > -1) {
-                        this.setState({ adminShow: true });
+                        _self.setState({ adminShow: true });
                         localStorage.setItem('selectRole', item.role)
                     }
                 })
@@ -153,14 +153,14 @@ class SiteFour extends React.Component {
         let enable = false;
         let currentStep = null;
 
-        if (this.props.viewMode === 'detailView') return;
+        if (_self.props.viewMode === 'detailView') return;
 
-        let site = this.props.siteName;
-        let userName = (this.props.userInfo && this.props.userInfo.info) ? this.props.userInfo.info.Name : '';
-        if (this.props.params.mainPath === "/site4" && this.props.params.subPath === "pg=newOrg") {
-            if (this.props.changeStep === '02') {
+        let site = _self.props.siteName;
+        let userName = (_self.props.userInfo && _self.props.userInfo.info) ? _self.props.userInfo.info.Name : '';
+        if (_self.props.params.mainPath === "/site4" && _self.props.params.subPath === "pg=newOrg") {
+            if (_self.props.changeStep === '02') {
                 currentStep = orgaSteps.stepsNewOrg2;
-            } else if (this.props.changeStep === '03') {
+            } else if (_self.props.changeStep === '03') {
                 currentStep = orgaSteps.stepsNewOrg3;
             } else {
                 currentStep = orgaSteps.stepsNewOrg;
@@ -168,8 +168,8 @@ class SiteFour extends React.Component {
 
 
             enable = true;
-        } else if (this.props.params.subPath === "pg=0") {
-            if (this.props.dataExist) {
+        } else if (_self.props.params.subPath === "pg=0") {
+            if (_self.props.dataExist) {
                 if (localStorage.selectRole === 'AdminManager') {
                     currentStep = orgaSteps.stepsOrgDataAdmin;
                 } else {
@@ -184,7 +184,7 @@ class SiteFour extends React.Component {
             }
 
             enable = true;
-        } else if (this.props.params.subPath === "pg=2") {
+        } else if (_self.props.params.subPath === "pg=2") {
             //Cloudlets
             if (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer') {
                 currentStep = cloudletSteps.stepsCloudletDev;
@@ -192,63 +192,63 @@ class SiteFour extends React.Component {
                 currentStep = cloudletSteps.stepsCloudlet;
             }
             enable = true;
-        } else if (this.props.params.subPath === "pg=3") {
+        } else if (_self.props.params.subPath === "pg=3") {
             //Flavors
             currentStep = orgaSteps.stepsFlavors;
             enable = true;
-        } else if (this.props.params.subPath === "pg=4") {
+        } else if (_self.props.params.subPath === "pg=4") {
             //Cluster Instances
             currentStep = orgaSteps.stepsClusterInst;
             enable = true;
-        } else if (this.props.params.subPath === "pg=5") {
+        } else if (_self.props.params.subPath === "pg=5") {
             //Apps
             currentStep = orgaSteps.stepsApp;
             enable = true;
-        } else if (this.props.params.subPath === "pg=6") {
+        } else if (_self.props.params.subPath === "pg=6") {
             //App Instances
             currentStep = orgaSteps.stepsAppInst;
             enable = true;
-        } else if (this.props.params.subPath === "pg=createClusterInst") {
+        } else if (_self.props.params.subPath === "pg=createClusterInst") {
             currentStep = orgaSteps.stepsClusterInstReg;
             enable = true;
-        } else if (this.props.params.subPath === "pg=createApp") {
+        } else if (_self.props.params.subPath === "pg=createApp") {
             currentStep = orgaSteps.stepsCreateApp;
             enable = true;
-        } else if (this.props.params.subPath === "pg=createAppInst") {
+        } else if (_self.props.params.subPath === "pg=createAppInst") {
             currentStep = orgaSteps.stepsCreateAppInst;
             enable = true;
-        } else if (this.props.params.subPath === "pg=createCloudlet") {
+        } else if (_self.props.params.subPath === "pg=createCloudlet") {
             currentStep = cloudletSteps.stepsCloudletReg;
             enable = true;
-        } else if (this.props.params.subPath === "pg=createFlavor") {
+        } else if (_self.props.params.subPath === "pg=createFlavor") {
             currentStep = orgaSteps.stepsCreateFlavor;
             enable = true;
         }
 
-        this.setState({ steps: currentStep })
+        _self.setState({ steps: currentStep })
 
-        let elmentName = (this.steps) ? currentStep : null;
-        //this.steps.props.options.hideNext = true;
+        let elmentName = (_self.steps) ? currentStep : null;
+        //_self.steps.props.options.hideNext = true;
         let element = (elmentName) ? document.getElementsByClassName(elmentName[0].element.replace('.', '')) : [];
         if (enable) {
             console.log("elementelement111", element)
-            this.setState({ stepsEnabled: true, enable: true })
+            _self.setState({ stepsEnabled: true, enable: true })
         }
 
     }
 
     UNSAFE_componentWillMount() {
         let store = JSON.parse(localStorage.PROJECT_INIT);
-        this.setState({
+        _self.setState({
             activeItem: (localStorage.selectMenu) ? localStorage.selectMenu : 'Organizations',
             headerTitle: (localStorage.selectMenu) ? localStorage.selectMenu : 'Organizations'
         })
 
 
         if (store) {
-            this.getAdminInfo(store.userToken);
+            _self.getAdminInfo(store.userToken);
         } else {
-            this.gotoUrl('/logout')
+            _self.gotoUrl('/logout')
         }
         setTimeout(() => {
             let elem = document.getElementById('animationWrapper')
@@ -256,26 +256,26 @@ class SiteFour extends React.Component {
             }
         }, 4000)
 
-        this.setState({ steps: orgaSteps.stepsZero, intoCity: false });
+        _self.setState({ steps: orgaSteps.stepsZero, intoCity: false });
         //
-        if (this.props.params.subPath !== 'pg=audits') {
-            this.getDataAudit();
+        if (_self.props.params.subPath !== 'pg=audits') {
+            _self.getDataAudit();
         }
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
         try {
-            this.setState({ bodyHeight: (window.innerHeight - this.headerH) })
-            this.setState({ contHeight: (nextProps.size.height - this.headerH) / 2 - this.hgap })
-            this.setState({ contWidth: (window.innerWidth - this.state.menuW) })
-            this.setState({ userToken: nextProps.userToken })
-            this.setState({ userName: (nextProps.userInfo && nextProps.userInfo.info) ? nextProps.userInfo.info.Name : null })
+            _self.setState({ bodyHeight: (window.innerHeight - _self.headerH) })
+            _self.setState({ contHeight: (nextProps.size.height - _self.headerH) / 2 - _self.hgap })
+            _self.setState({ contWidth: (window.innerWidth - _self.state.menuW) })
+            _self.setState({ userToken: nextProps.userToken })
+            _self.setState({ userName: (nextProps.userInfo && nextProps.userInfo.info) ? nextProps.userInfo.info.Name : null })
 
         } catch (e) {
 
         }
         if (nextProps.selectedOrg) {
-            this.setState({ selectOrg: nextProps.selectedOrg })
+            _self.setState({ selectOrg: nextProps.selectedOrg })
         }
 
         if (nextProps.params && nextProps.params.subPath) {
@@ -287,17 +287,17 @@ class SiteFour extends React.Component {
                 subPath = paths[0];
                 subParam = paths[1];
             }
-            this.setState({ page: subPath, OrganizationName: subParam })
+            _self.setState({ page: subPath, OrganizationName: subParam })
 
         }
 
         if (nextProps.viewMode && localStorage.selectRole.indexOf('Developer') === -1) {
-            this.setState({ viewMode: nextProps.viewMode })
+            _self.setState({ viewMode: nextProps.viewMode })
         } else {
-            this.setState({ viewMode: 'listView' })
+            _self.setState({ viewMode: 'listView' })
         }
 
-        if ((nextProps.alertInfo !== this.props.alertInfo) && nextProps.alertInfo.mode) {
+        if ((nextProps.alertInfo !== _self.props.alertInfo) && nextProps.alertInfo.mode) {
             Alert.closeAll();
             if (nextProps.alertInfo.mode === 'success') {
 
@@ -326,9 +326,9 @@ class SiteFour extends React.Component {
 
         //set filters
         if (nextProps.tableHeaders) {
-            this.setState({ showItem: false })
+            _self.setState({ showItem: false })
             if (nextProps.tableHeaders.length) {
-                this.setState({ tableHeaders: nextProps.tableHeaders })
+                _self.setState({ tableHeaders: nextProps.tableHeaders })
             } else {
 
             }
@@ -344,65 +344,65 @@ class SiteFour extends React.Component {
         if (formKey.length) {
             if (nextProps.formInfo[formKey[0]]['submitSucceeded']) {
                 if (nextProps.formInfo[formKey[0]]['submitSucceeded'] === true) {
-                    this.setState({ stepsEnabled: false })
+                    _self.setState({ stepsEnabled: false })
                 }
             }
         }
         if (tutorial === 'done') {
-            //this.setState({stepsEnabled:false})
+            //_self.setState({stepsEnabled:false})
         }
         //
         let enable = true;
         setTimeout(() => {
-            if (enable && !this.state.learned && !tutorial) {
-                this.enalbeSteps();
-                this.setState({ stepsEnabled: true, learned: true })
+            if (enable && !_self.state.learned && !tutorial) {
+                _self.enalbeSteps();
+                _self.setState({ stepsEnabled: true, learned: true })
                 localStorage.setItem('TUTORIAL', 'done')
             }
 
         }, 1000)
 
-        let site = this.props.siteName;
-        if (!this.props.changeStep || this.props.changeStep === '02') {
-            this.setState({ enable: true })
+        let site = _self.props.siteName;
+        if (!_self.props.changeStep || _self.props.changeStep === '02') {
+            _self.setState({ enable: true })
         } else {
-            this.setState({ enable: false })
+            _self.setState({ enable: false })
         }
 
-        if (nextProps.regionInfo.region.length && !this.state.regionToggle) {
+        if (nextProps.regionInfo.region.length && !_self.state.regionToggle) {
 
             let getRegions = []
-            this.setState({ regionToggle: true })
+            _self.setState({ regionToggle: true })
             if (nextProps.regionInfo.region) {
                 nextProps.regionInfo.region.map((region, i) => {
                     getRegions.push({ key: i + 2, text: region, value: region })
                 })
             }
-            let newRegions = Object.assign([], this.state.regions).concat(getRegions)
-            this.setState({ regions: newRegions })
+            let newRegions = Object.assign([], _self.state.regions).concat(getRegions)
+            _self.setState({ regions: newRegions })
 
         }
         if (nextProps.clickCity.length > 0) {
-            this.setState({ intoCity: true })
+            _self.setState({ intoCity: true })
         } else {
-            this.setState({ intoCity: false })
+            _self.setState({ intoCity: false })
         }
 
         //set category
-        if (nextProps.detailData !== this.props.detailData) {
+        if (nextProps.detailData !== _self.props.detailData) {
             // alert(JSON.stringify(nextProps.detailData))
-            this.setState({ detailData: nextProps.detailData })
+            _self.setState({ detailData: nextProps.detailData })
         }
 
     }
 
     componentWillUnmount() {
-        this.setState({ learned: false })
+        _self.setState({ learned: false })
     }
 
     searchChange = (e, { value }) => {
-        this.setState({ searchChangeValue: value })
-        this.props.handleSearchValue(this.props.searchValue, value)
+        _self.setState({ searchChangeValue: value })
+        _self.props.handleSearchValue(_self.props.searchValue, value)
     }
 
 
@@ -428,7 +428,7 @@ class SiteFour extends React.Component {
     ]
 
     onExit() {
-        this.setState({ stepsEnabled: false })
+        _self.setState({ stepsEnabled: false })
     }
 
 
@@ -463,7 +463,7 @@ class SiteFour extends React.Component {
         }
 
         checked = (checkedArray) ? JSON.parse(checkedArray) : [];
-        this.props.handleAuditCheckCount(checkResult.length - checked.length)
+        _self.props.handleAuditCheckCount(checkResult.length - checked.length)
         localStorage.setItem('auditUnChecked', JSON.stringify(checkResult))
     }
 
@@ -474,27 +474,27 @@ class SiteFour extends React.Component {
                 let request = mcRequest.request;
                 let checked = localStorage.getItem('auditChecked')
                 if (request.method === serviceMC.getEP().SHOW_SELF) {
-                    this.reduceAuditCount(response.data, checked)
+                    _self.reduceAuditCount(response.data, checked)
                 }
             }
         }
-        this.props.handleLoadingSpinner(false);
+        _self.props.handleLoadingSpinner(false);
     }
 
     getDataAudit = () => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        this.setState({ devData: [] })
-        this.loadCount = 0;
+        _self.setState({ devData: [] })
+        _self.loadCount = 0;
         serviceMC.sendRequest(this, {
             token: store.userToken,
             method: serviceMC.getEP().SHOW_SELF,
             data: '{}',
             showMessage: false
-        }, this.receiveResult)
+        }, _self.receiveResult)
     }
 
     render() {
-        const { stepsEnabled, initialStep, hintsEnabled, hints, steps } = this.state;
+        const { stepsEnabled, initialStep, hintsEnabled, hints, steps } = _self.state;
         return (
             <div className='view_body'>
                 {steps ?
@@ -502,27 +502,27 @@ class SiteFour extends React.Component {
                         enabled={stepsEnabled}
                         steps={steps}
                         initialStep={initialStep}
-                        onExit={this.onExit}
+                        onExit={_self.onExit}
                         showButtons={true}
                         options={{ hideNext: false }}
-                        ref={steps => (this.steps = steps)}
+                        ref={steps => (_self.steps = steps)}
                     /> : null}
                 {hints ?
                     <Hints
                         enabled={hintsEnabled}
                         hints={hints}
                     /> : null}
-                {(this.props.loadingSpinner == true) ?
+                {(_self.props.loadingSpinner == true) ?
                     <div className="loadingBox" style={{ zIndex: 9999 }}>
                         <GridLoader
                             sizeUnit={"px"}
                             size={25}
                             color={'#70b2bc'}
-                            loading={this.props.loadingSpinner}
+                            loading={_self.props.loadingSpinner}
                         />
                     </div> : null}
-                <SideNav onOptionClick={this.handleItemClick} email={this.state.email} data={this.props.userInfo.info} helpClick={this.enalbeSteps} gotoUrl={this.gotoUrl} />
-                <Motion defaultStyle={defaultMotion} style={this.state.setMotion}>
+                <SideNav onOptionClick={_self.handleItemClick} email={_self.state.email} data={_self.props.userInfo.info} helpClick={_self.enalbeSteps} gotoUrl={_self.gotoUrl} />
+                <Motion defaultStyle={defaultMotion} style={_self.state.setMotion}>
                     {interpolatingStyle => <div style={interpolatingStyle} id='animationWrapper'></div>}
                 </Motion>
             </div>
