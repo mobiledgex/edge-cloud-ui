@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Icon, Popup } from 'semantic-ui-react';
+import { Form, Icon, Popup, Input } from 'semantic-ui-react';
 const MexInput = (props) => {
 
     let form = props.form
@@ -8,21 +8,22 @@ const MexInput = (props) => {
     const onValueChange = (value) =>
     {
         setValue(value)
-        props.onChange(form, value, props.parentForm)
+        props.onChange(form, value)
     }
 
     const getForm = () => (
         <div>
-            <Form.Input
+            <Input
                 icon={form.error ? <Icon color='red' name='times circle outline'/> : null}
-                label={props.label ? props.label : null}
+                label={form.unit ? {content: form.unit } : null}
+                labelPosition= {form.unit ? 'right' : null}
                 placeholder={form.placeholder ? form.placeholder : null}
                 onChange={(e, { value }) => onValueChange(value)}
                 type={form.rules ? form.rules.type : 'text'}
                 required={form.required ? form.rules.required : false}
                 disabled={props.disabled}
                 value={value}
-                style={form.style}
+                style={form.style ? form.style : { width: form.unit ? '96%' : '100%' }}
             />
         </div >
     )

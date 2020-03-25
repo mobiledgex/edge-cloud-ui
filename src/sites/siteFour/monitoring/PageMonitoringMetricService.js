@@ -1,11 +1,11 @@
 import axios from "axios";
-import type {TypeCloudlet, TypeCluster} from "../../../shared/Types";
-import {SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET} from "../../../services/endPointTypes";
-import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../shared/Constants";
-import {sendSyncRequest} from "../../../services/serviceMC";
-import {makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
-import {formatData} from "../../../services/formatter/formatComputeInstance";
-import {makeFormForAppInstance} from "./admin/PageAdminMonitoringService";
+import type { TypeCloudlet, TypeCluster } from "../../../shared/Types";
+import { SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET } from "../../../services/endPointTypes";
+import { APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT, REGION } from "../../../shared/Constants";
+import { sendSyncRequest } from "../../../services/serviceMC";
+import { makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast } from "./PageMonitoringCommonService";
+import { formatData } from "../../../services/formatter/formatComputeInstance";
+import { makeFormForAppInstance } from "./admin/PageAdminMonitoringService";
 
 
 
@@ -72,8 +72,8 @@ export const getClusterList = async () => {
     try {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
-        let requestData = {showSpinner: false, token: token, method: SHOW_CLUSTER_INST, data: {region: REGION.EU}};
-        let requestData2 = {showSpinner: false, token: token, method: SHOW_CLUSTER_INST, data: {region: REGION.US}};
+        let requestData = { showSpinner: false, token: token, method: SHOW_CLUSTER_INST, data: { region: REGION.EU } };
+        let requestData2 = { showSpinner: false, token: token, method: SHOW_CLUSTER_INST, data: { region: REGION.US } };
         let promiseList = []
         promiseList.push(sendSyncRequest(this, requestData))
         promiseList.push(sendSyncRequest(this, requestData2))
@@ -117,13 +117,13 @@ export const getCloudletList = async () => {
             showSpinner: false,
             token: token,
             method: SHOW_ORG_CLOUDLET,
-            data: {region: REGION.EU, org: localStorage.selectOrg}
+            data: { region: REGION.EU, org: localStorage.selectOrg }
         };
         let requestData2 = {
             showSpinner: false,
             token: token,
             method: SHOW_ORG_CLOUDLET,
-            data: {region: REGION.US, org: localStorage.selectOrg}
+            data: { region: REGION.US, org: localStorage.selectOrg }
         };
         let promiseList = []
 
@@ -165,8 +165,8 @@ export const getCloudletListAll = async () => {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
         //data: { region: region, org: _self.props.selectOrg || localStorage.selectOrg }
-        let requestData = {showSpinner: false, token: token, method: SHOW_CLOUDLET, data: {region: REGION.EU}};
-        let requestData2 = {showSpinner: false, token: token, method: SHOW_CLOUDLET, data: {region: REGION.US}};
+        let requestData = { showSpinner: false, token: token, method: SHOW_CLOUDLET, data: { region: REGION.EU } };
+        let requestData2 = { showSpinner: false, token: token, method: SHOW_CLOUDLET, data: { region: REGION.US } };
         let promiseList = []
 
         promiseList.push(sendSyncRequest(this, requestData))
@@ -727,7 +727,7 @@ export const getClusterEventLogList = async (clusterList) => {
         Operator: "TDG"
     */
 
-    clusterList.map((item : TypeCluster,index)=>{
+    clusterList.map((item: TypeCluster, index) => {
 
         console.log("getClusterEventLogList===Cloudlet>", item.Cloudlet);
         console.log("getClusterEventLogList===ClusterName>", item.ClusterName);

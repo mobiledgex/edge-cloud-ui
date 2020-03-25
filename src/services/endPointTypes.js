@@ -1,25 +1,7 @@
 
-import * as FormatComputeOrganization from './formatter/formatComputeOrganization';
-import * as FormatComputeUsers from './formatter/formatComputeUsers';
-import * as FormatComputeAccounts from './formatter/formatComputeAccounts';
 import * as FormatComputeCloudlet from './formatter/formatComputeCloudlet';
-import * as FormatComputeCloudletInfo from './formatter/formatComputeCloudletInfo';
 import * as FormatComputeClstInst from './formatter/formatComputeClstInstance';
-import * as FormatComputeFlavor from './formatter/formatComputeFlavor';
-import * as FormatComputeApp from './formatter/formatComputeApp';
-import * as FormatComputeInst from './formatter/formatComputeInstance';
-import * as FormatComputeCluster from './formatter/formatComputeCluster';
-import * as FormatMonitorCloudlet from "./formatter/formatMonitorCloudlet";
-import * as FormatMonitorCluster from "./formatter/formatMonitorCluster";
-import * as FormatMonitorApp from "./formatter/formatMonitorApp";
-import * as FormatComputeCloudletPool from './formatter/formatComputeCloudletPool';
-import * as FormatComputeCloudletPoolDelete from './formatter/formatComputeCloudletPoolDelete';
-import * as FormatComputeCloudletPoolMember from './formatter/formatComputeCloudletPoolMember';
-import * as FormatComputeCloudletPoolMemberDelete from './formatter/formatComputeCloudletPoolMemberDelete';
 import * as FormatComputeOrgCloudlet from './formatter/formatComputeOrgCloudlet';
-import * as FormatComputeLinkPoolOrgDelete from './formatter/formatComputeLinkPoolOrgDelete';
-import * as FormatAutoProvPolicy from './formatter/formatAutoProvPolicy';
-import * as FormatPrivacyPolicy from './formatter/formatPrivacyPolicy';
 
 
 export const SHOW_ORG = "showOrg";
@@ -39,7 +21,6 @@ export const CREATE_CLOUDLET = "CreateCloudlet";
 export const SHOW_CLUSTER_INST = "ShowClusterInst";
 export const CREATE_CLUSTER_INST = "CreateClusterInst";
 export const DELETE_CLUSTER_INST = "DeleteClusterInst";
-export const SHOW_CLUSTER_FLAVOR = "ShowClusterFlavor";
 export const SHOW_FLAVOR = "ShowFlavor";
 export const CREATE_FLAVOR = "CreateFlavor";
 export const DELETE_FLAVOR = "DeleteFlavor"
@@ -133,7 +114,6 @@ export function getPath(request) {
         case SHOW_FLAVOR:
         case CREATE_FLAVOR:
         case DELETE_FLAVOR:
-        case SHOW_CLUSTER_FLAVOR:
         case SHOW_APP:
         case CREATE_APP:
         case UPDATE_APP:
@@ -189,59 +169,14 @@ export function getPath(request) {
 export function formatData(request, response) {
     let data = undefined;
     switch (request.method) {
-        case SHOW_ORG:
-            data = FormatComputeOrganization.formatData(response, request.data)
-            break;
-        case SHOW_USERS:
-            data = FormatComputeUsers.formatData(response, request.data)
-            break;
-        case SHOW_ACCOUNTS:
-            data = FormatComputeAccounts.formatData(response, request.data)
-            break;
         case SHOW_CLOUDLET:
             data = FormatComputeCloudlet.formatData(response, request.data)
-            break;
-        case SHOW_CLOUDLET_INFO:
-            data = FormatComputeCloudletInfo.formatData(response, request.data)
             break;
         case SHOW_CLUSTER_INST:
             data = FormatComputeClstInst.formatData(response, request.data)
             break;
-        case SHOW_FLAVOR:
-            data = FormatComputeFlavor.formatData(response, request.data)
-            break;
-        case SHOW_CLUSTER_FLAVOR:
-            data = FormatComputeCluster.formatData(response, request.data)
-            break;
-        case SHOW_APP:
-            data = FormatComputeApp.formatData(response, request.data)
-            break;
-        case SHOW_APP_INST:
-            data = FormatComputeInst.formatData(response, request.data)
-            break;
-        case CLOUDLET_METRICS_APP:
-            data = FormatMonitorCloudlet.formatData(response, request.data)
-            break;
-        case CLUSTER_INST_METRICS_APP:
-            data = FormatMonitorCluster.formatData(response, request.data)
-            break;
-        case APP_INST_METRICS_APP:
-            data = FormatMonitorApp.formatData(response, request.data)
-            break;
-        case SHOW_CLOUDLET_POOL:
-            data = FormatComputeCloudletPool.formatData(response, request.data)
-            break;
-        case SHOW_CLOUDLET_MEMBER:
-            data = FormatComputeCloudletPoolMember.formatData(response, request.data)
-            break;
         case SHOW_ORG_CLOUDLET:
             data = FormatComputeOrgCloudlet.formatData(response, request.data)
-            break;
-        case SHOW_AUTO_PROV_POLICY:
-            data = FormatAutoProvPolicy.formatData(response, request.data)
-            break;
-        case SHOW_PRIVACY_POLICY:
-            data = FormatPrivacyPolicy.formatData(response, request.data)
             break;
         default:
             data = undefined;
@@ -250,73 +185,4 @@ export function formatData(request, response) {
         response.data = data;
     }
     return { request: request, response: response }
-}
-
-export function getKey(keyId, data) {
-    switch (keyId) {
-        case 'Cloudlet':
-            return FormatComputeCloudlet.getKey(data)
-        case 'ClusterInst':
-            return FormatComputeClstInst.getKey(data)
-        case 'appinst':
-            return FormatComputeInst.getKey(data)
-        case 'Organization':
-            return FormatComputeOrganization.getKey(data)
-        case 'Flavors':
-            return FormatComputeFlavor.getKey(data)
-        case 'App':
-            return FormatComputeApp.getKey(data)
-        case 'User':
-            return FormatComputeUsers.getKey(data)
-        case 'Account':
-            return FormatComputeAccounts.getKey(data)
-        case 'Cloudlet Pools':
-            return FormatComputeCloudletPoolDelete.getKey(data)
-        case 'delete member':
-            return FormatComputeCloudletPoolMemberDelete.getKey(data)
-        case 'delete link':
-            return FormatComputeLinkPoolOrgDelete.getKey(data)
-        default:
-            return null;
-    }
-}
-
-export function getDeleteMethod(keyId) {
-    switch (keyId) {
-        case 'Cloudlet':
-            return DELETE_CLOUDLET;
-        case 'ClusterInst':
-            return DELETE_CLUSTER_INST;
-        case 'appinst':
-            return DELETE_APP_INST;
-        case 'Organization':
-            return DELETE_ORG;
-        case 'Flavors':
-            return DELETE_FLAVOR;
-        case 'App':
-            return DELETE_APP;
-        case 'User':
-            return DELETE_USER;
-        case 'Account':
-            return DELETE_ACCOUNT;
-        case 'Cloudlet Pools':
-            return DELETE_CLOUDLET_POOL;
-        case 'delete member':
-            return DELETE_CLOUDLET_POOL_MEMBER;
-        case 'delete link':
-            return DELETE_LINK_POOL_ORG;
-        default:
-            return null;
-    }
-}
-
-export function getStreamMethod(keyId) {
-    switch (keyId) {
-        case 'Cloudlet':
-            return STREAM_CLOUDLET;
-        case 'ClusterInst':
-            return STREAM_CLUSTER_INST;
-        case 'appinst':
-            return STREAM_APP_INST;
-    }
 }

@@ -6,7 +6,7 @@ export const getKey = (data) => {
         region: Region,
         cloudlet: {
             key: {
-                organization: Operator ,
+                organization: Operator,
                 name: CloudletName
             }
         }
@@ -16,10 +16,6 @@ export const getKey = (data) => {
 
 export const formatData = (datas, body) => {
     let values = [];
-    //{"data":{"key":{"organization":"AnandOprOrg","name":"hackathon-anand"},"location":{"latitude":33.01,"longitude":-96.61},"ip_support":2,"num_dynamic_ips":254,"time_limits":{},"status":{},"state":5,"platform_type":5,"notify_srv_addr":"127.0.0.1:0","flavor":{"name":"x1.medium"},"physical_name":"hackathon-anand","container_version":"2020-02-18","config":{}}}
-
-    try
-    {
     if (datas.data) {
         let toArray = null;
         let toJson = [];
@@ -54,7 +50,7 @@ export const formatData = (datas, body) => {
                         State: '',
                         Progress: '',
                         Status: '',
-                        CloudletInfoState:4,
+                        CloudletInfoState: 4,
                         Edit: null
                     })
                 } else {
@@ -69,17 +65,11 @@ export const formatData = (datas, body) => {
                     let State = dataResult.data.state || '-';
                     let Status = dataResult.data.status;
                     let CloudletInfoState = 4;
-                    values.push({ uuid: generateUniqueId(), CloudletInfoState:CloudletInfoState, Region: Region, CloudletName: CloudletName, Operator: Operator, CloudletLocation: CloudletLocation, Ip_support: Ip_support, Num_dynamic_ips: Num_dynamic_ips, Physical_name: Physical_name, Platform_type: Platform_type, State: State,Progress: '', Status: Status, Edit: newRegistKey })
+                    values.push({ uuid: generateUniqueId(), CloudletInfoState: CloudletInfoState, Region: Region, CloudletName: CloudletName, Operator: Operator, CloudletLocation: CloudletLocation, Ip_support: Ip_support, Num_dynamic_ips: Num_dynamic_ips, Physical_name: Physical_name, Platform_type: Platform_type, State: State, Progress: '', Status: Status, Edit: newRegistKey })
                 }
             })
         }
     }
-}
-catch( e)
-{
-    alert(e)
-}
-    console.log('Rahul1234', values)
     return values
 }
 

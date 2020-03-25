@@ -1714,6 +1714,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+        getHeight = () => {
+            return window.innerHeight - 133
+        }
 
         render() {
             // todo: Components showing when the loading of graph data is not completed.
@@ -1779,7 +1782,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         {this.renderSelectBoxRow()}
                                         {this.renderSelectBoxRow2nd()}
                                     </div>
-                                    <Grid.Row className='site_content_body' style={{overflowY: 'auto', marginTop: -20}}>
+                                    <Grid.Row className='site_content_body' style={{overflowY: 'auto', marginTop: -20, height:this.getHeight()}}>
                                         <div className="page_monitoring" style={{backgroundColor: 'transparent', height: 3250}}>
                                             <div className='page_monitoring_dashboard_kyungjoon' style={{}}>
                                                 {this.state.currentClassification === CLASSIFICATION.CLUSTER
