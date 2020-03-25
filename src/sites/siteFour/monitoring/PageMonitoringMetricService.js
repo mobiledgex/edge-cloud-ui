@@ -692,7 +692,6 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
             },
             timeout: 15 * 1000
         }).then(async response => {
-            // "time",                "cloudlet",                "operator",                "event",                "status"
             if (response.data.data["0"].Series !== null) {
                 let values = response.data.data["0"].Series["0"].values
                 return values;
@@ -752,7 +751,7 @@ export const getClusterEventLogList = async (clusterList) => {
                     "organization": "TDG",
                     "name": "hamburg-stage"
                 },
-                "developer": selectOrg
+                "organization": selectOrg
             },
             "last": 10
         },

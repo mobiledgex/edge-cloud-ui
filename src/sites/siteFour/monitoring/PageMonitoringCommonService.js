@@ -611,10 +611,10 @@ export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, fetch
                         "name": dataOne.ClusterName
                     },
                     "cloudlet_key": {
-                        "organization":  dataOne.Operator,
+                        "organization": dataOne.Operator,
                         "name": dataOne.Cloudlet
                     },
-                    "developer": dataOne.OrganizationName,
+                    "organization": dataOne.OrganizationName,
                 },
                 "last": fetchingDataNo,
                 "selector": "*"

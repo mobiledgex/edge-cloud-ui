@@ -9,7 +9,7 @@ export const getKey = (data) => {
             key: {
                 cluster_key: { name: ClusterName },
                 cloudlet_key: { organization: Operator, name: Cloudlet },
-                developer: OrganizationName
+                organization: OrganizationName
             },
             flavor: { name: Flavor }
         }
@@ -56,7 +56,7 @@ export const formatData = (datas, body) => {
                     let Index = i;
                     let Region = body.region || body.params.region || '-';
                     let ClusterName = dataResult.data.key.cluster_key.name || '-';
-                    let DeveloperName = dataResult.data.key.developer || '-';
+                    let DeveloperName = dataResult.data.key.organization || '-';
                     let Operator = dataResult.data.key.cloudlet_key.organization || '-';
                     let Cloudlet = dataResult.data.key.cloudlet_key.name || '-';
                     let Flavor = dataResult.data.flavor.name || '-';

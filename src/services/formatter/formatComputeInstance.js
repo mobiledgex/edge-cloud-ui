@@ -10,7 +10,7 @@ export const getKey = (data) => {
         cluster_inst_key: {
           cloudlet_key: { name: Cloudlet, organization: Operator },
           cluster_key: { name: ClusterInst },
-          developer: OrganizationName
+          organization: OrganizationName
         }
       },
     }

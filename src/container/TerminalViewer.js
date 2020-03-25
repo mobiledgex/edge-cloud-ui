@@ -73,8 +73,8 @@ class MexTerminal extends Component {
                 cluster_inst_key:
                 {
                     cluster_key: { name: ClusterInst },
-                    cloudlet_key: { organization: Operator, name: Cloudlet },
-                    developer: OrganizationName
+                    cloudlet_key: { organization: Operator , name: Cloudlet },
+                    organization: OrganizationName
                 }
             },
             container_id: data.Container,
@@ -352,7 +352,7 @@ class MexTerminal extends Component {
     }
 
     loadVMPage = () => {
-        return <iframe title='VM' ref={this.vmPage} src={this.props.data.vm.url} style={{ width: '100%', height: '100%' }}></iframe>
+	return <iframe title='VM' ref={this.vmPage} src={this.props.data.vm.url} style={{ width: '100%', height: '100%' }}></iframe>
     }
 
     render() {
