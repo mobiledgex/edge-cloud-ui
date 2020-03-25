@@ -50,8 +50,6 @@ import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 
 
-
-
 import {
     getOneYearStartEndDatetime,
     isEmpty,
@@ -1288,6 +1286,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_widget_icon_area'
                          style={{position: 'absolute', right: 25, top: 10}}>
                         {/*desc:############################*/}
+                        {/*desc:    edit btn                */}
+                        {/*desc:############################*/}
+                        <div className="edit page_monitoring_widget_icon">
+                            {/*<MaterialIcon icon='create'/>*/}
+                        </div>
+                        {/*desc:############################*/}
                         {/*desc:    maximize button         */}
                         {/*desc:############################*/}
                         {graphType.toUpperCase() !== GRID_ITEM_TYPE.PERFORMANCE_SUM
@@ -1301,12 +1305,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <MaterialIcon icon='aspect_ratio'/>
                         </div>
                         }
-                        {/*desc:############################*/}
-                        {/*desc:edit btn*/}
-                        {/*desc:############################*/}
-                        <div className="edit page_monitoring_widget_icon">
-                            <MaterialIcon icon='create'/>
-                        </div>
+
                         <div className="remove page_monitoring_widget_icon"
                              onClick={() => {
                                  this.removeGridItem(uniqueIndex)
@@ -1320,10 +1319,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*desc:############################*/}
                     {/*@desc:__makeGridItem BodyByType  */}
                     {/*desc:############################*/}
-                    <div className='page_monitoring_column_resizable'
-                        //onMouseDown={ e => e.stopPropagation() }
-                        //style={{height: this.gridItemHeight}}
-                    >
+                    <div className='page_monitoring_column_resizable'>
+
                         {this.___makeGridItemBodyByType(hwType, graphType.toUpperCase())}
                     </div>
                 </div>
