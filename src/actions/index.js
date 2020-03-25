@@ -1,4 +1,7 @@
 import * as types from './ActionTypes';
+import {SET_MAP_TYLE_LAYER} from "./ActionTypes";
+import {SET_LINE_COLOR} from "./ActionTypes";
+import {SET_CLOUDLET_ICON_COLOR} from "./ActionTypes";
 
 export function changeSite(state) {
     return {
@@ -196,6 +199,21 @@ export const toggleLoading = (isLoading) => {
         isLoading
     }
 }
+
+export const setMapTyleLayer = (value) => ({
+    type: SET_MAP_TYLE_LAYER,
+    currentTyleLayer: value
+})
+
+export const setLineColor = (value) => ({
+    type: SET_LINE_COLOR,
+    lineColor: value
+})
+
+export const setCloudletIconColor = (value) => ({
+    type: SET_CLOUDLET_ICON_COLOR,
+    cloudletIconColor: value
+})
 
 
 export function showFlavor(flavor) {

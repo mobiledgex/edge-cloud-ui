@@ -1,5 +1,4 @@
 import React from "react";
-import {reactLocalStorage} from "reactjs-localstorage";
 import * as L from 'leaflet';
 import "../PageMonitoring.css";
 import 'react-leaflet-fullscreen-control'
@@ -10,23 +9,24 @@ import {Map, Marker, Polyline, Popup, TileLayer, Tooltip} from "react-leaflet";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {isEmpty, showToast} from "../PageMonitoringCommonService";
 import {groupByKey_, removeDuplicates, renderPlaceHolderLottiePinJump3} from "../PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
 import {Radio} from 'antd'
-import {hot} from "react-hot-loader/root";
-import {withRouter} from "react-router-dom";
 import {connect} from "react-redux";
-import sizeMe from "react-sizeme";
 import * as actions from "../../../../actions";
-
+import {
+    DARK_CLOUTLET_ICON_COLOR,
+    DARK_LINE_COLOR,
+    WHITE_CLOUTLET_ICON_COLOR,
+    WHITE_LINE_COLOR
+} from "../../../../shared/Constants";
 
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
     zoom: 13,
 }
-let greenIcon = new L.Icon({
+/*let greenIcon = new L.Icon({
     iconUrl: require('../../../../assets/leaflet_markers/marker-icon-2x-green.png'),
     //iconUrl: require('../images/cloud003.png'),
     //iconUrl: 'https://cdn4.iconfinder.com/data/icons/social-messaging-ui-color-and-shapes-1/177800/11-512.png',
@@ -35,7 +35,7 @@ let greenIcon = new L.Icon({
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
     shadowSize: [41, 41]
-});
+});*/
 
 var cellphoneIcon2 = L.icon({
     iconUrl: require('../images/cellhone_white003.png'),
@@ -61,16 +61,32 @@ let cloudBlueIcon = L.icon({
     iconAnchor: [24, 30],//x,y
     shadowSize: [41, 41]
 });
+
+
 const mapStateToProps = (state) => {
     return {
         isLoading: state.LoadingReducer.isLoading,
+        currentTyleLayer: state.MapTyleLayerReducer.currentTyleLayer,
+        lineColor: state.MapTyleLayerReducer.lineColor,
+        cloudletIconColor: state.MapTyleLayerReducer.cloudletIconColor,
     }
 };
 const mapDispatchProps = (dispatch) => {
     return {
         toggleLoading: (data) => {
             dispatch(actions.toggleLoading(data))
-        }
+        },
+        setMapTyleLayer: (data) => {
+            dispatch(actions.setMapTyleLayer(data))
+        },
+
+        setLineColor: (data) => {
+            dispatch(actions.setLineColor(data))
+        },
+
+        setCloudletIconColor: (data) => {
+            dispatch(actions.setCloudletIconColor(data))
+        },
     };
 };
 type Props = {
@@ -80,6 +96,13 @@ type Props = {
     isMapUpdate: boolean,
     currentWidgetWidth: number,
     isFullScreenMap: boolean,
+    currentTyleLayer: string,
+    lineColor: string,
+    cloudletIconColor: string,
+    setMapTyleLayer: Function,
+    setLineColor: Function,
+    setCloudletIconColor: Function,
+    isLoading: boolean,
 
 };
 type State = {
@@ -123,7 +146,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
         constructor(props: Props) {
             super(props);
-
 
             this.state = {
                 zoom: 3,//mapZoom
@@ -307,7 +329,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                         </div>
 
                     </div>
-                    {/*@todo: LeafletMapWrapperForDev*/}
                     <div className='page_monitoring_container'>
                         <div style={{height: '100%', width: '100%', zIndex: 1}}>
                             <Map center={[45.4, 51.7]}
@@ -331,10 +352,9 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                      this.map = ref;
                                  }}
                             >
-
-                                {this.props.parent.state.loading && renderPlaceHolderLottiePinJump3()}
+                                {this.props.isLoading && renderPlaceHolderLottiePinJump3()}
                                 <TileLayer
-                                    url={this.state.currentTyleLayer}
+                                    url={this.props.currentTyleLayer}
                                     //url={'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'}
                                     minZoom={2}
                                     style={{zIndex: 1}}
@@ -358,31 +378,25 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                             cursor: 'pointer'
                                         }}/>
                                 </Control>
-
-
                                 {/*@desc:#####################################..*/}
                                 {/*@desc: topRight Radio Btns changing MapTyle...*/}
                                 {/*@desc:#####################################..*/}
                                 {this.props.isFullScreenMap &&
                                 <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
                                     <Radio.Group defaultValue="0" buttonStyle="solid"
-                                                 onChange={(e) => {
+                                                 onChange={async (e) => {
                                                      let index = e.target.value
 
-                                                     let lineColor = 'yellow';
-                                                     let cloudletIconColor = 'green'
+                                                     let lineColor = DARK_LINE_COLOR;
+                                                     let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
                                                      if (Number(index) >= 2) {
-                                                         lineColor = 'black';
-                                                         cloudletIconColor = 'blue'
-                                                         reactLocalStorage.set('map_lineColor', lineColor)
-                                                         reactLocalStorage.set('map_cloudletIconColor', cloudletIconColor)
-
+                                                         lineColor = WHITE_LINE_COLOR;
+                                                         cloudletIconColor = WHITE_CLOUTLET_ICON_COLOR
                                                      }
-                                                     this.setState({
-                                                         currentTyleLayer: this.mapTileList[index].url,
-                                                         lineColor: lineColor,
-                                                         cloudletIconColor: cloudletIconColor,
-                                                     })
+
+                                                     this.props.setMapTyleLayer(this.mapTileList[index].url);
+                                                     this.props.setLineColor(lineColor);
+                                                     this.props.setCloudletIconColor(cloudletIconColor);
 
                                                  }}
                                     >
@@ -430,7 +444,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
                                                                 //[item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
                                                             ]}
-                                                            color={this.state.lineColor}
+                                                            color={this.props.lineColor}
                                                         />
 
                                                     </React.Fragment>
@@ -458,7 +472,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                         return (
                                             <Marker
                                                 ref={c => this.marker1 = c}
-                                                icon={this.state.cloudletIconColor === 'green' ? cloudGreenIcon : cloudBlueIcon}
+                                                icon={this.props.cloudletIconColor === 'green' ? cloudGreenIcon : cloudBlueIcon}
                                                 className='marker1'
                                                 position={
                                                     [outerItem.CloudletLocation.latitude, outerItem.CloudletLocation.longitude,]

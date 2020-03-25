@@ -34,6 +34,12 @@ export type TypeClient = {
     }
 }
 
+/*export type TypeMapTyleLayerReducer = {
+    currentTyleLayer: string,
+    lineColor: string,
+    cloudletIconColor: string,
+}*/
+
 export type TypeLineChartData2 = {
     levelTypeNameList: Array,
     usageSetList: Array,
