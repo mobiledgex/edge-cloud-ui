@@ -268,7 +268,7 @@
     position: relative;
     -webkit-transition: height 200ms ease;
     transition: height 200ms ease;
-    background-color: black;
+    background-color: #292c33;
 }
 
 .leaflet-popup-content {
