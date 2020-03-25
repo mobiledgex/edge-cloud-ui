@@ -422,14 +422,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             //DESC: FAKEDATA
             //DESC: FAKEDATA
-            await this.loadInitDataForCluster__FOR__DEV();
-
-
+            //await this.loadInitDataForCluster__FOR__DEV();
             /*
             TODO: REAL DATA
             TODO: REAL DATA
             */
-            //await this.loadInitDataForCluster();
+            await this.loadInitDataForCluster();
 
             this.setState({
                 loading: false,
@@ -1006,7 +1004,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             console.log("groupdClousterList===>", groupdClusterList);
 
-            let selectedCloudletCount=Object.keys(groupdClusterList)
+            let selectedCloudletCount = Object.keys(groupdClusterList)
 
             console.log("selectedCloudletCount===>", selectedCloudletCount.length);
 
@@ -1289,7 +1287,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     }}
                 >
 
-                    <div className='page_monitoring_widget_icon_area' style={{position:'absolute', right:25, top:10}}>
+                    <div className='page_monitoring_widget_icon_area'
+                         style={{position: 'absolute', right: 25, top: 10}}>
                         {/*desc:############################*/}
                         {/*desc:    maximize button         */}
                         {/*desc:############################*/}
@@ -1301,7 +1300,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <div className="maxize page_monitoring_widget_icon"
                              onClick={this.showBigModal.bind(this, hwType, graphType)}
                         >
-                            <MaterialIcon icon='aspect_ratio' />
+                            <MaterialIcon icon='aspect_ratio'/>
                         </div>
                         }
                         {/*desc:############################*/}
@@ -1443,6 +1442,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:---------------------------*/}
                         <Button
                             onClick={async () => {
+                                await this.resetAllDataForDev();
+                            }}
+                        >Reset
+                        </Button>
+                        <Button
+                            onClick={async () => {
                                 if (!this.state.loading) {
                                     this.refreshAllData();
                                 } else {
@@ -1456,12 +1461,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                className="sync alternate icon"></i>
                         </Button>
 
-                        {/*<Button*/}
-                        {/*    onClick={async () => {*/}
-                        {/*        await this.resetAllDataForDev();*/}
-                        {/*    }}*/}
-                        {/*>Reset*/}
-                        {/*</Button>*/}
                         {this.state.intervalLoading &&
                         <div>
                             <div style={{marginLeft: 15}}>
@@ -1641,16 +1640,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         Fix Grid
                                     </div>
                                     <Checkbox toggle
-                                        checked={!this.state.isDraggable}
-                                        onChange={async () => {
-                                            await this.setState({
-                                                isDraggable: !this.state.isDraggable,
-                                                appInstanceListGroupByCloudlet: [],
-                                            })
-                                            this.setState({
-                                                appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
-                                            });
-                                        }}
+                                              checked={!this.state.isDraggable}
+                                              onChange={async () => {
+                                                  await this.setState({
+                                                      isDraggable: !this.state.isDraggable,
+                                                      appInstanceListGroupByCloudlet: [],
+                                                  })
+                                                  this.setState({
+                                                      appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
+                                                  });
+                                              }}
                                     />
                                 </div>
                             </Tooltip>
@@ -1703,7 +1702,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {/*    : null*/}
                             {/*}*/}
                             <div className='page_monitoring_select_toggle'>
-                                <MaterialIcon icon='aspect_ratio' />
+                                <MaterialIcon icon='aspect_ratio'/>
                             </div>
                         </div>
                     </div>
@@ -1819,11 +1818,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.renderHeader()}
                             <Grid.Row className='site_content_body'>
                                 <div className="page_monitoring">
-                                    <div style={{backgroundColor:'#202329'}}>
+                                    <div style={{backgroundColor: '#202329'}}>
                                         {this.renderSelectBoxRow()}
                                     </div>
                                     <div className='page_monitoring_dashboard_dev'
-                                         style={{overflowY:'auto', padding:5}}>
+                                         style={{overflowY: 'auto', padding: 5}}>
                                         {this.state.currentClassification === CLASSIFICATION.CLUSTER
                                             ? this.renderGridLayoutForCluster()
                                             : this.renderGridLayoutForAppInst()
