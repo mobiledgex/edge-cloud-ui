@@ -380,7 +380,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                         style={{
                                             cursor: 'pointer',
                                             pointerEvents: 'auto',
-                                            fontSize: 30,
+                                            fontSize: 15,
                                             background: 'green',
                                         }}
 

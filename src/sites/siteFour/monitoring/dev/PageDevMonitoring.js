@@ -7,7 +7,7 @@ import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
-import {Button as MButton, CircularProgress} from '@material-ui/core'
+import {CircularProgress} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
 import {Card, DatePicker, Select, Tooltip} from 'antd';
 
@@ -48,6 +48,8 @@ import {
 import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
+
+
 
 
 import {
@@ -1024,11 +1026,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         makeGridSizeByType(graphType) {
-            if (graphType === GRID_ITEM_TYPE.CLUSTER_LIST) {
-                return 2;
-            } else if (graphType === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST) {
-                return 2;
-            } else if (graphType === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
+            if (graphType === GRID_ITEM_TYPE.CLUSTER_LIST || graphType === GRID_ITEM_TYPE.PERFORMANCE_SUM || graphType === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST || graphType === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                 return 2;
             } else {
                 return 1;
@@ -1233,7 +1231,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
         }
 
-        showBigModal = (hwType, graphType,) => {
+        showBigModal = (hwType, graphType) => {
 
             let chartDataForRendering = []
             if (graphType.toUpperCase() == GRID_ITEM_TYPE.LINE) {
@@ -1319,9 +1317,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     </div>
 
 
-                    {/*@desc:__makeGridItem BodyByType      */}
-                    {/*@desc:__makeGridItem BodyByType      */}
-                    {/*@desc:__makeGridItem BodyByType      */}
+                    {/*desc:############################*/}
+                    {/*@desc:__makeGridItem BodyByType  */}
+                    {/*desc:############################*/}
                     <div className='page_monitoring_column_resizable'
                         //onMouseDown={ e => e.stopPropagation() }
                         //style={{height: this.gridItemHeight}}
@@ -1489,8 +1487,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         }
-                        {/*
-                       {this.props.isLoading &&
+                        {this.props.isLoading &&
                         <div>
                             <div style={{marginLeft: 15}}>
                                 <CircularProgress
@@ -1504,23 +1501,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         }
-
-                        <MButton
-                            style={{backgroundColor: '#6c6c6c', color: 'white', height: 37}}
-                            onClick={() => {
-                                this.props.toggleLoading(true);
-                            }}>toggleLoadingtrue
-
-                        </MButton>
-                        <MButton
-                            style={{backgroundColor: '#6c6c6c', color: 'white', height: 37}}
-                            onClick={() => {
-                                this.props.toggleLoading(false);
-                            }}>toggleLoadingFalse
-
-                        </MButton>
-                        */}
-
                     </div>
                 </Grid.Row>
             )
@@ -1607,8 +1587,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     placeholder={this.state.appInstSelectBoxPlaceholder}
                                     selection
                                     options={this.state.appInstDropdown}
-                                    //style={Styles.dropDown}
-
                                     onChange={async (e, {value}) => {
                                         await this.handleAppInstDropdown(value.trim())
                                     }}
@@ -1621,7 +1599,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     onClick={async () => {
                                         this.resetGridPosition();
                                     }}
-                                >Layout Reset
+                                >Reset Layout
                                 </Button>
                             </div>
                             {/*todo:---------------------------*/}
@@ -1671,36 +1649,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                               })
                                           }}
                                 />
-                                {/*<MButton*/}
-                                {/*    style={{*/}
-                                {/*        backgroundColor: this.state.isStream ? 'green' : '#6c6c6c',*/}
-                                {/*        color: 'white',*/}
-                                {/*        height: 37*/}
-                                {/*    }}*/}
-                                {/*    onClick={async () => {*/}
-                                {/*        this.setState({*/}
-                                {/*            isStream: !this.state.isStream,*/}
-                                {/*        }, () => {*/}
-                                {/*            if (!this.state.isStream) {*/}
-                                {/*                clearInterval(this.intervalForAppInst)*/}
-                                {/*            } else {*/}
-                                {/*                this.handleAppInstDropdown(this.state.currentAppInst)*/}
-                                {/*            }*/}
-                                {/*        })*/}
-                                {/*    }}*/}
-                                {/*>STREAM {this.state.isStream ? 'on' : 'off'}</MButton>*/}
                             </div>
-
                             }
-
-                            {/*{this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?*/}
-                            {/*    <div style={{marginLeft: 20, marginBottom: 12,}}>*/}
-                            {/*        <MButton*/}
-                            {/*            style={{backgroundColor: '#6c6c6c', color: 'white', height: 37}}*/}
-                            {/*            onClick={() => this.setState({openTerminal: true})}>Terminal</MButton>*/}
-                            {/*    </div>*/}
-                            {/*    : null*/}
-                            {/*}*/}
                             <div className='page_monitoring_select_toggle'>
                                 <MaterialIcon icon='aspect_ratio'/>
                             </div>
@@ -1712,46 +1662,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        /* temp____filterByGraphType(arrList, graphType) {
-             return arrList.filter((item, pos) => {
-                 return item.graphType === graphType;
-             })
-         }*/
-
-        /* temp__makeDropdownListForLine_Cluster(hwListForCluster) {
-             let currentGridItems = this.state.layoutMapperForCluster;
-
-             if (!isEmpty(currentGridItems)) {
-                 let lineChartListInGrid = this.filterByGraphType(currentGridItems, "line");
-                 console.log("filteredList===>", lineChartListInGrid);
-
-                 let lineChartHwList = []
-                 lineChartListInGrid.map(item => {
-                     lineChartHwList.push(item.hwType);
-                 })
-
-                 console.log("lineChartHwList===>", lineChartHwList);
-                 console.log("lineChartHwList===ADD_ITEM_LIST>", hwListForCluster);
-
-                 let dropdownListForLineChart = hwListForCluster;
-
-                 let lineChartNewDropdownList = []
-                 dropdownListForLineChart.map((item, index) => {
-
-                     lineChartHwList.map((innerItem, innerIndex) => {
-                         if (item.value === innerItem) {
-                             dropdownListForLineChart.splice(index, 1);
-                         }
-                     })
-                 })
-
-                 console.log("lineChartHwList===filteredLineChartList>", dropdownListForLineChart);
-
-                 this.setState({
-                     hwListForCluster: dropdownListForLineChart,
-                 })
-             }
-         }*/
 
         render() {
             // todo: Components showing when the loading of graph data is not completed.
@@ -1831,10 +1741,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 </div>
                             </Grid.Row>
                         </Grid.Column>
-                        <div className='page_monitoring_terminal_button'
-                             onClick={() => this.setState({openTerminal: true})}
-                        >
-                        </div>
+                        {/*todo:---------------------------------*/}
+                        {/*todo:terminal button                   */}
+                        {/*todo:---------------------------------*/}
+                        {this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?
+                            <div className='page_monitoring_terminal_button'
+                                 onClick={() => this.setState({openTerminal: true})}
+                            >
+                            </div>
+                            : null
+                        }
+
                     </Grid.Row>
                     <Modal style={{width: '100%', height: '100%'}} open={this.state.openTerminal}>
                         <TerminalViewer data={this.state.terminalData} onClose={() => {
