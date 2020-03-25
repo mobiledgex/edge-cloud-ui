@@ -21,7 +21,7 @@ class OrganizationList extends React.Component {
 
         this.action = '';
         this.data = {}
-        this.keys = Object.assign([], keys);
+        this.keys = keys()
     }
 
     onRegClose = (isEdited)=>
@@ -80,6 +80,7 @@ class OrganizationList extends React.Component {
                     this.props.handleUserRole(roleInfo.role)
                     localStorage.setItem('selectOrg', data[fields.organizationName])
                     localStorage.setItem('selectRole', roleInfo.role)
+                    this.forceUpdate()
                     break;
                 }
             }
@@ -136,6 +137,7 @@ class OrganizationList extends React.Component {
         {
             key.visible = false;
         }
+        this.forceUpdate()
     }
 
     customizedData = () => {
@@ -151,7 +153,7 @@ class OrganizationList extends React.Component {
     * Customized data block
     * ** */
 
-   UNSAFE_componentWillMount() {
+   componentDidMount() {
         this.customizedData()
     }
 

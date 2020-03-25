@@ -18,7 +18,7 @@ import CreateAccount from './components/login/CreateAccont';
 import history from './history';
 import VerifyContent from './container/verifyContent';
 import './css/index.css';
-import SiteFour from "./sites/siteFour/siteFour";
+import SiteFour from './sites/siteFour/siteFour'
 import './css/pages/audit.css';
 import './css/pages/cloudletPool.css';
 import './css/pages/monitoring.css';

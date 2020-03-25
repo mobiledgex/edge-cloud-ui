@@ -4,14 +4,14 @@ import { SHOW_ORG, CREATE_ORG, DELETE_ORG } from './endPointTypes'
 
 let fields = formatter.fields;
 
-export const keys = [
+export const keys = () => ([
     { field: fields.organizationName, serverField: 'Name', label: 'Organization', sortable: true, visible: true },
     { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: true },
     { field: fields.phone, serverField: 'Phone', label: 'Phone', sortable: false, visible: true },
     { field: fields.address, serverField: 'Address', label: 'Address', sortable: false, visible: true },
     { field: 'manage', label: 'Manage', sortable: false, visible: false, clickable: true},
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
-]
+])
 
 export const getKey = (data) => {
     return ({
@@ -54,5 +54,5 @@ const customData = (value) => {
 }
 
 export const getData = (response, body) => {
-    return formatter.formatData(response, body, keys, customData)
+    return formatter.formatData(response, body, keys(), customData)
 }

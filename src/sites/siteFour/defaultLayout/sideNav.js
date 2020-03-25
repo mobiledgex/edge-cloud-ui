@@ -95,7 +95,7 @@ const useStyles = makeStyles(theme => ({
 
 
 const options = [
-    { label: 'Organizations', icon: <SupervisorAccountOutlinedIcon />, pg: 0, page: <SiteFourPageOrganization />, roles: ['AdminManager', 'DeveloperManager'] },
+    { label: 'Organizations', icon: <SupervisorAccountOutlinedIcon />, pg: 0, page: <SiteFourPageOrganization />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
     { label: 'Users & Roles', icon: <AssignmentIndOutlinedIcon />, pg: 1, page: <SiteFourPageUser />, roles: ['AdminManager'] },
     { label: 'Accounts', icon: <DvrOutlinedIcon />, pg: 101, page: <SiteFourPageAccount />, roles: ['AdminManager'] },
     { divider: true },
@@ -163,9 +163,11 @@ export default function MiniDrawer(props) {
         )
     }
 
-    const organizationInfo = () => {
+    
+
+    const roleInfo = () => {
         return (
-            <ListItem onClick={(e)=>{setOpenLegend(true)}}>
+            <ListItem onClick={(e) => { setOpenLegend(true) }}>
                 <ListItemIcon>
                     {localStorage.selectRole ?
                         <div className="markBox">
@@ -197,17 +199,31 @@ export default function MiniDrawer(props) {
                 </ListItemIcon>
                 <ListItemText>
                     <strong style={{ color: '#BFC0C2', fontSize: 15 }}> {localStorage.selectRole && localStorage.selectRole != 'null' ? localStorage.selectRole : 'Select Organization'}</strong>
+
                 </ListItemText>
             </ListItem>
 
         )
     }
 
+    const getRoleInfo = (role) => {
+        switch (role) {
+            case 'DeveloperViewer':
+            case 'DeveloperContributor':
+                return 'DeveloperManager'
+            case 'OperatorViewer':
+            case 'OperatorContributor':
+                return 'OperatorManager'
+            default:
+                return role
+        }
+    }
+
     const menuList = () => {
         return options.map((option, i) => (
             option.divider ?
                 <Divider key={i} /> :
-                option.roles.includes(getUserRole()) ?
+                option.roles.includes(getRoleInfo(getUserRole())) ?
                     <div key={i}>
                         {showOptionForm(i, option)}
                         {option.subOptions ?
@@ -236,7 +252,6 @@ export default function MiniDrawer(props) {
     const closeLegend = () => {
         setOpenLegend(false)
     }
-
     return (
         <div className={classes.root}>
             <CssBaseline />
@@ -260,8 +275,8 @@ export default function MiniDrawer(props) {
                         {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                     </IconButton>
                 </div>
-                <List style={{backgroundColor: '#292c33', height: '100%'}}>
-                    {organizationInfo()}
+                <List style={{ backgroundColor: '#292c33', height: '100%' }}>
+                    {roleInfo()}
                     {menuList()}
                     {versionInfo()}
                 </List>

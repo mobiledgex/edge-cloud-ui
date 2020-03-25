@@ -1,5 +1,5 @@
 import { generateUniqueId } from '../serviceMC';
-import { toJson } from '../JsonUtil'
+import { toJson } from '../../utils/JsonUtil'
 
 export const fields = {
     uuid: 'uuid',
