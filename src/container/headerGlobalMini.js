@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Image, Popup} from 'semantic-ui-react';
+import {Button, Image, Popup, Icon} from 'semantic-ui-react';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
@@ -122,15 +122,15 @@ class headerGlobalMini extends React.Component {
     makeProfileButton = () => (
         <Button.Group vertical className="table_actions_popup_group">
             <Button className="table_actions_popup_group_button">
-                {this.state.userInfo['Name']}
+                <strong>{this.state.userInfo['Name']}</strong>
             </Button>
             <Button onClick={() => this.profileView()} className="table_actions_popup_group_button">
-                <i className="material-icons"><AccountBoxOutlinedIcon/></i>
-                Profile
+                <Icon name='user circle outline' size='large' />
+                <strong>Profile</strong>
             </Button>
             <Button onClick={() => this.gotoPreview('/logout')} className="table_actions_popup_group_button">
-                <i className="material-icons"><ExitToAppOutlinedIcon/></i>
-                LogOut
+                <Icon name='sign-out' size='large'/>
+                <strong>Logout</strong>
             </Button>
         </Button.Group>
     )
