@@ -43,7 +43,7 @@ const renderField = ({
     <div>
         <label>{label}</label>
         <div>
-            <input {...input} placeholder={label} type={type} />
+            <input {...input} style={{color:'black'}} placeholder={label} type={type} />
             {touched &&
             ((error && <span>{error}</span>) ||
                 (warning && <span>{warning}</span>))}
@@ -81,6 +81,8 @@ class PopSendEmailView extends React.Component {
 
     render() {
         let { handleSubmit, pristine, reset, submitting, rawViewData } = this.props;
+
+        console.log("20200306 " + JSON.stringify(rawViewData))
         return (
             <form id={'eSendForm'} onSubmit={handleSubmit(submit)}>
                 <Field
@@ -110,7 +112,7 @@ class PopSendEmailView extends React.Component {
                 <div>
                     <label>Content</label>
                     <div>
-                        <textarea name="content" placeholder="Content" rows="10" cols="40" >{"Dear MobiledgeX Support team,\nPlease investigate Trace ID : " + rawViewData.traceid}</textarea>
+                        <textarea style={{color:'black'}} name="content" placeholder="Content" rows="10" cols="40" >{"Dear MobiledgeX Support team,\nPlease investigate Trace ID : " + rawViewData.traceid}</textarea>
                     </div>
                 </div>
                 <div style={{display:'none'}}>

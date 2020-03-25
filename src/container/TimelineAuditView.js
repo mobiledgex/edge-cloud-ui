@@ -1,6 +1,6 @@
 import 'react-hot-loader'
 import React from 'react';
-import { Button, Dropdown, Modal } from 'semantic-ui-react';
+import { Button, Dropdown, Modal, Icon } from 'semantic-ui-react';
 import * as moment from 'moment';
 import ReactJson from 'react-json-view';
 import { connect } from 'react-redux';
@@ -11,18 +11,17 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import * as actions from "../actions";
 import View from "react-flexbox";
 import FlexBox from "flexbox-react";
+import CalendarTimeline from "../components/timeline/calendarTimeline";
 import HorizontalTimelineKJ from "../components/horizontal_timeline_kj/Components/HorizontalTimeline";
 import { hot } from "react-hot-loader/root";
 
 const countryOptions = [
-    { key: '24', value: '24', flag: '24', text: 'Last 24hours' },
-    { key: '18', value: '18', flag: '18', text: 'Last 18hours' },
-    { key: '12', value: '12', flag: '12', text: 'Last 12hours' },
-    { key: '6', value: '6', flag: '6', text: 'Last 6hours' },
-    { key: '1', value: '1', flag: '1', text: 'Last an hour' },
-
+    { key: '24', value: 24, flag: '24', text: 'Last 24 hours' },
+    { key: '18', value: 18, flag: '18', text: 'Last 18 hours' },
+    { key: '12', value: 12, flag: '12', text: 'Last 12 hours' },
+    { key: '6', value: 6, flag: '6', text: 'Last 6 hours' },
+    { key: '1', value: 1, flag: '1', text: 'Last hour' },
 ]
-let timesList = [];
 let _self = null;
 const jsonView = (jsonObj, self) => {
     return <ReactJson src={jsonObj} {...self.jsonViewProps} style={{ width: '100%' }} />
@@ -62,22 +61,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
     class TimelineAuditView extends React.Component {
         state = {
             value: 0,
-            previous: 0,
-            minEventPadding: 20,
-            maxEventPadding: 100,
-            linePadding: 50,
-            labelWidth: 170,
-            fillingMotionStiffness: 150,
-            fillingMotionDamping: 25,
-            slidingMotionStiffness: 150,
-            slidingMotionDamping: 25,
-            stylesBackground: 'transparent',
-            stylesForeground: '#454952',
-            stylesOutline: '#454952',
-            isTouchEnabled: true,
-            isKeyboardEnabled: true,
-            isOpenEnding: true,
-            isOpenBeginning: true,
             dates: [],
             contData: [],
             rawAllData: [],
@@ -95,8 +78,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             timesList: [],
             timeLineIndex: 0,
             tasksList: [],
+            timelineList: [],
             currentTask: '',
             currentTaskTime: '',
+            closeMap:true,
+            storageTimeList: [],
+            statusList: [],
+            statusCount: [],
+            typeList:[],
+            nameList:[],
+            timelineSelectedIndex: 0,
+            unCheckedErrorCount: 0
         };
         jsonViewProps = {
             name: null,
@@ -118,6 +110,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             _self = this;
             this.sameTime = '0';
             this.addCount = 0;
+
+            this.mapzoneStyle = [
+                {margin:'0 0 10px 0', padding: '5px 15px 15px', alignItems:'center', flexDirection:'column', height:'500px', width:'100%', overflow:'scroll'},
+                {margin:'0 0 10px 0', padding: '5px 15px 15px', alignItems:'center', flexDirection:'column', height:'28px', width:'100%'}
+            ]
         }
 
         componentWillMount() {
@@ -150,12 +147,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     tasksList: [],
                     isLoading: true,
                 })
+                let storageTimeList = JSON.parse(localStorage.getItem("selectedTime"))
 
                 if (!nextProps.location.search.toString().includes('org=')) {
                     await this.setState({
                         orgName: '',
                     })
                 }
+
+                let timesList = []
+                let newTimesList = []
                 if (nextProps.data.data && nextProps.data.data.length) {
 
                     nextProps.data.data.map((item) => {
@@ -164,6 +165,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                         let composit = stdate + " " + sttime;
                         dummys.push(composit)
                         dummyConts.push(item)
+                        newTimesList.push(composit)
                         timesList.push('timeline-dot-' + composit);
                     })
 
@@ -182,22 +184,82 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     let tasksList = []
 
                     //todo: Extract only the TaskName to display at the top of the timeline.
+                    let typeOptions = [{ key: 'all', value: 'all', flag: 'all', text: 'All' }]
+                    let nameOptions = [{ key: 'all', value: 'all', flag: 'all', text: 'All' }]
                     for (let i in auditList) {
                         let operName = auditList[i].operationname;
-                        tasksList.push(this.makeOper(operName));
-                    }
+                        let makeOperName = this.makeOper(operName)
+                        tasksList.push(makeOperName);
 
-                    let newTimesList = []
-                    for (let i in timesList) {
-                        if (i < tasksList.length) {
-                            newTimesList.push(timesList[i].toString().replace('timeline-dot-', ''))
+                        let nameIndex = nameOptions.findIndex(t => t.value === makeOperName)
+                        if(nameIndex === (-1)){
+                            nameOptions.push({
+                                key: makeOperName, value: makeOperName, flag: makeOperName, text: makeOperName
+                            })
+                        }
+
+                        let renderValue = this.typeRender(this.makeOper(operName))
+                        let typesIndex = typeOptions.findIndex(t => t.value === renderValue)
+
+                        if(typesIndex === (-1)){
+                            typeOptions.push({
+                                 key: renderValue, value: renderValue, flag: renderValue, text: renderValue
+                            })
                         }
                     }
+
+                    let statusList = []
+                    let statusCount = []
+                    let errorCount = 0
+                    let unCheckedErrorCount = 0
+                    let normalCount = 0
+
+                    for (let i in auditList) {
+                        let status = auditList[i].status;
+                        let traceid = auditList[i].traceid;
+                        if(auditList[i].status === 200){
+                            normalCount++
+                        } else {
+                            let makeDate = this.makeUTC(auditList[i].starttime)
+                            let makeTime = this.makeNotUTC(auditList[i].starttime)
+                            let newDate =  new Date(makeDate + " " + makeTime)
+                            let storageTimeIndex = (storageTimeList) ? storageTimeList.findIndex(s => new Date(s).getTime() === newDate.getTime()) : 0
+                            if(storageTimeIndex === (-1)){
+                                unCheckedErrorCount++
+                            }
+                            errorCount++
+                        }
+                        statusList.push({"status":status, "traceid":traceid});
+                    }
+                    statusCount.push({"errorCount":errorCount, "normalCount":normalCount})
+
+                    let check = false
+                    newTimesList.map((time) => {
+                        if(storageTimeList){
+                            storageTimeList.map((storage) => {
+                                if(new Date(storage).getTime() === new Date(time).getTime()){
+                                    check = true
+                                }
+                            })
+                        }
+                    })
+                    if(!check || storageTimeList.length > 200){
+                        localStorage.removeItem('selectedTime')
+                    }
+
+                    let timelineList = []
+
+                    timelineList.push({'timesList' : newTimesList ,'tasksList':tasksList, 'statusList': statusList})
+
                     await this.setState({
+                        timelineList: timelineList,
                         timesList: newTimesList,//@:todo: TimesList to display above the timeline Dot
-                        tasksList: tasksList,//@:todo: 타임라인 Dot 위쪽에 표시해줄 tasksList
-                        currentTask: tasksList[0],
-                        currentTaskTime: timesList[0],
+                        statusCount: statusCount,
+                        typeList: typeOptions,
+                        nameList: nameOptions,
+                        unCheckedErrorCount: unCheckedErrorCount,
+                        currentTask: timelineList[0].tasksList[0],
+                        currentTaskTime: timelineList[0].timesList[0],
                         isLoading: false,
                     })
                     this.props.handleLoadingSpinner(false);
@@ -219,15 +281,37 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
         }
 
+        typeRender(value) {
+            let renderValue = null
+            value = value.toLowerCase()
 
-        makeUnixUTC = (time) => {
-            let newTime = moment(time).unix()
-            return moment(newTime).utc().format('YYYY/MM/DD HH:mm:ss.SSS')
+            if(value.indexOf('cloudletpool') > (-1)){
+                renderValue = 'CloudletPool'
+            } else if(value.indexOf('cloudlet') > (-1)){
+                renderValue = 'Cloudlet'
+            } else if(value.indexOf('cluster') > (-1)){
+                renderValue = 'Cluster'
+            } else if(value.indexOf('appinst') > (-1)){
+                renderValue = 'AppInst'
+            } else if(value.indexOf('app') > (-1)){
+                renderValue = 'App'
+            } else if(value.indexOf('audit') > (-1)){
+                renderValue = 'Audit'
+            } else if(value.indexOf('login') > (-1)){
+                renderValue = 'Login'
+            } else if(value.indexOf('user') > (-1)){
+                renderValue = 'User'
+            } else {
+                renderValue = 'Other'
+            }
+            return renderValue
         }
+
         makeUTC = (time) => {
             let newTime = moment(time).unix()
             return moment(newTime).utc().format('YYYY/MM/DD')
         }
+
         makeNotUTC = (time) => {
             let newTime = moment(time).unix();
             let makeTime = moment(newTime).utc().format('HH:mm:ss:SSS');
@@ -241,9 +325,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             _self.sameTime = makeTime;
             return makeTime;
         }
+
         makeOper = (logName) => {
-            let lastSub = logName.substring(logName.lastIndexOf('/') + 1);
-            return lastSub
+            // let lastSub = logName.substring(logName.lastIndexOf('/') + 1);
+            let item = '';
+            let nameArray = logName.substring(1).split("/").filter(name => name != 'ws');
+
+            if(nameArray[2] === 'login'){
+                item = nameArray[2]
+            } else if(nameArray[2] === 'auth'){
+                if(nameArray[3] === 'ctrl'){
+                    item = nameArray[4]
+                } else {
+                    item = nameArray[3] + nameArray[4].charAt(0).toUpperCase() + nameArray[4].slice(1)
+                }
+            }
+            return item
         }
 
 
@@ -254,6 +351,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             })
             let selectedIndex = value.value;
             let timelineDataOne = this.state.rawAllData[selectedIndex]
+            this.setStorageData(timelineDataOne.starttime)
             setTimeout(() => {
                 this.setRequestView(timelineDataOne)
                 this.setResponseView(timelineDataOne)
@@ -264,8 +362,25 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             }, 251)
         }
 
+        setStorageData(data) {
+            let timeList = [];
+            let storageTimeList = JSON.parse(localStorage.getItem("selectedTime"))
+            let makeDate = this.makeUTC(data)
+            let makeTime = this.makeNotUTC(data)
+            let newDate =  new Date(makeDate + " " + makeTime)
 
-
+            if (storageTimeList) {
+                timeList = storageTimeList
+                let storageTimeIndex = storageTimeList.findIndex(s => new Date(s).getTime() === newDate.getTime())
+                if(storageTimeIndex === (-1)){
+                    timeList.push(newDate)
+                    localStorage.setItem("selectedTime", JSON.stringify(timeList))
+                }
+            } else {
+                timeList[0] = newDate
+                localStorage.setItem("selectedTime", JSON.stringify(timeList))
+            }
+        }
 
 
         setAllView(dummyConts, sId) {
@@ -273,6 +388,34 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 rawViewData: dummyConts,
                 currentTraceid: dummyConts['traceid']
             })
+        }
+
+        onItemSelect = (item, i) => {
+            let value = '';
+            let times = this.state.timelineList[0].timesList
+            let status = this.state.timelineList[0].statusList
+
+            times.map((time, index) => {
+                if(new Date(time).getTime() === item){
+                    this.setState({"timelineSelectedIndex" : i})
+                    this.onHandleIndexClick({"value" : i})
+                    console.log("20200324 " + status[index].status)
+                    if(status[index].status !== 200){
+                        this.setState({"unCheckedErrorCount" : this.state.unCheckedErrorCount - 1})
+                    }
+                }
+            })
+        }
+
+        onPopupEmail = () => {
+            setTimeout(() => {
+                this.setState({openSendEmail: true})
+            }, 251)
+        }
+
+        onCloseMap =()=> {
+            let close = !this.state.closeMap;
+            this.setState({closeMap:close})
         }
 
         setRequestView(dummyConts, sId) {
@@ -303,7 +446,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             {
                 if(i>0)
                 {
-                    data = data + ',' 
+                    data = data + ','
                 }
                 data = data.concat(dataArray[i])
             }
@@ -334,6 +477,71 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         }
         close = () => this.setState({ openSendEmail: false })
 
+        dropDownOnChange = (e, v) => {
+            let allData = this.state.rawAllData
+            let timelineList = []
+            let tasksList = []
+            let timesList = []
+            let statusList = []
+
+            allData.map((allValue, allIndex) => {
+                let storageTimeList = JSON.parse(localStorage.getItem("selectedTime"))
+                let taskValue = this.makeOper(allValue.operationname)
+                let task = (e === 'type')? this.typeRender(allValue.operationname):taskValue
+                let date = this.makeUTC(allValue.starttime)
+                let time = this.makeNotUTC(allValue.starttime)
+                let datetime = date + " " + time
+                let status = allValue.status
+                let traceid = allValue.traceid;
+
+                if(v.value === 'all' || v.value === 'All'){
+                    tasksList.push(task)
+                    timesList.push(datetime)
+                    statusList.push({"status":status, "traceid":traceid});
+                } else if(task === v.value){
+                    tasksList.push(taskValue)
+                    timesList.push(datetime)
+                    statusList.push({"status":status, "traceid":traceid});
+                } else if(v.value > 0){
+                    let newDate = (new Date().getTime() - (v.value * 1000 * 3600))
+                    if(newDate < new Date(datetime)){
+                        tasksList.push(task)
+                        timesList.push(datetime)
+                        statusList.push({"status":status, "traceid":traceid});
+                    }
+                } else if(v.value === 'uncheck'){
+                    if(status !== 200){
+                        let storageTimeIndex = (storageTimeList) ? storageTimeList.findIndex(s => new Date(s).getTime() === new Date(datetime).getTime()) : 0
+                        if(storageTimeIndex === (-1)){
+                            tasksList.push(taskValue)
+                            timesList.push(datetime)
+                            statusList.push({"status":status, "traceid":traceid});
+                        }
+                    }
+                }
+            })
+
+            timelineList.push({'timesList' : timesList ,'tasksList':tasksList, 'statusList': statusList})
+            this.setState({timelineList: timelineList})
+        }
+
+        dropDownOnNameChange = (e, v) => {
+            this.dropDownOnChange('name', v)
+
+        }
+
+        dropDownOnTypeChange = (e, v) => {
+            this.dropDownOnChange('type', v)
+        }
+
+        dropDownOnDateChange = (e, v) => {
+            this.dropDownOnChange('date', v)
+        }
+
+        onClickUnCheckedError = (e, v) => {
+            let value = {'value':'uncheck'}
+            this.dropDownOnChange(null,value)
+        }
 
         render() {
             const state = this.state;
@@ -342,140 +550,97 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     <div className="page_audit_history">
                         <div className="page_audit_history_option">
                             <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
-
                             <div className="page_audit_history_option_period">
+                                Unchecked Error <button style={{color:'black'}} onClick={this.onClickUnCheckedError}>{this.state.unCheckedErrorCount}</button>
+                            </div>
+                            <div className="page_audit_history_option_period">
+                                Name
+                                <Dropdown
+                                    placeholder='All'
+                                    fluid
+                                    search
+                                    selection
+                                    options={this.state.nameList}
+                                    onChange={this.dropDownOnNameChange}
+                                    style={{ width: 200 }}
+                                />
+                            </div>
+                            <div className="page_audit_history_option_period">
+                                Type
+                                <Dropdown
+                                    placeholder='All'
+                                    fluid
+                                    search
+                                    selection
+                                    options={this.state.typeList}
+                                    onChange={this.dropDownOnTypeChange}
+                                    style={{ width: 200 }}
+                                />
+                            </div>
+                            <div className="page_audit_history_option_period">
+                                Date Range
                                 <Dropdown
                                     placeholder='Custom Time Range'
                                     fluid
                                     search
                                     selection
                                     options={countryOptions}
+                                    onChange={this.dropDownOnDateChange}
                                     style={{ width: 200 }}
                                 />
                             </div>
                         </div>
-                        <div className="page_audit_history_timeline">
-
-                            <div
-                                style={{
-                                    height: 160,
-                                    width: '100%',
-                                    overflow: 'auto',
-                                    marginTop: -50,
-                                    marginBottom: 100,
-                                    //backgroundColor: 'blue',
-                                    display: 'block',
-
-                                }}>
-
-                                {this.props.isLoading &&
-                                    <FlexBox style={{ position: 'absolute', top: '5%', zIndex: 9999999 }}>
-                                        <CircularProgress style={{ color: '#77BD25', zIndex: 9999999, fontSize: 10 }}
-                                            size={20} />
-                                    </FlexBox>
-                                }
-                                {!this.state.isLoading && this.state.timesList.length !== 0 &&
-                                    <HorizontalTimelineKJ
-                                        labelWidth={250}
-                                        getLabel={(date, task, index) => {
-                                            return (
-                                                <View column={true}>
-                                                    <div
-                                                        style={{
-                                                            height: 15,
-                                                            fontSize: 13,
-                                                            borderWidth: 1,
-                                                            borderColor: 'grey'
-                                                        }}>
-                                                        {date}
-                                                    </div>
-                                                    <FlexBox style={{
-                                                        fontSize: 15,
-                                                        fontWeight: '800',
-                                                        color: 'orange',
-                                                        marginTop: 5,
-                                                        marginBottom: 0,
-                                                        height: 30,
-                                                        alignItems: 'flex-end',
-                                                        justifyContent: 'center',
-                                                    }}>
-                                                        {task}
-                                                    </FlexBox>
-                                                </View>
-                                            )
-                                        }}
-                                        index={this.state.timeLineIndex}
-                                        indexClick={async (timeLineIndex) => {
-                                            await this.setState({
-                                                timeLineIndex: timeLineIndex,
-                                                currentTask: this.state.tasksList[timeLineIndex],
-                                                currentTaskTime: this.state.timesList[timeLineIndex],
-                                            });
-
-                                            this.onHandleIndexClick({ value: timeLineIndex, previous: this.state.value });
-                                        }}
-                                        values={this.state.timesList}
-                                        tasks={this.state.tasksList}
-                                        styles={{
-                                            outline: '#dfdfdf',
-                                            outline2: '#79BF14',
-                                            background: '#f8f8f8',
-                                            foreground: '#79BF14'
-                                        }}
-                                        linePadding={150}
-                                        /* slidingMotion={{
-                                             stiffness: 300,
-                                             damping: 30,
-                                         }}
-                                         fillingMotion={{
-                                             stiffness: 300,
-                                             damping: 30,
-                                         }}*/
-                                        isKeyboardEnabled={true}
-                                    />
-                                }
-                            </div>
-
+                    </div>
+                    <div style={{margin:'0 0 10px 0', padding: '5px 15px 15px', alignItems:'center', flexDirection:'column', height:'100%', width:'100%', overflow:'scroll'}}>
+                        {/*<div className="round_panel" style={{width:'100%'}}>*/}
+                        <div>
+                            {(this.state.timesList.length > 0) ?<CalendarTimeline timelineList={this.state.timelineList[0]} onItemSelectCallback={this.onItemSelect} onPopupEmail={this.onPopupEmail} statusCount={this.state.statusCount} timelineSelectedIndex={this.state.timelineSelectedIndex}/>:null}
                         </div>
                     </div>
-                    <div className="page_audit_code">
-                        <div className="page_audit_code_left">
-                            <div className="page_audit_code_rawviewer">
-                                <div className="page_audit_code_rawviewer_title">
-                                    Raw Viewer
+                    <div className="round_panel" style={(!this.state.closeMap)?this.mapzoneStyle[0]:this.mapzoneStyle[1]}>
+                        <div style={{margin:'0 0 5px 0', cursor:'pointer', display:'flex', alignItems:'column', justifyContent:'center'}} onClick={this.onCloseMap}>
+                            <span style={{color:'#c8c9cb'}}>{(this.state.closeMap)?'Show':'Hide'}</span>
+                            <Icon name={(this.state.closeMap)?'angle up':'angle down'}/>
+                        </div>
+                            <div className="page_audit_code_left">
+                                <div className="page_audit_code_rawviewer">
+                                    <div className="page_audit_code_rawviewer_title">
+                                        Raw Viewer
+                                        <div className="page_audit_code">
+                                    </div>
+                                    {this.state.isLoading2 &&
+                                        <FlexBox style={{ position: 'absolute', bottom: '54%', left: '5%', zIndex: 9999999 }}>
+                                            <CircularProgress style={{ color: '#1cecff', zIndex: 9999999, fontSize: 10 }}
+                                                size={20} />
+                                        </FlexBox>
+                                    }
+                                    <div className="page_audit_code_rawviewer_codebox">
+                                        {(this.state.rawViewData) ? jsonView(this.state.rawViewData, this) : null}
+                                    </div>
                                 </div>
-                                {this.state.isLoading2 &&
-                                    <FlexBox style={{ position: 'absolute', bottom: '54%', left: '5%', zIndex: 9999999 }}>
-                                        <CircularProgress style={{ color: '#1cecff', zIndex: 9999999, fontSize: 10 }}
-                                            size={20} />
-                                    </FlexBox>
-                                }
-                                <div className="page_audit_code_rawviewer_codebox">
-                                    {(this.state.rawViewData) ? jsonView(this.state.rawViewData, this) : null}
+                            </div>
+                            <div className="page_audit_code_right">
+                                <div className="page_audit_code_request">
+                                    <div className="page_audit_code_request_title">
+                                        Request
+                                    </div>
+                                    <div className="page_audit_code_request_codebox">
+                                        {(this.state.requestData) ? jsonView(this.state.requestData, this) : null}
+                                    </div>
+                                </div>
+                                <div className="page_audit_code_response">
+                                    <div className="page_audit_code_response_title">
+                                        Response
+                                    </div>
+                                    <div className="page_audit_code_response_codebox">
+                                        {(this.state.responseData) ? jsonView(this.state.responseData, this) : null}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div className="page_audit_code_right">
-                            <div className="page_audit_code_request">
-                                <div className="page_audit_code_request_title">
-                                    Request
-                                </div>
-                                <div className="page_audit_code_request_codebox">
-                                    {(this.state.requestData) ? jsonView(this.state.requestData, this) : null}
-                                </div>
-                            </div>
-                            <div className="page_audit_code_response">
-                                <div className="page_audit_code_response_title">
-                                    Response
-                                </div>
-                                <div className="page_audit_code_response_codebox">
-                                    {(this.state.responseData) ? jsonView(this.state.responseData, this) : null}
-                                </div>
-                            </div>
-                        </div>
+                        <SendEmailView dimmer={true} open={this.state.openSendEmail} close={this.close}
+                                       callback={this.submitSendEmail} rawViewData={this.state.rawViewData}> </SendEmailView>
                     </div>
-                    <SendEmailView dimmer={true} open={this.state.openSendEmail} close={this.close}
-                        callback={this.submitSendEmail}> </SendEmailView>
                 </div>
             )
         }
@@ -495,14 +660,14 @@ class SendEmailView extends React.Component {
     }
 
     render() {
-        let { dimmer, open, close, callback } = this.props;
+        let { dimmer, open, close, callback, rawViewData } = this.props;
         return (
             <Modal dimmer={dimmer} open={open} onClose={close} closeIcon>
                 <Modal.Header>New Email</Modal.Header>
                 <Modal.Content>
                     <Modal.Description>
                         <PopSendEmailView ref={form => this.formReference = form} submitState={this.state.submitState}
-                            clearState={this.state.clearState}></PopSendEmailView>
+                                          clearState={this.state.clearState} rawViewData={rawViewData}></PopSendEmailView>
                     </Modal.Description>
                 </Modal.Content>
                 <Modal.Actions>
@@ -521,4 +686,3 @@ class SendEmailView extends React.Component {
         )
     }
 }
-
