@@ -5,7 +5,7 @@ import 'react-leaflet-fullscreen-control'
 import type {TypeAppInstance, TypeClient} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 import {CheckCircleOutlined} from '@material-ui/icons';
-import {Map, Marker, Polyline, Popup, TileLayer, Tooltip} from "react-leaflet";
+import {Map, Marker, Polyline, Popup, Rectangle, TileLayer, Tooltip,} from "react-leaflet";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
@@ -360,6 +360,39 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     style={{zIndex: 1}}
                                     //maxZoom={15}
                                 />
+                                {this.state.newCloudLetLocationList.length === 0 &&
+                                <Rectangle
+                                    bounds={[[50.1109, 15.6821], [37.5665, 80.978],]}
+
+                                    color={'green'}
+                                    attribution={{
+                                        weight: 10,
+
+                                    }}
+                                >
+
+                                    <Tooltip
+                                        //offset={[14, -10]}//x,y
+                                        className='tooltip001'
+                                        opacity={0.8}
+                                        permanent
+                                        direction={'center'}
+                                        style={{
+                                            cursor: 'pointer',
+                                            pointerEvents: 'auto',
+                                            fontSize: 30,
+                                            background: 'green',
+                                        }}
+
+                                    >
+                                        <span>
+                                            There are no apps on the cluster | cloud
+                                        </span>
+                                    </Tooltip>
+                                </Rectangle>
+                                }
+
+
                                 <Control position="topleft">
                                     <Icon
                                         onClick={() => {

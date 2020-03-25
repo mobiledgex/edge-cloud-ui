@@ -1,6 +1,15 @@
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Bungee|Candal|Righteous&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Acme|Roboto|Bungee|Barlow+Semi+Condensed|Candal|Encode+Sans+Condensed|Righteous|Karla|Roboto+Condensed&display=swap');
 
+.tooltip001 {
+    font-size: 18px;
+    background-color: transparent;
+    color: white;
+    border: 0px none rgba(255,255,255,0.3);
+    font-weight: bold;
+    font-style: italic;
+}
+
 
 #button-wrapper {
     position: absolute;

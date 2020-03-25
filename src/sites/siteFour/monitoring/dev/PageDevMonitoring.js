@@ -422,14 +422,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             //DESC: FAKEDATA
             //DESC: FAKEDATA
-            //await this.loadInitDataForCluster__FOR__DEV();
+            await this.loadInitDataForCluster__FOR__DEV();
 
 
             /*
             TODO: REAL DATA
             TODO: REAL DATA
             */
-            await this.loadInitDataForCluster();
+            //await this.loadInitDataForCluster();
 
             this.setState({
                 loading: false,
@@ -1000,6 +1000,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             console.log('appInstDropdown===filteredAppInstList>', filteredAppInstList);
             let appInstDropdown = makeSelectBoxListWithValuePipe(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST, CLASSIFICATION.REGION)
             console.log('appInstDropdown===>', appInstDropdown);
+
+
+            let groupdClusterList = reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET)
+
+            console.log("groupdClousterList===>", groupdClusterList);
+
+            let selectedCloudletCount=Object.keys(groupdClusterList)
+
+            console.log("selectedCloudletCount===>", selectedCloudletCount.length);
+
             await this.setState({
                 appInstDropdown: appInstDropdown,
                 currentAppInst: '',
