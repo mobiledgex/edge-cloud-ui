@@ -2,6 +2,7 @@ import React from 'react';
 import { Table } from 'semantic-ui-react'
 import ReactJson from 'react-json-view';
 import { Card } from '@material-ui/core';
+import * as constant from '../../constant'
 
 const jsonViewProps = {
     name: null,
@@ -62,7 +63,7 @@ const getRow = (id, item, data) => {
 const MexDetailViewer = (props) => {
     let detailData = props.detailData;
     return (
-        <Card style={{width:'100%', backgroundColor:'transparent', color:'white'}}>
+        <Card style={{width:'100%', backgroundColor:'transparent', color:'white', height:constant.getHeight(155)}}>
             <Table celled style={{ width: '100%', backgroundColor: '#2A2C33', border: 'none'}}>
                 <Table.Header>
                     <Table.Row>
