@@ -448,7 +448,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
         }
 
-
         async loadInitDataForCluster__FOR__DEV(isInterval: boolean = false) {
             try {
                 clearInterval(this.intervalForAppInst)
