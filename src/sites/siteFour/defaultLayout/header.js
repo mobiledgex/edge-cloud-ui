@@ -58,7 +58,7 @@ export default function Header(props) {
             className={clsx(classes.appBar, {
                 [classes.appBarShift]: props.open,
             })}
-            style={{zIndex: 1}}
+            style={{zIndex: 10}}
         >
             <Toolbar style={{backgroundColor: '#3B3F47'}}>
 
