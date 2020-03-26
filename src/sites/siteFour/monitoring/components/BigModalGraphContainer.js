@@ -14,7 +14,11 @@ import {connect} from "react-redux";
 import sizeMe from "react-sizeme";
 import * as actions from "../../../../actions";
 import {Button} from "semantic-ui-react";
-import {renderCircleLoaderForMap, renderGridLoader2, renderPlaceHolderLottiePinJump} from "../PageMonitoringCommonService";
+import {
+    renderCircleLoaderForMap,
+    renderGridLoader2,
+    renderPlaceHolderLottiePinJump
+} from "../PageMonitoringCommonService";
 
 const FA = require('react-fontawesome')
 const mapStateToProps = (state) => {
@@ -118,7 +122,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         bodyStyle={{
                             height: window.innerHeight * 0.98,
                             marginTop: -90,
-                            backgroundColor: 'black'
+                            backgroundColor: 'black',
+                            zIndex: 999999999999999999999,
                         }}
                         width={'99%'}
                         footer={null}

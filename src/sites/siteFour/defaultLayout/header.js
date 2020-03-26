@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -11,7 +11,7 @@ import HeaderGlobalMini from '../../../container/headerGlobalMini';
 import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 
-import { Image } from 'semantic-ui-react';
+import {Image} from 'semantic-ui-react';
 
 const drawerWidth = 250;
 
@@ -58,12 +58,13 @@ export default function Header(props) {
             className={clsx(classes.appBar, {
                 [classes.appBarShift]: props.open,
             })}
+            style={{zIndex: 1}}
         >
-            <Toolbar style={{ backgroundColor: '#3B3F47' }}>
+            <Toolbar style={{backgroundColor: '#3B3F47'}}>
 
                 {props.open ? null :
-                    <Typography variant="h6" noWrap style={{marginLeft:-14, marginRight:20}}>
-                        <Image  size='mini' src='/assets/brand/X_Logo_green.svg' />
+                    <Typography variant="h6" noWrap style={{marginLeft: -14, marginRight: 20}}>
+                        <Image size='mini' src='/assets/brand/X_Logo_green.svg'/>
                     </Typography>
                 }
                 <IconButton
@@ -75,22 +76,24 @@ export default function Header(props) {
                         [classes.hide]: props.open,
                     })}
                 >
-                    <MenuIcon />
+                    <MenuIcon/>
                 </IconButton>
-                <div className={classes.grow} />
+                <div className={classes.grow}/>
                 <div className={classes.sectionDesktop}>
                     <IconButton>
                         {localStorage.selectOrg ?
                             <h5>
                                 <strong>Organization:</strong> {localStorage.selectOrg}</h5> : null}
                     </IconButton>
-                    <IconButton aria-label="show 4 new mails" color="inherit" onClick={(e) => props.gotoUrl('/site1', 'pg=0')}>
-                        <PublicOutlinedIcon fontSize='large' />
+                    <IconButton aria-label="show 4 new mails" color="inherit"
+                                onClick={(e) => props.gotoUrl('/site1', 'pg=0')}>
+                        <PublicOutlinedIcon fontSize='large'/>
                     </IconButton>
-                    <IconButton aria-label="show 17 new notifications" color="inherit" onClick={(e) => props.helpClick()}>
-                        <HelpOutlineOutlinedIcon fontSize='large' />
+                    <IconButton aria-label="show 17 new notifications" color="inherit"
+                                onClick={(e) => props.helpClick()}>
+                        <HelpOutlineOutlinedIcon fontSize='large'/>
                     </IconButton>
-                    <HeaderGlobalMini email={props.email} data={props.data} />
+                    <HeaderGlobalMini email={props.email} data={props.data}/>
                 </div>
             </Toolbar>
         </AppBar>
