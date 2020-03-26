@@ -1,13 +1,13 @@
-import React, {Component} from 'react';
+import React from 'react';
 
-import ReactMapboxGl, {Feature, Layer} from 'react-mapbox-gl';
 import {hot} from "react-hot-loader/root";
 import TagCloud from 'react-tag-cloud';
 import randomColor from 'randomcolor';
-const Map = ReactMapboxGl({
+
+/*const Map = ReactMapboxGl({
     accessToken:
         'pk.eyJ1Ijoia3l1bmdqb29uLWdvLWNvbnN1bHRhbnQiLCJhIjoiY2s2Mnk2eHl0MDI5bzNzcGc0MTQ3NTM4NSJ9.BVwP4hu1ySJCJpGyVQBWSQ'
-});
+});*/
 type Props = {};
 type State = {};
 

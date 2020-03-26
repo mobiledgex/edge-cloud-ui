@@ -1,3 +1,4 @@
+/*
 import React, {Component} from 'react';
 
 import ReactMapboxGl, {Feature, Layer} from 'react-mapbox-gl';
@@ -44,3 +45,4 @@ export default hot(
         }
     }
 )
+*/
