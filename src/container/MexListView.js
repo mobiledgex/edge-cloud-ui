@@ -18,7 +18,7 @@ import MexMessageStream, { CODE_FINISH } from '../hoc/stepper/mexMessageStream';
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import Map from '../libs/simpleMaps/with-react-motion/index_clusters';
 
-const regions = ['US', 'EU']
+
 
 class MexListView extends React.Component {
     constructor(props) {
@@ -40,6 +40,10 @@ class MexListView extends React.Component {
         this.selectedRowIndex = {};
         this.sorting = false;
         this.selectedRegion = REGION_ALL
+
+
+        let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
+        this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
     }
 
 
@@ -425,8 +429,8 @@ class MexListView extends React.Component {
         let filterList = [];
         if (requestInfo.isRegion) {
             if (region === REGION_ALL) {
-                for (let i = 0; i < regions.length; i++) {
-                    region = regions[i];
+                for (let i = 0; i < this.regions.length; i++) {
+                    region = this.regions[i];
                     let filter = requestInfo.filter === undefined ? {} : requestInfo.filter;
                     filter[fields.region] = region;
                     filterList.push(filter)
@@ -503,7 +507,18 @@ class MexListView extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    return {}
+    let region = state.changeRegion
+        ? {
+            value: state.changeRegion.region
+        }
+        : {};
+    let regionInfo = (state.regionInfo) ? state.regionInfo : null;
+    return {
+        getRegion: (state.getRegion) ? state.getRegion.region : null,
+        regionInfo: regionInfo,
+        region: region,
+        changeRegion: state.changeRegion ? state.changeRegion.region : null,
+    }
 };
 
 const mapDispatchProps = (dispatch) => {

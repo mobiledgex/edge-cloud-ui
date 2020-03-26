@@ -1,20 +1,23 @@
 import * as formatter from './format'
-import { SHOW_CLOUDLET_LINKORG , CREATE_LINK_POOL_ORG, DELETE_LINK_POOL_ORG} from './endPointTypes'
+import { SHOW_CLOUDLET_LINKORG, CREATE_LINK_POOL_ORG, DELETE_LINK_POOL_ORG } from './endPointTypes'
 
 const fields = formatter.fields;
 
 export const keys = [
     { field: fields.region, serverField: 'Region' },
-    { field: fields.organizationName, serverField: 'Org'},
-    { field: fields.poolName, serverField: 'CloudletPool'}
+    { field: fields.organizationName, serverField: 'Org' },
+    { field: fields.poolName, serverField: 'CloudletPool' }
 ]
 
 const getKey = (data) => {
-    return ({
-        region: data[fields.region],
-        cloudletpool: data[fields.poolName],
-        org: data[fields.organizationName]
-    })
+    if (data) {
+        return ({
+            region: data[fields.region],
+            cloudletpool: data[fields.poolName],
+            org: data[fields.organizationName]
+        })
+    }
+    return {}
 }
 
 export const showCloudletLinkOrg = (data) => {
