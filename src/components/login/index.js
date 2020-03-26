@@ -152,20 +152,18 @@ let flag = true;
 
 const SuccessMsg = (props) => (
     <Grid className="signUpBD">
+        {!(props.msg.indexOf('created') > -1) &&
         <Grid.Row>
-            {(props.msg.indexOf('created') > -1) ?
-                <span className='title'>User created</span>
-            :
             <span className='title' onClick={()=>console.log(props.msg)}>{String(props.msg)}</span>
-            }
         </Grid.Row>
+        }
         {(props.msg.indexOf('created') !== -1) ?
             <Fragment>
                 <Grid.Row>
                     <div className="login-text">{props.self.state.resultMsg}</div>
                 </Grid.Row>
                 <Grid.Row>
-                    <div className="login-text" style={{fontStyle:'italic'}}>If you verify your account, Sign in with your account</div>
+                    <div className="login-text">If you have not received the email after a few minutes, check your spam folder or click <span style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', display:'inline-block'}} onClick={() => props.self.onSendEmail('verify')}>here</span> to resend verification email.</div>
                 </Grid.Row>
             </Fragment>
             :
@@ -322,10 +320,9 @@ class Login extends Component {
         } else if(nextProps.loginMode === 'signuped' && nextProps.createSuccess){
             localStorage.setItem('userInfo', null)
             let email = nextProps.userInfo && nextProps.userInfo.email;
-            let msgTxt = `Thank you for signing up. Please verify your account.
-                            In order to login to your account, you must verify your account.
-                            An email has been sent to ${email} with a link to verify your account.
-                            If you have not received the email after a few minutes check your spam folder or resend the verification email.`
+            let msgTxt = `Welcome to the Edge! Thank you for signing up. 
+                            To login to your account, you must first validate your email address. 
+                            An email has been sent to  ${email} with a link to authenticate your account.`
             this.setState({successCreate:true, loginMode:'signuped', successMsg:'Account created', resultMsg:msgTxt})
         }
 
