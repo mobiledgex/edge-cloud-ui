@@ -49,7 +49,7 @@ export const formatData = (datas, body) => {
                         State: '',
                         Progress: '',
                         Status: '',
-                        Reservable:'',
+                        Reservable: '',
                         Edit: null
                     })
                 } else {
@@ -71,7 +71,7 @@ export const formatData = (datas, body) => {
                     let Deployment = dataResult.data.deployment;
 
 
-                    values.push({ uuid: generateUniqueId(), Region: Region, ClusterName: ClusterName, OrganizationName: DeveloperName, Operator: Operator, Cloudlet: Cloudlet, Flavor: Flavor, IpAccess: IpAccess, CloudletLocation: CloudletLocation, State: State, Progress: '', Status: Status, Reservable:Reservable,Deployment: Deployment, Edit: newRegistKey })
+                    values.push({ uuid: generateUniqueId(), Region: Region, ClusterName: ClusterName, OrganizationName: DeveloperName, Operator: Operator, Cloudlet: Cloudlet, Flavor: Flavor, IpAccess: IpAccess, CloudletLocation: CloudletLocation, State: State, Progress: '', Status: Status, Reservable: Reservable, Deployment: Deployment, Edit: newRegistKey })
 
                 }
             })

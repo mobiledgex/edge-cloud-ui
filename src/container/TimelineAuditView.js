@@ -63,23 +63,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         state = {
             value: 0,
             previous: 0,
-            minEventPadding: 20,
-            maxEventPadding: 100,
             linePadding: 50,
             labelWidth: 170,
-            fillingMotionStiffness: 150,
-            fillingMotionDamping: 25,
-            slidingMotionStiffness: 150,
-            slidingMotionDamping: 25,
-            stylesBackground: 'transparent',
-            stylesForeground: '#454952',
-            stylesOutline: '#454952',
-            isTouchEnabled: true,
             isKeyboardEnabled: true,
-            isOpenEnding: true,
-            isOpenBeginning: true,
             dates: [],
-            contData: [],
             rawAllData: [],
             rawViewData: [],
             requestData: [],
@@ -220,10 +207,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         }
 
 
-        makeUnixUTC = (time) => {
-            let newTime = moment(time).unix()
-            return moment(newTime).utc().format('YYYY/MM/DD HH:mm:ss.SSS')
-        }
         makeUTC = (time) => {
             let newTime = moment(time).unix()
             return moment(newTime).utc().format('YYYY/MM/DD')
@@ -335,10 +318,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         close = () => this.setState({ openSendEmail: false })
 
 
+        getHeight = () => {
+            return window.innerHeight - 72
+        }
+
         render() {
             const state = this.state;
             return (
-                <div className="page_audit">
+                <div className="page_audit" style={{height:this.getHeight()}}>
                     <div className="page_audit_history">
                         <div className="page_audit_history_option">
                             <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
@@ -354,7 +341,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 />
                             </div>
                         </div>
-                        <div className="page_audit_history_timeline">
+                        <div className="page_audit_history_timeline" >
 
                             <div
                                 style={{

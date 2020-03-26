@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import '../../css/components/dualListbox/react-dual-listbox.css'
 import DualListBox from 'react-dual-listbox';
 import {Icon} from "semantic-ui-react";
 const MexDualList = (props) => {

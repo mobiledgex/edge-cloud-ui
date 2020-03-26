@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
     },
     label: {
         color: '#FFF',
-        width: 200,
+        width: '100%',
         fontWeight: 500,
         wordWrap: "break-word"
     },
@@ -113,7 +113,7 @@ const MultiStream = (props) => {
         let step = steps[steps.length - 1]
         step = step.code === CODE_FINISH ? steps[steps.length - 2] : step
         return (<ExpansionPanelSummary
-            style={{ backgroundColor: '#24252b', color: 'white' }}
+            style={{ backgroundColor: '#24252b', color: 'white'}}
             expandIcon={<ExpandMoreIcon style={{ color: 'white' }} />}
             aria-controls="panel1a-content"
             id="panel1a-header"

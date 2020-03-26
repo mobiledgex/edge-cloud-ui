@@ -15,9 +15,7 @@ import RegistryUserForm from '../reduxForm/RegistryUserForm';
 import RegistryResetForm from '../reduxForm/registryResetForm';
 import CustomContentAlert from './CustomContentAlert';
 import PublicIP from 'public-ip';
-/*
 
- */
 
 const host = window.location.host;
 let self = null;
@@ -320,8 +318,8 @@ class Login extends Component {
         } else if(nextProps.loginMode === 'signuped' && nextProps.createSuccess){
             localStorage.setItem('userInfo', null)
             let email = nextProps.userInfo && nextProps.userInfo.email;
-            let msgTxt = `Welcome to the Edge! Thank you for signing up. 
-                            To login to your account, you must first validate your email address. 
+            let msgTxt = `Welcome to the Edge! Thank you for signing up.
+                            To login to your account, you must first validate your email address.
                             An email has been sent to  ${email} with a link to authenticate your account.`
             this.setState({successCreate:true, loginMode:'signuped', successMsg:'Account created', resultMsg:msgTxt})
         }

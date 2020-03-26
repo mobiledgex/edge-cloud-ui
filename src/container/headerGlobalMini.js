@@ -1,14 +1,15 @@
 import React from 'react';
-import {Button, Image, Popup} from 'semantic-ui-react';
+import {Button, Image, Popup, Icon} from 'semantic-ui-react';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as serviceMC from '../services/serviceMC';
 import PopProfileViewer from '../container/popProfileViewer';
-import AccountBoxIcon from '@material-ui/icons/AccountBox';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
+import { IconButton } from '@material-ui/core';
+import AccountBoxOutlinedIcon from '@material-ui/icons/AccountBoxOutlined';
+import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
 
 
 // const StyledMenu = withStyles({
@@ -121,15 +122,15 @@ class headerGlobalMini extends React.Component {
     makeProfileButton = () => (
         <Button.Group vertical className="table_actions_popup_group">
             <Button className="table_actions_popup_group_button">
-                {this.state.userInfo['Name']}
+                <strong>{this.state.userInfo['Name']}</strong>
             </Button>
             <Button onClick={() => this.profileView()} className="table_actions_popup_group_button">
-                <i className="material-icons">account_box</i>
-                Profile
+                <Icon name='user circle outline' size='large' />
+                <strong>Profile</strong>
             </Button>
             <Button onClick={() => this.gotoPreview('/logout')} className="table_actions_popup_group_button">
-                <i className="material-icons">exit_to_app</i>
-                LogOut
+                <Icon name='sign-out' size='large'/>
+                <strong>Logout</strong>
             </Button>
         </Button.Group>
     )
@@ -142,9 +143,9 @@ class headerGlobalMini extends React.Component {
                 <Popup
                     inverted
                     trigger={
-                        <div className='navbar_icon' style={{padding:0}} onClick={(e) => { this.setState({ anchorEl: e.currentTarget }) }}>
+                        <IconButton color='inherit' onClick={(e) => { this.setState({ anchorEl: e.currentTarget }) }}>
                             <AccountCircleOutlinedIcon fontSize='large'/>
-                        </div>
+                        </IconButton>
                     }
                     content={this.makeProfileButton()}
                     on='click'
@@ -152,27 +153,6 @@ class headerGlobalMini extends React.Component {
                     className="table_actions_popup gnb_profile"
                     basic
                 />
-                {/*<StyledMenu*/}
-                {/*    anchorEl={this.state.anchorEl}*/}
-                {/*    keepMounted*/}
-                {/*    open={Boolean(this.state.anchorEl)}*/}
-                {/*    onClose={this.onMenuClose}*/}
-                {/*>*/}
-                {/*    <div align="center" style={{ textTransform: 'uppercase', margin: 5 }}><ListItemText primary={this.state.userInfo['Name']} /></div>*/}
-                {/*    <Divider />*/}
-                {/*    <MenuItem onClick={() => this.profileView()}>*/}
-                {/*        <ListItemIcon style={{ color: 'white' }}>*/}
-                {/*            <AccountBoxIcon />*/}
-                {/*        </ListItemIcon>*/}
-                {/*        <ListItemText primary="Profile" />*/}
-                {/*    </MenuItem>*/}
-                {/*    <MenuItem onClick={() => this.gotoPreview('/logout')}>*/}
-                {/*        <ListItemIcon style={{ color: 'white' }}>*/}
-                {/*            <ExitToAppIcon />*/}
-                {/*        </ListItemIcon>*/}
-                {/*        <ListItemText primary="Logout" />*/}
-                {/*    </MenuItem>*/}
-                {/*</StyledMenu>*/}
                 <PopProfileViewer data={this.state.userInfo} dimmer={false} open={this.state.openProfile} close={this.closeProfile} ></PopProfileViewer>
             </div >
 

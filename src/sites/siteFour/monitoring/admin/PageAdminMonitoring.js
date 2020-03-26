@@ -1067,6 +1067,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             },
         ]
 
+        getHeight = () => {
+            return window.innerHeight - 133
+        }
+
         render() {
             // todo: Components showing when the loading of graph data is not completed.
             if (!this.state.isAppInstaceDataReady) {
@@ -1094,7 +1098,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <Grid.Column>
                                 <div className="table-no-resized">
 
-                                    <div className={isIOS ? 'page_monitoring page_isIOS' : 'page_monitoring'}>
+                                    <div className={isIOS ? 'page_monitoring page_isIOS' : 'page_monitoring'} style={{height:this.getHeight()}}>
                                         {/*todo:---------------------------------*/}
                                         {/*todo:SELECTBOX_ROW        */}
                                         {/*todo:---------------------------------*/}
