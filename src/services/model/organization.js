@@ -7,10 +7,10 @@ let fields = formatter.fields;
 export const keys = () => ([
     { field: fields.organizationName, serverField: 'Name', label: 'Organization', sortable: true, visible: true },
     { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: true },
-    { field: fields.phone, serverField: 'Phone', label: 'Phone', sortable: false, visible: true },
-    { field: fields.address, serverField: 'Address', label: 'Address', sortable: false, visible: true },
-    { field: 'manage', label: 'Manage', sortable: false, visible: false, clickable: true},
-    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
+    { field: fields.phone, serverField: 'Phone', label: 'Phone', sortable: true, visible: true },
+    { field: fields.address, serverField: 'Address', label: 'Address', sortable: true, visible: true },
+    { field: 'manage', label: 'Manage', visible: false, clickable: true},
+    { field: fields.actions, label: 'Actions', visible: true, clickable: true }
 ])
 
 export const getKey = (data) => {

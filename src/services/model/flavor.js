@@ -5,28 +5,26 @@ import { SHOW_FLAVOR, CREATE_FLAVOR, DELETE_FLAVOR } from './endPointTypes'
 
 let fields = formatter.fields
 
-export const keys = [ 
+export const keys = [
     { field: fields.region, label: 'Region', sortable: true, visible: true },
-    { field: fields.flavorName, serverField: 'key#OS#name', label: 'Flavor Name', visible: true },
-    { field: fields.ram, serverField: 'ram', label: 'RAM Size(MB)', visible: true },
-    { field: fields.vCPUs, serverField: 'vcpus', label: 'Number of vCPUs', visible: true },
-    { field: fields.disk, serverField: 'disk', label: 'Disk Space(GB)', visible: true },
-    { field: fields.gpu, serverField: 'opt_res_map#OS#gpu', label: 'Number of GPUs', visible: true },
+    { field: fields.flavorName, serverField: 'key#OS#name', label: 'Flavor Name', sortable: true, visible: true },
+    { field: fields.ram, serverField: 'ram', label: 'RAM Size(MB)', sortable: true, visible: true },
+    { field: fields.vCPUs, serverField: 'vcpus', label: 'Number of vCPUs', sortable: true, visible: true },
+    { field: fields.disk, serverField: 'disk', label: 'Disk Space(GB)', sortable: true, visible: true },
+    { field: fields.gpu, serverField: 'opt_res_map#OS#gpu', label: 'Number of GPUs', sortable: true, visible: true },
     { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
 
 export const getKey = (data, isCreate) => {
-    let flavor  = {}
-    flavor.key = {name: data[fields.flavorName]}
+    let flavor = {}
+    flavor.key = { name: data[fields.flavorName] }
 
-    if(isCreate)
-    {
+    if (isCreate) {
         flavor.ram = parseInt(data[fields.ram])
         flavor.vcpus = parseInt(data[fields.vCPUs])
         flavor.disk = parseInt(data[fields.disk])
-        if(data[fields.gpu])
-        {
-            flavor.opt_res_map = {gpu:"gpu:1"}
+        if (data[fields.gpu]) {
+            flavor.opt_res_map = { gpu: "gpu:1" }
         }
     }
     return ({
