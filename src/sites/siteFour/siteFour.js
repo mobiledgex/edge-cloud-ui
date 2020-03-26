@@ -51,7 +51,6 @@ class SiteFour extends React.Component {
             setMotion: defaultMotion,
             OrganizationName: '',
             adminShow: false,
-            viewMode: 'listView',
             currentVersion: 'v-',
             searchChangeValue: 'Username',
             menuClick: false,
@@ -87,7 +86,6 @@ class SiteFour extends React.Component {
     handleItemClick(id, label, pg, role) {
         localStorage.setItem('selectMenu', label)
         _self.setState({ menuClick: true })
-        _self.props.handleDetail({ data: null, viewMode: 'listView' })
         _self.props.handleChangeViewBtn(false);
         _self.props.handleChangeClickCity([]);
         _self.props.handleChangeComputeItem(label);
@@ -152,11 +150,6 @@ class SiteFour extends React.Component {
     enalbeSteps = () => {
         let enable = false;
         let currentStep = null;
-
-        if (_self.props.viewMode === 'detailView') return;
-
-        let site = _self.props.siteName;
-        let userName = (_self.props.userInfo && _self.props.userInfo.info) ? _self.props.userInfo.info.Name : '';
         if (_self.props.params.mainPath === "/site4" && _self.props.params.subPath === "pg=newOrg") {
             if (_self.props.changeStep === '02') {
                 currentStep = orgaSteps.stepsNewOrg2;
@@ -165,8 +158,6 @@ class SiteFour extends React.Component {
             } else {
                 currentStep = orgaSteps.stepsNewOrg;
             }
-
-
             enable = true;
         } else if (_self.props.params.subPath === "pg=0") {
             if (_self.props.dataExist) {
@@ -291,12 +282,6 @@ class SiteFour extends React.Component {
 
         }
 
-        if (nextProps.viewMode && localStorage.selectRole.indexOf('Developer') === -1) {
-            _self.setState({ viewMode: nextProps.viewMode })
-        } else {
-            _self.setState({ viewMode: 'listView' })
-        }
-
         if ((nextProps.alertInfo !== _self.props.alertInfo) && nextProps.alertInfo.mode) {
             Alert.closeAll();
             if (nextProps.alertInfo.mode === 'success') {
@@ -387,13 +372,6 @@ class SiteFour extends React.Component {
         } else {
             _self.setState({ intoCity: false })
         }
-
-        //set category
-        if (nextProps.detailData !== _self.props.detailData) {
-            // alert(JSON.stringify(nextProps.detailData))
-            _self.setState({ detailData: nextProps.detailData })
-        }
-
     }
 
     componentWillUnmount() {
@@ -532,16 +510,12 @@ class SiteFour extends React.Component {
 };
 
 const mapStateToProps = (state) => {
-    let viewMode = null;
-    if (state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
-        viewMode = state.changeViewMode.mode.viewMode;
-    }
+    
     let tutorState = (state.tutorState) ? state.tutorState.state : null;
     let formInfo = (state.form) ? state.form : null;
     let submitInfo = (state.submitInfo) ? state.submitInfo : null;
     let regionInfo = (state.regionInfo) ? state.regionInfo : null;
     let checkedAudit = (state.checkedAudit) ? state.checkedAudit.audit : null;
-    let detailData = (state.changeViewMode && state.changeViewMode.mode) ? state.changeViewMode.mode.data : null;
     let selectedOrg = (state.selectOrganiz) ? state.selectOrganiz.org : null;
 
 
@@ -553,7 +527,6 @@ const mapStateToProps = (state) => {
         selectOrg: state.selectOrg.org ? state.selectOrg.org : null,
         loadingSpinner: state.loadingSpinner.loading ? state.loadingSpinner.loading : null,
         injectData: state.injectData ? state.injectData : null,
-        viewMode: viewMode,
         alertInfo: {
             mode: state.alertInfo.mode,
             msg: state.alertInfo.msg
@@ -571,7 +544,6 @@ const mapStateToProps = (state) => {
         regionInfo: regionInfo,
         audit: checkedAudit,
         clickCity: state.clickCityList.list,
-        detailData: detailData,
         selectedOrg
     }
 };

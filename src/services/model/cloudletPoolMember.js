@@ -11,18 +11,21 @@ export const keys = [
 ]
 
 export const getKey = (data) => {
-    return ({
-        region: data[fields.region],
-        cloudletpoolmember: {
-            cloudlet_key: {
-                name: data[fields.cloudletName],
-                organization: data[fields.operatorName]
-            },
-            pool_key: {
-                name: data[fields.poolName]
+    if (data) {
+        return ({
+            region: data[fields.region],
+            cloudletpoolmember: {
+                cloudlet_key: {
+                    name: data[fields.cloudletName],
+                    organization: data[fields.operatorName]
+                },
+                pool_key: {
+                    name: data[fields.poolName]
+                }
             }
-        }
-    })
+        })
+    }
+    return {}
 }
 
 export const showCloudletPoolMembers = (data) => {

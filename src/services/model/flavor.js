@@ -16,21 +16,23 @@ export const keys = [
 ]
 
 export const getKey = (data, isCreate) => {
-    let flavor = {}
-    flavor.key = { name: data[fields.flavorName] }
+    if (data) {
+        let flavor = {}
+        flavor.key = { name: data[fields.flavorName] }
 
-    if (isCreate) {
-        flavor.ram = parseInt(data[fields.ram])
-        flavor.vcpus = parseInt(data[fields.vCPUs])
-        flavor.disk = parseInt(data[fields.disk])
-        if (data[fields.gpu]) {
-            flavor.opt_res_map = { gpu: "gpu:1" }
+        if (isCreate) {
+            flavor.ram = parseInt(data[fields.ram])
+            flavor.vcpus = parseInt(data[fields.vCPUs])
+            flavor.disk = parseInt(data[fields.disk])
+            if (data[fields.gpu]) {
+                flavor.opt_res_map = { gpu: "gpu:1" }
+            }
         }
+        return ({
+            region: data[fields.region],
+            flavor: flavor
+        })
     }
-    return ({
-        region: data[fields.region],
-        flavor: flavor
-    })
 }
 
 export const showFlavors = (data) => {

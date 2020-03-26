@@ -23,23 +23,24 @@ export const showCloudletInfos = (data) => {
     if (formatter.isAdmin()) {
         method = SHOW_CLOUDLET_INFO;
     }
-    if(method)
-    {
+    if (method) {
         return { method: method, data: data }
     }
 }
 
 export const getKey = (data) => {
-    const { CloudletName, Operator, Region } = data
-    return ({
-        region: Region,
-        cloudlet: {
-            key: {
-                organization: Operator,
-                name: CloudletName
+    if (data) {
+        return ({
+            region: data[fields.region],
+            cloudlet: {
+                key: {
+                    organization: data[fields.operatorName],
+                    name: data[fields.cloudletName]
+                }
             }
-        }
-    })
+        })
+    }
+    return {}
 }
 
 const customData = (value) => {
