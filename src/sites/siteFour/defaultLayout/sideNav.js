@@ -44,7 +44,7 @@ import AutoProvPolicy from '../policies/autoProvPolicyList/autoProvPolicyList';
 import PrivacyPolicy from '../policies/privacyPolicy/privacyPolicyList';
 import PageMonitoringMain from '../monitoring/PageMonitoringMain'
 
-import { Collapse } from '@material-ui/core';
+import { Collapse, Tooltip } from '@material-ui/core';
 import { Image } from 'semantic-ui-react';
 import PopLegendViewer from '../../../container/popLegendViewer';
 
@@ -156,14 +156,17 @@ export default function MiniDrawer(props) {
     const showOptionForm = (i, option) => {
         return (
             <ListItem button key={option.label} onClick={() => { option.pg !== undefined ? onOptionClick(option, i) : expandOptions(option) }}>
-                <ListItemIcon style={{ color: '#B1B2B4' }}>{option.icon}</ListItemIcon>
+                <Tooltip title={option.label} aria-label="add">
+                    <ListItemIcon style={{ color: '#B1B2B4' }}>{option.icon}
+                    </ListItemIcon>
+                </Tooltip>
                 <ListItemText style={{ color: '#B1B2B4' }} primary={option.label} />
                 {option.subOptions ? expand ? <ExpandLess style={{ color: '#B1B2B4' }} /> : <ExpandMore style={{ color: '#B1B2B4' }} /> : null}
             </ListItem>
         )
     }
 
-    
+
 
     const roleInfo = () => {
         return (
