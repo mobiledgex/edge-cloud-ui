@@ -362,7 +362,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 />
                                 {this.state.newCloudLetLocationList.length === 0 &&
                                 <Rectangle
-                                    bounds={[[50.1109, 15.6821], [37.5665, 80.978],]}
+                                    bounds={[[50.1109, 5.6821], [37.5665, 95.978],]}
 
                                     color={'green'}
                                     attribution={{
@@ -386,7 +386,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
                                     >
                                         <span>
-                                            There are no apps on the cluster | cloud
+                                            There are no apps on the selected cluster | cloud
                                         </span>
                                     </Tooltip>
                                 </Rectangle>
