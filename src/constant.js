@@ -18,8 +18,8 @@ export const APP_INST = 'AppInst'
 export const APP = 'App'
 export const YES = 'YES'
 
-export const getHeight = () => {
-    return window.innerHeight - 85
+export const getHeight = (height) => {
+    return window.innerHeight - (height ? height : 85)
 }
 
 export const IPAccessLabel = (id) => {
