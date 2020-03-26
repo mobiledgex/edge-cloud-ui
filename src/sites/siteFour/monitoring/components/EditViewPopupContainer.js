@@ -63,7 +63,7 @@ export default class EditViewPopupContainer extends React.Component<Props, State
             <div style={{flex: 1, display: 'flex'}}>
                 <AModal
                     mask={false}
-                    style={{}}
+                    style={{zIndex:99999999}}
                     //title={this.props.currentGraphAppInst + " [" + this.props.cluster + "]" + "  " + this.state.hardwareType}
                     visible={this.props.isOpenEditView}
                     onOk={() => {
@@ -78,7 +78,8 @@ export default class EditViewPopupContainer extends React.Component<Props, State
                     bodyStyle={{
                         height: window.innerHeight * 0.65,
                         marginTop: -90,
-                        backgroundColor: '#232323'
+                        backgroundColor: '#292c33',
+                        zIndex:99999999
                     }}
                     width={'99%'}
                     footer={null}

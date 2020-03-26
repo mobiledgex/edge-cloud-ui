@@ -122,7 +122,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         bodyStyle={{
                             height: window.innerHeight * 0.98,
                             marginTop: -90,
-                            backgroundColor: 'black',
+                            backgroundColor: '#292c33',
                             zIndex: 999999999999999999999,
                         }}
                         width={'99%'}

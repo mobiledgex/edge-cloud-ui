@@ -10,6 +10,13 @@
     font-style: italic;
 }
 
+.page_monitoring_select_area .ui.selection.dropdown {
+    margin-right: 20px;
+    margin-bottom: 10px;
+    z-index: -50;
+    /* min-width: 250px; */
+}
+
 
 #button-wrapper {
     position: absolute;

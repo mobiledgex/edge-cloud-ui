@@ -7,9 +7,10 @@ import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
-import {CircularProgress} from '@material-ui/core'
+import {CircularProgress, Toolbar} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
-import {Card, DatePicker, Select, Tooltip} from 'antd';
+import {DatePicker, Select, Tooltip} from 'antd';
+import {Card} from '@material-ui/core'
 
 import {
     defaultHwMapperListForCluster,
@@ -418,13 +419,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             /*DESC: FAKEDATA
             DESC: FAKEDATA*/
-            //await this.loadInitDataForCluster__FOR__DEV();
+            await this.loadInitDataForCluster__FOR__DEV();
 
             /*
             TODO: REAL DATA
             TODO: REAL DATA
             */
-            await this.loadInitDataForCluster();
+            //await this.loadInitDataForCluster();
 
             this.setState({
                 loading: false,
@@ -1579,6 +1580,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     value={this.state.currentAppInst}
                                     placeholder={this.state.appInstSelectBoxPlaceholder}
                                     selection
+                                    style={PageMonitoringStyles.dropDown}
                                     options={this.state.appInstDropdown}
                                     onChange={async (e, {value}) => {
                                         await this.handleAppInstDropdown(value.trim())
@@ -1713,37 +1715,45 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     />
 
                     <Grid.Row className='view_contents'>
-                        <Grid.Column className='contents_body'>
-                            {/*todo:---------------------------------*/}
-                            {/*todo:Content Header                   */}
-                            {/*todo:---------------------------------*/}
-                            <SemanticToastContainer position={"top-right"}/>
-                            {this.renderHeader()}
-                            <Grid.Row className='site_content_body'>
+                        <Card style={{
+                            width: '100%',
+                            height: '100%',
+                            backgroundColor: '#292c33',
+                            padding: 10,
+                            color: 'white',
+                            paddingTop: 15,
+                        }}>
+                            <div>
+                                {/*todo:---------------------------------*/}
+                                {/*todo:Content Header                   */}
+                                {/*todo:---------------------------------*/}
+                                <SemanticToastContainer position={"top-right"}/>
+                                {this.renderHeader()}
                                 <div className="page_monitoring">
-                                    <div style={{backgroundColor: '#202329'}}>
+                                    <div style={{backgroundColor: '#202329', marginLeft: 10, marginRight: 10,}}>
                                         {this.renderSelectBoxRow()}
                                     </div>
                                     <div className='page_monitoring_dashboard_dev'
-                                         style={{overflowY: 'auto', padding: 5}}>
+                                         style={{overflowY: 'auto', padding: -50}}>
                                         {this.state.currentClassification === CLASSIFICATION.CLUSTER
                                             ? this.renderGridLayoutForCluster()
                                             : this.renderGridLayoutForAppInst()
                                         }
                                     </div>
                                 </div>
-                            </Grid.Row>
-                        </Grid.Column>
-                        {/*todo:---------------------------------*/}
-                        {/*todo:terminal button                   */}
-                        {/*todo:---------------------------------*/}
-                        {this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?
-                            <div className='page_monitoring_terminal_button'
-                                 onClick={() => this.setState({openTerminal: true})}
-                            >
                             </div>
-                            : null
-                        }
+                            {/*todo:---------------------------------*/}
+                            {/*todo:terminal button                   */}
+                            {/*todo:---------------------------------*/}
+                            {this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?
+                                <div className='page_monitoring_terminal_button'
+                                     onClick={() => this.setState({openTerminal: true})}
+                                >
+                                </div>
+                                : null
+                            }
+                        </Card>
+
 
                     </Grid.Row>
                     <Modal style={{width: '100%', height: '100%'}} open={this.state.openTerminal}>
