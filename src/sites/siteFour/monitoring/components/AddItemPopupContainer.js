@@ -81,7 +81,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
 
                     }}
                     width={'100%'}
-                    style={{padding:'10px', top:0, minWidth:1200}}
+                    style={{padding: '10px', top: 0, minWidth: 1200}}
 
                     footer={null}
                 >
@@ -158,7 +158,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         {/*todo:Radio.Group*/}
                         {/*todo:Radio.Group*/}
                         <div className='page_monitoring_form_row'>
-                            <div  className='page_monitoring_form_column_left'>
+                            <div className='page_monitoring_form_column_left'>
                                 Item Type
                             </div>
                             <Radio.Group
@@ -290,7 +290,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
 
                         {this.state.isShowHWDropDown && <div>
                             <div className='page_monitoring_form_row'>
-                                <div  className='page_monitoring_form_column_left' >
+                                <div className='page_monitoring_form_column_left'>
                                     HW Type
                                 </div>
                                 <div className='page_monitoring_form_column_right'>
@@ -313,7 +313,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         </div>}
                         {this.state.isShowEventLog &&
                         <div className='page_monitoring_form_row'>
-                            <div  className='page_monitoring_form_column_left' >
+                            <div className='page_monitoring_form_column_left'>
                                 Event Log Type
                             </div>
 
@@ -332,10 +332,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                 />
                             </div>
                         </div>
-
                         }
-
-
                         {/*todo:Buttons*/}
                         {/*todo:Buttons*/}
                         {/*todo:Buttons*/}
@@ -345,7 +342,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                 onClick={async () => {
                                     // __addGridItem(hwType, graphType = 'line') {
 
-                                    await this.props.parent.__addGridItem(this.state.currentHwType, this.state.currentItemType);
+                                    await this.props.parent.addGridItem(this.state.currentHwType, this.state.currentItemType);
                                     this.closePopupWindow();
                                     showToast('added Item!! [' + this.state.currentHwType + "]")
 

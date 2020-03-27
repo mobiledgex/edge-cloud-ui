@@ -354,24 +354,35 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     //maxZoom={15}
                                 />
                                 {this.state.newCloudLetLocationList.length === 0 &&
-                                <Tooltip
-                                    //offset={[14, -10]}//x,y
-                                    className='tooltip001'
-                                    opacity={0.8}
-                                    permanent
-                                    direction={'center'}
-                                    style={{
-                                        cursor: 'pointer',
-                                        pointerEvents: 'auto',
-                                        fontSize: 15,
-                                        background: 'green',
-                                    }}
+                                <Rectangle
+                                    bounds={[[50.1109, 5.6821], [37.5665, 95.978],]}
 
+                                    color={'green'}
+                                    attribution={{
+                                        weight: 10,
+
+                                    }}
                                 >
+
+                                    <Tooltip
+                                        //offset={[14, -10]}//x,y
+                                        className='tooltip001'
+                                        opacity={0.8}
+                                        permanent
+                                        direction={'center'}
+                                        style={{
+                                            cursor: 'pointer',
+                                            pointerEvents: 'auto',
+                                            fontSize: 15,
+                                            background: 'green',
+                                        }}
+
+                                    >
                                         <span>
                                             There are no apps on the selected cluster | cloud
                                         </span>
-                                </Tooltip>
+                                    </Tooltip>
+                                </Rectangle>
                                 }
 
 
