@@ -131,20 +131,32 @@ const defaultPage = (options) => {
     return <SiteFourPageOrganization />
 }
 
+const navstate = ()=>
+{
+    return localStorage.getItem('navigation')
+}
+
+const setNavState = (flag)=>
+{
+    return localStorage.setItem('navigation', flag)
+}
+
 export default function MiniDrawer(props) {
     const classes = useStyles();
     const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = React.useState(navstate() ? navstate() : false);
     const [expand, setExpand] = React.useState(false);
     const [openLegend, setOpenLegend] = React.useState(false);
 
     const [page, setPage] = React.useState(defaultPage(options));
 
     const handleDrawerOpen = () => {
+        setNavState(true)
         setOpen(true);
     };
 
     const handleDrawerClose = () => {
+        setNavState(false)
         setOpen(false);
     };
 
