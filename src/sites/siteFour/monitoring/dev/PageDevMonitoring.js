@@ -475,13 +475,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
 
-
-
-                //@fixme: fakeData __allAppInstEvLogListValues
-                //@fixme: fakeData __allAppInstEvLogListValues
-                //@fixme: fakeData __allAppInstEvLogListValues
-                //@fixme: fakeData __allAppInstEvLogListValues
-                //@fixme: fakeData __allAppInstEvLogListValues
                 //@fixme: fakeData __allAppInstEvLogListValues
                 //@fixme: fakeData __allAppInstEvLogListValues
                 //@fixme: fakeData __allAppInstEvLogListValues
