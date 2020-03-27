@@ -1601,7 +1601,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     value={this.state.currentAppInst}
                                     placeholder={this.state.appInstSelectBoxPlaceholder}
                                     selection
-                                    style={PageMonitoringStyles.dropDown}
+                                    // style={PageMonitoringStyles.dropDown}
                                     options={this.state.appInstDropdown}
                                     onChange={async (e, {value}) => {
                                         await this.handleAppInstDropdown(value.trim())
@@ -1744,9 +1744,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             backgroundColor: '#292c33',
                             padding: 10,
                             color: 'white',
-                            paddingTop: 15,
-                            overflowY: 'auto',
-                            marginBottom: 200,
                         }}>
                             <div>
                                 {/*todo:---------------------------------*/}

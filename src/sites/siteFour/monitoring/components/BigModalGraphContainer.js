@@ -120,85 +120,62 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         }}
                         closable={true}
                         bodyStyle={{
-                            height: window.innerHeight * 0.98,
-                            marginTop: -90,
-                            backgroundColor: '#292c33',
-                            zIndex: 999999999999999999999,
+                            height: window.innerHeight-20,
+                            backgroundColor: 'rgb(41, 44, 51)',
                         }}
-                        width={'99%'}
+                        width={'100%'}
+                        style={{padding:'10px', top:0}}
                         footer={null}
                     >
-                        <div style={{display: 'flex', width: '100%'}}>
-                            <div style={{
-                                flex: .025,
-                                backgroundColor: 'transparent',
-                                width: 120,
-                                display: 'flex',
-                                alignSelf: 'center',
-                                justifyContent: 'center'
-                            }} onClick={() => {
-                                this.props.parent.setState({
-                                    isShowBigGraph: false,
-                                })
-                            }}>
-                                {/*<ArrowBack  style={{fontSize: 30, color: 'white'}} color={'white'}/>*/}
-                                <FA name="arrow-circle-left" style={{fontSize: 40, color: 'white'}}/>
+                        <div style={{width: '100%'}}>
+                            {/*<div style={{*/}
+                            {/*    flex: .025,*/}
+                            {/*    backgroundColor: 'transparent',*/}
+                            {/*    width: 120,*/}
+                            {/*    display: 'flex',*/}
+                            {/*    alignSelf: 'center',*/}
+                            {/*    justifyContent: 'center'*/}
+                            {/*}} onClick={() => {*/}
+                            {/*    this.props.parent.setState({*/}
+                            {/*        isShowBigGraph: false,*/}
+                            {/*    })*/}
+                            {/*}}>*/}
+                            {/*    /!*<ArrowBack  style={{fontSize: 30, color: 'white'}} color={'white'}/>*!/*/}
+                            {/*    <FA name="arrow-circle-left" style={{fontSize: 40, color: 'white'}}/>*/}
 
-                            </div>
+                            {/*</div>*/}
                             {this.state.graphType === GRID_ITEM_TYPE.MAP ?
-
-                                <React.Fragment>
-                                    <div style={{
-                                        color: 'white',
-                                        fontSize: 35,
-                                        flex: .2,
-                                        marginLeft: 25,
-                                    }}> Deployed Instance
+                                <div>
+                                    <div className='page_monitoring_popup_title'>
+                                        Deployed Instance
                                     </div>
                                     {this.props.isLoading && renderCircleLoaderForMap()}
-                                </React.Fragment>
+                                </div>
                                 : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                                    <div style={{
-                                        color: 'white',
-                                        fontSize: 35,
-                                        flex: .9,
-                                        marginLeft: 25,
-                                    }}> Cluster {this.props.popupGraphHWType} Usage
+                                    <div className='page_monitoring_popup_title'>
+                                        Cluster {this.props.popupGraphHWType} Usage
                                     </div>
                                     : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ?
-                                        <div style={{
-                                            color: 'white',
-                                            fontSize: 35,
-                                            flex: .9,
-                                            marginLeft: 25,
-                                        }}> App Instance {this.props.popupGraphHWType} Usage
+                                        <div className='page_monitoring_popup_title'>
+                                            App Instance {this.props.popupGraphHWType} Usage
                                         </div>
                                         : this.state.graphType === GRID_ITEM_TYPE.BUBBLE ?
 
-                                            <div style={{
-                                                color: 'white',
-                                                fontSize: 35,
-                                                flex: .9,
-                                                marginLeft: 25,
-                                            }}> Bubble Chart
+                                            <div className='page_monitoring_popup_title'>
+                                                Bubble Chart
                                             </div>
 
                                             :
-                                            <div style={{
-                                                color: 'white',
-                                                fontSize: 35,
-                                                flex: .9,
-                                                marginLeft: 25,
-                                            }}> Top 5 {this.props.popupGraphHWType} Usage
+                                            <div className='page_monitoring_popup_title'>
+                                                Top 5 {this.props.popupGraphHWType} Usage
                                                 of {this.props.parent.state.currentClassification}
                                             </div>
                             }
-
-
+                            <div className='page_monitoring_popup_title_divide'/>
                         </div>
 
                         {this.state.graphType === GRID_ITEM_TYPE.LINE ?
-                            <div style={{marginTop: 50}}>
+                            <div>
                                 <Line
                                     width={window.innerWidth * 0.9}
                                     ref="chart"
@@ -209,7 +186,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 />
                             </div>
                             : this.state.graphType === GRID_ITEM_TYPE.BAR || this.state.graphType === GRID_ITEM_TYPE.COLUMN ?
-                                <div style={{marginTop: 50, height: '90%'}}>
+                                <div style={{height: 'calc(100% - 62px)'}}>
                                     <Bar_Column_Chart
                                         width={"100%"}
                                         //height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
@@ -225,10 +202,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 : this.state.graphType === GRID_ITEM_TYPE.MAP ?
 
                                     <React.Fragment>
-                                        <div>
-
-                                        </div>
-                                        <div style={{height: window.innerHeight * 0.92}}>
+                                        <div style={{height: 'calc(100% - 62px)'}}>
                                             <LeafletMapWrapperForDev
                                                 mapPopUploading={false}
                                                 parent={this}

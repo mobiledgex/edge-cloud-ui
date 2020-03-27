@@ -52,7 +52,7 @@
     color:rgba(255,255,255,.8);
     margin-right: 10px;
     margin-bottom: 10px;
-    z-index: 10;
+    /*z-index: 10;*/
 
 }
 
@@ -816,4 +816,46 @@ page_monitoring_dashboard_dev {
     display: flex;
     /*align-items: center;*/
     /*justify-content: center;*/
+}
+
+/* 임시 팝업 화면 */
+.page_monitoring_popup_title {
+    color: white;
+    font-size: 24px;
+    font-weight: 500
+}
+.page_monitoring_popup_title_divide {
+    width: 100%;
+    border-top: 1px solid rgba(34,36,38,.15);
+    border-bottom: 1px solid rgba(255,255,255,.1);
+    margin: 1rem 0
+}
+.page_monitoring_form_row {
+    display: flex;
+    flex-direction: row;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.page_monitoring_form_row >.ui.button {
+    margin-right: 20px !important;
+}
+
+.page_monitoring_form_column_left{
+    display: flex;
+    width:10%;
+
+}
+.page_monitoring_form_column_right{
+    display: flex;
+    width:90%;
+
+}
+.page_monitoring_form_column_right>div {
+    margin-right: 20px;
+}
+.page_monitoring_form_radio_label {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
 }

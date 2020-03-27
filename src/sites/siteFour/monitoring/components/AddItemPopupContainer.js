@@ -63,7 +63,6 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
             <div style={{flex: 1, display: 'flex'}}>
                 <AModal
                     mask={false}
-                    style={{zIndex:99999999}}
                     //title={this.props.currentGraphAppInst + " [" + this.props.cluster + "]" + "  " + this.state.hardwareType}
                     visible={this.props.isOpenEditView}
                     onOk={() => {
@@ -77,50 +76,43 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                     closable={true}
                     bodyStyle={{
                         height: window.innerHeight * 0.65,
-                        marginTop: -90,
-                        backgroundColor: '#292c33',
-                        zIndex:99999999
+                        // marginTop: -90,
+                        backgroundColor: 'rgb(41, 44, 51)'
+
                     }}
-                    width={'99%'}
+                    width={'100%'}
+                    style={{padding:'10px', top:0, minWidth:1200}}
+
                     footer={null}
                 >
-                    <div style={{width: '100%', marginLeft: 70}}>
-                        <div style={{display: 'flex'}}>
-                            <div style={{
-                                flex: .025,
-                                backgroundColor: 'transparent',
-                                width: 120,
-                                display: 'flex',
-                                alignSelf: 'center',
-                                justifyContent: 'center'
-                            }} onClick={() => {
-                                this.closePopupWindow();
-                            }}>
-                                {/*<ArrowBack  style={{fontSize: 30, color: 'white'}} color={'white'}/>*/}
-                                <FA name="arrow-circle-left" style={{fontSize: 40, color: 'white'}}/>
+                    <div style={{width: '100%'}}>
+                        <div style={{}}>
+                            {/*<div style={{*/}
+                            {/*    flex: .025,*/}
+                            {/*    backgroundColor: 'transparent',*/}
+                            {/*    width: 120,*/}
+                            {/*    display: 'flex',*/}
+                            {/*    alignSelf: 'center',*/}
+                            {/*    justifyContent: 'center'*/}
+                            {/*}} onClick={() => {*/}
+                            {/*    this.closePopupWindow();*/}
+                            {/*}}>*/}
+                            {/*    /!*<ArrowBack  style={{fontSize: 30, color: 'white'}} color={'white'}/>*!/*/}
+                            {/*    <FA name="arrow-circle-left" style={{fontSize: 40, color: 'white'}}/>*/}
 
+                            {/*</div>*/}
+                            <div className='page_monitoring_popup_title'>
+                                Add Item
                             </div>
-                            <div>
-                                <React.Fragment>
-                                    <div style={{
-                                        color: 'white',
-                                        fontSize: 35,
-                                        flex: .2,
-                                        marginLeft: 25,
-                                    }}> Add Item
-                                    </div>
-                                </React.Fragment>
-
-                            </div>
+                            <div className='page_monitoring_popup_title_divide'/>
                         </div>
-                        <div style={{height: 45}}/>
                         {/*todo:theme*/}
                         {/*todo:theme*/}
-                        <div style={{display: 'flex'}}>
-                            <div className="page_monitoring_dropdown_label" style={{marginLeft: 0, marginRight: 67}}>
+                        <div className='page_monitoring_form_row'>
+                            <div className='page_monitoring_form_column_left'>
                                 Theme
                             </div>
-                            <div style={{marginBottom: 10,}}>
+                            <div className='page_monitoring_form_column_right'>
                                 <Dropdown
                                     selectOnBlur={false}
                                     placeholder="Select Theme"
@@ -162,12 +154,11 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                             </div>
                         </div>
 
-                        <div style={{height: 25}}/>
                         {/*todo:Radio.Group*/}
                         {/*todo:Radio.Group*/}
                         {/*todo:Radio.Group*/}
-                        <div style={{display: 'flex'}}>
-                            <div className="page_monitoring_dropdown_label" style={{marginLeft: 0, marginRight: 50}}>
+                        <div className='page_monitoring_form_row'>
+                            <div  className='page_monitoring_form_column_left'>
                                 Item Type
                             </div>
                             <Radio.Group
@@ -182,13 +173,12 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                 }}
                                 value={this.state.currentItemType}
                             >
-                                <div style={{display: 'flex'}}>
+                                <div className='page_monitoring_form_column_right'>
                                     {/*desc:###############################*/}
                                     {/*desc:map and bubble chart           */}
                                     {/*desc:###############################*/}
                                     <div>
                                         <div
-                                            className='center002'
                                             onClick={() => {
                                                 this.setState({
                                                     currentItemType: GRID_ITEM_TYPE.MAP,
@@ -203,10 +193,8 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                             <Radio value={GRID_ITEM_TYPE.MAP}>Map</Radio>
                                         </div>
                                     </div>
-                                    <div style={{width: 25}}/>
                                     <div>
                                         <div
-                                            className='center002'
                                             onClick={() => {
                                                 this.setState({
                                                     currentItemType: GRID_ITEM_TYPE.BUBBLE,
@@ -217,15 +205,13 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         >
                                             <img src={require('../images/map001.png')}/>
                                         </div>
-                                        <div className='center002'>
+                                        <div className='page_monitoring_form_radio_label'>
                                             <Radio value={GRID_ITEM_TYPE.BUBBLE}>Bubble</Radio>
                                         </div>
                                     </div>
-                                    <div style={{width: 25}}/>
 
                                     <div>
                                         <div
-                                            className='center002'
                                             onClick={() => {
                                                 this.setState({
                                                     currentItemType: GRID_ITEM_TYPE.LINE,
@@ -236,15 +222,13 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         >
                                             <img src={require('../images/graph001.png')}/>
                                         </div>
-                                        <div className='center002'>
+                                        <div className='page_monitoring_form_radio_label'>
                                             <Radio value={GRID_ITEM_TYPE.LINE}>Line Chart</Radio>
                                         </div>
                                     </div>
-                                    <div style={{width: 25}}/>
                                     {/*todo:itemOne*/}
                                     <div>
                                         <div
-                                            className='center002'
                                             onClick={() => {
                                                 this.setState({
                                                     currentItemType: GRID_ITEM_TYPE.BAR,
@@ -255,15 +239,13 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         >
                                             <img src={require('../images/bar001.png')}/>
                                         </div>
-                                        <div className='center002'>
+                                        <div className='page_monitoring_form_radio_label'>
                                             <Radio value={GRID_ITEM_TYPE.BAR}>Bar Chart</Radio>
                                         </div>
                                     </div>
                                     {/*todo:itemOne*/}
-                                    <div style={{width: 25}}/>
                                     <div>
                                         <div
-                                            className='center002'
                                             onClick={() => {
                                                 this.setState({
                                                     currentItemType: GRID_ITEM_TYPE.COLUMN,
@@ -274,17 +256,15 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         >
                                             <img src={require('../images/bar001.png')}/>
                                         </div>
-                                        <div className='center002'>
+                                        <div className='page_monitoring_form_radio_label'>
                                             <Radio value={GRID_ITEM_TYPE.COLUMN}>Column Chart</Radio>
                                         </div>
                                     </div>
-                                    <div style={{width: 25}}/>
                                     {/*todo:######################################*/}
                                     {/*todo:APP_INST_EVENT_LOG*/}
                                     {/*todo:######################################*/}
                                     <div>
                                         <div
-                                            className='center002'
                                             onClick={() => {
 
                                                 this.setState({
@@ -296,11 +276,10 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         >
                                             <img src={require('../images/log001.png')}/>
                                         </div>
-                                        <div className='center002'>
+                                        <div className='page_monitoring_form_radio_label'>
                                             <Radio value={GRID_ITEM_TYPE.APP_INST_EVENT_LOG}>Event Log</Radio>
                                         </div>
                                     </div>
-                                    <div style={{width: 25}}/>
 
                                 </div>
                             </Radio.Group>
@@ -309,45 +288,49 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         {/*todo:Radio.Group End*/}
                         {/*todo:Radio.Group End*/}
 
-                        <div style={{height: 50}}/>
                         {this.state.isShowHWDropDown && <div>
-                            <div style={{display: 'flex'}}>
-                                <div className="page_monitoring_dropdown_label" style={{marginLeft: 0, marginRight: 50}}>
+                            <div className='page_monitoring_form_row'>
+                                <div  className='page_monitoring_form_column_left' >
                                     HW Type
                                 </div>
-                                <Dropdown
-                                    selectOnBlur={false}
-                                    onClick={e => e.stopPropagation()}
-                                    placeholder="Select HW Type"
-                                    selection
-                                    onChange={async (e, {value}) => {
-                                        this.setState({
-                                            currentHwType: value,
-                                        })
-                                    }}
-                                    value={this.state.currentHwType}
-                                    options={this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER ? this.props.parent.state.hwListForCluster : this.props.parent.state.hwListForAppInst}
-                                />
+                                <div className='page_monitoring_form_column_right'>
+                                    <Dropdown
+                                        selectOnBlur={false}
+                                        onClick={e => e.stopPropagation()}
+                                        placeholder="Select HW Type"
+                                        selection
+                                        onChange={async (e, {value}) => {
+                                            this.setState({
+                                                currentHwType: value,
+                                            })
+                                        }}
+                                        value={this.state.currentHwType}
+                                        options={this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER ? this.props.parent.state.hwListForCluster : this.props.parent.state.hwListForAppInst}
+                                    />
+                                </div>
                             </div>
 
                         </div>}
                         {this.state.isShowEventLog &&
-                        <div style={{display: 'flex'}}>
-                            <div className="page_monitoring_dropdown_label" style={{marginLeft: 0, marginRight: 12}}>
+                        <div className='page_monitoring_form_row'>
+                            <div  className='page_monitoring_form_column_left' >
                                 Event Log Type
                             </div>
-                            <Dropdown
-                                selectOnBlur={false}
-                                placeholder="Select Item"
-                                selection
-                                onChange={async (e, {value}) => {
-                                    this.setState({
-                                        currentItemType: value,
-                                    })
-                                }}
-                                style={PageMonitoringStyles.dropDown2}
-                                options={EVENT_LOG_ITEM_LIST}
-                            />
+
+                            <div className='page_monitoring_form_column_right'>
+                                <Dropdown
+                                    selectOnBlur={false}
+                                    placeholder="Select Item"
+                                    selection
+                                    onChange={async (e, {value}) => {
+                                        this.setState({
+                                            currentItemType: value,
+                                        })
+                                    }}
+                                    style={PageMonitoringStyles.dropDown2}
+                                    options={EVENT_LOG_ITEM_LIST}
+                                />
+                            </div>
                         </div>
 
                         }
@@ -356,8 +339,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         {/*todo:Buttons*/}
                         {/*todo:Buttons*/}
                         {/*todo:Buttons*/}
-                        <div style={{height: 50}}/>
-                        <div style={{display: 'flex'}}>
+                        <div className='page_monitoring_form_row'>
                             <Button
                                 positive={true}
                                 onClick={async () => {
@@ -371,7 +353,6 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                 }}
                             >Add
                             </Button>
-                            <div style={{width: 15}}/>
                             <Button
                                 onClick={async () => {
                                     this.closePopupWindow();
