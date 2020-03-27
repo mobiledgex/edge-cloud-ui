@@ -24,4 +24,5 @@ ENV REACT_APP_BUILD_VERSION=$TAG
 
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 ENV HTTPS=true
+ENV CI=true
 CMD ["/usr/bin/npm", "start"]

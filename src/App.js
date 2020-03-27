@@ -12,13 +12,13 @@ import * as actions from './actions';
 import * as serviceMC from './services/serviceMC';
 import {LOCAL_STRAGE_KEY} from './components/utils/Settings'
 //insert pages
-import EntranceGlob from './sites/entranceGlob';
-import SiteTwo from "./sites/siteTwo";
+import EntranceGlob from './sites/siteOne/entranceGlob';
+import './app.css';
 import CreateAccount from './components/login/CreateAccont';
 import history from './history';
 import VerifyContent from './container/verifyContent';
 import './css/index.css';
-import SiteFour from "./sites/siteFour/siteFour";
+import SiteFour from './sites/siteFour/siteFour'
 import './css/pages/audit.css';
 import './css/pages/cloudletPool.css';
 import './css/pages/monitoring.css';
@@ -167,7 +167,6 @@ const DashboardContainer = ( props, props2) => {
                 {props.mainPath === '/logout' && <EntranceGlob params={_params} history={(props2.history)?props2.history:null} />}
                 {props.mainPath === '/' && <EntranceGlob params={_params} history={(props2.history)?props2.history:null} />}
                 {props.mainPath === '/site1' && <EntranceGlob params={_params} history={(props2.history)?props2.history:null}/>}
-                {props.mainPath === '/site2' && <SiteTwo params={_params} history={(props2.history)?props2.history:null}/>}
                 {props.mainPath === '/site4' && <SiteFour params={_params} history={(props2.history)?props2.history:null}/>}
                 {props.mainPath === '/createAccount' && <CreateAccount params={_params} history={(props2.history)?props2.history:null}/>}
                 {props.mainPath === '/passwordreset' && <EntranceGlob params={_params} history={(props2.history)?props2.history:null} reset={true}/>}
@@ -300,7 +299,8 @@ class App extends Component {
             self.props.mapDispatchToLoginWithPassword(storage_json)
         }
     }
-    componentWillReceiveProps(nextProps) {
+    
+    UNSAFE_componentWillReceiveProps(nextProps) {
         // let props = nextProps;
         // if(nextProps.clickTab) {
         //     let params = {params:{page:'pg='+nextProps.clickTab}}
