@@ -168,7 +168,7 @@ export const APP_INST_USAGE_TYPE_INDEX = {
 }
 
 
-export const RECENT_DATA_LIMIT_COUNT = 10
+export const RECENT_DATA_LIMIT_COUNT = 25
 
 export const APP_PERFORMANCE_VALUES = {
     M4_MEDIUM: {

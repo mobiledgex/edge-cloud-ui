@@ -15,148 +15,153 @@ import PageDevMonitoring from "./dev/PageDevMonitoring";
 
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
-    //AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version;
-    console.log("onmessage pCurrentAppInst===>", pCurrentAppInst);
-    let AppName = pCurrentAppInst.split('|')[0].trim()
-    let Cloudlet = pCurrentAppInst.split('|')[1].trim()
-    let ClusterInst = pCurrentAppInst.split('|')[2].trim()
-    let Region = pCurrentAppInst.split('|')[3].trim()
-    let HealthCheck = pCurrentAppInst.split('|')[4].trim()
-    let Version = pCurrentAppInst.split('|')[5].trim()
-    let Operator = pCurrentAppInst.split('|')[6].trim()
 
-    let store = JSON.parse(localStorage.PROJECT_INIT);
-    let token = store ? store.userToken : 'null';
+    try {
+        //AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version;
+        console.log("onmessage pCurrentAppInst===>", pCurrentAppInst);
+        let AppName = pCurrentAppInst.split('|')[0].trim()
+        let Cloudlet = pCurrentAppInst.split('|')[1].trim()
+        let ClusterInst = pCurrentAppInst.split('|')[2].trim()
+        let Region = pCurrentAppInst.split('|')[3].trim()
+        let HealthCheck = pCurrentAppInst.split('|')[4].trim()
+        let Version = pCurrentAppInst.split('|')[5].trim()
+        let Operator = pCurrentAppInst.split('|')[6].trim()
 
-    let organization = localStorage.selectOrg.toString()
-    let prefixUrl = (process.env.REACT_APP_API_ENDPOINT).replace('http', 'ws');
-    console.log("onmessage==REACT_APP_API_ENDPOINT==>", prefixUrl)
+        let store = JSON.parse(localStorage.PROJECT_INIT);
+        let token = store ? store.userToken : 'null';
 
-    const webSocket = new WebSocket(`${prefixUrl}/ws/api/v1/auth/ctrl/ShowAppInstClient`)
+        let organization = localStorage.selectOrg.toString()
+        let prefixUrl = (process.env.REACT_APP_API_ENDPOINT).replace('http', 'ws');
+        console.log("onmessage==REACT_APP_API_ENDPOINT==>", prefixUrl)
 
-    let showAppInstClientRequestForm = {
-        "Region": Region,
-        "AppInstClientKey": {
-            "key": {
-                "app_key": {
-                    "name": AppName,
-                    "organization": organization,
-                    "version": Version,
-                },
-                "cluster_inst_key": {
-                    "cluster_key": {
-                        "name": ClusterInst,
+        const webSocket = new WebSocket(`${prefixUrl}/ws/api/v1/auth/ctrl/ShowAppInstClient`)
+
+        let showAppInstClientRequestForm = {
+            "Region": Region,
+            "AppInstClientKey": {
+                "key": {
+                    "app_key": {
+                        "name": AppName,
+                        "organization": organization,
+                        "version": Version,
                     },
-                    "organization": organization,
-                    "cloudlet_key": {
-                        "name": Cloudlet,
-                        "organization": Operator
+                    "cluster_inst_key": {
+                        "cluster_key": {
+                            "name": ClusterInst,
+                        },
+                        "organization": organization,
+                        "cloudlet_key": {
+                            "name": Cloudlet,
+                            "organization": Operator
+                        }
                     }
                 }
             }
         }
-    }
 
-    /* let testForm = {
-         "Region": "EU",
-         "AppInstClientKey": {
-             "key": {
-                 "app_key": {
-                     "name": "MobiledgeX SDK Demo",
-                     "organization": "MobiledgeX",
-                     "version": "2.0"
-                 },
-                 "cluster_inst_key": {
-                     "cluster_key": {
-                         "name": "autoclustermobiledgexsdkdemo"
+        /* let testForm = {
+             "Region": "EU",
+             "AppInstClientKey": {
+                 "key": {
+                     "app_key": {
+                         "name": "MobiledgeX SDK Demo",
+                         "organization": "MobiledgeX",
+                         "version": "2.0"
                      },
-                     "organization": "MobiledgeX",
-                     "cloudlet_key": {
-                         "name": "hamburg-stage",
-                         "organization": "TDG"//operator
+                     "cluster_inst_key": {
+                         "cluster_key": {
+                             "name": "autoclustermobiledgexsdkdemo"
+                         },
+                         "organization": "MobiledgeX",
+                         "cloudlet_key": {
+                             "name": "hamburg-stage",
+                             "organization": "TDG"//operator
+                         }
                      }
                  }
              }
-         }
-     }*/
+         }*/
 
-    console.log("requestShowAppInstClientWS====>", showAppInstClientRequestForm)
+        console.log("requestShowAppInstClientWS====>", showAppInstClientRequestForm)
 
-    webSocket.onopen = () => {
-        try {
-            _this.props.toggleLoading(false)
-            console.log("onmessage WebSocket is open now.");
+        webSocket.onopen = () => {
+            try {
+                _this.props.toggleLoading(false)
+                console.log("onmessage WebSocket is open now.");
 
-            webSocket.send(JSON.stringify({
-                token: token,
-            }))
-            webSocket.send(JSON.stringify(showAppInstClientRequestForm))
-        } catch (e) {
-            //alert(e.toString())
+                webSocket.send(JSON.stringify({
+                    token: token,
+                }))
+                webSocket.send(JSON.stringify(showAppInstClientRequestForm))
+            } catch (e) {
+                //alert(e.toString())
+            }
         }
-    }
 
 
-    let appInstCount = 0;
-    let interval = null;
-    webSocket.onmessage = async (event) => {
-        try {
-            console.log("readyState====>", webSocket.readyState);
+        let appInstCount = 0;
+        let interval = null;
+        webSocket.onmessage = async (event) => {
+            try {
+                console.log("readyState====>", webSocket.readyState);
 
-            _this.props.toggleLoading(true)
+                _this.props.toggleLoading(true)
 
-            appInstCount++;
-            let data = JSON.parse(event.data);
-            let uuid = data.data.client_key.uuid;
-            console.log("onmessage==data==>", data);
-            if (data.code === 200) {
+                appInstCount++;
+                let data = JSON.parse(event.data);
+                let uuid = data.data.client_key.uuid;
+                console.log("onmessage==data==>", data);
+                if (data.code === 200) {
+                    _this.setState({
+                        loading: true,
+                    })
+                }
+                let clientLocationOne: TypeClientLocation = data.data.location;
+                if (!isEmpty(uuid)) {
+                    clientLocationOne.uuid = uuid;
+                    let serverLocation = pCurrentAppInst.split('|')[7].trim()
+                    clientLocationOne.serverLocInfo = JSON.parse(serverLocation)
+                }
+                console.log("onmessage====clientLocationOne>", clientLocationOne);
+
                 _this.setState({
-                    loading: true,
+                    selectedClientLocationListOnAppInst: _this.state.selectedClientLocationListOnAppInst.concat(clientLocationOne),
+                }, () => {
+                    console.log("onmessage====currentClientLocationListOnAppInst>", _this.state.selectedClientLocationListOnAppInst);
                 })
-            }
-            let clientLocationOne: TypeClientLocation = data.data.location;
-            if (!isEmpty(uuid)) {
-                clientLocationOne.uuid = uuid;
-                let serverLocation = pCurrentAppInst.split('|')[7].trim()
-                clientLocationOne.serverLocInfo = JSON.parse(serverLocation)
-            }
-            console.log("onmessage====clientLocationOne>", clientLocationOne);
 
-            _this.setState({
-                selectedClientLocationListOnAppInst: _this.state.selectedClientLocationListOnAppInst.concat(clientLocationOne),
-            }, () => {
-                console.log("onmessage====currentClientLocationListOnAppInst>", _this.state.selectedClientLocationListOnAppInst);
-            })
+                setTimeout(() => {
+                    _this.setState({
+                        loading: false,
+                    })
+                    _this.props.toggleLoading(false)
+                }, 20)
 
+                console.log("onmessage.....appInstCount====>", appInstCount);
+            } catch (e) {
+                //alert(e)
+            }
+        }
+
+
+        webSocket.onerror = (event) => {
             setTimeout(() => {
                 _this.setState({
                     loading: false,
                 })
                 _this.props.toggleLoading(false)
-            }, 20)
+            }, 15)
+        };
 
-            console.log("onmessage.....appInstCount====>", appInstCount);
-        } catch (e) {
-            //alert(e)
-        }
-    }
-
-
-    webSocket.onerror = (event) => {
-        setTimeout(() => {
-            _this.setState({
-                loading: false,
-            })
+        webSocket.onclose = function (event) {
+            //alert(event.toString())
             _this.props.toggleLoading(false)
-        }, 15)
-    };
+        };
 
-    webSocket.onclose = function (event) {
-        //alert(event.toString())
-        _this.props.toggleLoading(false)
-    };
+        return webSocket;
+    } catch (e) {
 
-    return webSocket;
+    }
 
 }
 

@@ -420,13 +420,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             /*DESC: FAKEDATA
             DESC: FAKEDATA*/
-            await this.loadInitDataForCluster__FOR__DEV();
+            //await this.loadInitDataForCluster__FOR__DEV();
 
             /*
             TODO: REAL DATA
             TODO: REAL DATA
             */
-            //await this.loadInitDataForCluster();
+            await this.loadInitDataForCluster();
 
             this.setState({
                 loading: false,
@@ -454,8 +454,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             try {
                 clearInterval(this.intervalForAppInst)
                 this.setState({dropdownRequestLoading: true})
+
+                //FIXME : ############################
                 //@FIXME: fakeData22222222222
-                //@FIXME: fakeData22222222222
+                //FIXME : ############################
                 let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
                 let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
                 let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
@@ -465,19 +467,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 console.log("clusterDropdownList===>", clusterDropdownList);
 
 
+                //FIXME : ############################
                 //FIXME : FAKEDATA ClusterEventLog
-                //FIXME : FAKEDATA ClusterEventLog
-                //FIXME : FAKEDATA ClusterEventLog
+                //FIXME : ############################
                 await this.setState({
                     allClusterEventLogList: [],
                     filteredClusterEventLogList: []
                 })
 
 
-
+                //FIXME : ############################
                 //@fixme: fakeData __allAppInstEvLogListValues
-                //@fixme: fakeData __allAppInstEvLogListValues
-                //@fixme: fakeData __allAppInstEvLogListValues
+                //FIXME : ############################
                 let __allAppInstEvLogListValues = require('../temp/allAppInstEventLogList')
                 await this.setState({
                     allAppInstEventLogs: __allAppInstEvLogListValues,
@@ -830,17 +831,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }, 1000 * 7.0)
         }
 
-        handleAppInstDropdown = async (pCurrentAppInst) => {
+        handleAppInstDropdown = async (pCurrentAppInst, isStreamBtnClick = false) => {
             clearInterval(this.intervalForAppInst)
 
             //@fixme: ################################
             //@fixme: requestShowAppInstClientWS
             //@fixme: ################################
-            await this.setState({
-                selectedClientLocationListOnAppInst: [],
-            })
+            if (!isStreamBtnClick){
+                await this.setState({
+                    selectedClientLocationListOnAppInst: [],
+                })
+                this.webSocketInst = requestShowAppInstClientWS(pCurrentAppInst, this);
+            }
 
-            this.webSocketInst = requestShowAppInstClientWS(pCurrentAppInst, this);
 
             await this.setState({
                 currentAppInst: pCurrentAppInst,
@@ -1636,16 +1639,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 </div>
                                 <Checkbox toggle
                                           onClick={async () => {
-                                              this.setState({
+                                              await this.setState({
                                                   isStream: !this.state.isStream,
-                                              }, () => {
-                                                  if (!this.state.isStream) {
-                                                      clearInterval(this.intervalForAppInst)
-                                                  } else {
-                                                      this.handleAppInstDropdown(this.state.currentAppInst)
-                                                  }
-                                              })
+                                              });
+
+                                              if (!this.state.isStream) {
+                                                  clearInterval(this.intervalForAppInst)
+                                              } else {
+                                                  this.handleAppInstDropdown(this.state.currentAppInst, true)
+                                              }
+
                                           }}
+
+
                                 />
                             </div>
                             }
