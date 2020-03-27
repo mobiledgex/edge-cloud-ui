@@ -30,7 +30,7 @@ type State = {
 
 };
 
-export default class EditViewPopupContainer extends React.Component<Props, State> {
+export default class AddItemPopupContainer extends React.Component<Props, State> {
 
 
     constructor(props: Props) {
@@ -183,6 +183,46 @@ export default class EditViewPopupContainer extends React.Component<Props, State
                                 value={this.state.currentItemType}
                             >
                                 <div style={{display: 'flex'}}>
+                                    {/*desc:###############################*/}
+                                    {/*desc:map and bubble chart           */}
+                                    {/*desc:###############################*/}
+                                    <div>
+                                        <div
+                                            className='center002'
+                                            onClick={() => {
+                                                this.setState({
+                                                    currentItemType: GRID_ITEM_TYPE.MAP,
+                                                    isShowHWDropDown: false,
+                                                    isShowEventLog: false,
+                                                })
+                                            }}
+                                        >
+                                            <img src={require('../images/map001.png')}/>
+                                        </div>
+                                        <div className='center002'>
+                                            <Radio value={GRID_ITEM_TYPE.MAP}>Map</Radio>
+                                        </div>
+                                    </div>
+                                    <div style={{width: 25}}/>
+                                    <div>
+                                        <div
+                                            className='center002'
+                                            onClick={() => {
+                                                this.setState({
+                                                    currentItemType: GRID_ITEM_TYPE.BUBBLE,
+                                                    isShowHWDropDown: false,
+                                                    isShowEventLog: false,
+                                                })
+                                            }}
+                                        >
+                                            <img src={require('../images/map001.png')}/>
+                                        </div>
+                                        <div className='center002'>
+                                            <Radio value={GRID_ITEM_TYPE.BUBBLE}>Bubble</Radio>
+                                        </div>
+                                    </div>
+                                    <div style={{width: 25}}/>
+
                                     <div>
                                         <div
                                             className='center002'
@@ -261,45 +301,7 @@ export default class EditViewPopupContainer extends React.Component<Props, State
                                         </div>
                                     </div>
                                     <div style={{width: 25}}/>
-                                    {/*map and bubble chart*/}
-                                    {/*map and bubble chart*/}
-                                    {/*map and bubble chart*/}
-                                    <div>
-                                        <div
-                                            className='center002'
-                                            onClick={() => {
-                                                this.setState({
-                                                    currentItemType: GRID_ITEM_TYPE.MAP,
-                                                    isShowHWDropDown: false,
-                                                    isShowEventLog: false,
-                                                })
-                                            }}
-                                        >
-                                            <img src={require('../images/map001.png')}/>
-                                        </div>
-                                        <div className='center002'>
-                                            <Radio value={GRID_ITEM_TYPE.MAP}>Map</Radio>
-                                        </div>
-                                    </div>
-                                    <div style={{width: 25}}/>
-                                    <div>
-                                        <div
-                                            className='center002'
-                                            onClick={() => {
-                                                this.setState({
-                                                    currentItemType: GRID_ITEM_TYPE.BUBBLE,
-                                                    isShowHWDropDown: false,
-                                                    isShowEventLog: false,
-                                                })
-                                            }}
-                                        >
-                                            <img src={require('../images/map001.png')}/>
-                                        </div>
-                                        <div className='center002'>
-                                            <Radio value={GRID_ITEM_TYPE.BUBBLE}>Bubble</Radio>
-                                        </div>
-                                    </div>
-                                    <div style={{width: 25}}/>
+
                                 </div>
                             </Radio.Group>
                         </div>

@@ -394,8 +394,9 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
         for (let index = 0; index < instanceBodyList.length; index++) {
             promiseList.push(getAppLevelMetrics(instanceBodyList[index]))
         }
-        //todo: Bring health check list(cpu,mem,network,disk..) to the number of apps instance, by parallel request
 
+
+        //todo: Bring health check list(cpu,mem,network,disk..) to the number of apps instance, by parallel request
         let appInstanceHealthCheckList = []
         try {
             appInstanceHealthCheckList = await Promise.all(promiseList);

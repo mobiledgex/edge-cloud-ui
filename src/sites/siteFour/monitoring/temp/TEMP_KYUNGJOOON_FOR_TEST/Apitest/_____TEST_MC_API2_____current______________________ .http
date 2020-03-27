@@ -739,3 +739,31 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODQ2NzAzN
 }
 
 ###
+POST https://console-stage.mobiledgex.net:443/api/v1/auth/events/app
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODUzNjQxODQsImlhdCI6MTU4NTI3Nzc4NCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.4xc6mIR-8RQyUkTd-kCx8rTBUo8rsnpmIamMyGytvXBDEoZMCKAcIMNxN-lz5SlRmUWeXBgg8lkVvBXH5h522w
+
+{
+    "region": "EU",
+    "appinst": {
+        "app_key": {
+            "organization": "MobiledgeX",
+            "name": "MobiledgeX SDK Demo",
+            "version": "docker"
+        },
+        "cluster_inst_key": {
+            "cluster_key": {
+                "name": "venky-test"
+            },
+            "cloudlet_key": {
+                "name": "hamburg-stage",
+                "organization": "TDG"
+            }
+        }
+    },
+    "selector": "*",
+    "last": 20
+
+}
+
+###

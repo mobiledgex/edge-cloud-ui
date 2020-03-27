@@ -87,7 +87,7 @@ import PerformanceSummaryTable from "../components/PerformanceSummaryTable";
 import VirtualAppInstEventLogListContainer from "../components/VirtualAppInstEventLogListContainer";
 import MaterialIcon from "material-icons-react";
 import '../PageMonitoring.css'
-import EditViewPopupContainer from "../components/EditViewPopupContainer";
+import AddItemPopupContainer from "../components/AddItemPopupContainer";
 
 const {Option} = Select;
 
@@ -420,13 +420,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             /*DESC: FAKEDATA
             DESC: FAKEDATA*/
-            //await this.loadInitDataForCluster__FOR__DEV();
+            await this.loadInitDataForCluster__FOR__DEV();
 
             /*
             TODO: REAL DATA
             TODO: REAL DATA
             */
-            await this.loadInitDataForCluster();
+            //await this.loadInitDataForCluster();
 
             this.setState({
                 loading: false,
@@ -558,11 +558,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 let cloudletList = await getCloudletList()
                 let clusterList = await getClusterList();
                 let appInstList: Array<TypeAppInstance> = await getAppInstList();
-                console.log("loadInitDataForCluster..appInstanceList===>", appInstList);
-
-                console.log("loadInitDataForCluster..clusterList===>", clusterList);
-                console.log("loadInitDataForCluster..scloudletList===>", cloudletList);
-
                 if (appInstList.length === 0) {
                     this.setState({
                         isNoData: true,
@@ -837,7 +832,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //@fixme: ################################
             //@fixme: requestShowAppInstClientWS
             //@fixme: ################################
-            if (!isStreamBtnClick){
+            if (!isStreamBtnClick) {
                 await this.setState({
                     selectedClientLocationListOnAppInst: [],
                 })
@@ -884,6 +879,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             } finally {
                 this.setState({dropdownRequestLoading: false})
             }
+
+            console.log("allAppInstUsageList===>", allAppInstUsageList);
 
 
             let currentCluster = pCurrentAppInst.split("|")[2].trim() + " | " + pCurrentAppInst.split('|')[1].trim()
@@ -1029,6 +1026,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         makeGridSizeByType(graphType) {
             if (graphType === GRID_ITEM_TYPE.CLUSTER_LIST || graphType === GRID_ITEM_TYPE.PERFORMANCE_SUM || graphType === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST || graphType === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                 return 2;
+            } else if (graphType === GRID_ITEM_TYPE.MAP) {
+                return 2;
+            } else {
+                return 1;
+            }
+        }
+
+        makeGridSizeHeightByType(graphType) {
+            if (graphType === GRID_ITEM_TYPE.MAP) {
+                return 2;
             } else {
                 return 1;
             }
@@ -1059,7 +1066,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         x: 0,
                         y: maxY + 1,
                         w: this.makeGridSizeByType(graphType),
-                        h: 1,
+                        h: this.makeGridSizeHeightByType(graphType),
                     }),
                     layoutMapperForCluster: mapperList.concat(itemOne),
                 })
@@ -1424,85 +1431,93 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             return (
 
-                <Grid.Row className='content_title'>
-                    <div className='content_title_wrap'>
-                        <div className='content_title_label'>Monitoring</div>
-                        <Button positive={true}
+                <>
+                    <Grid.Row className='content_title'>
+                        <div className='content_title_wrap'>
+                            <div className='content_title_label'>Monitoring</div>
+                            <Button positive={true}
+                                    onClick={async () => {
+                                        this.setState({
+                                            isOpenEditView: true,
+                                        })
+                                    }}
+                            >Add
+                            </Button>
+
+
+                            {/*todo:---------------------------*/}
+                            {/*todo:REFRESH, RESET BUTTON DIV  */}
+                            {/*todo:---------------------------*/}
+                            <Button
                                 onClick={async () => {
-                                    this.setState({
-                                        isOpenEditView: true,
-                                    })
+                                    await this.resetAllDataForDev();
                                 }}
-                        >Add
-                        </Button>
-                        {/*todo:---------------------------*/}
-                        {/*todo:REFRESH, RESET BUTTON DIV  */}
-                        {/*todo:---------------------------*/}
-                        <Button
-                            onClick={async () => {
-                                await this.resetAllDataForDev();
-                            }}
-                        >Reset
-                        </Button>
-                        <Button
-                            onClick={async () => {
-                                if (!this.state.loading) {
-                                    this.refreshAllData();
-                                } else {
-                                    showToast('Currently loading, you can\'t request again.')
-                                }
+                            >Reset
+                            </Button>
+                            <Button
+                                onClick={async () => {
+                                    if (!this.state.loading) {
+                                        this.refreshAllData();
+                                    } else {
+                                        showToast('Currently loading, you can\'t request again.')
+                                    }
 
-                            }}
-                            className="ui circular icon button"
-                        >
-                            <i aria-hidden="true"
-                               className="sync alternate icon"></i>
-                        </Button>
+                                }}
+                                className="ui circular icon button"
+                            >
+                                <i aria-hidden="true"
+                                   className="sync alternate icon"></i>
+                            </Button>
 
-                        {this.state.intervalLoading &&
-                        <div>
-                            <div style={{marginLeft: 15}}>
-                                <CircularProgress
-                                    style={{
-                                        color: this.state.currentClassification === CLASSIFICATION.APPINST ? 'grey' : 'green',
-                                        zIndex: 9999999,
-                                        fontSize: 10
-                                    }}
-                                    size={20}
-                                />
+                            {this.state.intervalLoading &&
+                            <div>
+                                <div style={{marginLeft: 15}}>
+                                    <CircularProgress
+                                        style={{
+                                            color: this.state.currentClassification === CLASSIFICATION.APPINST ? 'grey' : 'green',
+                                            zIndex: 9999999,
+                                            fontSize: 10
+                                        }}
+                                        size={20}
+                                    />
+                                </div>
                             </div>
-                        </div>
-                        }
+                            }
 
-                        {this.state.webSocketLoading &&
-                        <div>
-                            <div style={{marginLeft: 15}}>
-                                <CircularProgress
-                                    style={{
-                                        color: 'green',
-                                        zIndex: 9999999,
-                                    }}
-                                    size={45}
-                                />
+                            {this.state.webSocketLoading &&
+                            <div>
+                                <div style={{marginLeft: 15}}>
+                                    <CircularProgress
+                                        style={{
+                                            color: 'green',
+                                            zIndex: 9999999,
+                                        }}
+                                        size={45}
+                                    />
+                                </div>
                             </div>
-                        </div>
-                        }
-                        {this.props.isLoading &&
-                        <div>
-                            <div style={{marginLeft: 15}}>
-                                <CircularProgress
-                                    style={{
-                                        color: 'green',
-                                        zIndex: 9999999,
-                                        fontSize: 10
-                                    }}
-                                    size={20}
-                                />
+                            }
+                            {this.props.isLoading &&
+                            <div>
+                                <div style={{marginLeft: 15}}>
+                                    <CircularProgress
+                                        style={{
+                                            color: 'green',
+                                            zIndex: 9999999,
+                                            fontSize: 10
+                                        }}
+                                        size={20}
+                                    />
+                                </div>
                             </div>
+                            }
                         </div>
-                        }
+                    </Grid.Row>
+                    <div style={{backgroundColor: '#202329', marginLeft: 10, marginRight: 10,}}>
+                        {this.renderSelectBoxRow()}
                     </div>
-                </Grid.Row>
+                </>
+
             )
         }
 
@@ -1600,7 +1615,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     onClick={async () => {
                                         this.resetGridPosition();
                                     }}
-                                >Reset Layout
+                                >
+                                    Revert to the default layout
                                 </Button>
                             </div>
                             {/*todo:---------------------------*/}
@@ -1655,9 +1671,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 />
                             </div>
                             }
-                            <div className='page_monitoring_select_toggle'>
+                           {/* <div className='page_monitoring_select_toggle'>
                                 <MaterialIcon icon='aspect_ratio'/>
-                            </div>
+                            </div>*/}
                         </div>
                     </div>
 
@@ -1703,7 +1719,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 <div style={{width: '100%', height: '100%',}}>
 
-                    <EditViewPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}/>
+                    <AddItemPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}/>
 
                     <ModalGraph selectedClusterUsageOne={this.state.selectedClusterUsageOne}
                                 selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
@@ -1722,8 +1738,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
                         loading={this.state.loading}
                     />
-
-                    <Grid.Row className='view_contents' style={{overflowY: 'auto', height: 1200}}>
+                    <Grid.Row className='view_contents'>
                         <Card style={{
                             width: '100%',
                             backgroundColor: '#292c33',
@@ -1739,10 +1754,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 {/*todo:---------------------------------*/}
                                 <SemanticToastContainer position={"top-right"}/>
                                 {this.renderHeader()}
-                                <div className="page_monitoring">
-                                    <div style={{backgroundColor: '#202329', marginLeft: 10, marginRight: 10,}}>
-                                        {this.renderSelectBoxRow()}
-                                    </div>
+                                <div className="page_monitoring" style={{overflowY: 'auto', height: 1200}}>
                                     <div className='page_monitoring_dashboard_dev'
                                          style={{}}>
                                         {this.state.currentClassification === CLASSIFICATION.CLUSTER
