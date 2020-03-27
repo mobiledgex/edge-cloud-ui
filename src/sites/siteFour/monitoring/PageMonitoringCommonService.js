@@ -1,7 +1,7 @@
 import React from 'react';
 import './PageMonitoring.css';
-import {toast} from "react-semantic-toasts";
-import {GRID_ITEM_TYPE, HARDWARE_TYPE, USAGE_TYPE,} from "../../../shared/Constants";
+import {SemanticToastContainer, toast} from "react-semantic-toasts";
+import {CLASSIFICATION, GRID_ITEM_TYPE, HARDWARE_TYPE, USAGE_TYPE,} from "../../../shared/Constants";
 import Lottie from "react-lottie";
 import {makeGradientColor} from "./dev/PageDevMonitoringService";
 import {Chart} from "react-google-charts";
@@ -12,6 +12,7 @@ import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {GridLoader, PulseLoader} from "react-spinners";
 import {Grid} from "semantic-ui-react";
 import {barChartOption, columnChartOption} from "./PageMonitoringUtils";
+import {Card} from "@material-ui/core";
 
 export const PageMonitoringStyles = {
     icon: {
@@ -183,7 +184,17 @@ export const groupByKey_ = (array, key) => {
 export const renderLoaderArea = (_this) => (
     <Grid.Row className='view_contents' style={{height: window.height, width: window.width}}>
         <Grid.Column className='contents_body'>
-            {_this.renderHeader()}
+
+            <Card style={{
+                width: '100%',
+                backgroundColor: '#292c33',
+                padding: 10,
+                color: 'white',
+            }}>
+                <div>
+                    {_this.renderHeader()}
+                </div>
+            </Card>
             <div style={{position: 'absolute', top: '77%', left: '48%'}}>
                 <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row', marginTop: 350}}>
                     {renderGridLoader2(150, 150)}
