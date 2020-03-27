@@ -181,16 +181,15 @@ export const groupByKey_ = (array, key) => {
 
 
 export const renderLoaderArea = (_this) => (
-    <Grid.Row className='view_contents'>
+    <Grid.Row className='view_contents' style={{height: window.height, width: window.width}}>
         <Grid.Column className='contents_body'>
             {_this.renderHeader()}
-            <div style={{position: 'absolute', top: '37%', left: '48%'}}>
-                <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
+            <div style={{position: 'absolute', top: '77%', left: '48%'}}>
+                <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row', marginTop: 350}}>
                     {renderGridLoader2(150, 150)}
                 </div>
             </div>
         </Grid.Column>
-
     </Grid.Row>
 )
 

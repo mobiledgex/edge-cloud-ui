@@ -26,18 +26,8 @@ const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
     zoom: 13,
 }
-/*let greenIcon = new L.Icon({
-    iconUrl: require('../../../../assets/leaflet_markers/marker-icon-2x-green.png'),
-    //iconUrl: require('../images/cloud003.png'),
-    //iconUrl: 'https://cdn4.iconfinder.com/data/icons/social-messaging-ui-color-and-shapes-1/177800/11-512.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-    iconSize: [21, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});*/
 
-var cellphoneIcon2 = L.icon({
+let cellphoneIcon2 = L.icon({
     iconUrl: require('../images/cellhone_white003.png'),
     iconSize: [25, 41],
     iconAnchor: [12, 41],
