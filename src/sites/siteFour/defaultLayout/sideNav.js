@@ -115,32 +115,52 @@ const options = [
     { label: 'Audit Logs', icon: <FeaturedPlayListOutlinedIcon />, pg: 'audits', page: <SiteFourPageAudits />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] }
 ]
 
-const defaultPage = () => {
+const defaultPage = (options) => {
     let path = window.location + '';
     let currentPage = path.substring(path.indexOf('pg='))
     for (let i = 0; i < options.length; i++) {
         let option = options[i]
-        if (currentPage === 'pg=' + option.pg) {
+        if(option.subOptions)
+        {
+            return defaultPage(option.subOptions)
+        }
+        else if (currentPage === 'pg=' + option.pg) {
             return option.page
         }
     }
     return <SiteFourPageOrganization />
 }
 
+const navstate = ()=>
+{
+    if(localStorage.getItem('navigation'))
+    {
+        return parseInt(localStorage.getItem('navigation'))
+    }
+    return 0
+}
+
+const setNavState = (flag)=>
+{
+    return localStorage.setItem('navigation', flag)
+}
+
 export default function MiniDrawer(props) {
     const classes = useStyles();
     const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = React.useState(navstate() === 1 ? true : false);
     const [expand, setExpand] = React.useState(false);
     const [openLegend, setOpenLegend] = React.useState(false);
 
-    const [page, setPage] = React.useState(defaultPage());
+    const [page, setPage] = React.useState(defaultPage(options));
 
     const handleDrawerOpen = () => {
+        setNavState(1)
         setOpen(true);
     };
 
     const handleDrawerClose = () => {
+        setNavState(0)
         setOpen(false);
     };
 
