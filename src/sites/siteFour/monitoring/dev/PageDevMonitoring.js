@@ -122,7 +122,6 @@ type Props = {
 }
 
 
-
 type State = {
     layoutForCluster: any,
     layoutForAppInst: any,
@@ -1716,14 +1715,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         loading={this.state.loading}
                     />
 
-                    <Grid.Row className='view_contents'>
+                    <Grid.Row className='view_contents' style={{overflowY: 'auto', height: 1200}}>
                         <Card style={{
                             width: '100%',
-                            height: '100%',
                             backgroundColor: '#292c33',
                             padding: 10,
                             color: 'white',
                             paddingTop: 15,
+                            overflowY: 'auto',
+                            marginBottom: 200,
                         }}>
                             <div>
                                 {/*todo:---------------------------------*/}
@@ -1736,7 +1736,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         {this.renderSelectBoxRow()}
                                     </div>
                                     <div className='page_monitoring_dashboard_dev'
-                                         style={{overflowY: 'auto', padding: -50}}>
+                                         style={{}}>
                                         {this.state.currentClassification === CLASSIFICATION.CLUSTER
                                             ? this.renderGridLayoutForCluster()
                                             : this.renderGridLayoutForAppInst()
