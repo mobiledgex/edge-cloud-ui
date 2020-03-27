@@ -21,7 +21,7 @@ import {
     WHITE_CLOUTLET_ICON_COLOR,
     WHITE_LINE_COLOR
 } from "../../../../shared/Constants";
-
+import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
     zoom: 13,
@@ -285,7 +285,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 <React.Fragment>
                     <div>
                         {!this.props.isFullScreenMap &&
-                        <div className='page_monitoring_title_area' >
+                        <div className='page_monitoring_title_area'>
                             <div style={{
                                 display: 'flex',
                                 width: '100%',
@@ -303,7 +303,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                         }
 
                         {this.props.parent.state.mapPopUploading &&
-                        <div className='page_monitoring_title_area' >
+                        <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title' style={{
                                 backgroundColor: 'transparent',
                                 flex: .65
