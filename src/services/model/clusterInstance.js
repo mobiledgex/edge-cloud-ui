@@ -97,8 +97,8 @@ export const clusterKey = (data, isCreate) => {
             if (data[fields.numberOfMasters]) {
                 clusterinst.num_masters = parseInt(data[fields.numberOfMasters])
             }
-            if (data[fields.num_nodes]) {
-                clusterinst.num_nodes = parseInt(data[fields.num_nodes])
+            if (data[fields.numberOfNodes]) {
+                clusterinst.num_nodes = parseInt(data[fields.numberOfNodes])
             }
         }
         return ({
