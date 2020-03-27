@@ -1063,7 +1063,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
                 return (
                     this.state.loading ? renderPlaceHolderCircular() :
-                        <PerformanceSummaryTableContainer parent={this} clusterUsageList={this.state.filteredClusterUsageList}/>
+                        <PerformanceSummaryTableContainer parent={this}
+                                                          clusterUsageList={this.state.filteredClusterUsageList}/>
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PIE) {
                 return (
@@ -1564,7 +1565,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 />
                             </div>
                             }
-                           {/* <div className='page_monitoring_select_toggle'>
+                            {/* <div className='page_monitoring_select_toggle'>
                                 <MaterialIcon icon='aspect_ratio'/>
                             </div>*/}
                         </div>
@@ -1639,14 +1640,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             color: 'white',
                         }}>
                             <div>
-                                {/*todo:---------------------------------*/}
-                                {/*todo:Content Header                   */}
-                                {/*todo:---------------------------------*/}
+                                {/*desc:---------------------------------*/}
+                                {/*desc:Content Header                   */}
+                                {/*desc:---------------------------------*/}
                                 <SemanticToastContainer position={"top-right"}/>
                                 {this.renderHeader()}
                                 <div className="page_monitoring" style={{overflowY: 'auto', height: 1200}}>
                                     <div className='page_monitoring_dashboard_dev'
-                                         style={{}}>
+                                         style={{marginBottom: 110}}>
                                         {this.state.currentClassification === CLASSIFICATION.CLUSTER
                                             ? this.renderGridLayoutForCluster()
                                             : this.renderGridLayoutForAppInst()
@@ -1654,11 +1655,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     </div>
                                 </div>
                             </div>
-                            {/*todo:---------------------------------*/}
-                            {/*todo:terminal button                   */}
-                            {/*todo:---------------------------------*/}
+                            {/*desc:---------------------------------*/}
+                            {/*desc:terminal button                   */}
+                            {/*desc:---------------------------------*/}
                             {this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?
-                                <div className='page_monitoring_terminal_button'
+                                <div className='page_monitoring_terminal_button' style={{marginBottom: 100}}
                                      onClick={() => this.setState({openTerminal: true})}
                                 >
                                 </div>
