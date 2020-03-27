@@ -115,12 +115,16 @@ const options = [
     { label: 'Audit Logs', icon: <FeaturedPlayListOutlinedIcon />, pg: 'audits', page: <SiteFourPageAudits />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] }
 ]
 
-const defaultPage = () => {
+const defaultPage = (options) => {
     let path = window.location + '';
     let currentPage = path.substring(path.indexOf('pg='))
     for (let i = 0; i < options.length; i++) {
         let option = options[i]
-        if (currentPage === 'pg=' + option.pg) {
+        if(option.subOptions)
+        {
+            return defaultPage(option.subOptions)
+        }
+        else if (currentPage === 'pg=' + option.pg) {
             return option.page
         }
     }
@@ -134,7 +138,7 @@ export default function MiniDrawer(props) {
     const [expand, setExpand] = React.useState(false);
     const [openLegend, setOpenLegend] = React.useState(false);
 
-    const [page, setPage] = React.useState(defaultPage());
+    const [page, setPage] = React.useState(defaultPage(options));
 
     const handleDrawerOpen = () => {
         setOpen(true);
