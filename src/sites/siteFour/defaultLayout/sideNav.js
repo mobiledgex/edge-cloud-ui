@@ -133,7 +133,11 @@ const defaultPage = (options) => {
 
 const navstate = ()=>
 {
-    return localStorage.getItem('navigation')
+    if(localStorage.getItem('navigation'))
+    {
+        return parseInt(localStorage.getItem('navigation'))
+    }
+    return 0
 }
 
 const setNavState = (flag)=>
@@ -144,19 +148,19 @@ const setNavState = (flag)=>
 export default function MiniDrawer(props) {
     const classes = useStyles();
     const theme = useTheme();
-    const [open, setOpen] = React.useState(navstate() ? navstate() : false);
+    const [open, setOpen] = React.useState(navstate() === 1 ? true : false);
     const [expand, setExpand] = React.useState(false);
     const [openLegend, setOpenLegend] = React.useState(false);
 
     const [page, setPage] = React.useState(defaultPage(options));
 
     const handleDrawerOpen = () => {
-        setNavState(true)
+        setNavState(1)
         setOpen(true);
     };
 
     const handleDrawerClose = () => {
-        setNavState(false)
+        setNavState(0)
         setOpen(false);
     };
 
