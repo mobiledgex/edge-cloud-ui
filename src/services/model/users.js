@@ -1,22 +1,25 @@
 import { fields, formatData } from './format'
 import * as serverData from './serverData'
-import { SHOW_USERS, DELETE_USER, ADD_USER_ROLE} from './endPointTypes'
+import { SHOW_USERS, DELETE_USER, ADD_USER_ROLE } from './endPointTypes'
 
 
 
 export const keys = [
-    { field: fields.organizationName, serverField: 'org', label: 'Username', visible: true },
-    { field: fields.username, serverField: 'username', label: 'Organization', visible: true },
-    { field: fields.role, serverField: 'role', label: 'Role Type', visible: true },
+    { field: fields.organizationName, serverField: 'org', label: 'Username', sortable: true, visible: true },
+    { field: fields.username, serverField: 'username', label: 'Organization', sortable: true, visible: true },
+    { field: fields.role, serverField: 'role', label: 'Role Type', sortable: true, visible: true },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
 
 export const getKey = (data) => {
-    return ({
-        org: data[fields.organizationName],
-        username: data[fields.username],
-        role: data[fields.role]
-    })
+    if (data) {
+        return ({
+            org: data[fields.organizationName],
+            username: data[fields.username],
+            role: data[fields.role]
+        })
+    }
+    return {}
 }
 
 export const showUsers = (data) => {
