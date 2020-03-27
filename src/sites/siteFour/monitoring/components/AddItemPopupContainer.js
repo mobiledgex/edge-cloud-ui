@@ -63,6 +63,25 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
         })
     }
 
+    renderPrevBtn2() {
+        return (
+            <div style={{
+                flex: .025,
+                backgroundColor: 'transparent',
+                width: 120,
+                display: 'flex',
+                alignSelf: 'center',
+                justifyContent: 'center'
+            }} onClick={() => {
+                this.closePopupWindow();
+            }}>
+                {/*<ArrowBack  style={{fontSize: 30, color: 'white'}} color={'white'}/>*/}
+                <FA name="arrow-circle-left" style={{fontSize: 40, color: 'white'}}/>
+
+            </div>
+        )
+    }
+
     render() {
         return (
             <div style={{flex: 1, display: 'flex'}}>
@@ -78,7 +97,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         this.closePopupWindow();
 
                     }}
-                    closable={true}
+                    closable={false}
                     bodyStyle={{
                         height: window.innerHeight * 0.65,
                         // marginTop: -90,
@@ -91,26 +110,13 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                     footer={null}
                 >
                     <div style={{width: '100%'}}>
-                        <div style={{}}>
-                            {/*<div style={{*/}
-                            {/*    flex: .025,*/}
-                            {/*    backgroundColor: 'transparent',*/}
-                            {/*    width: 120,*/}
-                            {/*    display: 'flex',*/}
-                            {/*    alignSelf: 'center',*/}
-                            {/*    justifyContent: 'center'*/}
-                            {/*}} onClick={() => {*/}
-                            {/*    this.closePopupWindow();*/}
-                            {/*}}>*/}
-                            {/*    /!*<ArrowBack  style={{fontSize: 30, color: 'white'}} color={'white'}/>*!/*/}
-                            {/*    <FA name="arrow-circle-left" style={{fontSize: 40, color: 'white'}}/>*/}
-
-                            {/*</div>*/}
+                        <div style={{display:'flex', width:'100%',}}>
+                            {this.renderPrevBtn2()}
                             <div className='page_monitoring_popup_title'>
                                 Add Item
                             </div>
-                            <div className='page_monitoring_popup_title_divide'/>
                         </div>
+                        <div className='page_monitoring_popup_title_divide'/>
                         {/*todo:theme*/}
                         {/*todo:theme*/}
                         <div className='page_monitoring_form_row'>

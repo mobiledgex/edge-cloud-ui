@@ -1,5 +1,7 @@
 // @flow
-import * as React from 'react';
+
+
+import React, {Fragment} from 'react';
 import {Modal as AModal} from "antd";
 import {CLASSIFICATION, GRID_ITEM_TYPE, lineGraphOptions} from "../../../../shared/Constants";
 import {Line} from "react-chartjs-2";
@@ -91,6 +93,27 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
         }
 
+        renderPrevBtn() {
+            return (
+                <div style={{
+                    flex: .025,
+                    backgroundColor: 'transparent',
+                    width: 120,
+                    display: 'flex',
+                    alignSelf: 'center',
+                    justifyContent: 'center'
+                }} onClick={() => {
+                    this.props.parent.setState({
+                        isShowBigGraph: false,
+                    })
+                }}>
+                    {/*<ArrowBack  style={{fontSize: 30, color: 'white'}} color={'white'}/>*/}
+                    <FA name="arrow-circle-left" style={{fontSize: 40, color: 'white'}}/>
+
+                </div>
+            )
+        }
+
         render() {
             return (
                 <div style={{flex: 1, display: 'flex'}}>
@@ -105,6 +128,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             })
 
                         }}
+                        cancelButtonProps={{
+                            style: {display: 'none'}
+                        }}
                         //maskClosable={true}
                         onCancel={() => {
                             this.props.parent.setState({
@@ -112,7 +138,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             })
 
                         }}
-                        closable={true}
+                        closable={false}
                         bodyStyle={{
                             height: window.innerHeight - 20,
                             backgroundColor: 'rgb(41, 44, 51)',
@@ -122,24 +148,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         footer={null}
                     >
                         <div style={{width: '100%'}}>
-                            {/*<div style={{*/}
-                            {/*    flex: .025,*/}
-                            {/*    backgroundColor: 'transparent',*/}
-                            {/*    width: 120,*/}
-                            {/*    display: 'flex',*/}
-                            {/*    alignSelf: 'center',*/}
-                            {/*    justifyContent: 'center'*/}
-                            {/*}} onClick={() => {*/}
-                            {/*    this.props.parent.setState({*/}
-                            {/*        isShowBigGraph: false,*/}
-                            {/*    })*/}
-                            {/*}}>*/}
-                            {/*    /!*<ArrowBack  style={{fontSize: 30, color: 'white'}} color={'white'}/>*!/*/}
-                            {/*    <FA name="arrow-circle-left" style={{fontSize: 40, color: 'white'}}/>*/}
-
-                            {/*</div>*/}
                             {this.state.graphType === GRID_ITEM_TYPE.MAP ?
                                 <div style={{display: 'flex'}}>
+                                    {this.renderPrevBtn()}
                                     <div className='page_monitoring_popup_title'>
                                         Deployed Instance
                                     </div>
@@ -148,24 +159,37 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     </div>
                                 </div>
                                 : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                                    <div className='page_monitoring_popup_title'>
-                                        Cluster {this.props.popupGraphHWType} Usage
-                                    </div>
-                                    : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ?
+                                    <div style={{display: 'flex'}}>
+                                        {this.renderPrevBtn()}
                                         <div className='page_monitoring_popup_title'>
-                                            App Instance {this.props.popupGraphHWType} Usage
+                                            Cluster {this.props.popupGraphHWType} Usage
+                                        </div>
+                                    </div>
+
+                                    : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ?
+                                        <div style={{display: 'flex'}}>
+                                            {this.renderPrevBtn()}
+                                            <div className='page_monitoring_popup_title'>
+                                                App Instance {this.props.popupGraphHWType} Usage
+                                            </div>
                                         </div>
                                         : this.state.graphType === GRID_ITEM_TYPE.BUBBLE ?
 
-                                            <div className='page_monitoring_popup_title'>
-                                                Bubble Chart
+                                            <div style={{display: 'flex'}}>
+                                                {this.renderPrevBtn()}
+                                                <div className='page_monitoring_popup_title'>
+                                                    Bubble Chart
+                                                </div>
+                                            </div>
+                                            :
+                                            <div style={{display: 'flex'}}>
+                                                {this.renderPrevBtn()}
+                                                <div className='page_monitoring_popup_title'>
+                                                    Top 5 {this.props.popupGraphHWType} Usage
+                                                    of {this.props.parent.state.currentClassification}
+                                                </div>
                                             </div>
 
-                                            :
-                                            <div className='page_monitoring_popup_title'>
-                                                Top 5 {this.props.popupGraphHWType} Usage
-                                                of {this.props.parent.state.currentClassification}
-                                            </div>
                             }
                             <div className='page_monitoring_popup_title_divide'/>
                         </div>
