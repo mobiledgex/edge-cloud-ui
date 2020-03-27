@@ -3,7 +3,6 @@ import * as React from 'react';
 import {Table} from "semantic-ui-react";
 import {Tooltip} from "antd";
 import {PageMonitoringStyles, renderPlaceHolderCircular} from "../PageMonitoringCommonService";
-import {CircularProgress} from "@material-ui/core";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 
 type Props = {

@@ -23,7 +23,7 @@ type State = {
 };
 
 
-export default class ModalGraphForAppInst extends React.Component<Props, State> {
+export default class ModalGraphForAppInstContainer extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)

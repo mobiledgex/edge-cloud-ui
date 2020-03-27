@@ -1,10 +1,7 @@
 import React from 'react';
 import TagCloud from 'react-tag-cloud';
-import randomColor from 'randomcolor';
 import type {TypeClusterUsageList} from "../../../../shared/Types";
 import {CHART_COLOR_MONOKAI} from "../../../../shared/Constants";
-import {convertToClassification, renderLineChartCoreForDev} from "../dev/PageDevMonitoringService";
-import {renderPlaceHolderCircular} from "../PageMonitoringCommonService";
 
 type Props = {
     allClusterUsageList: any,

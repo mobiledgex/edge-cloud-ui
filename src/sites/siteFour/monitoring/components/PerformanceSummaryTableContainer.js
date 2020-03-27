@@ -14,7 +14,7 @@ type State = {
     clusterUsageList: any,
 };
 
-export default class PerformanceSummaryTable extends React.Component<Props, State> {
+export default class PerformanceSummaryTableContainer extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)

@@ -1,24 +1,18 @@
 // @flow
 import * as React from 'react';
-import {Modal as AModal, Select} from "antd";
+import {Modal as AModal} from "antd";
 import {CLASSIFICATION, GRID_ITEM_TYPE, lineGraphOptions} from "../../../../shared/Constants";
 import {Line} from "react-chartjs-2";
 import {Chart as Bar_Column_Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {barChartOption, columnChartOption} from "../PageMonitoringUtils";
-import LeafletMapWrapperForDev from "./LeafletMapContainerDev";
-import MarkerClusterGroup from 'leaflet-make-cluster-group'
+import LeafletMapWrapperForDev from "./LeafletMapDevContainer";
 import {hot} from "react-hot-loader/root";
 import {withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 import sizeMe from "react-sizeme";
 import * as actions from "../../../../actions";
-import {Button} from "semantic-ui-react";
-import {
-    renderCircleLoaderForMap,
-    renderGridLoader2,
-    renderPlaceHolderLottiePinJump
-} from "../PageMonitoringCommonService";
+import {renderCircleLoaderForMap} from "../PageMonitoringCommonService";
 
 const FA = require('react-fontawesome')
 const mapStateToProps = (state) => {

@@ -21,7 +21,7 @@ import '../PageMonitoring.css'
 import {PageMonitoringStyles, renderLoaderArea, renderPlaceHolderCircular, showToast} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
 import {handleBubbleChartDropDownForCloudlet, makeBarChartDataForCloudlet, makeLineChartForCloudlet, renderBottomGridAreaForCloudlet} from "./PageOperMonitoringService";
-import LeafletMap from "../components/LeafletMapContainerOper";
+import LeafletMap from "../components/LeafletMapOperContainer";
 import {filterByClassification, makeSelectBoxListWithKey, sortByKey} from "../dev/PageDevMonitoringService";
 
 import {getAllCloudletEventLogs, getCloudletEventLog, getCloudletLevelUsageList, getCloudletList,} from '../PageMonitoringMetricService'

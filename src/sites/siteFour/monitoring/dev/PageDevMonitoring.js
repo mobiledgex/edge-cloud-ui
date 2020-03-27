@@ -71,9 +71,9 @@ import {
 } from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
-import ModalGraph from "../components/ModalGraph";
+import ModalGraph from "../components/ModalGraphContainer";
 import {reactLocalStorage} from "reactjs-localstorage";
-import LeafletMapWrapperForDev from "../components/LeafletMapContainerDev";
+import LeafletMapWrapperForDev from "../components/LeafletMapDevContainer";
 import {Responsive, WidthProvider} from "react-grid-layout";
 import _ from "lodash";
 import PieChartContainer from "../components/PieChartContainer";
@@ -82,7 +82,7 @@ import BubbleChartContainer from "../components/BubbleChartContainer";
 import BarChartContainer from "../components/BarChartContainer";
 import LineChartContainer from "../components/LineChartContainer";
 import EventLogListContainer from "../components/EventLogListContainer";
-import PerformanceSummaryTable from "../components/PerformanceSummaryTable";
+import PerformanceSummaryTableContainer from "../components/PerformanceSummaryTableContainer";
 import VirtualAppInstEventLogListContainer from "../components/VirtualAppInstEventLogListContainer";
 import MaterialIcon from "material-icons-react";
 import '../PageMonitoring.css'
@@ -1063,7 +1063,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
                 return (
                     this.state.loading ? renderPlaceHolderCircular() :
-                        <PerformanceSummaryTable parent={this} clusterUsageList={this.state.filteredClusterUsageList}/>
+                        <PerformanceSummaryTableContainer parent={this} clusterUsageList={this.state.filteredClusterUsageList}/>
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PIE) {
                 return (
