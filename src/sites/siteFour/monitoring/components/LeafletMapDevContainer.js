@@ -452,23 +452,19 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                             icon={cellphoneIcon2}
                                                             position={
                                                                 [item.latitude, item.longitude]
-                                                                //[item.latitude, item.longitude]
                                                             }
                                                         >
-                                                            <Popup className='leaflet-popup-content-wrapper2'
+                                                            <Popup className='clientPopup'
                                                                    style={{fontSize: 11}}>{item.uuid}</Popup>
                                                         </Marker>
-
-                                                        {/*@todo:Render lines....*/}
-                                                        {/*@todo:Render lines....*/}
-                                                        {/*@todo:Render lines....*/}
+                                                        {/*@desc:#####################################..*/}
+                                                        {/*@desc:Render lines....                       */}
+                                                        {/*@desc:#####################################..*/}
                                                         <Polyline
                                                             dashArray={['3,5,8']}
                                                             id={index}
                                                             positions={[
                                                                 [item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
-
-                                                                //[item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
                                                             ]}
                                                             color={this.props.lineColor}
                                                         />

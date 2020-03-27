@@ -5,7 +5,7 @@
     font-size: 18px;
     background-color: transparent;
     color: white;
-    border: 0px none rgba(255,255,255,0.3);
+    border: 0px none rgba(255, 255, 255, 0.3);
     font-weight: bold;
     font-style: italic;
 }
@@ -79,6 +79,11 @@
     font-weight: bold;
     color: white;
     font-size: 12px;
+    /*width: 300px;*/
+}
+
+.clientPopup {
+    width: 300px;
 }
 
 .leaflet-popup-content-wrapper2 {
@@ -397,6 +402,7 @@
     justify-content: center;
     margin-top: 10px;
 }
+
 /*antd ui overriding css*/
 
 
