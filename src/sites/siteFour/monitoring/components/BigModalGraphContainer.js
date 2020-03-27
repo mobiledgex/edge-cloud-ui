@@ -114,11 +114,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         }}
                         closable={true}
                         bodyStyle={{
-                            height: window.innerHeight-20,
+                            height: window.innerHeight - 20,
                             backgroundColor: 'rgb(41, 44, 51)',
                         }}
                         width={'100%'}
-                        style={{padding:'10px', top:0}}
+                        style={{padding: '10px', top: 0}}
                         footer={null}
                     >
                         <div style={{width: '100%'}}>
@@ -139,11 +139,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                             {/*</div>*/}
                             {this.state.graphType === GRID_ITEM_TYPE.MAP ?
-                                <div>
+                                <div style={{display: 'flex'}}>
                                     <div className='page_monitoring_popup_title'>
                                         Deployed Instance
                                     </div>
-                                    {this.props.isLoading && renderCircleLoaderForMap()}
+                                    <div style={{marginLeft: 0}}>
+                                        {this.props.isLoading && renderCircleLoaderForMap()}
+                                    </div>
                                 </div>
                                 : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER ?
                                     <div className='page_monitoring_popup_title'>

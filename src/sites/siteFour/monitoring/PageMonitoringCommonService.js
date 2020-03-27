@@ -219,7 +219,7 @@ export const renderGridLoader2 = (width, height) => {
 
 export const renderCircleLoaderForMap = (width, height) => {
     return (
-        <div style={{zIndex: 99999999999, marginLeft: -180, marginTop: 15, height: 30,}}>
+        <div style={{zIndex: 99999999999, marginLeft: 20, marginBottom: 0, height: 20, }}>
             <PulseLoader
                 sizeUnit={"px"}
                 size={20}
@@ -228,7 +228,6 @@ export const renderCircleLoaderForMap = (width, height) => {
                 style={{zIndex: 999999999999999, marginLeft: -30}}
             />
         </div>
-
     )
 }
 
