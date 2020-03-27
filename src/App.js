@@ -23,18 +23,6 @@ import './css/pages/audit.css';
 import './css/pages/cloudletPool.css';
 import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
-import TagCloudTest from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/TagCloudTest";
-import ContextMenuTest from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/ContextMenuTest";
-import StreamTest from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/StreamTest";
-import StreamingRequestExample002 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/StreamingRequestExample002";
-import StreamTestTickTock from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/StreamTestTickTock";
-import WebSocketTest from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/WebSocketTest";
-import Test006 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/Test006";
-import Test001 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/Test001";
-import TestMap001 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/TestMap001";
-import TestLeafLetMap from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/TestLeafLetMap";
-import TestLeafLetMapRaw from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/TestLeafLetMapRaw";
-import ReactReafletTest from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/ReactReafletTest_Current";
 // API
 
 let self = null;
@@ -311,7 +299,7 @@ class App extends Component {
             self.props.mapDispatchToLoginWithPassword(storage_json)
         }
     }
-    
+
     UNSAFE_componentWillReceiveProps(nextProps) {
         // let props = nextProps;
         // if(nextProps.clickTab) {
@@ -342,14 +330,6 @@ class App extends Component {
                     <Route exact path='/createAccount' component={DashboardContainer.bind(this, {mainPath:'/createAccount'})} />
                     <Route exact path='/passwordreset' component={DashboardContainer.bind(this, {mainPath:'/passwordreset'})} />
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
-                    <Route exact path='/TagCloudTest' component={TagCloudTest} />
-                    <Route exact path='/ContextMenuTest' component={ContextMenuTest} />
-                    <Route exact path='/StreamTest' component={StreamTest} />
-                    <Route exact path='/StreamingRequestExample002' component={StreamingRequestExample002} />
-                    <Route exact path='/WebSocketTest' component={WebSocketTest} />
-                    <Route exact path='/Test006' component={Test006} />
-                    <Route exact path='/Test001' component={Test001} />
-                    <Route exact path='/ReactReafletTest' component={ReactReafletTest} />
                 </div>
             </Router>
         );

@@ -418,16 +418,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             })
 
-            /*DESC: FAKEDATA
-            DESC: FAKEDATA*/
-            //await this.loadInitDataForCluster__FOR__DEV();
-
-            /*
-            TODO: REAL DATA
-            TODO: REAL DATA
-            */
             await this.loadInitDataForCluster();
-
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
@@ -448,103 +439,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 modalIsOpen: true,
                 selectedClusterUsageOneIndex: index,
             })
-        }
-
-        async loadInitDataForCluster__FOR__DEV(isInterval: boolean = false) {
-            try {
-                clearInterval(this.intervalForAppInst)
-                this.setState({dropdownRequestLoading: true})
-
-                //FIXME : ############################
-                //@FIXME: fakeData22222222222
-                //FIXME : ############################
-                let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
-                let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-                let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
-                console.log('appInstanceList====>', appInstanceList);
-                console.log('clusterUsageList===>', clusterList);
-                let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
-                console.log("clusterDropdownList===>", clusterDropdownList);
-
-
-                //FIXME : ############################
-                //FIXME : FAKEDATA ClusterEventLog
-                //FIXME : ############################
-                await this.setState({
-                    allClusterEventLogList: [],
-                    filteredClusterEventLogList: []
-                })
-
-
-                //FIXME : ############################
-                //@fixme: fakeData __allAppInstEvLogListValues
-                //FIXME : ############################
-                let __allAppInstEvLogListValues = require('../temp/allAppInstEventLogList')
-                await this.setState({
-                    allAppInstEventLogs: __allAppInstEvLogListValues,
-                    filteredAppInstEventLogs: __allAppInstEvLogListValues,
-                })
-
-
-                let appInstanceListGroupByCloudlet = []
-                try {
-                    appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
-                } catch (e) {
-                    showToast(e.toString())
-                }
-                console.log('appInstanceListGroupByCloudlet===>', appInstanceListGroupByCloudlet);
-
-                await this.setState({
-                    isReady: true,
-                    clusterDropdownList: clusterDropdownList,
-                    dropDownCloudletList: cloudletList,
-                    clusterList: clusterList,
-                    isAppInstaceDataReady: true,
-                    appInstanceList: appInstanceList,
-                    filteredAppInstanceList: appInstanceList,
-                    dropdownRequestLoading: false,
-
-                });
-
-                if (!isInterval) {
-                    this.setState({
-                        appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
-                    })
-                }
-                //fixme: fakeData22222222222
-                //fixme: fakeData22222222222
-                let allClusterUsageList = []
-                allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
-                console.log('filteredAppInstanceList===>', appInstanceList)
-
-                let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
-                await this.setState({
-                    bubbleChartData: bubbleChartData,
-                })
-
-                let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
-                    return o.sumCpuUsage;
-                }));
-
-                let maxMem = Math.max.apply(Math, allClusterUsageList.map(function (o) {
-                    return o.sumMemUsage;
-                }));
-
-                console.log('allClusterUsageList333====>', allClusterUsageList);
-
-                await this.setState({
-                    clusterListLoading: false,
-                    allCloudletUsageList: allClusterUsageList,
-                    allClusterUsageList: allClusterUsageList,
-                    filteredClusterUsageList: allClusterUsageList,
-                    maxCpu: maxCpu,
-                    maxMem: maxMem,
-                    isRequesting: false,
-                    currentCluster: '',
-                })
-            } catch (e) {
-
-            }
         }
 
         async loadInitDataForCluster(isInterval: boolean = false) {
@@ -1042,7 +936,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        async __addGridItem(hwType, graphType = 'line') {
+        async addGridItem(hwType, graphType = 'line') {
 
             if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
 
@@ -1130,7 +1024,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-        ___makeGridItemBodyByType(hwType, graphType) {
+        makeGridItemBodyByType(hwType, graphType) {
 
             if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                 return (
@@ -1269,7 +1163,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        _makeGridItemOne(uniqueIndex, hwType, graphType, item) {
+        makeGridItemOne(uniqueIndex, hwType, graphType, item) {
             return (
                 <div
                     key={uniqueIndex} data-grid={item} style={{margin: 0, backgroundColor: '#292c33'}}
@@ -1331,7 +1225,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*desc:############################*/}
                     <div className='page_monitoring_column_resizable'>
 
-                        {this.___makeGridItemBodyByType(hwType, graphType.toUpperCase())}
+                        {this.makeGridItemBodyByType(hwType, graphType.toUpperCase())}
                     </div>
                 </div>
             )
@@ -1379,7 +1273,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             graphType = graphType.toUpperCase()
                         }
                         console.log("hwType===>", hwType);
-                        return this._makeGridItemOne(uniqueIndex, hwType, graphType, item)
+                        return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
                     })}
 
 
@@ -1419,7 +1313,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         }
                         console.log("hwType===>", hwType);
 
-                        return this._makeGridItemOne(uniqueIndex, hwType, graphType, item)
+                        return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
 
                     })}
                 </ResponsiveReactGridLayout>
