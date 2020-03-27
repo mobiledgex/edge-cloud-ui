@@ -293,40 +293,43 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
             return (
                 <React.Fragment>
-                    <div className='page_monitoring_title_area' style={{display: 'flex'}}>
-
+                    <div>
                         {!this.props.isFullScreenMap &&
-                        <div style={{
-                            display: 'flex',
-                            width: '100%',
-                            height: 30
-                        }}>
-                            <div className='page_monitoring_title' style={{
-                                backgroundColor: 'transparent',
-                                flex: .38
+                        <div className='page_monitoring_title_area' >
+                            <div style={{
+                                display: 'flex',
+                                width: '100%',
+                                height: 30
                             }}>
-                                Deployed Instance
-                            </div>
+                                <div className='page_monitoring_title' style={{
+                                    backgroundColor: 'transparent',
+                                    flex: .38
+                                }}>
+                                    Deployed Instance
+                                </div>
 
+                            </div>
                         </div>
                         }
 
-                        <div className='page_monitoring_title' style={{
-                            backgroundColor: 'transparent',
-                            flex: .65
-                        }}>
-                            {this.props.parent.state.mapPopUploading &&
-                            <div style={{zIndex: 99999999999}}>
-                                <CircularProgress style={{
-                                    color: '#1cecff',
-                                    marginRight: 0,
-                                    marginBottom: -2,
-                                    fontWeight: 'bold',
-                                }}
-                                                  size={14}/>
+                        {this.props.parent.state.mapPopUploading &&
+                        <div className='page_monitoring_title_area' >
+                            <div className='page_monitoring_title' style={{
+                                backgroundColor: 'transparent',
+                                flex: .65
+                            }}>
+                                <div style={{zIndex: 99999999999}}>
+                                    <CircularProgress style={{
+                                        color: '#1cecff',
+                                        marginRight: 0,
+                                        marginBottom: -2,
+                                        fontWeight: 'bold',
+                                    }}
+                                                      size={14}/>
+                                </div>
                             </div>
-                            }
                         </div>
+                        }
 
                     </div>
                     <div className='page_monitoring_container'>
