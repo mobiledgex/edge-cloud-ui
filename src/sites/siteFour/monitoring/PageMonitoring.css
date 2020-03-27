@@ -93,6 +93,11 @@
     font-size: 12px;
 }
 
+.mapLoader{
+    position: absolute;
+    left: 305px;
+}
+
 .marker1 {
     background-color: green;
     font-weight: bold;

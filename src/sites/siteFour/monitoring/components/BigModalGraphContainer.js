@@ -154,7 +154,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <div className='page_monitoring_popup_title'>
                                         Deployed Instance
                                     </div>
-                                    <div style={{marginLeft: 0}}>
+                                    <div className='mapLoader'>
                                         {this.props.isLoading && renderCircleLoaderForMap()}
                                     </div>
                                 </div>
