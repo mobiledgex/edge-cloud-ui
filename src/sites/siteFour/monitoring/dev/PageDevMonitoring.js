@@ -7,10 +7,9 @@ import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
-import {CircularProgress, Toolbar} from '@material-ui/core'
+import {Card, CircularProgress} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
 import {DatePicker, Select, Tooltip} from 'antd';
-import {Card} from '@material-ui/core'
 
 import {
     defaultHwMapperListForCluster,

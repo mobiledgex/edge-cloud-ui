@@ -2,15 +2,27 @@ import 'react-hot-loader';
 
 import React from 'react';
 import '../PageMonitoring.css';
-import {APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, CLASSIFICATION, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX_FOR_CLUSTER} from "../../../../shared/Constants";
+import {
+    APP_INST_MATRIX_HW_USAGE_INDEX,
+    CHART_COLOR_LIST,
+    CLASSIFICATION,
+    HARDWARE_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    USAGE_INDEX_FOR_CLUSTER
+} from "../../../../shared/Constants";
 import BubbleChart from "../../../../components/BubbleChart";
 import PageDevMonitoring from "./PageDevMonitoring";
-import {convertByteToMegaByte, numberWithCommas, PageMonitoringStyles, renderUsageByType, showToast} from "../PageMonitoringCommonService";
+import {
+    convertByteToMegaByte,
+    numberWithCommas,
+    PageMonitoringStyles,
+    renderUsageByType,
+    showToast
+} from "../PageMonitoringCommonService";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
 import {Select} from "antd";
 import {Responsive, WidthProvider} from "react-grid-layout";
-import type {MonitoringContextInterface} from "../PageMonitoringGlobalStore";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const {Option} = Select;
@@ -32,9 +44,6 @@ export const defaultLayoutForCluster = [
     {i: '1', x: 0, y: 0, w: 2, h: 2, "add": false},
     {i: '2', x: 2, y: 0, w: 1, h: 1, "add": false},
     {i: '3', x: 2, y: 1, w: 1, h: 1, "add": false},
-
-
-
 
 
     /*{i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},
