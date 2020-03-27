@@ -1,18 +1,23 @@
 // @flow
 import * as React from 'react';
-import {Modal as AModal} from "antd";
+import {Modal as AModal, Radio} from "antd";
 import {Button, Dropdown} from "semantic-ui-react";
 import {PageMonitoringStyles, showToast} from "../PageMonitoringCommonService";
 import {
-    ADD_ITEM_LIST, CHART_COLOR_APPLE,
-    CHART_COLOR_LIST, CHART_COLOR_LIST2, CHART_COLOR_LIST3, CHART_COLOR_LIST4, CHART_COLOR_MONOKAI,
-    CLASSIFICATION, EVENT_LOG_ITEM_LIST,
-    GRID_ITEM_TYPE, HARDWARE_TYPE,
+    CHART_COLOR_APPLE,
+    CHART_COLOR_LIST,
+    CHART_COLOR_LIST2,
+    CHART_COLOR_LIST3,
+    CHART_COLOR_LIST4,
+    CHART_COLOR_MONOKAI,
+    CLASSIFICATION,
+    EVENT_LOG_ITEM_LIST,
+    GRID_ITEM_TYPE,
+    HARDWARE_TYPE,
     THEME_OPTIONS
 } from "../../../../shared/Constants";
 import {reactLocalStorage} from "reactjs-localstorage";
 import {getUserId} from "../dev/PageDevMonitoringService";
-import {Radio} from 'antd';
 
 
 const FA = require('react-fontawesome')
@@ -174,42 +179,6 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                 value={this.state.currentItemType}
                             >
                                 <div className='page_monitoring_form_column_right'>
-                                    {/*desc:###############################*/}
-                                    {/*desc:map and bubble chart           */}
-                                    {/*desc:###############################*/}
-                                    <div>
-                                        <div
-                                            onClick={() => {
-                                                this.setState({
-                                                    currentItemType: GRID_ITEM_TYPE.MAP,
-                                                    isShowHWDropDown: false,
-                                                    isShowEventLog: false,
-                                                })
-                                            }}
-                                        >
-                                            <img src={require('../images/map001.png')}/>
-                                        </div>
-                                        <div className='center002'>
-                                            <Radio value={GRID_ITEM_TYPE.MAP}>Map</Radio>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div
-                                            onClick={() => {
-                                                this.setState({
-                                                    currentItemType: GRID_ITEM_TYPE.BUBBLE,
-                                                    isShowHWDropDown: false,
-                                                    isShowEventLog: false,
-                                                })
-                                            }}
-                                        >
-                                            <img src={require('../images/map001.png')}/>
-                                        </div>
-                                        <div className='page_monitoring_form_radio_label'>
-                                            <Radio value={GRID_ITEM_TYPE.BUBBLE}>Bubble</Radio>
-                                        </div>
-                                    </div>
-
                                     <div>
                                         <div
                                             onClick={() => {
@@ -278,6 +247,41 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         </div>
                                         <div className='page_monitoring_form_radio_label'>
                                             <Radio value={GRID_ITEM_TYPE.APP_INST_EVENT_LOG}>Event Log</Radio>
+                                        </div>
+                                    </div>
+                                    {/*desc:###############################*/}
+                                    {/*desc:map and bubble chart           */}
+                                    {/*desc:###############################*/}
+                                    <div>
+                                        <div
+                                            onClick={() => {
+                                                this.setState({
+                                                    currentItemType: GRID_ITEM_TYPE.MAP,
+                                                    isShowHWDropDown: false,
+                                                    isShowEventLog: false,
+                                                })
+                                            }}
+                                        >
+                                            <img src={require('../images/map001.png')}/>
+                                        </div>
+                                        <div className='center002'>
+                                            <Radio value={GRID_ITEM_TYPE.MAP}>Map</Radio>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div
+                                            onClick={() => {
+                                                this.setState({
+                                                    currentItemType: GRID_ITEM_TYPE.BUBBLE,
+                                                    isShowHWDropDown: false,
+                                                    isShowEventLog: false,
+                                                })
+                                            }}
+                                        >
+                                            <img src={require('../images/map001.png')}/>
+                                        </div>
+                                        <div className='page_monitoring_form_radio_label'>
+                                            <Radio value={GRID_ITEM_TYPE.BUBBLE}>Bubble</Radio>
                                         </div>
                                     </div>
 
