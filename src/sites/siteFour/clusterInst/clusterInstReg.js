@@ -104,7 +104,11 @@ class ClusterInstReg extends React.Component {
     deploymentValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
-            if (form.field === fields.numberOfMasters || form.field === fields.numberOfNodes) {
+            if (form.field === fields.numberOfMasters) {
+                form.value = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? 1 : undefined
+                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_DOCKER ? false : true
+            }
+            else if (form.field === fields.numberOfNodes) {
                 form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_DOCKER ? false : true
             }
             else if (form.field === fields.ipAccess) {
@@ -393,13 +397,10 @@ const mapStateToProps = (state) => {
         }
         : {};
     let regionInfo = (state.regionInfo) ? state.regionInfo : null;
-    let _changedRegion = (state.form && state.form.createAppFormDefault && state.form.createAppFormDefault.values) ? state.form.createAppFormDefault.values.Region : null;
     return {
         getRegion: (state.getRegion) ? state.getRegion.region : null,
         regionInfo: regionInfo,
-        region: region,
-        changeRegion: state.changeRegion ? state.changeRegion.region : null,
-        changedRegion: _changedRegion
+        region: region
     }
 };
 

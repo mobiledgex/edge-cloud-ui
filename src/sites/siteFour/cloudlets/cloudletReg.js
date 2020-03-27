@@ -287,13 +287,10 @@ const mapStateToProps = (state) => {
         }
         : {};
     let regionInfo = (state.regionInfo) ? state.regionInfo : null;
-    let _changedRegion = (state.form && state.form.createAppFormDefault && state.form.createAppFormDefault.values) ? state.form.createAppFormDefault.values.Region : null;
     return {
         getRegion: (state.getRegion) ? state.getRegion.region : null,
         regionInfo: regionInfo,
-        region: region,
-        changeRegion: state.changeRegion ? state.changeRegion.region : null,
-        changedRegion: _changedRegion
+        region: region
     }
 };
 
