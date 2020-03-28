@@ -1,7 +1,7 @@
 import React from 'react';
 import './PageMonitoring.css';
-import {toast} from "react-semantic-toasts";
-import {GRID_ITEM_TYPE, HARDWARE_TYPE, THEME_OPTIONS, USAGE_TYPE,} from "../../../shared/Constants";
+import {SemanticToastContainer, toast} from "react-semantic-toasts";
+import {CLASSIFICATION, GRID_ITEM_TYPE, HARDWARE_TYPE, USAGE_TYPE,} from "../../../shared/Constants";
 import Lottie from "react-lottie";
 import {makeGradientColor} from "./dev/PageDevMonitoringService";
 import {Chart} from "react-google-charts";
@@ -9,11 +9,28 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import {makeCompleteDateTime} from "./admin/PageAdminMonitoringService";
 import moment from "moment";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
-import {GridLoader} from "react-spinners";
+import {GridLoader, PulseLoader} from "react-spinners";
 import {Grid} from "semantic-ui-react";
 import {barChartOption, columnChartOption} from "./PageMonitoringUtils";
+import {Card} from "@material-ui/core";
 
 export const PageMonitoringStyles = {
+    icon: {
+        fontSize: 29,
+        width: 37,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        //backgroundColor: 'red',
+        position: "absolute",
+        top: 7,
+        fontWeight: 'bold',
+        cursor: "pointer"
+    },
+    gridTitle2: {
+        flex: .87,
+        marginLeft: 0, alignItems: 'flex-start', marginTop: 8, alignSelf: 'center', justifyContent: 'flex-start'
+    },
     selectBoxRow: {
         alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,
     },
@@ -45,7 +62,7 @@ export const PageMonitoringStyles = {
         minWidth: '350px',
         //fontSize: '12px',
         minHeight: '40px',
-        zIndex: 9999,
+        zIndex: 1,
         //height: '50px',
     },
     dropDown2: {
@@ -125,8 +142,17 @@ export const PageMonitoringStyles = {
         fontSize: 29,
         fontFamily: 'Karla'
         //backgroundColor:'red'
-    }
+    },
+    noData2: {
+        width: '100%', backgroundColor: 'blue', fontSize: 15, display: 'flex'
+        , alignItems: 'center', justifyContent: 'center',
+    },
+    gridTableData: {flex: .15, backgroundColor: '#181A1F', height: 64, marginTop: 0, textAlign: 'center'},
+    gridTableData2: {flex: .15, backgroundColor: '#1e2025', height: 64, marginTop: 0, textAlign: 'center'},
 
+
+    appInstGridTableData: {flex: .083, backgroundColor: '#181A1F', height: 64, marginTop: 0, textAlign: 'center'},
+    appInstGridTableData2: {flex: .083, backgroundColor: '#1e2025', height: 64, marginTop: 0, textAlign: 'center'},
 }
 export const noDataArea = () => (
     <div style={PageMonitoringStyles.center3}>
@@ -142,18 +168,39 @@ export const isEmpty = (value) => {
     }
 };
 
+export const groupByKey_ = (array, key) => {
+    // Return the end result
+    return array.reduce((result, currentValue) => {
+        // If an array already present for key, push it to the array. Else create an array and push the object
+        (result[currentValue[key]] = result[currentValue[key]] || []).push(
+            currentValue
+        );
+        // Return the current iteration `result` value, this will be taken as next iteration `result` value and accumulate
+        return result;
+    }, {}); // empty object is the initial value for result object
+};
+
 
 export const renderLoaderArea = (_this) => (
-    <Grid.Row className='view_contents'>
+    <Grid.Row className='view_contents' style={{height: window.height, width: window.width}}>
         <Grid.Column className='contents_body'>
-            {_this.renderHeader()}
-            <div style={{position: 'absolute', top: '37%', left: '48%'}}>
-                <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
+
+            <Card style={{
+                width: '100%',
+                backgroundColor: '#292c33',
+                padding: 10,
+                color: 'white',
+            }}>
+                <div>
+                    {_this.renderHeader()}
+                </div>
+            </Card>
+            <div style={{position: 'absolute', top: '77%', left: '48%'}}>
+                <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row', marginTop: 350}}>
                     {renderGridLoader2(150, 150)}
                 </div>
             </div>
         </Grid.Column>
-
     </Grid.Row>
 )
 
@@ -167,6 +214,20 @@ export const renderGridLoader2 = (width, height) => {
             loading={true}
         />
 
+    )
+}
+
+export const renderCircleLoaderForMap = (width, height) => {
+    return (
+        <div style={{zIndex: 99999999999, marginLeft: 20, marginBottom: 0, height: 20, }}>
+            <PulseLoader
+                sizeUnit={"px"}
+                size={20}
+                color={'#70b2bc'}
+                loading={true}
+                style={{zIndex: 999999999999999, marginLeft: -30}}
+            />
+        </div>
     )
 }
 
@@ -185,7 +246,32 @@ export const renderGridLoader = () => {
 export const renderPlaceHolderCircular = (type: string = '') => {
     return (
         <div className='page_monitoring_blank_box'
-             style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
+             style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%', zIndex: 999999999999999999999}}>
+            {/*<Lottie
+                options={{
+                    loop: true,
+                    autoplay: true,
+                    animationData: require('../../../lotties/14112-heartrate_777'),
+                    rendererSettings: {
+                        preserveAspectRatio: 'xMidYMid slice'
+                    }
+                }}
+                speed={2.5}
+                height={150}
+                width={150}
+                isStopped={false}
+                isPaused={false}
+            />*/}
+            <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}
+            />
+        </div>
+    )
+}
+
+export const renderPlaceHolderCircular2 = (type: string = '') => {
+    return (
+        <div className='page_monitoring_blank_box'
+             style={{height: '100%'}}>
             {/*<Lottie
                 options={{
                     loop: true,
@@ -231,6 +317,23 @@ export const renderPlaceHolderLottiePinJump = (type: string = '') => {
     )
 }
 
+
+export const removeDuplicates = (paramArrayList, key) => {
+    let newArray = [];
+    let uniqueObject = {};
+    for (let i in paramArrayList) {
+
+        let objTitle = paramArrayList[i][key];
+        uniqueObject[objTitle] = paramArrayList[i];
+    }
+    for (let i in uniqueObject) {
+        newArray.push(uniqueObject[i]);
+    }
+
+    console.log(newArray);
+    return newArray;
+}
+
 export const renderPlaceHolderLottiePinJump2 = (type: string = '') => {
     return (
         <div className='page_monitoring_blank_box'
@@ -247,6 +350,29 @@ export const renderPlaceHolderLottiePinJump2 = (type: string = '') => {
                 speed={2.9}
                 height={350}
                 width={350}
+                isStopped={false}
+                isPaused={false}
+            />
+        </div>
+    )
+}
+
+export const renderPlaceHolderLottiePinJump3 = (type: string = '') => {
+    return (
+        <div className='page_monitoring_blank_box'
+             style={{zIndex: 999999999999, position: 'absolute', top: '1%', left: '1%'}}>
+            <Lottie
+                options={{
+                    loop: true,
+                    autoplay: true,
+                    animationData: require('../../../lotties/pinjump'),
+                    rendererSettings: {
+                        preserveAspectRatio: 'xMidYMid slice'
+                    }
+                }}
+                speed={2.9}
+                height={75}
+                width={75}
                 isStopped={false}
                 isPaused={false}
             />
@@ -395,7 +521,12 @@ export const lineGraphOptionsForAppInst = (hardwareType) => {
                         beginAtZero: true,
                         fontColor: 'white',
                         callback(value, index, label) {
-                            return convertByteToMegaByte(value, hardwareType)
+                            if (hardwareType === HARDWARE_TYPE.CPU) {
+                                return value.toFixed(2);
+                            } else {
+                                return convertByteToMegaByte(value, hardwareType)
+                            }
+
 
                         },
                     },
@@ -502,7 +633,7 @@ export const sortUsageListByType = (usageList, hardwareType) => {
 }
 
 
-export const renderUsageByType = (usageOne, hardwareType, role = '',) => {
+export const renderUsageByType = (usageOne, hardwareType, _this) => {
 
     if (hardwareType === HARDWARE_TYPE.CPU) {
         return usageOne.sumCpuUsage
@@ -519,7 +650,6 @@ export const renderUsageByType = (usageOne, hardwareType, role = '',) => {
     if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
         return usageOne.sumTcpRetrans;
     }
-    ////////////////////////////
     if (hardwareType === HARDWARE_TYPE.UDPRECV) {
         return usageOne.sumUdpRecv;
     }
@@ -534,7 +664,6 @@ export const renderUsageByType = (usageOne, hardwareType, role = '',) => {
     if (hardwareType === HARDWARE_TYPE.NET_RECV) {
         return usageOne.avgNetRecv;
     }
-
 
     if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
         return usageOne.sumRecvBytes
@@ -570,20 +699,20 @@ export const arraysEqual = (a, b) => {
     }
 }
 
-export const renderBarChartCore = (chartDataList, hardwareType, _this, graphType) => {
-
-
+export const renderBarChartCore = (chartDataList, hardwareType, _this, graphType, isResizeComplete) => {
     return (
-        <Chart
-            width={"100%"}
-            //height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
-            height={'100%'}
-            chartType={graphType === GRID_ITEM_TYPE.BAR ? 'BarChart' : 'ColumnChart'}
-            //chartType={'ColumnChart'}
-            loader={<div><CircularProgress style={{color: '#1cecff', zIndex: 999999}}/></div>}
-            data={chartDataList}
-            options={graphType === GRID_ITEM_TYPE.BAR ? barChartOption(hardwareType) : columnChartOption(hardwareType)}
-        />
+        <div style={{width: '100%'}}>
+            <Chart
+                key={isResizeComplete}
+                //height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
+                height={'100%'}
+                chartType={graphType === GRID_ITEM_TYPE.BAR ? 'BarChart' : 'ColumnChart'}
+                //chartType={'ColumnChart'}
+                loader={<div><CircularProgress style={{color: '#1cecff', zIndex: 999999}}/></div>}
+                data={chartDataList}
+                options={graphType === GRID_ITEM_TYPE.BAR ? barChartOption(hardwareType) : columnChartOption(hardwareType)}
+            />
+        </div>
     );
 }
 
@@ -601,46 +730,52 @@ export const numberWithCommas = (x) => {
 
 
 export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
-    return (
-        {
-            "token": token,
-            "params": {
-                "region": dataOne.Region,
-                "clusterinst": {
-                    "cluster_key": {
-                        "name": dataOne.ClusterName
-                    },
-                    "cloudlet_key": {
-                        "organization": dataOne.Operator,
-                        "name": dataOne.Cloudlet
-                    },
-                    "organization": dataOne.OrganizationName,
+
+
+    console.log("makeFormForClusterLevelMatric====>", dataOne);
+
+    let dataForm = {
+        "token": token,
+        "params": {
+            "region": dataOne.Region,
+            "clusterinst": {
+                "cluster_key": {
+                    "name": dataOne.ClusterName
                 },
-                "last": fetchingDataNo,
-                "selector": "*"
-            }
+                "cloudlet_key": {
+                    "organization": dataOne.Operator,
+                    "name": dataOne.Cloudlet
+                },
+                "organization": dataOne.OrganizationName,
+            },
+            "last": fetchingDataNo,
+            "selector": "*"
         }
+    }
 
+    console.log("dataForm====>", dataForm);
 
-    )
+    return dataForm;
 }
 
 export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
 
-    return (
-        {
-            "token": token,
-            "params": {
-                "region": dataOne.Region,
-                "cloudlet": {
-                    "organization": dataOne.Operator,
-                    "name": dataOne.CloudletName,
-                },
-                "last": fetchingDataNo,
-                "selector": "*"
-            }
+    let formBody = {
+        "token": token,
+        "params": {
+            "region": dataOne.Region,
+            "cloudlet": {
+                "organization": dataOne.Operator,
+                "name": dataOne.CloudletName,
+            },
+            "last": fetchingDataNo,
+            "selector": "*"
         }
-    )
+    }
+
+    console.log("makeFormForCloudletLevelMatric====>", formBody);
+
+    return formBody;
 }
 
 
@@ -685,6 +820,16 @@ export const showToast2 = (title: string, time = 2) => {
         icon: 'star',
         title: title,
         //animation: 'swing left',
+        time: time * 1000,
+        color: 'black',
+    });
+}
+export const showToast3 = (title: string, time = 2) => {
+    toast({
+        type: 'warning',
+        icon: 'star',
+        title: title,
+        animation: 'swing left',
         time: time * 1000,
         color: 'black',
     });
@@ -749,7 +894,7 @@ export const hardwareTypeToUsageKey = (hwType: string) => {
  * @param themeTitle
  * @returns {[]}
  */
-export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType, ) => {
+export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType,) => {
 
     console.log('makeBubbleChartDataForCluster===>', usageList)
 

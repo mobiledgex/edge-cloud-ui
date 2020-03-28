@@ -21,12 +21,46 @@ export type TypeGridInstanceList = {
     "sumSendBytes": number,
 }
 
+export type TypeClient = {
+    latitude: number,
+    longitude: number,
+    horizontal_accuracy: number,
+    altitude: number,
+    timestamp: any,
+    uuid: string,
+    serverLocInfo: {
+        lat: number,
+        long: number,
+    }
+}
+
+/*export type TypeMapTyleLayerReducer = {
+    currentTyleLayer: string,
+    lineColor: string,
+    cloudletIconColor: string,
+}*/
+
 export type TypeLineChartData2 = {
     levelTypeNameList: Array,
     usageSetList: Array,
     newDateTimeList: Array,
     hardwareType: string,
 
+}
+
+export type TypeClientLocation = {
+    latitude: number,
+    longitude: number,
+    horizontal_accuracy: number,
+    altitude: number,
+    course: number,
+    speed: number,
+    timestamp: any,
+    uuid: string,
+    serverLocInfo: {
+        lat: number,
+        long: number,
+    }
 }
 
 
@@ -149,6 +183,7 @@ export type TypeAppInstance = {
     "Edit": any,
     "Status": any,
     "Revision": number,
+    "HealthCheck": number,
 }
 
 export type TypeBarChartData = {
@@ -162,4 +197,19 @@ export type TypeLineChartData = {
     usageSetList: string,
     newDateTimeList: string,
     hardwareType: string,
+}
+
+export type TypeClusterEventLog = {
+    "time": string,
+    "cluster": string,
+    "dev": string,
+    "cloudlet": string,
+    "operator": string,
+    "flavor": string,
+    "vcpu": number,
+    "ram": number,
+    "disk": number,
+    "other": string,
+    "event": string,
+    "status": string,
 }

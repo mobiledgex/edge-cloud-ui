@@ -9,7 +9,7 @@ import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
-import {DatePicker,} from 'antd';
+import {Card, DatePicker,} from 'antd';
 import {filterListBykeyForCloudlet, renderBubbleChartForCloudlet,} from "../admin/PageAdminMonitoringService";
 import {CLASSIFICATION, HARDWARE_OPTIONS_FOR_CLOUDLET, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../../shared/Constants";
 import type {TypeGridInstanceList} from "../../../../shared/Types";
@@ -21,8 +21,8 @@ import '../PageMonitoring.css'
 import {PageMonitoringStyles, renderLoaderArea, renderPlaceHolderCircular, showToast} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
 import {handleBubbleChartDropDownForCloudlet, makeBarChartDataForCloudlet, makeLineChartForCloudlet, renderBottomGridAreaForCloudlet} from "./PageOperMonitoringService";
-import LeafletMap from "../components/LeafletMapWrapperForOper";
-import {filterUsageByClassification, makeSelectBoxListWithKey, sortByKey} from "../dev/PageDevMonitoringService";
+import LeafletMap from "../components/LeafletMapOperContainer";
+import {filterByClassification, makeSelectBoxListWithKey, sortByKey} from "../dev/PageDevMonitoringService";
 
 import {getAllCloudletEventLogs, getCloudletEventLog, getCloudletLevelUsageList, getCloudletList,} from '../PageMonitoringMetricService'
 
@@ -43,6 +43,10 @@ const mapDispatchProps = (dispatch) => {
         }
     };
 };
+
+
+let isIOS = /iPad|iPhone|iPod/.test(navigator.platform)
+    || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
 
 type Props = {
     handleLoadingSpinner: Function,
@@ -663,8 +667,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             this.setState({
                 currentRegion: selectedRegion,
             }, async () => {
-                let filteredCloudletList = filterUsageByClassification(this.state.cloudletList, selectedRegion, CLASSIFICATION.REGION)
-                let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, selectedRegion, CLASSIFICATION.REGION)
+                let filteredCloudletList = filterByClassification(this.state.cloudletList, selectedRegion, CLASSIFICATION.REGION)
+                let filteredCloudletUsageList = filterByClassification(this.state.allCloudletUsageList, selectedRegion, CLASSIFICATION.REGION)
                 let dropdownCloudletList = makeSelectBoxListWithKey(filteredCloudletList, "CloudletName")
                 console.log('dropdownCloudletList===>', dropdownCloudletList);
                 await this.setState({
@@ -697,7 +701,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 }
 
 
-                let filteredCloudletUsageList = filterUsageByClassification(this.state.allCloudletUsageList, selectedCloudlet.toString().trim(), CLASSIFICATION.cloudlet)
+                let filteredCloudletUsageList = filterByClassification(this.state.allCloudletUsageList, selectedCloudlet.toString().trim(), CLASSIFICATION.cloudlet)
                 await this.setState({
                     // filteredCloudletList: filteredCloudletList,
                     cloudletSelectLoading: false,
@@ -1025,6 +1029,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
+        getHeight = () => {
+            return window.innerHeight - 133
+        }
+
         render() {
             // todo: Components showing when the loading of graph data is not completed.
             if (!this.state.isAppInstaceDataReady) {
@@ -1038,10 +1046,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <Grid.Row className='view_contents'>
                         <Grid.Column className='contents_body'>
                             {this.renderHeader()}
-                            <div style={{position: 'absolute', top: '37%', left: '48%'}}>
-                                <div style={{marginLeft: -450, display: 'flex', flexDirection: 'row', fontSize: 30, opacity: 1, color: 'white'}}>
-                                    No data to express ( There is no cloudlet you can access )
-                                </div>
+                            <div style={{}}>
+                                <Card
+                                    hoverable
+                                    style={{width: '100%', height: '100%'}}
+                                    cover={<div style={{marginLeft: 40, marginTop: 5}}>
+                                        <img alt="example" src="/assets/brand/MobiledgeX_Logo_tm_white.svg" width={500} height={250}/>
+                                    </div>}
+                                >
+                                    <div style={{fontSize: 45, fontFamily:'Roboto Condensed'}}>
+                                        There is no cloudlet you can access...
+                                    </div>
+                                </Card>
                             </div>
                         </Grid.Column>
                     </Grid.Row>
@@ -1081,7 +1097,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <Grid.Column>
                                 <div className="table-no-resized">
 
-                                    <div className="page_monitoring">
+                                    <div className={isIOS ? 'page_monitoring page_isIOS' : 'page_monitoring'} style={{height:this.getHeight()}}>
                                         {/*todo:---------------------------------*/}
                                         {/*todo:SELECTBOX_ROW        */}
                                         {/*todo:---------------------------------*/}

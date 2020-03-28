@@ -14,16 +14,4 @@ $ npm start
 |           | line Chart | lineChart.css | Style of linechart           |
 
 
-### External Library
 
-    * map
-    : react simpleMap
-
-    * calendar
-     http://adphorus.github.io/react-date-range/
-
-
-### Using HTTPS
-
-    * link : https://facebook.github.io/create-react-app/docs/using-https-in-development
-    $ HTTPS=true npm start

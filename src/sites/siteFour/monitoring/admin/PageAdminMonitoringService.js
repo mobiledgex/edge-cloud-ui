@@ -1,9 +1,16 @@
 import React from 'react';
 import '../PageMonitoring.css';
-import { APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGION } from "../../../../shared/Constants";
+import {
+    APP_INST_MATRIX_HW_USAGE_INDEX,
+    CHART_COLOR_LIST,
+    HARDWARE_TYPE,
+    NETWORK_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    REGION
+} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
 import BubbleChart from "../../../../components/BubbleChart";
-import { TypeAppInstance } from "../../../../shared/Types";
+import {TypeAppInstance} from "../../../../shared/Types";
 import PageAdminMonitoring from "./PageAdminMonitoring";
 import {
     convertByteToMegaByte,
@@ -14,10 +21,10 @@ import {
     PageMonitoringStyles,
     showToast
 } from "../PageMonitoringCommonService";
-import { TabPanel, Tabs } from "react-tabs";
-import { Table } from "semantic-ui-react";
-import type { TypeAppInstanceUsage2, TypeGridInstanceList } from "../../../../shared/Types";
-import { Progress } from "antd";
+import {TabPanel, Tabs} from "react-tabs";
+import {Table} from "semantic-ui-react";
+import type {TypeAppInstanceUsage2, TypeGridInstanceList} from "../../../../shared/Types";
+import {Progress} from "antd";
 
 export const cutArrayList = (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];
@@ -58,59 +65,117 @@ export const makeSelectBoxListByClassification_byKey = (arrList, keyName) => {
 
 export const makeFormForAppInstance = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
 
+    let appName = dataOne.AppName;
+    if (dataOne.AppName.includes('[')) {
+        appName = dataOne.AppName.toString().split('[')[0]
+    }
+
     if (pStartTime !== '' && pEndTime !== '') {
-        return (
-            {
-                "token": token,
-                "params": {
-                    "region": dataOne.Region,
-                    "appinst": {
-                        "app_key": {
-                            "organization": dataOne.OrganizationName,
-                            "name": dataOne.AppName.toLowerCase().replace(/\s+/g, ''),
-                            "version": dataOne.Version
-                        },
-                        "cluster_inst_key": {
-                            "cluster_key": { "name": dataOne.ClusterInst },
-                            "cloudlet_key": {
-                                "name": dataOne.Cloudlet,
-                                "organization": dataOne.Operator
-                            }
-                        }
+
+
+      /*
+            AppName: "KYUNGJOON_APP001"
+​​
+            Cloudlet: "DemoRahul"
+            ​​
+            CloudletLocation: Object { latitude: -10, longitude: -55, timestamp: {} }
+            ​​
+            ClusterInst: "autoclusterkyungjoon-app001"
+            ​​
+            Created: "seconds : 1584354577"
+            ​​
+            Edit: Array(10) [ "Region", "DeveloperName", "AppName", … ]
+                ​​
+            ​​
+            Flavor: "m4.large"
+            ​​
+            HealthCheck: undefined
+            ​​
+            Liveness: 1
+            ​​
+            Mapped_port: Array [ {…} ]
+                ​​
+            Operator: "TDG"
+            ​​
+            OrganizationName: "MobiledgeX"
+            ​​
+            Progress: ""
+            ​​
+            Region: "EU"
+            ​​
+            Revision: 1
+            ​​
+            Runtime: Object { container_ids: (1) […] }
+            ​​
+            State: 5
+            ​​
+            Status: Object {  }
+            ​​
+            URI: "autoclusterkyungjoon-app001.demorahul.tdg.mobiledgex.net"
+            ​​
+            Version: "1.0"
+            ​​
+            uuid: "077a4a59-c7a9-445c-8af9-dad10444fdfb"
+        */
+
+
+        let form = {
+            "token": token,
+            "params": {
+                "region": dataOne.Region,
+                "appinst": {
+                    "app_key": {
+                        "organization": dataOne.OrganizationName,
+                        "name": appName,
+                        "version": dataOne.Version
                     },
-                    "selector": valid,
-                    "last": fetchingDataNo,
-                    "starttime": pStartTime,
-                    "endtime": pEndTime,
-                }
+                    "cluster_inst_key": {
+                        "cluster_key": {"name": dataOne.ClusterInst},
+                        "cloudlet_key": {
+                            "name": dataOne.Cloudlet,
+                            "organization": dataOne.Operator
+                        }
+                    }
+                },
+                "selector": valid,
+                "last": fetchingDataNo,
+                "starttime": pStartTime,
+                "endtime": pEndTime,
             }
-        )
+        }
+        console.log("makeFormForAppInstance1111====>", form);
+        return form;
+
+
     } else {
-        return (
-            {
-                "token": token,
-                "params": {
-                    "region": dataOne.Region,
-                    "appinst": {
-                        "app_key": {
-                            "organization": dataOne.OrganizationName,
-                            "name": dataOne.AppName.toLowerCase().replace(/\s+/g, ''),
-                            "version": dataOne.Version
-                        },
-                        "cluster_inst_key": {
-                            "cluster_key": { "name": dataOne.ClusterInst },
-                            "cloudlet_key": {
-                                "name": dataOne.Cloudlet,
-                                "organization": dataOne.Operator
-                            }
-                        }
+
+        let form = {
+            "token": token,
+            "params": {
+                "region": dataOne.Region,
+                "appinst": {
+                    "app_key": {
+                        "organization": dataOne.OrganizationName,
+                        "name": dataOne.AppName.toLowerCase().replace(/\s+/g, ''),
+                        "version": dataOne.Version
                     },
-                    "selector": valid,
-                    //"last": 25
-                    "last": fetchingDataNo,
-                }
+                    "cluster_inst_key": {
+                        "cluster_key": {"name": dataOne.ClusterInst},
+                        "cloudlet_key": {
+                            "name": dataOne.Cloudlet,
+                            "organization": dataOne.Operator
+                        }
+                    }
+                },
+                "selector": valid,
+                //"last": 25
+                "last": fetchingDataNo,
             }
-        )
+        }
+
+        console.log("makeFormForAppInstance222====>", form)
+
+        return form;
     }
 }
 
@@ -138,7 +203,7 @@ export const filterInstanceCountOnCloutLetOne = (appInstanceListGroupByCloudlet,
  * @param pTypeValue
  * @returns {*}
  */
-export const filterListBykey = (pFilterKey, pTypeValue, usageList, ) => {
+export const filterListBykey = (pFilterKey, pTypeValue, usageList,) => {
     let filteredUsageList = usageList.filter((item) => {
         if (item.instance[pFilterKey] === pTypeValue) {
             return item;
@@ -147,7 +212,7 @@ export const filterListBykey = (pFilterKey, pTypeValue, usageList, ) => {
     return filteredUsageList
 }
 
-export const filterListBykeyForCloudlet = (pFilterKey, selectedCloudletOne, usageList, ) => {
+export const filterListBykeyForCloudlet = (pFilterKey, selectedCloudletOne, usageList,) => {
     let filteredUsageList = usageList.filter((item) => {
         if (item[pFilterKey] === selectedCloudletOne) {
             return item;
@@ -261,7 +326,7 @@ export const makeCloudletListSelectBox = (appInstanceList) => {
  * @param hardwareType
  * @returns {string}
  */
-export const renderUsageLabelByType = (usageOne, hardwareType) => {
+export const renderUsageLabelByType = (usageOne, hardwareType, _this) => {
     if (hardwareType === HARDWARE_TYPE.CPU) {
         let cpuUsageOne = '';
         try {
@@ -304,10 +369,60 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
         return usageOne.sumAcceptsConnection
     }
 
+}
+
+
+export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, _this) => {
+    if (hardwareType === HARDWARE_TYPE.CPU) {
+        let cpuUsageOne = '';
+        try {
+            cpuUsageOne = (usageOne.sumCpuUsage * 1).toFixed(2) + " %";
+        } catch (e) {
+            cpuUsageOne = 0;
+        }
+        return cpuUsageOne;
+    }
+
+    if (hardwareType === HARDWARE_TYPE.VCPU) {
+        return numberWithCommas(usageOne.sumVCpuUsage) + ""
+    }
+
+    if (hardwareType === HARDWARE_TYPE.MEM) {
+        return numberWithCommas((usageOne.sumMemUsage / 1000000).toFixed(2)) + " %"
+    }
+
+    if (hardwareType === HARDWARE_TYPE.DISK) {
+        return numberWithCommas(usageOne.sumDiskUsage) + " Byte"
+    }
+
+    if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+        return numberWithCommas(usageOne.sumRecvBytes) + " Byte";
+    }
+
+    if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+        return numberWithCommas(usageOne.sumSendBytes) + " Byte";
+    }
+
+    if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+        return usageOne.sumActiveConnection
+    }
+
+    if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+        return usageOne.sumHandledConnection
+    }
+
+    if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+        return usageOne.sumAcceptsConnection
+    }
 
 }
 
+
 export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
+
+
+    console.log("usageList===>", usageList);
+
 
     if (hardwareType === HARDWARE_TYPE.CPU) {
         usageList.sort((a, b) => b.sumCpuUsage - a.sumCpuUsage);
@@ -340,14 +455,14 @@ export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
     } else {
 
         let chartDataList = [];
-        chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", { role: "style" }, { role: 'annotation' }])
+        chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
 
         usageList.map((item: TypeAppInstanceUsage2, index) => {
             if (index < 5) {
-                let barDataOne = [item.appName.toString().substring(0, 10),
-                renderUsageByType2(item, hardwareType),
-                CHART_COLOR_LIST[index],
-                renderUsageLabelByType(item, hardwareType)]
+                let barDataOne = [item.appName.toString().substring(0, 13) + "..",
+                    renderUsageByType2(item, hardwareType),
+                    CHART_COLOR_LIST[index],
+                    renderUsageLabelByType(item, hardwareType)]
                 chartDataList.push(barDataOne);
             }
         })
@@ -393,8 +508,8 @@ export const makeGridInstanceList = (usageList: any) => {
 export const renderPlaceHolder2 = () => {
     let boxWidth = window.innerWidth * 0.3;
     return (
-        <div style={{ width: 350, height: 250, backgroundColor: 'black' }}>
-            <div style={{ marginTop: 0 }}>
+        <div style={{width: 350, height: 250, backgroundColor: 'black'}}>
+            <div style={{marginTop: 0}}>
                 <Lottie
                     options={{
                         loop: true,
@@ -408,7 +523,7 @@ export const renderPlaceHolder2 = () => {
                     width={150}
                     isStopped={false}
                     isPaused={false}
-                    style={{ marginTop: 0, }}
+                    style={{marginTop: 0,}}
                 />
             </div>
         </div>
@@ -497,7 +612,7 @@ export const renderBubbleChart = (_this: PageAdminMonitoring, hardwareType: stri
 
 
         return (
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <div style={{display: 'flex', flexDirection: 'row'}}>
                 <div style={{
                     //backgroundColor: 'blue',
                     backgroundColor: '#1e2124',
@@ -583,7 +698,7 @@ export const renderBubbleChartForCloudlet = (_this: PageAdminMonitoring, hardwar
 
 
         return (
-            <div style={{ display: 'flex', flexDirection: 'row', zIndex: 1 }}>
+            <div style={{display: 'flex', flexDirection: 'row', zIndex: 1}}>
                 <div style={{
                     //backgroundColor: 'blue',
                     backgroundColor: '#1e2124',
@@ -736,12 +851,12 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
 
 export const makeNetworkBarData = (networkUsageList, hwType) => {
     let chartDataList = [];
-    chartDataList.push(["Element", hwType + " USAGE", { role: "style" }, { role: 'annotation' }])
+    chartDataList.push(["Element", hwType + " USAGE", {role: "style"}, {role: 'annotation'}])
 
     for (let index = 0; index < networkUsageList.length; index++) {
         if (index < 5) {
             let barDataOne = [
-                networkUsageList[index].instance.AppName.toString().substring(0, 10) + "...",
+                networkUsageList[index].appName.toString().substring(0, 10) + "...",
                 hwType === HARDWARE_TYPE.RECV_BYTES ? networkUsageList[index].sumRecvBytes : networkUsageList[index].sumSendBytes,
                 CHART_COLOR_LIST[index],
                 hwType === HARDWARE_TYPE.RECV_BYTES ? networkUsageList[index].sumRecvBytes : networkUsageList[index].sumSendBytes,
@@ -887,32 +1002,32 @@ export const renderBottomGridArea = (_this) => {
                 </Table.Row>
             </Table.Header>
             <Table.Body className="tbBodyList"
-                ref={(div) => {
-                    this.messageList = div;
-                }}
+                        ref={(div) => {
+                            this.messageList = div;
+                        }}
             >
                 {/*-----------------------*/}
                 {/*todo:ROW HEADER        */}
                 {/*-----------------------*/}
                 {!_this.state.isReady &&
-                    <Table.Row className='page_monitoring_popup_table_empty'>
-                        <Table.Cell>
-                            <Lottie
-                                options={{
-                                    loop: true,
-                                    autoplay: true,
-                                    animationData: require('../../../../lotties/loader001'),
-                                    rendererSettings: {
-                                        preserveAspectRatio: 'xMidYMid slice'
-                                    }
-                                }}
-                                height={240}
-                                width={240}
-                                isStopped={false}
-                                isPaused={false}
-                            />
-                        </Table.Cell>
-                    </Table.Row>}
+                <Table.Row className='page_monitoring_popup_table_empty'>
+                    <Table.Cell>
+                        <Lottie
+                            options={{
+                                loop: true,
+                                autoplay: true,
+                                animationData: require('../../../../lotties/loader001'),
+                                rendererSettings: {
+                                    preserveAspectRatio: 'xMidYMid slice'
+                                }
+                            }}
+                            height={240}
+                            width={240}
+                            isStopped={false}
+                            isPaused={false}
+                        />
+                    </Table.Cell>
+                </Table.Row>}
                 {_this.state.isReady && _this.state.filteredGridInstanceList.map((item: TypeGridInstanceList, index) => {
 
                     return (
@@ -930,9 +1045,10 @@ export const renderBottomGridArea = (_this) => {
                                         {item.sumCpuUsage.toFixed(2) + '%'}
                                     </div>
                                     <div>
-                                        <Progress style={{ width: '100%' }} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
-                                            percent={(item.sumCpuUsage / _this.state.gridInstanceListCpuMax) * 100}
-                                            strokeColor={'#29a1ff'} status={'normal'} />
+                                        <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10}
+                                                  showInfo={false}
+                                                  percent={(item.sumCpuUsage / _this.state.gridInstanceListCpuMax) * 100}
+                                                  strokeColor={'#29a1ff'} status={'normal'}/>
                                     </div>
                                 </div>
                             </Table.Cell>
@@ -942,9 +1058,10 @@ export const renderBottomGridArea = (_this) => {
                                         {numberWithCommas(item.sumMemUsage) + ' Byte'}
                                     </div>
                                     <div>
-                                        <Progress style={{ width: '100%' }} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
-                                            percent={(item.sumMemUsage / _this.state.gridInstanceListMemMax) * 100}
-                                            strokeColor={'#29a1ff'} status={'normal'} />
+                                        <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10}
+                                                  showInfo={false}
+                                                  percent={(item.sumMemUsage / _this.state.gridInstanceListMemMax) * 100}
+                                                  strokeColor={'#29a1ff'} status={'normal'}/>
                                     </div>
 
                                 </div>
@@ -987,7 +1104,7 @@ export const makeNetworkLineChartData = (filteredNetworkUsageList, pHardwareType
 
     for (let i in filteredNetworkUsageList) {
         let seriesValues = filteredNetworkUsageList[i].values
-        instanceAppName = filteredNetworkUsageList[i].instance.AppName
+        instanceAppName = filteredNetworkUsageList[i].appName;
         let usageList = [];
 
         for (let j in seriesValues) {
@@ -1117,26 +1234,26 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
                 {/*todo:하단의 dot paging ..*/}
                 {/*todo:#####################..*/}
                 {cloudletListLength > 6 &&
-                    <div className='page_monitoring_pager_row'>
-                        {chunkedCloudletListOfColSize.map((item, index) => {
-                            return (
-                                <div
-                                    style={{ display: 'flex', margin: '0 5px' }}
-                                    onClick={() => {
-                                        _this.setState({
-                                            currentSixGridIndex: index,
-                                        })
-                                    }}
-                                >
-                                    {/*todo:#####################..*/}
-                                    {/*todo:선택된 index는 그린Color */}
-                                    {/*todo:#####################..*/}
-                                    <div className='page_monitoring_pager_btn'
-                                        style={{ backgroundColor: _this.state.currentSixGridIndex === index ? 'rgba(136,221,0,.9)' : 'rgba(255,255,255,.5)' }} />
-                                </div>
-                            )
-                        })}
-                    </div>
+                <div className='page_monitoring_pager_row'>
+                    {chunkedCloudletListOfColSize.map((item, index) => {
+                        return (
+                            <div
+                                style={{display: 'flex', margin: '0 5px'}}
+                                onClick={() => {
+                                    _this.setState({
+                                        currentSixGridIndex: index,
+                                    })
+                                }}
+                            >
+                                {/*todo:#####################..*/}
+                                {/*todo:선택된 index는 그린Color */}
+                                {/*todo:#####################..*/}
+                                <div className='page_monitoring_pager_btn'
+                                     style={{backgroundColor: _this.state.currentSixGridIndex === index ? 'rgba(136,221,0,.9)' : 'rgba(255,255,255,.5)'}}/>
+                            </div>
+                        )
+                    })}
+                </div>
                 }
 
             </Tabs>
