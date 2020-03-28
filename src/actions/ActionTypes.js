@@ -15,7 +15,7 @@ export const COMPUTE_ITEM = 'COMPUTE_ITEM';
 export const CLICK_CITY_LIST = 'CLICK_CITY_LIST';
 export const USER_INFO = 'USER_INFO';
 export const MAP_COORDINATES_LONG = 'MAP_COORDINATES_LONG';
-export const MAP_COORDINATES_LAT = 'MAP_COORDINATES_LAT';
+export const MAP_COORDINATES_LAT = 'SET_MAP_TYLE_LAYER';
 export const SHOW_USER_ROLE = 'SHOW_USER_ROLE';
 export const SHOW_FLAVOR = 'SHOW_FLAVOR';
 export const SELECT_ORG = 'SELECT_ORG';
@@ -47,3 +47,7 @@ export const STATE_STREAM = 'STATE_STREAM';
 export const RESET_MAP = 'RESET_MAP';
 export const SUBMIT_OBJ = 'SUBMIT_OBJ';
 export const CHANGE_NEXT = 'CHANGE_NEXT';
+
+export const SET_MAP_TYLE_LAYER = 'SET_MAP_TYLE_LAYER';
+export const SET_LINE_COLOR = 'LINE_COLOR';
+export const SET_CLOUDLET_ICON_COLOR = 'CLOUDLET_ICON_COLOR';

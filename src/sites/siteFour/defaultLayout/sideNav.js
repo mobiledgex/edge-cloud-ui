@@ -291,6 +291,7 @@ export default function MiniDrawer(props) {
                         [classes.drawerClose]: !open,
                     }),
                 }}
+                style={{zIndex:1}}
             >
                 <div className={classes.toolbar}>
                     <Image wrapped size='small' src='/assets/brand/logo_mex.svg' />

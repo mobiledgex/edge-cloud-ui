@@ -299,7 +299,7 @@ class App extends Component {
             self.props.mapDispatchToLoginWithPassword(storage_json)
         }
     }
-    
+
     UNSAFE_componentWillReceiveProps(nextProps) {
         // let props = nextProps;
         // if(nextProps.clickTab) {

@@ -85,30 +85,30 @@ export default class BubbleChart extends Component {
         //6097326EDC1269BA27527536405330
         let colorCodes = 'DE0000FF9600FFF6005BCB000096FF'
         if (this.props.themeTitle === THEME_OPTIONS.EUNDEW) {
-            let eundewColorCodes = 'DE0000FF9600FFF6005BCB000096FF'
+            let eundewColorCodes = 'DE0000FF9600FFF6005BCB000096FF00FFFF0080800000FF000080FF00FF800080800000808080808000'
             colorCodes = eundewColorCodes;
         }
-        if (this.props.themeTitle === THEME_OPTIONS.BLUE) {
-            let blueColorCodes = '65DEF1A8DCD1DCE2C8F96900F17F29'
+        if (this.props.themeTitle === THEME_OPTIONS.BLUE) {//#00FFFF#008080#0000FF#000080#FF00FF#800080#800000#808080#808000
+            let blueColorCodes = '65DEF1A8DCD1DCE2C8F96900F17F2900FFFF0080800000FF000080FF00FF800080800000808080808000'
             colorCodes = blueColorCodes;
         }
         if (this.props.themeTitle === THEME_OPTIONS.GREEN) {
-            let greenColorCodes = "008000d7fff1556B2F32CD328cd790"
+            let greenColorCodes = "008000d7fff1556B2F32CD328cd79000FFFF0080800000FF000080FF00FF800080800000808080808000"
             colorCodes = greenColorCodes;
         }
 
         if (this.props.themeTitle === THEME_OPTIONS.RED) {
-            let redColorCodes = 'FF0000FFBDAAD4826A802D15551300'
+            let redColorCodes = 'FF0000FFBDAAD4826A802D1555130000FFFF0080800000FF000080FF00FF800080800000808080808000'
             colorCodes = redColorCodes;
         }
 
         if (this.props.themeTitle === THEME_OPTIONS.MONOKAI) {
-            let monokaiColor = 'F92672FD971FA6E22EE6DB74A6E22E'
+            let monokaiColor = 'F92672FD971FA6E22EE6DB74A6E22E00FFFF0080800000FF000080FF00FF800080800000808080808000'
             colorCodes = monokaiColor;
         }
 
         if (this.props.themeTitle === THEME_OPTIONS.APPLE) {
-            let appleColors = '0A84FF30D158FF453AFF9F0AFF375F'
+            let appleColors = '0A84FF30D158FF453AFF9F0AFF375F00FFFF0080800000FF000080FF00FF800080800000808080808000'
             colorCodes = appleColors;
         }
 

@@ -45,7 +45,7 @@ import {
     NETWORK_OPTIONS,
     NETWORK_TYPE,
     RECENT_DATA_LIMIT_COUNT,
-    REGIONS_OPTIONS
+    REGIONS_OPTIONS, USER_TYPE
 } from "../../../../shared/Constants";
 import type {TypeAppInstance, TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeUtilization} from "../../../../shared/Types";
@@ -298,7 +298,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
 
                 //@fixme: realdata
-                let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
+                let appInstanceList: Array<TypeAppInstance> = await getAppInstList(['EU', 'US'], USER_TYPE.ADMIN);
 
                 appInstanceList.map(async (item: TypeAppInstance, index) => {
                     if (index === 0) {
@@ -336,14 +336,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 let allAppInstUsageList = [];
                 //@todo:realdata
                 try {
-                    allAppInstUsageList = await getAppLevelUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
+                    allAppInstUsageList = await getAppLevelUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime, USER_TYPE.ADMIN);
                 } catch (e) {
                     showToast(e.toString())
                 }
 
                 //fixme: fakedata
                 //allAppInstUsageList = require('./appAppLevelUsageList__all')
-                //console.log('allAppInstUsageList====>', allAppInstUsageList);
+                console.log('allAppInstUsageList====>', allAppInstUsageList);
 
 
                 //todo: MAKE SELECTBOX.
@@ -363,7 +363,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //todo: -------------------------------------------------------------
                 //todo: MAKE TOP5 INSTANCE LIST
                 //todo: -------------------------------------------------------------
-                let appInstanceListTop5 = makeSelectBoxListByClassification(cutArrayList(5, this.state.filteredAppInstUsageList), CLASSIFICATION.APP_NAME)
+
+                console.log("filteredAppInstUsageList===>", this.state.filteredAppInstUsageList);
+
+                let appInstanceListTop5 = makeSelectBoxListByClassification(cutArrayList(5, this.state.filteredAppInstUsageList), CLASSIFICATION.appName)
 
                 console.log('appInstanceListTop5====>', appInstanceListTop5);
 
@@ -814,7 +817,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        renderSelectBoxRow() {
+        renderDropdowns() {
             return (
                 <div className='page_monitoring_select_row'>
                     <div className='page_monitoring_select_area'>
@@ -828,6 +831,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                             <Dropdown
                                 disabled={this.state.loading}
+                                selectOnBlur={false}
                                 clearable={this.state.regionSelectBoxClearable}
                                 placeholder='REGION'
                                 selection
@@ -863,8 +867,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 CloudLet
                             </div>
                             <Dropdown
-                                style={{zIndex: 9999}}
+                                style={{zIndex: 9999, minWidth: 240}}
                                 disabled={this.state.loading}
+                                selectOnBlur={false}
                                 value={this.state.currentCloudLet}
                                 clearable={this.state.cloudLetSelectBoxClearable}
                                 loading={this.state.loading}
@@ -897,6 +902,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <Dropdown
                                 style={{zIndex: 9999}}
                                 disabled={this.state.loading}
+                                selectOnBlur={false}
                                 value={this.state.currentCluster}
                                 clearable={this.state.clusterSelectBoxClearable}
                                 disabled={this.state.currentCloudLet === '' || this.state.loading}
@@ -930,7 +936,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 App Inst
                             </div>
                             <Dropdown
-                                style={{zIndex: 9999}}
+                                selectOnBlur={false}
+                                style={{zIndex: 9999, minWidth: 290}}
                                 disabled={this.state.currentCluster === '' || this.state.loading}
                                 clearable={this.state.appInstSelectBoxClearable}
                                 loading={this.state.loading}
@@ -1095,7 +1102,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         {/*todo:---------------------------------*/}
                                         {/*todo:SELECTBOX_ROW        */}
                                         {/*todo:---------------------------------*/}
-                                        {this.renderSelectBoxRow()}
+                                        {this.renderDropdowns()}
 
                                         <div className='page_monitoring_dashboard'>
                                             {/*_____row____1*/}
@@ -1261,13 +1268,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*todo:---------------------------------*/}
                                                         {/*todo: BOTTOM APP INSTACE LIST         */}
                                                         {/*todo:---------------------------------*/}
-                                                        <div className='page_monitoring_popup_table'>
+                                                       {/* <div className=''>
                                                             {this.state.filteredGridInstanceList.length && this.state.isReady === 0 ?
                                                                 <div style={PageMonitoringStyles.noData}>
                                                                     NO DATA
                                                                 </div>
                                                                 : renderBottomGridArea(this)}
-                                                        </div>
+                                                        </div>*/}
                                                     </div>
                                                 </OutsideClickHandler>
                                             </ToggleDisplay>
