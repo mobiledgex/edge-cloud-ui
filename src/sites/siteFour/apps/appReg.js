@@ -121,6 +121,9 @@ class ClusterInstReg extends React.Component {
             if (form.field === fields.imageType) {
                 form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? 'Qcow' : 'Docker'
             }
+            else if (form.field === fields.imagePath) {
+                form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? 'https://artifactory.mobiledgex.net/artifactory/repo-NewDevOrg' : 'docker.mobiledgex.net/newdevorg/images/server-ping-threaded:5.0'
+            }
             else if (form.field === fields.scaleWithCluster) {
                 form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? true : false
             }
