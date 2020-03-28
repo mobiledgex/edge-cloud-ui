@@ -399,7 +399,7 @@ class ClustersMap extends Component {
             cloudletData.push({ "name": key, "coordinates": [groupbyClData[key][0]['LON'], groupbyClData[key][0]['LAT']], "population": 17843000, "cost": groupbyClData[key].length })
         })
         if (!_.isEqual(locationData, prevState.cities)) {
-            return { cities: locationData, center: zoomControls.center, zoom: 3};
+            return { cities: locationData, center: nextProps.locData ? prevState.center : zoomControls.center,zoom: nextProps.locData ? prevState.zoom : 3};
         }
         return null;
     }
