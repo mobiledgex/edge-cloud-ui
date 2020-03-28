@@ -10,7 +10,7 @@ import {
 } from "react-simple-maps"
 import { Button, Icon, List } from 'semantic-ui-react';
 import ContainerDimensions from 'react-container-dimensions';
-
+import _ from "lodash";
 import { Motion, spring } from "react-motion"
 import * as d3 from 'd3';
 import { scaleLinear } from "d3-scale"
@@ -306,8 +306,10 @@ class ClustersMap extends Component {
                     "population": 17843000,
                     "cost": 3
                 }]
-            
-            this.props.onMapClick(location)
+            if(this.props.onMapClick)
+            {
+                this.props.onMapClick(location)
+            }
             _self.setState({ cities: locationData, detailMode: false })
             _self.forceUpdate();
         }
@@ -396,9 +398,8 @@ class ClustersMap extends Component {
         Object.keys(groupbyClData).map((key) => {
             cloudletData.push({ "name": key, "coordinates": [groupbyClData[key][0]['LON'], groupbyClData[key][0]['LAT']], "population": 17843000, "cost": groupbyClData[key].length })
         })
-
-        if (locationData !== prevState.cities) {
-            return { cities: locationData };
+        if (!_.isEqual(locationData, prevState.cities)) {
+            return { cities: locationData, center: zoomControls.center, zoom: 3};
         }
         return null;
     }
