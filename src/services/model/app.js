@@ -68,6 +68,9 @@ export const getKey = (data, isCreate) => {
         if (data[fields.privacyPolicyName]) {
             app.default_privacy_policy = data[fields.privacyPolicyName]
         }
+        if (data[fields.accessType]) {
+            app.access_type = data[fields.accessType]
+        }
     }
     return ({
         region: data[fields.region],

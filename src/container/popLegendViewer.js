@@ -184,7 +184,7 @@ export default class PopLegendViewer extends React.Component {
         let { orgType } = this.state;
         return (
             <Modal style={{width: '450px'}} className="modal_role" open={this.state.open}>
-                <Modal.Header >Permission of Role</Modal.Header>
+                <Modal.Header >Permissions of Role</Modal.Header>
                 <Modal.Content scrolling>
                     <Modal.Description>
                         <Grid divided>
@@ -244,11 +244,11 @@ export default class PopLegendViewer extends React.Component {
                                             </Table.Cell>
                                         </Table.Row>
                                         <Table.Row>
-                                            <Table.Cell>Flavor</Table.Cell>
+                                            <Table.Cell>Flavors</Table.Cell>
                                             <Table.Cell>{this.getUserRole('Flavor')}</Table.Cell>
                                         </Table.Row>
                                         <Table.Row>
-                                            <Table.Cell>Cluster Instance</Table.Cell>
+                                            <Table.Cell>Cluster Instances</Table.Cell>
                                             <Table.Cell>{this.getUserRole('Cluster Instance')}</Table.Cell>
                                         </Table.Row>
                                         <Table.Row>
@@ -256,7 +256,7 @@ export default class PopLegendViewer extends React.Component {
                                             <Table.Cell>{this.getUserRole('Apps')}</Table.Cell>
                                         </Table.Row>
                                         <Table.Row>
-                                            <Table.Cell>App Instance</Table.Cell>
+                                            <Table.Cell>App Instances</Table.Cell>
                                             <Table.Cell>{this.getUserRole('App Instance')}</Table.Cell>
                                         </Table.Row>
                                     </Table.Body>

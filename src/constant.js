@@ -56,6 +56,20 @@ export const accessType = (id) => {
     }
 }
 
+export const imageType = (id) => {
+    switch (id) {
+        case 1:
+            return 'Qcow'
+        case 'Qcow':
+            return 1
+        case 3:
+            return 'Docker'
+        case 'Docker':
+            return 3
+    }
+}
+
+
 export const IPSupport = (id) => {
     switch (id) {
         case 2:
