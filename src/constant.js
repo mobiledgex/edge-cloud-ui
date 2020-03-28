@@ -8,6 +8,10 @@ export const DELETE_ORGANIZATION = 'DeleteOrganization'
 export const DEPLOYMENT_TYPE_DOCKER = 'docker';
 export const DEPLOYMENT_TYPE_KUBERNETES = 'kubernetes';
 export const DEPLOYMENT_TYPE_VM = 'VM';
+export const DEPLOYMENT_TYPE_HELM = 'helm';
+export const ACCESS_TYPE_DEFAULT_FOR_DEPLOYMENT = 'Default For Deployment';
+export const ACCESS_TYPE_DIRECT = 'Direct';
+export const ACCESS_TYPE_LOAD_BALANCER = 'Load Balancer';
 export const IP_ACCESS_DEDICATED = 'Dedicated';
 export const IP_ACCESS_SHARED = 'Shared';
 export const DELETE = 'Delete'
@@ -32,6 +36,23 @@ export const IPAccessLabel = (id) => {
             return 1
         case 'Shared':
             return 3
+    }
+}
+
+export const accessType = (id) => {
+    switch (id) {
+        case 0:
+            return ACCESS_TYPE_DEFAULT_FOR_DEPLOYMENT
+        case 1:
+            return ACCESS_TYPE_DIRECT
+        case 2:
+            return ACCESS_TYPE_LOAD_BALANCER
+        case ACCESS_TYPE_DEFAULT_FOR_DEPLOYMENT:
+            return 0
+        case ACCESS_TYPE_DIRECT:
+            return 1
+        case ACCESS_TYPE_LOAD_BALANCER:
+            return 2
     }
 }
 

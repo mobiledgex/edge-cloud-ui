@@ -54,7 +54,7 @@ class AppInstList extends React.Component {
                 {
                     app_key:
                     {
-                        developer_key: { name: data[fields.organizationName] },
+                        organization:  data[fields.organizationName],
                         name: data[fields.appName],
                         version: data[fields.version]
                     },
