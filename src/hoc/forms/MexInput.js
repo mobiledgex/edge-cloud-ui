@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Icon, Popup, Input } from 'semantic-ui-react';
+import { Icon, Popup, Input } from 'semantic-ui-react';
 const MexInput = (props) => {
 
     let form = props.form
