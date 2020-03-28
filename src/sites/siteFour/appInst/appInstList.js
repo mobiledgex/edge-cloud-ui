@@ -11,7 +11,6 @@ import AppInstReg from './appInstReg';
 import * as constant from '../../../services/model/shared';
 import TerminalViewer from '../../../container/TerminalViewer';
 import * as serviceMC from '../../../services/serviceMC';
-import { Modal } from 'semantic-ui-react';
 import { Dialog } from '@material-ui/core';
 
 class AppInstList extends React.Component {
