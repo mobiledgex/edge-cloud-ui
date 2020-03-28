@@ -2,7 +2,10 @@ export const toJson = (data) => {
     let toJson = []
     if (data) {
         if (typeof data === 'object') {
-            toJson = data.length>0 ? data : [data]
+            if(data)
+            {
+                toJson = Array.isArray(data) ? data : [data]
+            }
         } else {
             let toArray = data.split('\n')
             toArray.pop();
