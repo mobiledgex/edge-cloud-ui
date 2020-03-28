@@ -24,6 +24,8 @@ export const keys = [
     { field: fields.officialFQDN, serverField: 'official_fqdn', label: 'Official FQDN' },
     { field: fields.androidPackageName, serverField: 'android_package_name', label: '' },
     { field: fields.revision, serverField: 'revision', label: 'Revision' },
+    { field: fields.autoPolicyName, serverField: 'auto_prov_policy', label: 'Auto Provisioning Policy' },
+    { field: fields.privacyPolicyName, serverField: 'default_privacy_policy', label: 'Default Privacy Policy' },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
 
@@ -59,6 +61,12 @@ export const getKey = (data, isCreate) => {
         }
         if (data[fields.command]) {
             app.deployment_manifest = data[fields.deploymentManifest]
+        }
+        if (data[fields.autoPolicyName]) {
+            app.auto_prov_policy = data[fields.autoPolicyName]
+        }
+        if (data[fields.privacyPolicyName]) {
+            app.default_privacy_policy = data[fields.privacyPolicyName]
         }
     }
     return ({
