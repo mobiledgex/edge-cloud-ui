@@ -8,9 +8,9 @@ import MexForms, { SELECT, DUALLIST } from '../../../../hoc/forms/MexForms';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import * as serverData from '../../../../services/model/serverData';
-import { fields } from '../../../../services/model/format';
+import { fields, getOrganization } from '../../../../services/model/format';
 
-import { showOrganizations } from '../../../../services/model/organization';
+import { getOrganizationList } from '../../../../services/model/organization';
 import { showCloudlets } from '../../../../services/model/cloudlet';
 import { createAutoProvPolicy, addAutoProvCloudletKey, deleteAutoProvCloudletKey } from '../../../../services/model/autoProvisioningPolicy';
 
@@ -250,11 +250,11 @@ class AutoProvPolicyReg extends React.Component {
             this.selectCloudlet(data)
         }
         else {
-            this.organizationList = await serverData.showDataFromServer(this, showOrganizations());
+            this.organizationList = await getOrganizationList(this);
             let forms = [
                 { label: 'Create Auto Provisioning Policy', formType: 'Header', visible: true },
                 { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
-                { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: true }, visible: true },
+                { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true },
                 { field: fields.autoPolicyName, label: 'Auto Policy Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { required: true }, visible: true },
                 { field: fields.deployClientCount, label: 'Deploy Client Count', formType: 'Input', rules: { type: 'number', required: true }, visible: true, dataValidateFunc: this.validatedeployClientCount },
                 { field: fields.deployIntervalCount, label: 'Deploy Interval Count (s)', formType: 'Input', rules: { type: 'number' }, visible: true },

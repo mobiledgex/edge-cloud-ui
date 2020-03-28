@@ -6,7 +6,7 @@ import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX } from '../../.
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
-import { fields } from '../../../services/model/format';
+import { fields, getOrganization } from '../../../services/model/format';
 //model
 import { getOrganizationList } from '../../../services/model/organization';
 import { getCloudletList } from '../../../services/model/cloudlet';
@@ -139,7 +139,7 @@ class ClusterInstReg extends React.Component {
         return [
             { label: 'App Instances', formType: 'Header', visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
-            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: true, disabled: false }, visible: true, tip: 'Organization or Company Name that a Developer is part of' },
+            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of' },
             { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
             { field: fields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: true }, visible: true, dependentData: [{ index: 3, field: fields.appName }] },
             { field: fields.operatorName, label: 'Operator', formType: 'Select', placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
