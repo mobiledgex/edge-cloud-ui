@@ -1,10 +1,9 @@
 export const layout = {
   backgroundColor: 'black',
-  marginTop:'20%',
+  marginTop:'10%',
   textAlign: "center"
 }
 export const container = {
-  lineHeight: 1.5,
   height:'100%',
   display: 'inline-block',
   verticalAlign: "middle"
@@ -12,7 +11,7 @@ export const container = {
 export const optionBody = {
   backgroundColor: 'black',
   borderColor: 'white',
-  padding: 30,
+  padding: 20,
   width: '50%'
 }
 export const label = {
@@ -26,7 +25,7 @@ export const cmdLine = {
   border:'solid 1px',
   borderRadius: '5px',
   borderColor: 'white',
-  minWidth:200,
+  width:200,
   backgroundColor: 'black',
   height:'35px',
 }
