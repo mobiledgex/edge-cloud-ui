@@ -68,7 +68,7 @@ export const showClusterInsts = (data) => {
         {
             data.clusterinst = {
                 key: {
-                    developer: formatter.getOrganization()
+                    organization: formatter.getOrganization()
                 }
             }
         }
