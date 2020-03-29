@@ -1,6 +1,6 @@
 import * as formatter from './format'
 import uuid from 'uuid'
-import { TYPE_JSON } from '../../constant'
+import * as constant from '../../constant'
 import * as serverData from './serverData'
 import { SHOW_APP_INST, CREATE_APP_INST, UPDATE_APP_INST, DELETE_APP_INST, STREAM_APP_INST, SHOW_APP } from './endPointTypes'
 
@@ -13,17 +13,17 @@ export const keys = [
   { field: fields.version, serverField: 'key#OS#app_key#OS#version', label: 'Version', visible: true },
   { field: fields.operatorName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: true },
   { field: fields.cloudletName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: true },
-  { field: fields.cloudletLocation, serverField: 'cloudlet_loc', label: 'Cloudlet Location', dataType: TYPE_JSON },
+  { field: fields.cloudletLocation, serverField: 'cloudlet_loc', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
   { field: fields.clusterName, serverField: 'key#OS#cluster_inst_key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster Instance', visible: true },
   { field: fields.deployment, label: 'Deployment', sortable: true, visible: true },
   { field: fields.uri, serverField: 'uri', label: 'URI' },
   { field: fields.liveness, serverField: 'liveness', label: 'Liveness' },
-  { field: fields.mappedPorts, serverField: 'mapped_ports', label: 'Mapped Port', dataType: TYPE_JSON },
+  { field: fields.mappedPorts, serverField: 'mapped_ports', label: 'Mapped Port', dataType: constant.TYPE_JSON },
   { field: fields.flavorName, serverField: 'flavor#OS#name', label: 'Flavor' },
   { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
-  { field: fields.runtimeInfo, serverField: 'runtime_info', label: 'Runtime', dataType: TYPE_JSON },
-  { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: TYPE_JSON },
-  { field: fields.status, serverField: 'status', label: 'Status', dataType: TYPE_JSON },
+  { field: fields.runtimeInfo, serverField: 'runtime_info', label: 'Runtime', dataType: constant.TYPE_JSON },
+  { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_JSON },
+  { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
   { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
 
@@ -104,6 +104,7 @@ export const streamAppInst = (data) => {
 }
 
 const customData = (value) => {
+  value[fields.liveness] = constant.liveness(value[fields.liveness])
 }
 
 export const getData = (response, body) => {

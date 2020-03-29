@@ -19,6 +19,9 @@ export const SELECT = 'Select'
 export const CLOUDLET = 'Cloudlet'
 export const CLUSTER_INST = 'ClusterInst'
 export const APP_INST = 'AppInst'
+export const PLATFORM_TYPE_OPEN_STACK = 'Openstack'
+export const IP_SUPPORT_DYNAMIC = 'Dynamic'
+export const LIVENESS_STATIC = 'Static'
 export const APP = 'App'
 export const YES = 'YES'
 
@@ -36,6 +39,8 @@ export const IPAccessLabel = (id) => {
             return 1
         case 'Shared':
             return 3
+        default:
+            return id
     }
 }
 
@@ -53,6 +58,8 @@ export const accessType = (id) => {
             return 1
         case ACCESS_TYPE_LOAD_BALANCER:
             return 2
+        default:
+            return id
     }
 }
 
@@ -66,6 +73,8 @@ export const imageType = (id) => {
             return 'Docker'
         case 'Docker':
             return 3
+        default:
+            return id
     }
 }
 
@@ -73,9 +82,11 @@ export const imageType = (id) => {
 export const IPSupport = (id) => {
     switch (id) {
         case 2:
-            return 'Dynamic'
-        case 'Dynamic':
+            return IP_SUPPORT_DYNAMIC
+        case IP_SUPPORT_DYNAMIC:
             return 2
+        default:
+            return id
     }
 }
 
@@ -83,16 +94,28 @@ export const IPSupport = (id) => {
 export const PlatformType = (id) => {
     switch (id) {
         case 2:
-            return 'Openstack'
-        case 'Openstack':
+            return PLATFORM_TYPE_OPEN_STACK
+        case PLATFORM_TYPE_OPEN_STACK:
             return 2
+        default:
+            return id
+    }
+}
+
+export const liveness = (id) => {
+    switch (id) {
+        case 1:
+            return LIVENESS_STATIC
+        case LIVENESS_STATIC:
+            return 1
+        default:
+            return id
     }
 }
 
 
 export const getTip = (field) => {
-    switch(field)
-    {
+    switch (field) {
         case fields.region:
             return 'Select region where you want to deploy.'
         case fields.organizationName:
