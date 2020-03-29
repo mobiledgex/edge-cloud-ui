@@ -242,7 +242,7 @@ const MexForms = (props) => {
 
     const showTip = (form) => {
         return (
-            <Tooltip title={form.tip} aria-label="tip">
+            <Tooltip title={form.tip.split('\n').map((info)=>{return <strong>{info}<br/></strong>})} aria-label="tip">
                 {getIcon('help')}
             </Tooltip>
         )

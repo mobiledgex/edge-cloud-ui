@@ -1,6 +1,7 @@
 import * as formatter from './format'
 import uuid from 'uuid'
 import * as serverData from './serverData'
+import * as constant from '../../constant'
 import { TYPE_JSON } from '../../constant';
 import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, CREATE_CLOUDLET, STREAM_CLOUDLET, DELETE_CLOUDLET, SHOW_CLOUDLET_INFO } from './endPointTypes'
 
@@ -14,10 +15,20 @@ export const getKey = (data, isCreate) => {
     }
     if (isCreate) {
         cloudlet.location = data[fields.cloudletLocation]
-        cloudlet.ip_support = data[fields.ipSupport]
         cloudlet.num_dynamic_ips = parseInt(data[fields.numDynamicIPs])
         cloudlet.physical_name = data[fields.physicalName]
-        cloudlet.platform_type = data[fields.platformType]
+        cloudlet.ip_support = constant.IPSupport(data[fields.ipSupport])
+        cloudlet.platform_type = constant.PlatformType(data[fields.platformType])
+        let accessvars = {}
+        if (data[fields.openRCData]) {
+            accessvars.OPENRC_DATA = data[fields.openRCData]
+        }
+        if (data[fields.caCertdata]) {
+            accessvars.CACERT_DATA = data[fields.caCertdata]
+        }
+        if (data[fields.openRCData] || data[fields.openRCData]) {
+            cloudlet.accessvars = accessvars
+        }
     }
     return ({
         region: data[fields.region],
@@ -103,6 +114,8 @@ export const keys = [
     { field: fields.numDynamicIPs, serverField: 'num_dynamic_ips', label: 'Number of Dynamic IPs' },
     { field: fields.physicalName, serverField: 'physical_name', label: '	Physical Name' },
     { field: fields.platformType, serverField: 'platform_type', label: 'Platform Type' },
+    { field: fields.openRCData, serverField: 'accessvars#OS#OPENRC_DATA', label: 'Open RC Data' },
+    { field: fields.caCertdata, serverField: 'accessvars#OS#CACERT_DATA', label: 'CA Cert Data' },
     { field: fields.cloudletStatus, label: 'Cloudlet Status', visible: true },
     { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
     { field: fields.status, serverField: 'status', label: 'Status', dataType: TYPE_JSON },
@@ -111,6 +124,7 @@ export const keys = [
 
 const customData = (value) => {
     value[fields.cloudletStatus] = 4
+    value[fields.platformType] = constant.PlatformType(value[fields.platformType])
 }
 
 export const getData = (response, body) => {
