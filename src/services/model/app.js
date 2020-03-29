@@ -134,6 +134,8 @@ const newLineToJsonObject = (data) => {
 }
 const customData = (value) => {
     value[fields.deploymentManifest] = newLineToJsonObject(value[fields.deploymentManifest])
+    value[fields.accessType] = constant.accessType(value[fields.accessType])
+    value[fields.imageType] = constant.imageType(value[fields.imageType])
 }
 
 export const getData = (response, body) => {

@@ -96,7 +96,9 @@ export const fields = {
     manage: 'manage',
     poolName:'poolName',
     clusterinst:'clusterinst',
-    container_ids:'container_ids'
+    container_ids:'container_ids',
+    openRCData:'openRCData',
+    caCertdata:'caCertdata'
 
 }
 
