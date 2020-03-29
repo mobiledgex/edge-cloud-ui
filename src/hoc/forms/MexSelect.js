@@ -111,7 +111,7 @@ const MexSelect = (props) => {
             options={getData(form)} 
             onChange={(e, { value }) => onSelected(value)}
             value={selected}
-            style={{height:35}}/>
+            style={{height:38, lineHeight:1.5}}/>
     )
 
     return (
