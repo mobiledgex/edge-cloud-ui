@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
-import { Form, Popup, Icon } from 'semantic-ui-react';
+import React, { useState, useRef } from 'react'
+import { Form, Popup, Icon, Button, Dropdown } from 'semantic-ui-react';
 
 
 const MexSelect = (props) => {
 
     let form = props.form;
-
+    const refSelect = useRef(null);
     const [selected, setSelected] = useState(props.form.value ? props.form.value : null)
 
     //Filter data based on dependData definition for given form
@@ -67,10 +67,10 @@ const MexSelect = (props) => {
     }
 
     const onSelected = (value) => {
+        form.error = undefined
         setSelected(value)
         props.onChange(form, value)
     }
-
 
     const getBasicForm = () => (
         <select style={form.style}
@@ -85,19 +85,33 @@ const MexSelect = (props) => {
             }
         </select>
     )
+
+    const getIcon = ()=>
+    {
+        let style ={ marginRight: 10, position: 'absolute', right: '0px' }
+        return (
+            form.error ? 
+                <Icon color='red' name='times circle outline' style={style} /> : undefined
+        )
+    }
     const getForm = () => (
         form.style ?
             getBasicForm() :
-            <Form.Select
-                icon={form.error ? <Icon color='red' name='times circle outline' style={{ marginRight: 10, position: 'absolute', right: '0px' }} /> : null}
-                placeholder={form.placeholder ? form.placeholder : null}
-                label={props.label ? props.label : null}
-                required={props.required}
-                disabled={props.disabled}
-                options={getData(form)}
-                onChange={(e, { value }) => onSelected(value)}
-                value={selected}
-            />
+            <Dropdown 
+            ref = {refSelect}
+            clearable 
+            fluid
+            search
+            icon={getIcon()}
+            placeholder={form.placeholder ? form.placeholder : null}
+            label={props.label ? props.label : null}
+            selection 
+            required={props.required}
+            disabled={props.disabled}
+            options={getData(form)} 
+            onChange={(e, { value }) => onSelected(value)}
+            value={selected}
+            style={{height:35}}/>
     )
 
     return (
