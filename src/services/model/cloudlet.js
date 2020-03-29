@@ -7,25 +7,22 @@ import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, CREATE_CLOUDLET, STREAM_CLOUDLET, DEL
 const fields = formatter.fields;
 
 export const getKey = (data, isCreate) => {
-    if (data) {
-        let cloudlet = {}
-        cloudlet.key = {
-            organization: data[fields.operatorName],
-            name: data[fields.cloudletName]
-        }
-        if (isCreate) {
-            cloudlet.location = data[fields.cloudletLocation]
-            cloudlet.ip_support = data[fields.ipSupport]
-            cloudlet.num_dynamic_ips = parseInt(data[fields.numDynamicIPs])
-            cloudlet.physical_name = data[fields.physicalName]
-            cloudlet.platform_type = data[fields.platformType]
-        }
-        return ({
-            region: data[fields.region],
-            cloudlet: cloudlet
-        })
+    let cloudlet = {}
+    cloudlet.key = {
+        organization: data[fields.operatorName],
+        name: data[fields.cloudletName]
     }
-    return {}
+    if (isCreate) {
+        cloudlet.location = data[fields.cloudletLocation]
+        cloudlet.ip_support = data[fields.ipSupport]
+        cloudlet.num_dynamic_ips = parseInt(data[fields.numDynamicIPs])
+        cloudlet.physical_name = data[fields.physicalName]
+        cloudlet.platform_type = data[fields.platformType]
+    }
+    return ({
+        region: data[fields.region],
+        cloudlet: cloudlet
+    })
 }
 
 export const multiDataRequest = (keys, mcRequestList) => {

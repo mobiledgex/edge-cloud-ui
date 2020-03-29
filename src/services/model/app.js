@@ -1,6 +1,7 @@
 import * as formatter from './format'
 import { TYPE_JSON } from '../../constant';
 import * as serverData from './serverData'
+import * as constant from '../../constant'
 import { SHOW_APP, CREATE_APP, UPDATE_APP, DELETE_APP } from './endPointTypes'
 
 let fields = formatter.fields
@@ -42,7 +43,7 @@ export const getKey = (data, isCreate) => {
     if (isCreate) {
         app.scale_with_cluster = data[fields.scaleWithCluster]
         app.deployment = data[fields.deployment]
-        app.image_type = data[fields.imageType]
+        app.image_type = constant.imageType(data[fields.imageType])
         app.image_path = data[fields.imagePath]
         if (data[fields.accessPorts]) {
             app.access_ports = data[fields.accessPorts]
@@ -69,7 +70,7 @@ export const getKey = (data, isCreate) => {
             app.default_privacy_policy = data[fields.privacyPolicyName]
         }
         if (data[fields.accessType]) {
-            app.access_type = data[fields.accessType]
+            app.access_type = constant.accessType(data[fields.accessType])
         }
     }
     return ({

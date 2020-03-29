@@ -10,14 +10,11 @@ export const keys = [
 ]
 
 const getKey = (data) => {
-    if (data) {
         return ({
             region: data[fields.region],
             cloudletpool: data[fields.poolName],
             org: data[fields.organizationName]
         })
-    }
-    return {}
 }
 
 export const showCloudletLinkOrg = (data) => {

@@ -12,14 +12,11 @@ export const keys = [
 ]
 
 export const getKey = (data) => {
-    if (data) {
-        return ({
-            org: data[fields.organizationName],
-            username: data[fields.username],
-            role: data[fields.role]
-        })
-    }
-    return {}
+    return ({
+        org: data[fields.organizationName],
+        username: data[fields.username],
+        role: data[fields.role]
+    })
 }
 
 export const showUsers = (data) => {

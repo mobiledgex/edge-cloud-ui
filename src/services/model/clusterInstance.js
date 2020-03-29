@@ -77,36 +77,33 @@ export const showClusterInsts = (data) => {
 }
 
 export const clusterKey = (data, isCreate) => {
-    if (data) {
-        let clusterinst = {}
-        clusterinst.key = {
-            cluster_key: { name: data[fields.clusterName] },
-            cloudlet_key: { organization: data[fields.operatorName], name: data[fields.cloudletName] },
-            organization: data[fields.organizationName]
-        }
-        clusterinst.flavor = { name: data[fields.flavorName] }
-        if (isCreate) {
-            clusterinst.deployment = data[fields.deployment]
-            if (data[fields.ipAccess]) {
-                clusterinst.ip_access = parseInt(IPAccessLabel(data[fields.ipAccess]))
-            }
-            clusterinst.reservable = data[fields.reservable]
-            if (data[fields.reservedBy]) {
-                clusterinst.reserved_by = data[fields.reservedBy]
-            }
-            if (data[fields.numberOfMasters]) {
-                clusterinst.num_masters = parseInt(data[fields.numberOfMasters])
-            }
-            if (data[fields.numberOfNodes]) {
-                clusterinst.num_nodes = parseInt(data[fields.numberOfNodes])
-            }
-        }
-        return ({
-            region: data[fields.region],
-            clusterinst: clusterinst
-        })
+    let clusterinst = {}
+    clusterinst.key = {
+        cluster_key: { name: data[fields.clusterName] },
+        cloudlet_key: { organization: data[fields.operatorName], name: data[fields.cloudletName] },
+        organization: data[fields.organizationName]
     }
-    return {}
+    clusterinst.flavor = { name: data[fields.flavorName] }
+    if (isCreate) {
+        clusterinst.deployment = data[fields.deployment]
+        if (data[fields.ipAccess]) {
+            clusterinst.ip_access = parseInt(IPAccessLabel(data[fields.ipAccess]))
+        }
+        clusterinst.reservable = data[fields.reservable]
+        if (data[fields.reservedBy]) {
+            clusterinst.reserved_by = data[fields.reservedBy]
+        }
+        if (data[fields.numberOfMasters]) {
+            clusterinst.num_masters = parseInt(data[fields.numberOfMasters])
+        }
+        if (data[fields.numberOfNodes]) {
+            clusterinst.num_nodes = parseInt(data[fields.numberOfNodes])
+        }
+    }
+    return ({
+        region: data[fields.region],
+        clusterinst: clusterinst
+    })
 }
 
 export const getClusterInstList = async (self, data) => {

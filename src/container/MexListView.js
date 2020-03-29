@@ -141,17 +141,19 @@ class MexListView extends React.Component {
     onDelete = async (action) => {
         let dataList = this.state.dataList
         let data = dataList[this.selectedRowIndex]
-        if (action.ws) {
-            this.wsResponseCount = 0
-            this.props.handleLoadingSpinner(true);
-            serverData.sendWSRequest(action.onClick(data), this.onDeleteWSResponse)
-        }
-        else {
-            let mcRequest = await serverData.sendRequest(this, action.onClick(data))
-            if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-                this.props.handleAlertInfo('success', `${mcRequest.request.success} deleted successfully`)
-                dataList.splice(this.selectedRowIndex, 1)
-                this.setState({ dataList: dataList })
+        if (data) {
+            if (action.ws) {
+                this.wsResponseCount = 0
+                this.props.handleLoadingSpinner(true);
+                serverData.sendWSRequest(action.onClick(data), this.onDeleteWSResponse)
+            }
+            else {
+                let mcRequest = await serverData.sendRequest(this, action.onClick(data))
+                if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
+                    this.props.handleAlertInfo('success', `${mcRequest.request.success} deleted successfully`)
+                    dataList.splice(this.selectedRowIndex, 1)
+                    this.setState({ dataList: dataList })
+                }
             }
         }
     }
