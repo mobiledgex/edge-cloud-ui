@@ -1,0 +1,4 @@
+EDGECLOUD-1942 [WebUI-Monitoring] RECV BYTES and SEND BYTES metrics graph is not working 
+EDGECLOUD-2059 [WebUI- Monitoring] TCP metrics shows twice the amount for TCPCONNS and TCPRETRANS than what it actually collects in influxDB  ￼
+EDGECLOUD-2054 [WebUI- Monitoring] UDP metrics shows twice the amount for UDPSENT and UDPRECV than what it actually collects in influxDB ASSIGNED
+EDGECLOUD-2042
