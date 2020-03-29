@@ -28,22 +28,19 @@ export const keys = [
 ]
 
 export const getKey = (data, isCreate) => {
-  if (data) {
-    return ({
-      region: data[fields.region],
-      appinst: {
-        key: {
-          app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] },
-          cluster_inst_key: {
-            cloudlet_key: { name: data[fields.cloudletName], organization: data[fields.operatorName] },
-            cluster_key: { name: data[fields.clusterName] },
-            organization: data[fields.organizationName]
-          }
-        },
-      }
-    })
-  }
-  return {}
+  return ({
+    region: data[fields.region],
+    appinst: {
+      key: {
+        app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] },
+        cluster_inst_key: {
+          cloudlet_key: { name: data[fields.cloudletName], organization: data[fields.operatorName] },
+          cluster_key: { name: data[fields.clusterName] },
+          organization: data[fields.organizationName]
+        }
+      },
+    }
+  })
 }
 
 export const multiDataRequest = (keys, mcRequestList) => {

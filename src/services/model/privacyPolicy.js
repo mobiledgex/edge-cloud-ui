@@ -23,16 +23,13 @@ export const keys = [
 ]
 
 const getKey = (data) => {
-  if (data) {
-    return {
-      region: data[fields.region],
-      privacypolicy: {
-        key: { organization: data[fields.organizationName], name: data[fields.privacyPolicyName] },
-        outbound_security_rules: data[fields.outboundSecurityRules]
-      }
+  return {
+    region: data[fields.region],
+    privacypolicy: {
+      key: { organization: data[fields.organizationName], name: data[fields.privacyPolicyName] },
+      outbound_security_rules: data[fields.outboundSecurityRules]
     }
   }
-  return {}
 }
 
 
