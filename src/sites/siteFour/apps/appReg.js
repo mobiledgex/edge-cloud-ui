@@ -225,14 +225,6 @@ class ClusterInstReg extends React.Component {
                     }
                     data[uuid] = undefined
                 }
-                else if(form.field === fields.imageType)
-                {
-                    data[fields.imageType] = constant.imageType(data[fields.imageType])
-                }
-                else if(form.field === fields.accessType)
-                {
-                    data[fields.accessType] = constant.accessType(data[fields.accessType])
-                }
             }
             if (ports.length > 0) {
                 data[fields.accessPorts] = ports
