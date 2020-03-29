@@ -83,6 +83,10 @@ export const showCloudlets = (data) => {
     return { method: method, data: data }
 }
 
+export const showOrgCloudlets = (data) => {
+    return { method: SHOW_ORG_CLOUDLET, data: data }
+}
+
 export const createCloudlet = (data, callback) => {
     let requestData = getKey(data, true)
     let request = { uuid: data.uuid ? data.uuid : uuid(), method: CREATE_CLOUDLET, data: requestData }
@@ -91,6 +95,10 @@ export const createCloudlet = (data, callback) => {
 
 export const getCloudletList = async (self, data) => {
     return await serverData.showDataFromServer(self, showCloudlets(data))
+}
+
+export const getOrgCloudletList = async (self, data) => {
+    return await serverData.showDataFromServer(self, showOrgCloudlets(data))
 }
 
 export const deleteCloudlet = (data) => {
