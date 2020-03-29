@@ -215,23 +215,62 @@ export const NETWORK_OPTIONS2 = [
 ]
 
 export const APP_INST_MATRIX_HW_USAGE_INDEX = {
+/*
+   /*
+    0: "time"
+    1: "app"
+    2: "ver"
+    3: "pod"
+    4: "cluster"
+    5: "clusterorg"
+    6: "cloudlet"
+    7: "cloudletorg"
+    8: "apporg"
+    9: "pod_1"
+    10: "cpu"
+    11: "mem"
+    12: "disk"
+    13: "sendBytes"
+    14: "recvBytes"
+    15: "port"
+    16: "active"
+    17: "handled"
+    18: "accepts"
+    19: "bytesSent"
+    20: "bytesRecvd"
+    21: "P0"
+    22: "P25"
+    23: "P50"
+    24: "P75"
+    25: "P90"
+    26: "P95"
+    27: "P99"
+    28: "P99.5"
+    29: "P99.9"
+    30: "P100"
+ */
     TIME: 0,
     APP: 1,
-    CLUSTER: 2,
     DEV: 3,
-    CLOUDLET: 4,
-    OPERATOR: 5,
-    CPU: 6,
-    MEM: 7,
-    DISK: 8,
-    SENDBYTES: 9,
-    RECVBYTES: 10,
-    PORT: 11,
-    ACTIVE: 12,
-    HANDLED: 13,
-    ACCEPTS: 14,
-    BYTESSENT: 15,
-    BYTESRECVD: 16,
+    CLUSTER: 4,
+    OPERATOR: 8,
+    CLOUDLET: 6,
+    /*CPU: 10,
+    MEM: 11,
+    DISK: 12,*/
+
+    CPU: 16,
+    MEM: 17,
+    DISK: 18,
+
+    SENDBYTES: 13,
+    RECVBYTES: 14,
+    PORT: 15,
+    ACTIVE: 16,
+    HANDLED: 17,
+    ACCEPTS: 18,
+    BYTESSENT: 19,
+    BYTESRECVD: 20,
 }
 
 export const USAGE_INDEX = {

@@ -414,6 +414,8 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
         console.log("usageListForAllInstance===>", usageListForAllInstance);
 
+
+
         let allUsageList = []
         usageListForAllInstance.map((item, index) => {
             let appName = item.instanceData.AppName
@@ -470,6 +472,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
                     if (series["0"] !== undefined) {
                         let networkSeries = series["0"]
+                        columns = networkSeries.columns;
                         networkSeriesValue = networkSeries.values;
                         networkSeries.values.map(item => {
                             let sendBytesOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.SENDBYTES];//sendBytesOne
@@ -505,11 +508,11 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                         sumActiveConnection: Math.ceil(sumActiveConnection / RECENT_DATA_LIMIT_COUNT),
                         sumHandledConnection: Math.ceil(sumHandledConnection / RECENT_DATA_LIMIT_COUNT),
                         sumAcceptsConnection: Math.ceil(sumAcceptsConnection / RECENT_DATA_LIMIT_COUNT),
-                        cpuSeriesValue: cpuSeriesValue,
-                        memSeriesValue: memSeriesValue,
-                        diskSeriesValue: diskSeriesValue,
+                        cpuSeriesValue: networkSeriesValue,
+                        memSeriesValue: networkSeriesValue,
+                        diskSeriesValue: networkSeriesValue,
                         networkSeriesValue: networkSeriesValue,
-                        connectionsSeriesValue: connectionsSeriesValue,
+                        connectionsSeriesValue: networkSeriesValue,
 
                     })
 

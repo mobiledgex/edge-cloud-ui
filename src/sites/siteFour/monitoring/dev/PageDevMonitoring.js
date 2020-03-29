@@ -849,12 +849,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             });
 
             let allUsageList = allClusterUsageList;
-            console.log('handleClusterDropdown===>', allClusterUsageList)
             let filteredClusterUsageList = []
-
-            console.log("handleClusterDropdown===selectedCluster>", selectedCluster);
-            console.log("handleClusterDropdown===selectedCloudlet>", selectedCloudlet);
-
             allUsageList.map(item => {
                 if (item.cluster === selectedCluster && item.cloudlet === selectedCloudlet) {
                     filteredClusterUsageList.push(item)
@@ -863,8 +858,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 filteredClusterUsageList: filteredClusterUsageList,
             })
-
-            console.log("handleClusterDropdown===>", filteredClusterUsageList);
 
             let allClusterEventLogList = this.state.allClusterEventLogList
             let filteredClusterEventLogList = []
