@@ -1,6 +1,7 @@
 import { fields } from "./services/model/format"
 
 export const TYPE_JSON = 'JSON'
+export const TYPE_JSON_NEW_LINE = 'JSON_NEW_LINE'
 export const ADD_CLOUDLET = 'AddCloudlet'
 export const DELETE_CLOUDLET = 'DeleteCloudlet'
 export const ADD_ORGANIZATION = 'AddOrganization'

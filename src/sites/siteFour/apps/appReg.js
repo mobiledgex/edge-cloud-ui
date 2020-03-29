@@ -305,7 +305,6 @@ class ClusterInstReg extends React.Component {
             this.flavorList = await getFlavorList(this, { region: data[fields.region] })
             this.privacyPolicyList = await getPrivacyPolicyList(this, { region: data[fields.region] })
             this.autoProvPolicyList = await getAutoProvPolicyList(this, { region: data[fields.region] })
-
             if (data[fields.accessPorts]) {
                 let portArray = data[fields.accessPorts].split(',')
                 for (let i = 0; i < portArray.length; i++) {
@@ -365,6 +364,23 @@ class ClusterInstReg extends React.Component {
         ]
     }
 
+    updateFormData = (forms, data) => {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            this.updateUI(form)
+            if (data) {
+                if (form.forms && form.formType !== 'Header' && form.formType !== 'MultiForm') {
+                    this.updateFormData(form.forms, data)
+                }
+                else {
+                    form.value = data[form.field]
+                    this.checkForms(form, forms, true)
+                }
+            }
+        }
+
+    }
+
     getFormData = async (data) => {
         let forms = this.formKeys()
         if (data) {
@@ -378,21 +394,7 @@ class ClusterInstReg extends React.Component {
             { label: this.isUpdate ? 'Update' : 'Create', formType: BUTTON, onClick: this.onCreate, validate: true },
             { label: 'Cancel', formType: BUTTON, onClick: this.onAddCancel })
 
-
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
-            this.updateUI(form)
-            if (data) {
-                if (form.field === fields.accessType) {
-                    form.value = constant.accessType(data[form.field])
-                } else if (form.field === fields.imageType) {
-                    form.value = constant.imageType(data[form.field])
-                } else {
-                    form.value = data[form.field]
-                }
-                this.checkForms(form, forms, true)
-            }
-        }
+        this.updateFormData(forms, data)
 
         this.setState({
             forms: forms
