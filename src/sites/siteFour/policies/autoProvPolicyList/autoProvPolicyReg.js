@@ -11,7 +11,7 @@ import * as serverData from '../../../../services/model/serverData';
 import { fields, getOrganization } from '../../../../services/model/format';
 
 import { getOrganizationList } from '../../../../services/model/organization';
-import { showCloudlets } from '../../../../services/model/cloudlet';
+import { getOrgCloudletList } from '../../../../services/model/cloudlet';
 import { createAutoProvPolicy, addAutoProvCloudletKey, deleteAutoProvCloudletKey } from '../../../../services/model/autoProvisioningPolicy';
 
 
@@ -82,7 +82,7 @@ class AutoProvPolicyReg extends React.Component {
         let organization = data[fields.organizationName]
         let autoPolicyName = data[fields.autoPolicyName]
 
-        this.cloudletList = await serverData.showDataFromServer(this, showCloudlets({ region: region }))
+        this.cloudletList = await getOrgCloudletList(this, { region: region, org:organization })
         if (this.cloudletList && this.cloudletList.length > 0) {
             let action = 'Add'
             if (this.props.action === 'Add') {
