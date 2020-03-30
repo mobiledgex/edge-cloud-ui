@@ -74,7 +74,7 @@ import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraph from "../components/ModalGraphContainer";
 import {reactLocalStorage} from "reactjs-localstorage";
 import LeafletMapWrapperForDev from "../components/LeafletMapDevContainer";
-import {Responsive, WidthProvider} from "react-grid-layout";
+import {LayoutItem, Responsive, WidthProvider} from "react-grid-layout";
 import _ from "lodash";
 import PieChartContainer from "../components/PieChartContainer";
 import BigModalGraphContainer from "../components/BigModalGraphContainer";
@@ -87,6 +87,7 @@ import VirtualAppInstEventLogListContainer from "../components/VirtualAppInstEve
 import MaterialIcon from "material-icons-react";
 import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
+import type {Layout} from "react-grid-layout/lib/utils";
 
 const {Option} = Select;
 
@@ -417,7 +418,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             })
 
-            await this.loadInitDataForCluster();
+            await this.loadInitDataForCluster__FOR__DEV();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
@@ -429,7 +430,103 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             if (!isEmpty(this.webSocketInst)) {
                 this.webSocketInst.close();
             }
+        }
 
+        async loadInitDataForCluster__FOR__DEV(isInterval: boolean = false) {
+            try {
+                clearInterval(this.intervalForAppInst)
+                this.setState({dropdownRequestLoading: true})
+
+                //FIXME : ############################
+                //@FIXME: fakeData22222222222
+                //FIXME : ############################
+                let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
+                let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
+                let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
+                console.log('appInstanceList====>', appInstanceList);
+                console.log('clusterUsageList===>', clusterList);
+                let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
+                console.log("clusterDropdownList===>", clusterDropdownList);
+
+
+                //FIXME : ############################
+                //FIXME : FAKEDATA ClusterEventLog
+                //FIXME : ############################
+                await this.setState({
+                    allClusterEventLogList: [],
+                    filteredClusterEventLogList: []
+                })
+
+
+                //FIXME : ############################
+                //@fixme: fakeData __allAppInstEvLogListValues
+                //FIXME : ############################
+                let __allAppInstEvLogListValues = require('../temp/allAppInstEventLogList')
+                await this.setState({
+                    allAppInstEventLogs: __allAppInstEvLogListValues,
+                    filteredAppInstEventLogs: __allAppInstEvLogListValues,
+                })
+
+
+                let appInstanceListGroupByCloudlet = []
+                try {
+                    appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
+                } catch (e) {
+                    showToast(e.toString())
+                }
+                console.log('appInstanceListGroupByCloudlet===>', appInstanceListGroupByCloudlet);
+
+                await this.setState({
+                    isReady: true,
+                    clusterDropdownList: clusterDropdownList,
+                    dropDownCloudletList: cloudletList,
+                    clusterList: clusterList,
+                    isAppInstaceDataReady: true,
+                    appInstanceList: appInstanceList,
+                    filteredAppInstanceList: appInstanceList,
+                    dropdownRequestLoading: false,
+
+                });
+
+                if (!isInterval) {
+                    this.setState({
+                        appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
+                    })
+                }
+                //fixme: fakeData22222222222
+                //fixme: fakeData22222222222
+                let allClusterUsageList = []
+                allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+                console.log('filteredAppInstanceList===>', appInstanceList)
+
+                let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
+                await this.setState({
+                    bubbleChartData: bubbleChartData,
+                })
+
+                let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
+                    return o.sumCpuUsage;
+                }));
+
+                let maxMem = Math.max.apply(Math, allClusterUsageList.map(function (o) {
+                    return o.sumMemUsage;
+                }));
+
+                console.log('allClusterUsageList333====>', allClusterUsageList);
+
+                await this.setState({
+                    clusterListLoading: false,
+                    allCloudletUsageList: allClusterUsageList,
+                    allClusterUsageList: allClusterUsageList,
+                    filteredClusterUsageList: allClusterUsageList,
+                    maxCpu: maxCpu,
+                    maxMem: maxMem,
+                    isRequesting: false,
+                    currentCluster: '',
+                })
+            } catch (e) {
+
+            }
         }
 
         showModalClusterLineChart(lineChartDataOne, index) {
@@ -1218,10 +1315,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
+
+
         renderGridLayoutForCluster() {
             return (
                 <ResponsiveReactGridLayout
                     isResizable={true}
+                    verticalCompact={false}
                     isDraggable={this.state.isDraggable}
                     //useCSSTransforms={true}
                     className={'layout page_monitoring_layout_dev'}
@@ -1246,7 +1346,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         reactLocalStorage.setObject(getUserId() + "_layout", layout)
                     }}
                     {...this.props}
-
                 >
                     {this.state.layoutForCluster.map((item, loopIndex) => {
 
