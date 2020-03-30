@@ -258,6 +258,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         intervalForAppInst = null;
         gridItemHeight = 420;
         webSocketInst: WebSocket = null;
+        gridLayoutHeight=window.innerHeight*0.82;
 
         constructor(props) {
             super(props);
@@ -409,7 +410,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         componentDidMount = async () => {
-
             this.setState({
                 loading: true,
                 bubbleChartLoader: true,
@@ -706,12 +706,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 this.setState({
                     intervalLoading: true,
                 })
-                let arrDateTime2 = getOneYearStartEndDatetime();
 
-                console.log('allAppInstUsageList77===>startDate', arrDateTime2[0]);
-                console.log('allAppInstUsageList77===>EndDate', arrDateTime2[1]);
                 let allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT);
-                console.log('allAppInstUsageList77===>', allAppInstUsageList);
                 this.setState({
                     intervalLoading: false,
                     filteredAppInstUsageList: allAppInstUsageList,
@@ -772,9 +768,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             } finally {
                 this.setState({dropdownRequestLoading: false})
             }
-
-            console.log("allAppInstUsageList===>", allAppInstUsageList);
-
 
             let currentCluster = pCurrentAppInst.split("|")[2].trim() + " | " + pCurrentAppInst.split('|')[1].trim()
             pCurrentAppInst = pCurrentAppInst.trim();
@@ -1638,9 +1631,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 {/*desc:---------------------------------*/}
                                 <SemanticToastContainer position={"top-right"}/>
                                 {this.renderHeader()}
-                                <div className="page_monitoring" style={{overflowY: 'auto', height: 1200}}>
+                                <div className="page_monitoring" style={{overflowY: 'auto', height: this.gridLayoutHeight}}>
                                     <div className='page_monitoring_dashboard_dev'
-                                         style={{marginBottom: 110}}>
+                                         style={{marginBottom: 0}}>
                                         {this.state.currentClassification === CLASSIFICATION.CLUSTER
                                             ? this.renderGridLayoutForCluster()
                                             : this.renderGridLayoutForAppInst()
