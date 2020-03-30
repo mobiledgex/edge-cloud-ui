@@ -136,7 +136,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         })
                                         this.props.parent.handleThemeChanges(value)
                                         let selectedChartColorList = [];
-                                        if (value === THEME_OPTIONS.EUNDEW) {
+                                        if (value === THEME_OPTIONS.DEFAULT) {
                                             selectedChartColorList = CHART_COLOR_LIST;
                                         }
                                         if (value === THEME_OPTIONS.BLUE) {

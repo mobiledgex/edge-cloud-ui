@@ -251,6 +251,7 @@ type State = {
     currentWidgetWidth: number,
     isOpenEditView: boolean,
     isFullScreenMap: boolean,
+    isStackedLineChart: boolean,
 
 }
 
@@ -407,6 +408,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentWidgetWidth: 1,
                 isOpenEditView: false,
                 isFullScreenMap: false,
+                isStackedLineChart: false,
             };
         }
 
@@ -418,7 +420,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             })
 
-            await this.loadInitDataForCluster();
+            await this.loadInitDataForCluster__FOR__DEV();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
@@ -1111,7 +1113,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                 return (
-                    this.makeLineChartData(hwType)
+                    this.makeLineChartData(hwType, )
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BAR) {
                 return (
@@ -1503,8 +1505,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+
         handleThemeChanges = (value) => {
-            if (value === THEME_OPTIONS.EUNDEW) {
+            if (value === THEME_OPTIONS.DEFAULT) {
                 this.setState({
                     chartColorList: CHART_COLOR_LIST
                 })
@@ -1590,6 +1593,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     }}
                                 />
                             </div>
+
+                            <Button
+                                onClick={async () => {
+                                    this.setState({
+                                        isStackedLineChart: !this.state.isStackedLineChart,
+                                    }, () => {
+                                        //alert(this.state.isStackedLineChart)
+                                    })
+                                }}
+                                primary={this.state.isStackedLineChart}
+                                style={{height: 35}}
+                            >Stacked Line Chart
+                            </Button>
                         </div>
                         <div className='page_monitoring_select_column_end'>
                             <div className='page_monitoring_select_toggle'>
