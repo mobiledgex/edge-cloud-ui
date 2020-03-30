@@ -113,7 +113,10 @@ export default class ModalGraph extends React.Component<Props, State> {
 
                     }}
                     maskStyle={{color:'white'}}
-                    bodyStyle={{backgroundColor:'black'}}
+                    bodyStyle={{
+                      //  height: window.innerHeight - 20,
+                        backgroundColor: 'rgb(41, 44, 51)',
+                    }}
                     width={'30%'}
                     height={'85%'}
                     footer={null}
