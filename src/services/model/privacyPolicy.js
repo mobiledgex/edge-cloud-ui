@@ -12,7 +12,7 @@ export const outboundSecurityRulesKeys = [
 
 export const keys = [
   { field: fields.region, label: 'Region', sortable: true, visible: true },
-  { field: fields.organizationName, serverField: 'key#OS#developer', label: 'Organization Name', sortable: true, visible: true },
+  { field: fields.organizationName, serverField: 'key#OS#organization', label: 'Organization Name', sortable: true, visible: true },
   { field: fields.privacyPolicyName, serverField: 'key#OS#name', label: 'Privacy Policy Name', sortable: true, visible: true },
   { field: fields.outboundSecurityRulesCount, label: 'Rules Count', sortable: true, visible: true },
   {
@@ -52,6 +52,7 @@ export const getPrivacyPolicyList = async (self, data) => {
 
 export const updatePrivacyPolicy = (data) => {
   let requestData = getKey(data)
+  requestData.privacypolicy.fields = ['3', '3.1', '3.2', '3.3', '3.4']
   return { method: UPDATE_PRIVACY_POLICY, data: requestData }
 }
 
