@@ -71,9 +71,6 @@ class ClusterInstView extends React.Component {
             if (key.field === fields.state) {
                 key.customizedData = constant.showProgress
             }
-            else if (key.field === fields.ipAccess) {
-                key.customizedData = constant.getIPAccess
-            }
         }
     }
 
