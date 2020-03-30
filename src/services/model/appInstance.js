@@ -14,6 +14,7 @@ export const keys = [
   { field: fields.operatorName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: true },
   { field: fields.cloudletName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: true },
   { field: fields.cloudletLocation, serverField: 'cloudlet_loc', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
+  { field: fields.clusterdeveloper, serverField: 'key#OS#cluster_inst_key#OS#organization', sortable: true, label: 'Cluster Developer', visible: false },
   { field: fields.clusterName, serverField: 'key#OS#cluster_inst_key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster Instance', visible: true },
   { field: fields.deployment, label: 'Deployment', sortable: true, visible: true },
   { field: fields.uri, serverField: 'uri', label: 'URI' },
@@ -36,7 +37,7 @@ export const getKey = (data, isCreate) => {
         cluster_inst_key: {
           cloudlet_key: { name: data[fields.cloudletName], organization: data[fields.operatorName] },
           cluster_key: { name: data[fields.clusterName] },
-          organization: data[fields.organizationName]
+          organization: data[fields.clusterdeveloper] ? data[fields.clusterdeveloper] : data[fields.organizationName]
         }
       },
     }
