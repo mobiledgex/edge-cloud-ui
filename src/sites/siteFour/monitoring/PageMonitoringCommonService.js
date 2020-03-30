@@ -219,7 +219,7 @@ export const renderGridLoader2 = (width, height) => {
 
 export const renderCircleLoaderForMap = (width, height) => {
     return (
-        <div style={{zIndex: 99999999999, marginLeft: 20, marginBottom: 0, height: 20, }}>
+        <div style={{zIndex: 99999999999, marginLeft: 20, marginBottom: 0, height: 20,}}>
             <PulseLoader
                 sizeUnit={"px"}
                 size={20}
@@ -429,7 +429,7 @@ export const convertByteToMegaByte2 = (value, hardwareType) => {
 }
 
 
-export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDateTimeList, hardwareType) => {
+export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDateTimeList, hardwareType, isGradientColor = false) => {
 
     const lineChartData = (canvas) => {
         let gradientList = makeGradientColor(canvas, height);
@@ -440,7 +440,7 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
                 let datasetsOne = {
                     label: paramLevelTypeNameList[i],
                     backgroundColor: gradientList[i],//todo: 리전드box area fill True/false
-                    fill: false,//todo: 라인차트 area fill True/false
+                    //fill: isGradientColor,//todo: 라인차트 area fill True/false
                     //backgroundColor: '',
                     borderColor: gradientList[i],
                     borderWidth: 3.7, //lineBorder

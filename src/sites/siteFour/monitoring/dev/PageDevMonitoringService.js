@@ -27,36 +27,24 @@ import {Responsive, WidthProvider} from "react-grid-layout";
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const {Option} = Select;
 
-export const defaultLayoutForAppInst = [
+
+
+export const defaultLayoutForCluster = [
     {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},
     {i: '2', x: 1, y: 0, w: 1, h: 1, "add": false},
     {i: '3', x: 2, y: 0, w: 1, h: 1, "add": false},
     {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false},
     {i: '5', x: 1, y: 1, w: 1, h: 1, "add": false},
-    /*{i: '6', x: 2, y: 1, w: 1, h: 1, "add": false},
+    {i: '6', x: 2, y: 1, w: 1, h: 1, "add": false},
     {i: '7', x: 0, y: 2, w: 1, h: 1, "add": false},
     {i: '8', x: 1, y: 2, w: 1, h: 1, "add": false},
-    {i: '9', x: 2, y: 2, w: 1, h: 1, "add": false},*/
-
-];
-
-export const defaultLayoutForCluster = [
-    {i: '1', x: 0, y: 0, w: 2, h: 2, "add": false},
-    {i: '2', x: 2, y: 0, w: 1, h: 1, "add": false},
-    {i: '3', x: 2, y: 1, w: 1, h: 1, "add": false},
-    {i: '4', x: 0, y: 2, w: 1, h: 1, "add": false},
-    {i: '5', x: 1, y: 2, w: 1, h: 1, "add": false},
-    {i: '6', x: 2, y: 2, w: 1, h: 1, "add": false},
-
+    {i: '9', x: 2, y: 2, w: 1, h: 1, "add": false},
 
     /*{i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},
     {i: '2', x: 1, y: 0, w: 1, h: 1, "add": false},
     {i: '3', x: 2, y: 0, w: 1, h: 1, "add": false},
     {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false},
     {i: '5', x: 1, y: 1, w: 1, h: 1, "add": false},*/
-
-
-
 
     /*{i: '6', x: 2, y: 1, w: 1, h: 1, "add": false,},
 
@@ -75,6 +63,19 @@ export const defaultLayoutForCluster = [
     {i: '16', x: 0, y: 5, w: 1, h: 1, "add": false},
     {i: '17', x: 1, y: 5, w: 1, h: 1, "add": false},
     {i: '18', x: 2, y: 5, w: 1, h: 1, "add": false},*/
+];
+
+export const defaultLayoutForAppInst = [
+    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},
+    {i: '2', x: 1, y: 0, w: 1, h: 1, "add": false},
+    {i: '3', x: 2, y: 0, w: 1, h: 1, "add": false},
+    {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false},
+    {i: '5', x: 1, y: 1, w: 1, h: 1, "add": false},
+    {i: '6', x: 2, y: 1, w: 1, h: 1, "add": false},
+    {i: '7', x: 0, y: 2, w: 1, h: 1, "add": false},
+    /*{i: '8', x: 1, y: 2, w: 1, h: 1, "add": false},
+    {i: '9', x: 2, y: 2, w: 1, h: 1, "add": false},*/
+
 ];
 
 
@@ -118,6 +119,12 @@ export const HARDWARE_TYPE_FOR_GRID = {
     HANDLED_CONNECTION: 'HANDLED_CONNECTION',//13
     ACCEPTS_CONNECTION: 'ACCEPTS_CONNECTION',//14 (index)
 
+};
+
+export const CHART_TYPE = {
+    LINE: 'line',
+    BAR: 'bar',
+    COLUMN: 'col',
 }
 
 export const defaultHwMapperListForCluster = [
@@ -135,25 +142,40 @@ export const defaultHwMapperListForCluster = [
     {
         id: '3',
         hwType: HARDWARE_TYPE_FOR_GRID.CPU,
-        graphType: 'line',
+        graphType: CHART_TYPE.LINE,
     },
     {
         id: '4',
         hwType: HARDWARE_TYPE_FOR_GRID.MEM,
-        graphType: 'line',
+        graphType: CHART_TYPE.LINE,
     },
     {
         id: '5',
         hwType: HARDWARE_TYPE_FOR_GRID.DISK,
-        graphType: 'line',
+        graphType: CHART_TYPE.LINE,
     },
     {
         id: '6',
         hwType: HARDWARE_TYPE_FOR_GRID.RECVBYTES,
-        graphType: 'line',
+        graphType: CHART_TYPE.LINE,
+    },
+    {
+        id: '7',
+        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
+        graphType: CHART_TYPE.BAR,
+    },
+    {
+        id: '8',
+        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
+        graphType: CHART_TYPE.BAR,
+    },
+    {
+        id: '9',
+        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
+        graphType: CHART_TYPE.BAR,
     },
 
-]
+];
 
 export const defaultLayoutMapperForAppInst = [
 
@@ -171,29 +193,29 @@ export const defaultLayoutMapperForAppInst = [
     {
         id: '3',
         hwType: HARDWARE_TYPE_FOR_GRID.CPU,
-        graphType: 'line',
+        graphType: CHART_TYPE.LINE,
     },
     {
         id: '4',
         hwType: HARDWARE_TYPE_FOR_GRID.MEM,
-        graphType: 'line',
+        graphType: CHART_TYPE.LINE,
     },
     {
         id: '5',
         hwType: HARDWARE_TYPE_FOR_GRID.DISK,
-        graphType: 'line',
+        graphType: CHART_TYPE.LINE,
     },
     {
         id: '6',
         hwType: HARDWARE_TYPE_FOR_GRID.RECVBYTES,
-        graphType: 'line',
+        graphType: CHART_TYPE.LINE,
     },
     {
         id: '7',
         hwType: HARDWARE_TYPE_FOR_GRID.SENDBYTES,
-        graphType: 'line',
+        graphType: CHART_TYPE.LINE,
     },
-]
+];
 
 
 /*
@@ -214,7 +236,7 @@ export const makeid = (length) => {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
-}
+};
 
 export const console_log = (msg, color = 'green') => {
     color = color || "black";
@@ -256,13 +278,13 @@ export const console_log = (msg, color = 'green') => {
     } else {
         console.log("%c" + msg, "color:" + color + ";font-weight:bold;font-size:14pt; background-color:black;");
     }
-}
+};
 
 
 export const getUserId = () => {
-    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
     return store.email;
-}
+};
 
 
 export const filterByClassification = (originalList, selectOne, filterKey,) => {
@@ -270,30 +292,30 @@ export const filterByClassification = (originalList, selectOne, filterKey,) => {
         //todo:리전인 경우.....
         if (filterKey === CLASSIFICATION.REGION) {
             if (selectOne !== 'ALL') {
-                let filteredList = []
+                let filteredList = [];
                 originalList.map(item => {
                     if (item[filterKey] === selectOne) {
                         filteredList.push(item);
                     }
-                })
+                });
                 return filteredList;
             } else {
                 return originalList;
             }
         } else {
-            let filteredInstanceList = []
+            let filteredInstanceList = [];
             originalList.map(item => {
                 if (item[filterKey] === selectOne) {
                     filteredInstanceList.push(item);
                 }
-            })
+            });
             return filteredInstanceList;
         }
     } catch (e) {
 
     }
 
-}
+};
 
 export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, userType = '') => {
     if (hardwareType === HARDWARE_TYPE.CPU) {
@@ -332,7 +354,7 @@ export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, userTyp
     if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
         return numberWithCommas((usageOne.sumRecvBytes / 1000000).toFixed(0)) + " MByte"
     }
-}
+};
 
 
 export const sortUsageListByTypeForCluster = (usageList, hardwareType) => {
@@ -357,7 +379,7 @@ export const sortUsageListByTypeForCluster = (usageList, hardwareType) => {
     }
 
     return usageList;
-}
+};
 
 export const sortByKey = (arrList, key) => {
 
@@ -366,19 +388,19 @@ export const sortByKey = (arrList, key) => {
 
 
     return arrList;
-}
+};
 
 
 export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageDevMonitoring) => {
 
     console.log(`renderBarGraphForCluster===>${hardwareType}`, usageList);
-    usageList = sortUsageListByTypeForCluster(usageList, hardwareType)
+    usageList = sortUsageListByTypeForCluster(usageList, hardwareType);
 
     if (usageList.length === 0) {
         return "";
     } else {
         let chartDataList = [];
-        chartDataList.push(["Element", hardwareType + " USAGE", {role: "style"}, {role: 'annotation'}])
+        chartDataList.push(["Element", hardwareType + " USAGE", {role: "style"}, {role: 'annotation'}]);
         for (let index = 0; index < usageList.length; index++) {
             if (index < 5) {
                 let barDataOne = [
@@ -386,7 +408,7 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageD
                     renderUsageByType(usageList[index], hardwareType, _this),
                     _this.state.chartColorList[index],
                     renderUsageLabelByTypeForCluster(usageList[index], hardwareType)
-                ]
+                ];
                 chartDataList.push(barDataOne);
             }
         }
@@ -394,10 +416,10 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageD
         let chartDataSet = {
             chartDataList,
             hardwareType,
-        }
+        };
         return chartDataSet
     }
-}
+};
 
 
 /**
@@ -433,7 +455,7 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
             return "";
         } else {
             let chartDataList = [];
-            chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
+            chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}]);
             for (let index = 0; index < typedUsageList.length; index++) {
                 if (index < 5) {
                     let barDataOne = [
@@ -441,7 +463,7 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
                         renderUsageByType(typedUsageList[index], hardwareType, _this),
                         CHART_COLOR_LIST[index],
                         renderUsageLabelByTypeForCluster(typedUsageList[index], hardwareType, _this)
-                    ]
+                    ];
                     chartDataList.push(barDataOne);
                 }
             }
@@ -449,7 +471,7 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
             let chartDataSet = {
                 chartDataList,
                 hardwareType,
-            }
+            };
             return chartDataSet
         }
     } catch (e) {
@@ -457,7 +479,7 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
     }
 
 
-}
+};
 
 
 export const handleHardwareTabChanges = async (_this: PageDevMonitoring, selectedValueOne) => {
@@ -484,7 +506,7 @@ export const handleHardwareTabChanges = async (_this: PageDevMonitoring, selecte
             })
         }
     }
-}
+};
 
 
 /**
@@ -508,7 +530,7 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
         let appInstanceList = _this.state.appInstanceList;
 
 
-        let boxWidth = (window.innerWidth - 300) / 3 - 20
+        let boxWidth = (window.innerWidth - 300) / 3 - 20;
 
         function renderZoomLevel(appInstanceListLength) {
             if (appInstanceListLength <= 4) {
@@ -576,8 +598,8 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
                         }}
                         bubbleClickFun={async (cluster_cloudlet, index) => {
                             try {
-                                let lineChartDataSet = makeLineChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this)
-                                cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
+                                let lineChartDataSet = makeLineChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this);
+                                cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1];
                                 handleLegendAndBubbleClickedEvent(_this, cluster_cloudlet, lineChartDataSet)
                             } catch (e) {
 
@@ -587,8 +609,8 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
                         }}
                         legendClickFun={async (cluster_cloudlet, index) => {
                             try {
-                                let lineChartDataSet = makeLineChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this)
-                                cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
+                                let lineChartDataSet = makeLineChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this);
+                                cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1];
                                 handleLegendAndBubbleClickedEvent(_this, cluster_cloudlet, lineChartDataSet)
                             } catch (e) {
 
@@ -604,7 +626,7 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
     }
 
 
-}
+};
 
 export const makeLineChartDataForAppInstAll = (hardwareUsageList: Array, hardwareType: string = 'all', _this: PageDevMonitoring) => {
     console.log("hardwareType===>", hardwareType);
@@ -620,27 +642,27 @@ export const makeLineChartDataForAppInstAll = (hardwareUsageList: Array, hardwar
     } else {
 
 
-        let instanceAppName = ''
+        let instanceAppName = '';
         let instanceNameList = [];
-        let usageSetList = []
-        let dateTimeList = []
+        let usageSetList = [];
+        let dateTimeList = [];
 
         hardwareUsageList.map((item: TypeAppInstanceUsage2, index) => {
 
-            let seriesValues = []
-            let seriesValues2 = []
-            let seriesValues3 = []
-            let seriesValues4 = []
-            let seriesValues5 = []
-            seriesValues = item.cpuSeriesValue
-            seriesValues2 = item.memSeriesValue
-            seriesValues3 = item.diskSeriesValue
-            seriesValues4 = item.networkSeriesValue
-            seriesValues5 = item.connectionsSeriesValue
+            let seriesValues = [];
+            let seriesValues2 = [];
+            let seriesValues3 = [];
+            let seriesValues4 = [];
+            let seriesValues5 = [];
+            seriesValues = item.cpuSeriesValue;
+            seriesValues2 = item.memSeriesValue;
+            seriesValues3 = item.diskSeriesValue;
+            seriesValues4 = item.networkSeriesValue;
+            seriesValues5 = item.connectionsSeriesValue;
 
             console.log(`seriesValues===${hardwareType}>`, seriesValues);
 
-            instanceAppName = item.instance.AppName
+            instanceAppName = item.instance.AppName;
             let usageList = [];
 
             for (let j in seriesValues) {
@@ -670,18 +692,18 @@ export const makeLineChartDataForAppInstAll = (hardwareUsageList: Array, hardwar
                 dateTimeList.push(seriesValues[j]["0"].toString().split("T")[1]);
             }
 
-            instanceNameList.push(instanceAppName)
+            instanceNameList.push(instanceAppName);
             usageSetList.push(usageList);
 
-        })
+        });
 
 
-        console_log(hardwareType)
+        console_log(hardwareType);
         console.log(`usageSetList===${hardwareType}>`, usageSetList);
 
 
         //@todo: CUT LIST INTO RECENT_DATA_LIMIT_COUNT
-        let newDateTimeList = []
+        let newDateTimeList = [];
         for (let i in dateTimeList) {
             if (i < RECENT_DATA_LIMIT_COUNT) {
                 let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
@@ -698,7 +720,7 @@ export const makeLineChartDataForAppInstAll = (hardwareUsageList: Array, hardwar
         }
     }
 
-}
+};
 
 
 export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareType: string = 'all', _this: PageDevMonitoring) => {
@@ -713,17 +735,17 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
     } else {
 
 
-        let instanceAppName = ''
+        let instanceAppName = '';
         let instanceNameList = [];
-        let usageSetList = []
-        let dateTimeList = []
+        let usageSetList = [];
+        let dateTimeList = [];
 
         if (hardwareType === 'all') {
 
         } else {
             hardwareUsageList.map((item: TypeAppInstanceUsage2, index) => {
 
-                let seriesValues = []
+                let seriesValues = [];
                 if (hardwareType === HARDWARE_TYPE.CPU) {
                     seriesValues = item.cpuSeriesValue
                 } else if (hardwareType === HARDWARE_TYPE.MEM) {
@@ -738,7 +760,7 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
 
                 console.log(`seriesValues===${hardwareType}>`, seriesValues);
 
-                instanceAppName = item.instance.AppName
+                instanceAppName = item.instance.AppName;
                 let usageList = [];
 
                 for (let j in seriesValues) {
@@ -763,12 +785,12 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
 
                     usageList.push(usageOne);
                     let dateOne = seriesValues[j]["0"];
-                    dateOne = dateOne.toString().split("T")
+                    dateOne = dateOne.toString().split("T");
 
                     dateTimeList.push(dateOne[1]);
                 }
 
-                instanceNameList.push(instanceAppName)
+                instanceNameList.push(instanceAppName);
                 usageSetList.push(usageList);
 
             })
@@ -779,7 +801,7 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
 
 
         //@todo: CUT LIST INTO RECENT_DATA_LIMIT_COUNT
-        let newDateTimeList = []
+        let newDateTimeList = [];
         for (let i in dateTimeList) {
             if (i < RECENT_DATA_LIMIT_COUNT) {
                 let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
@@ -796,51 +818,51 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
         }
     }
 
-}
+};
 
 export const makeAllLineChartData = (_this) => {
-    let completedLineCharDataSetList = []
-    let lineChartDataSet = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.CPU, _this)
-    let lineChartDataSet2 = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.MEM, _this)
-    let lineChartDataSet3 = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.DISK, _this)
-    let lineChartDataSet4 = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.RECVBYTES, _this)
-    let lineChartDataSet5 = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.SENDBYTES, _this)
+    let completedLineCharDataSetList = [];
+    let lineChartDataSet = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.CPU, _this);
+    let lineChartDataSet2 = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.MEM, _this);
+    let lineChartDataSet3 = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.DISK, _this);
+    let lineChartDataSet4 = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.RECVBYTES, _this);
+    let lineChartDataSet5 = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.SENDBYTES, _this);
     /*let lineChartDataSet6 = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, HARDWARE_TYPE.ACTIVE_CONNECTION, this)
     let lineChartDataSet7 = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, HARDWARE_TYPE.ACCEPTS_CONNECTION, this)
     let lineChartDataSet8 = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, HARDWARE_TYPE.HANDLED_CONNECTION, this)*/
 
-    completedLineCharDataSetList.push(lineChartDataSet)
-    completedLineCharDataSetList.push(lineChartDataSet2)
-    completedLineCharDataSetList.push(lineChartDataSet3)
-    completedLineCharDataSetList.push(lineChartDataSet4)
-    completedLineCharDataSetList.push(lineChartDataSet5)
+    completedLineCharDataSetList.push(lineChartDataSet);
+    completedLineCharDataSetList.push(lineChartDataSet2);
+    completedLineCharDataSetList.push(lineChartDataSet3);
+    completedLineCharDataSetList.push(lineChartDataSet4);
+    completedLineCharDataSetList.push(lineChartDataSet5);
     /*completedLineCharDataSetList.push(lineChartDataSet6)
     completedLineCharDataSetList.push(lineChartDataSet7)
     completedLineCharDataSetList.push(lineChartDataSet8)*/
 
-    let newLevelTypeNameList = []
-    let newDateTimeList = []
-    let newUsageSetList = []
-    let newHWTypeList = []
+    let newLevelTypeNameList = [];
+    let newDateTimeList = [];
+    let newUsageSetList = [];
+    let newHWTypeList = [];
     completedLineCharDataSetList.map(item => {
-        let newLevelTypeNameOne = item.levelTypeNameList["0"] + "[" + item.hardwareType + "]"
-        let usageSetListOne = item.usageSetList
-        newLevelTypeNameList.push(newLevelTypeNameOne)
+        let newLevelTypeNameOne = item.levelTypeNameList["0"] + "[" + item.hardwareType + "]";
+        let usageSetListOne = item.usageSetList;
+        newLevelTypeNameList.push(newLevelTypeNameOne);
         newUsageSetList.push(usageSetListOne[0]);
         newDateTimeList = item.newDateTimeList;
         newHWTypeList.push(item.hardwareType);
 
-    })
+    });
 
     lineChartDataSet = {
         hardwareType: 'ALL',
         levelTypeNameList: newLevelTypeNameList,
         usageSetList: newUsageSetList,
         newDateTimeList: newDateTimeList,
-    }
+    };
 
     return lineChartDataSet;
-}
+};
 
 
 export const convertHwTypePhrases = (pHardwareType) => {
@@ -861,20 +883,20 @@ export const convertHwTypePhrases = (pHardwareType) => {
         return "Disk"
     }
 
-}
+};
 
 
 export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: string, _this) => {
-    pUsageList = sortUsageListByTypeForCluster(pUsageList, hardwareType)
+    pUsageList = sortUsageListByTypeForCluster(pUsageList, hardwareType);
 
     if (pUsageList.length === 0) {
         return "";
     } else {
-        let classificationName = ''
+        let classificationName = '';
         let levelTypeNameList = [];
-        let usageSetList = []
-        let dateTimeList = []
-        let series = []
+        let usageSetList = [];
+        let dateTimeList = [];
+        let series = [];
         for (let i in pUsageList) {
 
             if (hardwareType === HARDWARE_TYPE.CPU) {
@@ -926,19 +948,19 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
                 }
                 usageList.push(usageOne);
                 let dateOne = series[j]["0"];
-                dateOne = dateOne.toString().split("T")
+                dateOne = dateOne.toString().split("T");
                 dateTimeList.push(dateOne[1]);
             }
 
-            levelTypeNameList.push(classificationName)
+            levelTypeNameList.push(classificationName);
             usageSetList.push(usageList);
         }
 
         console.log('usageSetList====>', usageSetList);
 
 
-        //@todo: CUST LIST INTO RECENT_DATA_LIMIT_COUNT
-        let newDateTimeList = []
+        //@todo: CUS LIST INTO RECENT_DATA_LIMIT_COUNT
+        let newDateTimeList = [];
         for (let i in dateTimeList) {
             if (i < RECENT_DATA_LIMIT_COUNT) {
                 let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
@@ -953,14 +975,14 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
             usageSetList,
             newDateTimeList,
             hardwareType,
-        }
+        };
 
-        console.log("lineChartDataSet===>", lineChartDataSet)
+        console.log("lineChartDataSet===>", lineChartDataSet);
 
         return lineChartDataSet
     }
 
-}
+};
 
 /**
  *
@@ -971,7 +993,7 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
 export const makeGradientColor = (canvas, height) => {
     const ctx = canvas.getContext("2d");
 
-    let gradientList = []
+    let gradientList = [];
     const gradient = ctx.createLinearGradient(0, 0, 0, height);
 
     //'rgb(222,0,0)', 'rgb(255,150,0)', 'rgb(255,246,0)', 'rgb(91,203,0)', 'rgb(0,150,255)'
@@ -994,14 +1016,48 @@ export const makeGradientColor = (canvas, height) => {
     gradient5.addColorStop(0, 'rgb(0,150,255)');
     gradient5.addColorStop(1, 'rgba(0,150,255,0)');
 
-    gradientList.push(gradient)
-    gradientList.push(gradient2)
-    gradientList.push(gradient3)
-    gradientList.push(gradient4)
-    gradientList.push(gradient5)
+    gradientList.push(gradient);
+    gradientList.push(gradient2);
+    gradientList.push(gradient3);
+    gradientList.push(gradient4);
+    gradientList.push(gradient5);
 
     return gradientList;
+};
+
+export const hexToRGB = (hex, alpha) => {
+    var r = parseInt(hex.slice(1, 3), 16),
+        g = parseInt(hex.slice(3, 5), 16),
+        b = parseInt(hex.slice(5, 7), 16);
+
+    if (alpha) {
+        return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")";
+    } else {
+        return "rgb(" + r + ", " + g + ", " + b + ")";
+    }
 }
+
+
+export const makeGradientColorList = (canvas, height, colorList) => {
+    //let colorList= ['red', 'blue', 'green', 'yellow', 'grey']
+
+    console.log("colorList===>", colorList);
+    const ctx = canvas.getContext("2d");
+
+    let gradientList = [];
+
+
+    colorList.map(item => {
+        const gradient = ctx.createLinearGradient(0, 0, 0, height);
+        gradient.addColorStop(0, hexToRGB(item, 0.2));
+        gradient.addColorStop(0.5, hexToRGB(item, 0.5));
+        gradient.addColorStop(1, hexToRGB(item, 0.85));
+        gradientList.push(gradient);
+    })
+
+
+    return gradientList;
+};
 
 
 export const makeGradientColorOne = (canvas, height) => {
@@ -1010,12 +1066,7 @@ export const makeGradientColorOne = (canvas, height) => {
     gradient.addColorStop(0, 'rgb(111,253,255)');
     gradient.addColorStop(1.0, 'rgb(62,113,243)');
     return gradient;
-}
-
-
-export const getColorOne = () => {
-    return 'rgb(111,253,255)';
-}
+};
 
 
 /**
@@ -1028,21 +1079,21 @@ export const handleLegendAndBubbleClickedEvent = (_this: PageDevMonitoring, clic
 
     let selectedIndex = 0;
     lineChartDataSet.levelTypeNameList.map((item, jIndex) => {
-        let newItem = item.toString().replace('\n', "|").replace("[", '').replace("]", '')
-        clickedItem = clickedItem.toString().replace('\n', "|").replace("[", '').replace("]", '')
+        let newItem = item.toString().replace('\n', "|").replace("[", '').replace("]", '');
+        clickedItem = clickedItem.toString().replace('\n', "|").replace("[", '').replace("]", '');
         if (clickedItem === newItem) {
             selectedIndex = jIndex;
         }
-    })
+    });
     let selectedLineChartDataSetOne = {
         levelTypeNameList: lineChartDataSet.levelTypeNameList[selectedIndex],
         usageSetList: lineChartDataSet.usageSetList[selectedIndex],
         newDateTimeList: lineChartDataSet.newDateTimeList,
         hardwareType: lineChartDataSet.hardwareType,
-    }
+    };
 
     _this.showModalClusterLineChart(selectedLineChartDataSetOne, selectedIndex)
-}
+};
 
 export const addUnitNameForUsage = (value, hardwareType, _this) => {
 
@@ -1067,7 +1118,7 @@ export const addUnitNameForUsage = (value, hardwareType, _this) => {
             return value;
         }
     }
-}
+};
 
 
 export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, context: MonitoringContextInterface) => {
@@ -1161,16 +1212,18 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, cont
             }
 
         }
-    }//options
+    };//options
 
     return options;
-}
+};
 
 
-export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring) => {
+export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring, isGradientColor = false) => {
 
 
     const lineChartData = (canvas) => {
+
+        let gradientList = makeGradientColorList(canvas, 305, _this.state.chartColorList);
         let finalSeriesDataSets = [];
         for (let index in usageSetList) {
             //@todo: top5 만을 추린다
@@ -1181,12 +1234,10 @@ export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTi
                     label: levelTypeNameList[index],
                     radius: 0,
                     borderWidth: 3.5,//todo:라인 두께
-                    fill: false,
+                    fill: isGradientColor,// @desc:fill@desc:fill@desc:fill@desc:fill
                     lineTension: 0.5,
-                    /*backgroundColor:  gradientList[index],
-                    borderColor: gradientList[index],*/
-                    backgroundColor: _this.state.chartColorList[index],
-                    borderColor: _this.state.chartColorList[index],
+                    backgroundColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
+                    borderColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
                     data: usageSetList[index],
                     borderCapStyle: 'butt',
                     borderDash: [],
@@ -1202,7 +1253,7 @@ export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTi
                     pointRadius: 1,
                     pointHitRadius: 10,
 
-                }
+                };
 
                 finalSeriesDataSets.push(datasetsOne)
             }
@@ -1213,10 +1264,10 @@ export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTi
             labels: newDateTimeList,
             datasets: finalSeriesDataSets,
         }
-    }
+    };
 
     return lineChartData;
-}
+};
 
 export const convertToClassification = (pClassification) => {
     if (pClassification === CLASSIFICATION.APPINST) {
@@ -1224,7 +1275,7 @@ export const convertToClassification = (pClassification) => {
     } else {
         return pClassification
     }
-}
+};
 
 
 export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDataSet, context) => {
@@ -1235,7 +1286,7 @@ export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDat
         let hardwareType = lineChartDataSet.hardwareType;
 
 
-        const lineChartDataForRendering = makeTop5LineChartData(levelTypeNameList, usageSetList, newDateTimeList, _this)
+        const lineChartDataForRendering = makeTop5LineChartData(levelTypeNameList, usageSetList, newDateTimeList, _this);
         return (
             <div style={{
                 position: 'relative',
@@ -1252,7 +1303,7 @@ export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDat
 
         showToast(e.toString())
     }
-}
+};
 
 
 export const renderLineChartCoreForDev_AppInst = (_this: PageDevMonitoring, lineChartDataSet) => {
@@ -1298,7 +1349,7 @@ export const renderLineChartCoreForDev_AppInst = (_this: PageDevMonitoring, line
                         pointRadius: 1,
                         pointHitRadius: 10,
 
-                    }
+                    };
 
                     finalSeriesDataSets.push(datasetsOne)
                 }
@@ -1308,7 +1359,7 @@ export const renderLineChartCoreForDev_AppInst = (_this: PageDevMonitoring, line
                 labels: newDateTimeList,
                 datasets: finalSeriesDataSets,
             }
-        }
+        };
 
         let height = 500 + 100;
         let options = {
@@ -1404,7 +1455,7 @@ export const renderLineChartCoreForDev_AppInst = (_this: PageDevMonitoring, line
                 }
 
             }
-        }//options
+        };//options
 
 
         //todo :#######################
@@ -1432,7 +1483,7 @@ export const renderLineChartCoreForDev_AppInst = (_this: PageDevMonitoring, line
     } catch (e) {
         // showToast(e.toString())
     }
-}
+};
 
 
 export const makeSelectBoxListWithKeyValuePipe = (arrList, keyName, valueName) => {
@@ -1445,7 +1496,7 @@ export const makeSelectBoxListWithKeyValuePipe = (arrList, keyName, valueName) =
         })
     }
     return newArrList;
-}
+};
 
 
 export const makeSelectBoxListWithKey = (arrList, keyName) => {
@@ -1458,7 +1509,7 @@ export const makeSelectBoxListWithKey = (arrList, keyName) => {
         })
     }
     return newArrList;
-}
+};
 
 export const makeSelectBoxListWithValuePipe = (appInstList, keyName: string, valueName: string, thirdValue: string, fourthValue: string = '') => {
     let newArrList = [];
@@ -1482,7 +1533,7 @@ export const makeSelectBoxListWithValuePipe = (appInstList, keyName: string, val
 
 
     return newArrList;
-}
+};
 
 
 export const removeDuplication = (originalArray, prop) => {
@@ -1497,7 +1548,7 @@ export const removeDuplication = (originalArray, prop) => {
         newArray.push(lookupObject[i]);
     }
     return newArray;
-}
+};
 
 
 

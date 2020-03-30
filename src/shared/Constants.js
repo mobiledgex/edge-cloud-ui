@@ -60,6 +60,8 @@ export const ITEM_TYPE = [
 ]
 
 
+
+
 export const lineGraphOptions = {
     animation: {
         duration: 1000
@@ -168,7 +170,7 @@ export const APP_INST_USAGE_TYPE_INDEX = {
 }
 
 
-export const RECENT_DATA_LIMIT_COUNT = 20
+export const RECENT_DATA_LIMIT_COUNT = 10
 
 export const APP_PERFORMANCE_VALUES = {
     M4_MEDIUM: {
@@ -215,54 +217,49 @@ export const NETWORK_OPTIONS2 = [
 ]
 
 export const APP_INST_MATRIX_HW_USAGE_INDEX = {
-/*
-   /*
-    0: "time"
-    1: "app"
-    2: "ver"
-    3: "pod"
-    4: "cluster"
-    5: "clusterorg"
-    6: "cloudlet"
-    7: "cloudletorg"
-    8: "apporg"
-    9: "pod_1"
-    10: "cpu"
-    11: "mem"
-    12: "disk"
-    13: "sendBytes"
-    14: "recvBytes"
-    15: "port"
-    16: "active"
-    17: "handled"
-    18: "accepts"
-    19: "bytesSent"
-    20: "bytesRecvd"
-    21: "P0"
-    22: "P25"
-    23: "P50"
-    24: "P75"
-    25: "P90"
-    26: "P95"
-    27: "P99"
-    28: "P99.5"
-    29: "P99.9"
-    30: "P100"
- */
+    /*
+       /*
+        0: "time"
+        1: "app"
+        2: "ver"
+        3: "pod"
+        4: "cluster"
+        5: "clusterorg"
+        6: "cloudlet"
+        7: "cloudletorg"
+        8: "apporg"
+        9: "pod_1"
+        10: "cpu"
+        11: "mem"
+        12: "disk"
+        13: "sendBytes"
+        14: "recvBytes"
+        15: "port"
+        16: "active"
+        17: "handled"
+        18: "accepts"
+        19: "bytesSent"
+        20: "bytesRecvd"
+        21: "P0"
+        22: "P25"
+        23: "P50"
+        24: "P75"
+        25: "P90"
+        26: "P95"
+        27: "P99"
+        28: "P99.5"
+        29: "P99.9"
+        30: "P100"
+     */
     TIME: 0,
     APP: 1,
+    CLUSTER: 2,
     DEV: 3,
-    CLUSTER: 4,
-    OPERATOR: 8,
-    CLOUDLET: 6,
-    /*CPU: 10,
+    CLOUDLET: 4,
+    OPERATOR: 5,
+    CPU: 10,
     MEM: 11,
-    DISK: 12,*/
-
-    CPU: 16,
-    MEM: 17,
-    DISK: 18,
-
+    DISK: 12,
     SENDBYTES: 13,
     RECVBYTES: 14,
     PORT: 15,

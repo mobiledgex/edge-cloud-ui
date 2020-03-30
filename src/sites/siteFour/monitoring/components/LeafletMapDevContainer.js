@@ -138,7 +138,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
             super(props);
 
             this.state = {
-                zoom: 4,//mapZoom
+                zoom: 3,//mapZoom
                 appInstanceListGroupByCloudlet: '',
                 cloudletKeys: [],
                 newCloudLetLocationList: [],
