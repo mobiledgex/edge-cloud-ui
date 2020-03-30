@@ -12,7 +12,7 @@ import { fields, getOrganization } from '../../../services/model/format';
 //model
 import { createClusterInst } from '../../../services/model/clusterInstance';
 import { getOrganizationList } from '../../../services/model/organization';
-import { getCloudletList } from '../../../services/model/cloudlet';
+import { getOrgCloudletList } from '../../../services/model/cloudlet';
 import { getFlavorList } from '../../../services/model/flavor';
 import { getPrivacyPolicyList } from '../../../services/model/privacyPolicy';
 //Map
@@ -40,12 +40,24 @@ class ClusterInstReg extends React.Component {
         this.ipAccessList = []
     }
 
-    getCloudletInfo = async (region, form, forms) => {
-        if (!this.requestedRegionList.includes(region)) {
-            this.cloudletList = [...this.cloudletList, ...await getCloudletList(this, { region: region })]
+    getCloudletInfo = async (form, forms) => {
+        let region = undefined;
+        let organizationName = undefined;
+        for (let i = 0; i < forms.length; i++) {
+            let tempForm = forms[i]
+            if (tempForm.field === fields.region) {
+                region = tempForm.value
+            }
+            else if (tempForm.field === fields.organizationName) {
+                organizationName = tempForm.value
+            }
         }
-        this.updateUI(form)
-        this.setState({ forms: forms })
+        if(region && organizationName)
+        {
+            this.cloudletList = await getOrgCloudletList(this, { region: region, org:organizationName })
+            this.updateUI(form)
+            this.setState({ forms: forms })
+        }
     }
 
     getFlavorInfo = async (region, form, forms) => {
@@ -71,7 +83,7 @@ class ClusterInstReg extends React.Component {
             if (form.field === fields.operatorName) {
                 this.operatorValueChange(form, forms, isInit)
                 if (isInit === undefined || isInit === false) {
-                    this.getCloudletInfo(region, form, forms)
+                    this.getCloudletInfo(form, forms)
                 }
             }
             else if (form.field === fields.flavorName) {
@@ -86,6 +98,18 @@ class ClusterInstReg extends React.Component {
             }
         }
         this.requestedRegionList.push(region)
+    }
+
+    organizationValueChange = (currentForm, forms, isInit) =>{
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (form.field === fields.operatorName) {
+                this.operatorValueChange(form, forms, isInit)
+                if (isInit === undefined || isInit === false) {
+                    this.getCloudletInfo(form, forms)
+                }
+            }
+        }
     }
 
     operatorValueChange = (currentForm, forms, isInit) => {
@@ -104,7 +128,11 @@ class ClusterInstReg extends React.Component {
     deploymentValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
-            if (form.field === fields.numberOfMasters || form.field === fields.numberOfNodes) {
+            if (form.field === fields.numberOfMasters) {
+                form.value = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? 1 : undefined
+                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_DOCKER ? false : true
+            }
+            else if (form.field === fields.numberOfNodes) {
                 form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_DOCKER ? false : true
             }
             else if (form.field === fields.ipAccess) {
@@ -148,6 +176,9 @@ class ClusterInstReg extends React.Component {
     checkForms = (form, forms, isInit) => {
         if (form.field === fields.region) {
             this.regionValueChange(form, forms, isInit)
+        }
+        else if (form.field === fields.organizationName) {
+            this.organizationValueChange(form, forms, isInit)
         }
         else if (form.field === fields.operatorName) {
             this.operatorValueChange(form, forms, isInit)
@@ -393,13 +424,10 @@ const mapStateToProps = (state) => {
         }
         : {};
     let regionInfo = (state.regionInfo) ? state.regionInfo : null;
-    let _changedRegion = (state.form && state.form.createAppFormDefault && state.form.createAppFormDefault.values) ? state.form.createAppFormDefault.values.Region : null;
     return {
         getRegion: (state.getRegion) ? state.getRegion.region : null,
         regionInfo: regionInfo,
-        region: region,
-        changeRegion: state.changeRegion ? state.changeRegion.region : null,
-        changedRegion: _changedRegion
+        region: region
     }
 };
 

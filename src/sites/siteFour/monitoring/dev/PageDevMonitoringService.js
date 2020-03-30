@@ -16,16 +16,13 @@ import {
     convertByteToMegaByte,
     numberWithCommas,
     PageMonitoringStyles,
-    renderUsageByType, showToast
+    renderUsageByType,
+    showToast
 } from "../PageMonitoringCommonService";
-import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
-import {Table} from "semantic-ui-react";
-import Lottie from "react-lottie";
-import type {TypeAppInstanceUsage2, TypeClusterUsageList} from "../../../../shared/Types";
-import {Progress, Select, Tooltip} from "antd";
+import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
+import {Select} from "antd";
 import {Responsive, WidthProvider} from "react-grid-layout";
-import type {MonitoringContextInterface} from "../PageMonitoringGlobalState";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const {Option} = Select;
@@ -44,13 +41,23 @@ export const defaultLayoutForAppInst = [
 ];
 
 export const defaultLayoutForCluster = [
-    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},
+    {i: '1', x: 0, y: 0, w: 2, h: 2, "add": false},
+    {i: '2', x: 2, y: 0, w: 1, h: 1, "add": false},
+    {i: '3', x: 2, y: 1, w: 1, h: 1, "add": false},
+    {i: '4', x: 0, y: 2, w: 1, h: 1, "add": false},
+    {i: '5', x: 1, y: 2, w: 1, h: 1, "add": false},
+    {i: '6', x: 2, y: 2, w: 1, h: 1, "add": false},
+
+
+    /*{i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},
     {i: '2', x: 1, y: 0, w: 1, h: 1, "add": false},
     {i: '3', x: 2, y: 0, w: 1, h: 1, "add": false},
-
-
     {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false},
-    {i: '5', x: 1, y: 1, w: 1, h: 1, "add": false},
+    {i: '5', x: 1, y: 1, w: 1, h: 1, "add": false},*/
+
+
+
+
     /*{i: '6', x: 2, y: 1, w: 1, h: 1, "add": false,},
 
     {i: '7', x: 0, y: 2, w: 1, h: 1, "add": false,},
@@ -114,7 +121,6 @@ export const HARDWARE_TYPE_FOR_GRID = {
 }
 
 export const defaultHwMapperListForCluster = [
-
     {
         id: '1',
         hwType: HARDWARE_TYPE_FOR_GRID.MAP,
@@ -146,11 +152,7 @@ export const defaultHwMapperListForCluster = [
         hwType: HARDWARE_TYPE_FOR_GRID.RECVBYTES,
         graphType: 'line',
     },
-    {
-        id: '7',
-        hwType: HARDWARE_TYPE_FOR_GRID.SENDBYTES,
-        graphType: 'line',
-    },
+
 ]
 
 export const defaultLayoutMapperForAppInst = [
@@ -263,33 +265,35 @@ export const getUserId = () => {
 }
 
 
-export const filterUsageByClassification = (originalList, selectOne, filterKey,) => {
-
-    //todo:리전인 경우.....
-    if (filterKey === CLASSIFICATION.REGION) {
-        if (selectOne !== 'ALL') {
-            let filteredList = []
+export const filterByClassification = (originalList, selectOne, filterKey,) => {
+    try {
+        //todo:리전인 경우.....
+        if (filterKey === CLASSIFICATION.REGION) {
+            if (selectOne !== 'ALL') {
+                let filteredList = []
+                originalList.map(item => {
+                    if (item[filterKey] === selectOne) {
+                        filteredList.push(item);
+                    }
+                })
+                return filteredList;
+            } else {
+                return originalList;
+            }
+        } else {
+            let filteredInstanceList = []
             originalList.map(item => {
                 if (item[filterKey] === selectOne) {
-                    filteredList.push(item);
+                    filteredInstanceList.push(item);
                 }
             })
-            return filteredList;
-        } else {
-            return originalList;
+            return filteredInstanceList;
         }
-    } else {
-        let filteredInstanceList = []
-        originalList.map(item => {
-            if (item[filterKey] === selectOne) {
-                filteredInstanceList.push(item);
-            }
-        })
-        return filteredInstanceList;
+    } catch (e) {
+
     }
 
 }
-
 
 export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, userType = '') => {
     if (hardwareType === HARDWARE_TYPE.CPU) {
@@ -309,15 +313,18 @@ export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, userTyp
         return numberWithCommas((usageOne.sumTcpConns).toFixed(2)) + " "
     }
 
+    if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
+        return numberWithCommas((usageOne.sumTcpConns).toFixed(2)) + " "
+    }
+
     if (hardwareType === HARDWARE_TYPE.UDPSENT) {
-        return numberWithCommas((usageOne.sumUdpSent).toFixed(2)) + " "
+        return numberWithCommas((usageOne.sumUdpSent).toFixed(2)) + " datagrams"
     }
 
     if (hardwareType === HARDWARE_TYPE.UDPRECV) {
-        return numberWithCommas((usageOne.sumUdpRecv).toFixed(2)) + " "
+        return numberWithCommas((usageOne.sumUdpRecv).toFixed(2)) + " datagrams"
     }
 
-    //@fixme
     if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
         return numberWithCommas((usageOne.sumSendBytes / 1000000).toFixed(0)) + " MByte"
     }
@@ -376,7 +383,7 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageD
             if (index < 5) {
                 let barDataOne = [
                     usageList[index].cluster.toString() + "\n[" + usageList[index].cloudlet + "]",//clusterName
-                    renderUsageByType(usageList[index], hardwareType),
+                    renderUsageByType(usageList[index], hardwareType, _this),
                     _this.state.chartColorList[index],
                     renderUsageLabelByTypeForCluster(usageList[index], hardwareType)
                 ]
@@ -392,193 +399,6 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageD
     }
 }
 
-export const renderPerformanceSummaryTable = (_this: PageDevMonitoring, pClusterList) => {
-
-    //pClusterList
-    pClusterList = sortUsageListByTypeForCluster(pClusterList, HARDWARE_TYPE.CPU)
-    return (
-        <>
-            <div style={{
-                display: 'flex',
-                width: '100%',
-                height: 45
-            }}>
-                <div className='page_monitoring_title' style={{
-                    backgroundColor: 'transparent',
-                    flex: .38,
-                    marginTop: 5,
-                }}>
-                    Performance Summary
-                </div>
-                <div style={{flex: .4, marginRight: 70}}>
-                </div>
-
-            </div>
-            <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing
-                   styles={{zIndex: 999999999999}}>
-                <Table.Header className="viewListTableHeader" styles={{zIndex: 99999999999}}>
-                    <Table.Row>
-                        <Table.HeaderCell>
-                            Cluster
-                        </Table.HeaderCell>
-                        <Table.HeaderCell>
-                            CPU(%)
-                        </Table.HeaderCell>
-                        <Table.HeaderCell>
-                            MEM
-                        </Table.HeaderCell>
-                        <Table.HeaderCell>
-                            DISK
-                        </Table.HeaderCell>
-                        <Tooltip
-                            placement="topLeft"
-                            title={
-                                <div>
-                                    <p>NETWORK RECV</p>
-                                </div>
-                            }
-                        >
-                            <Table.HeaderCell>
-                                NETWORK RECV
-                            </Table.HeaderCell>
-                        </Tooltip>
-
-                        <Tooltip
-                            placement="topLeft"
-                            title={
-                                <div>
-                                    <p>NETWORK SENT</p>
-                                </div>
-                            }
-                        >
-                            <Table.HeaderCell>
-                                NETWORK SENT
-                            </Table.HeaderCell>
-                        </Tooltip>
-
-                        <Table.HeaderCell>
-                            TCP CONN
-                        </Table.HeaderCell>
-                        <Table.HeaderCell>
-                            TCP RETRANS
-                        </Table.HeaderCell>
-                        <Table.HeaderCell>
-                            UDP REV
-                        </Table.HeaderCell>
-                        <Table.HeaderCell>
-                            UDP SENT
-                        </Table.HeaderCell>
-
-                    </Table.Row>
-                </Table.Header>
-                <Table.Body className="tbBodyList"
-                            ref={(div) => {
-                                _this.messageList = div;
-                            }}
-                >
-                    {/*-----------------------*/}
-                    {/*todo:ROW HEADER        */}
-                    {/*-----------------------*/}
-                    {!_this.state.isReady &&
-                    <Table.Row className='page_monitoring_popup_table_empty'>
-                        <Table.Cell>
-                            <Lottie
-                                options={{
-                                    loop: true,
-                                    autoplay: true,
-                                    animationData: require('../../../../lotties/loader001'),
-                                    rendererSettings: {
-                                        preserveAspectRatio: 'xMidYMid slice'
-                                    }
-                                }}
-                                height={240}
-                                width={240}
-                                isStopped={false}
-                                isPaused={false}
-                            />
-                        </Table.Cell>
-                    </Table.Row>}
-                    {!_this.state.isRequesting && pClusterList.map((item: TypeClusterUsageList, index) => {
-
-                        return (
-                            <Table.Row className='page_monitoring_popup_table_row'
-
-                                       onClick={() => {
-                                           try {
-                                               let cluster_cloudlet = item.cluster.toString() + ' | ' + item.cloudlet.toString()
-                                               let lineChartDataSet = makeLineChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this)
-                                               cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
-                                               handleLegendAndBubbleClickedEvent(_this, cluster_cloudlet, lineChartDataSet)
-
-                                           } catch (e) {
-
-                                           }
-                                       }}
-                            >
-                                <Table.Cell>
-                                    {item.cluster}<br/>[{item.cloudlet}]
-                                </Table.Cell>
-                                <Table.Cell>
-                                    <div>
-                                        <div>
-                                            {item.sumCpuUsage.toFixed(2) + '%'}
-                                        </div>
-                                        <div>
-                                            <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10}
-                                                      showInfo={false}
-                                                      percent={(item.sumCpuUsage / _this.state.maxCpu * 100)}
-                                                //percent={(item.sumCpuUsage / _this.state.gridInstanceListCpuMax) * 100}
-                                                      strokeColor={'#29a1ff'} status={'normal'}/>
-                                        </div>
-                                    </div>
-                                </Table.Cell>
-                                <Table.Cell>
-                                    <div>
-                                        <div>
-                                            {numberWithCommas(item.sumMemUsage.toFixed(2)) + ' %'}
-                                        </div>
-                                        <div>
-                                            <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10}
-                                                      showInfo={false}
-                                                      percent={(item.sumMemUsage / _this.state.maxMem * 100)}
-                                                      strokeColor={'#29a1ff'} status={'normal'}/>
-                                        </div>
-                                    </div>
-                                </Table.Cell>
-                                <Table.Cell>
-                                    {numberWithCommas(item.sumDiskUsage.toFixed(2)) + ' %'}
-                                </Table.Cell>
-                                <Table.Cell>
-                                    {numberWithCommas(item.sumRecvBytes.toFixed(2)) + ' '}
-                                </Table.Cell>
-                                <Table.Cell>
-                                    {numberWithCommas(item.sumSendBytes.toFixed(2)) + ' '}
-                                </Table.Cell>
-
-                                <Table.Cell>
-                                    {numberWithCommas(item.sumTcpConns.toFixed(2)) + ' '}
-                                </Table.Cell>
-                                <Table.Cell>
-                                    {numberWithCommas(item.sumTcpRetrans.toFixed(2)) + ' '}
-                                </Table.Cell>
-                                <Table.Cell>
-                                    {numberWithCommas(item.sumUdpRecv.toFixed(2)) + ' '}
-                                </Table.Cell>
-                                <Table.Cell>
-                                    {numberWithCommas(item.sumUdpSent.toFixed(2)) + ' '}
-                                </Table.Cell>
-
-                            </Table.Row>
-
-                        )
-                    })}
-                </Table.Body>
-            </Table>
-        </>
-
-
-    )
-}
 
 /**
  *
@@ -618,9 +438,9 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
                 if (index < 5) {
                     let barDataOne = [
                         typedUsageList[index].instance.AppName.toString().substring(0, 10) + "..." + "\n[" + typedUsageList[index].instance.Cloudlet + "]",
-                        renderUsageByType(typedUsageList[index], hardwareType),
+                        renderUsageByType(typedUsageList[index], hardwareType, _this),
                         CHART_COLOR_LIST[index],
-                        renderUsageLabelByType(typedUsageList[index], hardwareType)
+                        renderUsageLabelByTypeForCluster(typedUsageList[index], hardwareType, _this)
                     ]
                     chartDataList.push(barDataOne);
                 }
@@ -1135,6 +955,8 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
             hardwareType,
         }
 
+        console.log("lineChartDataSet===>", lineChartDataSet)
+
         return lineChartDataSet
     }
 
@@ -1222,6 +1044,31 @@ export const handleLegendAndBubbleClickedEvent = (_this: PageDevMonitoring, clic
     _this.showModalClusterLineChart(selectedLineChartDataSetOne, selectedIndex)
 }
 
+export const addUnitNameForUsage = (value, hardwareType, _this) => {
+
+    if (_this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+
+        if (hardwareType === HARDWARE_TYPE.CPU || hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
+            return value + " %";
+        } else if (hardwareType === HARDWARE_TYPE.SENDBYTES || hardwareType === HARDWARE_TYPE.RECVBYTES) {
+            return convertByteToMegaByte(value, hardwareType)
+        } else if (hardwareType === HARDWARE_TYPE.UDPRECV || hardwareType === HARDWARE_TYPE.UDPSENT) {
+            return value + " datagrams";
+        } else {
+            return value;
+        }
+
+    } else if (_this.state.currentClassification === CLASSIFICATION.APPINST) {
+        if (hardwareType === HARDWARE_TYPE.CPU) {
+            return value + " %";
+        } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM || hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
+            return convertByteToMegaByte(value, hardwareType)
+        } else {
+            return value;
+        }
+    }
+}
+
 
 export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, context: MonitoringContextInterface) => {
 
@@ -1266,13 +1113,9 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, cont
                     //max: 100,//todo max value
                     fontColor: 'white',
                     callback(value, index, label) {
-
-                        if (hardwareType === 'ALL') {
-                            return value;
-                        } else {
-                            return convertByteToMegaByte(value, hardwareType)
-                        }
-
+                        /*console.log("yAxes===>", hardwareType);
+                        console.log("yAxes===>", _this.state.currentClassification);*/
+                        return addUnitNameForUsage(value, hardwareType, _this,)
 
                     },
                 },
@@ -1392,7 +1235,7 @@ export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDat
         let hardwareType = lineChartDataSet.hardwareType;
 
 
-        const lineChartDataForRendering = makeTop5LineChartData(levelTypeNameList, usageSetList, newDateTimeList, _this, context)
+        const lineChartDataForRendering = makeTop5LineChartData(levelTypeNameList, usageSetList, newDateTimeList, _this)
         return (
             <div style={{
                 position: 'relative',
@@ -1617,15 +1460,27 @@ export const makeSelectBoxListWithKey = (arrList, keyName) => {
     return newArrList;
 }
 
-export const makeSelectBoxListWithThreeValuePipe = (arrList, keyName: string, valueName: string, thirdValue: string) => {
+export const makeSelectBoxListWithValuePipe = (appInstList, keyName: string, valueName: string, thirdValue: string, fourthValue: string = '') => {
     let newArrList = [];
-    for (let i in arrList) {
-        newArrList.push({
-            key: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim() + " | " + arrList[i][thirdValue].trim(),
-            value: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim() + " | " + arrList[i][thirdValue].trim(),
-            text: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim() + " | " + arrList[i][thirdValue].trim(),
-        })
+    if (fourthValue !== '') {
+        for (let i in appInstList) {
+            newArrList.push({
+                key: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim(),
+                value: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim(),
+                text: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim(),
+            })
+        }
+    } else {
+        for (let i in appInstList) {
+            newArrList.push({
+                key: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim(),
+                value: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim(),
+                text: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim(),
+            })
+        }
     }
+
+
     return newArrList;
 }
 

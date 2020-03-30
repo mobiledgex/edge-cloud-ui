@@ -15,18 +15,15 @@ const keys = [
 ]
 
 export const getKey = (data) => {
-    if (data) {
-        return ({
-            region: data[fields.region],
-            cloudlet: {
-                key: {
-                    organization: data[fields.operatorName],
-                    name: data[fields.cloudletName]
-                }
+    return ({
+        region: data[fields.region],
+        cloudlet: {
+            key: {
+                organization: data[fields.operatorName],
+                name: data[fields.cloudletName]
             }
-        })
-    }
-    return {}
+        }
+    })
 }
 
 const customData = (value) => {

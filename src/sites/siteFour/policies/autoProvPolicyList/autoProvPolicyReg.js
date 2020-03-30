@@ -8,10 +8,10 @@ import MexForms, { SELECT, DUALLIST } from '../../../../hoc/forms/MexForms';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import * as serverData from '../../../../services/model/serverData';
-import { fields } from '../../../../services/model/format';
+import { fields, getOrganization } from '../../../../services/model/format';
 
-import { showOrganizations } from '../../../../services/model/organization';
-import { showCloudlets } from '../../../../services/model/cloudlet';
+import { getOrganizationList } from '../../../../services/model/organization';
+import { getOrgCloudletList } from '../../../../services/model/cloudlet';
 import { createAutoProvPolicy, addAutoProvCloudletKey, deleteAutoProvCloudletKey } from '../../../../services/model/autoProvisioningPolicy';
 
 
@@ -82,7 +82,7 @@ class AutoProvPolicyReg extends React.Component {
         let organization = data[fields.organizationName]
         let autoPolicyName = data[fields.autoPolicyName]
 
-        this.cloudletList = await serverData.showDataFromServer(this, showCloudlets({ region: region }))
+        this.cloudletList = await getOrgCloudletList(this, { region: region, org:organization })
         if (this.cloudletList && this.cloudletList.length > 0) {
             let action = 'Add'
             if (this.props.action === 'Add') {
@@ -230,19 +230,33 @@ class AutoProvPolicyReg extends React.Component {
         }
     }
 
+    validatedeployClientCount = (form)=>
+    {
+        if (form.value && form.value.length > 0) {
+            let value = parseInt(form.value)
+            if(value <= 0)
+            {
+                form.error = 'Deploy Client Count must be greater than zero' 
+                return false; 
+            }
+        }
+        form.error = undefined;
+        return true;
+    }
+
     getFormData = async (data) => {
         if (data) {
             this.loadDefaultData(data)
             this.selectCloudlet(data)
         }
         else {
-            this.organizationList = await serverData.showDataFromServer(this, showOrganizations());
+            this.organizationList = await getOrganizationList(this);
             let forms = [
                 { label: 'Create Auto Provisioning Policy', formType: 'Header', visible: true },
                 { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
-                { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: true }, visible: true },
+                { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true },
                 { field: fields.autoPolicyName, label: 'Auto Policy Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { required: true }, visible: true },
-                { field: fields.deployClientCount, label: 'Deploy Client Count', formType: 'Input', rules: { type: 'number' }, visible: true },
+                { field: fields.deployClientCount, label: 'Deploy Client Count', formType: 'Input', rules: { type: 'number', required: true }, visible: true, dataValidateFunc: this.validatedeployClientCount },
                 { field: fields.deployIntervalCount, label: 'Deploy Interval Count (s)', formType: 'Input', rules: { type: 'number' }, visible: true },
                 { label: 'Create', formType: 'Button', onClick: this.onCreateAutoProvPolicy, validate: true },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
@@ -267,13 +281,11 @@ const mapStateToProps = (state) => {
         }
         : {};
     let regionInfo = (state.regionInfo) ? state.regionInfo : null;
-    let _changedRegion = (state.form && state.form.createAppFormDefault && state.form.createAppFormDefault.values) ? state.form.createAppFormDefault.values.Region : null;
     return {
         getRegion: (state.getRegion) ? state.getRegion.region : null,
         regionInfo: regionInfo,
         region: region,
         changeRegion: state.changeRegion ? state.changeRegion.region : null,
-        changedRegion: _changedRegion
     }
 };
 

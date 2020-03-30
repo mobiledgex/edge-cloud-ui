@@ -47,6 +47,7 @@ module.exports = {
                 'react/style-prop-object': 'off',
                 'jsx-a11y/accessible-emoji': 'off',
                 'react/jsx-pascal-case': 'off',
+                'jsx-a11y/iframe-has-title': 'off',
 
             }
         }

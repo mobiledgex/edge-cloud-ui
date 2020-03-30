@@ -14,15 +14,12 @@ export const keys = () => ([
 ])
 
 export const getKey = (data) => {
-    if (data) {
-        return ({
-            name: data[fields.organizationName],
-            type: data[fields.type],
-            address: data[fields.address],
-            phone: data[fields.phone]
-        })
-    }
-    return {}
+    return ({
+        name: data[fields.organizationName],
+        type: data[fields.type],
+        address: data[fields.address],
+        phone: data[fields.phone]
+    })
 }
 
 export const showOrganizations = (data) => {

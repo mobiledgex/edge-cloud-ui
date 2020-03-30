@@ -95,7 +95,10 @@ export const fields = {
     actions: 'actions',
     manage: 'manage',
     poolName:'poolName',
-    clusterinst:'clusterinst'
+    clusterinst:'clusterinst',
+    container_ids:'container_ids',
+    openRCData:'openRCData',
+    caCertdata:'caCertdata'
 
 }
 

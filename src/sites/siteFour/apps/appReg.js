@@ -7,7 +7,7 @@ import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX, TEXT_AREA } fr
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
-import { fields } from '../../../services/model/format';
+import { fields, getOrganization } from '../../../services/model/format';
 //model
 import { getOrganizationList } from '../../../services/model/organization';
 import { getFlavorList } from '../../../services/model/flavor';
@@ -121,8 +121,14 @@ class ClusterInstReg extends React.Component {
             if (form.field === fields.imageType) {
                 form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? 'Qcow' : 'Docker'
             }
+            else if (form.field === fields.imagePath) {
+                form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? 'https://artifactory.mobiledgex.net/artifactory/repo-NewDevOrg' : 'docker.mobiledgex.net/newdevorg/images/server-ping-threaded:5.0'
+            }
             else if (form.field === fields.scaleWithCluster) {
                 form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? true : false
+            }
+            else if (form.field === fields.accessType) {
+                form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.ACCESS_TYPE_DIRECT : constant.ACCESS_TYPE_DEFAULT_FOR_DEPLOYMENT
             }
         }
         this.setState({
@@ -196,40 +202,39 @@ class ClusterInstReg extends React.Component {
 
 
     onCreate = async (data) => {
-        if (data) { 
-                let forms = this.state.forms;
-                let ports = ''
-                for (let i = 0; i < forms.length; i++) {
-                    let form = forms[i];
-                    if (form.uuid) {
-                        let uuid = form.uuid;
-                        let multiFormData = data[uuid]
-                        if (multiFormData) {
-                            if (multiFormData[fields.portRangeMin] && multiFormData[fields.portRangeMax]) {
-                                ports = ports.length > 0 ? ports + ',' : ports
-                                ports = ports + multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMin] + '-' + multiFormData[fields.portRangeMax]
-                            }
-                            else if (multiFormData[fields.portRangeMax]) {
-                                ports = ports.length > 0 ? ports + ',' : ports
-                                ports = ports + multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMax]
-                            }
-                            else if (form.field === fields.deploymentManifest) {
-                                data[fields.deploymentManifest] = multiFormData[fields.deploymentManifest]
-                            }
+        if (data) {
+            let forms = this.state.forms;
+            let ports = ''
+            for (let i = 0; i < forms.length; i++) {
+                let form = forms[i];
+                if (form.uuid) {
+                    let uuid = form.uuid;
+                    let multiFormData = data[uuid]
+                    if (multiFormData) {
+                        if (multiFormData[fields.portRangeMin] && multiFormData[fields.portRangeMax]) {
+                            ports = ports.length > 0 ? ports + ',' : ports
+                            ports = ports + multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMin] + '-' + multiFormData[fields.portRangeMax]
                         }
-                        data[uuid] = undefined
+                        else if (multiFormData[fields.portRangeMax]) {
+                            ports = ports.length > 0 ? ports + ',' : ports
+                            ports = ports + multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMax]
+                        }
+                        else if (form.field === fields.deploymentManifest) {
+                            data[fields.deploymentManifest] = multiFormData[fields.deploymentManifest]
+                        }
                     }
+                    data[uuid] = undefined
                 }
-                if (ports.length > 0) {
-                    data[fields.accessPorts] = ports
-                }
+            }
+            if (ports.length > 0) {
+                data[fields.accessPorts] = ports
+            }
 
-            
+
             let isUpdate = this.props.isUpdate;
             let valid = isUpdate ? await updateApp(this, data) : await createApp(this, data)
-            if(valid)
-            {
-                this.props.handleAlertInfo('success', `App ${data[fields.appName]} ${isUpdate ? 'updated': 'created'} successfully` )
+            if (valid) {
+                this.props.handleAlertInfo('success', `App ${data[fields.appName]} ${isUpdate ? 'updated' : 'created'} successfully`)
                 this.props.onClose(true)
             }
         }
@@ -279,7 +284,10 @@ class ClusterInstReg extends React.Component {
                             form.options = this.autoProvPolicyList
                             break;
                         case fields.deployment:
-                            form.options = [constant.DEPLOYMENT_TYPE_DOCKER, constant.DEPLOYMENT_TYPE_KUBERNETES, constant.DEPLOYMENT_TYPE_VM]
+                            form.options = [constant.DEPLOYMENT_TYPE_DOCKER, constant.DEPLOYMENT_TYPE_KUBERNETES, constant.DEPLOYMENT_TYPE_VM, constant.DEPLOYMENT_TYPE_HELM]
+                            break;
+                        case fields.accessType:
+                            form.options = [constant.ACCESS_TYPE_DEFAULT_FOR_DEPLOYMENT, constant.ACCESS_TYPE_DIRECT, constant.ACCESS_TYPE_LOAD_BALANCER]
                             break;
                         default:
                             form.options = undefined;
@@ -294,11 +302,9 @@ class ClusterInstReg extends React.Component {
             let organization = {}
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
-
             this.flavorList = await getFlavorList(this, { region: data[fields.region] })
             this.privacyPolicyList = await getPrivacyPolicyList(this, { region: data[fields.region] })
             this.autoProvPolicyList = await getAutoProvPolicyList(this, { region: data[fields.region] })
-
             if (data[fields.accessPorts]) {
                 let portArray = data[fields.accessPorts].split(',')
                 for (let i = 0; i < portArray.length; i++) {
@@ -338,16 +344,17 @@ class ClusterInstReg extends React.Component {
         return [
             { label: 'Apps', formType: 'Header', visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
-            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: true, disabled: false }, visible: true, tip: 'Organization or Company Name that a Developer is part of' },
+            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of' },
             { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true }, visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
             { field: fields.version, label: 'App Version', formType: INPUT, placeholder: 'Enter App Version', rules: { required: true }, visible: true, tip: 'App version' },
             { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
+            { field: fields.accessType, label: 'Access Type', formType: SELECT, placeholder: 'Select Access Type', rules: { required: true }, visible: true },
             { field: fields.imageType, label: 'Image Type', formType: INPUT, placeholder: 'Select Deployment Type', rules: { required: true, disabled: true }, visible: true, tip: 'ImageType specifies image type of an App' },
             { field: fields.imagePath, label: 'Image Path', formType: INPUT, placeholder: 'Enter Image Path', rules: { required: true }, visible: true, update: true, tip: 'URI of where image resides' },
             { field: fields.authPublicKey, label: 'Auth Public Key', formType: TEXT_AREA, placeholder: 'Enter Auth Public Key', rules: { required: false }, visible: true, update: true, tip: 'auth_public_key' },
             { field: fields.flavorName, label: 'Default Flavor', formType: SELECT, placeholder: 'Select Flavor', rules: { required: true }, visible: true, update: true, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: fields.region }] },
-            { field: fields.privacyPolicyName, label: 'Default Privacy Policy', formType: SELECT, placeholder: 'Select Privacy Policy', rules: { required: true }, visible: true, update: true, tip: 'Privacy policy when creating auto cluster', dependentData: [{ index: 1, field: fields.region }] },
-            { field: fields.autoPolicyName, label: 'Auto Provisioning Policy', formType: SELECT, placeholder: 'Select Auto Provisioning Policy', rules: { required: true }, visible: true, update: true, tip: 'Select Auto Provisioning Policy', dependentData: [{ index: 1, field: fields.region }] },
+            { field: fields.privacyPolicyName, label: 'Default Privacy Policy', formType: SELECT, placeholder: 'Select Privacy Policy', rules: { required: false }, visible: true, update: true, tip: 'Privacy policy when creating auto cluster', dependentData: [{ index: 1, field: fields.region }] },
+            { field: fields.autoPolicyName, label: 'Auto Provisioning Policy', formType: SELECT, placeholder: 'Select Auto Provisioning Policy', rules: { required: false }, visible: true, update: true, tip: 'Select Auto Provisioning Policy', dependentData: [{ index: 1, field: fields.region }] },
             { field: fields.officialFQDN, label: 'Official FQDN', formType: INPUT, placeholder: 'Enter Official FQDN', rules: { required: false }, visible: true, update: true, tip: 'Official FQDN' },
             { field: fields.androidPackageName, label: 'Android Package Name', formType: INPUT, placeholder: 'Enter Package Name', rules: { required: false }, visible: true, update: true, tip: 'Package Name' },
             { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: CHECKBOX, visible: false, value: false, update: true },
@@ -357,28 +364,37 @@ class ClusterInstReg extends React.Component {
         ]
     }
 
+    updateFormData = (forms, data) => {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            this.updateUI(form)
+            if (data) {
+                if (form.forms && form.formType !== 'Header' && form.formType !== 'MultiForm') {
+                    this.updateFormData(form.forms, data)
+                }
+                else {
+                    form.value = data[form.field]
+                    this.checkForms(form, forms, true)
+                }
+            }
+        }
+
+    }
+
     getFormData = async (data) => {
         let forms = this.formKeys()
         if (data) {
             await this.loadDefaultData(forms, data)
         }
         else {
-            this.organizationList = await getOrganizationList()
+            this.organizationList = await getOrganizationList(this)
         }
 
         forms.push(
             { label: this.isUpdate ? 'Update' : 'Create', formType: BUTTON, onClick: this.onCreate, validate: true },
             { label: 'Cancel', formType: BUTTON, onClick: this.onAddCancel })
 
-
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
-            this.updateUI(form)
-            if (data) {
-                form.value = data[form.field]
-                this.checkForms(form, forms, true)
-            }
-        }
+        this.updateFormData(forms, data)
 
         this.setState({
             forms: forms

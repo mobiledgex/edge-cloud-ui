@@ -6,7 +6,7 @@ import MexForms from '../../../../hoc/forms/MexForms';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import uuid from 'uuid';
-import {fields} from '../../../../services/model/format';
+import {fields, getOrganization} from '../../../../services/model/format';
 //model
 import {getOrganizationList} from '../../../../services/model/organization';
 import {updatePrivacyPolicy, createPrivacyPolicy} from '../../../../services/model/privacyPolicy';
@@ -143,8 +143,8 @@ class AutoProvPolicyReg extends React.Component {
     getForms = () => ([
         { label: 'Create Privacy Policy', formType: 'Header' },
         { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region' },
-        { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: true }, visible: true, serverField: 'privacypolicy#OS#key#OS#developer' },
-        { field: fields.privacyPolicyName, label: 'Privacy Policy Name', formType: 'Input', placeholder: 'Enter Privacy Policy Name', rules: { required: true }, visible: true, serverField: 'privacypolicy#OS#key#OS#name' },
+        { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true },
+        { field: fields.privacyPolicyName, label: 'Privacy Policy Name', formType: 'Input', placeholder: 'Enter Privacy Policy Name', rules: { required: true }, visible: true },
         { field: fields.fullIsolation, label: 'Full Isolation', formType: 'Checkbox', visible: true, value: false },
         { label: 'Outbound Security Rules', formType: 'Header', forms: [{ formType: 'IconButton', icon: 'add', style:{ color: "white", display: 'inline' }, onClick: this.addRulesForm }], visible: true },
     ])
@@ -361,13 +361,11 @@ const mapStateToProps = (state) => {
         }
         : {};
     let regionInfo = (state.regionInfo) ? state.regionInfo : null;
-    let _changedRegion = (state.form && state.form.createAppFormDefault && state.form.createAppFormDefault.values) ? state.form.createAppFormDefault.values.Region : null;
     return {
         getRegion: (state.getRegion) ? state.getRegion.region : null,
         regionInfo: regionInfo,
         region: region,
         changeRegion: state.changeRegion ? state.changeRegion.region : null,
-        changedRegion: _changedRegion
     }
 };
 

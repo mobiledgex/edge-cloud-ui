@@ -50,103 +50,103 @@ export const formatData = (datas, body) => {
     ];
     if (toJson && toJson.length) {
       toJson.map((dataResult, i) => {
+                if (dataResult.error || dataResult.message || !dataResult.data) {
+                    values.push({
+                        Region: '',
+                        OrganizationName: '',
+                        AppName: '',
+                        Version: '',
+                        Operator: '',
+                        Cloudlet: '',
+                        ClusterInst: '',
+                        CloudletLocation: '',
+                        URI: '',
+                        Liveness: '',
+                        Mapped_port: '',
+                        Flavor: '',
+                        State: '',
+                        Error: '',
+                        Runtime: '',
+                        Created: '',
+                        Progress: '',
+                        Edit: null,
+                        Status: '',
+                        Revision: '',
+                        HealthCheck: '',
+                    })
+                } else {
+                    let Index = i;
+                    let Region = body.region || body.params.region || '-';
+                    let DeveloperName = dataResult.data.key.app_key.organization || '-';
+                    let AppName = dataResult.data.key.app_key.name || '-';
+                    let Version = dataResult.data.key.app_key.version || '-';
+                    let Operator = dataResult.data.key.cluster_inst_key.cloudlet_key.organization || '-';
+                    let Cloudlet = dataResult.data.key.cluster_inst_key.cloudlet_key.name || '-';
+                    let CloudletLocation = dataResult.data.cloudlet_loc || '-';
+                    let ClusterInst = dataResult.data.key.cluster_inst_key.cluster_key.name || '-';
+                    let URI = dataResult.data.uri || '-';
+                    let liveness = dataResult.data.liveness || '-';
+                    let mapped_ports = dataResult.data.mapped_ports || '-';
+                    let flavor = dataResult.data.flavor.name || '-';
+                    let state = dataResult.data.state || '-';
+                    let error = dataResult.data.errors || '-';
+                    let runtime = dataResult.data.runtime_info || '-';
+                    let created = "seconds : " + dataResult.data.created_at.seconds || '-' + "     nanos : " + dataResult.data.created_at.nanos || '-';
+                    let Status = dataResult.data.status
+                    let Revision = dataResult.data.revision || '-';
+                    let HealthCheck = dataResult.data.health_check;
 
-        if (dataResult.error || dataResult.message || !dataResult.data) {
-          values.push({
-            Region: '',
-            OrganizationName: '',
-            AppName: '',
-            Version: '',
-            Operator: '',
-            Cloudlet: '',
-            ClusterInst: '',
-            CloudletLocation: '',
-            URI: '',
-            Liveness: '',
-            Mapped_port: '',
-            Flavor: '',
-            State: '',
-            Error: '',
-            Runtime: '',
-            Created: '',
-            Progress: '',
-            Edit: null,
-            Status: '',
-            Revision: ''
-          })
+
+                    values.push({
+                        uuid: generateUniqueId(),
+                        Region: Region,
+                        OrganizationName: DeveloperName,
+                        AppName: AppName,
+                        Version: Version,
+                        Operator: Operator,
+                        Cloudlet: Cloudlet,
+                        ClusterInst: ClusterInst,
+                        CloudletLocation: CloudletLocation,
+                        URI: URI,
+                        Liveness: liveness,
+                        Mapped_port: mapped_ports,
+                        Flavor: flavor,
+                        State: state,
+                        Error: error,
+                        Runtime: runtime,
+                        Created: created,
+                        Progress: '',
+                        Edit: newRegistKey,
+                        Status: Status,
+                        Revision: Revision,
+                        HealthCheck: HealthCheck,
+                    })
+                }
+            })
         } else {
-          let Index = i;
-          let Region = body.region || body.params.region || '-';
-          let DeveloperName = dataResult.data.key.app_key.organization || '-';
-          let AppName = dataResult.data.key.app_key.name || '-';
-          let Version = dataResult.data.key.app_key.version || '-';
-          let Operator = dataResult.data.key.cluster_inst_key.cloudlet_key.organization || '-';
-          let Cloudlet = dataResult.data.key.cluster_inst_key.cloudlet_key.name || '-';
-          let CloudletLocation = dataResult.data.cloudlet_loc || '-';
-          let ClusterInst = dataResult.data.key.cluster_inst_key.cluster_key.name || '-';
-          let URI = dataResult.data.uri || '-';
-          let liveness = dataResult.data.liveness || '-';
-          let mapped_ports = dataResult.data.mapped_ports || '-';
-          let flavor = dataResult.data.flavor.name || '-';
-          let state = dataResult.data.state || '-';
-          let error = dataResult.data.errors || '-';
-          let runtime = dataResult.data.runtime_info || '-';
-          let created = "seconds : " + dataResult.data.created_at.seconds || '-' + "     nanos : " + dataResult.data.created_at.nanos || '-';
-          let Status = dataResult.data.status
-          let Revision = dataResult.data.revision || '-';
-
-
-
-
-          values.push({
-            uuid: generateUniqueId(),
-            Region: Region,
-            OrganizationName: DeveloperName,
-            AppName: AppName,
-            Version: Version,
-            Operator: Operator,
-            Cloudlet: Cloudlet,
-            ClusterInst: ClusterInst,
-            CloudletLocation: CloudletLocation,
-            URI: URI,
-            Liveness: liveness,
-            Mapped_port: mapped_ports,
-            Flavor: flavor,
-            State: state,
-            Error: error,
-            Runtime: runtime,
-            Created: created,
-            Progress: '',
-            Edit: newRegistKey,
-            Status: Status,
-            Revision: Revision
-          })
+            let newRegistKey = [
+                'Region',
+                'DeveloperName',
+                'AppName',
+                'Version',
+                'Operator',
+                'Cloudlet',
+                'ClusterInst',
+                'CloudletLocation'
+            ];
+            values.push({
+                Region: '',
+                OrganizationName: '',
+                AppName: '',
+                Version: '',
+                Operator: '',
+                Cloudlet: '',
+                ClusterInst: '',
+                CloudletLocation: '',
+                Edit: newRegistKey
+            })
         }
-      })
-    } else {
-      let newRegistKey = [
-        'Region',
-        'DeveloperName',
-        'AppName',
-        'Version',
-        'Operator',
-        'Cloudlet',
-        'ClusterInst',
-        'CloudletLocation'
-      ];
-      values.push({
-        Region: '',
-        OrganizationName: '',
-        AppName: '',
-        Version: '',
-        Operator: '',
-        Cloudlet: '',
-        ClusterInst: '',
-        CloudletLocation: '',
-        Edit: newRegistKey
-      })
     }
-  }
-  return values
+    return values
 
 }

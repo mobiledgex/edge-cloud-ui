@@ -3,7 +3,7 @@ import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
 import { Grid } from 'semantic-ui-react';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, INPUT } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA } from '../../../hoc/forms/MexForms';
 import MexTab from '../../../hoc/forms/MexTab';
 //redux
 import { connect } from 'react-redux';
@@ -12,7 +12,7 @@ import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 //model
 import { getOrganizationList } from '../../../services/model/organization';
-import { createCloudlet} from '../../../services/model/cloudlet';
+import { createCloudlet } from '../../../services/model/cloudlet';
 //Map
 import Map from '../../../libs/simpleMaps/with-react-motion/index_clusters';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
@@ -34,8 +34,23 @@ class ClusterInstReg extends React.Component {
         this.operatorList = []
     }
 
-    checkForms = (form, forms, isInit) => {
+    platformTypeValueChange = (currentForm, forms, isInit) => {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (form.field === fields.openRCData || form.field === fields.caCertdata) {
+                form.visible = currentForm.value === constant.PLATFORM_TYPE_OPEN_STACK ? true : false
+            }
+        }
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
+        }
+    }
 
+    checkForms = (form, forms, isInit) => {
+        if(form.field === fields.platformType)
+        {
+            this.platformTypeValueChange(form, forms, isInit)
+        }
     }
 
     /**Required */
@@ -75,8 +90,6 @@ class ClusterInstReg extends React.Component {
                                 data[fields.cloudletLocation] = multiFormData
                             }
                         }
-                        data[fields.ipSupport] = constant.IPSupport(data[fields.ipSupport])
-                        data[fields.platformType] = constant.PlatformType(data[fields.platformType])
                         data[uuid] = undefined
                     }
                 }
@@ -198,10 +211,10 @@ class ClusterInstReg extends React.Component {
                             form.options = this.regions;
                             break;
                         case fields.ipSupport:
-                            form.options = ['Dynamic'];
+                            form.options = [constant.IP_SUPPORT_DYNAMIC];
                             break;
                         case fields.platformType:
-                            form.options = ['Openstack'];
+                            form.options = [constant.PLATFORM_TYPE_OPEN_STACK];
                             break;
                         default:
                             form.options = undefined;
@@ -227,14 +240,17 @@ class ClusterInstReg extends React.Component {
     formKeys = () => {
         return [
             { label: 'Cloudlet', formType: 'Header', visible: true },
-            { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
-            { field: fields.cloudletName, label: 'Cloudlet Name', formType: 'Input', placeholder: 'Enter cloudlet Name', rules: { required: true }, visible: true, },
-            { field: fields.operatorName, label: 'Operator', formType: 'Select', placeholder: 'Select Operator', rules: { required: true }, visible: true },
-            { uuid: uuid(), field: fields.cloudletLocation, label: 'Cloudlet Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm() },
-            { field: fields.ipSupport, label: 'IP Support', formType: 'Select', placeholder: 'Select IP Support', rules: { required: true }, visible: true },
-            { field: fields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: 'Input', placeholder: 'Enter Number of Dynamic IPs', rules: { required: true, type: 'number' }, visible: true, },
-            { field: fields.physicalName, label: 'Physical Name', formType: 'Input', placeholder: 'Enter Physical Name', rules: { required: true }, visible: true, },
-            { field: fields.platformType, label: 'Platform Type', formType: 'Select', placeholder: 'Select Platform Type', rules: { required: true }, visible: true },
+            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Select region where you want to deploy.' },
+            { field: fields.cloudletName, label: 'Cloudlet Name', formType: INPUT, placeholder: 'Enter cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.' },
+            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, tip: 'Name of the organization you are currently managing.' },
+            { uuid: uuid(), field: fields.cloudletLocation, label: 'Cloudlet Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'Cloudlet Location' },
+            { field: fields.ipSupport, label: 'IP Support', formType: SELECT, placeholder: 'Select IP Support', rules: { required: true }, visible: true, tip: 'Ip Support indicates the type of public IP support provided by the Cloudlet. Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.' },
+            { field: fields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: INPUT, placeholder: 'Enter Number of Dynamic IPs', rules: { required: true, type: 'number' }, visible: true, tip: 'Number of dynamic IPs available for dynamic IP support.' },
+            { field: fields.physicalName, label: 'Physical Name', formType: INPUT, placeholder: 'Enter Physical Name', rules: { required: true }, visible: true, tip: 'Physical infrastructure cloudlet name.' },
+            { field: fields.platformType, label: 'Platform Type', formType: SELECT, placeholder: 'Select Platform Type', rules: { required: true }, visible: true, tip: 'Supported list of cloudlet types.' },
+            { field: fields.openRCData, label: 'OpenRC Data', formType: TEXT_AREA, placeholder: 'Enter OpenRC Data', rules: { required: false }, visible: false, update: true, tip: 'key-value pair of access variables delimitted by newline.\nSample Input:\nOS_AUTH_URL=...\nOS_PROJECT_ID=...\nOS_PROJECT_NAME=...' },
+            { field: fields.caCertdata, label: 'CACert Data', formType: TEXT_AREA, placeholder: 'Enter CACert Data', rules: { required: false }, visible: false, update: true, tip: 'CAcert data for HTTPS based verfication of auth URL' },
+
 
         ]
     }
@@ -287,13 +303,10 @@ const mapStateToProps = (state) => {
         }
         : {};
     let regionInfo = (state.regionInfo) ? state.regionInfo : null;
-    let _changedRegion = (state.form && state.form.createAppFormDefault && state.form.createAppFormDefault.values) ? state.form.createAppFormDefault.values.Region : null;
     return {
         getRegion: (state.getRegion) ? state.getRegion.region : null,
         regionInfo: regionInfo,
-        region: region,
-        changeRegion: state.changeRegion ? state.changeRegion.region : null,
-        changedRegion: _changedRegion
+        region: region
     }
 };
 

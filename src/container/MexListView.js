@@ -141,17 +141,19 @@ class MexListView extends React.Component {
     onDelete = async (action) => {
         let dataList = this.state.dataList
         let data = dataList[this.selectedRowIndex]
-        if (action.ws) {
-            this.wsResponseCount = 0
-            this.props.handleLoadingSpinner(true);
-            serverData.sendWSRequest(action.onClick(data), this.onDeleteWSResponse)
-        }
-        else {
-            let mcRequest = await serverData.sendRequest(this, action.onClick(data))
-            if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-                this.props.handleAlertInfo('success', `${mcRequest.request.success} deleted successfully`)
-                dataList.splice(this.selectedRowIndex, 1)
-                this.setState({ dataList: dataList })
+        if (data) {
+            if (action.ws) {
+                this.wsResponseCount = 0
+                this.props.handleLoadingSpinner(true);
+                serverData.sendWSRequest(action.onClick(data), this.onDeleteWSResponse)
+            }
+            else {
+                let mcRequest = await serverData.sendRequest(this, action.onClick(data))
+                if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
+                    this.props.handleAlertInfo('success', `${mcRequest.request.success} deleted successfully`)
+                    dataList.splice(this.selectedRowIndex, 1)
+                    this.setState({ dataList: dataList })
+                }
             }
         }
     }
@@ -204,7 +206,7 @@ class MexListView extends React.Component {
                     {
                         field === fields.actions ? this.getAction(item)
                             :
-                            <div style={{wordBreak:'break-all'}}>
+                            <div style={{ wordBreak: 'break-all' }}>
                                 {header.customizedData ? header.customizedData(item) : item[field]}
                             </div>
                     }</Table.Cell>
@@ -242,27 +244,30 @@ class MexListView extends React.Component {
                 </Table> </div>)
     }
 
-    getActionMenu = () => (
-        this.props.actionMenu ?
-            <Popper open={Boolean(this.state.anchorEl)} anchorEl={this.state.anchorEl} role={undefined} transition disablePortal>
-                {({ TransitionProps, placement }) => (
-                    <Grow
-                        {...TransitionProps}
-                        style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center right' }}
-                    >
-                        <Paper style={{ backgroundColor: '#212121', color: 'white' }}>
-                            <ClickAwayListener onClickAway={() => this.setState({ anchorEl: null })}>
-                                <MenuList autoFocusItem={Boolean(this.state.anchorEl)} id="menu-list-grow" >
-                                    {this.props.actionMenu.map((action, i) => {
-                                        return <MenuItem key={i} onClick={(e) => { this.onActionClose(action) }}>{action.label}</MenuItem>
-                                    })}
-                                </MenuList>
-                            </ClickAwayListener>
-                        </Paper>
-                    </Grow>
-                )}
-            </Popper> : null
-    )
+    getActionMenu = () => {
+        return (
+            this.props.actionMenu ?
+                <Popper open={Boolean(this.state.anchorEl)} anchorEl={this.state.anchorEl} role={undefined} transition disablePortal>
+                    {({ TransitionProps, placement }) => (
+                        <Grow
+                            {...TransitionProps}
+                            style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center right' }}
+                        >
+                            <Paper style={{ backgroundColor: '#212121', color: 'white' }}>
+                                <ClickAwayListener onClickAway={() => this.setState({ anchorEl: null })}>
+                                    <MenuList autoFocusItem={Boolean(this.state.anchorEl)} id="menu-list-grow" >
+                                        {this.props.actionMenu.map((action, i) => {
+                                            let visible = action.visible ? action.visible(this.state.dataList[this.selectedRowIndex]) : true
+                                            return visible ? <MenuItem key={i} onClick={(e) => { this.onActionClose(action) }}>{action.label}</MenuItem> : null
+                                        })}
+                                    </MenuList>
+                                </ClickAwayListener>
+                            </Paper>
+                        </Grow>
+                    )}
+                </Popper> : null
+        )
+    }
 
     /*
     Stepper Block
@@ -475,8 +480,6 @@ class MexListView extends React.Component {
         if (this.requestCount === 0 && dataList.length === 0) {
             this.props.handleAlertInfo('error', 'Requested data is empty')
         }
-
-
         this.setState({
             dataList: dataList
         })

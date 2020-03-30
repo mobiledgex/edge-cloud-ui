@@ -2,22 +2,21 @@ import 'react-hot-loader';
 import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Button, Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
+import {Button, Checkbox, Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
-import {Button as MButton, CircularProgress} from '@material-ui/core'
+import {Card, CircularProgress} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
-import {Button as AButton, Checkbox, DatePicker, Select, Tooltip} from 'antd';
-import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import {DatePicker, Select, Tooltip} from 'antd';
 
 import {
     defaultHwMapperListForCluster,
     defaultLayoutForAppInst,
     defaultLayoutForCluster,
     defaultLayoutMapperForAppInst,
-    filterUsageByClassification,
+    filterByClassification,
     getUserId,
     makeAllLineChartData,
     makeBarChartDataForAppInst,
@@ -26,8 +25,7 @@ import {
     makeLineChartDataForAppInst,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
-    makeSelectBoxListWithThreeValuePipe,
-    renderPerformanceSummaryTable,
+    makeSelectBoxListWithValuePipe,
 } from "./PageDevMonitoringService";
 import {
     ADD_ITEM_LIST,
@@ -38,40 +36,57 @@ import {
     CHART_COLOR_LIST4,
     CHART_COLOR_MONOKAI,
     CLASSIFICATION,
-    CONNECTIONS_OPTIONS,
     GRID_ITEM_TYPE,
     HARDWARE_OPTIONS_FOR_APPINST,
     HARDWARE_OPTIONS_FOR_CLUSTER,
     HARDWARE_TYPE,
-    NETWORK_OPTIONS,
     NETWORK_TYPE,
     RECENT_DATA_LIMIT_COUNT,
-    TCP_OPTIONS,
     THEME_OPTIONS,
-    THEME_OPTIONS_LIST,
-    UDP_OPTIONS
+    THEME_OPTIONS_LIST
 } from "../../../../shared/Constants";
 import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
-import '../PageMonitoring.css'
 
-import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, PageMonitoringStyles, renderLoaderArea, renderPlaceHolderCircular, showToast} from "../PageMonitoringCommonService";
-import {getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList} from "../PageMonitoringMetricService";
+
+import {
+    getOneYearStartEndDatetime,
+    isEmpty,
+    makeBubbleChartDataForCluster,
+    PageMonitoringStyles,
+    renderLoaderArea,
+    renderPlaceHolderCircular,
+    showToast
+} from "../PageMonitoringCommonService";
+import {
+    getAllAppInstEventLogs,
+    getAllClusterEventLogList,
+    getAppInstList,
+    getAppLevelUsageList,
+    getCloudletList,
+    getClusterLevelUsageList,
+    getClusterList,
+    requestShowAppInstClientWS
+} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
-import ModalGraph from "../components/ModalGraph";
+import ModalGraph from "../components/ModalGraphContainer";
 import {reactLocalStorage} from "reactjs-localstorage";
-import LeafletMapWrapperForDev from "../components/LeafletMapWrapperForDev";
+import LeafletMapWrapperForDev from "../components/LeafletMapDevContainer";
 import {Responsive, WidthProvider} from "react-grid-layout";
 import _ from "lodash";
-import PieChartWrapper from "../components/PieChartWrapper";
-import BigModalGraph from "../components/BigModalGraph";
-import type {MonitoringContextInterface,} from "../PageMonitoringGlobalState";
-import {MonitoringConsumer} from "../PageMonitoringGlobalState";
-import BubbleChartWrapper from "../components/BubbleChartWrapper";
-import BarChartWrapper from "../components/BarChartWrapper";
-import LineChartWrapper from "../components/LineChartWrapper";
+import PieChartContainer from "../components/PieChartContainer";
+import BigModalGraphContainer from "../components/BigModalGraphContainer";
+import BubbleChartContainer from "../components/BubbleChartContainer";
+import BarChartContainer from "../components/BarChartContainer";
+import LineChartContainer from "../components/LineChartContainer";
+import EventLogListContainer from "../components/EventLogListContainer";
+import PerformanceSummaryTableContainer from "../components/PerformanceSummaryTableContainer";
+import VirtualAppInstEventLogListContainer from "../components/VirtualAppInstEventLogListContainer";
+import MaterialIcon from "material-icons-react";
+import '../PageMonitoring.css'
+import AddItemPopupContainer from "../components/AddItemPopupContainer";
 
 const {Option} = Select;
 
@@ -105,6 +120,7 @@ type Props = {
     userRole: any,
 }
 
+
 type State = {
     layoutForCluster: any,
     layoutForAppInst: any,
@@ -119,7 +135,7 @@ type State = {
     clusterInstanceGroupList: any,
     startTime: string,
     endTime: string,
-    clusterList: any,
+    clusterUsageList: any,
     filteredCpuUsageList: any,
     filteredMemUsageList: any,
     filteredDiskUsageList: any,
@@ -177,7 +193,6 @@ type State = {
     connectionsTabIndex: number,
     tcpTabIndex: number,
     udpTabIndex: number,
-    cloudletList: Array,
     maxCpu: number,
     maxMem: number,
     intervalLoading: boolean,
@@ -223,14 +238,26 @@ type State = {
     themeOptions: any,
     isNoData: boolean,
     isBubbleChartMaked: boolean,
+    allClusterEventLogList: any,
+    filteredClusterEventLogList: any,
+    isResizeComplete: boolean,
+    allAppInstEventLogs: any,
+    filteredAppInstEventLogs: any,
+    isFixGrid: boolean,
+    webSocketLoading: boolean,
+    selectedClientLocationListOnAppInst: any,
+    isMapUpdate: boolean,
+    currentWidgetWidth: number,
+    isOpenEditView: boolean,
+    isFullScreenMap: boolean,
 
 }
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class PageDevMonitoring extends Component<Props, State> {
         intervalForAppInst = null;
-        context: MonitoringContextInterface;
         gridItemHeight = 420;
+        webSocketInst: WebSocket = null;
 
         constructor(props) {
             super(props);
@@ -315,11 +342,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
                 allConnectionsUsageList: [],
                 filteredConnectionsUsageList: [],
-
                 connectionsTabIndex: 0,
                 tcpTabIndex: 0,
                 udpTabIndex: 0,
-
                 dropdownCloudletList: [],
                 allUsageList: [],
                 maxCpu: 0,
@@ -368,23 +393,31 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 addItemList: ADD_ITEM_LIST,
                 themeOptions: THEME_OPTIONS_LIST,
                 isBubbleChartMaked: false,
+                allClusterEventLogList: [],
+                filteredClusterEventLogList: [],
+                isResizeComplete: false,
+                allAppInstEventLogs: [],
+                filteredAppInstEventLogs: [],
+                isFixGrid: false,
+                webSocketLoading: false,
+                selectedClientLocationListOnAppInst: [],
+                isMapUpdate: true,
+                currentWidgetWidth: 1,
+                isOpenEditView: false,
+                isFullScreenMap: false,
             };
         }
 
-
         componentDidMount = async () => {
-            /*  notification.info({
-                  message: 'To release or freeze a grid item,, double click the item!',
-                  placement: 'topLeft',
-                  top:100,
-              });*/
+
             this.setState({
                 loading: true,
                 bubbleChartLoader: true,
                 selectOrg: localStorage.selectOrg === undefined ? '' : localStorage.selectOrg.toString(),
-            })
-            await this.loadInitDataForCluster();
 
+            })
+
+            await this.loadInitDataForCluster();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
@@ -393,6 +426,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         componentWillUnmount(): void {
             clearInterval(this.intervalForAppInst)
+            if (!isEmpty(this.webSocketInst)) {
+                this.webSocketInst.close();
+            }
+
         }
 
         showModalClusterLineChart(lineChartDataOne, index) {
@@ -408,42 +445,50 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 clearInterval(this.intervalForAppInst)
 
                 this.setState({dropdownRequestLoading: true})
-                let clusterList = await getClusterList();
+                //@todo:#####################################################################
+                //@todo: real_data (cloudletList ,clusterList, appnInstList)
+                //@todo:#####################################################################
                 let cloudletList = await getCloudletList()
-                let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
-                if (appInstanceList.length === 0) {
+                let clusterList = await getClusterList();
+                let appInstList: Array<TypeAppInstance> = await getAppInstList();
+                if (appInstList.length === 0) {
                     this.setState({
                         isNoData: true,
                     })
                 }
 
-                //fixme: fakeData22222222222
-                //fixme: fakeData
-                /*    let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
-                    let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-                    let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
-                    console.log('appInstanceList====>', appInstanceList);*/
-
-                console.log('clusterList===>', clusterList);
+                console.log('clusterUsageList===>', clusterList);
 
                 let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
 
+                //@todo:#############################################
+                //@todo: getAllClusterEventLogList : real data
+                //@todo:#############################################
+                let allClusterEventLogList = await getAllClusterEventLogList(clusterList);
+                console.log("allClusterEventLogList===>", allClusterEventLogList);
+                await this.setState({
+                    allClusterEventLogList: allClusterEventLogList,
+                    filteredClusterEventLogList: allClusterEventLogList
+                })
 
-                console.log("clusterDropdownList===>", clusterDropdownList);
 
-                //@fixme: 클러스터 레벨 이벤트로그 호출...
-                //@fixme: 클러스터 레벨 이벤트로그 호출...
-                /*let clusterEventLogList = await getClusterEventLogList(clusterList);
-                //alert(JSON.stringify(clusterEventLogList))*/
+                //@todo:#############################################
+                //@todo: getAppInst Event Logs : real data
+                //@todo:#############################################
+                let allAppInstEventLogs = await getAllAppInstEventLogs();
+                console.log("allAppInstEventLogs====>", allAppInstEventLogs);
+                await this.setState({
+                    allAppInstEventLogs: allAppInstEventLogs,
+                    filteredAppInstEventLogs: allAppInstEventLogs,
+                })
+
 
                 let appInstanceListGroupByCloudlet = []
                 try {
-                    appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
+                    appInstanceListGroupByCloudlet = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
                 } catch (e) {
                     showToast(e.toString())
                 }
-
-
                 console.log('appInstanceListGroupByCloudlet===>', appInstanceListGroupByCloudlet);
 
                 await this.setState({
@@ -452,8 +497,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     dropDownCloudletList: cloudletList,
                     clusterList: clusterList,
                     isAppInstaceDataReady: true,
-                    appInstanceList: appInstanceList,
-                    filteredAppInstanceList: appInstanceList,
+                    appInstanceList: appInstList,
+                    filteredAppInstanceList: appInstList,
                     dropdownRequestLoading: false,
 
                 });
@@ -464,18 +509,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     })
                 }
                 let allClusterUsageList = []
+
+                //@todo:#############################################
+                //todo: real data (allClusterUsageList)
+                //@todo:#############################################
                 try {
                     allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
                 } catch (e) {
 
                 }
-
-                //fixme: fakeData22222222222
-                //fixme: fakeData22222222222
-                //fixme: fakeData22222222222
-                /*allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
-                console.log('filteredAppInstanceList===>', appInstanceList)*/
-
 
                 let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
                 await this.setState({
@@ -489,8 +531,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 let maxMem = Math.max.apply(Math, allClusterUsageList.map(function (o) {
                     return o.sumMemUsage;
                 }));
-
-                console.log('allClusterUsageList333====>', allClusterUsageList);
 
                 await this.setState({
                     clusterListLoading: false,
@@ -520,6 +560,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 filteredClusterUsageList: this.state.allClusterUsageList,
                 filteredAppInstanceList: this.state.appInstanceList,
+                filteredClusterEventLogList: this.state.allClusterEventLogList,
+                filteredAppInstEventLogs: this.state.allAppInstEventLogs,
                 appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
             });
             //todo: reset bubble chart data
@@ -582,10 +624,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
 
             return (
-                <LineChartWrapper context={this.context} loading={this.state.loading}
-                                  currentClassification={this.state.currentClassification}
-                                  parent={this}
-                                  pHardwareType={hwType} chartDataSet={lineChartDataSet}/>
+                <LineChartContainer isResizeComplete={this.state.isResizeComplete} context={this.context}
+                                    loading={this.state.loading}
+                                    currentClassification={this.state.currentClassification}
+                                    parent={this}
+                                    pHardwareType={hwType} chartDataSet={lineChartDataSet}/>
             )
 
         }
@@ -604,8 +647,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
 
             return (
-                <BarChartWrapper parent={this} loading={this.state.loading} chartDataSet={barChartDataSet}
-                                 pHardwareType={hwType} graphType={graphType}/>
+                <BarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this}
+                                   loading={this.state.loading} chartDataSet={barChartDataSet}
+                                   pHardwareType={hwType} graphType={graphType}/>
             )
         }
 
@@ -618,130 +662,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
         }
 
-
-        renderDropDownForMultiTab(cate) {
-            if (cate === HARDWARE_TYPE.SENDBYTES || cate === HARDWARE_TYPE.RECVBYTES) {
-                return this.renderDropdownForNetwork(cate)
-            } else if (cate === HARDWARE_TYPE.TCPCONNS || cate === HARDWARE_TYPE.TCPRETRANS) {
-                return this.renderDropdownForTCP(cate)
-            } else if (cate === HARDWARE_TYPE.UDPRECV || cate === HARDWARE_TYPE.UDPSENT) {
-                return this.renderDropdownForUDP(cate)
-            } else if (cate === HARDWARE_TYPE.ACCEPTS_CONNECTION || cate === HARDWARE_TYPE.HANDLED_CONNECTION || cate === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-                return this.renderDropdownForConnections(cate)
-            }
-
-        }
-
-        renderDropdownForConnections(subCategoryType) {
-            return (
-                <Dropdown
-                    placeholder='SELECT CONN TYPE'
-                    selection
-                    loading={this.state.loading}
-                    options={CONNECTIONS_OPTIONS}
-                    defaultValue={CONNECTIONS_OPTIONS[0].value}
-                    onChange={async (e, {value}) => {
-                        //TAB0 IS SENDBYTES
-                        if (value === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-                            this.setState({
-                                connectionsTabIndex: 0,
-                            })
-                        } else if (value === HARDWARE_TYPE.HANDLED_CONNECTION) {
-                            this.setState({
-                                connectionsTabIndex: 1,
-                            })
-                        } else if (value === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-                            this.setState({
-                                connectionsTabIndex: 2,
-                            })
-                        }
-
-                    }}
-                    value={subCategoryType}
-                    // style={Styles.dropDown}
-                />
-            )
-        }
-
-        renderDropdownForNetwork(hwType) {
-            return (
-                <Dropdown
-                    placeholder='SELECT NET TYPE'
-                    selection
-                    loading={this.state.loading}
-                    options={NETWORK_OPTIONS}
-                    defaultValue={NETWORK_OPTIONS[0].value}
-                    onChange={async (e, {value}) => {
-                        //TAB0 IS SENDBYTES
-                        if (value === HARDWARE_TYPE.RECVBYTES) {
-                            this.setState({
-                                networkTabIndex: 0,
-                            })
-                        } else if (value === HARDWARE_TYPE.SENDBYTES) {
-                            this.setState({
-                                networkTabIndex: 1,
-                            })
-                        }
-                    }}
-                    value={hwType}
-                    // style={Styles.dropDown}
-                />
-            )
-        }
-
-
-        renderDropdownForTCP(subCategoryType) {
-            return (
-                <Dropdown
-                    placeholder='SELECT TCP TYPE'
-                    selection
-                    loading={this.state.loading}
-                    options={TCP_OPTIONS}
-                    defaultValue={TCP_OPTIONS[0].value}
-                    onChange={async (e, {value}) => {
-                        //TAB0 IS SENDBYTES
-                        if (value === HARDWARE_TYPE.TCPCONNS) {
-                            this.setState({
-                                tcpTabIndex: 0,
-                            })
-                        } else if (value === HARDWARE_TYPE.TCPRETRANS) {
-                            this.setState({
-                                tcpTabIndex: 1,
-                            })
-                        }
-                    }}
-                    value={subCategoryType}
-                    // style={Styles.dropDown}
-                />
-            )
-        }
-
-
-        renderDropdownForUDP(subCategoryType) {
-            return (
-                <Dropdown
-                    placeholder='SELECT UDP TYPE'
-                    selection
-                    loading={this.state.loading}
-                    options={UDP_OPTIONS}
-                    defaultValue={UDP_OPTIONS[0].value}
-                    onChange={async (e, {value}) => {
-                        //TAB0 IS SENDBYTES
-                        if (value === HARDWARE_TYPE.UDPRECV) {
-                            this.setState({
-                                udpTabIndex: 0,
-                            })
-                        } else if (value === HARDWARE_TYPE.UDPSENT) {
-                            this.setState({
-                                udpTabIndex: 1,
-                            })
-                        }
-                    }}
-                    value={subCategoryType}
-                    // style={Styles.dropDown}
-                />
-            )
-        }
 
         async resetGridPosition() {
             try {
@@ -799,12 +719,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }, 1000 * 7.0)
         }
 
-        handleAppInstDropdown = async (pCurrentAppInst) => {
+        handleAppInstDropdown = async (pCurrentAppInst, isStreamBtnClick = false) => {
             clearInterval(this.intervalForAppInst)
 
-            await this.setState({
-                isShowBigGraph: false,
-            })
+            //@fixme: ################################
+            //@fixme: requestShowAppInstClientWS
+            //@fixme: ################################
+            if (!isStreamBtnClick) {
+                await this.setState({
+                    selectedClientLocationListOnAppInst: [],
+                })
+                this.webSocketInst = requestShowAppInstClientWS(pCurrentAppInst, this);
+            }
+
+
             await this.setState({
                 currentAppInst: pCurrentAppInst,
                 loading: true,
@@ -813,17 +741,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let AppName = pCurrentAppInst.split('|')[0].trim()
             let Cloudlet = pCurrentAppInst.split('|')[1].trim()
             let ClusterInst = pCurrentAppInst.split('|')[2].trim()
-            let filteredAppList = filterUsageByClassification(this.state.appInstanceList, Cloudlet, 'Cloudlet');
-            filteredAppList = filterUsageByClassification(filteredAppList, ClusterInst, 'ClusterInst');
-            filteredAppList = filterUsageByClassification(filteredAppList, AppName, 'AppName');
+            let filteredAppList = filterByClassification(this.state.appInstanceList, Cloudlet, 'Cloudlet');
+            filteredAppList = filterByClassification(filteredAppList, ClusterInst, 'ClusterInst');
+            filteredAppList = filterByClassification(filteredAppList, AppName, 'AppName');
 
+            console.log("filteredAppList===>", filteredAppList);
+
+            //todo:Terminal
+            //todo:Terminal
             //todo:Terminal
             this.setState({
                 terminalData: null
             })
             this.validateTerminal(filteredAppList)
 
-            let appInstDropdown = makeSelectBoxListWithThreeValuePipe(filteredAppList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
+            let appInstDropdown = makeSelectBoxListWithValuePipe(filteredAppList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
             await this.setState({
                 appInstDropdown,
             })
@@ -841,8 +773,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 this.setState({dropdownRequestLoading: false})
             }
 
-            console.log('allAppInstUsageList===>', allAppInstUsageList)
-            // Cluster | AppInst
+            console.log("allAppInstUsageList===>", allAppInstUsageList);
+
+
             let currentCluster = pCurrentAppInst.split("|")[2].trim() + " | " + pCurrentAppInst.split('|')[1].trim()
             pCurrentAppInst = pCurrentAppInst.trim();
             pCurrentAppInst = pCurrentAppInst.split("|")[0].trim() + " | " + pCurrentAppInst.split('|')[1].trim() + " | " + pCurrentAppInst.split('|')[2].trim()
@@ -854,7 +787,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 loading: false,
                 currentAppInst: pCurrentAppInst,
                 //currentCluster: currentCluster,
-                currentCluster: '',
+                currentCluster: isEmpty(this.state.currentCluster) ? '' : this.state.currentCluster,
                 clusterSelectBoxPlaceholder: 'Select cluster'
                 //clusterSelectBoxPlaceholder: 'Select Cluster'
             }, () => {
@@ -863,20 +796,41 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 console.log('filteredAppInstUsageList===>', this.state.filteredAppInstUsageList)
             })
 
-            await this.setState({
-                currentTabIndex: 0,
+            //todo: ############################
+            //todo: filtered AppInstEventLogList
+            //todo: ############################
+            let _allAppInstEventLog = this.state.allAppInstEventLogs;
+            let filteredAppInstEventLogList = _allAppInstEventLog.filter(item => {
+                if (item[1] === AppName && item[2] === ClusterInst && item[4] === Cloudlet) {
+                    return true;
+                }
             })
 
+            await this.setState({
+                filteredAppInstEventLogs: filteredAppInstEventLogList,
+                currentTabIndex: 0,
+            });
+
+
+            //todo: ############################
+            //todo: setStream
+            //todo: ############################
             if (this.state.isStream) {
                 this.setAppInstInterval(filteredAppList)
             } else {
                 clearInterval(this.intervalForAppInst)
             }
 
+
         }
+
 
         async handleClusterDropdown(value) {
             clearInterval(this.intervalForAppInst)
+
+            await this.setState({
+                selectedClientLocationListOnAppInst: [],
+            })
 
             let selectData = value.split("|")
             let selectedCluster = selectData[0].trim();
@@ -895,18 +849,35 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             });
 
             let allUsageList = allClusterUsageList;
-            console.log('allClusterUsageList===>', allClusterUsageList)
+            console.log('handleClusterDropdown===>', allClusterUsageList)
             let filteredClusterUsageList = []
+
+            console.log("handleClusterDropdown===selectedCluster>", selectedCluster);
+            console.log("handleClusterDropdown===selectedCloudlet>", selectedCloudlet);
+
             allUsageList.map(item => {
                 if (item.cluster === selectedCluster && item.cloudlet === selectedCloudlet) {
                     filteredClusterUsageList.push(item)
                 }
-                // console.log('Cluster_Dropdown===>', item);
+            })
+            await this.setState({
+                filteredClusterUsageList: filteredClusterUsageList,
             })
 
-            console.log('filteredUsageList===>', filteredClusterUsageList);
-            this.setState({
-                filteredClusterUsageList: filteredClusterUsageList,
+            console.log("handleClusterDropdown===>", filteredClusterUsageList);
+
+            let allClusterEventLogList = this.state.allClusterEventLogList
+            let filteredClusterEventLogList = []
+            allClusterEventLogList.map(item => {
+                /*                "cluster",1                "cloudlet",3                */
+                if (item[1] === selectedCluster && item[3] === selectedCloudlet) {
+                    filteredClusterEventLogList.push(item)
+                }
+            })
+
+            console.log("filteredClusterEventLogList===>", filteredClusterEventLogList);
+            await this.setState({
+                filteredClusterEventLogList: filteredClusterEventLogList,
             })
 
             let appInstanceList = this.state.appInstanceList;
@@ -918,8 +889,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 }
             })
             console.log('appInstDropdown===filteredAppInstList>', filteredAppInstList);
-            let appInstDropdown = makeSelectBoxListWithThreeValuePipe(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
+            let appInstDropdown = makeSelectBoxListWithValuePipe(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST, CLASSIFICATION.REGION)
             console.log('appInstDropdown===>', appInstDropdown);
+
+
+            let groupdClusterList = reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET)
+
+            console.log("groupdClousterList===>", groupdClusterList);
+
+            let selectedCloudletCount = Object.keys(groupdClusterList)
+
+            console.log("selectedCloudletCount===>", selectedCloudletCount.length);
 
             await this.setState({
                 appInstDropdown: appInstDropdown,
@@ -936,68 +916,24 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
         }
 
-
-        renderBubbleChartArea() {
-            return (
-                <div style={{height: '100%'}}>
-                    <BubbleChartWrapper
-                        loading={this.state.loading}
-                        parent={this}
-                        currentHardwareType={this.state.currentHardwareType}
-                        bubbleChartData={this.state.bubbleChartData}
-                        themeTitle={this.state.themeTitle}/>
-                </div>
-            )
+        makeGridSizeByType(graphType) {
+            if (graphType === GRID_ITEM_TYPE.CLUSTER_LIST || graphType === GRID_ITEM_TYPE.PERFORMANCE_SUM || graphType === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST || graphType === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
+                return 2;
+            } else if (graphType === GRID_ITEM_TYPE.MAP) {
+                return 2;
+            } else {
+                return 1;
+            }
         }
 
-
-        renderMapArea() {
-            return (
-                <>
-                    <div className='page_monitoring_title_area' style={{display: 'flex'}}>
-
-                        <div style={{
-                            display: 'flex',
-                            width: '100%',
-                            height: 30
-                        }}>
-                            <div className='page_monitoring_title' style={{
-                                backgroundColor: 'transparent',
-                                flex: .38
-                            }}>
-                                Deployed Instance
-                            </div>
-                        </div>
-
-                        <div className='page_monitoring_title' style={{
-                            backgroundColor: 'transparent',
-                            flex: .65
-                        }}>
-                            {this.state.mapPopUploading &&
-                            <div style={{zIndex: 99999999999}}>
-                                <CircularProgress style={{
-                                    color: '#1cecff',
-                                    marginRight: 0,
-                                    marginBottom: -2,
-                                    fontWeight: 'bold',
-                                }}
-                                                  size={14}/>
-                            </div>
-                            }
-                        </div>
-                    </div>
-                    {/*@todo: LeafletMapWrapperForDev*/}
-                    <div className='page_monitoring_container'>
-                        <LeafletMapWrapperForDev
-                            mapPopUploading={this.state.mapPopUploading}
-                            parent={this}
-                            isDraggable={this.state.isDraggable}
-                            handleAppInstDropdown={this.handleAppInstDropdown}
-                            markerList={this.state.appInstanceListGroupByCloudlet}/>
-                    </div>
-                </>
-            )
+        makeGridSizeHeightByType(graphType) {
+            if (graphType === GRID_ITEM_TYPE.MAP) {
+                return 2;
+            } else {
+                return 1;
+            }
         }
+
 
         async addGridItem(hwType, graphType = 'line') {
 
@@ -1022,16 +958,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         i: uniqueId,
                         x: 0,
                         y: maxY + 1,
-                        w: graphType === GRID_ITEM_TYPE.CLUSTER_LIST ? 2 : 1,
-                        h: 1,
+                        w: this.makeGridSizeByType(graphType),
+                        h: this.makeGridSizeHeightByType(graphType),
                     }),
                     layoutMapperForCluster: mapperList.concat(itemOne),
-                });
+                })
 
                 console.log("layoutMapperForCluster===>", this.state.layoutMapperForCluster)
-
                 reactLocalStorage.setObject(getUserId() + "_layout", this.state.layoutForCluster)
                 reactLocalStorage.setObject(getUserId() + "_layout_mapper", this.state.layoutMapperForCluster)
+
+
             } else {//@TODO: APPINST LEVEL
 
                 let currentItems = this.state.layoutForAppInst;
@@ -1086,8 +1023,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-
-        _makeGridItemOneByType(hwType, graphType) {
+        makeGridItemBodyByType(hwType, graphType) {
 
             if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                 return (
@@ -1103,23 +1039,53 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BUBBLE) {
                 return (
-                    this.renderBubbleChartArea()
+                    <BubbleChartContainer
+                        loading={this.state.loading}
+                        parent={this}
+                        currentHardwareType={this.state.currentHardwareType}
+                        bubbleChartData={this.state.bubbleChartData}
+                        themeTitle={this.state.themeTitle}/>
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.MAP) {
                 return (
-                    this.renderMapArea()
+                    <LeafletMapWrapperForDev
+                        currentWidgetWidth={this.state.currentWidgetWidth}
+                        isMapUpdate={this.state.isMapUpdate}
+                        selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
+                        mapPopUploading={this.state.mapPopUploading}
+                        parent={this}
+                        isDraggable={this.state.isDraggable}
+                        handleAppInstDropdown={this.handleAppInstDropdown}
+                        markerList={this.state.appInstanceListGroupByCloudlet}
+                        isFullScreenMap={false}
+                    />
                 )
-            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_LIST) {
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
                 return (
-                    this.state.loading ? renderPlaceHolderCircular() : renderPerformanceSummaryTable(this, this.state.filteredClusterUsageList)
+                    this.state.loading ? renderPlaceHolderCircular() :
+                        <PerformanceSummaryTableContainer parent={this}
+                                                          clusterUsageList={this.state.filteredClusterUsageList}/>
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PIE) {
                 return (
-                    <PieChartWrapper/>
+                    <PieChartContainer/>
+                )
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST) {
+                return (
+                    <EventLogListContainer eventLogList={this.state.filteredClusterEventLogList}/>
+                )
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
+                return (
+                    <VirtualAppInstEventLogListContainer
+                        currentAppInst={this.state.currentAppInst}
+                        parent={this}
+                        handleAppInstDropdown={this.handleAppInstDropdown}
+                        eventLogList={this.state.filteredAppInstEventLogs}
+                    />
                 )
             }
-
         }
+
 
         makeLineChartDataForBigModal(lineChartDataSet) {
             let levelTypeNameList = lineChartDataSet.levelTypeNameList
@@ -1167,9 +1133,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
         }
 
-        showBigModal = (hwType, graphType,) => {
-
-            //alert(this.state.currentClassification)
+        showBigModal = (hwType, graphType) => {
 
             let chartDataForRendering = []
             if (graphType.toUpperCase() == GRID_ITEM_TYPE.LINE) {
@@ -1194,104 +1158,108 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 popupGraphHWType: hwType,
                 popupGraphType: graphType,
                 isPopupMap: !this.state.isPopupMap,
+                isMapUpdate: true,
             });
         }
 
 
-        _makeGridItemOne(uniqueIndex, hwType, graphType, item,) {
+        makeGridItemOne(uniqueIndex, hwType, graphType, item) {
             return (
-                <div key={uniqueIndex} data-grid={item} style={{margin: 5, backgroundColor: 'black'}}
-                     onClick={() => {
-                         //alert('sdlkfdslkf')
-                     }}
-                     onDoubleClick={async () => {
-                         await this.setState({
-                             isDraggable: !this.state.isDraggable,
-                             appInstanceListGroupByCloudlet: [],
-                         })
-                         this.setState({
-                             appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
-                         });
-                     }}
+                <div
+                    key={uniqueIndex} data-grid={item} style={{margin: 0, backgroundColor: '#292c33'}}
+                    onClick={() => {
+                        // alert('sdlkfdslkf')
+                    }}
+                    onDoubleClick={async () => {
+                        await this.setState({
+                            isFixGrid: true,
+                            isDraggable: !this.state.isDraggable,
+                            appInstanceListGroupByCloudlet: [],
+                        })
+                        this.setState({
+                            appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
+                        });
+                        setTimeout(() => {
+                            this.setState({
+                                isFixGrid: false,
+                            })
+                        }, 500)
+                    }}
                 >
-                    <div className='page_monitoring_column_kyungjoon1' style={{height: this.gridItemHeight}}>
-                        {/*@todo:_makeGridItemOneByType      */}
-                        {/*@todo:_makeGridItemOneByType      */}
-                        {this._makeGridItemOneByType(hwType, graphType.toUpperCase())}
+
+                    <div className='page_monitoring_widget_icon_area'
+                         style={{position: 'absolute', right: 25, top: 10}}>
+                        {/*desc:############################*/}
+                        {/*desc:    edit btn                */}
+                        {/*desc:############################*/}
+                        <div className="edit page_monitoring_widget_icon">
+                            {/*<MaterialIcon icon='create'/>*/}
+                        </div>
+                        {/*desc:############################*/}
+                        {/*desc:    maximize button         */}
+                        {/*desc:############################*/}
+                        {graphType.toUpperCase() !== GRID_ITEM_TYPE.PERFORMANCE_SUM
+                        && graphType.toUpperCase() !== GRID_ITEM_TYPE.BUBBLE
+                        && graphType.toUpperCase() !== GRID_ITEM_TYPE.APP_INST_EVENT_LOG
+                        && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST
+                        &&
+                        <div className="maxize page_monitoring_widget_icon"
+                             onClick={this.showBigModal.bind(this, hwType, graphType)}
+                        >
+                            <MaterialIcon icon='aspect_ratio'/>
+                        </div>
+                        }
+
+                        <div className="remove page_monitoring_widget_icon"
+                             onClick={() => {
+                                 this.removeGridItem(uniqueIndex)
+                             }}
+                        >
+                            <MaterialIcon icon='delete'/>
+                        </div>
                     </div>
 
-                    <div className="remove"
-                         onClick={() => {
-                             this.removeGridItem(uniqueIndex)
-                         }}
-                         style={{
-                             fontSize: 25,
-                             width: 37,
-                             display: 'flex',
-                             alignItems: 'center',
-                             justifyContent: 'center',
-                             //backgroundColor: 'red',
-                             position: "absolute",
-                             right: "38px",
-                             top: 0,
-                             fontWeight: 'bold',
-                             cursor: "pointer",
-                             color: 'white'
-                         }}
-                    >
-                        x
-                    </div>
 
-                    {/*todo:maximize button*/}
-                    {/*todo:maximize button*/}
-                    {graphType.toUpperCase() !== GRID_ITEM_TYPE.BUBBLE &&
-                    <div className="maxize"
-                         onClick={this.showBigModal.bind(this, hwType, graphType)}
-                         style={{
-                             fontSize: 29,
-                             width: 37,
-                             display: 'flex',
-                             alignItems: 'center',
-                             justifyContent: 'center',
-                             //backgroundColor: 'red',
-                             position: "absolute",
-                             right: "0px",
-                             top: 7,
-                             fontWeight: 'bold',
-                             cursor: "pointer"
-                         }}
-                    >
-                        <FullscreenIcon color="primary" style={{color: 'white', fontSize: 25}}/>
-                    </div>
-                    }
+                    {/*desc:############################*/}
+                    {/*@desc:__makeGridItem BodyByType  */}
+                    {/*desc:############################*/}
+                    <div className='page_monitoring_column_resizable'>
 
+                        {this.makeGridItemBodyByType(hwType, graphType.toUpperCase())}
+                    </div>
                 </div>
             )
         }
 
 
         renderGridLayoutForCluster() {
-
             return (
                 <ResponsiveReactGridLayout
-                    style={{backgroundColor: 'black'}}
-                    isResizable={false}
+                    isResizable={true}
                     isDraggable={this.state.isDraggable}
-                    useCSSTransforms={true}
-                    className={'layout'}
+                    //useCSSTransforms={true}
+                    className={'layout page_monitoring_layout_dev'}
                     cols={{lg: 3, md: 3, sm: 3, xs: 3, xxs: 3}}
                     layout={this.state.layoutForCluster}
                     rowHeight={this.gridItemHeight}
+                    onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
+                        console.log("newItem====>", newItem.w);
+                        let width = newItem.w;
+                        this.setState({
+                            isResizeComplete: !this.state.isResizeComplete,
+                            currentWidgetWidth: width,
+                        })
+                    }}
+
                     onLayoutChange={(layout) => {
                         this.setState({
                             layoutForCluster: layout,
                         }, () => {
                             console.log("layoutForCluster===>", this.state.layoutForCluster);
                         })
-
                         reactLocalStorage.setObject(getUserId() + "_layout", layout)
-
                     }}
+                    {...this.props}
 
                 >
                     {this.state.layoutForCluster.map((item, loopIndex) => {
@@ -1305,7 +1273,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             graphType = graphType.toUpperCase()
                         }
                         console.log("hwType===>", hwType);
-                        return this._makeGridItemOne(uniqueIndex, hwType, graphType, item)
+                        return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
                     })}
 
 
@@ -1318,11 +1286,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         renderGridLayoutForAppInst = () => {
             return (
                 <ResponsiveReactGridLayout
-                    style={{backgroundColor: 'black'}}
-                    isResizable={false}
                     isDraggable={this.state.isDraggable}
                     useCSSTransforms={true}
-                    className={'layout'}
+                    isResizable={true}
+                    className={'layout page_monitoring_layout_dev'}
                     cols={{lg: 3, md: 3, sm: 3, xs: 3, xxs: 3}}
                     layout={this.state.layoutForAppInst}
                     rowHeight={this.gridItemHeight}
@@ -1346,7 +1313,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         }
                         console.log("hwType===>", hwType);
 
-                        return this._makeGridItemOne(uniqueIndex, hwType, graphType, item)
+                        return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
 
                     })}
                 </ResponsiveReactGridLayout>
@@ -1354,136 +1321,97 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        /* renderAddItemSelectOptions() {
-
-             if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                 return this.state.hwListForCluster.map(item => {
-                     return (
-                         <Option value={item.value}>{item.text}</Option>
-                     )
-                 });
-             } else {
-                 return this.state.hwListForAppInst.map(item => {
-                     return (
-                         <Option value={item.value}>{item.text}</Option>
-                     )
-                 });
-             }
-
-         }*/
-
         renderHeader = () => {
 
             return (
 
-                <Grid.Row className='content_title'>
-                    <div className='content_title_wrap'>
-                        <div className='content_title_label'>Monitoring</div>
-                        {/*todo:---------------------------*/}
-                        {/*todo:REFRESH, RESET BUTTON DIV  */}
-                        {/*todo:---------------------------*/}
-                        <Button
-                            onClick={async () => {
-                                if (!this.state.loading) {
-                                    this.refreshAllData();
-                                } else {
-                                    showToast('Currently loading, you can\'t request again.')
-                                }
-
-                            }}
-                            className="ui circular icon button"
-                        >
-                            <i aria-hidden="true"
-                               className="sync alternate icon"></i>
-                        </Button>
-                        <Button
-                            onClick={async () => {
-                                await this.resetAllDataForDev();
-                            }}
-                        >Reset
-                        </Button>
-                        <Tooltip
-                            placement="topLeft"
-                            title={
-                                <div>
-                                    <p>To release or freeze a grid item, double click grid item!</p>
-                                </div>
-                            }
-                        >
-                            <AButton
-                                style={{
-                                    borderColor: !this.state.isDraggable ? 'green' : 'rgba(117,122,133,1)',
-                                    backgroundColor: !this.state.isDraggable ? 'green' : 'rgba(117,122,133,1)',
-                                    color: 'white',
-                                    height: 35,
-                                }}
-                                onClick={async () => {
-                                    await this.setState({
-                                        isDraggable: !this.state.isDraggable,
-                                        appInstanceListGroupByCloudlet: [],
-                                    })
-                                    this.setState({
-                                        appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
-                                    });
-                                }}
-                                type="primary">
-                                Fix Grid
-                            </AButton>
-                        </Tooltip>
-                        <Button
-                            onClick={async () => {
-                                this.resetGridPosition();
-                            }}
-                        >Restore to Default Grid View
-                        </Button>
-                        {this.state.currentClassification === CLASSIFICATION.APPINST &&
-                        <div>
-                            <MButton
-                                style={{
-                                    backgroundColor: this.state.isStream ? 'green' : '#6c6c6c',
-                                    color: 'white',
-                                    height: 37
-                                }}
-                                onClick={async () => {
-                                    this.setState({
-                                        isStream: !this.state.isStream,
-                                    }, () => {
-                                        if (!this.state.isStream) {
-                                            clearInterval(this.intervalForAppInst)
-                                        } else {
-                                            this.handleAppInstDropdown(this.state.currentAppInst)
-                                        }
-                                    })
-                                }}
-                            >STREAM {this.state.isStream ? 'on' : 'off'}</MButton>
-                        </div>
-
-                        }
-                        {this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?
-                            <div style={{}}>
-                                <MButton
-                                    style={{backgroundColor: '#6c6c6c', color: 'white', height: 37}}
-                                    onClick={() => this.setState({openTerminal: true})}>Terminal</MButton>
-                            </div>
-                            : null
-                        }
-                        {this.state.intervalLoading &&
-                        <div>
-                            <div style={{marginLeft: 15}}>
-                                <CircularProgress
-                                    style={{
-                                        color: this.state.currentClassification === CLASSIFICATION.APPINST ? 'grey' : 'green',
-                                        zIndex: 9999999,
-                                        fontSize: 10
+                <>
+                    <Grid.Row className='content_title'>
+                        <div className='content_title_wrap'>
+                            <div className='content_title_label'>Monitoring</div>
+                            <Button positive={true}
+                                    onClick={async () => {
+                                        this.setState({
+                                            isOpenEditView: true,
+                                        })
                                     }}
-                                    size={20}
-                                />
-                            </div>
-                        </div>
-                        }
+                            >Add
+                            </Button>
 
+
+                            {/*todo:---------------------------*/}
+                            {/*todo:REFRESH, RESET BUTTON DIV  */}
+                            {/*todo:---------------------------*/}
+                            <Button
+                                onClick={async () => {
+                                    await this.resetAllDataForDev();
+                                }}
+                            >Reset
+                            </Button>
+                            <Button
+                                onClick={async () => {
+                                    if (!this.state.loading) {
+                                        this.refreshAllData();
+                                    } else {
+                                        showToast('Currently loading, you can\'t request again.')
+                                    }
+
+                                }}
+                                className="ui circular icon button"
+                            >
+                                <i aria-hidden="true"
+                                   className="sync alternate icon"></i>
+                            </Button>
+
+                            {this.state.intervalLoading &&
+                            <div>
+                                <div style={{marginLeft: 15}}>
+                                    <CircularProgress
+                                        style={{
+                                            color: this.state.currentClassification === CLASSIFICATION.APPINST ? 'grey' : 'green',
+                                            zIndex: 9999999,
+                                            fontSize: 10
+                                        }}
+                                        size={20}
+                                    />
+                                </div>
+                            </div>
+                            }
+
+                            {this.state.webSocketLoading &&
+                            <div>
+                                <div style={{marginLeft: 15}}>
+                                    <CircularProgress
+                                        style={{
+                                            color: 'green',
+                                            zIndex: 9999999,
+                                        }}
+                                        size={45}
+                                    />
+                                </div>
+                            </div>
+                            }
+                            {this.props.isLoading &&
+                            <div>
+                                <div style={{marginLeft: 15}}>
+                                    <CircularProgress
+                                        style={{
+                                            color: 'green',
+                                            zIndex: 9999999,
+                                            fontSize: 10
+                                        }}
+                                        size={20}
+                                    />
+                                </div>
+                            </div>
+                            }
+                        </div>
+                    </Grid.Row>
+                    <div style={{backgroundColor: '#202329', marginLeft: 10, marginRight: 10,}}>
+                        {this.renderSelectBoxRow()}
                     </div>
-                </Grid.Row>
+                </>
+
             )
         }
 
@@ -1527,196 +1455,127 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 <div className='page_monitoring_select_row'>
                     <div className='page_monitoring_select_area'>
 
-                        {/*todo:##########################*/}
-                        {/*todo:Cluster_Dropdown         */}
-                        {/*todo:##########################*/}
-                        <div className="page_monitoring_dropdown_box">
-                            <div className="page_monitoring_dropdown_label">
-                                Cluster | Cloudlet
-                            </div>
-                            <Dropdown
-                                value={this.state.currentCluster}
-                                clearable={this.state.clusterSelectBoxClearable}
-                                disabled={this.state.loading}
-                                placeholder={this.state.clusterSelectBoxPlaceholder}
-                                selection
-                                loading={this.state.loading}
-                                options={this.state.clusterDropdownList}
-                                style={PageMonitoringStyles.dropDown}
-                                onChange={async (e, {value}) => {
-                                    await this.handleClusterDropdown(value.trim())
-                                }}
-
-                            />
-                        </div>
-
-                        {/*todo:---------------------------*/}
-                        {/*todo: App Instance_Dropdown      */}
-                        {/*todo:---------------------------*/}
-                        <div className="page_monitoring_dropdown_box">
-                            <div className="page_monitoring_dropdown_label">
-                                App Inst
-                            </div>
-                            <Dropdown
-                                disabled={this.state.currentCluster === '' || this.state.loading || this.state.appInstDropdown.length === 0}
-                                clearable={this.state.appInstSelectBoxClearable}
-                                loading={this.state.loading}
-                                value={this.state.currentAppInst}
-                                placeholder={this.state.appInstSelectBoxPlaceholder}
-                                selection
-                                options={this.state.appInstDropdown}
-                                //style={Styles.dropDown}
-
-                                onChange={async (e, {value}) => {
-                                    await this.handleAppInstDropdown(value.trim())
-                                }}
-                            />
-                        </div>
-                        {/*todo:---------------------------*/}
-                        {/*todo:Dropdown #2nd row          */}
-                        {/*todo:---------------------------*/}
-
-                    </div>
-
-                </div>
-
-            )
-        }
-
-        renderSelectBoxRow2nd() {
-            return (
-                <div className='page_monitoring_select_row' style={{borderWidth: 1, borderColor: 'grey', marginBottom: 5, marginTop: 6}}>
-                    <div className='page_monitoring_select_area'>
-                        <>
+                        <div className='page_monitoring_select_column'>
+                            {/*todo:##########################*/}
+                            {/*todo:Cluster_Dropdown         */}
+                            {/*todo:##########################*/}
                             <div className="page_monitoring_dropdown_box">
                                 <div className="page_monitoring_dropdown_label">
-                                    Add Item
+                                    Cluster | Cloudlet
                                 </div>
                                 <Dropdown
-                                    placeholder="Select Item"
+                                    selectOnBlur={false}
+                                    value={this.state.currentCluster}
+                                    clearable={this.state.clusterSelectBoxClearable}
+                                    disabled={this.state.loading}
+                                    placeholder={this.state.clusterSelectBoxPlaceholder}
                                     selection
                                     loading={this.state.loading}
+                                    options={this.state.clusterDropdownList}
+                                    style={PageMonitoringStyles.dropDown}
                                     onChange={async (e, {value}) => {
-                                        await this.addGridItem(value, value)
-                                        showToast('added ' + value + " item!!")
+                                        await this.handleClusterDropdown(value.trim())
                                     }}
-                                    style={PageMonitoringStyles.dropDown2}
 
-                                    options={ADD_ITEM_LIST}
-                                />
-                            </div>
-                            <div className="page_monitoring_dropdown_label" style={{marginLeft: 0,}}>
-                                Add Line Chart
-                            </div>
-                            <div style={{marginBottom: 0,}}>
-                                <Dropdown
-                                    placeholder="Select Item"
-                                    selection
-                                    loading={this.state.loading}
-                                    onChange={async (e, {value}) => {
-                                        //alert(value)
-                                        await this.addGridItem(value, GRID_ITEM_TYPE.LINE)
-                                        showToast('added ' + value + " item!!")
-                                    }}
-                                    options={this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.state.hwListForCluster : this.state.hwListForAppInst}
                                 />
                             </div>
 
-                            {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
-                            <>
-                                <div className="page_monitoring_dropdown_label" style={{marginLeft: 0,}}>
-                                    Add Bar Chart
+                            {/*todo:---------------------------*/}
+                            {/*todo: App Instance_Dropdown      */}
+                            {/*todo:---------------------------*/}
+                            <div className="page_monitoring_dropdown_box">
+                                <div className="page_monitoring_dropdown_label">
+                                    App Inst
                                 </div>
                                 <Dropdown
-                                    placeholder="Select Item"
-                                    selection
+                                    selectOnBlur={false}
+                                    disabled={this.state.currentCluster === '' || this.state.loading || this.state.appInstDropdown.length === 0}
+                                    clearable={this.state.appInstSelectBoxClearable}
                                     loading={this.state.loading}
-                                    onChange={async (e, {value}) => {
-                                        //alert(value)
-                                        await this.addGridItem(value, GRID_ITEM_TYPE.BAR)
-                                        showToast('added ' + value + " item!!")
-                                    }}
-                                    options={this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.state.hwListForCluster : this.state.hwListForAppInst}
-                                />
-                            </>
-                            }
-                            {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
-                            <>
-                                <div className="page_monitoring_dropdown_label" style={{marginLeft: 0,}}>
-                                    Add Column Chart
-                                </div>
-                                <Dropdown
-                                    placeholder="Select Item"
+                                    value={this.state.currentAppInst}
+                                    placeholder={this.state.appInstSelectBoxPlaceholder}
                                     selection
-                                    loading={this.state.loading}
+                                    // style={PageMonitoringStyles.dropDown}
+                                    options={this.state.appInstDropdown}
                                     onChange={async (e, {value}) => {
-                                        //alert(value)
-                                        await this.addGridItem(value, GRID_ITEM_TYPE.COLUMN)
-                                        showToast('added ' + value + " item!!")
+                                        await this.handleAppInstDropdown(value.trim())
                                     }}
-                                    options={this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.state.hwListForCluster : this.state.hwListForAppInst}
                                 />
-
-                            </>
-                            }
-
-                            <>
-                                <div className="page_monitoring_dropdown_label" style={{marginLeft: 0,}}>
-                                    Theme
-                                </div>
-                                <div style={{marginBottom: 0,}}>
-                                    <Dropdown
-                                        placeholder="Select Theme"
-                                        selection
-                                        loading={this.state.loading}
-                                        value={this.state.themeTitle}
-                                        //style={{width: 190, marginBottom: 10, marginLeft: 5}}
-                                        onChange={async (e, {value}) => {
-
-                                            await this.setState({
-                                                themeTitle: value,
-                                            })
-                                            this.handleThemeChanges(value)
-                                            let selectedChartColorList = [];
-                                            if (value === THEME_OPTIONS.EUNDEW) {
-                                                selectedChartColorList = CHART_COLOR_LIST;
-                                            }
-                                            if (value === THEME_OPTIONS.BLUE) {
-                                                selectedChartColorList = CHART_COLOR_LIST2;
-                                            }
-                                            if (value === THEME_OPTIONS.GREEN) {
-                                                selectedChartColorList = CHART_COLOR_LIST3;
-                                            }
-                                            if (value === THEME_OPTIONS.RED) {
-                                                selectedChartColorList = CHART_COLOR_LIST4;
-                                            }
-
-                                            if (value === THEME_OPTIONS.MONOKAI) {
-                                                selectedChartColorList = CHART_COLOR_MONOKAI;
-                                            }
-
-                                            if (value === THEME_OPTIONS.APPLE) {
-                                                selectedChartColorList = CHART_COLOR_APPLE;
-                                            }
-
-                                            reactLocalStorage.setObject(getUserId() + "_mon_theme", selectedChartColorList)
-                                            reactLocalStorage.set(getUserId() + "_mon_theme_title", value)
-                                        }}
-                                        options={this.state.themeOptions}
+                            </div>
+                        </div>
+                        <div className='page_monitoring_select_column_end'>
+                            <div className='page_monitoring_select_toggle'>
+                                <Button
+                                    onClick={async () => {
+                                        this.resetGridPosition();
+                                    }}
+                                >
+                                    Revert to the default layout
+                                </Button>
+                            </div>
+                            {/*todo:---------------------------*/}
+                            {/*todo:FIX GRID BTN    (Switch)   */}
+                            {/*todo:---------------------------*/}
+                            <Tooltip
+                                placement="topLeft"
+                                title={
+                                    <div>
+                                        <p>To release or freeze a grid item, double click grid item!</p>
+                                    </div>
+                                }
+                            >
+                                <div className='page_monitoring_select_toggle'>
+                                    <div className='page_monitoring_select_toggle_label'>
+                                        Fix Grid
+                                    </div>
+                                    <Checkbox toggle
+                                              checked={!this.state.isDraggable}
+                                              onChange={async () => {
+                                                  await this.setState({
+                                                      isDraggable: !this.state.isDraggable,
+                                                      appInstanceListGroupByCloudlet: [],
+                                                  })
+                                                  this.setState({
+                                                      appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
+                                                  });
+                                              }}
                                     />
                                 </div>
-                            </>
-                        </>
-                    </div>
-                </div>
+                            </Tooltip>
+                            {this.state.currentClassification === CLASSIFICATION.APPINST &&
+                            <div className='page_monitoring_select_toggle'>
+                                <div className='page_monitoring_select_toggle_label'>
+                                    Stream
+                                </div>
+                                <Checkbox toggle
+                                          onClick={async () => {
+                                              await this.setState({
+                                                  isStream: !this.state.isStream,
+                                              });
 
+                                              if (!this.state.isStream) {
+                                                  clearInterval(this.intervalForAppInst)
+                                              } else {
+                                                  this.handleAppInstDropdown(this.state.currentAppInst, true)
+                                              }
+
+                                          }}
+
+
+                                />
+                            </div>
+                            }
+                            {/* <div className='page_monitoring_select_toggle'>
+                                <MaterialIcon icon='aspect_ratio'/>
+                            </div>*/}
+                        </div>
+                    </div>
+
+                </div>
 
             )
         }
 
-        getHeight = () => {
-            return window.innerHeight - 133
-        }
 
         render() {
             // todo: Components showing when the loading of graph data is not completed.
@@ -1731,17 +1590,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <Grid.Row className='view_contents'>
                         <Grid.Column className='contents_body'>
                             {this.renderHeader()}
-                            <div style={{position: 'absolute', top: '37%', left: '48%'}}>
-                                <div style={{
-                                    marginLeft: -450,
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    fontSize: 30,
-                                    opacity: 1,
-                                    color: 'white'
-                                }}>
-                                    There is no app instance you can access..
-                                </div>
+                            <div style={{}}>
+                                <Card
+                                    hoverable
+                                    style={{width: '100%', height: '100%'}}
+                                    cover={<div style={{marginLeft: 40, marginTop: 5}}>
+                                        <img alt="example" src="/assets/brand/MobiledgeX_Logo_tm_white.svg" width={500}
+                                             height={250}/>
+                                    </div>}
+                                >
+                                    <div style={{fontSize: 45, fontFamily: 'Roboto Condensed'}}>
+                                        There is no app instance you can access..
+                                    </div>
+                                </Card>
                             </div>
                         </Grid.Column>
                     </Grid.Row>
@@ -1749,60 +1610,71 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
 
             return (
-                <MonitoringConsumer>
-                    {(context: MonitoringContextInterface) => (
-                        <div
-                            style={{width: '100%', height: '100%',}}
-                            ref={() => this.context = context}
-                        >
-                            <ModalGraph selectedClusterUsageOne={this.state.selectedClusterUsageOne}
-                                        selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
-                                        parent={this}
-                                        modalIsOpen={this.state.modalIsOpen}
-                                        cluster={''} contents={''}/>
 
-                            <BigModalGraph
-                                chartDataForRendering={this.state.chartDataForRendering}
-                                isShowBigGraph={this.state.isShowBigGraph}
+                <div style={{width: '100%', height: '100%',}}>
+
+                    <AddItemPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}/>
+
+                    <ModalGraph selectedClusterUsageOne={this.state.selectedClusterUsageOne}
+                                selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
                                 parent={this}
-                                popupGraphHWType={this.state.popupGraphHWType}
-                                graphType={this.state.popupGraphType}
-                                isPopupMap={this.state.isPopupMap}
-                                appInstanceListGroupByCloudlet={this.state.appInstanceListGroupByCloudlet}
-                            />
+                                modalIsOpen={this.state.modalIsOpen}
+                                cluster={''} contents={''}/>
 
-                            <Grid.Row className='view_contents'>
-                                <Grid.Column className='contents_body'>
-                                    {/*todo:---------------------------------*/}
-                                    {/*todo:Content Header                   */}
-                                    {/*todo:---------------------------------*/}
-                                    <SemanticToastContainer position={"top-right"}/>
-                                    {this.renderHeader()}
-                                    <div style={{marginTop: 30, marginLeft: 30, marginBottom: 0}}>
-                                        {this.renderSelectBoxRow()}
-                                        {this.renderSelectBoxRow2nd()}
+                    <BigModalGraphContainer
+                        chartDataForRendering={this.state.chartDataForRendering}
+                        isShowBigGraph={this.state.isShowBigGraph}
+                        parent={this}
+                        popupGraphHWType={this.state.popupGraphHWType}
+                        graphType={this.state.popupGraphType}
+                        isPopupMap={this.state.isPopupMap}
+                        appInstanceListGroupByCloudlet={this.state.appInstanceListGroupByCloudlet}
+                        selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
+                        loading={this.state.loading}
+                    />
+                    <Grid.Row className='view_contents'>
+                        <Card style={{
+                            width: '100%',
+                            backgroundColor: '#292c33',
+                            padding: 10,
+                            color: 'white',
+                        }}>
+                            <div>
+                                {/*desc:---------------------------------*/}
+                                {/*desc:Content Header                   */}
+                                {/*desc:---------------------------------*/}
+                                <SemanticToastContainer position={"top-right"}/>
+                                {this.renderHeader()}
+                                <div className="page_monitoring" style={{overflowY: 'auto', height: 1200}}>
+                                    <div className='page_monitoring_dashboard_dev'
+                                         style={{marginBottom: 110}}>
+                                        {this.state.currentClassification === CLASSIFICATION.CLUSTER
+                                            ? this.renderGridLayoutForCluster()
+                                            : this.renderGridLayoutForAppInst()
+                                        }
                                     </div>
-                                    <Grid.Row className='site_content_body' style={{overflowY: 'auto', marginTop: -20, height:this.getHeight()}}>
-                                        <div className="page_monitoring" style={{backgroundColor: 'transparent', height: 3250}}>
-                                            <div className='page_monitoring_dashboard_kyungjoon' style={{}}>
-                                                {this.state.currentClassification === CLASSIFICATION.CLUSTER
-                                                    ? this.renderGridLayoutForCluster()
-                                                    : this.renderGridLayoutForAppInst()
-                                                }
-                                            </div>
-                                        </div>
-                                    </Grid.Row>
-                                </Grid.Column>
-                            </Grid.Row>
-                            <Modal style={{width: '100%', height: '100%'}} open={this.state.openTerminal}>
-                                <TerminalViewer data={this.state.terminalData} onClose={() => {
-                                    this.setState({openTerminal: false})
-                                }}/>
-                            </Modal>
-                        </div>
+                                </div>
+                            </div>
+                            {/*desc:---------------------------------*/}
+                            {/*desc:terminal button                   */}
+                            {/*desc:---------------------------------*/}
+                            {this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?
+                                <div className='page_monitoring_terminal_button' style={{marginBottom: 100}}
+                                     onClick={() => this.setState({openTerminal: true})}
+                                >
+                                </div>
+                                : null
+                            }
+                        </Card>
 
-                    )}
-                </MonitoringConsumer>
+
+                    </Grid.Row>
+                    <Modal style={{width: '100%', height: '100%'}} open={this.state.openTerminal}>
+                        <TerminalViewer data={this.state.terminalData} onClose={() => {
+                            this.setState({openTerminal: false})
+                        }}/>
+                    </Modal>
+                </div>
 
 
             )//return End
@@ -1811,6 +1683,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
     }
-))));
+))))
+;
 
 

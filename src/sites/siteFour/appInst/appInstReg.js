@@ -6,10 +6,10 @@ import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX } from '../../.
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
-import { fields } from '../../../services/model/format';
+import { fields, getOrganization } from '../../../services/model/format';
 //model
 import { getOrganizationList } from '../../../services/model/organization';
-import { getCloudletList } from '../../../services/model/cloudlet';
+import { getOrgCloudletList } from '../../../services/model/cloudlet';
 import { getClusterInstList } from '../../../services/model/clusterInstance';
 import { getAppList } from '../../../services/model/app';
 import { createAppInst } from '../../../services/model/appInstance';
@@ -34,12 +34,23 @@ class ClusterInstReg extends React.Component {
         //To avoid refecthing data from server
     }
 
-    getCloudletInfo = async (region, form, forms) => {
-        if (!this.requestedRegionList.includes(region)) {
-            this.cloudletList = [...this.cloudletList, ...await getCloudletList(this, { region: region })]
+    getCloudletInfo = async (form, forms) => {
+        let region = undefined;
+        let organizationName = undefined;
+        for (let i = 0; i < forms.length; i++) {
+            let tempForm = forms[i]
+            if (tempForm.field === fields.region) {
+                region = tempForm.value
+            }
+            else if (tempForm.field === fields.organizationName) {
+                organizationName = tempForm.value
+            }
         }
-        this.updateUI(form)
-        this.setState({ forms: forms })
+        if (region && organizationName) {
+            this.cloudletList = await getOrgCloudletList(this, { region: region, org: organizationName })
+            this.updateUI(form)
+            this.setState({ forms: forms })
+        }
     }
 
     getClusterInstInfo = async (region, form, forms) => {
@@ -135,11 +146,23 @@ class ClusterInstReg extends React.Component {
         this.requestedRegionList.push(region)
     }
 
+    organizationValueChange = (currentForm, forms, isInit) => {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (form.field === fields.operatorName) {
+                this.operatorValueChange(form, forms, isInit)
+                if (isInit === undefined || isInit === false) {
+                    this.getCloudletInfo(form, forms)
+                }
+            }
+        }
+    }
+
     formKeys = () => {
         return [
             { label: 'App Instances', formType: 'Header', visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
-            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: true, disabled: false }, visible: true, tip: 'Organization or Company Name that a Developer is part of' },
+            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of' },
             { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
             { field: fields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: true }, visible: true, dependentData: [{ index: 3, field: fields.appName }] },
             { field: fields.operatorName, label: 'Operator', formType: 'Select', placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
@@ -152,6 +175,9 @@ class ClusterInstReg extends React.Component {
     checkForms = (form, forms, isInit) => {
         if (form.field === fields.region) {
             this.regionValueChange(form, forms, isInit)
+        }
+        else if (form.field === fields.region) {
+            this.organizationValueChange(form, forms, isInit)
         }
         else if (form.field === fields.organizationName) {
             this.organizationValueChange(form, forms, isInit)
@@ -269,7 +295,7 @@ class ClusterInstReg extends React.Component {
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
             if (this.props.isLaunch) {
-                this.cloudletList = await getCloudletList(this, { region: data[fields.region] })
+                this.cloudletList = await getOrgCloudletList(this, { region: data[fields.region], org: data[fields.organizationName] })
                 this.clusterInstList = await getClusterInstList(this, { region: data[fields.region] })
                 let app = {}
                 app[fields.appName] = data[fields.appName]
@@ -280,11 +306,9 @@ class ClusterInstReg extends React.Component {
 
                 let disabledFields = [fields.region, fields.organizationName, fields.appName, fields.version]
 
-                for(let i=0;i<forms.length;i++)
-                {
+                for (let i = 0; i < forms.length; i++) {
                     let form = forms[i];
-                    if(disabledFields.includes(form.field))
-                    {
+                    if (disabledFields.includes(form.field)) {
                         form.rules.disabled = true;
                     }
                 }

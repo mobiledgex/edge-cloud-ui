@@ -1,6 +1,23 @@
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Bungee|Candal|Righteous&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Acme|Roboto|Bungee|Barlow+Semi+Condensed|Candal|Encode+Sans+Condensed|Righteous|Karla|Roboto+Condensed&display=swap');
 
+.tooltip001 {
+    font-size: 18px;
+    background-color: transparent;
+    color: white;
+    border: 0px none rgba(255, 255, 255, 0.3);
+    font-weight: bold;
+    font-style: italic;
+}
+
+/*.page_monitoring_select_area .ui.selection.dropdown {*/
+/*    margin-right: 20px;*/
+/*    margin-bottom: 10px;*/
+/*    z-index: -50;*/
+/*    !* min-width: 250px; *!*/
+/*}*/
+
+
 #button-wrapper {
     position: absolute;
     bottom: 0px;
@@ -61,7 +78,24 @@
     background-color: rgba(71, 82, 102, 0.65);
     font-weight: bold;
     color: white;
-    font-size: 20px;
+    font-size: 12px;
+    /*width: 300px;*/
+}
+
+.clientPopup {
+    width: 300px;
+}
+
+.leaflet-popup-content-wrapper2 {
+    background-color: rgba(71, 82, 102, 0.65);
+    font-weight: bold;
+    color: white;
+    font-size: 12px;
+}
+
+.mapLoader{
+    position: absolute;
+    left: 305px;
 }
 
 .marker1 {
@@ -72,6 +106,10 @@
 .request-popup .leaflet-popup-content-wrapper {
     border-radius: 0px;
     background-color: #575757;
+}
+
+.leaflet-popup-content {
+    font-size: 14px;
 }
 
 
@@ -144,10 +182,8 @@
     -webkit-font-feature-settings: 'tnum';
     font-feature-settings: 'tnum';
     position: relative;
-    top: 100px;
     width: auto;
     margin: 0 auto;
-    padding-bottom: 24px;
     pointer-events: none;
 }
 
@@ -157,7 +193,7 @@
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 1000;
+    z-index: 1200;
     overflow: auto;
     outline: 0;
     -webkit-overflow-scrolling: touch;
@@ -256,12 +292,12 @@
     position: relative;
     -webkit-transition: height 200ms ease;
     transition: height 200ms ease;
-    background-color: black;
+    background-color: #292c33;
 }
 
 .leaflet-popup-content {
     width: 700px;
-    min-width: 400px;
+    min-width: 450px;
 }
 
 .leaflet-popup-content-wrapper {
@@ -272,6 +308,109 @@
     /*font-family: "Roboto Light";*/
     font-size: 20px;
 }
+
+
+.react-grid-item {
+    touch-action: none;
+}
+
+.drag-handle {
+    touch-action: none;
+}
+
+.react-grid-item.react-grid-placeholder {
+    background-color: navy;
+    border: solid 2px #3f9ec6;
+    opacity: 0.25;
+    transition-duration: 100ms;
+    z-index: 2;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.page_monitoring_popup_table_row {
+    flex: 1;
+    display: flex;
+}
+
+/*.viewListTableHeader{
+    flex: 1;
+    display: flex;
+}*/
+
+
+.viewListTableHeader2 {
+    flex: 1;
+    display: flex;
+}
+
+/*semantics ui overriding css*/
+
+.ui.toggle.checkbox input:focus ~ .box:before, .ui.toggle.checkbox input:focus ~ label:before {
+    background-color: gray;
+    border: none;
+}
+
+.ui.toggle.checkbox input:focus:checked ~ .box:before, .ui.toggle.checkbox input:focus:checked ~ label:before {
+    background-color: green !important;
+}
+
+.ui.toggle.checkbox input:checked ~ .box:before, .ui.toggle.checkbox input:checked ~ label:before {
+    background-color: green !important;
+}
+
+.ui.toggle.checkbox .box:before, .ui.toggle.checkbox label:before {
+    display: block;
+    position: absolute;
+    content: '';
+    z-index: 1;
+    transform: none;
+    border: none;
+    top: 0;
+    background: grey;
+    box-shadow: none;
+    width: 3.5rem;
+    height: 1.5rem;
+    border-radius: 500rem;
+}
+
+.center001 {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+}
+
+.ant-radio-inner {
+    position: relative;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 16px;
+    height: 16px;
+    background-color: #26483300;
+    border-color: #9f9fb1;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 100px;
+    transition: all 0.3s;
+}
+
+.center002 {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+/*antd ui overriding css*/
+
+
 
 
 

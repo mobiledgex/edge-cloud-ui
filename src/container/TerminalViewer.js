@@ -10,6 +10,8 @@ import { Image, Label } from 'semantic-ui-react';
 import * as style from '../hoc/terminal/TerminalStyle';
 import { Paper, Box } from '@material-ui/core';
 import MexForms from '../hoc/forms/MexForms';
+import {fields} from '../services/model/format'
+import * as constant from '../constant'
 
 
 const CMD_CLEAR = 'clear';
@@ -32,8 +34,8 @@ class MexTerminal extends Component {
             editable: false,
         })
         this.containerIds = [];
-        if (props.data.Runtime && props.data.Runtime.container_ids) {
-            this.containerIds = props.data.Runtime.container_ids;
+        if (props.data[fields.runtimeInfo] && props.data[fields.runtimeInfo][fields.container_ids]) {
+            this.containerIds = props.data[fields.runtimeInfo][fields.container_ids];
         }
         this.request = 'Run Command'
         this.requestTypes = ['Run Command', 'Show Logs']
@@ -58,42 +60,41 @@ class MexTerminal extends Component {
         }
     }
 
-    sendRequest = (data) => {
-        const { Region, OrganizationName, AppName, Version, ClusterInst, Cloudlet, Operator } = this.props.data;
+    sendRequest = (terminaData) => { 
         let ExecRequest =
         {
             app_inst_key:
             {
                 app_key:
                 {
-                    organization: OrganizationName,
-                    name: AppName,
-                    version: Version
+                    organization: this.props.data[fields.organizationName],
+                    name: this.props.data[fields.appName],
+                    version: this.props.data[fields.version]
                 },
                 cluster_inst_key:
                 {
-                    cluster_key: { name: ClusterInst },
-                    cloudlet_key: { organization: Operator , name: Cloudlet },
-                    organization: OrganizationName
+                    cluster_key: { name: this.props.data[fields.clusterName] },
+                    cloudlet_key: { organization: this.props.data[fields.operatorName] , name: this.props.data[fields.cloudletName] },
+                    organization: this.props.data[fields.organizationName]
                 }
             },
-            container_id: data.Container,
+            container_id: terminaData.Container,
             offer: JSON.stringify(this.localConnection.localDescription)
         }
 
         let method = '';
-        if (data.Request === 'Run Command') {
+        if (terminaData.Request === 'Run Command') {
             method = serviceMC.getEP().RUN_COMMAND;
-            ExecRequest.cmd = { command: data.Command }
+            ExecRequest.cmd = { command: terminaData.Command }
         }
-        else if (data.Request === 'Show Logs') {
+        else if (terminaData.Request === 'Show Logs') {
             method = serviceMC.getEP().SHOW_LOGS;
-            let showLogs = data.ShowLogs
+            let showLogs = terminaData.ShowLogs
             let tail = showLogs.Tail ? parseInt(showLogs.Tail) : undefined
             ExecRequest.log = showLogs ? { since: showLogs.Since, tail: tail, timestamps: showLogs.Timestamps, follow: showLogs.Follow } : {}
         }
         let requestedData = {
-            Region: Region,
+            region: this.props.data[fields.region],
             ExecRequest: ExecRequest
         }
 
@@ -290,11 +291,10 @@ class MexTerminal extends Component {
         return data
     }
 
-    onConnect = () => {
+    onConnect = (data) => {
         this.setState({
             forms: this.getForms()
         })
-        let data = this.formattedData()
         this.setState({
             statusColor: 'orange',
             status: "connecting",
@@ -311,20 +311,20 @@ class MexTerminal extends Component {
 
     getLogOptions = () => (
         [
-            { field: 'Since', label: 'Since', type: 'Input', visible: true, labelStyle: style.label, style: style.logs },
-            { field: 'Tail', label: 'Tail', type: 'Input', rules: { type: 'number' }, visible: true, labelStyle: style.label, style: style.logs },
-            { field: 'Timestamps', label: 'Timestamps', type: 'Checkbox', visible: true, labelStyle: style.label, style: { color: 'green' } },
-            { field: 'Follow', label: 'Follow', type: 'Checkbox', visible: true, labelStyle: style.label, style: { color: 'green' } }
+            { field: 'Since', label: 'Since', formType: 'Input', visible: true, labelStyle: style.label, style: style.logs },
+            { field: 'Tail', label: 'Tail', formType: 'Input', rules: { type: 'number' }, visible: true, labelStyle: style.label, style: style.logs },
+            { field: 'Timestamps', label: 'Timestamps', formType: 'Checkbox', visible: true, labelStyle: style.label, style: { color: 'green' } },
+            { field: 'Follow', label: 'Follow', formType: 'Checkbox', visible: true, labelStyle: style.label, style: { color: 'green' } }
         ]
     )
 
     getForms = () => (
         [
-            { field: 'Request', label: 'Request', type: 'Select', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions(this.requestTypes), value: this.request },
-            { field: 'Container', label: 'Container', type: 'Select', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions(this.containerIds), value: this.containerIds[0] },
-            { field: 'Command', label: 'Command', type: 'Input', rules: { required: true }, visible: this.request === 'Run Command' ? true : false, labelStyle: style.label, style: style.cmdLine },
-            { uuid: 'ShowLogs', field: 'LogOptions', type: 'MultiForm', visible: this.request === 'Show Logs' ? true : false, forms: this.getLogOptions(), width: 4 },
-            { label: 'Connect', type: 'Button', style: style.button, onClick: this.onConnect, validate: true }
+            { field: 'Request', label: 'Request', formType: 'Select', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions(this.requestTypes), value: this.request },
+            { field: 'Container', label: 'Container', formType: 'Select', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions(this.containerIds), value: this.containerIds[0] },
+            { field: 'Command', label: 'Command', formType: 'Input', rules: { required: true }, visible: this.request === 'Run Command' ? true : false, labelStyle: style.label, style: style.cmdLine },
+            { uuid: 'ShowLogs', field: 'LogOptions', formType: 'MultiForm', visible: this.request === 'Show Logs' ? true : false, forms: this.getLogOptions(), width: 4 },
+            { label: 'Connect', formType: 'Button', style: style.button, onClick: this.onConnect, validate: true }
         ])
 
     onValueChange = (currentForm) => {
@@ -387,7 +387,7 @@ class MexTerminal extends Component {
                                     </div>
                                 </div>
                                 :
-                                <div style={{ paddingLeft: 20, paddingTop: 30, height: '100%' }}>
+                                <div style={{ paddingLeft: 20, paddingTop: 30, height: constant.getHeight() }}>
                                     <Terminal editable={this.state.editable} open={this.state.open} close={this.close} path={this.state.path} onEnter={this.onEnter} history={this.state.history} />
                                 </div> : null
                 }

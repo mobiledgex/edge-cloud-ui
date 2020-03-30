@@ -1,24 +1,26 @@
 import {convertByteToMegaByte} from "../sites/siteFour/monitoring/PageMonitoringCommonService";
 
 export const API_ENDPOINT_PREFIX = '/api/v1/';
-export const BORDER_CHART_COLOR_LIST = ["#70001C", "#FF5E1D", "#E3DC39", "#128702", "#1C22FF",'#66D9EF', '#272822', '#75715E',]
-export const CHART_COLOR_LIST = ['#DE0000', '#FF9600', '#FFF600', '#5BCB00', '#0096FF','#66D9EF', '#272822', '#75715E',]
-export const CHART_COLOR_LIST2 = ['#65DEF1', '#A8DCD1', '#DCE2C8', '#F96900', '#F17F29','#66D9EF', '#272822', '#75715E',]
+export const BORDER_CHART_COLOR_LIST = ["#70001C", "#FF5E1D", "#E3DC39", "#128702", "#1C22FF", '#66D9EF', '#272822', '#75715E',]
+export const CHART_COLOR_LIST = ['#DE0000', '#FF9600', '#FFF600', '#5BCB00', '#0096FF', '#66D9EF', '#272822', '#75715E',]
+export const CHART_COLOR_LIST2 = ['#65DEF1', '#A8DCD1', '#DCE2C8', '#F96900', '#F17F29', '#66D9EF', '#272822', '#75715E',]
 
-export const CHART_COLOR_LIST3 = ['#008000', '#d7fff1', '#556B2F', '#32CD32', '#8cd790','#66D9EF', '#272822', '#75715E',]
+export const CHART_COLOR_LIST3 = ['#008000', '#d7fff1', '#556B2F', '#32CD32', '#8cd790', '#66D9EF', '#272822', '#75715E',]
 
-export const CHART_COLOR_LIST4 = ['#FF0000', '#FFBDAA', '#D4826A', '#802D15', '#551300','#66D9EF', '#272822', '#75715E',]
+export const CHART_COLOR_LIST4 = ['#FF0000', '#FFBDAA', '#D4826A', '#802D15', '#551300', '#66D9EF', '#272822', '#75715E',]
 
-export const CHART_COLOR_MONOKAI = ['#F92672', '#FD971F', '#A6E22E', '#E6DB74', '#A6E22E','#66D9EF', '#272822', '#75715E',]
-
-
-
-
-export const CHART_COLOR_APPLE = ['#0A84FF', '#30D158', '#FF453A', '#FF9F0A', '#FF375F','#66D9EF', '#272822', '#75715E',]
+export const CHART_COLOR_MONOKAI = ['#F92672', '#FD971F', '#A6E22E', '#E6DB74', '#A6E22E', '#66D9EF', '#272822', '#75715E',]
+export const CHART_COLOR_APPLE = ['#0A84FF', '#30D158', '#FF453A', '#FF9F0A', '#FF375F', '#66D9EF', '#272822', '#75715E',]
 
 export const CHART_COLOR_LIST5 = ['#609732', '#6EDC12', '#69BA27', '#527536', '#405330']
 export const CHART_COLOR_LIST6 = ['#AA5939', '#F75514', '#D15A2B', '#83513C', '#5D4136']
 export const CHART_COLOR_LIST7 = ['#6F256F', '#A10DA1', '#881C88', '#552755', '#3C233C']
+
+export const DARK_LINE_COLOR = 'yellow'
+export const DARK_CLOUTLET_ICON_COLOR = 'green'
+
+export const WHITE_LINE_COLOR = 'black'
+export const WHITE_CLOUTLET_ICON_COLOR = 'blue'
 
 
 export const GRAPH_HEIGHT = 300
@@ -44,6 +46,16 @@ export const THEME_OPTIONS_LIST = [
     {value: 'RED', text: 'RED'},
     {value: 'MONOKAI', text: 'MONOKAI'},
     {value: 'APPLE', text: 'APPLE'},
+    //CHART_COLOR_APPLE
+]
+
+export const ITEM_TYPE = [
+    {text: 'LINE_CHART', value: 'LINE_CHART'},
+    {text: 'BAR_CHART', value: 'BAR_CHART'},
+    {text: 'COLUMN_CHART', value: 'COLUMN_CHART'},
+    {text: 'EVENT_LOG', value: 'EVENT_LOG'},
+    {text: 'MAP', value: 'MAP'},
+
     //CHART_COLOR_APPLE
 ]
 
@@ -156,7 +168,7 @@ export const APP_INST_USAGE_TYPE_INDEX = {
 }
 
 
-export const RECENT_DATA_LIMIT_COUNT = 10
+export const RECENT_DATA_LIMIT_COUNT = 20
 
 export const APP_PERFORMANCE_VALUES = {
     M4_MEDIUM: {
@@ -273,12 +285,29 @@ export const GRID_ITEM_TYPE = {
     TABLE: 'TABLE',
     PIE: 'PIE',
     CLUSTER_LIST: 'CLUSTER_LIST',
+    CLUSTER_EVENTLOG_LIST: 'CLUSTER_EVENTLOG_LIST',
+    APP_INST_EVENT_LOG: 'APP_INST_EVENT_LOG',
+    PERFORMANCE_SUM: 'PERFORMANCE_SUM'
 }
-
 export const ADD_ITEM_LIST = [
     {text: 'MAP', value: 'MAP'},
+    //{text: 'TAG_CLOUD', value: 'TAG_CLOUD'},
     {text: 'BUBBLE', value: 'BUBBLE'},
-    {text: 'PERFORMANCE SUM', value: 'CLUSTER_LIST'},
+    {text: 'PERFORMANCE SUM', value: 'PERFORMANCE_SUM'},
+    {text: 'CLUSTER EVENT LOG', value: 'CLUSTER_EVENTLOG_LIST'},
+    {text: 'APP INST EVENT LOG', value: 'APP_INST_EVENT_LOG'},
+]
+
+export const EVENT_LOG_ITEM_LIST = [
+
+    {text: 'PERFORMANCE SUM', value: 'PERFORMANCE_SUM'},
+    {text: 'CLUSTER EVENT LOG', value: 'CLUSTER_EVENTLOG_LIST'},
+    {text: 'APP INST EVENT LOG', value: 'APP_INST_EVENT_LOG'},
+]
+
+export const MAP_ITEM_LIST = [
+    {text: 'MAP', value: 'MAP'},
+    {text: 'BUBBLE', value: 'BUBBLE'},
 ]
 
 
@@ -350,7 +379,7 @@ export const HARDWARE_TYPE_FOR_CLOUDLET = {
 }
 
 export const HARDWARE_TYPE = {
-    ALL:'ALL',
+    ALL: 'ALL',
 
     FLAVOR: 'FLAVOR',
     CPU: 'CPU',
