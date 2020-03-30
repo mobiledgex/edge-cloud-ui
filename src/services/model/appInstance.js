@@ -16,6 +16,7 @@ export const keys = [
   { field: fields.cloudletLocation, serverField: 'cloudlet_loc', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
   { field: fields.clusterdeveloper, serverField: 'key#OS#cluster_inst_key#OS#organization', sortable: true, label: 'Cluster Developer', visible: false },
   { field: fields.clusterName, serverField: 'key#OS#cluster_inst_key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster Instance', visible: true },
+  { field: fields.privacyPolicyName, serverField: 'privacy_policy', label: 'Privacy Policy', visible: false },
   { field: fields.deployment, label: 'Deployment', sortable: true, visible: true },
   { field: fields.uri, serverField: 'uri', label: 'URI' },
   { field: fields.liveness, serverField: 'liveness', label: 'Liveness' },
@@ -29,18 +30,25 @@ export const keys = [
 ]
 
 export const getKey = (data, isCreate) => {
+  let appinst = {}
+  appinst.key = {
+    app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] },
+    cluster_inst_key: {
+      cloudlet_key: { name: data[fields.cloudletName], organization: data[fields.operatorName] },
+      cluster_key: { name: data[fields.clusterName] },
+      organization: data[fields.clusterdeveloper] ? data[fields.clusterdeveloper] : data[fields.organizationName]
+    }
+  }
+
+  if (isCreate) {
+    if (data[fields.privacyPolicyName]) {
+      appinst.privacy_policy = data[fields.privacyPolicyName]
+    }
+  }
+  
   return ({
     region: data[fields.region],
-    appinst: {
-      key: {
-        app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] },
-        cluster_inst_key: {
-          cloudlet_key: { name: data[fields.cloudletName], organization: data[fields.operatorName] },
-          cluster_key: { name: data[fields.clusterName] },
-          organization: data[fields.clusterdeveloper] ? data[fields.clusterdeveloper] : data[fields.organizationName]
-        }
-      },
-    }
+    appinst: appinst
   })
 }
 
