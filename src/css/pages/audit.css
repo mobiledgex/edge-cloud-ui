@@ -8,7 +8,7 @@
 .page_audit_history {
     display: flex;
     width: 100%;
-    flex-direction: column;
+    /*flex-direction: column;*/
 }
 /* Safari 10.1+ */
 @media not all and (min-resolution:.001dpcm) {

@@ -88,7 +88,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             typeList:[],
             nameList:[],
             timelineSelectedIndex: 0,
-            unCheckedErrorCount: 0
+            unCheckedErrorCount: 0,
+            unCheckedErrorToggle: false
         };
         jsonViewProps = {
             name: null,
@@ -223,7 +224,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                             let makeDate = this.makeUTC(auditList[i].starttime)
                             let makeTime = this.makeNotUTC(auditList[i].starttime)
                             let newDate =  new Date(makeDate + " " + makeTime)
-                            let storageTimeIndex = (storageTimeList) ? storageTimeList.findIndex(s => new Date(s).getTime() === newDate.getTime()) : 0
+                            let storageTimeIndex = (storageTimeList) ? storageTimeList.findIndex(s => new Date(s).getTime() === newDate.getTime()) : (-1)
                             if(storageTimeIndex === (-1)){
                                 unCheckedErrorCount++
                             }
@@ -511,7 +512,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     }
                 } else if(v.value === 'uncheck'){
                     if(status !== 200){
-                        let storageTimeIndex = (storageTimeList) ? storageTimeList.findIndex(s => new Date(s).getTime() === new Date(datetime).getTime()) : 0
+                        let storageTimeIndex = (storageTimeList) ? storageTimeList.findIndex(s => new Date(s).getTime() === new Date(datetime).getTime()) : (-1)
                         if(storageTimeIndex === (-1)){
                             tasksList.push(taskValue)
                             timesList.push(datetime)
@@ -539,14 +540,26 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         }
 
         onClickUnCheckedError = (e, v) => {
+            let unCheckedToggle = this.state.unCheckedErrorToggle
             let value = {'value':'uncheck'}
+            console.log('20200327 ' + unCheckedToggle)
+            if(unCheckedToggle){
+                value = {'value':'all'}
+                this.setState({unCheckedErrorToggle: false})
+            } else {
+                this.setState({unCheckedErrorToggle: true})
+            }
             this.dropDownOnChange(null,value)
+        }
+
+        getHeight = () => {
+            return window.innerHeight - 72
         }
 
         render() {
             const state = this.state;
             return (
-                <div className="page_audit">
+                <div className="page_audit" style={{height:this.getHeight()}}>
                     <div className="page_audit_history">
                         <div className="page_audit_history_option">
                             <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>

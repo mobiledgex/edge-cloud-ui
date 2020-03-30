@@ -32,12 +32,21 @@ export default class CalendarTimeline extends Component {
             .startOf("day")
             .add(1, "day")
             .toDate();
+        const visibleTimeStart = moment()
+            .startOf("day")
+            .valueOf();
+        const visibleTimeEnd = moment()
+            .startOf("day")
+            .add(1, "day")
+            .valueOf();
 
         this.state = {
             groups,
             items,
             defaultTimeStart,
-            defaultTimeEnd
+            defaultTimeEnd,
+            visibleTimeStart,
+            visibleTimeEnd
         };
 
     }
@@ -240,43 +249,72 @@ export default class CalendarTimeline extends Component {
         }
     }
 
+    onPrevClick = () => {
+        const zoom = this.state.visibleTimeEnd - this.state.visibleTimeStart;
+        this.setState(state => ({
+            visibleTimeStart: state.visibleTimeStart - zoom,
+            visibleTimeEnd: state.visibleTimeEnd - zoom
+        }));
+    };
+
+    onNextClick = () => {
+        const zoom = this.state.visibleTimeEnd - this.state.visibleTimeStart;
+        this.setState(state => ({
+            visibleTimeStart: state.visibleTimeStart + zoom,
+            visibleTimeEnd: state.visibleTimeEnd + zoom
+        }));
+    };
+
+    onCurrentClick = () => {
+        this.setState(state => ({
+            visibleTimeStart: state.defaultTimeStart,
+            visibleTimeEnd: state.defaultTimeEnd
+        }));
+    };
+
     render() {
-        const { groups, items, defaultTimeStart, defaultTimeEnd } = this.state;
+        const { groups, items, defaultTimeStart, defaultTimeEnd, visibleTimeStart, visibleTimeEnd } = this.state;
         return (
-            <Timeline
-                groups={groups}
-                items={items}
-                keys={keys}
-                sidebarWidth={150}
-                canMove
-                canResize="right"
-                canSelect
-                itemsSorted
-                itemTouchSendsClick={false}
-                stackItems
-                itemHeightRatio={0.75}
-                showCursorLine
-                minResizeWidth={550}
-                defaultTimeStart={defaultTimeStart}
-                defaultTimeEnd={defaultTimeEnd}
-                itemRenderer={this.itemRenderer}
-                groupRenderer={this.groupRenderer}
-                selected={[(this.props.timelineSelectedIndex).toString()]}
-                onItemSelect={this.handleItemSelect}
-            >
-                <TimelineHeaders className="sticky">
-                    <SidebarHeader>
-                        {({ getRootProps }) => {
-                            return <div {...getRootProps()}>
-                                <div>normal : {this.props.statusCount[0].normalCount}</div>
-                                <div>error: {this.props.statusCount[0].errorCount}</div>
-                            </div>;
-                        }}
-                    </SidebarHeader>
-                    <DateHeader unit="primaryHeader" />
-                    <DateHeader style={{color:'black'}}/>
-                </TimelineHeaders>
-            </Timeline>
+            <div>
+                <button style={{color:'black'}} onClick={this.onPrevClick}>{"< Prev"}</button>
+                <button style={{color:'black'}} onClick={this.onCurrentClick}>{"current"}</button>
+                <button style={{color:'black'}} onClick={this.onNextClick}>{"Next >"}</button>
+                <Timeline
+                    groups={groups}
+                    items={items}
+                    keys={keys}
+                    sidebarWidth={150}
+                    canMove
+                    canSelect
+                    itemsSorted
+                    itemTouchSendsClick={false}
+                    stackItems
+                    itemHeightRatio={0.75}
+                    showCursorLine
+                    minResizeWidth={550}
+                    defaultTimeStart={defaultTimeStart}
+                    defaultTimeEnd={defaultTimeEnd}
+                    visibleTimeStart={visibleTimeStart}
+                    visibleTimeEnd={visibleTimeEnd}
+                    itemRenderer={this.itemRenderer}
+                    groupRenderer={this.groupRenderer}
+                    selected={[(this.props.timelineSelectedIndex).toString()]}
+                    onItemSelect={this.handleItemSelect}
+                >
+                    <TimelineHeaders className="sticky">
+                        <SidebarHeader>
+                            {({ getRootProps }) => {
+                                return <div {...getRootProps()}>
+                                    <div>normal : {this.props.statusCount[0].normalCount}</div>
+                                    <div>error: {this.props.statusCount[0].errorCount}</div>
+                                </div>;
+                            }}
+                        </SidebarHeader>
+                        <DateHeader unit="primaryHeader" />
+                        <DateHeader style={{color:'black'}}/>
+                    </TimelineHeaders>
+                </Timeline>
+            </div>
         );
     }
 }
