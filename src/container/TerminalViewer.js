@@ -75,7 +75,7 @@ class MexTerminal extends Component {
                 {
                     cluster_key: { name: this.props.data[fields.clusterName] },
                     cloudlet_key: { organization: this.props.data[fields.operatorName] , name: this.props.data[fields.cloudletName] },
-                    organization: this.props.data[fields.organizationName]
+                    organization: this.props.data[fields.clusterdeveloper]
                 }
             },
             container_id: terminaData.Container,

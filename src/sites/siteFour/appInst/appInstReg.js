@@ -215,7 +215,7 @@ class ClusterInstReg extends React.Component {
     onCreate = async (data) => {
         if (data) {
             let cloudlets = data[fields.cloudletName];
-            data[fields.clusterName] = data[fields.autoClusterInstance] ? 'autocluster' + data[fields.appName].toLowerCase().replace(/ /g, "") : data[fields].clusterName
+            data[fields.clusterName] = data[fields.autoClusterInstance] ? 'autocluster' + data[fields.appName].toLowerCase().replace(/ /g, "") : data[fields.clusterName]
             if (cloudlets && cloudlets.length > 0) {
                 for (let i = 0; i < cloudlets.length; i++) {
                     let cloudlet = cloudlets[i];
