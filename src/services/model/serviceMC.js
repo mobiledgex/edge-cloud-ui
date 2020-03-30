@@ -26,7 +26,7 @@ function getHeader(request) {
 }
 
 const showSpinner = (self, value) => {
-    if (self.props.handleLoadingSpinner) {
+    if (self && self.props.handleLoadingSpinner) {
         self.props.handleLoadingSpinner(value)
     }
 }
@@ -131,10 +131,13 @@ export function sendMultiRequest(self, requestDataList, callback) {
 
 export const sendSyncRequest = async (self, request) => {
     try {
+        showSpinner(self, true)
         let response = await axios.post(EP.getPath(request), request.data,
             {
                 headers: getHeader(request)
             });
+
+        showSpinner(self, false)
         return EP.formatData(request, response);
     } catch (error) {
         if (error.response) {
