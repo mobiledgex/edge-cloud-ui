@@ -8,11 +8,14 @@ export const ADD_ORGANIZATION = 'AddOrganization'
 export const DELETE_ORGANIZATION = 'DeleteOrganization'
 export const DEPLOYMENT_TYPE_DOCKER = 'docker';
 export const DEPLOYMENT_TYPE_KUBERNETES = 'kubernetes';
-export const DEPLOYMENT_TYPE_VM = 'VM';
+export const DEPLOYMENT_TYPE_VM = 'vm';
 export const DEPLOYMENT_TYPE_HELM = 'helm';
 export const ACCESS_TYPE_DEFAULT_FOR_DEPLOYMENT = 'Default For Deployment';
 export const ACCESS_TYPE_DIRECT = 'Direct';
 export const ACCESS_TYPE_LOAD_BALANCER = 'Load Balancer';
+export const IMAGE_TYPE_DOCKER = 'Docker';
+export const IMAGE_TYPE_QCOW = 'Qcow';
+export const IMAGE_TYPE_HELM = 'Helm';
 export const IP_ACCESS_DEDICATED = 'Dedicated';
 export const IP_ACCESS_SHARED = 'Shared';
 export const DELETE = 'Delete'
@@ -67,12 +70,16 @@ export const accessType = (id) => {
 export const imageType = (id) => {
     switch (id) {
         case 1:
-            return 'Qcow'
-        case 'Qcow':
+            return IMAGE_TYPE_DOCKER
+        case IMAGE_TYPE_DOCKER:
             return 1
+        case 2:
+            return IMAGE_TYPE_QCOW
+        case IMAGE_TYPE_QCOW:
+            return 2
         case 3:
-            return 'Docker'
-        case 'Docker':
+            return IMAGE_TYPE_HELM
+        case IMAGE_TYPE_HELM:
             return 3
         default:
             return id
