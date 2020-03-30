@@ -99,6 +99,9 @@ export const clusterKey = (data, isCreate) => {
         if (data[fields.numberOfNodes]) {
             clusterinst.num_nodes = parseInt(data[fields.numberOfNodes])
         }
+        if (data[fields.privacyPolicyName]) {
+            clusterinst.privacy_policy = data[fields.privacyPolicyName]
+        }
     }
     return ({
         region: data[fields.region],
