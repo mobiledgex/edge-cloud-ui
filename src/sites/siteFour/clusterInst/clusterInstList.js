@@ -7,7 +7,7 @@ import * as actions from '../../../actions';
 
 
 //model
-import * as constant from '../../../services/model/shared';
+import * as shared from '../../../services/model/shared';
 import { fields } from '../../../services/model/format';
 import { keys, showClusterInsts, deleteClusterInst, streamClusterInst, multiDataRequest } from '../../../services/model/clusterInstance';
 import { showCloudlets } from '../../../services/model/cloudlet';
@@ -69,7 +69,10 @@ class ClusterInstView extends React.Component {
         for (let i = 0; i < this.keys.length; i++) {
             let key = this.keys[i]
             if (key.field === fields.state) {
-                key.customizedData = constant.showProgress
+                key.customizedData = shared.showProgress
+            }
+            if (key.field === fields.reservable) {
+                key.customizedData = shared.showYesNo
             }
         }
     }
