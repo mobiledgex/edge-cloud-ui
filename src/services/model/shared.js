@@ -37,27 +37,6 @@ export const additionalDetail = (data) => {
             </div> : null)
 }
 
-
-export const getIPAccess = (data) => {
-    let id = data[fields.ipAccess]
-    switch (id) {
-        case 1:
-            return 'Dedicated'
-        case 3:
-            return 'Shared'
-    }
-}
-
-export const getIPSupport = (data) => {
-    let id = data[fields.ipSupport]
-    switch (id) {
-        case 1:
-            return 'Static'
-        case 2:
-            return 'Dynamic'
-    }
-}
-
 const getStateStatus = (id) => {
     switch (id) {
         case 0:
@@ -98,7 +77,7 @@ const getStateStatus = (id) => {
 export const showProgress = (data, isDetailView) => {
     let state = data[fields.state]
     if (isDetailView) {
-        return getStateStatus(state)
+        return getStateStatus(data)
     }
     else {
         let icon = null;

@@ -9,7 +9,7 @@ import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest }
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
 import ClouldletReg from './cloudletReg';
 
-import * as constant from '../../../services/model/shared';
+import * as shared from '../../../services/model/shared';
 import { Button } from 'semantic-ui-react';
 
 class CloudletList extends React.Component {
@@ -107,10 +107,7 @@ class CloudletList extends React.Component {
                 key.customizedData = this.getCloudletInfoState
             }
             else if (key.field === fields.state) {
-                key.customizedData = constant.showProgress
-            }
-            else if (key.field === fields.ipSupport) {
-                key.customizedData = constant.getIPSupport
+                key.customizedData = shared.showProgress
             }
         }
     }

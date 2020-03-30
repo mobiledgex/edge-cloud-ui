@@ -1,7 +1,7 @@
 import * as formatter from './format'
 import * as serverData from './serverData'
 import uuid from 'uuid'
-import { SHOW_CLUSTER_INST, STREAM_CLUSTER_INST, CREATE_CLUSTER_INST, DELETE_CLUSTER_INST, SHOW_CLOUDLET, SHOW_ORG_CLOUDLET } from './endPointTypes'
+import { SHOW_CLUSTER_INST, STREAM_CLUSTER_INST, CREATE_CLUSTER_INST, UPDATE_CLUSTER_INST, DELETE_CLUSTER_INST, SHOW_CLOUDLET, SHOW_ORG_CLOUDLET } from './endPointTypes'
 import { TYPE_JSON, IPAccessLabel } from '../../constant';
 
 let fields = formatter.fields;
@@ -119,6 +119,13 @@ export const createClusterInst = (data, callback) => {
     return serverData.sendWSRequest(request, callback)
 }
 
+export const updateClusterInst = (data, callback) => {
+    let requestData = clusterKey(data, true)
+    requestData.clusterinst.fields = ['14']
+    let request = { uuid: data.uuid ? data.uuid : uuid(), method: UPDATE_CLUSTER_INST, data: requestData }
+    return serverData.sendWSRequest(request, callback)
+}
+
 export const deleteClusterInst = (data) => {
     let requestData = clusterKey(data)
     return { uuid: data.uuid, method: DELETE_CLUSTER_INST, data: requestData, success: `Cluster Instance ${data[fields.appName]}` }
@@ -131,6 +138,7 @@ export const streamClusterInst = (data) => {
 
 
 const customData = (value) => {
+    value[fields.ipAccess] = IPAccessLabel(value[fields.ipAccess])
 }
 
 export const getData = (response, body) => {

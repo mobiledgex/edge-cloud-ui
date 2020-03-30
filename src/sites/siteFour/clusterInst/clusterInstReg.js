@@ -10,7 +10,7 @@ import * as actions from '../../../actions';
 import * as constant from '../../../constant';
 import { fields, getOrganization } from '../../../services/model/format';
 //model
-import { createClusterInst } from '../../../services/model/clusterInstance';
+import { createClusterInst, updateClusterInst } from '../../../services/model/clusterInstance';
 import { getOrganizationList } from '../../../services/model/organization';
 import { getOrgCloudletList } from '../../../services/model/cloudlet';
 import { getFlavorList } from '../../../services/model/flavor';
@@ -218,7 +218,8 @@ class ClusterInstReg extends React.Component {
         if (data) {
             let cloudlets = data[fields.cloudletName];
             if (this.props.isUpdate) {
-                //update cluster data
+                this.props.handleLoadingSpinner(true)
+                updateClusterInst(data, this.onCreateResponse)
             }
             else {
                 if (cloudlets && cloudlets.length > 0) {
@@ -358,7 +359,6 @@ class ClusterInstReg extends React.Component {
             flavor[fields.flavorName] = data[fields.flavorName]
             this.flavorList = [flavor]
 
-            data[fields.ipAccess] = constant.IPAccessLabel(data[fields.ipAccess])
             this.ipAccessList = data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES ? [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED] : [constant.IP_ACCESS_DEDICATED];
 
             this.privacyPolicyList = await getPrivacyPolicyList(this, { region: data[fields.region] })
