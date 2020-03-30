@@ -2,7 +2,6 @@ import * as formatter from './format'
 import uuid from 'uuid'
 import * as serverData from './serverData'
 import * as constant from '../../constant'
-import { TYPE_JSON } from '../../constant';
 import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, CREATE_CLOUDLET, STREAM_CLOUDLET, DELETE_CLOUDLET, SHOW_CLOUDLET_INFO } from './endPointTypes'
 
 const fields = formatter.fields;
@@ -117,7 +116,7 @@ export const keys = [
     { field: fields.region, label: 'Region', sortable: true, visible: true },
     { field: fields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet Name', sortable: true, visible: true },
     { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true },
-    { field: fields.cloudletLocation, serverField: 'location', label: 'Cloudlet Location', dataType: TYPE_JSON },
+    { field: fields.cloudletLocation, serverField: 'location', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
     { field: fields.ipSupport, serverField: 'ip_support', label: 'IP Support' },
     { field: fields.numDynamicIPs, serverField: 'num_dynamic_ips', label: 'Number of Dynamic IPs' },
     { field: fields.physicalName, serverField: 'physical_name', label: '	Physical Name' },
@@ -126,12 +125,13 @@ export const keys = [
     { field: fields.caCertdata, serverField: 'accessvars#OS#CACERT_DATA', label: 'CA Cert Data' },
     { field: fields.cloudletStatus, label: 'Cloudlet Status', visible: true },
     { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
-    { field: fields.status, serverField: 'status', label: 'Status', dataType: TYPE_JSON },
+    { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
 
 const customData = (value) => {
     value[fields.cloudletStatus] = 4
+    value[fields.ipSupport] = constant.IPSupport(value[fields.ipSupport])
     value[fields.platformType] = constant.PlatformType(value[fields.platformType])
 }
 
