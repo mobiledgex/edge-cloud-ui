@@ -74,6 +74,14 @@ const getStateStatus = (id) => {
     }
 }
 
+export const showYesNo = (data, isDetailView)=>
+{
+    if(isDetailView)
+    {
+        return data ? 'Yes' : 'No'
+    }
+}
+
 export const showProgress = (data, isDetailView) => {
     let state = data[fields.state]
     if (isDetailView) {

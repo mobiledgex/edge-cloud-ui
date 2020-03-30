@@ -77,7 +77,7 @@ class ClusterInstReg extends React.Component {
         let forms = this.state.forms
         if (data) {
             if (this.props.isUpdate) {
-                //update cluster data
+                //update cloudlet data
             }
             else {
                 for (let i = 0; i < forms.length; i++) {
