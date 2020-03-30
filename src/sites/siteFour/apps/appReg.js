@@ -119,7 +119,9 @@ class ClusterInstReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
             if (form.field === fields.imageType) {
-                form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? 'Qcow' : 'Docker'
+                form.value = currentForm.value === constant.DEPLOYMENT_TYPE_HELM ? constant.IMAGE_TYPE_HELM : 
+                currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.IMAGE_TYPE_QCOW : 
+                constant.IMAGE_TYPE_DOCKER
             }
             else if (form.field === fields.imagePath) {
                 form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? 'https://artifactory.mobiledgex.net/artifactory/repo-NewDevOrg' : 'docker.mobiledgex.net/newdevorg/images/server-ping-threaded:5.0'
@@ -198,8 +200,6 @@ class ClusterInstReg extends React.Component {
         let forms = this.state.forms;
         this.checkForms(form, forms)
     }
-
-
 
     onCreate = async (data) => {
         if (data) {
