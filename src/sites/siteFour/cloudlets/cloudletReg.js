@@ -61,6 +61,7 @@ class ClusterInstReg extends React.Component {
     }
 
     onCreateResponse = (mcRequest) => {
+        this.props.handleLoadingSpinner(false)
         if (mcRequest) {
             let data = undefined;
             let request = mcRequest.request;
@@ -93,6 +94,7 @@ class ClusterInstReg extends React.Component {
                         data[uuid] = undefined
                     }
                 }
+                this.props.handleLoadingSpinner(true)
                 createCloudlet(data, this.onCreateResponse)
             }
         }
@@ -260,7 +262,7 @@ class ClusterInstReg extends React.Component {
             await this.loadDefaultData(data)
         }
         else {
-            let organizationList = await getOrganizationList()
+            let organizationList = await getOrganizationList(this)
             this.operatorList = []
             for (let i = 0; i < organizationList.length; i++) {
                 let organization = organizationList[i]
