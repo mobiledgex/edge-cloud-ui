@@ -98,7 +98,8 @@ export const fields = {
     clusterinst:'clusterinst',
     container_ids:'container_ids',
     openRCData:'openRCData',
-    caCertdata:'caCertdata'
+    caCertdata:'caCertdata',
+    clusterdeveloper:'clusterdeveloper'
 
 }
 
