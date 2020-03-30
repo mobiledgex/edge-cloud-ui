@@ -84,7 +84,7 @@ export default class BubbleChart extends Component {
 
         //6097326EDC1269BA27527536405330
         let colorCodes = 'DE0000FF9600FFF6005BCB000096FF'
-        if (this.props.themeTitle === THEME_OPTIONS.EUNDEW) {
+        if (this.props.themeTitle === THEME_OPTIONS.DEFAULT) {
             let eundewColorCodes = 'DE0000FF9600FFF6005BCB000096FF00FFFF0080800000FF000080FF00FF800080800000808080808000'
             colorCodes = eundewColorCodes;
         }

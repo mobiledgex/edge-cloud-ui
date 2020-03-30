@@ -31,7 +31,7 @@ export const REGION = {
 }
 
 export const THEME_OPTIONS = {
-    EUNDEW: 'EUNDEW',
+    DEFAULT: 'DEFAULT',
     BLUE: "BLUE",
     GREEN: 'GREEN',
     RED: 'RED',
@@ -40,7 +40,7 @@ export const THEME_OPTIONS = {
 }
 
 export const THEME_OPTIONS_LIST = [
-    {value: 'EUNDEW', text: 'EUNDEW'},
+    {value: 'DEFAULT', text: 'DEFAULT'},
     {value: 'BLUE', text: 'BLUE'},
     {value: 'GREEN', text: 'GREEN'},
     {value: 'RED', text: 'RED'},

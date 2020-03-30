@@ -627,6 +627,7 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
 
 
 };
+/*
 
 export const makeLineChartDataForAppInstAll = (hardwareUsageList: Array, hardwareType: string = 'all', _this: PageDevMonitoring) => {
     console.log("hardwareType===>", hardwareType);
@@ -680,9 +681,9 @@ export const makeLineChartDataForAppInstAll = (hardwareUsageList: Array, hardwar
                 usageOne3 = seriesValues3[j][APP_INST_MATRIX_HW_USAGE_INDEX.DISK];
                 usageOne4 = seriesValues4[j][APP_INST_MATRIX_HW_USAGE_INDEX.SENDBYTES];
                 usageOne5 = seriesValues4[j][APP_INST_MATRIX_HW_USAGE_INDEX.RECVBYTES];
-                /*usageOne6 = seriesValues5[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE.toString()];
+                /!*usageOne6 = seriesValues5[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE.toString()];
                 usageOne7 = seriesValues5[j][APP_INST_MATRIX_HW_USAGE_INDEX.HANDLED.toString()];
-                usageOne8 = seriesValues5[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACCEPTS.toString()];*/
+                usageOne8 = seriesValues5[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACCEPTS.toString()];*!/
 
                 usageList.push(usageOne);
                 usageList.push(usageOne2);
@@ -721,6 +722,7 @@ export const makeLineChartDataForAppInstAll = (hardwareUsageList: Array, hardwar
     }
 
 };
+*/
 
 
 export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareType: string = 'all', _this: PageDevMonitoring) => {
@@ -1218,6 +1220,15 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, cont
 };
 
 
+/**
+ *
+ * @param levelTypeNameList
+ * @param usageSetList
+ * @param newDateTimeList
+ * @param _this
+ * @param isGradientColor
+ * @returns {function(*=): {datasets: [], labels: *}}
+ */
 export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring, isGradientColor = false) => {
 
 
@@ -1286,7 +1297,7 @@ export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDat
         let hardwareType = lineChartDataSet.hardwareType;
 
 
-        const lineChartDataForRendering = makeTop5LineChartData(levelTypeNameList, usageSetList, newDateTimeList, _this);
+        const lineChartDataForRendering = makeTop5LineChartData(levelTypeNameList, usageSetList, newDateTimeList, _this, _this.state.isStackedLineChart);
         return (
             <div style={{
                 position: 'relative',
