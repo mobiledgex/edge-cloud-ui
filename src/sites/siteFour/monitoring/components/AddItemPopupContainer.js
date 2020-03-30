@@ -113,7 +113,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         <div style={{display:'flex', width:'100%',}}>
                             {this.renderPrevBtn2()}
                             <div className='page_monitoring_popup_title'>
-                                Add Item
+                                Add Item  [{this.props.parent.state.currentClassification }]
                             </div>
                         </div>
                         <div className='page_monitoring_popup_title_divide'/>

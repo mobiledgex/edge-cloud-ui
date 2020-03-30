@@ -259,7 +259,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         intervalForAppInst = null;
         gridItemHeight = 420;
         webSocketInst: WebSocket = null;
-        gridLayoutHeight=window.innerHeight*0.82;
+        gridLayoutHeight = window.innerHeight * 0.82;
 
         constructor(props) {
             super(props);
@@ -418,7 +418,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             })
 
-            await this.loadInitDataForCluster__FOR__DEV();
+            await this.loadInitDataForCluster();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
@@ -540,7 +540,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         async loadInitDataForCluster(isInterval: boolean = false) {
             try {
                 clearInterval(this.intervalForAppInst)
-
                 this.setState({dropdownRequestLoading: true})
                 //@todo:#####################################################################
                 //@todo: real_data (cloudletList ,clusterList, appnInstList)
@@ -721,11 +720,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
 
             return (
-                <LineChartContainer isResizeComplete={this.state.isResizeComplete} context={this.context}
-                                    loading={this.state.loading}
-                                    currentClassification={this.state.currentClassification}
-                                    parent={this}
-                                    pHardwareType={hwType} chartDataSet={lineChartDataSet}/>
+                <LineChartContainer
+                    isResizeComplete={this.state.isResizeComplete}
+                    loading={this.state.loading}
+                    currentClassification={this.state.currentClassification}
+                    parent={this}
+                    pHardwareType={hwType} chartDataSet={lineChartDataSet}
+                />
             )
 
         }
@@ -1106,7 +1107,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-        makeGridItemBodyByType(hwType, graphType) {
+        ____makeGridItemBodyByType(hwType, graphType) {
 
             if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                 return (
@@ -1272,12 +1273,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                     <div className='page_monitoring_widget_icon_area'
                          style={{position: 'absolute', right: 25, top: 10}}>
-                        {/*desc:############################*/}
-                        {/*desc:    edit btn                */}
-                        {/*desc:############################*/}
-                        <div className="edit page_monitoring_widget_icon">
-                            {/*<MaterialIcon icon='create'/>*/}
-                        </div>
+
                         {/*desc:############################*/}
                         {/*desc:    maximize button         */}
                         {/*desc:############################*/}
@@ -1292,6 +1288,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <MaterialIcon icon='aspect_ratio'/>
                         </div>
                         }
+
+                        {/*desc:############################*/}
+                        {/*desc:    edit btn                */}
+                        {/*desc:############################*/}
+                        <div className="edit page_monitoring_widget_icon" onClick={() => {
+                            alert('sdlfksldkflskdlf')
+                        }}>
+                            <MaterialIcon icon='create'/>
+                        </div>
 
                         <div className="remove page_monitoring_widget_icon"
                              onClick={() => {
@@ -1308,13 +1313,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*desc:############################*/}
                     <div className='page_monitoring_column_resizable'>
 
-                        {this.makeGridItemBodyByType(hwType, graphType.toUpperCase())}
+                        {this.____makeGridItemBodyByType(hwType, graphType.toUpperCase())}
                     </div>
                 </div>
             )
         }
-
-
 
 
         renderGridLayoutForCluster() {
@@ -1730,7 +1733,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 {/*desc:---------------------------------*/}
                                 <SemanticToastContainer position={"top-right"}/>
                                 {this.renderHeader()}
-                                <div className="page_monitoring" style={{overflowY: 'auto', height: this.gridLayoutHeight}}>
+                                <div className="page_monitoring"
+                                     style={{overflowY: 'auto', height: this.gridLayoutHeight}}>
                                     <div className='page_monitoring_dashboard_dev'
                                          style={{marginBottom: 0}}>
                                         {this.state.currentClassification === CLASSIFICATION.CLUSTER
