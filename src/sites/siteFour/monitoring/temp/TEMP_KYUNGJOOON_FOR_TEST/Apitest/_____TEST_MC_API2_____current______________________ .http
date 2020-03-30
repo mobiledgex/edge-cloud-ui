@@ -770,3 +770,34 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODU1OTkyM
     "selector": "*",
     "last": 20
 }
+
+
+
+
+### https://console-stage.mobiledgex.net:443/api/v1/auth/metrics/app
+### https://console-stage.mobiledgex.net:443/api/v1/auth/metrics/app
+
+POST https://console-stage.mobiledgex.net:443/api/v1/auth/metrics/cluster
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODU2MjA4NTcsImlhdCI6MTU4NTUzNDQ1NywidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.osWgOjxCpj3_nYi4gS-qVKJQs8iwnJERJUJ8c_v90Uz-A6vGTeWVOQy0uUj3Ai9OK7YZD1dQXpVOYByU2GdBSQ
+
+{
+    "region": "EU",
+    "clusterinst": {
+        "cluster_key": {
+            "name": "mexdemo-stage"
+        },
+        "cloudlet_key": {
+            "organization": "TDG",
+            "name": "mexplat-stage-berlin-cloudlet"
+        },
+        "organization": "MobiledgeX"
+    },
+    "last": 20,
+    "selector": "*"
+}
+
+###
+
+
+
