@@ -21,7 +21,7 @@ export const keys = [
     { field: fields.deployment, serverField: 'deployment', sortable: true, label: 'Deployment', visible: true },
     { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
     { field: fields.status, serverField: 'status', label: 'Status', dataType: TYPE_JSON },
-    { field: fields.reservable, serverField: 'reservable' },
+    { field: fields.reservable, serverField: 'reservable', label: 'Reservable' },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
 
@@ -139,6 +139,7 @@ export const streamClusterInst = (data) => {
 
 const customData = (value) => {
     value[fields.ipAccess] = IPAccessLabel(value[fields.ipAccess])
+    value[fields.reservable] = value[fields.reservable] ? value[fields.reservable] : false
 }
 
 export const getData = (response, body) => {
