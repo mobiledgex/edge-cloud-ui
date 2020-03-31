@@ -84,7 +84,7 @@ const MexDetailViewer = (props) => {
                     {props.keys.map((item, i) => {
                         let data = detailData[item.field]
                         return (
-                            data !== undefined ?
+                            (data !== undefined && item.detailView === undefined || item.detailView)?
                                 item.keys ?
                                     data.length > 0 ?
                                         getRow(i, item, subView(item.keys, data)) : null

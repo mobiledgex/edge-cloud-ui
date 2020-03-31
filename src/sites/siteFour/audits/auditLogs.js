@@ -36,15 +36,6 @@ class SiteFourPageAudits extends React.Component {
         this._cloudletDummy = [];
     }
 
-    gotoUrl(site, subPath) {
-        _self.props.history.push({
-            pathname: site,
-            search: subPath
-        });
-        _self.props.history.location.search = subPath;
-
-    }
-
     //go to
     gotoPreview(site) {
         //브라우져 입력창에 주소 기록

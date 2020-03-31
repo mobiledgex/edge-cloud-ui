@@ -99,8 +99,8 @@ export const fields = {
     container_ids:'container_ids',
     openRCData:'openRCData',
     caCertdata:'caCertdata',
-    clusterdeveloper:'clusterdeveloper'
-
+    clusterdeveloper:'clusterdeveloper',
+    containerVersion:'containerVersion',
 }
 
 export const getUserRole = () => {

@@ -35,7 +35,17 @@ class MexTerminal extends Component {
         })
         this.containerIds = [];
         if (props.data[fields.runtimeInfo] && props.data[fields.runtimeInfo][fields.container_ids]) {
-            this.containerIds = props.data[fields.runtimeInfo][fields.container_ids];
+            let tempContainerIds = props.data[fields.runtimeInfo][fields.container_ids];
+            for(let i=0;i<tempContainerIds.length;i++)
+            {
+                let id = tempContainerIds[i]
+                let containEnvoy = id.substring(0, 5)
+                if(containEnvoy !== 'envoy')
+                {
+                    this.containerIds.push(id)
+                }
+            }
+            
         }
         this.request = 'Run Command'
         this.requestTypes = ['Run Command', 'Show Logs']

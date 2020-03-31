@@ -113,17 +113,17 @@ export const getClusterInstList = async (self, data) => {
     return await serverData.showDataFromServer(self, showClusterInsts(data))
 }
 
-export const createClusterInst = (data, callback) => {
+export const createClusterInst = (self, data, callback) => {
     let requestData = clusterKey(data, true)
     let request = { uuid: data.uuid ? data.uuid : uuid(), method: CREATE_CLUSTER_INST, data: requestData }
-    return serverData.sendWSRequest(request, callback)
+    return serverData.sendWSRequest(self, request, callback)
 }
 
-export const updateClusterInst = (data, callback) => {
+export const updateClusterInst = (self, data, callback) => {
     let requestData = clusterKey(data, true)
     requestData.clusterinst.fields = ['14']
     let request = { uuid: data.uuid ? data.uuid : uuid(), method: UPDATE_CLUSTER_INST, data: requestData }
-    return serverData.sendWSRequest(request, callback)
+    return serverData.sendWSRequest(self, request, callback)
 }
 
 export const deleteClusterInst = (data) => {

@@ -37,7 +37,7 @@ class ClusterInstReg extends React.Component {
         this.cloudletList = []
         this.flavorList = []
         this.privacyPolicyList = []
-        this.ipAccessList = []
+        this.ipAccessList = [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED]
     }
 
     getCloudletInfo = async (form, forms) => {
@@ -109,6 +109,10 @@ class ClusterInstReg extends React.Component {
                     this.getCloudletInfo(form, forms)
                 }
             }
+            else if (form.field === fields.privacyPolicyName) {
+                this.updateUI(form)
+                this.setState({ forms: forms })
+            }
         }
     }
 
@@ -134,11 +138,6 @@ class ClusterInstReg extends React.Component {
             }
             else if (form.field === fields.numberOfNodes) {
                 form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_DOCKER ? false : true
-            }
-            else if (form.field === fields.ipAccess) {
-                this.ipAccessValueChange(currentForm, forms)
-                this.ipAccessList = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED] : [constant.IP_ACCESS_DEDICATED];
-                this.updateUI(form)
             }
         }
         if (isInit === undefined || isInit === false) {
@@ -219,7 +218,7 @@ class ClusterInstReg extends React.Component {
             let cloudlets = data[fields.cloudletName];
             if (this.props.isUpdate) {
                 this.props.handleLoadingSpinner(true)
-                updateClusterInst(data, this.onCreateResponse)
+                updateClusterInst(this, data, this.onCreateResponse)
             }
             else {
                 if (cloudlets && cloudlets.length > 0) {
@@ -227,7 +226,7 @@ class ClusterInstReg extends React.Component {
                         let cloudlet = cloudlets[i];
                         data[fields.cloudletName] = cloudlet;
                         this.props.handleLoadingSpinner(true)
-                        createClusterInst(data, this.onCreateResponse)
+                        createClusterInst(this, data, this.onCreateResponse)
                     }
 
                 }
@@ -358,9 +357,6 @@ class ClusterInstReg extends React.Component {
             flavor[fields.region] = data[fields.region]
             flavor[fields.flavorName] = data[fields.flavorName]
             this.flavorList = [flavor]
-
-            this.ipAccessList = data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES ? [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED] : [constant.IP_ACCESS_DEDICATED];
-
             this.privacyPolicyList = await getPrivacyPolicyList(this, { region: data[fields.region] })
         }
     }
@@ -375,7 +371,7 @@ class ClusterInstReg extends React.Component {
             { field: fields.cloudletName, label: 'Cloudlet', formType: 'MultiSelect', placeholder: 'Select Cloudlet', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 4, field: fields.operatorName }] },
             { field: fields.deployment, label: 'Deployment Type', formType: 'Select', placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, update: true },
             { field: fields.ipAccess, label: 'IP Access', formType: 'Select', placeholder: 'Select IP Access', visible: true, update: true },
-            { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: 'Select', placeholder: 'Select Privacy Policy Name', visible: false, update: true, dependentData: [{ index: 1, field: fields.region }] },
+            { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: 'Select', placeholder: 'Select Privacy Policy Name', visible: false, update: true, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.organizationName }] },
             { field: fields.flavorName, label: 'Flavor', formType: 'Select', placeholder: 'Select Flavor', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
             { field: fields.numberOfMasters, label: 'Number of Masters', formType: 'Input', placeholder: 'Enter Number of Masters', rules: { type: 'number', disabled: true }, visible: false, value: 1, update: true },
             { field: fields.numberOfNodes, label: 'Number of Nodes', formType: 'Input', placeholder: 'Enter Number of Nodes', rules: { type: 'number' }, visible: false, update: true },

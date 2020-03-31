@@ -97,11 +97,11 @@ export const showProgress = (data, isDetailView) => {
             case 3:
             case 7:
             case 14:
-                icon = <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading size={12} color='green' name='circle notch' />} />
+                icon = <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading color='green' name='circle notch' />} />
                 break;
             case 10:
             case 12:
-                icon = <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading size={12} color='red' name='circle notch' />} />
+                icon = <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading color='red' name='circle notch' />} />
                 break;
             default:
                 icon = <Popup content={getStateStatus(state)} trigger={<Icon className="progressIndicator" name='close' color='red' />} />

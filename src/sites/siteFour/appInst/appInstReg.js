@@ -241,7 +241,7 @@ class ClusterInstReg extends React.Component {
                     let cloudlet = cloudlets[i];
                     data[fields.cloudletName] = cloudlet;
                     this.props.handleLoadingSpinner(true)
-                    createAppInst(data, this.onCreateResponse)
+                    createAppInst(this, data, this.onCreateResponse)
                 }
             }
         }

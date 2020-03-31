@@ -47,10 +47,12 @@ const showError = (request, message) => {
 
 const checkExpiry = (self, message) => {
     let isExpired = message.indexOf('expired jwt') > -1 || message.indexOf('expired token') > -1 || message.indexOf('token is expired') > -1
-    if (isExpired && self.gotoUrl) {
+    if (isExpired && self) {
         localStorage.setItem('userInfo', null)
         localStorage.setItem('sessionData', null)
-        setTimeout(() => self.gotoUrl('/logout'), 2000);
+        setTimeout(() => self.props.history.push({
+            pathname: '/logout'
+        }), 2000);
     }
     return !isExpired;
 }
@@ -71,7 +73,6 @@ function responseError(self, request, response, callback) {
         }
     }
 }
-
 
 export function sendWSRequest(request, callback) {
     let url = process.env.REACT_APP_API_ENDPOINT;
