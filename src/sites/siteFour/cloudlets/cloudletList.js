@@ -28,12 +28,13 @@ class CloudletList extends React.Component {
         this.setState({ currentView: null })
     }
 
-    onAdd = () => {
-        this.setState({ currentView: <ClouldletReg onClose={this.onRegClose}/> })
+    onAdd = (action, data) => {
+        this.setState({ currentView: <ClouldletReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose}/> })
     }
 
     actionMenu = () => {
         return [
+            { label: 'Update', onClick: this.onAdd },
             { label: 'Delete', onClick: deleteCloudlet, ws: true }
         ]
     }

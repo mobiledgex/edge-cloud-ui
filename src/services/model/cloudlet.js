@@ -2,7 +2,7 @@ import * as formatter from './format'
 import uuid from 'uuid'
 import * as serverData from './serverData'
 import * as constant from '../../constant'
-import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, CREATE_CLOUDLET, STREAM_CLOUDLET, DELETE_CLOUDLET, SHOW_CLOUDLET_INFO } from './endPointTypes'
+import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, CREATE_CLOUDLET, UPDATE_CLOUDLET,  STREAM_CLOUDLET, DELETE_CLOUDLET, SHOW_CLOUDLET_INFO } from './endPointTypes'
 
 const fields = formatter.fields;
 
@@ -27,6 +27,9 @@ export const getKey = (data, isCreate) => {
         }
         if (data[fields.openRCData] || data[fields.openRCData]) {
             cloudlet.accessvars = accessvars
+        }
+        if (data[fields.containerVersion]) {
+            cloudlet.container_version = data[fields.containerVersion]
         }
     }
     return ({
@@ -86,10 +89,17 @@ export const showOrgCloudlets = (data) => {
     return { method: SHOW_ORG_CLOUDLET, data: data }
 }
 
-export const createCloudlet = (data, callback) => {
+export const createCloudlet = (self, data, callback) => {
     let requestData = getKey(data, true)
     let request = { uuid: data.uuid ? data.uuid : uuid(), method: CREATE_CLOUDLET, data: requestData }
-    return serverData.sendWSRequest(request, callback)
+    return serverData.sendWSRequest(self, request, callback)
+}
+
+export const updateCloudlet = (self, data, callback) => {
+    let requestData = getKey(data, true)
+    requestData.cloudlet.fields = ['20']
+    let request = { uuid: data.uuid ? data.uuid : uuid(), method: UPDATE_CLOUDLET, data: requestData }
+    return serverData.sendWSRequest(self, request, callback)
 }
 
 export const getCloudletList = async (self, data) => {
@@ -117,6 +127,8 @@ export const keys = [
     { field: fields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet Name', sortable: true, visible: true },
     { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true },
     { field: fields.cloudletLocation, serverField: 'location', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
+    { field: fields.latitude, serverField: 'location#OS#latitude', label: 'Longitude', detailView:false },
+    { field: fields.longitude, serverField: 'location#OS#longitude', label: 'Latitude', detailView:false },
     { field: fields.ipSupport, serverField: 'ip_support', label: 'IP Support' },
     { field: fields.numDynamicIPs, serverField: 'num_dynamic_ips', label: 'Number of Dynamic IPs' },
     { field: fields.physicalName, serverField: 'physical_name', label: '	Physical Name' },
@@ -126,6 +138,7 @@ export const keys = [
     { field: fields.cloudletStatus, label: 'Cloudlet Status', visible: true },
     { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
     { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
+    { field: fields.containerVersion, serverField: 'container_version', label: 'Container Version' },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
 

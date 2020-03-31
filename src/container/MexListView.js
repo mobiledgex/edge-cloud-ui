@@ -145,7 +145,7 @@ class MexListView extends React.Component {
             if (action.ws) {
                 this.wsResponseCount = 0
                 this.props.handleLoadingSpinner(true);
-                serverData.sendWSRequest(action.onClick(data), this.onDeleteWSResponse)
+                serverData.sendWSRequest(this, action.onClick(data), this.onDeleteWSResponse)
             }
             else {
                 let mcRequest = await serverData.sendRequest(this, action.onClick(data))
@@ -301,7 +301,7 @@ class MexListView extends React.Component {
         if (stream) {
             let state = data[fields.state];
             if (state === 2 || state === 3 || state === 6 || state === 7 || state === 9 || state === 10 || state === 12 || state === 14) {
-                serverData.sendWSRequest(stream(data), this.requestResponse)
+                serverData.sendWSRequest(this, stream(data), this.requestResponse)
             }
         }
     }

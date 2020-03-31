@@ -96,10 +96,10 @@ export const showAppInsts = (data) => {
   return { method: SHOW_APP_INST, data: data }
 }
 
-export const createAppInst = (data, callback) => {
+export const createAppInst = (self, data, callback) => {
   let requestData = getKey(data, true)
   let request = { uuid: data.uuid ? data.uuid : uuid(), method: CREATE_APP_INST, data: requestData }
-  return serverData.sendWSRequest(request, callback)
+  return serverData.sendWSRequest(self, request, callback)
 }
 
 export const deleteAppInst = (data) => {
