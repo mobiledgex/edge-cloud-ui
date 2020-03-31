@@ -37,7 +37,7 @@ class ClusterInstReg extends React.Component {
         this.cloudletList = []
         this.flavorList = []
         this.privacyPolicyList = []
-        this.ipAccessList = []
+        this.ipAccessList = [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED]
     }
 
     getCloudletInfo = async (form, forms) => {
@@ -138,11 +138,6 @@ class ClusterInstReg extends React.Component {
             }
             else if (form.field === fields.numberOfNodes) {
                 form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_DOCKER ? false : true
-            }
-            else if (form.field === fields.ipAccess) {
-                this.ipAccessValueChange(currentForm, forms)
-                this.ipAccessList = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED] : [constant.IP_ACCESS_DEDICATED];
-                this.updateUI(form)
             }
         }
         if (isInit === undefined || isInit === false) {
@@ -362,9 +357,6 @@ class ClusterInstReg extends React.Component {
             flavor[fields.region] = data[fields.region]
             flavor[fields.flavorName] = data[fields.flavorName]
             this.flavorList = [flavor]
-
-            this.ipAccessList = data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES ? [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED] : [constant.IP_ACCESS_DEDICATED];
-
             this.privacyPolicyList = await getPrivacyPolicyList(this, { region: data[fields.region] })
         }
     }
