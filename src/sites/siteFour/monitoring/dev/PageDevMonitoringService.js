@@ -798,9 +798,6 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
         }
 
 
-        console.log("usageSetList===>", usageSetList);
-
-
         //@todo: CUT LIST INTO RECENT_DATA_LIMIT_COUNT
         let newDateTimeList = [];
         for (let i in dateTimeList) {
@@ -1038,35 +1035,45 @@ export const hexToRGB = (hex, alpha) => {
     }
 }
 
-
-export const makeGradientColorList = (canvas, height, colorList) => {
-    //let colorList= ['red', 'blue', 'green', 'yellow', 'grey']
-
-    console.log("colorList===>", colorList);
-    const ctx = canvas.getContext("2d");
-
-    let gradientList = [];
-
-
-    colorList.map(item => {
-        const gradient = ctx.createLinearGradient(0, 0, 0, height);
-        gradient.addColorStop(0, hexToRGB(item, 0.2));
-        gradient.addColorStop(0.5, hexToRGB(item, 0.5));
-        gradient.addColorStop(1, hexToRGB(item, 0.85));
-        gradientList.push(gradient);
-    })
-
-
-    return gradientList;
-};
-
-
 export const makeGradientColorOne = (canvas, height) => {
     const ctx = canvas.getContext("2d");
     const gradient = ctx.createLinearGradient(0, 0, 0, height);
     gradient.addColorStop(0, 'rgb(111,253,255)');
     gradient.addColorStop(1.0, 'rgb(62,113,243)');
     return gradient;
+};
+
+
+export const makeGradientColorList = (canvas, height, colorList, isBig = false) => {
+    //let colorList= ['red', 'blue', 'green', 'yellow', 'grey']
+    console.log("colorList===>", colorList);
+    const ctx = canvas.getContext("2d");
+    let gradientList = [];
+    if (isBig) {
+        colorList.map(item => {
+            const gradient = ctx.createLinearGradient(0, 0, 0, height);
+            gradient.addColorStop(0.1, hexToRGB(item, 0.1));
+            gradient.addColorStop(0.2, hexToRGB(item, 0.2));
+            gradient.addColorStop(0.3, hexToRGB(item, 0.3));
+            gradient.addColorStop(0.4, hexToRGB(item, 0.4));
+            gradient.addColorStop(0.5, hexToRGB(item, 0.5));
+            gradient.addColorStop(0.6, hexToRGB(item, 0.6));
+            gradient.addColorStop(0.7, hexToRGB(item, 0.7));
+            gradient.addColorStop(0.8, hexToRGB(item, 0.8));
+            gradient.addColorStop(0.9, hexToRGB(item, 0.9));
+            gradientList.push(gradient);
+        })
+    } else {
+        colorList.map(item => {
+            const gradient = ctx.createLinearGradient(0, 0, 0, height);
+            gradient.addColorStop(0, hexToRGB(item, 0.2));
+            gradient.addColorStop(0.5, hexToRGB(item, 0.5));
+            gradient.addColorStop(1, hexToRGB(item, 0.85));
+            gradientList.push(gradient);
+        })
+    }
+
+    return gradientList;
 };
 
 
@@ -1216,9 +1223,53 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, cont
 
         }
     };//options
-
     return options;
 };
+
+
+export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMonitoring) => {
+    const lineChartData = (canvas) => {
+        let levelTypeNameList = lineChartDataSet.levelTypeNameList
+        let usageSetList = lineChartDataSet.usageSetList
+        let newDateTimeList = lineChartDataSet.newDateTimeList
+        let gradientList = makeGradientColorList(canvas, 305, _this.state.chartColorList, true);
+        let finalSeriesDataSets = [];
+        for (let index in usageSetList) {
+            //@todo: top5 만을 추린다
+            if (index < 5) {
+                let datasetOne = {
+                    label: levelTypeNameList[index],
+                    radius: 0,
+                    borderWidth: 3.5,//todo:라인 두께
+                    fill: _this.state.isStackedLineChart,// @desc:fill BackgroundArea
+                    backgroundColor: _this.state.isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
+                    borderColor: _this.state.isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
+                    lineTension: 0.5,
+                    data: usageSetList[index],
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: 'rgba(75,192,192,1)',
+                    pointBackgroundColor: '#fff',
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+                    pointHoverBorderColor: 'rgba(220,220,220,1)',
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+                }
+                finalSeriesDataSets.push(datasetOne)
+            }
+        }
+        return {
+            labels: newDateTimeList,
+            datasets: finalSeriesDataSets,
+        }
+    };
+    return lineChartData;
+}
 
 
 /**
@@ -1247,9 +1298,10 @@ export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTi
                     radius: 0,
                     borderWidth: 3.5,//todo:라인 두께
                     fill: isGradientColor,// @desc:fill@desc:fill@desc:fill@desc:fill
-                    lineTension: 0.5,
                     backgroundColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
                     borderColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
+                    lineTension: 0.5,
+
                     data: usageSetList[index],
                     borderCapStyle: 'butt',
                     borderDash: [],

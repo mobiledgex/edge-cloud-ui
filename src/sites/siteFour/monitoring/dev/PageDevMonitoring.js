@@ -20,9 +20,9 @@ import {
     getUserId,
     makeAllLineChartData,
     makeBarChartDataForAppInst,
-    makeBarChartDataForCluster,
+    makeBarChartDataForCluster, makeGradientColorList,
     makeid,
-    makeLineChartDataForAppInst,
+    makeLineChartDataForAppInst, makeLineChartDataForBigModal,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
     makeSelectBoxListWithValuePipe,
@@ -71,7 +71,7 @@ import {
 } from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
-import ModalGraph from "../components/ModalGraphContainer";
+import ModalGraph from "../components/MiniModalGraphContainer";
 import {reactLocalStorage} from "reactjs-localstorage";
 import LeafletMapWrapperForDev from "../components/LeafletMapDevContainer";
 import {LayoutItem, Responsive, WidthProvider} from "react-grid-layout";
@@ -252,6 +252,8 @@ type State = {
     isOpenEditView: boolean,
     isFullScreenMap: boolean,
     isStackedLineChart: boolean,
+    isGradientColor: boolean,
+
 
 }
 
@@ -409,6 +411,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isOpenEditView: false,
                 isFullScreenMap: false,
                 isStackedLineChart: false,
+                isGradientColor: false,
             };
         }
 
@@ -442,9 +445,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //FIXME : ############################
                 //@FIXME: fakeData22222222222
                 //FIXME : ############################
-                let clusterList = require('../aaaaaa___TEMP_WILLBEDELETED/Jsons/clusterList')
-                let cloudletList = require('../aaaaaa___TEMP_WILLBEDELETED/Jsons/cloudletList')
-                let appInstanceList = require('../aaaaaa___TEMP_WILLBEDELETED/Jsons/appInstanceList')
+                let clusterList = require('../zzz____TESTCODE____/Jsons/clusterList')
+                let cloudletList = require('../zzz____TESTCODE____/Jsons/cloudletList')
+                let appInstanceList = require('../zzz____TESTCODE____/Jsons/appInstanceList')
                 console.log('appInstanceList====>', appInstanceList);
                 console.log('clusterUsageList===>', clusterList);
                 let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
@@ -463,7 +466,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //FIXME : ############################
                 //@fixme: fakeData __allAppInstEvLogListValues
                 //FIXME : ############################
-                let __allAppInstEvLogListValues = require('../aaaaaa___TEMP_WILLBEDELETED/Jsons/allAppInstEventLogList')
+                let __allAppInstEvLogListValues = require('../zzz____TESTCODE____/Jsons/allAppInstEventLogList')
                 await this.setState({
                     allAppInstEventLogs: __allAppInstEvLogListValues,
                     filteredAppInstEventLogs: __allAppInstEvLogListValues,
@@ -498,7 +501,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
                 let allClusterUsageList = []
-                allClusterUsageList = require('../aaaaaa___TEMP_WILLBEDELETED/Jsons/allClusterUsageList')
+                allClusterUsageList = require('../zzz____TESTCODE____/Jsons/allClusterUsageList')
                 console.log('filteredAppInstanceList===>', appInstanceList)
 
                 let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
@@ -1173,52 +1176,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        makeLineChartDataForBigModal(lineChartDataSet) {
-            let levelTypeNameList = lineChartDataSet.levelTypeNameList
-            let usageSetList = lineChartDataSet.usageSetList
-            let newDateTimeList = lineChartDataSet.newDateTimeList
-
-            let finalSeriesDataSets = [];
-            for (let index in usageSetList) {
-                //@todo: top5 만을 추린다
-                if (index < 5) {
-                    let datasetOne = {
-                        label: levelTypeNameList[index],
-                        radius: 0,
-                        borderWidth: 3.5,//todo:라인 두께
-                        fill: false,
-                        lineTension: 0.5,
-                        /*backgroundColor:  gradientList[index],
-                        borderColor: gradientList[index],*/
-                        backgroundColor: this.state.chartColorList[index],
-                        borderColor: this.state.chartColorList[index],
-                        data: usageSetList[index],
-                        borderCapStyle: 'butt',
-                        borderDash: [],
-                        borderDashOffset: 0.0,
-                        borderJoinStyle: 'miter',
-                        pointBorderColor: 'rgba(75,192,192,1)',
-                        pointBackgroundColor: '#fff',
-                        pointBorderWidth: 1,
-                        pointHoverRadius: 5,
-                        pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-                        pointHoverBorderColor: 'rgba(220,220,220,1)',
-                        pointHoverBorderWidth: 2,
-                        pointRadius: 1,
-                        pointHitRadius: 10,
-
-                    }
-
-                    finalSeriesDataSets.push(datasetOne)
-                }
-
-            }
-            return {
-                labels: newDateTimeList,
-                datasets: finalSeriesDataSets,
-            }
-        }
-
         showBigModal = (hwType, graphType) => {
 
             let chartDataForRendering = []
@@ -1226,10 +1183,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 if (this.state.currentClassification === CLASSIFICATION.APPINST) {
                     let lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
-                    chartDataForRendering = this.makeLineChartDataForBigModal(lineChartDataSet)
+                    chartDataForRendering = makeLineChartDataForBigModal(lineChartDataSet, this)
                 } else {
                     let lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
-                    chartDataForRendering = this.makeLineChartDataForBigModal(lineChartDataSet)
+                    chartDataForRendering = makeLineChartDataForBigModal(lineChartDataSet, this)
                 }
 
             } else if (graphType.toUpperCase() == GRID_ITEM_TYPE.BAR || graphType.toUpperCase() == GRID_ITEM_TYPE.COLUMN) {
