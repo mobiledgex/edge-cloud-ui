@@ -210,6 +210,7 @@ const MexForms = (props) => {
 
         let parentForm = props.forms[parentId];
         return forms.map((form, i) => {
+            initValidateRules(form)
             let key = parentForm.uuid + '' + i
             let required = false;
             let disabled = false;

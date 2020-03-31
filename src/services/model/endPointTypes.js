@@ -29,6 +29,7 @@ export const SHOW_CONTROLLER = "showController"
 export const SHOW_CLOUDLET = "ShowCloudlet";
 export const SHOW_CLOUDLET_INFO = "ShowCloudletInfo";
 export const DELETE_CLOUDLET = "DeleteCloudlet";
+export const UPDATE_CLOUDLET = "UpdateCloudlet";
 export const CREATE_CLOUDLET = "CreateCloudlet";
 export const SHOW_CLUSTER_INST = "ShowClusterInst";
 export const CREATE_CLUSTER_INST = "CreateClusterInst";
@@ -118,6 +119,7 @@ export function getPath(request) {
         case SHOW_CLOUDLET:
         case SHOW_CLOUDLET_INFO:
         case CREATE_CLOUDLET:
+        case UPDATE_CLOUDLET:
         case DELETE_CLOUDLET:
         case STREAM_CLOUDLET:
         case SHOW_CLUSTER_INST:
