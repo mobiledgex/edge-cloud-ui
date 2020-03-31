@@ -10,7 +10,7 @@ import {
     showToast
 } from "./PageMonitoringCommonService";
 import {formatData} from "../../../services/formatter/formatComputeInstance";
-import {makeFormForAppInstance} from "./admin/PageAdminMonitoringService";
+import {makeFormForAppLevelUsageList} from "./admin/PageAdminMonitoringService";
 import PageDevMonitoring from "./dev/PageDevMonitoring";
 
 
@@ -386,7 +386,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
         for (let index = 0; index < appInstanceList.length; index++) {
             //todo: Create a data FORM format for requests
-            let instanceInfoOneForm = makeFormForAppInstance(appInstanceList[index], pHardwareType, store.userToken, recentDataLimitCount, pStartTime, pEndTime)
+            let instanceInfoOneForm = makeFormForAppLevelUsageList(appInstanceList[index], pHardwareType, store.userToken, recentDataLimitCount, pStartTime, pEndTime)
             instanceBodyList.push(instanceInfoOneForm);
         }
 

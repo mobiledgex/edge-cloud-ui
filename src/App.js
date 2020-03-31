@@ -24,6 +24,7 @@ import './css/pages/cloudletPool.css';
 import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
 import Test001 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/Test001";
+import Test003 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/LIneSeriesWebSocketTestForAppInst0001";
 // API
 
 let self = null;
@@ -331,7 +332,7 @@ class App extends Component {
                     <Route exact path='/createAccount' component={DashboardContainer.bind(this, {mainPath:'/createAccount'})} />
                     <Route exact path='/passwordreset' component={DashboardContainer.bind(this, {mainPath:'/passwordreset'})} />
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
-                    <Route exact path='/Test001' component={Test001} />
+                    <Route exact path='/LIneSeriesWebSocketTestForAppInst0001' component={Test003} />
                 </div>
             </Router>
         );

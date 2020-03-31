@@ -799,5 +799,35 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODU2MjA4N
 
 ###
 
+POST https://console-stage.mobiledgex.net:443/api/v1/auth/metrics/app
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODU3MTYyNTYsImlhdCI6MTU4NTYyOTg1NiwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.rO4xtriISqU4y4FaJBUtuoPrKFsODYlaHREmVCWm4236HKvxZdv271o-X7xwwX-s_pH0FSC3F6uYrPplwlfzfQ
+
+{
+    "region": "EU",
+    "appinst": {
+        "app_key": {
+            "organization": "MobiledgeX",
+            "name": "MEXPrometheusAppName",
+            "version": "1.0"
+        },
+        "cluster_inst_key": {
+            "cluster_key": {
+                "name": "mexdemo-stage"
+            },
+            "cloudlet_key": {
+                "name": "mexplat-stage-frankfurt-cloudlet",
+                "organization": "TDG"
+            }
+        }
+    },
+    "selector": "*",
+    "last": 10,
+    "starttime": "2019-04-02T13:44:00Z",
+    "endtime": "2020-03-31T13:44:00Z"
+}
+
+###
+
 
 

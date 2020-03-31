@@ -28,7 +28,6 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const {Option} = Select;
 
 
-
 export const defaultLayoutForCluster = [
     {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},
     {i: '2', x: 1, y: 0, w: 1, h: 1, "add": false},
@@ -1103,6 +1102,8 @@ export const addUnitNameForUsage = (value, hardwareType, _this) => {
 
         if (hardwareType === HARDWARE_TYPE.CPU || hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
             return value + " %";
+        } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
+            return value + " %";
         } else if (hardwareType === HARDWARE_TYPE.SENDBYTES || hardwareType === HARDWARE_TYPE.RECVBYTES) {
             return convertByteToMegaByte(value, hardwareType)
         } else if (hardwareType === HARDWARE_TYPE.UDPRECV || hardwareType === HARDWARE_TYPE.UDPSENT) {
@@ -1113,7 +1114,7 @@ export const addUnitNameForUsage = (value, hardwareType, _this) => {
 
     } else if (_this.state.currentClassification === CLASSIFICATION.APPINST) {
         if (hardwareType === HARDWARE_TYPE.CPU) {
-            return value + " %";
+            return value.toString().substring(0, 9) + " %";
         } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM || hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
             return convertByteToMegaByte(value, hardwareType)
         } else {
