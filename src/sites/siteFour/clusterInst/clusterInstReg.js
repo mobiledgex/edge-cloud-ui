@@ -109,6 +109,10 @@ class ClusterInstReg extends React.Component {
                     this.getCloudletInfo(form, forms)
                 }
             }
+            else if (form.field === fields.privacyPolicyName) {
+                this.updateUI(form)
+                this.setState({ forms: forms })
+            }
         }
     }
 
@@ -375,7 +379,7 @@ class ClusterInstReg extends React.Component {
             { field: fields.cloudletName, label: 'Cloudlet', formType: 'MultiSelect', placeholder: 'Select Cloudlet', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 4, field: fields.operatorName }] },
             { field: fields.deployment, label: 'Deployment Type', formType: 'Select', placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, update: true },
             { field: fields.ipAccess, label: 'IP Access', formType: 'Select', placeholder: 'Select IP Access', visible: true, update: true },
-            { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: 'Select', placeholder: 'Select Privacy Policy Name', visible: false, update: true, dependentData: [{ index: 1, field: fields.region }] },
+            { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: 'Select', placeholder: 'Select Privacy Policy Name', visible: false, update: true, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.organizationName }] },
             { field: fields.flavorName, label: 'Flavor', formType: 'Select', placeholder: 'Select Flavor', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
             { field: fields.numberOfMasters, label: 'Number of Masters', formType: 'Input', placeholder: 'Enter Number of Masters', rules: { type: 'number', disabled: true }, visible: false, value: 1, update: true },
             { field: fields.numberOfNodes, label: 'Number of Nodes', formType: 'Input', placeholder: 'Enter Number of Nodes', rules: { type: 'number' }, visible: false, update: true },
