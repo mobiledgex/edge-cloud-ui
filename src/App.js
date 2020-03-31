@@ -23,8 +23,8 @@ import './css/pages/audit.css';
 import './css/pages/cloudletPool.css';
 import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
-import Test001 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/Test001";
-import Test003 from "./sites/siteFour/monitoring/temp/TEMP_KYUNGJOOON_FOR_TEST/Pages/LIneSeriesWebSocketTestForAppInst0001";
+import Test001 from "./sites/siteFour/monitoring/TEMP_WILLBEDELETED/Pages/Test001";
+import Test003 from "./sites/siteFour/monitoring/TEMP_WILLBEDELETED/Pages/LIneSeriesWebSocketTestForAppInst0001";
 // API
 
 let self = null;

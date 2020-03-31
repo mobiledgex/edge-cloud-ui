@@ -1,6 +1,6 @@
 import React from "react";
 import * as L from 'leaflet';
-import "../PageMonitoring.css";
+import "../../PageMonitoring.css";
 import 'react-leaflet-fullscreen-control'
 import type {TypeAppInstance, TypeClient, TypeClientLocation} from "../../../../shared/Types";
 import Ripples from "react-ripples";

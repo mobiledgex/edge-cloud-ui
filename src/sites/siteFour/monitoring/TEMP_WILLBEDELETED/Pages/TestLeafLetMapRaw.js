@@ -3,7 +3,7 @@ import * as React from 'react';
 import L from 'leaflet';
 import {SemanticToastContainer} from "react-semantic-toasts";
 import {Grid} from "semantic-ui-react";
-import {showToast} from "../../../PageMonitoringCommonService";
+import {showToast} from "../../PageMonitoringCommonService";
 import {Modal as AModal} from "antd";
 import './styles.css'
 import {hot} from "react-hot-loader/root";

@@ -442,9 +442,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //FIXME : ############################
                 //@FIXME: fakeData22222222222
                 //FIXME : ############################
-                let clusterList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/clusterList')
-                let cloudletList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/cloudletList')
-                let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
+                let clusterList = require('../TEMP_WILLBEDELETED/Jsons/clusterList')
+                let cloudletList = require('../TEMP_WILLBEDELETED/Jsons/cloudletList')
+                let appInstanceList = require('../TEMP_WILLBEDELETED/Jsons/appInstanceList')
                 console.log('appInstanceList====>', appInstanceList);
                 console.log('clusterUsageList===>', clusterList);
                 let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
@@ -463,7 +463,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //FIXME : ############################
                 //@fixme: fakeData __allAppInstEvLogListValues
                 //FIXME : ############################
-                let __allAppInstEvLogListValues = require('../temp/allAppInstEventLogList')
+                let __allAppInstEvLogListValues = require('../TEMP_WILLBEDELETED/Jsons/allAppInstEventLogList')
                 await this.setState({
                     allAppInstEventLogs: __allAppInstEvLogListValues,
                     filteredAppInstEventLogs: __allAppInstEvLogListValues,
@@ -498,7 +498,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
                 let allClusterUsageList = []
-                allClusterUsageList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/allClusterUsageList')
+                allClusterUsageList = require('../TEMP_WILLBEDELETED/Jsons/allClusterUsageList')
                 console.log('filteredAppInstanceList===>', appInstanceList)
 
                 let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
@@ -1294,9 +1294,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*desc:############################*/}
                         {/*desc:    edit btn                */}
                         {/*desc:############################*/}
-                        <div className="edit page_monitoring_widget_icon" onClick={() => {
-                            //alert('sdlfksldkflskdlf')
-                        }}>
+                        <div className="edit page_monitoring_widget_icon"
+                             onClick={() => {
+                                 //alert('sdlfksldkflskdlf')
+                             }}
+                        >
                             <MaterialIcon icon='create'/>
                         </div>
 
@@ -1603,7 +1605,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         })
                                     }}
                                     positive={this.state.isStackedLineChart}
-                                    style={{height: 35, backgroundColor:'green'}}
+                                    style={{height: 35, backgroundColor: 'green'}}
                                 >Stacked Line Chart
                                 </Button>
                             </div>

@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {ComposableMap, Geographies, Geography, Marker, ZoomableGroup, Annotation} from "../../../../../../components/react-simple-maps-v1/src/ReactSimpleMapV1"
+import {ComposableMap, Geographies, Geography, Marker, ZoomableGroup, Annotation} from "../../../../../components/react-simple-maps-v1/src/ReactSimpleMapV1"
 import {Button, Icon} from "semantic-ui-react";
 import './mapbox.css'
 
