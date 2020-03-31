@@ -11,7 +11,7 @@ import {
 import L from 'leaflet';
 import {hot} from "react-hot-loader/root";
 
-import '../../../PageMonitoring.css'
+import '../../PageMonitoring.css'
 import {Button} from "antd";
 import {Select} from "antd";
 import {Icon} from "semantic-ui-react";

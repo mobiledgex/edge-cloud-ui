@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {Line} from 'react-chartjs-2';
 import {hot} from "react-hot-loader/root";
-import type {TypeClientLocation} from "../../../../../../shared/Types";
-import {isEmpty} from "../../../PageMonitoringCommonService";
+import type {TypeClientLocation} from "../../../../../shared/Types";
+import {isEmpty} from "../../PageMonitoringCommonService";
 
 const data2222 = {
     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],

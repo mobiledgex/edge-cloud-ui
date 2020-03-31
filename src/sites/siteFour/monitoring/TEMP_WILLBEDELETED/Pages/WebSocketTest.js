@@ -2,7 +2,7 @@ import * as React from 'react';
 import {CircularProgress} from "@material-ui/core";
 import FlexBox from "flexbox-react";
 import uuid from "uuid";
-import {showToast3} from "../../../PageMonitoringCommonService";
+import {showToast3} from "../../PageMonitoringCommonService";
 import {SemanticToastContainer} from "react-semantic-toasts";
 
 type Props = {

@@ -3,7 +3,7 @@ import React from "react";
 
 import {reactLocalStorage} from "reactjs-localstorage";
 import {hot} from "react-hot-loader/root";
-import {isEmpty} from "../../../PageMonitoringCommonService";
+import {isEmpty} from "../../PageMonitoringCommonService";
 
 import _ from "lodash";
 import {WidthProvider, Responsive} from "react-grid-layout";

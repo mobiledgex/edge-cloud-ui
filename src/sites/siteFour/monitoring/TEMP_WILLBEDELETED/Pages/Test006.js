@@ -3,7 +3,7 @@ import React from "react";
 
 import {Grid, Table} from "semantic-ui-react";
 import {Tooltip} from "antd";
-import './../../../../../../css/index.css'
+import '../../../../../css/index.css'
 import './../../../../../../css/pages/monitoring.css'
 import "./styles.css";
 
