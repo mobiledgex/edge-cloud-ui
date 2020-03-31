@@ -95,7 +95,7 @@ class ClusterInstReg extends React.Component {
                     }
                 }
                 this.props.handleLoadingSpinner(true)
-                createCloudlet(data, this.onCreateResponse)
+                createCloudlet(this, data, this.onCreateResponse)
             }
         }
     }

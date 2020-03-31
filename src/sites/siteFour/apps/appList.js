@@ -31,16 +31,6 @@ class AppList extends React.Component {
 
     /***Action Block */
 
-    gotoUrl(site, subPath) {
-        let mainPath = site;
-        this.props.history.push({
-            pathname: site,
-            search: subPath
-        });
-        this.props.history.location.search = subPath;
-        this.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
-    }
-
 
     onLaunch = (action, data) => {
         this.setState({ currentView: <AppInstReg isLaunch={action ? true : false} data={data} onClose={this.onRegClose}/> })

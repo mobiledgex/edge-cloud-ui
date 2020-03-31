@@ -219,7 +219,7 @@ class ClusterInstReg extends React.Component {
             let cloudlets = data[fields.cloudletName];
             if (this.props.isUpdate) {
                 this.props.handleLoadingSpinner(true)
-                updateClusterInst(data, this.onCreateResponse)
+                updateClusterInst(this, data, this.onCreateResponse)
             }
             else {
                 if (cloudlets && cloudlets.length > 0) {
@@ -227,7 +227,7 @@ class ClusterInstReg extends React.Component {
                         let cloudlet = cloudlets[i];
                         data[fields.cloudletName] = cloudlet;
                         this.props.handleLoadingSpinner(true)
-                        createClusterInst(data, this.onCreateResponse)
+                        createClusterInst(this, data, this.onCreateResponse)
                     }
 
                 }
