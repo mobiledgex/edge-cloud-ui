@@ -392,7 +392,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isPopupMap: false,
                 //reactLocalStorage.setObject(getUserId() + "_mon_theme")
                 chartColorList: isEmpty(reactLocalStorage.get(themeKey)) ? CHART_COLOR_LIST : reactLocalStorage.getObject(themeKey),
-                themeTitle: isEmpty(reactLocalStorage.get(themeTitle)) ? 'EUNDEW' : reactLocalStorage.get(themeTitle),
+                themeTitle: isEmpty(reactLocalStorage.get(themeTitle)) ? 'DEFAULT' : reactLocalStorage.get(themeTitle),
                 addItemList: ADD_ITEM_LIST,
                 themeOptions: THEME_OPTIONS_LIST,
                 isBubbleChartMaked: false,
@@ -420,7 +420,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             })
 
-            await this.loadInitDataForCluster__FOR__DEV();
+            await this.loadInitDataForCluster();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
