@@ -15,6 +15,7 @@ import {connect} from "react-redux";
 import sizeMe from "react-sizeme";
 import * as actions from "../../../../actions";
 import {renderCircleLoaderForMap} from "../PageMonitoringCommonService";
+import {makeLineChartOptions} from "../dev/PageDevMonitoringService";
 
 const FA = require('react-fontawesome')
 const mapStateToProps = (state) => {
@@ -41,11 +42,12 @@ type Props = {
 };
 type State = {
     chartDataForRendering: any,
+    bigModalLoading: boolean,
     options: any,
     graphType: string,
     popupGraphHWType: string,
     appInstanceListGroupByCloudlet: any,
-    bigModalLoading: boolean,
+
 };
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class BigModalGraphContainer extends React.Component<Props, State> {
@@ -56,6 +58,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             this.state = {
                 chartDataForRendering: [],
                 bigModalLoading: false,
+                options: [],
+                graphType: '',
+                popupGraphHWType: '',
+                appInstanceListGroupByCloudlet: [],
             }
         }
 
@@ -201,7 +207,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     ref="chart"
                                     height={window.innerHeight * 0.8}
                                     data={this.state.chartDataForRendering}
-                                    options={lineGraphOptions}
+                                    //options={lineGraphOptions}
+                                    options={makeLineChartOptions(this.state.popupGraphHWType, this.state.chartDataForRendering, this.props.parent)}
                                     //data={data222}
                                 />
                             </div>

@@ -1131,7 +1131,7 @@ export const addUnitNameForUsage = (value, hardwareType, _this) => {
 };
 
 
-export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, context: MonitoringContextInterface) => {
+export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this) => {
 
     let options = {
         stacked: true,
@@ -1237,7 +1237,7 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
         for (let index in usageSetList) {
             //@todo: top5 만을 추린다
             if (index < 5) {
-                let datasetOne = {
+                let datasetsOne = {
                     label: levelTypeNameList[index],
                     radius: 0,
                     borderWidth: 3.5,//todo:라인 두께
@@ -1245,6 +1245,7 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
                     backgroundColor: _this.state.isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
                     borderColor: _this.state.isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
                     lineTension: 0.5,
+
                     data: usageSetList[index],
                     borderCapStyle: 'butt',
                     borderDash: [],
@@ -1259,8 +1260,10 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
                     pointHoverBorderWidth: 2,
                     pointRadius: 1,
                     pointHitRadius: 10,
-                }
-                finalSeriesDataSets.push(datasetOne)
+
+                };
+
+                finalSeriesDataSets.push(datasetsOne)
             }
         }
         return {
