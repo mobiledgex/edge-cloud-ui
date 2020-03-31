@@ -4,7 +4,7 @@ import {hot} from "react-hot-loader/root";
 import type {TypeClientLocation} from "../../../../../../shared/Types";
 import {isEmpty} from "../../../PageMonitoringCommonService";
 
-const data = {
+const data2222 = {
     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
     datasets: [
         {
@@ -52,14 +52,47 @@ const data = {
     ]
 };
 
+const data = {
+    datasets: [
+        {
+            label: "Dataset 1",
+            borderColor: "rgb(255, 99, 132)",
+            backgroundColor: "rgba(255, 99, 132, 0.5)",
+            lineTension: 0,
+            borderDash: [8, 4],
+            data: [15, 12, 39, 40, 56, 55, 40]
+
+        }
+    ]
+};
+
+const options = {
+    scales: {
+        xAxes: [
+            {
+                type: "realtime",
+                realtime: {
+                    onRefresh: function() {
+                        data2222.datasets[0].data.push({
+                            x: Date.now(),
+                            y: Math.random() * 100
+                        });
+                    },
+                    delay: 500
+                }
+            }
+        ]
+    }
+};
+
 export default hot(
     class LIneSeriesWebSocketTestForAppInst0001 extends Component {
 
         componentDidMount() {
-            const {datasets} = this.refs.chart.chartInstance.data
-            console.log(datasets[0].data);
+            /*const {datasets} = this.refs.chart.chartInstance.data
+            console.log(datasets[0].data);*/
 
-            this.getGrapHData();
+            //this.getGrapHData();
         }
 
         getGrapHData(){
@@ -123,10 +156,10 @@ export default hot(
 
         render() {
             return (
-                <div style={{backgroundColor:'black'}}>
+                <div style={{backgroundColor:'white'}}>
                     <h2>Line Example</h2>
                     <div style={{width: 1500, height: 1500}}>
-                        <Line ref="chart" data={data}/>
+                        <Line data={data2222} options={options}  />
                     </div>
 
                 </div>

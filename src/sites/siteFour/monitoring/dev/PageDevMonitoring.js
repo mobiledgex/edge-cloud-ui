@@ -260,7 +260,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         intervalForAppInst = null;
         gridItemHeight = 420;
         webSocketInst: WebSocket = null;
-        gridLayoutHeight = window.innerHeight * 0.82;
+        gridLayoutHeight = window.innerHeight * 0.825;
 
         constructor(props) {
             super(props);
@@ -1113,7 +1113,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                 return (
-                    this.makeLineChartData(hwType, )
+                    this.makeLineChartData(hwType,)
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BAR) {
                 return (
@@ -1593,19 +1593,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     }}
                                 />
                             </div>
-
-                            <Button
-                                onClick={async () => {
-                                    this.setState({
-                                        isStackedLineChart: !this.state.isStackedLineChart,
-                                    }, () => {
-                                        //alert(this.state.isStackedLineChart)
-                                    })
-                                }}
-                                primary={this.state.isStackedLineChart}
-                                style={{height: 35}}
-                            >Stacked Line Chart
-                            </Button>
+                            <div style={{marginTop: 2}}>
+                                <Button
+                                    onClick={async () => {
+                                        this.setState({
+                                            isStackedLineChart: !this.state.isStackedLineChart,
+                                        }, () => {
+                                            //alert(this.state.isStackedLineChart)
+                                        })
+                                    }}
+                                    positive={this.state.isStackedLineChart}
+                                    style={{height: 35, backgroundColor:'green'}}
+                                >Stacked Line Chart
+                                </Button>
+                            </div>
                         </div>
                         <div className='page_monitoring_select_column_end'>
                             <div className='page_monitoring_select_toggle'>
