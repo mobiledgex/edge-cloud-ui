@@ -1,5 +1,7 @@
 import {convertByteToMegaByte} from "../sites/siteFour/monitoring/PageMonitoringCommonService";
 
+export const RECENT_DATA_LIMIT_COUNT = 50
+
 export const API_ENDPOINT_PREFIX = '/api/v1/';
 export const BORDER_CHART_COLOR_LIST = ["#70001C", "#FF5E1D", "#E3DC39", "#128702", "#1C22FF", '#66D9EF', '#272822', '#75715E',]
 export const CHART_COLOR_LIST = ['#DE0000', '#FF9600', '#FFF600', '#5BCB00', '#0096FF', '#66D9EF', '#272822', '#75715E',]
@@ -170,7 +172,7 @@ export const APP_INST_USAGE_TYPE_INDEX = {
 }
 
 
-export const RECENT_DATA_LIMIT_COUNT = 10
+
 
 export const APP_PERFORMANCE_VALUES = {
     M4_MEDIUM: {
