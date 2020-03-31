@@ -1295,7 +1295,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*desc:    edit btn                */}
                         {/*desc:############################*/}
                         <div className="edit page_monitoring_widget_icon" onClick={() => {
-                            alert('sdlfksldkflskdlf')
+                            //alert('sdlfksldkflskdlf')
                         }}>
                             <MaterialIcon icon='create'/>
                         </div>
