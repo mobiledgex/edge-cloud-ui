@@ -25,6 +25,11 @@ import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
 import Test001 from "./sites/siteFour/monitoring/zzz____TESTCODE____/Pages/Test001";
 import Test003 from "./sites/siteFour/monitoring/zzz____TESTCODE____/Pages/LIneSeriesWebSocketTestForAppInst0001";
+import LIneChartTest from "./sites/siteFour/monitoring/zzz____TESTCODE____/Pages/LIneChartTest";
+import WebSocketTestForClusterInst
+    from "./sites/siteFour/monitoring/zzz____TESTCODE____/Pages/WebSocketTestForClusterInst";
+import BarChart0003 from "./sites/siteFour/monitoring/zzz____TESTCODE____/Pages/BarChart0003";
+import ColumnChart0003 from "./sites/siteFour/monitoring/zzz____TESTCODE____/Pages/ColumnChart0003";
 // API
 
 let self = null;
@@ -332,7 +337,9 @@ class App extends Component {
                     <Route exact path='/createAccount' component={DashboardContainer.bind(this, {mainPath:'/createAccount'})} />
                     <Route exact path='/passwordreset' component={DashboardContainer.bind(this, {mainPath:'/passwordreset'})} />
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
-                    <Route exact path='/LIneSeriesWebSocketTestForAppInst0001' component={Test003} />
+                    <Route exact path='/BarChart0003' component={BarChart0003} />
+                    <Route exact path='/ColumnChart0003' component={ColumnChart0003} />
+
                 </div>
             </Router>
         );

@@ -1229,15 +1229,16 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this) => {
 
 export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMonitoring) => {
     const lineChartData = (canvas) => {
+        let gradientList = makeGradientColorList(canvas, 305, _this.state.chartColorList, true);
         let levelTypeNameList = lineChartDataSet.levelTypeNameList
         let usageSetList = lineChartDataSet.usageSetList
         let newDateTimeList = lineChartDataSet.newDateTimeList
-        let gradientList = makeGradientColorList(canvas, 305, _this.state.chartColorList, true);
+
         let finalSeriesDataSets = [];
         for (let index in usageSetList) {
             //@todo: top5 만을 추린다
             if (index < 5) {
-                let datasetsOne = {
+                let dataSetsOne = {
                     label: levelTypeNameList[index],
                     radius: 0,
                     borderWidth: 3.5,//todo:라인 두께
@@ -1245,7 +1246,6 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
                     backgroundColor: _this.state.isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
                     borderColor: _this.state.isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
                     lineTension: 0.5,
-
                     data: usageSetList[index],
                     borderCapStyle: 'butt',
                     borderDash: [],
@@ -1263,7 +1263,7 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
 
                 };
 
-                finalSeriesDataSets.push(datasetsOne)
+                finalSeriesDataSets.push(dataSetsOne)
             }
         }
         return {
@@ -1362,7 +1362,7 @@ export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDat
             }}>
                 <ReactChartJsLine
                     data={lineChartDataForRendering}
-                    options={makeLineChartOptions(hardwareType, lineChartDataSet, _this, context)}
+                    options={makeLineChartOptions(hardwareType, lineChartDataSet, _this)}
                 />
             </div>
         );
