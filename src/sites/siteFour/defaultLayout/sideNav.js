@@ -221,7 +221,16 @@ export default function MiniDrawer(props) {
                         </div> : null}
                 </ListItemIcon>
                 <ListItemText>
-                    <strong style={{ color: '#BFC0C2', fontSize: 15 }}> {localStorage.selectRole && localStorage.selectRole != 'null' ? localStorage.selectRole : 'Select Organization'}</strong>
+                    <strong style={{ color: '#BFC0C2', fontSize: 12}}> 
+                        {
+                            localStorage.selectRole && localStorage.selectRole != 'null' ? localStorage.selectRole : 
+                            <div>
+                                <p>No Organization selected</p>
+                                <p>Click Manage to view and</p>
+                                <p>manage your Organization</p>
+                            </div>
+                        }
+                    </strong>
 
                 </ListItemText>
             </ListItem>
