@@ -643,6 +643,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     maxMem: maxMem,
                     isRequesting: false,
                     currentCluster: '',
+                }, () => {
+                    console.log("filteredClusterUsageList===>", this.state.filteredClusterUsageList);
                 })
             } catch (e) {
 
@@ -927,19 +929,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        async handleClusterDropdown(value) {
+        async handleClusterDropdown(selectedClusterOne) {
             clearInterval(this.intervalForAppInst)
 
             await this.setState({
                 selectedClientLocationListOnAppInst: [],
             })
 
-            let selectData = value.split("|")
+            let selectData = selectedClusterOne.split("|")
             let selectedCluster = selectData[0].trim();
             let selectedCloudlet = selectData[1].trim();
 
             await this.setState({
-                currentCluster: value,
+                currentCluster: selectedClusterOne,
                 currentClassification: CLASSIFICATION.CLUSTER,
                 dropdownRequestLoading: true,
             })
@@ -1630,11 +1632,50 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                               }
 
                                           }}
+                                          value={this.state.isStream}
 
 
                                 />
                             </div>
                             }
+
+                            {/*desc:Cluster Stream*/}
+                            {/*desc:Cluster Stream*/}
+                            {/*desc:Cluster Stream*/}
+                            {/*{this.state.currentClassification === CLASSIFICATION.CLUSTER &&
+                            <div className='page_monitoring_select_toggle'>
+                                <div className='page_monitoring_select_toggle_label'>
+                                    Cluster Stream
+                                </div>
+                                <Checkbox toggle
+                                          onClick={async () => {
+                                              await this.setState({
+                                                  isStream: !this.state.isStream,
+                                              });
+
+                                              if (!this.state.isStream) {
+                                                  clearInterval(this.intervalForAppInst)
+                                              } else {
+                                                  //this.handleClusterDropdown(this.state.currentAppInst, true)
+                                                  setInterval(() => {
+                                                      this.intervalForAppInst = this.loadInitDataForCluster(true)
+                                                  }, 7000)
+                                                  //alert(this.state.currentCluster)
+                                              }
+
+                                          }}
+                                          value={this.state.isStream}
+
+
+                                />
+                            </div>
+                            }
+                            */}
+
+
+                            {/*desc:aspect_ratio*/}
+                            {/*desc:aspect_ratio*/}
+                            {/*desc:aspect_ratio*/}
                             {/* <div className='page_monitoring_select_toggle'>
                                 <MaterialIcon icon='aspect_ratio'/>
                             </div>*/}
