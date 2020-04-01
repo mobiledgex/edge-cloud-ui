@@ -1,6 +1,7 @@
 import * as formatter from './format'
-import { TYPE_JSON } from '../../constant';
+import { TYPE_JSON_NEW_LINE } from '../../constant';
 import * as serverData from './serverData'
+import * as constant from '../../constant'
 import { SHOW_APP, CREATE_APP, UPDATE_APP, DELETE_APP } from './endPointTypes'
 
 let fields = formatter.fields
@@ -12,7 +13,7 @@ export const keys = [
     { field: fields.version, serverField: 'key#OS#version', label: 'Version', visible: true },
     { field: fields.deployment, serverField: 'deployment', label: 'Deployment', sortable: true, visible: true },
     { field: fields.command, serverField: 'command', label: 'Command' },
-    { field: fields.deploymentManifest, serverField: 'deployment_manifest', label: 'Deployment Manifest', dataType: TYPE_JSON },
+    { field: fields.deploymentManifest, serverField: 'deployment_manifest', label: 'Deployment Manifest', dataType: TYPE_JSON_NEW_LINE },
     { field: fields.deploymentGenerator, serverField: 'deployment_generator', label: 'Deployment Generator' },
     { field: fields.imageType, serverField: 'image_type', label: 'Image Type' },
     { field: fields.imagePath, serverField: 'image_path', label: 'Image Path' },
@@ -42,7 +43,7 @@ export const getKey = (data, isCreate) => {
     if (isCreate) {
         app.scale_with_cluster = data[fields.scaleWithCluster]
         app.deployment = data[fields.deployment]
-        app.image_type = data[fields.imageType]
+        app.image_type = constant.imageType(data[fields.imageType])
         app.image_path = data[fields.imagePath]
         if (data[fields.accessPorts]) {
             app.access_ports = data[fields.accessPorts]
@@ -59,7 +60,7 @@ export const getKey = (data, isCreate) => {
         if (data[fields.command]) {
             app.command = data[fields.command]
         }
-        if (data[fields.command]) {
+        if (data[fields.deploymentManifest]) {
             app.deployment_manifest = data[fields.deploymentManifest]
         }
         if (data[fields.autoPolicyName]) {
@@ -69,7 +70,7 @@ export const getKey = (data, isCreate) => {
             app.default_privacy_policy = data[fields.privacyPolicyName]
         }
         if (data[fields.accessType]) {
-            app.access_type = data[fields.accessType]
+            app.access_type = constant.accessType(data[fields.accessType])
         }
     }
     return ({
@@ -103,7 +104,7 @@ export const createApp = async (self, data) => {
 
 export const updateApp = async (self, data) => {
     let requestData = getKey(data, true)
-    requestData.app.fields = ['4', '7', '9.1']
+    requestData.app.fields = ['4', '7', '9.1', '16']
     let request = { method: UPDATE_APP, data: requestData }
     return await serverData.sendRequest(self, request)
 }
@@ -113,26 +114,10 @@ export const deleteApp = (data) => {
     return { uuid: data.uuid, method: DELETE_APP, data: requestData, success: `App ${data[fields.appName]}` }
 }
 
-const newLineToJsonObject = (data) => {
-    try {
-        let formatedData = {}
-        if (data) {
-            let dataArray = data.split('\n');
-            for (let i = 0; i < dataArray.length; i++) {
-                let dataObject = dataArray[i].split(':')
-                if (dataObject.length == 2) {
-                    formatedData[dataObject[0]] = dataObject[1]
-                }
-            }
-            return formatedData
-        }
-    }
-    catch (e) {
-        console.log('MexError', e)
-    }
-}
+
 const customData = (value) => {
-    value[fields.deploymentManifest] = newLineToJsonObject(value[fields.deploymentManifest])
+    value[fields.accessType] = constant.accessType(value[fields.accessType])
+    value[fields.imageType] = constant.imageType(value[fields.imageType])
 }
 
 export const getData = (response, body) => {

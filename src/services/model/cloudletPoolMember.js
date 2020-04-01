@@ -11,7 +11,6 @@ export const keys = [
 ]
 
 export const getKey = (data) => {
-    if (data) {
         return ({
             region: data[fields.region],
             cloudletpoolmember: {
@@ -24,8 +23,6 @@ export const getKey = (data) => {
                 }
             }
         })
-    }
-    return {}
 }
 
 export const showCloudletPoolMembers = (data) => {

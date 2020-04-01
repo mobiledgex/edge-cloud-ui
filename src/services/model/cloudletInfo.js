@@ -29,7 +29,6 @@ export const showCloudletInfos = (data) => {
 }
 
 export const getKey = (data) => {
-    if (data) {
         return ({
             region: data[fields.region],
             cloudlet: {
@@ -39,8 +38,6 @@ export const getKey = (data) => {
                 }
             }
         })
-    }
-    return {}
 }
 
 const customData = (value) => {

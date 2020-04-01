@@ -1,6 +1,6 @@
 import * as formatter from './format'
 import uuid from 'uuid'
-import { TYPE_JSON } from '../../constant'
+import * as constant from '../../constant'
 import * as serverData from './serverData'
 import { SHOW_APP_INST, CREATE_APP_INST, UPDATE_APP_INST, DELETE_APP_INST, STREAM_APP_INST, SHOW_APP } from './endPointTypes'
 
@@ -13,37 +13,43 @@ export const keys = [
   { field: fields.version, serverField: 'key#OS#app_key#OS#version', label: 'Version', visible: true },
   { field: fields.operatorName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: true },
   { field: fields.cloudletName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: true },
-  { field: fields.cloudletLocation, serverField: 'cloudlet_loc', label: 'Cloudlet Location', dataType: TYPE_JSON },
+  { field: fields.cloudletLocation, serverField: 'cloudlet_loc', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
+  { field: fields.clusterdeveloper, serverField: 'key#OS#cluster_inst_key#OS#organization', sortable: true, label: 'Cluster Developer', visible: false },
   { field: fields.clusterName, serverField: 'key#OS#cluster_inst_key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster Instance', visible: true },
+  { field: fields.privacyPolicyName, serverField: 'privacy_policy', label: 'Privacy Policy', visible: false },
   { field: fields.deployment, label: 'Deployment', sortable: true, visible: true },
   { field: fields.uri, serverField: 'uri', label: 'URI' },
   { field: fields.liveness, serverField: 'liveness', label: 'Liveness' },
-  { field: fields.mappedPorts, serverField: 'mapped_ports', label: 'Mapped Port', dataType: TYPE_JSON },
+  { field: fields.mappedPorts, serverField: 'mapped_ports', label: 'Mapped Port', dataType: constant.TYPE_JSON },
   { field: fields.flavorName, serverField: 'flavor#OS#name', label: 'Flavor' },
   { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
-  { field: fields.runtimeInfo, serverField: 'runtime_info', label: 'Runtime', dataType: TYPE_JSON },
-  { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: TYPE_JSON },
-  { field: fields.status, serverField: 'status', label: 'Status', dataType: TYPE_JSON },
+  { field: fields.runtimeInfo, serverField: 'runtime_info', label: 'Runtime', dataType: constant.TYPE_JSON },
+  { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_JSON },
+  { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
   { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
 
 export const getKey = (data, isCreate) => {
-  if (data) {
-    return ({
-      region: data[fields.region],
-      appinst: {
-        key: {
-          app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] },
-          cluster_inst_key: {
-            cloudlet_key: { name: data[fields.cloudletName], organization: data[fields.operatorName] },
-            cluster_key: { name: data[fields.clusterName] },
-            organization: data[fields.organizationName]
-          }
-        },
-      }
-    })
+  let appinst = {}
+  appinst.key = {
+    app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] },
+    cluster_inst_key: {
+      cloudlet_key: { name: data[fields.cloudletName], organization: data[fields.operatorName] },
+      cluster_key: { name: data[fields.clusterName] },
+      organization: data[fields.clusterdeveloper] ? data[fields.clusterdeveloper] : data[fields.organizationName]
+    }
   }
-  return {}
+
+  if (isCreate) {
+    if (data[fields.privacyPolicyName]) {
+      appinst.privacy_policy = data[fields.privacyPolicyName]
+    }
+  }
+  
+  return ({
+    region: data[fields.region],
+    appinst: appinst
+  })
 }
 
 export const multiDataRequest = (keys, mcRequestList) => {
@@ -90,10 +96,10 @@ export const showAppInsts = (data) => {
   return { method: SHOW_APP_INST, data: data }
 }
 
-export const createAppInst = (data, callback) => {
+export const createAppInst = (self, data, callback) => {
   let requestData = getKey(data, true)
   let request = { uuid: data.uuid ? data.uuid : uuid(), method: CREATE_APP_INST, data: requestData }
-  return serverData.sendWSRequest(request, callback)
+  return serverData.sendWSRequest(self, request, callback)
 }
 
 export const deleteAppInst = (data) => {
@@ -107,6 +113,7 @@ export const streamAppInst = (data) => {
 }
 
 const customData = (value) => {
+  value[fields.liveness] = constant.liveness(value[fields.liveness])
 }
 
 export const getData = (response, body) => {

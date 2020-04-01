@@ -4,52 +4,71 @@ export const SHOW_ROLE = "ShowRole";
 export const RESEND_VERIFY = "resendverify";
 export const SETTING_LOCK = "SettingLock";
 
-const getToken = () => {
+const getToken = (self) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-    return store.userToken;
+    if (store) {
+        return store.userToken
+    }
+    self.props.history.push({
+        pathname: '/logout'
+    })
 }
 
 export const sendRequest = async (self, requestData) => {
-    requestData.token = getToken();
-    return await serviceMC.sendSyncRequest(self, requestData)
+    let token = getToken(self)
+    if (token) {
+        requestData.token = token;
+        return await serviceMC.sendSyncRequest(self, requestData)
+    }
 }
 
-export const sendWSRequest = async (requestData, callback) => {
-    requestData.token = getToken();
-    serviceMC.sendWSRequest(requestData, callback)
+export const sendWSRequest = async (self, requestData, callback) => {
+    let token = getToken(self)
+    if (token) {
+        requestData.token = token;
+        serviceMC.sendWSRequest(requestData, callback)
+    }
 }
 
 export const sendMultiRequest = (self, requestInfoList, callback) => {
-    let requestDataList = [];
-    for (let i = 0; i < requestInfoList.length; i++) {
-        let requestInfo = requestInfoList[i];
-        requestInfo.token = getToken();
-        requestDataList.push(requestInfo)
+    let token = getToken(self)
+    if (token) {
+        let requestDataList = [];
+        for (let i = 0; i < requestInfoList.length; i++) {
+            let requestInfo = requestInfoList[i];
+            requestInfo.token = getToken(self);
+            requestDataList.push(requestInfo)
+        }
+        serviceMC.sendMultiRequest(self, requestDataList, callback)
     }
-    serviceMC.sendMultiRequest(self, requestDataList, callback)
 }
 
 export const showDataFromServer = async (self, requestData) => {
     let dataList = []
-    requestData.token = getToken();
-    let mcRequest =  await serviceMC.sendSyncRequest(self, requestData)
-    if(mcRequest && mcRequest.response && mcRequest.response.data)
-    {
-        dataList = mcRequest.response.data;
+    let token = getToken(self)
+    if (token) {
+        requestData.token = token;
+        let mcRequest = await serviceMC.sendSyncRequest(self, requestData)
+        if (mcRequest && mcRequest.response && mcRequest.response.data) {
+            dataList = mcRequest.response.data;
+        }
     }
     return dataList;
 }
 
 export const showMultiDataFromServer = (self, requestType, filter, callback) => {
-    let requestDataList = [];
-    for (let i = 0; i < requestType.length; i++) {
-        let request = requestType[i](Object.assign({}, filter))
-        if (request) {
-            request.token = getToken();
-            requestDataList.push(request);
+    let token = getToken(self)
+    if (token) {
+        let requestDataList = [];
+        for (let i = 0; i < requestType.length; i++) {
+            let request = requestType[i](Object.assign({}, filter))
+            if (request) {
+                request.token = token;
+                requestDataList.push(request);
+            }
         }
+        serviceMC.sendMultiRequest(self, requestDataList, callback)
     }
-    serviceMC.sendMultiRequest(self, requestDataList, callback)
 }
 
 /* User Role */

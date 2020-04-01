@@ -9,7 +9,8 @@ import * as constant from '../../../constant';
 import { fields, getOrganization } from '../../../services/model/format';
 //model
 import { getOrganizationList } from '../../../services/model/organization';
-import { getCloudletList } from '../../../services/model/cloudlet';
+import { getOrgCloudletList } from '../../../services/model/cloudlet';
+import { getPrivacyPolicyList } from '../../../services/model/privacyPolicy';
 import { getClusterInstList } from '../../../services/model/clusterInstance';
 import { getAppList } from '../../../services/model/app';
 import { createAppInst } from '../../../services/model/appInstance';
@@ -30,16 +31,28 @@ class ClusterInstReg extends React.Component {
         this.organizationList = []
         this.cloudletList = []
         this.clusterInstList = []
+        this.privacyPolicyList = []
         this.appList = []
         //To avoid refecthing data from server
     }
 
-    getCloudletInfo = async (region, form, forms) => {
-        if (!this.requestedRegionList.includes(region)) {
-            this.cloudletList = [...this.cloudletList, ...await getCloudletList(this, { region: region })]
+    getCloudletInfo = async (form, forms) => {
+        let region = undefined;
+        let organizationName = undefined;
+        for (let i = 0; i < forms.length; i++) {
+            let tempForm = forms[i]
+            if (tempForm.field === fields.region) {
+                region = tempForm.value
+            }
+            else if (tempForm.field === fields.organizationName) {
+                organizationName = tempForm.value
+            }
         }
-        this.updateUI(form)
-        this.setState({ forms: forms })
+        if (region && organizationName) {
+            this.cloudletList = await getOrgCloudletList(this, { region: region, org: organizationName })
+            this.updateUI(form)
+            this.setState({ forms: forms })
+        }
     }
 
     getClusterInstInfo = async (region, form, forms) => {
@@ -53,6 +66,14 @@ class ClusterInstReg extends React.Component {
     getAppInfo = async (region, form, forms) => {
         if (!this.requestedRegionList.includes(region)) {
             this.appList = [...this.appList, ...await getAppList(this, { region: region })]
+        }
+        this.updateUI(form)
+        this.setState({ forms: forms })
+    }
+
+    getPrivacyPolicyInfo = async (region, form, forms) => {
+        if (!this.requestedRegionList.includes(region)) {
+            this.privacyPolicyList = [...this.privacyPolicyList, ...await getPrivacyPolicyList(this, { region: region })]
         }
         this.updateUI(form)
         this.setState({ forms: forms })
@@ -77,11 +98,14 @@ class ClusterInstReg extends React.Component {
             if (form.field === fields.clusterName) {
                 form.rules.disabled = currentForm.value ? true : false
                 form.error = currentForm.value ? undefined : form.error
-                if (isInit === undefined || isInit === false) {
-                    this.setState({ forms: forms })
-                }
-                break;
             }
+            else if (form.field === fields.privacyPolicyName) {
+                form.visible = currentForm.value
+                form.value = currentForm.value ? form.value : undefined
+            }
+        }
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
         }
     }
 
@@ -131,8 +155,25 @@ class ClusterInstReg extends React.Component {
                     this.getAppInfo(region, form, forms)
                 }
             }
+            else if (form.field === fields.privacyPolicyName) {
+                if (isInit === undefined || isInit === false) {
+                    this.getPrivacyPolicyInfo(region, form, forms)
+                }
+            }
         }
         this.requestedRegionList.push(region)
+    }
+
+    organizationValueChange = (currentForm, forms, isInit) => {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (form.field === fields.operatorName) {
+                this.operatorValueChange(form, forms, isInit)
+                if (isInit === undefined || isInit === false) {
+                    this.getCloudletInfo(form, forms)
+                }
+            }
+        }
     }
 
     formKeys = () => {
@@ -146,12 +187,16 @@ class ClusterInstReg extends React.Component {
             { field: fields.cloudletName, label: 'Cloudlet', formType: 'MultiSelect', placeholder: 'Select Cloudlets', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 5, field: fields.operatorName }] },
             { field: fields.autoClusterInstance, label: 'Auto Cluster Instance', formType: CHECKBOX, visible: true, value: false },
             { field: fields.clusterName, label: 'Cluster', formType: 'Select', placeholder: 'Select Clusters', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
+            { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: 'Select', placeholder: 'Select Privacy Policy', rules: { required: false }, visible: false, dependentData: [{ index: 1, field: fields.region }] },
         ]
     }
 
     checkForms = (form, forms, isInit) => {
         if (form.field === fields.region) {
             this.regionValueChange(form, forms, isInit)
+        }
+        else if (form.field === fields.region) {
+            this.organizationValueChange(form, forms, isInit)
         }
         else if (form.field === fields.organizationName) {
             this.organizationValueChange(form, forms, isInit)
@@ -175,6 +220,7 @@ class ClusterInstReg extends React.Component {
     }
 
     onCreateResponse = (mcRequest) => {
+        this.props.handleLoadingSpinner(false)
         if (mcRequest) {
             let data = undefined;
             let request = mcRequest.request;
@@ -189,12 +235,13 @@ class ClusterInstReg extends React.Component {
     onCreate = async (data) => {
         if (data) {
             let cloudlets = data[fields.cloudletName];
-            data[fields.clusterName] = data[fields.autoClusterInstance] ? 'autocluster' + data[fields.appName].toLowerCase().replace(/ /g, "") : data[fields].clusterName
+            data[fields.clusterName] = data[fields.autoClusterInstance] ? 'autocluster' + data[fields.appName].toLowerCase().replace(/ /g, "") : data[fields.clusterName]
             if (cloudlets && cloudlets.length > 0) {
                 for (let i = 0; i < cloudlets.length; i++) {
                     let cloudlet = cloudlets[i];
                     data[fields.cloudletName] = cloudlet;
-                    createAppInst(data, this.onCreateResponse)
+                    this.props.handleLoadingSpinner(true)
+                    createAppInst(this, data, this.onCreateResponse)
                 }
             }
         }
@@ -252,6 +299,9 @@ class ClusterInstReg extends React.Component {
                         case fields.appName:
                             form.options = this.appList
                             break;
+                        case fields.privacyPolicyName:
+                            form.options = this.privacyPolicyList
+                            break;
                         case fields.version:
                             form.options = this.appList
                             break;
@@ -269,8 +319,9 @@ class ClusterInstReg extends React.Component {
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
             if (this.props.isLaunch) {
-                this.cloudletList = await getCloudletList(this, { region: data[fields.region] })
+                this.cloudletList = await getOrgCloudletList(this, { region: data[fields.region], org: data[fields.organizationName] })
                 this.clusterInstList = await getClusterInstList(this, { region: data[fields.region] })
+                this.privacyPolicyList = await getPrivacyPolicyList(this, { region: data[fields.region] })
                 let app = {}
                 app[fields.appName] = data[fields.appName]
                 app[fields.region] = data[fields.region]
@@ -280,11 +331,9 @@ class ClusterInstReg extends React.Component {
 
                 let disabledFields = [fields.region, fields.organizationName, fields.appName, fields.version]
 
-                for(let i=0;i<forms.length;i++)
-                {
+                for (let i = 0; i < forms.length; i++) {
                     let form = forms[i];
-                    if(disabledFields.includes(form.field))
-                    {
+                    if (disabledFields.includes(form.field)) {
                         form.rules.disabled = true;
                     }
                 }
@@ -298,7 +347,7 @@ class ClusterInstReg extends React.Component {
             await this.loadDefaultData(forms, data)
         }
         else {
-            this.organizationList = await getOrganizationList()
+            this.organizationList = await getOrganizationList(this)
         }
 
         forms.push(

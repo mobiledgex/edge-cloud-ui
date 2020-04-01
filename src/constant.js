@@ -1,17 +1,21 @@
 import { fields } from "./services/model/format"
 
 export const TYPE_JSON = 'JSON'
+export const TYPE_JSON_NEW_LINE = 'JSON_NEW_LINE'
 export const ADD_CLOUDLET = 'AddCloudlet'
 export const DELETE_CLOUDLET = 'DeleteCloudlet'
 export const ADD_ORGANIZATION = 'AddOrganization'
 export const DELETE_ORGANIZATION = 'DeleteOrganization'
 export const DEPLOYMENT_TYPE_DOCKER = 'docker';
 export const DEPLOYMENT_TYPE_KUBERNETES = 'kubernetes';
-export const DEPLOYMENT_TYPE_VM = 'VM';
+export const DEPLOYMENT_TYPE_VM = 'vm';
 export const DEPLOYMENT_TYPE_HELM = 'helm';
 export const ACCESS_TYPE_DEFAULT_FOR_DEPLOYMENT = 'Default For Deployment';
 export const ACCESS_TYPE_DIRECT = 'Direct';
 export const ACCESS_TYPE_LOAD_BALANCER = 'Load Balancer';
+export const IMAGE_TYPE_DOCKER = 'Docker';
+export const IMAGE_TYPE_QCOW = 'Qcow';
+export const IMAGE_TYPE_HELM = 'Helm';
 export const IP_ACCESS_DEDICATED = 'Dedicated';
 export const IP_ACCESS_SHARED = 'Shared';
 export const DELETE = 'Delete'
@@ -19,6 +23,9 @@ export const SELECT = 'Select'
 export const CLOUDLET = 'Cloudlet'
 export const CLUSTER_INST = 'ClusterInst'
 export const APP_INST = 'AppInst'
+export const PLATFORM_TYPE_OPEN_STACK = 'Openstack'
+export const IP_SUPPORT_DYNAMIC = 'Dynamic'
+export const LIVENESS_STATIC = 'Static'
 export const APP = 'App'
 export const YES = 'YES'
 
@@ -36,6 +43,8 @@ export const IPAccessLabel = (id) => {
             return 1
         case 'Shared':
             return 3
+        default:
+            return id
     }
 }
 
@@ -53,19 +62,27 @@ export const accessType = (id) => {
             return 1
         case ACCESS_TYPE_LOAD_BALANCER:
             return 2
+        default:
+            return id
     }
 }
 
 export const imageType = (id) => {
     switch (id) {
         case 1:
-            return 'Qcow'
-        case 'Qcow':
+            return IMAGE_TYPE_DOCKER
+        case IMAGE_TYPE_DOCKER:
             return 1
+        case 2:
+            return IMAGE_TYPE_QCOW
+        case IMAGE_TYPE_QCOW:
+            return 2
         case 3:
-            return 'Docker'
-        case 'Docker':
+            return IMAGE_TYPE_HELM
+        case IMAGE_TYPE_HELM:
             return 3
+        default:
+            return id
     }
 }
 
@@ -73,9 +90,11 @@ export const imageType = (id) => {
 export const IPSupport = (id) => {
     switch (id) {
         case 2:
-            return 'Dynamic'
-        case 'Dynamic':
+            return IP_SUPPORT_DYNAMIC
+        case IP_SUPPORT_DYNAMIC:
             return 2
+        default:
+            return id
     }
 }
 
@@ -83,16 +102,28 @@ export const IPSupport = (id) => {
 export const PlatformType = (id) => {
     switch (id) {
         case 2:
-            return 'Openstack'
-        case 'Openstack':
+            return PLATFORM_TYPE_OPEN_STACK
+        case PLATFORM_TYPE_OPEN_STACK:
             return 2
+        default:
+            return id
+    }
+}
+
+export const liveness = (id) => {
+    switch (id) {
+        case 1:
+            return LIVENESS_STATIC
+        case LIVENESS_STATIC:
+            return 1
+        default:
+            return id
     }
 }
 
 
 export const getTip = (field) => {
-    switch(field)
-    {
+    switch (field) {
         case fields.region:
             return 'Select region where you want to deploy.'
         case fields.organizationName:
