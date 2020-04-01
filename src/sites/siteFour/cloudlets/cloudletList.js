@@ -62,7 +62,7 @@ class CloudletList extends React.Component {
    **/
 
     getCloudletInfoState = (data, isDetailView) => {
-        let id = data[fields.cloudletStatus]
+        let id = isDetailView ? data : data[fields.cloudletStatus]
         let state = 'Not Present';
         let color = 'red'
         switch (id) {
