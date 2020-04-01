@@ -1077,6 +1077,24 @@ export const makeGradientColorList = (canvas, height, colorList, isBig = false) 
 };
 
 
+export const makeGradientColorList2 = (canvas, height, colorList, isBig = false) => {
+    //let colorList= ['red', 'blue', 'green', 'yellow', 'grey']
+    console.log("colorList===>", colorList);
+    const ctx = canvas.getContext("2d");
+    let gradientList = [];
+
+    colorList.map(item => {
+        const gradient = ctx.createLinearGradient(0, 0, 0, height);
+        gradient.addColorStop(0, hexToRGB(item, 0.4));
+        gradient.addColorStop(0.5, hexToRGB(item, 0.7));
+        gradient.addColorStop(1, hexToRGB(item, 0.98));
+        gradientList.push(gradient);
+    })
+
+    return gradientList;
+};
+
+
 /**
  *
  * @param _this
@@ -1304,7 +1322,6 @@ export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTi
                     backgroundColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
                     borderColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
                     lineTension: 0.5,
-
                     data: usageSetList[index],
                     borderCapStyle: 'butt',
                     borderDash: [],

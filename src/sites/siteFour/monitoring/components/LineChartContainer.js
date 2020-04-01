@@ -54,9 +54,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
 
     render() {
         return (
-
             <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
-
                 <div className='page_monitoring_dual_container' style={{flex: 1}}>
                     <div className='page_monitoring_title_area'>
                         <div className='page_monitoring_title'>

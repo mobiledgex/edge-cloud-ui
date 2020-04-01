@@ -89,7 +89,7 @@ import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout} from "react-grid-layout/lib/utils";
 import BarChart0003 from "../zzz____TESTCODE____/Pages/BarChart0003";
-import BarChartContainer002 from "../components/BarChartContainer002";
+import GradientBarChartContainer from "../components/BarChartContainer002";
 
 const {Option} = Select;
 
@@ -751,14 +751,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 barChartDataSet = []
             }
 
-            return (
+            /*return (
                 <BarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this}
                                    loading={this.state.loading} chartDataSet={barChartDataSet}
                                    pHardwareType={hwType} graphType={graphType}/>
-            )
-            /*return (
-                <BarChartContainer002/>
             )*/
+            return (
+                <GradientBarChartContainer/>
+            )
         }
 
 

@@ -827,27 +827,22 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODU3MTYyN
     "endtime": "2020-03-31T13:44:00Z"
 }
 
-###
+### registerclient
+### registerclient
+### registerclient
+### registerclient
 
-
-POST https://console-stage.mobiledgex.net:443/api/v1/auth/metrics/cluster
+POST  https://eu-stage.dme.mobiledgex.net:38001/v1/registerclient
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODU3ODc1ODYsImlhdCI6MTU4NTcwMTE4NiwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.ct5FLb-w3-Onfs8PABBdF3xWyvNapSk-DN3-1r9KUbqQ5ZkkOiTPqlWpk6p0TSr2aqKzLNaUrKTwjXgkDhQXmw
 
 {
-    "region": "EU",
-    "clusterinst": {
-        "cluster_key": {
-            "name": "mexdemo-stage"
-        },
-        "cloudlet_key": {
-            "organization": "TDG",
-            "name": "mexplat-stage-hamburg-cloudlet"
-        },
-        "organization": "MobiledgeX"
-    },
-    "last": 50,
-    "selector": "*"
+    "app_name": "MobiledgeX SDK Demo",
+    "app_vers": "k8s",
+    "carrier_name": "TDG",
+    "org_name": "MobiledgeX",
+    "dev_name": "MobiledgeX",
+    "ver": 1
 }
 
 ###
