@@ -311,7 +311,7 @@ export const getCloudletList = async () => {
         let mergedCloudletList = [];
         orgCloudletList.map(item => {
             //@todo : null check
-            if (item.response.data["0"].Region !== '') {
+            if (item.response.data.length > 0) {
                 let cloudletList = item.response.data;
                 cloudletList.map(item => {
                     mergedCloudletList.push(item);
@@ -320,7 +320,6 @@ export const getCloudletList = async () => {
         })
 
         console.log("mergedCloudletList====>", mergedCloudletList);
-
         console.log("mergedCloudletList====selectOrg>", localStorage.selectOrg)
 
         //todo: current org에 관한것만 flitering
@@ -335,7 +334,7 @@ export const getCloudletList = async () => {
 
         return mergedCloudletList;
     } catch (e) {
-        showToast('getCloudletList===>' + e.toString())
+        showToast('getCloudletList=ERROR!!!==>' + e.toString())
     }
 }
 
