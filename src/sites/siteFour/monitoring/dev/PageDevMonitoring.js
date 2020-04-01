@@ -88,6 +88,8 @@ import MaterialIcon from "material-icons-react";
 import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout} from "react-grid-layout/lib/utils";
+import BarChart0003 from "../zzz____TESTCODE____/Pages/BarChart0003";
+import BarChartContainer002 from "../components/BarChartContainer002";
 
 const {Option} = Select;
 
@@ -410,8 +412,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentWidgetWidth: 1,
                 isOpenEditView: false,
                 isFullScreenMap: false,
-                isStackedLineChart: false,
-                isGradientColor: false,
+                isStackedLineChart: true,
+                //isGradientColor: true,
             };
         }
 
@@ -754,6 +756,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                    loading={this.state.loading} chartDataSet={barChartDataSet}
                                    pHardwareType={hwType} graphType={graphType}/>
             )
+            /*return (
+                <BarChartContainer002/>
+            )*/
         }
 
 
