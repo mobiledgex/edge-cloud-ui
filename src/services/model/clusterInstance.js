@@ -140,6 +140,7 @@ export const streamClusterInst = (data) => {
 
 const customData = (value) => {
     value[fields.ipAccess] = IPAccessLabel(value[fields.ipAccess])
+    value[fields.numberOfNodes] = value[fields.numberOfNodes] ? value[fields.numberOfNodes] : 0
 }
 
 export const getData = (response, body) => {
