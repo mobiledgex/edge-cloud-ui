@@ -1634,5 +1634,296 @@ export const removeDuplication = (originalArray, prop) => {
     return newArray;
 };
 
+export const barChartOptions1 = {
+    animation: {
+        duration: 500
+    },
+    legend: {
+        display: false
+    },
+    maintainAspectRatio: false,//@todo
+    responsive: true,//@todo
+    datasetStrokeWidth: 3,
+    pointDotStrokeWidth: 4,
+    layout: {
+        padding: {
+            left: 0,
+            right: 10,
+            top: 25,
+            bottom: 10
+        }
+    },
+    scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero: true,
+                fontColor: 'white',
+                callback(value, index, label) {
+                    return value;
+                },
+            },
+            gridLines: {
+                color: "#505050",
+            },
+            //stacked: true
+
+        }],
+        xAxes: [{
+            /*ticks: {
+                fontColor: 'white'
+            },*/
+            gridLines: {
+                color: "#505050",
+            },
+            ticks: {
+                fontSize: 14,
+                fontColor: 'white',
+                //maxRotation: 0.05,
+                //autoSkip: true,
+                autoSkip: false,
+                maxRotation: 0,
+                minRotation: 0,
+                padding: 10,
+                labelOffset: 0,
+                callback(label, index, labels) {
+                    return [label.toString().split("[")[0], "[" + label.toString().split("[")[1]]
+                }
+            },
+            beginAtZero: false,
+            /* gridLines: {
+                 drawTicks: true,
+             },*/
+        }],
+        backgroundColor: {
+            fill: "#1e2124"
+        },
+    },
+    plugins: {
+        labels: {
+            // render 'label', 'value', 'percentage', 'image' or custom function, default is 'percentage'
+            render: function (args) {
+                // args will be something like:
+                // { label: 'Label', value: 123, percentage: 50, index: 0, dataset: {...} }
+                return args.value + '%';
+                // return object if it is image
+                // return { src: 'image.png', width: 16, height: 16 };
+            },
+
+            // precision for percentage, default is 0
+            precision: 0,
+
+            // identifies whether or not labels of value 0 are displayed, default is false
+            showZero: true,
+
+            // font size, default is defaultFontSize
+            fontSize: 22,
+
+            // font color, can be color array for each data or function for dynamic color, default is defaultFontColor
+            fontColor: '#fff',
+
+            // font style, default is defaultFontStyle
+            fontStyle: 'normal',
+
+            // font family, default is defaultFontFamily
+            fontFamily: "Acme",
+
+            // draw text shadows under labels, default is false
+            textShadow: true,
+
+            // text shadow intensity, default is 6
+            shadowBlur: 30,
+
+            // text shadow X offset, default is 3
+            shadowOffsetX: 5,
+
+            // text shadow Y offset, default is 3
+            shadowOffsetY: 5,
+
+            // text shadow color, default is 'rgba(0,0,0,0.3)'
+            shadowColor: 'rgba(255,255,255,0.75)',
+
+            // draw label in arc, default is false
+            // bar chart ignores this
+            arc: true,
+
+            // position to draw label, available value is 'default', 'border' and 'outside'
+            // bar chart ignores this
+            // default is 'default'
+            position: 'default',
+
+            // draw label even it's overlap, default is true
+            // bar chart ignores this
+            overlap: true,
+
+            // show the real calculated percentages from the values and don't apply the additional logic to fit the percentages to 100 in total, default is false
+            showActualPercentages: true,
+
+            // set images when `render` is 'image'
+            images: [
+                {
+                    src: 'image.png',
+                    width: 16,
+                    height: 16
+                }
+            ],
+
+            // add padding when position is `outside`
+            // default is 2
+            outsidePadding: 4,
+
+            // add margin of text when position is `outside` or `border`
+            // default is 2
+            textMargin: 4
+        }
+    }
+
+}
+
+export const barChartOptions2 = {
+    animation: {
+        duration: 500
+    },
+    legend: {
+        display: false
+    },
+    maintainAspectRatio: false,//@todo
+    responsive: true,//@todo
+    datasetStrokeWidth: 3,
+    pointDotStrokeWidth: 4,
+    layout: {
+        padding: {
+            left: 0,
+            right: 10,
+            top: 25,
+            bottom: 10
+        }
+    },
+    scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero: true,
+                fontColor: 'white',
+                callback(label, index, labels) {
+                    return [label.toString().split("[")[0], "[" + label.toString().split("[")[1]]
+                }
+            },
+            gridLines: {
+                color: "#505050",
+            },
+            //stacked: true
+
+
+        }],
+        xAxes: [{
+            /*ticks: {
+                fontColor: 'white'
+            },*/
+            gridLines: {
+                color: "#505050",
+            },
+            ticks: {
+                fontSize: 14,
+                fontColor: 'white',
+                //maxRotation: 0.05,
+                //autoSkip: true,
+                autoSkip: false,
+                maxRotation: 0,
+                minRotation: 0,
+                padding: 10,
+                labelOffset: 0,
+                /*callback(label, index, labels) {
+                    return [label.toString().split("[")[0], "[" + label.toString().split("[")[1]]
+                }*/
+            },
+            beginAtZero: false,
+            /* gridLines: {
+                 drawTicks: true,
+             },*/
+        }],
+        backgroundColor: {
+            fill: "#1e2124"
+        },
+    },
+    plugins: {
+        labels: {
+            // render 'label', 'value', 'percentage', 'image' or custom function, default is 'percentage'
+            render: function (args) {
+                // args will be something like:
+                // { label: 'Label', value: 123, percentage: 50, index: 0, dataset: {...} }
+                return args.value + '%';
+                // return object if it is image
+                // return { src: 'image.png', width: 16, height: 16 };
+            },
+
+            // precision for percentage, default is 0
+            precision: 0,
+
+            // identifies whether or not labels of value 0 are displayed, default is false
+            showZero: true,
+
+            // font size, default is defaultFontSize
+            fontSize: 24,
+
+            // font color, can be color array for each data or function for dynamic color, default is defaultFontColor
+            fontColor: '#fff',
+
+            // font style, default is defaultFontStyle
+            fontStyle: 'normal',
+
+            // font family, default is defaultFontFamily
+            fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+
+            // draw text shadows under labels, default is false
+            textShadow: true,
+
+            // text shadow intensity, default is 6
+            shadowBlur: 30,
+
+            // text shadow X offset, default is 3
+            shadowOffsetX: 5,
+
+            // text shadow Y offset, default is 3
+            shadowOffsetY: 5,
+
+            // text shadow color, default is 'rgba(0,0,0,0.3)'
+            shadowColor: 'rgba(255,255,255,0.75)',
+
+            // draw label in arc, default is false
+            // bar chart ignores this
+            arc: true,
+
+            // position to draw label, available value is 'default', 'border' and 'outside'
+            // bar chart ignores this
+            // default is 'default'
+            position: 'border',
+
+            // draw label even it's overlap, default is true
+            // bar chart ignores this
+            overlap: true,
+
+            // show the real calculated percentages from the values and don't apply the additional logic to fit the percentages to 100 in total, default is false
+            showActualPercentages: true,
+
+            // set images when `render` is 'image'
+            images: [
+                {
+                    src: 'image.png',
+                    width: 16,
+                    height: 16
+                }
+            ],
+
+            // add padding when position is `outside`
+            // default is 2
+            outsidePadding: 2,
+
+            // add margin of text when position is `outside` or `border`
+            // default is 2
+            textMargin: 4
+        }
+    }
+
+}
+
 
 
