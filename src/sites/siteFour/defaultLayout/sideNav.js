@@ -137,7 +137,7 @@ const navstate = ()=>
     {
         return parseInt(localStorage.getItem('navigation'))
     }
-    return 0
+    return 1
 }
 
 const setNavState = (flag)=>
