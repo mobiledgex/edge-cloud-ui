@@ -142,7 +142,7 @@ class ClusterInstReg extends React.Component {
             if (form.field === fields.operatorName) {
                 this.operatorValueChange(form, forms, isInit)
                 if (isInit === undefined || isInit === false) {
-                    this.getCloudletInfo(region, form, forms)
+                    this.getCloudletInfo(form, forms)
                 }
             }
             else if (form.field === fields.clusterName) {

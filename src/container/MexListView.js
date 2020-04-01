@@ -15,6 +15,7 @@ import * as actions from '../actions';
 import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP } from './MexToolbar';
 import MexDetailViewer from '../hoc/dataViewer/DetailViewer';
 import MexMessageStream, { CODE_FINISH } from '../hoc/stepper/mexMessageStream';
+import { getUserRole } from '../services/model/format';
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import Map from '../libs/simpleMaps/with-react-motion/index_clusters';
 
@@ -69,9 +70,26 @@ class MexListView extends React.Component {
         }
     }
 
+    checkRole = (form) => {
+        let roles = form.roles
+        if (roles) {
+            let visible  = false
+            form.detailView = false
+            for (let i = 0; i < roles.length; i++) {
+                let role = roles[i]
+                if (role === getUserRole()) {
+                    visible = true
+                    form.detailView = true
+                }
+            }
+            form.visible = form.visible ? visible : form.visible
+        }
+    }
+
     makeHeader() {
         const { column, direction } = this.state
         return this.keys.map((header, i) => {
+            this.checkRole(header)
             if (header.visible) {
                 return (
                     <Table.HeaderCell key={i} className={header.sortable ? '' : 'unsortable'} textAlign='center' sorted={column === header.field ? direction : null} onClick={header.sortable ? this.handleSort(header.field) : null}>
@@ -200,6 +218,7 @@ class MexListView extends React.Component {
 
     makeBody(i, item) {
         return this.keys.map((header, j) => {
+            this.checkRole(header)
             if (header.visible) {
                 let field = header.field;
                 return <Table.Cell key={j} className="table_actions" textAlign='center' onClick={() => this.getCellClick(header, i)} style={(this.state.selectedItem == i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }}>

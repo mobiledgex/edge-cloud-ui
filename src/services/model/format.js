@@ -146,11 +146,13 @@ const map = (value, currentObject, keys) => {
             }
             else {
                 let updatedData = mapObject(currentObject, key.serverField);
-                if (typeof updatedData === 'boolean') {
-                    value[key.field] = updatedData
-                }
-                else {
-                    value[key.field] = updatedData ? updatedData : key.defaultValue
+                if (updatedData) {
+                    if (typeof updatedData === 'boolean') {
+                        value[key.field] = updatedData
+                    }
+                    else {
+                        value[key.field] = updatedData ? updatedData : key.defaultValue
+                    }
                 }
             }
         }

@@ -249,7 +249,23 @@ const MexForms = (props) => {
         )
     }
 
-
+    const checkRole = (form)=>
+    {
+        let currentRole = localStorage.selectRole
+        let roles = form.roles
+        if(roles)
+        {
+            form.visible = false;
+            for(let i=0;i<roles.length;i++)
+            {
+                let role = roles[i]
+                if(role === currentRole)
+                {
+                    form.visible = true
+                }
+            }
+        }
+    }
 
     const loadForms = (index, form) => {
         form.id = { id: index }
@@ -306,6 +322,7 @@ const MexForms = (props) => {
                     <Grid columns={2}>
                         {forms.map((form, i) => {
                             initValidateRules(form);
+                            checkRole(form)
                             return (
                                 form.visible ?
                                     form.formType === HEADER ?
