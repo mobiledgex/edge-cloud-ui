@@ -184,10 +184,10 @@ class AutoProvPolicyReg extends React.Component {
         return data
     }
 
-    onCreate = async () => {
-        let data = this.formattedData()
+    onCreate = async (data) => {
+        //let data = this.formattedData()
         if (data) {
-            let outbound_security_rules = [];
+            let outboundSecurityRules = [];
             if (!data[fields.fullIsolation]) {
                 for (let i = 0; i < this.state.forms.length; i++) {
                     let form = this.state.forms[i];
@@ -195,7 +195,7 @@ class AutoProvPolicyReg extends React.Component {
                         let uuid = form.uuid;
                         let outboundSecurityRule = data[uuid]
                         if (outboundSecurityRule) {
-                            outbound_security_rules.push({
+                            outboundSecurityRules.push({
                                 protocol: outboundSecurityRule[fields.protocol],
                                 port_range_min: outboundSecurityRule[fields.protocol] !== 'icmp' ? parseInt(outboundSecurityRule[fields.portRangeMin]) : undefined,
                                 port_range_max: outboundSecurityRule[fields.protocol] !== 'icmp' ? parseInt(outboundSecurityRule[fields.portRangeMax]) : undefined,
@@ -206,8 +206,10 @@ class AutoProvPolicyReg extends React.Component {
                     }
                 }
             }
-
-            
+            if(outboundSecurityRules.length > 0)
+            {
+                data[fields.outboundSecurityRules] = outboundSecurityRules;
+            }
             let mcRequest = await serverData.sendRequest(this, this.props.action === 'Update' ? updatePrivacyPolicy(data) : createPrivacyPolicy(data))
             if (mcRequest && mcRequest.response) {
                 let response = mcRequest.response

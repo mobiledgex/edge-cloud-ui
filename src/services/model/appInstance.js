@@ -14,7 +14,9 @@ export const keys = [
   { field: fields.operatorName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: true },
   { field: fields.cloudletName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: true },
   { field: fields.cloudletLocation, serverField: 'cloudlet_loc', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
+  { field: fields.clusterdeveloper, serverField: 'key#OS#cluster_inst_key#OS#organization', sortable: true, label: 'Cluster Developer', visible: false },
   { field: fields.clusterName, serverField: 'key#OS#cluster_inst_key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster Instance', visible: true },
+  { field: fields.privacyPolicyName, serverField: 'privacy_policy', label: 'Privacy Policy', visible: false },
   { field: fields.deployment, label: 'Deployment', sortable: true, visible: true },
   { field: fields.uri, serverField: 'uri', label: 'URI' },
   { field: fields.liveness, serverField: 'liveness', label: 'Liveness' },
@@ -28,18 +30,25 @@ export const keys = [
 ]
 
 export const getKey = (data, isCreate) => {
+  let appinst = {}
+  appinst.key = {
+    app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] },
+    cluster_inst_key: {
+      cloudlet_key: { name: data[fields.cloudletName], organization: data[fields.operatorName] },
+      cluster_key: { name: data[fields.clusterName] },
+      organization: data[fields.clusterdeveloper] ? data[fields.clusterdeveloper] : data[fields.organizationName]
+    }
+  }
+
+  if (isCreate) {
+    if (data[fields.privacyPolicyName]) {
+      appinst.privacy_policy = data[fields.privacyPolicyName]
+    }
+  }
+  
   return ({
     region: data[fields.region],
-    appinst: {
-      key: {
-        app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] },
-        cluster_inst_key: {
-          cloudlet_key: { name: data[fields.cloudletName], organization: data[fields.operatorName] },
-          cluster_key: { name: data[fields.clusterName] },
-          organization: data[fields.organizationName]
-        }
-      },
-    }
+    appinst: appinst
   })
 }
 
@@ -87,10 +96,10 @@ export const showAppInsts = (data) => {
   return { method: SHOW_APP_INST, data: data }
 }
 
-export const createAppInst = (data, callback) => {
+export const createAppInst = (self, data, callback) => {
   let requestData = getKey(data, true)
   let request = { uuid: data.uuid ? data.uuid : uuid(), method: CREATE_APP_INST, data: requestData }
-  return serverData.sendWSRequest(request, callback)
+  return serverData.sendWSRequest(self, request, callback)
 }
 
 export const deleteAppInst = (data) => {

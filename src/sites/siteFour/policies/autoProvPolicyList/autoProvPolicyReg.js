@@ -106,6 +106,11 @@ class AutoProvPolicyReg extends React.Component {
                 forms: forms
             })
         }
+        else
+        {
+            this.props.handleAlertInfo('error', 'No Cloudlets present')
+            this.props.onClose(true)
+        }
 
     }
 

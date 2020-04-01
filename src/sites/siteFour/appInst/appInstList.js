@@ -36,11 +36,13 @@ class AppInstList extends React.Component {
 
     onTerminalVisible = (data) => {
         let visible = false;
-        let runtimeInfo = data[fields.runtimeInfo]
-        if (runtimeInfo) {
-            let containers = runtimeInfo[fields.container_ids]
-            if (containers && containers.length > 0) {
-                visible = true
+        if (data) {
+            let runtimeInfo = data[fields.runtimeInfo]
+            if (runtimeInfo) {
+                let containers = runtimeInfo[fields.container_ids]
+                if (containers && containers.length > 0) {
+                    visible = true
+                }
             }
         }
         return visible

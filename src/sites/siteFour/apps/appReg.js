@@ -28,7 +28,7 @@ class ClusterInstReg extends React.Component {
         this.privacyPolicyList = []
         this.autoProvPolicyList = []
         this.requestedRegionList = []
-        //To avoid refecthing data from server
+        //To avoid refetching data from server
     }
 
 
@@ -115,14 +115,41 @@ class ClusterInstReg extends React.Component {
     /**port block */
 
 
+    updateImagePath = (forms, form)=>
+    {
+        let organizationName = undefined;
+        let version = undefined;
+        let deployment = undefined;
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i];
+            if (form.field === fields.organizationName) {
+                organizationName = form.value
+            }
+            else if (form.field === fields.version) {
+                version = form.value
+            }
+            else if (form.field === fields.deployment) {
+                deployment = form.value
+            }
+        }
+        if(deployment && version && organizationName)
+        {
+            form.value = deployment === constant.DEPLOYMENT_TYPE_VM ? 
+                `https://artifactory.mobiledgex.net/artifactory/repo-${organizationName}` : 
+                `docker.mobiledgex.net/${organizationName}/images/server-ping-threaded:${version}`
+        }
+    }
+
     deploymentValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
             if (form.field === fields.imageType) {
-                form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? 'Qcow' : 'Docker'
+                form.value = currentForm.value === constant.DEPLOYMENT_TYPE_HELM ? constant.IMAGE_TYPE_HELM : 
+                currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.IMAGE_TYPE_QCOW : 
+                constant.IMAGE_TYPE_DOCKER
             }
             else if (form.field === fields.imagePath) {
-                form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? 'https://artifactory.mobiledgex.net/artifactory/repo-NewDevOrg' : 'docker.mobiledgex.net/newdevorg/images/server-ping-threaded:5.0'
+                this.updateImagePath(forms, form)
             }
             else if (form.field === fields.scaleWithCluster) {
                 form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? true : false
@@ -183,9 +210,41 @@ class ClusterInstReg extends React.Component {
         this.requestedRegionList.push(region)
     }
 
+    organizationValueChange = (currentForm, forms, isInit)=>
+    {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i];
+            if (form.field === fields.imagePath) {
+                this.updateImagePath(forms, form)
+            }
+        }
+        this.setState({
+            forms: forms
+        })
+    }
+
+    versionValueChange = (currentForm, forms, isInit)=>
+    {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i];
+            if (form.field === fields.imagePath) {
+                this.updateImagePath(forms, form)
+            }
+        }
+        this.setState({
+            forms: forms
+        })
+    }
+
     checkForms = (form, forms, isInit) => {
         if (form.field === fields.region) {
             this.regionValueChange(form, forms, isInit)
+        }
+        else if (form.field === fields.organizationName) {
+            this.organizationValueChange(form, forms, isInit)
+        }
+        else if (form.field === fields.version) {
+            this.versionValueChange(form, forms, isInit)
         }
         else if (form.field === fields.deployment) {
             this.deploymentValueChange(form, forms, isInit)
@@ -198,8 +257,6 @@ class ClusterInstReg extends React.Component {
         let forms = this.state.forms;
         this.checkForms(form, forms)
     }
-
-
 
     onCreate = async (data) => {
         if (data) {
@@ -346,7 +403,7 @@ class ClusterInstReg extends React.Component {
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
             { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of' },
             { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true }, visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
-            { field: fields.version, label: 'App Version', formType: INPUT, placeholder: 'Enter App Version', rules: { required: true }, visible: true, tip: 'App version' },
+            { field: fields.version, label: 'App Version', formType: INPUT, placeholder: 'Enter App Version', rules: { required: true, onBlur:true }, visible: true, tip: 'App version' },
             { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
             { field: fields.accessType, label: 'Access Type', formType: SELECT, placeholder: 'Select Access Type', rules: { required: true }, visible: true },
             { field: fields.imageType, label: 'Image Type', formType: INPUT, placeholder: 'Select Deployment Type', rules: { required: true, disabled: true }, visible: true, tip: 'ImageType specifies image type of an App' },

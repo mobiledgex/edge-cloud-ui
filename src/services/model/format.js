@@ -98,8 +98,9 @@ export const fields = {
     clusterinst:'clusterinst',
     container_ids:'container_ids',
     openRCData:'openRCData',
-    caCertdata:'caCertdata'
-
+    caCertdata:'caCertdata',
+    clusterdeveloper:'clusterdeveloper',
+    containerVersion:'containerVersion',
 }
 
 export const getUserRole = () => {
@@ -145,11 +146,13 @@ const map = (value, currentObject, keys) => {
             }
             else {
                 let updatedData = mapObject(currentObject, key.serverField);
-                if (typeof updatedData === 'boolean') {
-                    value[key.field] = updatedData
-                }
-                else {
-                    value[key.field] = updatedData ? updatedData : key.defaultValue
+                if (updatedData) {
+                    if (typeof updatedData === 'boolean') {
+                        value[key.field] = updatedData
+                    }
+                    else {
+                        value[key.field] = updatedData ? updatedData : key.defaultValue
+                    }
                 }
             }
         }

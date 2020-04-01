@@ -4,12 +4,12 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 
-import { fields } from '../../../services/model/format';
+import { fields, isAdmin } from '../../../services/model/format';
 import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/model/cloudlet';
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
 import ClouldletReg from './cloudletReg';
 
-import * as constant from '../../../services/model/shared';
+import * as shared from '../../../services/model/shared';
 import { Button } from 'semantic-ui-react';
 
 class CloudletList extends React.Component {
@@ -28,12 +28,13 @@ class CloudletList extends React.Component {
         this.setState({ currentView: null })
     }
 
-    onAdd = () => {
-        this.setState({ currentView: <ClouldletReg onClose={this.onRegClose}/> })
+    onAdd = (action, data) => {
+        this.setState({ currentView: <ClouldletReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose}/> })
     }
 
     actionMenu = () => {
         return [
+            { label: 'Update', onClick: this.onAdd },
             { label: 'Delete', onClick: deleteCloudlet, ws: true }
         ]
     }
@@ -52,7 +53,7 @@ class CloudletList extends React.Component {
             isMap: true,
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
-            onAdd: this.onAdd
+            onAdd: isAdmin() ? this.onAdd : undefined
         })
     }
 
@@ -61,7 +62,7 @@ class CloudletList extends React.Component {
    **/
 
     getCloudletInfoState = (data, isDetailView) => {
-        let id = data[fields.cloudletStatus]
+        let id = isDetailView ? data : data[fields.cloudletStatus]
         let state = 'Not Present';
         let color = 'red'
         switch (id) {
@@ -107,10 +108,7 @@ class CloudletList extends React.Component {
                 key.customizedData = this.getCloudletInfoState
             }
             else if (key.field === fields.state) {
-                key.customizedData = constant.showProgress
-            }
-            else if (key.field === fields.ipSupport) {
-                key.customizedData = constant.getIPSupport
+                key.customizedData = shared.showProgress
             }
         }
     }

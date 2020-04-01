@@ -100,7 +100,7 @@ const options = [
     { label: 'Accounts', icon: <DvrOutlinedIcon />, pg: 101, page: <SiteFourPageAccount />, roles: ['AdminManager'] },
     { divider: true },
     { label: 'Cloudlets', icon: <CloudQueueOutlinedIcon />, pg: 2, page: <SiteFourPageCloudlet />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
-    { label: 'Cloudlet Pools', icon: <CloudCircleOutlinedIcon />, pg: 7, page: <SiteFourPageCloudletPool />, roles: ['AdminManager', 'DeveloperManager'] },
+    { label: 'Cloudlet Pools', icon: <CloudCircleOutlinedIcon />, pg: 7, page: <SiteFourPageCloudletPool />, roles: ['AdminManager'] },
     { label: 'Flavors', icon: <FreeBreakfastOutlinedIcon />, pg: 3, page: <SiteFourPageFlavor />, roles: ['AdminManager', 'DeveloperManager'] },
     { label: 'Cluster Instances', icon: <StorageOutlinedIcon />, pg: 4, page: <SiteFourPageClusterInst />, roles: ['AdminManager', 'DeveloperManager'] },
     { label: 'Apps', icon: <AppsOutlinedIcon />, pg: 5, page: <SiteFourPageApps />, roles: ['AdminManager', 'DeveloperManager'] },
@@ -137,7 +137,7 @@ const navstate = ()=>
     {
         return parseInt(localStorage.getItem('navigation'))
     }
-    return 0
+    return 1
 }
 
 const setNavState = (flag)=>
