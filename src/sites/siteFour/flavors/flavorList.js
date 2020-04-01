@@ -15,6 +15,7 @@ class FlavorList extends React.Component {
         }
         this.action = '';
         this.data = {}
+        this.keys = keys();
     }
 
     onRegClose = (isEdited)=>
@@ -43,7 +44,7 @@ class FlavorList extends React.Component {
             isRegion:true,
             requestType: [showFlavors],
             sortBy: [fields.region, fields.flavorName],
-            keys: keys,
+            keys: this.keys,
             onAdd: isAdmin() ? this.onAdd : undefined
         })
     }
