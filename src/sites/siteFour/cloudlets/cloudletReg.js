@@ -274,6 +274,14 @@ class ClusterInstReg extends React.Component {
                     this.checkForms(form, forms, true)
                 }
             }
+            //Todo if more such functions required try to move it to mexforms
+            if(this.isUpdate)
+            {
+                if(form.field === fields.openRCData || form.field === fields.caCertdata)
+                {
+                    form.visible = false
+                }
+            }
         }
 
     }
