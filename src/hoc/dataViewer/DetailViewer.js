@@ -69,6 +69,7 @@ const getRow = (id, item, data) => {
         </Table.Row>
     )
 }
+
 const MexDetailViewer = (props) => {
     let detailData = props.detailData;
     return (
@@ -84,7 +85,7 @@ const MexDetailViewer = (props) => {
                     {props.keys.map((item, i) => {
                         let data = detailData[item.field]
                         return (
-                            (data !== undefined && item.detailView === undefined || item.detailView)?
+                            (data !== undefined && (item.detailView === undefined || item.detailView))?
                                 item.keys ?
                                     data.length > 0 ?
                                         getRow(i, item, subView(item.keys, data)) : null
