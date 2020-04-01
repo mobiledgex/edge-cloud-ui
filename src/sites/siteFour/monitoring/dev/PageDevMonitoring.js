@@ -20,9 +20,10 @@ import {
     getUserId,
     makeAllLineChartData,
     makeBarChartDataForAppInst,
-    makeBarChartDataForCluster, makeGradientColorList,
+    makeBarChartDataForCluster,
     makeid,
-    makeLineChartDataForAppInst, makeLineChartDataForBigModal,
+    makeLineChartDataForAppInst,
+    makeLineChartDataForBigModal,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
     makeSelectBoxListWithValuePipe,
@@ -74,7 +75,7 @@ import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraph from "../components/MiniModalGraphContainer";
 import {reactLocalStorage} from "reactjs-localstorage";
 import LeafletMapWrapperForDev from "../components/LeafletMapDevContainer";
-import {LayoutItem, Responsive, WidthProvider} from "react-grid-layout";
+import {Responsive, WidthProvider} from "react-grid-layout";
 import _ from "lodash";
 import PieChartContainer from "../components/PieChartContainer";
 import BigModalGraphContainer from "../components/BigModalGraphContainer";
@@ -88,8 +89,6 @@ import MaterialIcon from "material-icons-react";
 import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout} from "react-grid-layout/lib/utils";
-import BarChart0003 from "../zzz____TESTCODE____/Pages/BarChart0003";
-import GradientBarChartContainer from "../components/BarChartContainer002";
 
 const {Option} = Select;
 
@@ -751,14 +750,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 barChartDataSet = []
             }
 
-            /*return (
+            return (
                 <BarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this}
                                    loading={this.state.loading} chartDataSet={barChartDataSet}
                                    pHardwareType={hwType} graphType={graphType}/>
-            )*/
-            return (
-                <GradientBarChartContainer/>
             )
+            /*  return (
+                  <GradientBarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this}
+                                             loading={this.state.loading} chartDataSet={barChartDataSet}
+                                             pHardwareType={hwType} graphType={graphType}/>
+              )*/
         }
 
 
