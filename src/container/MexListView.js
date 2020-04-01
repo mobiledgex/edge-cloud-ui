@@ -80,6 +80,7 @@ class MexListView extends React.Component {
                 if (role === getUserRole()) {
                     visible = true
                     form.detailView = true
+                    break;
                 }
             }
             form.visible = form.visible ? visible : form.visible
@@ -221,7 +222,7 @@ class MexListView extends React.Component {
             this.checkRole(header)
             if (header.visible) {
                 let field = header.field;
-                return <Table.Cell key={j} className="table_actions" textAlign='center' onClick={() => this.getCellClick(header, i)} style={(this.state.selectedItem == i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }}>
+                return <Table.Cell key={j} className="table_actions" textAlign='center' onClick={() => this.getCellClick(header, i)} style={(this.state.selectedItem == i) ? { background: '#444', cursor: 'pointer',height:50 } : { cursor: 'pointer', height: 50}}>
                     {
                         field === fields.actions ? this.getAction(item)
                             :
