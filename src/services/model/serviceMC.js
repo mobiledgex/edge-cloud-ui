@@ -26,7 +26,7 @@ function getHeader(request) {
 }
 
 const showSpinner = (self, value) => {
-    if (self.props.handleLoadingSpinner) {
+    if (self && self.props.handleLoadingSpinner) {
         self.props.handleLoadingSpinner(value)
     }
 }
@@ -47,10 +47,12 @@ const showError = (request, message) => {
 
 const checkExpiry = (self, message) => {
     let isExpired = message.indexOf('expired jwt') > -1 || message.indexOf('expired token') > -1 || message.indexOf('token is expired') > -1
-    if (isExpired && self.gotoUrl) {
+    if (isExpired && self) {
         localStorage.setItem('userInfo', null)
         localStorage.setItem('sessionData', null)
-        setTimeout(() => self.gotoUrl('/logout'), 2000);
+        setTimeout(() => self.props.history.push({
+            pathname: '/logout'
+        }), 2000);
     }
     return !isExpired;
 }
@@ -71,7 +73,6 @@ function responseError(self, request, response, callback) {
         }
     }
 }
-
 
 export function sendWSRequest(request, callback) {
     let url = process.env.REACT_APP_API_ENDPOINT;
@@ -131,10 +132,13 @@ export function sendMultiRequest(self, requestDataList, callback) {
 
 export const sendSyncRequest = async (self, request) => {
     try {
+        showSpinner(self, true)
         let response = await axios.post(EP.getPath(request), request.data,
             {
                 headers: getHeader(request)
             });
+
+        showSpinner(self, false)
         return EP.formatData(request, response);
     } catch (error) {
         if (error.response) {

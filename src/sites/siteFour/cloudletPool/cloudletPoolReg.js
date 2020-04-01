@@ -10,7 +10,7 @@ import * as serverData from '../../../services/model/serverData';
 import { fields } from '../../../services/model/format';
 
 import { showOrganizations } from '../../../services/model/organization';
-import { showCloudlets } from '../../../services/model/cloudlet';
+import { getCloudletList } from '../../../services/model/cloudlet';
 import { createCloudletPool } from '../../../services/model/cloudletPool';
 import { createCloudletPoolMember, deleteCloudletPoolMember } from '../../../services/model/cloudletPoolMember';
 import { createLinkPoolOrg, deleteLinkPoolOrg } from '../../../services/model/cloudletLinkOrg';
@@ -89,6 +89,13 @@ class CloudletPoolReg extends React.Component {
         serverData.sendMultiRequest(this, requestDataList, this.organizationAddResponse)
     }
 
+    getData = (dataList, field) => {
+        if (dataList && dataList.length > 0)
+            return dataList.map(data => {
+                return { value: JSON.stringify(data), label: data[field] }
+            })
+    }
+
     selectOrganization = async (isNew) => {
         let data = this.poolData;
         let region = data[fields.region];
@@ -111,7 +118,7 @@ class CloudletPoolReg extends React.Component {
             let step = [
                 { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible: true, options: [region ], value: region },
                 { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { disabled: true }, visible: true, value: data[fields.poolName] },
-                { field: fields.organizations, label: 'Organizations', formType: 'DualList', rules: { required: true }, visible: true, options: this.organizationList },
+                { field: fields.organizations, label: 'Organizations', formType: 'DualList', rules: { required: true }, visible: true, options: this.getData(this.organizationList, fields.organizationName) },
                 { label: `${label} Organizations`, formType: 'Button', onClick: this.onAddOrganizations },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
             ]
@@ -120,6 +127,11 @@ class CloudletPoolReg extends React.Component {
                 step: 2,
                 forms: step
             })
+        }
+        else
+        {
+            this.props.handleAlertInfo('error', 'No organizations to unlink')
+            this.props.onClose(false)
         }
     }
 
@@ -185,17 +197,16 @@ class CloudletPoolReg extends React.Component {
         serverData.sendMultiRequest(this, requestDataList, this.addCloudletResponse)
     }
 
+   
+
     selectCloudlet = async (isNew) => {
         let data = this.poolData;
         let region = data[fields.region];
         let selectedDatas = data[fields.cloudlets]
         if (!this.props.action || this.action === constant.ADD_CLOUDLET) {
-            let mcRequest = await serverData.sendRequest(this, showCloudlets({ region: region }))
-            if (mcRequest && mcRequest.response) {
-                this.cloudletList = mcRequest.response.data
-                if (!isNew) {
-                    this.cloudletList = constant.filterData(selectedDatas, this.cloudletList, fields.cloudletName);
-                }
+            this.cloudletList = await getCloudletList(this, { region: region })
+            if (!isNew) {
+                this.cloudletList = constant.filterData(selectedDatas, this.cloudletList, fields.cloudletName);
             }
         }
         else {
@@ -208,7 +219,7 @@ class CloudletPoolReg extends React.Component {
             let step2 = [
                 { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible: true, options: [region], value: region },
                 { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { disabled: true }, visible: true, value: data[fields.poolName] },
-                { field: fields.cloudlets, label: 'Clouldets', formType: 'DualList', rules: { required: true }, visible: true, options: this.cloudletList },
+                { field: fields.cloudlets, label: 'Clouldets', formType: 'DualList', rules: { required: true }, visible: true, options: this.getData(this.cloudletList, fields.cloudletName) },
                 { label: `${label} Cloudlets`, formType: 'Button', onClick: this.onAddCloudlets },
                 { label: this.props.action ? 'Cancel' : 'Skip', formType: 'Button', onClick: this.onCloudletCancel }
             ]
@@ -217,6 +228,16 @@ class CloudletPoolReg extends React.Component {
                 step: 1,
                 forms: step2
             })
+        }else
+        {
+            this.props.handleAlertInfo('error', 'No Cloudlets present')
+            if(this.props.action)
+            {
+                this.props.onClose(true)
+            }else
+            {
+                this.selectOrganization(data, true)
+            }
         }
     }
 

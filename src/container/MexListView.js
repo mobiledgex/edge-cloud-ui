@@ -141,17 +141,19 @@ class MexListView extends React.Component {
     onDelete = async (action) => {
         let dataList = this.state.dataList
         let data = dataList[this.selectedRowIndex]
-        if (action.ws) {
-            this.wsResponseCount = 0
-            this.props.handleLoadingSpinner(true);
-            serverData.sendWSRequest(action.onClick(data), this.onDeleteWSResponse)
-        }
-        else {
-            let mcRequest = await serverData.sendRequest(this, action.onClick(data))
-            if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-                this.props.handleAlertInfo('success', `${mcRequest.request.success} deleted successfully`)
-                dataList.splice(this.selectedRowIndex, 1)
-                this.setState({ dataList: dataList })
+        if (data) {
+            if (action.ws) {
+                this.wsResponseCount = 0
+                this.props.handleLoadingSpinner(true);
+                serverData.sendWSRequest(this, action.onClick(data), this.onDeleteWSResponse)
+            }
+            else {
+                let mcRequest = await serverData.sendRequest(this, action.onClick(data))
+                if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
+                    this.props.handleAlertInfo('success', `${mcRequest.request.success} deleted successfully`)
+                    dataList.splice(this.selectedRowIndex, 1)
+                    this.setState({ dataList: dataList })
+                }
             }
         }
     }
@@ -299,7 +301,7 @@ class MexListView extends React.Component {
         if (stream) {
             let state = data[fields.state];
             if (state === 2 || state === 3 || state === 6 || state === 7 || state === 9 || state === 10 || state === 12 || state === 14) {
-                serverData.sendWSRequest(stream(data), this.requestResponse)
+                serverData.sendWSRequest(this, stream(data), this.requestResponse)
             }
         }
     }

@@ -26,7 +26,7 @@ class PrivacyPolicy extends React.Component {
         this.setState({ currentView: <PrivacyPolicyReg onClose={this.onRegClose} /> })
     }
 
-    onUpdate = (data) => {
+    onUpdate = (action, data) => {
         this.setState({ currentView: <PrivacyPolicyReg data={data} action='Update' onClose={this.onRegClose}/> })
     }
 

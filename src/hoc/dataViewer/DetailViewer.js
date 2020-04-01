@@ -3,6 +3,7 @@ import { Table } from 'semantic-ui-react'
 import ReactJson from 'react-json-view';
 import { Card } from '@material-ui/core';
 import * as constant from '../../constant'
+import * as JsonUtils from '../../utils/JsonUtil'
 
 const jsonViewProps = {
     name: null,
@@ -17,6 +18,14 @@ const jsonViewProps = {
     indentWidth: 4,
     displayDataTypes: false,
     iconStyle: "triangle"
+}
+const getJson = (data, item) =>
+{
+   if(item.dataType === constant.TYPE_JSON_NEW_LINE)
+   {
+       data = JsonUtils.newLineToJsonObject(data)
+   }
+   return <ReactJson src={data} {...jsonViewProps} />
 }
 const subView = (keys, dataList) => {
     return (
@@ -35,8 +44,8 @@ const subView = (keys, dataList) => {
                             keys.map((item, j) => {
                                 return (
                                     <Table.Cell key={j}>
-                                        {item.dataType === 'JSON' ?
-                                            <ReactJson src={data[item.field]} {...jsonViewProps} /> :
+                                        {item.dataType === constant.TYPE_JSON || item.dataType === constant.TYPE_JSON_NEW_LINE ?
+                                            getJson(data[item.field], item) :
                                             data[item.field]}
                                     </Table.Cell>)
                             }))
@@ -53,8 +62,8 @@ const getRow = (id, item, data) => {
         <Table.Row key={id} verticalAlign='top'>
             <Table.Cell>{item.label}</Table.Cell>
             <Table.Cell>
-                {item.dataType === 'JSON' ?
-                    <ReactJson src={data} {...jsonViewProps} /> :
+                {item.dataType === constant.TYPE_JSON || item.dataType === constant.TYPE_JSON_NEW_LINE ?
+                    getJson(data, item) :
                     item.customizedData ? item.customizedData(data, true) : data}
             </Table.Cell>
         </Table.Row>
@@ -75,7 +84,7 @@ const MexDetailViewer = (props) => {
                     {props.keys.map((item, i) => {
                         let data = detailData[item.field]
                         return (
-                            data !== undefined ?
+                            (data !== undefined && item.detailView === undefined || item.detailView)?
                                 item.keys ?
                                     data.length > 0 ?
                                         getRow(i, item, subView(item.keys, data)) : null
