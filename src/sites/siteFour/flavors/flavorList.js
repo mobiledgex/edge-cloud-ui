@@ -3,7 +3,7 @@ import MexListView from '../../../container/MexListView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
-import { fields, getUserRole } from '../../../services/model/format';
+import { fields, isAdmin } from '../../../services/model/format';
 import { keys, showFlavors, deleteFlavor } from '../../../services/model/flavor';
 import FlavorReg from './flavorReg';
 
@@ -44,7 +44,7 @@ class FlavorList extends React.Component {
             requestType: [showFlavors],
             sortBy: [fields.region, fields.flavorName],
             keys: keys,
-            onAdd: (getUserRole().includes('Admin') || getUserRole().includes('Operator')) ? this.onAdd : undefined
+            onAdd: isAdmin() ? this.onAdd : undefined
         })
     }
 
