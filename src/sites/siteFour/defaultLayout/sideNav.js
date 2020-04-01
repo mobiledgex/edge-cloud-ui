@@ -101,7 +101,7 @@ const options = [
     { divider: true },
     { label: 'Cloudlets', icon: <CloudQueueOutlinedIcon />, pg: 2, page: <SiteFourPageCloudlet />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
     { label: 'Cloudlet Pools', icon: <CloudCircleOutlinedIcon />, pg: 7, page: <SiteFourPageCloudletPool />, roles: ['AdminManager'] },
-    { label: 'Flavors', icon: <FreeBreakfastOutlinedIcon />, pg: 3, page: <SiteFourPageFlavor />, roles: ['AdminManager', 'DeveloperManager','OperatorManager'] },
+    { label: 'Flavors', icon: <FreeBreakfastOutlinedIcon />, pg: 3, page: <SiteFourPageFlavor />, roles: ['AdminManager', 'DeveloperManager'] },
     { label: 'Cluster Instances', icon: <StorageOutlinedIcon />, pg: 4, page: <SiteFourPageClusterInst />, roles: ['AdminManager', 'DeveloperManager'] },
     { label: 'Apps', icon: <AppsOutlinedIcon />, pg: 5, page: <SiteFourPageApps />, roles: ['AdminManager', 'DeveloperManager'] },
     { label: 'App Instances', icon: <GamesOutlinedIcon />, pg: 6, page: <SiteFourPageAppInst />, roles: ['AdminManager', 'DeveloperManager'] },
