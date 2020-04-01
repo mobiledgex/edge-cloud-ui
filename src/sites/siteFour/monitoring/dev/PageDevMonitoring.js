@@ -20,7 +20,7 @@ import {
     getUserId,
     makeAllLineChartData,
     makeBarChartDataForAppInst,
-    makeBarChartDataForCluster,
+    makeBarChartDataForCluster, makeGradientColorList2,
     makeid,
     makeLineChartDataForAppInst,
     makeLineChartDataForBigModal,
@@ -89,6 +89,7 @@ import MaterialIcon from "material-icons-react";
 import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout} from "react-grid-layout/lib/utils";
+import GradientBarChartContainer from "../components/GradientBarChartContainer";
 
 const {Option} = Select;
 
@@ -424,7 +425,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             })
 
-            await this.loadInitDataForCluster();
+            await this.loadInitDataForCluster__FOR__DEV();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
@@ -739,6 +740,56 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
+        makeGradientBarCharData(chartData) {
+            let canvasDatas = (canvas) => {
+                let CHARTCOLORLIST = this.state.chartColorList;
+                let gradientList = makeGradientColorList2(canvas, 305, CHARTCOLORLIST, true);
+                console.log("chartDataList===>", chartData.chartDataList);
+                let chartDatas = chartData.chartDataList
+                let labelList = [];
+                let graphDatasets = [];
+                chartDatas.map((item, index) => {
+                    if (index > 0) {
+                        labelList.push(item[0]);
+                    }
+                })
+
+                chartDatas.map((item, index) => {
+                    if (index > 0) {
+                        let itemOne = item[3].replace('\"', '')
+                        itemOne = itemOne.replace('%', '')
+                        itemOne = parseFloat(itemOne)
+                        graphDatasets.push(itemOne);
+                    }
+                })
+
+                console.log("graphDatasets===>", graphDatasets);
+
+                let dataSets = [
+                    {
+
+                        backgroundColor: gradientList,
+                        borderColor: gradientList,
+                        borderWidth: 1,
+                        hoverBackgroundColor: gradientList,
+                        hoverBorderColor: 'rgb(0,0,0)',
+                        data: graphDatasets,
+                    }
+                ]
+
+                let completeData = {
+                    labels: labelList,
+                    datasets: dataSets
+                }
+
+                return completeData;
+
+            };
+
+            return canvasDatas;
+
+        }
+
 
         makeBarChartData(hwType, graphType) {
 
@@ -752,16 +803,25 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 barChartDataSet = []
             }
 
-            return (
+
+          /*  return (
                 <BarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this}
                                    loading={this.state.loading} chartDataSet={barChartDataSet}
                                    pHardwareType={hwType} graphType={graphType}/>
-            )
-            /*  return (
-                  <GradientBarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this}
-                                             loading={this.state.loading} chartDataSet={barChartDataSet}
-                                             pHardwareType={hwType} graphType={graphType}/>
-              )*/
+            )*/
+
+
+            if (!isEmpty(barChartDataSet)) {
+                let chartDatas = this.makeGradientBarCharData(barChartDataSet)
+                console.log("graphType===>", graphType);
+                return (
+                    <GradientBarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this}
+                                               loading={this.state.loading} chartDataSet={chartDatas}
+                                               pHardwareType={hwType} graphType={graphType}/>
+                )
+            }
+
+
         }
 
 
