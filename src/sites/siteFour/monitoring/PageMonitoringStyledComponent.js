@@ -9,6 +9,29 @@ export const Center = styled.div`
   display : flex;
 `;
 
+export const OuterHeader = styled.div`
+    margin-left: 20px;
+    font-size: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    //background-color: green;
+    width: 100%;
+    //margin-right: 50px;
+`
+
+
+export const Center0001 = styled.div`
+    margin-left: 20px;
+    font-size: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    //background-color: green;
+    width: 195px;
+    //margin-right: 50px;
+`
+
 
 export const Legend = styled.div`
   justify-content: center;
@@ -21,6 +44,9 @@ export const Legend = styled.div`
   border-style: dotted;
   border-color: dimgrey;
   padding:5px;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 20px;
   //marginLeft:50px;
 `;
 

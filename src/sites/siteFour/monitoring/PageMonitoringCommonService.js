@@ -70,7 +70,7 @@ export const PageMonitoringStyles = {
         //minWidth: 150,
         minWidth: '350px',
         //fontSize: '12px',
-        minHeight: '40px',
+        minHeight: '30px',
         zIndex: 1,
         //height: '50px',
     },

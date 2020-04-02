@@ -1171,7 +1171,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this) => {
             }
         },
         legend: {
-            display: true,//@todo:리전드
+            display: false,//@todo:리전드display
             position: 'top',
             labels: {
                 boxWidth: 10,
@@ -1637,7 +1637,7 @@ export const removeDuplication = (originalArray, prop) => {
     return newArray;
 };
 
-export const barChartOptions1 = {
+export const GradientBarChartOptions1 = {
     animation: {
         duration: 500
     },

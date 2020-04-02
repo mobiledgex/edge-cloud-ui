@@ -2,18 +2,16 @@ import 'react-hot-loader';
 import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Button, Checkbox, Dropdown, Grid, Icon, Modal, Tab} from 'semantic-ui-react'
+import {Button, Checkbox, Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
-import {Card, CircularProgress} from '@material-ui/core'
+import {Card, CircularProgress, Button as MButton} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
 import {DatePicker, Select, Tooltip} from 'antd';
-import {Center, Legend, Center3, Center2, ClusterCluoudletLable} from '../PageMonitoringStyledComponent'
-
-import {Button as AButton} from '@material-ui/core';
-
+import {Center0001, Center2, ClusterCluoudletLable, Legend, OuterHeader} from '../PageMonitoringStyledComponent'
+import $ from 'jquery';
 import {
     defaultHwMapperListForCluster,
     defaultLayoutForAppInst,
@@ -93,7 +91,6 @@ import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout} from "react-grid-layout/lib/utils";
 import GradientBarChartContainer from "../components/GradientBarChartContainer";
-import {fields} from "../../../../services/model/format";
 
 const {Option} = Select;
 
@@ -106,12 +103,16 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const mapStateToProps = (state) => {
     return {
         isLoading: state.LoadingReducer.isLoading,
+        isShowHeader: state.HeaderReducer.isShowHeader,
     }
 };
-const mapDispatchProps = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
     return {
         toggleLoading: (data) => {
             dispatch(actions.toggleLoading(data))
+        },
+        toggleHeader: (data) => {
+            dispatch(actions.toggleHeader(data))
         }
     };
 };
@@ -125,6 +126,7 @@ type Props = {
     isLoading: boolean,
     toggleLoading: Function,
     userRole: any,
+    toggleHeader: Function,
 }
 
 
@@ -260,11 +262,11 @@ type State = {
     isStackedLineChart: boolean,
     isGradientColor: boolean,
     clusterList: any,
-
+    isShowFilter: boolean,
 
 }
 
-export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
+export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeight: true})(
     class PageDevMonitoring extends Component<Props, State> {
         intervalForAppInst = null;
         gridItemHeight = 320;
@@ -417,12 +419,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentWidgetWidth: 1,
                 isOpenEditView: false,
                 isFullScreenMap: false,
-                isStackedLineChart: false,
-                //isGradientColor: true,
+                isStackedLineChart: true,
+                isShowFilter: true,
             };
         }
 
         componentDidMount = async () => {
+            this.props.toggleHeader(false);
             this.setState({
                 loading: true,
                 bubbleChartLoader: true,
@@ -438,6 +441,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         componentWillUnmount(): void {
+            this.props.toggleHeader(true)
             clearInterval(this.intervalForAppInst)
             if (!isEmpty(this.webSocketInst)) {
                 this.webSocketInst.close();
@@ -1283,9 +1287,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
                 <div
                     key={uniqueIndex} data-grid={item} style={{margin: 0, backgroundColor: '#292c33'}}
-                    onClick={() => {
-                        // alert('sdlkfdslkf')
-                    }}
                     onDoubleClick={async () => {
                         await this.setState({
                             isFixGrid: true,
@@ -1443,6 +1444,42 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+        handleThemeChanges = (value) => {
+            if (value === THEME_OPTIONS.DEFAULT) {
+                this.setState({
+                    chartColorList: CHART_COLOR_LIST
+                })
+            }
+            if (value === THEME_OPTIONS.BLUE) {
+                this.setState({
+                    chartColorList: CHART_COLOR_LIST2
+                })
+            }
+            if (value === THEME_OPTIONS.GREEN) {
+                this.setState({
+                    chartColorList: CHART_COLOR_LIST3
+                })
+            }
+            if (value === THEME_OPTIONS.RED) {
+                this.setState({
+                    chartColorList: CHART_COLOR_LIST4
+                })
+            }
+
+            if (value === THEME_OPTIONS.MONOKAI) {
+                this.setState({
+                    chartColorList: CHART_COLOR_MONOKAI
+                })
+            }
+
+            if (value === THEME_OPTIONS.APPLE) {
+                this.setState({
+                    chartColorList: CHART_COLOR_APPLE
+                })
+            }
+        }
+
+
         renderHeader = () => {
 
             return (
@@ -1451,30 +1488,28 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <Grid.Row className='content_title'>
                         <div className='content_title_wrap'>
                             <div className='content_title_label'>Monitoring</div>
-                          {/*  <Button positive={true}
-
-                            >Add
-                            </Button>*/}
-                            <Button
+                            <MButton
+                                size={'small'}
+                                style={{width: 100, backgroundColor: '#559901', color: 'white'}}
                                 onClick={async () => {
                                     this.setState({
                                         isOpenEditView: true,
                                     })
                                 }}
-                                size={'small'} style={{width: 100, backgroundColor: '#559901', color: 'white'}}>
-                                <label>Add</label>
-                            </Button>)
-
-
+                            >
+                                Add
+                            </MButton>
                             {/*todo:---------------------------*/}
                             {/*todo:REFRESH, RESET BUTTON DIV  */}
                             {/*todo:---------------------------*/}
-                            <Button
+                            <MButton
+                                size={'small'}
+                                style={{width: 100, backgroundColor: 'grey', color: 'white'}}
                                 onClick={async () => {
                                     await this.resetAllDataForDev();
                                 }}
                             >Reset
-                            </Button>
+                            </MButton>
                             <Button
                                 onClick={async () => {
                                     if (!this.state.loading) {
@@ -1489,7 +1524,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 <i aria-hidden="true"
                                    className="sync alternate icon"></i>
                             </Button>
-
                             {this.state.intervalLoading &&
                             <div>
                                 <div style={{marginLeft: 15}}>
@@ -1532,6 +1566,50 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 </div>
                             </div>
                             }
+                            {/*
+                            desc:#######################################
+                            desc:Show Header
+                            desc:#######################################
+                            */}
+                            <OuterHeader>
+                                <Center0001 className='page_monitoring_select_toggle'>
+                                    <div className='page_monitoring_select_toggle_label'>
+                                        Show Header
+                                    </div>
+                                    <Checkbox
+                                        style={{marginRight: 10, marginTop: 4}}
+                                        toggle
+                                        //checked={!this.state.isDraggable}
+                                        onChange={async () => {
+                                            if (this.props.isShowHeader) {
+                                                this.props.toggleHeader(false)
+                                            } else {
+                                                this.props.toggleHeader(true)
+                                            }
+
+                                        }}
+                                        checked={this.props.isShowHeader}
+                                    >
+                                    </Checkbox>
+                                </Center0001>
+                                <Center0001 className='page_monitoring_select_toggle'>
+                                    <div className='page_monitoring_select_toggle_label'>
+                                        Show Filter
+                                    </div>
+                                    <Checkbox
+                                        style={{marginRight: 10, marginTop: 4}}
+                                        toggle
+                                        //checked={!this.state.isDraggable}
+                                        onChange={async () => {
+                                            this.setState({
+                                                isShowFilter: !this.state.isShowFilter,
+                                            })
+                                        }}
+                                        checked={this.state.isShowFilter}
+                                    >
+                                    </Checkbox>
+                                </Center0001>
+                            </OuterHeader>
                         </div>
                     </Grid.Row>
                     <div style={{backgroundColor: '#202329', marginLeft: 10, marginRight: 10,}}>
@@ -1543,220 +1621,160 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        handleThemeChanges = (value) => {
-            if (value === THEME_OPTIONS.DEFAULT) {
-                this.setState({
-                    chartColorList: CHART_COLOR_LIST
-                })
-            }
-            if (value === THEME_OPTIONS.BLUE) {
-                this.setState({
-                    chartColorList: CHART_COLOR_LIST2
-                })
-            }
-            if (value === THEME_OPTIONS.GREEN) {
-                this.setState({
-                    chartColorList: CHART_COLOR_LIST3
-                })
-            }
-            if (value === THEME_OPTIONS.RED) {
-                this.setState({
-                    chartColorList: CHART_COLOR_LIST4
-                })
-            }
-
-            if (value === THEME_OPTIONS.MONOKAI) {
-                this.setState({
-                    chartColorList: CHART_COLOR_MONOKAI
-                })
-            }
-
-            if (value === THEME_OPTIONS.APPLE) {
-                this.setState({
-                    chartColorList: CHART_COLOR_APPLE
-                })
-            }
-        }
-
         renderSelectBoxRow() {
-            return (
-                <div className='page_monitoring_select_row'>
-                    <div className='page_monitoring_select_area'>
 
-                        <div className='page_monitoring_select_column'>
-                            {/*todo:##########################*/}
-                            {/*todo:Cluster_Dropdown         */}
-                            {/*todo:##########################*/}
-                            <div className="page_monitoring_dropdown_box">
-                                <div className="page_monitoring_dropdown_label">
-                                    Cluster | Cloudlet
-                                </div>
-                                <Dropdown
-                                    selectOnBlur={false}
-                                    value={this.state.currentCluster}
-                                    clearable={this.state.clusterSelectBoxClearable}
-                                    disabled={this.state.loading}
-                                    placeholder={this.state.clusterSelectBoxPlaceholder}
-                                    selection
-                                    loading={this.state.loading}
-                                    options={this.state.clusterDropdownList}
-                                    style={PageMonitoringStyles.dropDown0}
-                                    onChange={async (e, {value}) => {
-                                        await this.handleClusterDropdown(value.trim())
-                                    }}
+            if (this.state.isShowFilter) {
+                return (
+                    <div className='page_monitoring_select_row'>
+                        <div className='page_monitoring_select_area'>
 
-                                />
-                            </div>
-
-                            {/*todo:---------------------------*/}
-                            {/*todo: App Instance_Dropdown      */}
-                            {/*todo:---------------------------*/}
-                            <div className="page_monitoring_dropdown_box">
-                                <div className="page_monitoring_dropdown_label">
-                                    App Inst
-                                </div>
-                                <Dropdown
-                                    selectOnBlur={false}
-                                    disabled={this.state.currentCluster === '' || this.state.loading || this.state.appInstDropdown.length === 0}
-                                    clearable={this.state.appInstSelectBoxClearable}
-                                    loading={this.state.loading}
-                                    value={this.state.currentAppInst}
-                                    placeholder={this.state.appInstSelectBoxPlaceholder}
-                                    selection
-                                    // style={PageMonitoringStyles.dropDown}
-                                    options={this.state.appInstDropdown}
-                                    onChange={async (e, {value}) => {
-                                        await this.handleAppInstDropdown(value.trim())
-                                    }}
-                                />
-                            </div>
-                            <div style={{marginTop: 2}}>
-                                <Button
-                                    onClick={async () => {
-                                        this.setState({
-                                            isStackedLineChart: !this.state.isStackedLineChart,
-                                        }, () => {
-                                            //alert(this.state.isStackedLineChart)
-                                        })
-                                    }}
-                                    positive={this.state.isStackedLineChart}
-                                    style={{height: 35, backgroundColor: 'green'}}
-                                >Stacked Line Chart
-                                </Button>
-                            </div>
-                        </div>
-                        <div className='page_monitoring_select_column_end'>
-                            <div className='page_monitoring_select_toggle'>
-                                <Button
-                                    onClick={async () => {
-                                        this.resetGridPosition();
-                                    }}
-                                >
-                                    Reset layout
-                                </Button>
-                            </div>
-                            {/*todo:---------------------------*/}
-                            {/*todo:FIX GRID BTN    (Switch)   */}
-                            {/*todo:---------------------------*/}
-                            <Tooltip
-                                placement="topLeft"
-                                title={
-                                    <div>
-                                        <p>To release or freeze a grid item, double click grid item!</p>
+                            <div className='page_monitoring_select_column'>
+                                {/*todo:##########################*/}
+                                {/*todo:Cluster_Dropdown         */}
+                                {/*todo:##########################*/}
+                                <div className="page_monitoring_dropdown_box">
+                                    <div className="page_monitoring_dropdown_label">
+                                        Cluster | Cloudlet
                                     </div>
-                                }
-                            >
-                                <div className='page_monitoring_select_toggle'>
-                                    <div className='page_monitoring_select_toggle_label'>
-                                        Fix Grid
-                                    </div>
-                                    <Checkbox toggle
-                                              checked={!this.state.isDraggable}
-                                              onChange={async () => {
-                                                  await this.setState({
-                                                      isDraggable: !this.state.isDraggable,
-                                                      appInstanceListGroupByCloudlet: [],
-                                                  })
-                                                  this.setState({
-                                                      appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
-                                                  });
-                                              }}
+                                    <Dropdown
+                                        selectOnBlur={false}
+                                        value={this.state.currentCluster}
+                                        clearable={this.state.clusterSelectBoxClearable}
+                                        disabled={this.state.loading}
+                                        placeholder={this.state.clusterSelectBoxPlaceholder}
+                                        selection
+                                        loading={this.state.loading}
+                                        options={this.state.clusterDropdownList}
+                                        style={PageMonitoringStyles.dropDown}
+                                        onChange={async (e, {value}) => {
+                                            await this.handleClusterDropdown(value.trim())
+                                        }}
+                                        style={{fontSize: 11}}
                                     />
                                 </div>
-                            </Tooltip>
-                            {this.state.currentClassification === CLASSIFICATION.APPINST &&
-                            <div className='page_monitoring_select_toggle'>
-                                <div className='page_monitoring_select_toggle_label'>
-                                    Stream
+
+                                {/*todo:---------------------------*/}
+                                {/*todo: App Instance_Dropdown      */}
+                                {/*todo:---------------------------*/}
+                                <div className="page_monitoring_dropdown_box">
+                                    <div className="page_monitoring_dropdown_label">
+                                        App Inst
+                                    </div>
+                                    <Dropdown
+                                        selectOnBlur={false}
+                                        disabled={this.state.currentCluster === '' || this.state.loading || this.state.appInstDropdown.length === 0}
+                                        clearable={this.state.appInstSelectBoxClearable}
+                                        loading={this.state.loading}
+                                        value={this.state.currentAppInst}
+                                        placeholder={this.state.appInstSelectBoxPlaceholder}
+                                        selection
+                                        // style={PageMonitoringStyles.dropDown}
+                                        options={this.state.appInstDropdown}
+                                        onChange={async (e, {value}) => {
+                                            await this.handleAppInstDropdown(value.trim())
+                                        }}
+                                        style={{fontSize: 11}}
+                                    />
                                 </div>
-                                <Checkbox toggle
-                                          onClick={async () => {
-                                              await this.setState({
-                                                  isStream: !this.state.isStream,
-                                              });
 
-                                              if (!this.state.isStream) {
-                                                  clearInterval(this.intervalForAppInst)
-                                              } else {
-                                                  this.handleAppInstDropdown(this.state.currentAppInst, true)
-                                              }
-
-                                          }}
-                                          value={this.state.isStream}
-
-
-                                />
                             </div>
-                            }
-
-                            {/*desc:Cluster Stream*/}
-                            {/*desc:Cluster Stream*/}
-                            {/*desc:Cluster Stream*/}
-                            {/*{this.state.currentClassification === CLASSIFICATION.CLUSTER &&
-                            <div className='page_monitoring_select_toggle'>
-                                <div className='page_monitoring_select_toggle_label'>
-                                    Cluster Stream
+                            <div className='page_monitoring_select_column_end' style={{marginTop: 0}}>
+                                <div className='page_monitoring_select_toggle'>
+                                    <MButton
+                                        size={'small'}
+                                        style={{
+                                            width: 150,
+                                            backgroundColor: this.state.isStackedLineChart ? '#559901' : 'grey',
+                                            color: 'white'
+                                        }}
+                                        onClick={async () => {
+                                            this.setState({
+                                                isStackedLineChart: !this.state.isStackedLineChart,
+                                            }, () => {
+                                                //alert(this.state.isStackedLineChart)
+                                            })
+                                        }}
+                                    >Stacked Line Chart
+                                    </MButton>
                                 </div>
-                                <Checkbox toggle
-                                          onClick={async () => {
-                                              await this.setState({
-                                                  isStream: !this.state.isStream,
-                                              });
+                                <div className='page_monitoring_select_toggle'>
+                                    <MButton
+                                        size={'small'}
+                                        style={{
+                                            width: 120,
+                                            backgroundColor: 'grey',
+                                            color: 'white'
+                                        }}
+                                        onClick={async () => {
+                                            this.resetGridPosition();
+                                        }}
+                                    >
+                                        Reset layout
+                                    </MButton>
+                                </div>
 
-                                              if (!this.state.isStream) {
-                                                  clearInterval(this.intervalForAppInst)
-                                              } else {
-                                                  //this.handleClusterDropdown(this.state.currentAppInst, true)
-                                                  setInterval(() => {
-                                                      this.intervalForAppInst = this.loadInitDataForCluster(true)
-                                                  }, 7000)
-                                                  //alert(this.state.currentCluster)
-                                              }
+                                {/*todo:---------------------------*/}
+                                {/*todo:FIX GRID BTN    (Switch)   */}
+                                {/*todo:---------------------------*/}
+                                <Tooltip
+                                    placement="topLeft"
+                                    title={
+                                        <div>
+                                            <p>To release or freeze a grid item, double click grid item!</p>
+                                        </div>
+                                    }
+                                >
+                                    <div className='page_monitoring_select_toggle'>
+                                        <div className='page_monitoring_select_toggle_label'>
+                                            Fix Grid
+                                        </div>
+                                        <Checkbox toggle
+                                                  checked={!this.state.isDraggable}
+                                                  onChange={async () => {
+                                                      await this.setState({
+                                                          isDraggable: !this.state.isDraggable,
+                                                          appInstanceListGroupByCloudlet: [],
+                                                      })
+                                                      this.setState({
+                                                          appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
+                                                      });
+                                                  }}
+                                        />
+                                    </div>
+                                </Tooltip>
+                                {this.state.currentClassification === CLASSIFICATION.APPINST &&
+                                <div className='page_monitoring_select_toggle'>
+                                    <div className='page_monitoring_select_toggle_label'>
+                                        Stream
+                                    </div>
+                                    <Checkbox toggle
+                                              onClick={async () => {
+                                                  await this.setState({
+                                                      isStream: !this.state.isStream,
+                                                  });
 
-                                          }}
-                                          value={this.state.isStream}
+                                                  if (!this.state.isStream) {
+                                                      clearInterval(this.intervalForAppInst)
+                                                  } else {
+                                                      this.handleAppInstDropdown(this.state.currentAppInst, true)
+                                                  }
+
+                                              }}
+                                              value={this.state.isStream}
 
 
-                                />
+                                    />
+                                </div>
+                                }
                             </div>
-                            }
-                            */}
-
-
-                            {/*desc:aspect_ratio*/}
-                            {/*desc:aspect_ratio*/}
-                            {/*desc:aspect_ratio*/}
-                            {/* <div className='page_monitoring_select_toggle'>
-                                <MaterialIcon icon='aspect_ratio'/>
-                            </div>*/}
                         </div>
+
                     </div>
-
-                </div>
-
-            )
+                )
+            } else {
+                return null;
+            }
         }
-
 
         render() {
             // todo: Components showing when the loading of graph data is not completed.
@@ -1832,34 +1850,66 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                 {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
                                     <Legend>
-                                        {this.state.filteredClusterUsageList.map((item, index) => {
-                                            return (
-                                                <Center2>
-                                                    <div style={{backgroundColor: this.state.chartColorList[index], width: 15, height: 15, borderRadius: 50, marginTop: 1}}>
+                                        {this.state.loading ?
+                                            <CircularProgress style={{fontWeight: 'bold', color: '#559901'}}
+                                                              color={'green'}
+                                                              size={15}/>
+                                            :
+                                            this.state.filteredClusterUsageList.map((item, index) => {
+                                                return (
+                                                    <Center2>
+                                                        <div style={{
+                                                            backgroundColor: this.state.chartColorList[index],
+                                                            width: 15,
+                                                            height: 15,
+                                                            borderRadius: 50,
+                                                            marginTop: 1
+                                                        }}>
 
-                                                    </div>
-                                                    <ClusterCluoudletLable
-                                                        style={{marginLeft: 4, marginRight: 15, marginBottom: 0}}>{item.cluster} {` [`}{item.cloudlet}]</ClusterCluoudletLable>
-                                                </Center2>
-                                            )
-                                        })}
+                                                        </div>
+                                                        <ClusterCluoudletLable
+                                                            style={{
+                                                                marginLeft: 4,
+                                                                marginRight: 15,
+                                                                marginBottom: 0
+                                                            }}>{item.cluster} {` [`}{item.cloudlet}]</ClusterCluoudletLable>
+                                                    </Center2>
+                                                )
+                                            })
+
+                                        }
                                     </Legend>
                                     :
                                     <Legend>
-                                        <Center2>
-                                            <div style={{backgroundColor: this.state.chartColorList[0], width: 15, height: 15, borderRadius: 50, marginTop: 1}}>
-                                            </div>
-                                            <ClusterCluoudletLable style={{marginLeft: 5, marginRight: 15, marginBottom: 0}}>
-                                                {this.state.currentAppInst.split("|")[1]} |
-                                                {this.state.currentAppInst.split("|")[2]} {`| `}
-                                                {this.state.currentAppInst.split("|")[0]}
-                                            </ClusterCluoudletLable>
-                                        </Center2>
+                                        {this.state.loading ?
+                                            <CircularProgress style={{fontWeight: 'bold', color: '#559901'}}
+                                                              color={'green'}
+                                                              size={15}/>
+                                            :
+                                            <Center2>
+                                                <div style={{
+                                                    backgroundColor: this.state.chartColorList[0],
+                                                    width: 15,
+                                                    height: 15,
+                                                    borderRadius: 50,
+                                                    marginTop: 1
+                                                }}>
+                                                </div>
+                                                <ClusterCluoudletLable
+                                                    style={{marginLeft: 5, marginRight: 15, marginBottom: 0}}>
+                                                    {this.state.currentAppInst.split("|")[0]} {`| `}
+                                                    {this.state.currentAppInst.split("|")[2]} {`| `}
+                                                    {this.state.currentAppInst.split("|")[1]}
+
+                                                </ClusterCluoudletLable>
+                                            </Center2>
+                                        }
                                     </Legend>
                                 }
 
 
-                                <div className="page_monitoring" style={{overflowY: 'auto', height: this.gridLayoutHeight}}>
+                                <div className="page_monitoring"
+                                     style={{overflowY: 'auto', height: this.gridLayoutHeight}}>
                                     <div className='page_monitoring_dashboard_dev'
                                          style={{marginBottom: 0}}>
                                         {this.state.currentClassification === CLASSIFICATION.CLUSTER
@@ -1901,3 +1951,47 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 ;
 
 
+{/*desc:Cluster Stream*/
+}
+{/*desc:Cluster Stream*/
+}
+{/*desc:Cluster Stream*/
+}
+{/*{this.state.currentClassification === CLASSIFICATION.CLUSTER &&
+                                <div className='page_monitoring_select_toggle'>
+                                    <div className='page_monitoring_select_toggle_label'>
+                                        Cluster Stream
+                                    </div>
+                                    <Checkbox toggle
+                                              onClick={async () => {
+                                                  await this.setState({
+                                                      isStream: !this.state.isStream,
+                                                  });
+
+                                                  if (!this.state.isStream) {
+                                                      clearInterval(this.intervalForAppInst)
+                                                  } else {
+                                                      //this.handleClusterDropdown(this.state.currentAppInst, true)
+                                                      setInterval(() => {
+                                                          this.intervalForAppInst = this.loadInitDataForCluster(true)
+                                                      }, 7000)
+                                                      //alert(this.state.currentCluster)
+                                                  }
+
+                                              }}
+                                              value={this.state.isStream}
+                                    />
+                                </div>
+                                }
+                                */
+}
+{/*desc:aspect_ratio*/
+}
+{/*desc:aspect_ratio*/
+}
+{/*desc:aspect_ratio*/
+}
+{/* <div className='page_monitoring_select_toggle'>
+                                <MaterialIcon icon='aspect_ratio'/>
+                            </div>*/
+}
