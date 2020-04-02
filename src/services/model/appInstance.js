@@ -44,6 +44,10 @@ export const getKey = (data, isCreate) => {
     if (data[fields.privacyPolicyName]) {
       appinst.privacy_policy = data[fields.privacyPolicyName]
     }
+
+    if (data[fields.configs]) {
+      appinst.configs = data[fields.configs]
+    }
   }
   
   return ({

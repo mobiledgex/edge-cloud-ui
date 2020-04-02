@@ -101,6 +101,9 @@ export const fields = {
     caCertdata:'caCertdata',
     clusterdeveloper:'clusterdeveloper',
     containerVersion:'containerVersion',
+    configs:'configs',
+    config:'config',
+    kind:'kind'
 }
 
 export const getUserRole = () => {
