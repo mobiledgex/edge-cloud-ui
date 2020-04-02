@@ -1,30 +1,30 @@
 import React from 'react';
-import { Header, Button, Icon } from 'semantic-ui-react';
+import {Header, Button, Icon} from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
 
-import { withRouter } from 'react-router-dom';
-import { Motion } from "react-motion";
-import { Steps, Hints } from 'intro.js-react';
+import {withRouter} from 'react-router-dom';
+import {Motion} from "react-motion";
+import {Steps, Hints} from 'intro.js-react';
 
 //redux
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import * as actions from '../../actions';
 
-import { GridLoader } from "react-spinners";
+import {GridLoader} from "react-spinners";
 
 import SideNav from './defaultLayout/sideNav'
 
 
 import * as serviceMC from '../../services/serviceMC';
 
-import { organizationTutor, CloudletTutor } from '../../tutorial';
+import {organizationTutor, CloudletTutor} from '../../tutorial';
 
 import Alert from 'react-s-alert';
 
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
 
-let defaultMotion = { left: window.innerWidth / 2, top: window.innerHeight / 2, opacity: 1 }
+let defaultMotion = {left: window.innerWidth / 2, top: window.innerHeight / 2, opacity: 1}
 let _self = null
 const orgaSteps = organizationTutor();
 const cloudletSteps = CloudletTutor();
@@ -46,7 +46,7 @@ class SiteFour extends React.Component {
             userToken: null,
             userName: '',
             regions: [
-                { key: 1, text: 'All', value: 'All' },
+                {key: 1, text: 'All', value: 'All'},
             ],
             setMotion: defaultMotion,
             OrganizationName: '',
@@ -79,13 +79,13 @@ class SiteFour extends React.Component {
             search: subPath
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
-        _self.setState({ page: subPath })
+        _self.props.handleChangeSite({mainPath: mainPath, subPath: subPath})
+        _self.setState({page: subPath})
     }
 
     handleItemClick(id, label, pg, role) {
         localStorage.setItem('selectMenu', label)
-        _self.setState({ menuClick: true })
+        _self.setState({menuClick: true})
         _self.props.handleChangeViewBtn(false);
         _self.props.handleChangeClickCity([]);
         _self.props.handleChangeComputeItem(label);
@@ -97,7 +97,7 @@ class SiteFour extends React.Component {
         });
         _self.props.history.location.search = "pg=" + pg;
         _self.props.handleChangeStep(pg)
-        _self.setState({ page: 'pg=' + pg, activeItem: label, headerTitle: label, intoCity: false })
+        _self.setState({page: 'pg=' + pg, activeItem: label, headerTitle: label, intoCity: false})
     }
 
     controllerOptions(option) {
@@ -129,7 +129,7 @@ class SiteFour extends React.Component {
             token: token,
             method: serviceMC.getEP().SHOW_CONTROLLER
         }, _self.receiveControllerResult);
-        _self.setState({ currentVersion: process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'v0.0.0' })
+        _self.setState({currentVersion: process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'})
     }
 
     receiveAdminInfo = (mcRequest) => {
@@ -139,7 +139,7 @@ class SiteFour extends React.Component {
                 _self.props.handleRoleInfo(response.data)
                 response.data.map((item, i) => {
                     if (item.role.indexOf('Admin') > -1) {
-                        _self.setState({ adminShow: true });
+                        _self.setState({adminShow: true});
                         localStorage.setItem('selectRole', item.role)
                     }
                 })
@@ -216,14 +216,14 @@ class SiteFour extends React.Component {
             enable = true;
         }
 
-        _self.setState({ steps: currentStep })
+        _self.setState({steps: currentStep})
 
         let elmentName = (_self.steps) ? currentStep : null;
         //_self.steps.props.options.hideNext = true;
         let element = (elmentName) ? document.getElementsByClassName(elmentName[0].element.replace('.', '')) : [];
         if (enable) {
             console.log("elementelement111", element)
-            _self.setState({ stepsEnabled: true, enable: true })
+            _self.setState({stepsEnabled: true, enable: true})
         }
 
     }
@@ -247,7 +247,7 @@ class SiteFour extends React.Component {
             }
         }, 4000)
 
-        _self.setState({ steps: orgaSteps.stepsZero, intoCity: false });
+        _self.setState({steps: orgaSteps.stepsZero, intoCity: false});
         //
         if (_self.props.params.subPath !== 'pg=audits') {
             _self.getDataAudit();
@@ -256,17 +256,17 @@ class SiteFour extends React.Component {
 
     componentWillReceiveProps(nextProps, nextContext) {
         try {
-            _self.setState({ bodyHeight: (window.innerHeight - _self.headerH) })
-            _self.setState({ contHeight: (nextProps.size.height - _self.headerH) / 2 - _self.hgap })
-            _self.setState({ contWidth: (window.innerWidth - _self.state.menuW) })
-            _self.setState({ userToken: nextProps.userToken })
-            _self.setState({ userName: (nextProps.userInfo && nextProps.userInfo.info) ? nextProps.userInfo.info.Name : null })
+            _self.setState({bodyHeight: (window.innerHeight - _self.headerH)})
+            _self.setState({contHeight: (nextProps.size.height - _self.headerH) / 2 - _self.hgap})
+            _self.setState({contWidth: (window.innerWidth - _self.state.menuW)})
+            _self.setState({userToken: nextProps.userToken})
+            _self.setState({userName: (nextProps.userInfo && nextProps.userInfo.info) ? nextProps.userInfo.info.Name : null})
 
         } catch (e) {
 
         }
         if (nextProps.selectedOrg) {
-            _self.setState({ selectOrg: nextProps.selectedOrg })
+            _self.setState({selectOrg: nextProps.selectedOrg})
         }
 
         if (nextProps.params && nextProps.params.subPath) {
@@ -278,7 +278,7 @@ class SiteFour extends React.Component {
                 subPath = paths[0];
                 subParam = paths[1];
             }
-            _self.setState({ page: subPath, OrganizationName: subParam })
+            _self.setState({page: subPath, OrganizationName: subParam})
 
         }
 
@@ -311,9 +311,9 @@ class SiteFour extends React.Component {
 
         //set filters
         if (nextProps.tableHeaders) {
-            _self.setState({ showItem: false })
+            _self.setState({showItem: false})
             if (nextProps.tableHeaders.length) {
-                _self.setState({ tableHeaders: nextProps.tableHeaders })
+                _self.setState({tableHeaders: nextProps.tableHeaders})
             } else {
 
             }
@@ -329,7 +329,7 @@ class SiteFour extends React.Component {
         if (formKey.length) {
             if (nextProps.formInfo[formKey[0]]['submitSucceeded']) {
                 if (nextProps.formInfo[formKey[0]]['submitSucceeded'] === true) {
-                    _self.setState({ stepsEnabled: false })
+                    _self.setState({stepsEnabled: false})
                 }
             }
         }
@@ -341,7 +341,7 @@ class SiteFour extends React.Component {
         setTimeout(() => {
             if (enable && !_self.state.learned && !tutorial) {
                 _self.enalbeSteps();
-                _self.setState({ stepsEnabled: true, learned: true })
+                _self.setState({stepsEnabled: true, learned: true})
                 localStorage.setItem('TUTORIAL', 'done')
             }
 
@@ -349,37 +349,37 @@ class SiteFour extends React.Component {
 
         let site = _self.props.siteName;
         if (!_self.props.changeStep || _self.props.changeStep === '02') {
-            _self.setState({ enable: true })
+            _self.setState({enable: true})
         } else {
-            _self.setState({ enable: false })
+            _self.setState({enable: false})
         }
 
         if (nextProps.regionInfo.region.length && !_self.state.regionToggle) {
 
             let getRegions = []
-            _self.setState({ regionToggle: true })
+            _self.setState({regionToggle: true})
             if (nextProps.regionInfo.region) {
                 nextProps.regionInfo.region.map((region, i) => {
-                    getRegions.push({ key: i + 2, text: region, value: region })
+                    getRegions.push({key: i + 2, text: region, value: region})
                 })
             }
             let newRegions = Object.assign([], _self.state.regions).concat(getRegions)
-            _self.setState({ regions: newRegions })
+            _self.setState({regions: newRegions})
 
         }
         if (nextProps.clickCity.length > 0) {
-            _self.setState({ intoCity: true })
+            _self.setState({intoCity: true})
         } else {
-            _self.setState({ intoCity: false })
+            _self.setState({intoCity: false})
         }
     }
 
     componentWillUnmount() {
-        _self.setState({ learned: false })
+        _self.setState({learned: false})
     }
 
-    searchChange = (e, { value }) => {
-        _self.setState({ searchChangeValue: value })
+    searchChange = (e, {value}) => {
+        _self.setState({searchChangeValue: value})
         _self.props.handleSearchValue(_self.props.searchValue, value)
     }
 
@@ -389,24 +389,24 @@ class SiteFour extends React.Component {
             key: 1,
             text: 'Mobile',
             value: 1,
-            content: <Header icon='mobile' content='Mobile' subheader='The smallest size' />,
+            content: <Header icon='mobile' content='Mobile' subheader='The smallest size'/>,
         },
         {
             key: 2,
             text: 'Tablet',
             value: 2,
-            content: <Header icon='tablet' content='Tablet' subheader='The size in the middle' />,
+            content: <Header icon='tablet' content='Tablet' subheader='The size in the middle'/>,
         },
         {
             key: 3,
             text: 'Desktop',
             value: 3,
-            content: <Header icon='desktop' content='Desktop' subheader='The largest size' />,
+            content: <Header icon='desktop' content='Desktop' subheader='The largest size'/>,
         },
     ]
 
     onExit() {
-        _self.setState({ stepsEnabled: false })
+        _self.setState({stepsEnabled: false})
     }
 
 
@@ -461,7 +461,7 @@ class SiteFour extends React.Component {
 
     getDataAudit = () => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        _self.setState({ devData: [] })
+        _self.setState({devData: []})
         _self.loadCount = 0;
         serviceMC.sendRequest(this, {
             token: store.userToken,
@@ -472,7 +472,7 @@ class SiteFour extends React.Component {
     }
 
     render() {
-        const { stepsEnabled, initialStep, hintsEnabled, hints, steps } = _self.state;
+        const {stepsEnabled, initialStep, hintsEnabled, hints, steps} = _self.state;
         return (
             <div className='view_body'>
                 {steps ?
@@ -482,7 +482,7 @@ class SiteFour extends React.Component {
                         initialStep={initialStep}
                         onExit={_self.onExit}
                         showButtons={true}
-                        options={{ hideNext: false }}
+                        options={{hideNext: false}}
                         ref={steps => (_self.steps = steps)}
                     /> : null}
                 {hints ?
@@ -491,7 +491,7 @@ class SiteFour extends React.Component {
                         hints={hints}
                     /> : null}
                 {(_self.props.loadingSpinner == true) ?
-                    <div className="loadingBox" style={{ zIndex: 9999 }}>
+                    <div className="loadingBox" style={{zIndex: 9999}}>
                         <GridLoader
                             sizeUnit={"px"}
                             size={25}
@@ -499,7 +499,8 @@ class SiteFour extends React.Component {
                             loading={_self.props.loadingSpinner}
                         />
                     </div> : null}
-                <SideNav onOptionClick={_self.handleItemClick} email={_self.state.email} data={_self.props.userInfo.info} helpClick={_self.enalbeSteps} gotoUrl={_self.gotoUrl} />
+                <SideNav onOptionClick={_self.handleItemClick} isShowHeader={this.props.isShowHeader} email={_self.state.email} data={_self.props.userInfo.info} helpClick={_self.enalbeSteps} gotoUrl={_self.gotoUrl}/>
+
                 <Motion defaultStyle={defaultMotion} style={_self.state.setMotion}>
                     {interpolatingStyle => <div style={interpolatingStyle} id='animationWrapper'></div>}
                 </Motion>
@@ -510,7 +511,7 @@ class SiteFour extends React.Component {
 };
 
 const mapStateToProps = (state) => {
-    
+
     let tutorState = (state.tutorState) ? state.tutorState.state : null;
     let formInfo = (state.form) ? state.form : null;
     let submitInfo = (state.submitInfo) ? state.submitInfo : null;
@@ -518,8 +519,8 @@ const mapStateToProps = (state) => {
     let checkedAudit = (state.checkedAudit) ? state.checkedAudit.audit : null;
     let selectedOrg = (state.selectOrganiz) ? state.selectOrganiz.org : null;
 
-
     return {
+        isShowHeader: state.HeaderReducer.isShowHeader,
         viewBtn: state.btnMnmt ? state.btnMnmt : null,
         userToken: (state.userToken) ? state.userToken : null,
         userInfo: state.userInfo ? state.userInfo : null,
@@ -550,6 +551,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchProps = (dispatch) => {
     return {
+        toggleHeader: (data) => {
+            dispatch(actions.toggleHeader(data))
+        },
         handleChangeSite: (data) => {
             dispatch(actions.changeSite(data))
         },
@@ -607,4 +611,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFour)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(SiteFour)));
