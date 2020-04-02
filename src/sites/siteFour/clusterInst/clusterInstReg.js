@@ -10,7 +10,7 @@ import * as actions from '../../../actions';
 import * as constant from '../../../constant';
 import { fields, getOrganization } from '../../../services/model/format';
 //model
-import { createClusterInst } from '../../../services/model/clusterInstance';
+import { createClusterInst, updateClusterInst } from '../../../services/model/clusterInstance';
 import { getOrganizationList } from '../../../services/model/organization';
 import { getOrgCloudletList } from '../../../services/model/cloudlet';
 import { getFlavorList } from '../../../services/model/flavor';
@@ -37,7 +37,7 @@ class ClusterInstReg extends React.Component {
         this.cloudletList = []
         this.flavorList = []
         this.privacyPolicyList = []
-        this.ipAccessList = []
+        this.ipAccessList = [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED]
     }
 
     getCloudletInfo = async (form, forms) => {
@@ -109,6 +109,10 @@ class ClusterInstReg extends React.Component {
                     this.getCloudletInfo(form, forms)
                 }
             }
+            else if (form.field === fields.privacyPolicyName) {
+                this.updateUI(form)
+                this.setState({ forms: forms })
+            }
         }
     }
 
@@ -134,11 +138,6 @@ class ClusterInstReg extends React.Component {
             }
             else if (form.field === fields.numberOfNodes) {
                 form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_DOCKER ? false : true
-            }
-            else if (form.field === fields.ipAccess) {
-                this.ipAccessValueChange(currentForm, forms)
-                this.ipAccessList = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED] : [constant.IP_ACCESS_DEDICATED];
-                this.updateUI(form)
             }
         }
         if (isInit === undefined || isInit === false) {
@@ -202,6 +201,7 @@ class ClusterInstReg extends React.Component {
     }
 
     onCreateResponse = (mcRequest) => {
+        this.props.handleLoadingSpinner(false)
         if (mcRequest) {
             let data = undefined;
             let request = mcRequest.request;
@@ -217,14 +217,16 @@ class ClusterInstReg extends React.Component {
         if (data) {
             let cloudlets = data[fields.cloudletName];
             if (this.props.isUpdate) {
-                //update cluster data
+                this.props.handleLoadingSpinner(true)
+                updateClusterInst(this, data, this.onCreateResponse)
             }
             else {
                 if (cloudlets && cloudlets.length > 0) {
                     for (let i = 0; i < cloudlets.length; i++) {
                         let cloudlet = cloudlets[i];
                         data[fields.cloudletName] = cloudlet;
-                        createClusterInst(data, this.onCreateResponse)
+                        this.props.handleLoadingSpinner(true)
+                        createClusterInst(this, data, this.onCreateResponse)
                     }
 
                 }
@@ -355,10 +357,6 @@ class ClusterInstReg extends React.Component {
             flavor[fields.region] = data[fields.region]
             flavor[fields.flavorName] = data[fields.flavorName]
             this.flavorList = [flavor]
-
-            data[fields.ipAccess] = constant.IPAccessLabel(data[fields.ipAccess])
-            this.ipAccessList = data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES ? [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED] : [constant.IP_ACCESS_DEDICATED];
-
             this.privacyPolicyList = await getPrivacyPolicyList(this, { region: data[fields.region] })
         }
     }
@@ -373,7 +371,7 @@ class ClusterInstReg extends React.Component {
             { field: fields.cloudletName, label: 'Cloudlet', formType: 'MultiSelect', placeholder: 'Select Cloudlet', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 4, field: fields.operatorName }] },
             { field: fields.deployment, label: 'Deployment Type', formType: 'Select', placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, update: true },
             { field: fields.ipAccess, label: 'IP Access', formType: 'Select', placeholder: 'Select IP Access', visible: true, update: true },
-            { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: 'Select', placeholder: 'Select Privacy Policy Name', visible: false, update: true, dependentData: [{ index: 1, field: fields.region }] },
+            { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: 'Select', placeholder: 'Select Privacy Policy Name', visible: false, update: true, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.organizationName }] },
             { field: fields.flavorName, label: 'Flavor', formType: 'Select', placeholder: 'Select Flavor', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
             { field: fields.numberOfMasters, label: 'Number of Masters', formType: 'Input', placeholder: 'Enter Number of Masters', rules: { type: 'number', disabled: true }, visible: false, value: 1, update: true },
             { field: fields.numberOfNodes, label: 'Number of Nodes', formType: 'Input', placeholder: 'Enter Number of Nodes', rules: { type: 'number' }, visible: false, update: true },
@@ -387,7 +385,7 @@ class ClusterInstReg extends React.Component {
             await this.loadDefaultData(data)
         }
         else {
-            this.organizationList = await getOrganizationList()
+            this.organizationList = await getOrganizationList(this)
         }
 
         let forms = this.formKeys()

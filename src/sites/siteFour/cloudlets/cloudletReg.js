@@ -12,7 +12,7 @@ import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 //model
 import { getOrganizationList } from '../../../services/model/organization';
-import { createCloudlet } from '../../../services/model/cloudlet';
+import { createCloudlet, updateCloudlet } from '../../../services/model/cloudlet';
 //Map
 import Map from '../../../libs/simpleMaps/with-react-motion/index_clusters';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
@@ -47,8 +47,7 @@ class ClusterInstReg extends React.Component {
     }
 
     checkForms = (form, forms, isInit) => {
-        if(form.field === fields.platformType)
-        {
+        if (form.field === fields.platformType) {
             this.platformTypeValueChange(form, forms, isInit)
         }
     }
@@ -61,6 +60,7 @@ class ClusterInstReg extends React.Component {
     }
 
     onCreateResponse = (mcRequest) => {
+        this.props.handleLoadingSpinner(false)
         if (mcRequest) {
             let data = undefined;
             let request = mcRequest.request;
@@ -75,25 +75,26 @@ class ClusterInstReg extends React.Component {
     onCreate = async (data) => {
         let forms = this.state.forms
         if (data) {
+            for (let i = 0; i < forms.length; i++) {
+                let form = forms[i];
+                if (form.uuid) {
+                    let uuid = form.uuid;
+                    let multiFormData = data[uuid]
+                    if (multiFormData) {
+                        if (form.field === fields.cloudletLocation) {
+                            multiFormData.timestamp = {}
+                            data[fields.cloudletLocation] = multiFormData
+                        }
+                    }
+                    data[uuid] = undefined
+                }
+            }
+            this.props.handleLoadingSpinner(true)
             if (this.props.isUpdate) {
-                //update cluster data
+                updateCloudlet(this, data, this.onCreateResponse)
             }
             else {
-                for (let i = 0; i < forms.length; i++) {
-                    let form = forms[i];
-                    if (form.uuid) {
-                        let uuid = form.uuid;
-                        let multiFormData = data[uuid]
-                        if (multiFormData) {
-                            if (form.field === fields.cloudletLocation) {
-                                multiFormData.timestamp = {}
-                                data[fields.cloudletLocation] = multiFormData
-                            }
-                        }
-                        data[uuid] = undefined
-                    }
-                }
-                createCloudlet(data, this.onCreateResponse)
+                createCloudlet(this, data, this.onCreateResponse)
             }
         }
     }
@@ -229,6 +230,8 @@ class ClusterInstReg extends React.Component {
             let operator = {}
             operator[fields.operatorName] = data[fields.operatorName];
             this.operatorList = [operator]
+
+
         }
     }
 
@@ -247,12 +250,30 @@ class ClusterInstReg extends React.Component {
             { field: fields.ipSupport, label: 'IP Support', formType: SELECT, placeholder: 'Select IP Support', rules: { required: true }, visible: true, tip: 'Ip Support indicates the type of public IP support provided by the Cloudlet. Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.' },
             { field: fields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: INPUT, placeholder: 'Enter Number of Dynamic IPs', rules: { required: true, type: 'number' }, visible: true, tip: 'Number of dynamic IPs available for dynamic IP support.' },
             { field: fields.physicalName, label: 'Physical Name', formType: INPUT, placeholder: 'Enter Physical Name', rules: { required: true }, visible: true, tip: 'Physical infrastructure cloudlet name.' },
+            { field: fields.containerVersion, label: 'Container Version', formType: INPUT, placeholder: 'Enter Container Version', rules: { required: false }, visible: true, update: true },
             { field: fields.platformType, label: 'Platform Type', formType: SELECT, placeholder: 'Select Platform Type', rules: { required: true }, visible: true, tip: 'Supported list of cloudlet types.' },
-            { field: fields.openRCData, label: 'OpenRC Data', formType: TEXT_AREA, placeholder: 'Enter OpenRC Data', rules: { required: false }, visible: false, update: true, tip: 'key-value pair of access variables delimitted by newline.\nSample Input:\nOS_AUTH_URL=...\nOS_PROJECT_ID=...\nOS_PROJECT_NAME=...' },
-            { field: fields.caCertdata, label: 'CACert Data', formType: TEXT_AREA, placeholder: 'Enter CACert Data', rules: { required: false }, visible: false, update: true, tip: 'CAcert data for HTTPS based verfication of auth URL' },
+            { field: fields.openRCData, label: 'OpenRC Data', formType: TEXT_AREA, placeholder: 'Enter OpenRC Data', rules: { required: false }, visible: false, tip: 'key-value pair of access variables delimitted by newline.\nSample Input:\nOS_AUTH_URL=...\nOS_PROJECT_ID=...\nOS_PROJECT_NAME=...' },
+            { field: fields.caCertdata, label: 'CACert Data', formType: TEXT_AREA, placeholder: 'Enter CACert Data', rules: { required: false }, visible: false, tip: 'CAcert data for HTTPS based verfication of auth URL' },
 
 
         ]
+    }
+
+    updateFormData = (forms, data) => {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            this.updateUI(form)
+            if (data) {
+                if (form.forms && form.formType !== 'Header' && form.formType !== 'MultiForm') {
+                    this.updateFormData(form.forms, data)
+                }
+                else {
+                    form.value = data[form.field]
+                    this.checkForms(form, forms, true)
+                }
+            }
+        }
+
     }
 
     getFormData = async (data) => {
@@ -260,7 +281,7 @@ class ClusterInstReg extends React.Component {
             await this.loadDefaultData(data)
         }
         else {
-            let organizationList = await getOrganizationList()
+            let organizationList = await getOrganizationList(this)
             this.operatorList = []
             for (let i = 0; i < organizationList.length; i++) {
                 let organization = organizationList[i]
@@ -275,14 +296,7 @@ class ClusterInstReg extends React.Component {
             { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel })
 
 
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
-            this.updateUI(form)
-            if (data) {
-                form.value = data[form.field]
-                this.checkForms(form, forms, true)
-            }
-        }
+        this.updateFormData(forms, data)
 
         this.setState({
             forms: forms
