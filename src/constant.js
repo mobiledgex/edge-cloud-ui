@@ -23,7 +23,13 @@ export const SELECT = 'Select'
 export const CLOUDLET = 'Cloudlet'
 export const CLUSTER_INST = 'ClusterInst'
 export const APP_INST = 'AppInst'
+export const PLATFORM_TYPE_FAKE = 'Fake'
+export const PLATFORM_TYPE_DIND = 'DIND'
 export const PLATFORM_TYPE_OPEN_STACK = 'Openstack'
+export const PLATFORM_TYPE_AZURE = 'Azure'
+export const PLATFORM_TYPE_OPEN_GCP= 'GCP'
+export const PLATFORM_TYPE_EDGEBOX = 'Edgebox'
+export const PLATFORM_TYPE_FAKEINFRA = 'Fakeinfra'
 export const IP_SUPPORT_DYNAMIC = 'Dynamic'
 export const LIVENESS_STATIC = 'Static'
 export const APP = 'App'
@@ -101,10 +107,34 @@ export const IPSupport = (id) => {
 
 export const PlatformType = (id) => {
     switch (id) {
+        case 0:
+            return PLATFORM_TYPE_FAKE
+        case 1:
+            return PLATFORM_TYPE_DIND
         case 2:
             return PLATFORM_TYPE_OPEN_STACK
+        case 3:
+            return PLATFORM_TYPE_AZURE
+        case 4:
+            return PLATFORM_TYPE_OPEN_GCP
+        case 5:
+            return PLATFORM_TYPE_EDGEBOX
+        case 6:
+            return PLATFORM_TYPE_FAKEINFRA
+        case PLATFORM_TYPE_FAKE:
+            return 0
+        case PLATFORM_TYPE_DIND:
+            return 1
         case PLATFORM_TYPE_OPEN_STACK:
             return 2
+        case PLATFORM_TYPE_AZURE:
+            return 3
+        case PLATFORM_TYPE_OPEN_GCP:
+            return 4
+        case PLATFORM_TYPE_EDGEBOX:
+            return 5
+        case PLATFORM_TYPE_FAKEINFRA:
+            return 6
         default:
             return id
     }
