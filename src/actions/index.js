@@ -2,6 +2,7 @@ import * as types from './ActionTypes';
 import {SET_MAP_TYLE_LAYER} from "./ActionTypes";
 import {SET_LINE_COLOR} from "./ActionTypes";
 import {SET_CLOUDLET_ICON_COLOR} from "./ActionTypes";
+import {TOGGLE_HEADER} from "./ActionTypes";
 
 export function changeSite(state) {
     return {
@@ -199,6 +200,13 @@ export const toggleLoading = (isLoading) => {
         isLoading
     }
 }
+
+
+export const toggleHeader = (value) => ({
+    type: TOGGLE_HEADER, //type
+    isShowHeader: value //action
+})
+
 
 export const setMapTyleLayer = (value) => ({
     type: SET_MAP_TYLE_LAYER,
