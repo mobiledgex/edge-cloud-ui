@@ -228,7 +228,7 @@ export default function MiniDrawer(props) {
 
     const handleDrawerClose = () => {
         setNavState(0)
-        setOpen(false);
+        setOpen(!open);
     };
 
     const expandOptions = () => {
