@@ -443,3 +443,7 @@
 .visible.menu.transition {
     z-index: 9999999999999999999999999;
 }
+
+.version_display {
+    font-size: 10pt;
+}
