@@ -824,9 +824,10 @@ export const showToast = (title: string, time = 2) => {
         type: 'success',
         //icon: 'smile',
         title: title,
-        //animation: 'swing left',
-        time: time * 1000,
-        color: 'black',
+        animation: 'swing left',
+        time: time * 750,
+        color: '#77BD25',
+        size: 'tiny'
     });
 }
 export const showToast2 = (title: string, time = 2) => {
