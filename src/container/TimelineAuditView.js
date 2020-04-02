@@ -556,6 +556,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             return window.innerHeight - 72
         }
 
+        getWidth = () => {
+            return window.innerWidth - 100
+        }
+
         render() {
             const state = this.state;
             return (
@@ -564,10 +568,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                         <div className="page_audit_history_option">
                             <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
                             <div className="page_audit_history_option_period">
-                                Unchecked Error <button style={{color:'black'}} onClick={this.onClickUnCheckedError}>{this.state.unCheckedErrorCount}</button>
+                                <div className="page_audit_history_label">
+                                Unchecked Error
+                                </div>
+                                <button style={{color:'black'}} onClick={this.onClickUnCheckedError}>{this.state.unCheckedErrorCount}</button>
                             </div>
                             <div className="page_audit_history_option_period">
+                                <div className="page_audit_history_label">
                                 Name
+                                </div>
                                 <Dropdown
                                     placeholder='All'
                                     fluid
@@ -579,7 +588,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 />
                             </div>
                             <div className="page_audit_history_option_period">
+                                <div className="page_audit_history_label">
                                 Type
+                                </div>
                                 <Dropdown
                                     placeholder='All'
                                     fluid
@@ -591,7 +602,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 />
                             </div>
                             <div className="page_audit_history_option_period">
+                                <div className="page_audit_history_label">
                                 Date Range
+                                </div>
                                 <Dropdown
                                     placeholder='Custom Time Range'
                                     fluid
@@ -604,11 +617,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                             </div>
                         </div>
                     </div>
-                    <div style={{margin:'0 0 10px 0', padding: '5px 15px 15px', alignItems:'center', flexDirection:'column', height:'100%', width:'100%', overflow:'scroll'}}>
+                    <div style={{height:'80%', width:this.getWidth()}}>
                         {/*<div className="round_panel" style={{width:'100%'}}>*/}
-                        <div>
-                            {(this.state.timesList.length > 0) ?<CalendarTimeline timelineList={this.state.timelineList[0]} onItemSelectCallback={this.onItemSelect} onPopupEmail={this.onPopupEmail} statusCount={this.state.statusCount} timelineSelectedIndex={this.state.timelineSelectedIndex}/>:null}
-                        </div>
+                        {(this.state.timesList.length > 0) ?<CalendarTimeline timelineList={this.state.timelineList[0]} onItemSelectCallback={this.onItemSelect} onPopupEmail={this.onPopupEmail} statusCount={this.state.statusCount} timelineSelectedIndex={this.state.timelineSelectedIndex}/>:null}
                     </div>
                     <div className="round_panel" style={(!this.state.closeMap)?this.mapzoneStyle[0]:this.mapzoneStyle[1]}>
                         <div style={{margin:'0 0 5px 0', cursor:'pointer', display:'flex', alignItems:'column', justifyContent:'center'}} onClick={this.onCloseMap}>

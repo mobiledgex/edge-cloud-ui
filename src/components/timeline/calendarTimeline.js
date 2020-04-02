@@ -276,14 +276,16 @@ export default class CalendarTimeline extends Component {
         const { groups, items, defaultTimeStart, defaultTimeEnd, visibleTimeStart, visibleTimeEnd } = this.state;
         return (
             <div>
+                <div style={{marginBottom:4}}>
                 <button style={{color:'black'}} onClick={this.onPrevClick}>{"< Prev"}</button>
                 <button style={{color:'black'}} onClick={this.onCurrentClick}>{"current"}</button>
                 <button style={{color:'black'}} onClick={this.onNextClick}>{"Next >"}</button>
+                </div>
                 <Timeline
                     groups={groups}
                     items={items}
                     keys={keys}
-                    sidebarWidth={150}
+                    sidebarWidth={180}
                     canMove
                     canSelect
                     itemsSorted
@@ -305,8 +307,17 @@ export default class CalendarTimeline extends Component {
                         <SidebarHeader>
                             {({ getRootProps }) => {
                                 return <div {...getRootProps()}>
-                                    <div>normal : {this.props.statusCount[0].normalCount}</div>
-                                    <div>error: {this.props.statusCount[0].errorCount}</div>
+                                    <div className='timeline_header_summary'>
+                                        <div className='timeline_header_summary_column'>
+                                            <div className='timeline_header_summary_label'>Normal</div>
+                                            <div className='timeline_header_summary_normal'>{this.props.statusCount[0].normalCount}</div>
+                                        </div>
+                                        <div className='timeline_header_summary_column'>
+                                            <div className='timeline_header_summary_label'>Error</div>
+                                            <div className='timeline_header_summary_error'>{this.props.statusCount[0].errorCount}</div>
+                                        </div>
+
+                                    </div>
                                 </div>;
                             }}
                         </SidebarHeader>
