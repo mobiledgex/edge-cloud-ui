@@ -1645,11 +1645,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                                         selection
                                         loading={this.state.loading}
                                         options={this.state.clusterDropdownList}
-                                        style={PageMonitoringStyles.dropDown}
+                                        style={PageMonitoringStyles.dropDownForClusterCloudlet}
                                         onChange={async (e, {value}) => {
                                             await this.handleClusterDropdown(value.trim())
                                         }}
-                                        style={{fontSize: 11}}
                                     />
                                 </div>
 
@@ -1673,7 +1672,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                                         onChange={async (e, {value}) => {
                                             await this.handleAppInstDropdown(value.trim())
                                         }}
-                                        style={{fontSize: 11}}
+                                        style={PageMonitoringStyles.dropDownForClusterCloudlet}
                                     />
                                 </div>
 

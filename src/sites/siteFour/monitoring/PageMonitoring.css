@@ -447,3 +447,10 @@
 .version_display {
     font-size: 10pt;
 }
+
+/*
+.ui.selection.active.dropdown .menu {
+    border-top: solid 1px rgba(255,255,255,.05) !important;
+    min-width: 300px;
+}
+*/

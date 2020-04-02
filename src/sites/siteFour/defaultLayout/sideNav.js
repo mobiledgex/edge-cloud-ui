@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import clsx from 'clsx';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -237,6 +237,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(
 
         const [page, setPage] = React.useState(defaultPage(options));
 
+
+        useEffect(() => {
+
+            alert(props.isShowHeader.toString())
+        });
+
+
         const handleDrawerOpen = () => {
             setNavState(1)
             setOpen(true);
@@ -353,8 +360,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(
         }
 
         const versionInfo = () => (
-            <div className='version_display' style={{position: 'absolute', bottom: 5, marginLeft: 10, color: '#B1B2B4'}}>
-                {process.env.REACT_APP_BUILD_VERSION ? 'v'+process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'}
+            <div className='version_' style={{position: 'absolute', bottom: 5, marginLeft: 10, color: '#B1B2B4'}}>
+                {process.env.REACT_APP_BUILD_VERSION ? 'v' + process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'}
             </div>
         )
 
