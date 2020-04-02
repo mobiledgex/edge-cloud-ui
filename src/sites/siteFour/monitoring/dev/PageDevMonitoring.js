@@ -1,5 +1,5 @@
 import 'react-hot-loader';
-import {SemanticToastContainer, toast} from 'react-semantic-toasts';
+import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
 import {Button, Checkbox, Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
@@ -7,11 +7,10 @@ import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
-import {Card, CircularProgress, Button as MButton} from '@material-ui/core'
+import {Button as MButton, Card, CircularProgress} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
 import {DatePicker, Select, Tooltip} from 'antd';
 import {Center0001, Center2, ClusterCluoudletLable, Legend, OuterHeader} from '../PageMonitoringStyledComponent'
-import $ from 'jquery';
 import {
     defaultHwMapperListForCluster,
     defaultLayoutForAppInst,
@@ -91,9 +90,7 @@ import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout} from "react-grid-layout/lib/utils";
 import GradientBarChartContainer from "../components/GradientBarChartContainer";
-
 const {Option} = Select;
-
 const CheckboxGroup = Checkbox.Group;
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
