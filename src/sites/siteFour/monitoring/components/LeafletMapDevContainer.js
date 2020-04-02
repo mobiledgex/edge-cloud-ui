@@ -353,7 +353,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     style={{zIndex: 1}}
                                     //maxZoom={15}
                                 />
-                                {this.state.newCloudLetLocationList.length === 0 &&
+                               {/* {this.state.newCloudLetLocationList.length === 0 &&
                                 <Rectangle
                                     bounds={[[25.1109, 5.6821], [37.5665, 95.978],]}
 
@@ -384,7 +384,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     </Tooltip>
                                 </Rectangle>
                                 }
-
+                                */}
 
                                 <Control position="topleft">
                                     <Icon
