@@ -427,3 +427,19 @@
 .ui.toggle.checkbox input:checked ~ label:before {
     background-color: rgba(68, 119, 0, 1) !important;
 }
+
+.bubble-chart {
+    margin-left: -100px;
+}
+
+/*.ui.selection.active.dropdown .menu {
+    border-color: #96c8da;
+    box-shadow: 0 2px 3px 0 rgba(34,36,38,.15);
+    z-index: 999999999999999;
+}*/
+
+.ui.dropdown .menu { z-index: 999999 !important; }
+
+.visible.menu.transition {
+    z-index: 9999999999999999999999999;
+}

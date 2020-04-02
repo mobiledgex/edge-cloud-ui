@@ -180,7 +180,7 @@ export default class BubbleChart extends Component {
             .attr("transform", function (d) {
                 //todo: Bubble chart location setting...
                 //todo: Bubble chart location setting...
-                return "translate(" + (width * 5 / 10) + "," + (width * graph.offsetY) + ")"; //버블차트 위치
+                return "translate(" + ((width * 3 / 16)-0) + "," + (width * graph.offsetY-30) + ")"; //버블차트 위치
             });
         ;
 
@@ -234,7 +234,7 @@ export default class BubbleChart extends Component {
                 return "url(#clip-" + d.id + ")";
             })
             .style("font-weight", (d) => {
-                return valueFont.weight ? valueFont.weight : 600;
+                return valueFont.weight ? valueFont.weight : 300;
             })
             .style("font-family", valueFont.family)
             .style("fill", () => {
@@ -265,7 +265,7 @@ export default class BubbleChart extends Component {
                 return "url(#clip-" + d.id + ")";
             })
             .style("font-weight", (d) => {
-                return labelFont.weight ? labelFont.weight : 600;
+                return labelFont.weight ? labelFont.weight : 300;
             })
             .style("font-family", labelFont.family)
             .style("fill", () => {
@@ -280,7 +280,6 @@ export default class BubbleChart extends Component {
             .text(function (d) {
                 return d.label;//Label그리는 부분..
             });
-
 
         // Center the texts inside the circles.
         d3.selectAll(".label-text").attr("x", function (d) {
