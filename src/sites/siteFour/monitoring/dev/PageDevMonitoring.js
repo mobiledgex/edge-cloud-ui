@@ -12,6 +12,8 @@ import {hot} from "react-hot-loader/root";
 import {DatePicker, Select, Tooltip} from 'antd';
 import {Center, Legend, Center3, Center2, ClusterCluoudletLable} from '../PageMonitoringStyledComponent'
 
+import {Button as AButton} from '@material-ui/core';
+
 import {
     defaultHwMapperListForCluster,
     defaultLayoutForAppInst,
@@ -91,6 +93,7 @@ import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout} from "react-grid-layout/lib/utils";
 import GradientBarChartContainer from "../components/GradientBarChartContainer";
+import {fields} from "../../../../services/model/format";
 
 const {Option} = Select;
 
@@ -427,7 +430,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             })
 
-            await this.loadInitDataForCluster__FOR__DEV();
+            await this.loadInitDataForCluster();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
@@ -1448,14 +1451,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <Grid.Row className='content_title'>
                         <div className='content_title_wrap'>
                             <div className='content_title_label'>Monitoring</div>
-                            <Button positive={true}
-                                    onClick={async () => {
-                                        this.setState({
-                                            isOpenEditView: true,
-                                        })
-                                    }}
+                          {/*  <Button positive={true}
+
                             >Add
-                            </Button>
+                            </Button>*/}
+                            <Button
+                                onClick={async () => {
+                                    this.setState({
+                                        isOpenEditView: true,
+                                    })
+                                }}
+                                size={'small'} style={{width: 100, backgroundColor: '#559901', color: 'white'}}>
+                                <label>Add</label>
+                            </Button>)
 
 
                             {/*todo:---------------------------*/}
@@ -1644,7 +1652,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         this.resetGridPosition();
                                     }}
                                 >
-                                    Revert to the default layout
+                                    Reset layout
                                 </Button>
                             </div>
                             {/*todo:---------------------------*/}
@@ -1821,30 +1829,36 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 {/*desc:---------------------------------*/}
                                 {/*desc:Legend                           */}
                                 {/*desc:---------------------------------*/}
-                                <Legend>
-                                    {this.state.filteredClusterUsageList.map((item, index) => {
 
-                                        return (
-                                            <Center2>
-                                                {/*<div style={{marginRight:0}}>
-                                                    {this.state.chartColorList[index]}
-                                                </div>*/}
-                                                <div style={{backgroundColor: this.state.chartColorList[index], width: 15, height: 15, borderRadius: 50, marginTop:1}}>
+                                {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
+                                    <Legend>
+                                        {this.state.filteredClusterUsageList.map((item, index) => {
+                                            return (
+                                                <Center2>
+                                                    <div style={{backgroundColor: this.state.chartColorList[index], width: 15, height: 15, borderRadius: 50, marginTop: 1}}>
 
-                                                </div>
-                                                <ClusterCluoudletLable style={{marginLeft: 5, marginRight: 15, marginBottom: 0}}>{item.cluster}[{item.cloudlet}]</ClusterCluoudletLable>
-                                            </Center2>
-                                        )
-                                    })}
-                                </Legend>
-                                {/*  <Legend>
-                                    <Center2>
+                                                    </div>
+                                                    <ClusterCluoudletLable
+                                                        style={{marginLeft: 4, marginRight: 15, marginBottom: 0}}>{item.cluster} {` [`}{item.cloudlet}]</ClusterCluoudletLable>
+                                                </Center2>
+                                            )
+                                        })}
+                                    </Legend>
+                                    :
+                                    <Legend>
+                                        <Center2>
+                                            <div style={{backgroundColor: this.state.chartColorList[0], width: 15, height: 15, borderRadius: 50, marginTop: 1}}>
+                                            </div>
+                                            <ClusterCluoudletLable style={{marginLeft: 5, marginRight: 15, marginBottom: 0}}>
+                                                {this.state.currentAppInst.split("|")[1]} |
+                                                {this.state.currentAppInst.split("|")[2]} {`| `}
+                                                {this.state.currentAppInst.split("|")[0]}
+                                            </ClusterCluoudletLable>
+                                        </Center2>
+                                    </Legend>
+                                }
 
-                                        <MaterialIcon icon="fiber_manual_record" color={reactLocalStorage.getObject(getUserId() + "_mon_theme")[0]}/>
-                                        <MaterialIcon icon="fiber_manual_record" color={reactLocalStorage.getObject(getUserId() + "_mon_theme")[1]}/>
 
-                                    </Center2>
-                                </Legend>*/}
                                 <div className="page_monitoring" style={{overflowY: 'auto', height: this.gridLayoutHeight}}>
                                     <div className='page_monitoring_dashboard_dev'
                                          style={{marginBottom: 0}}>
