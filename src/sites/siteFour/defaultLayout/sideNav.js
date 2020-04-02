@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import clsx from 'clsx';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -13,7 +13,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MexHeader from './header'
 import {getUserRole} from '../../../services/model/format'
-
 import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
 import AssignmentIndOutlinedIcon from '@material-ui/icons/AssignmentIndOutlined';
 import DvrOutlinedIcon from '@material-ui/icons/DvrOutlined';
@@ -47,8 +46,6 @@ import PageMonitoringMain from '../monitoring/PageMonitoringMain'
 import {Collapse, Tooltip} from '@material-ui/core';
 import {Image} from 'semantic-ui-react';
 import PopLegendViewer from '../../../container/popLegendViewer';
-import * as actions from "../../../actions";
-import {connect} from "react-redux";
 
 const drawerWidth = 250;
 
@@ -214,209 +211,187 @@ const setNavState = (flag) => {
     return localStorage.setItem('navigation', flag)
 }
 
-const mapStateToProps = (state) => {
-    return {
-        isShowHeader: state.HeaderReducer.isShowHeader,
-    }
-};
-const mapDispatchToProps = (dispatch) => {
-    return {
-        toggleHeader: (data) => {
-            dispatch(actions.toggleHeader(data))
-        }
+
+export default function MiniDrawer(props) {
+    const classes = useStyles();
+    const theme = useTheme();
+    const [open, setOpen] = React.useState(navstate() === 1 ? true : false);
+    const [expand, setExpand] = React.useState(false);
+    const [openLegend, setOpenLegend] = React.useState(false);
+    const [page, setPage] = React.useState(defaultPage(options));
+
+
+    const handleDrawerOpen = () => {
+        setNavState(1)
+        setOpen(true);
     };
-};
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    function MiniDrawer(props) {
-        const classes = useStyles();
-        const theme = useTheme();
-        const [open, setOpen] = React.useState(navstate() === 1 ? true : false);
-        const [expand, setExpand] = React.useState(false);
-        const [openLegend, setOpenLegend] = React.useState(false);
+    const handleDrawerClose = () => {
+        setNavState(0)
+        setOpen(false);
+    };
 
-        const [page, setPage] = React.useState(defaultPage(options));
+    const expandOptions = () => {
+        setExpand(!expand)
+    }
 
+    const onOptionClick = (option, i) => {
+        setPage(option.page)
+        props.onOptionClick(i, option.label, option.pg, localStorage.selectRole)
+    }
 
-        useEffect(() => {
-
-            alert(props.isShowHeader.toString())
-        });
-
-
-        const handleDrawerOpen = () => {
-            setNavState(1)
-            setOpen(true);
-        };
-
-        const handleDrawerClose = () => {
-            setNavState(0)
-            setOpen(false);
-        };
-
-        const expandOptions = () => {
-            setExpand(!expand)
-        }
-
-        const onOptionClick = (option, i) => {
-            setPage(option.page)
-            props.onOptionClick(i, option.label, option.pg, localStorage.selectRole)
-        }
-
-        const showOptionForm = (i, option) => {
-            return (
-                <ListItem button key={option.label} onClick={() => {
-                    option.pg !== undefined ? onOptionClick(option, i) : expandOptions(option)
-                }}>
-                    <Tooltip title={option.label} aria-label="add">
-                        <ListItemIcon style={{color: '#B1B2B4'}}>{option.icon}
-                        </ListItemIcon>
-                    </Tooltip>
-                    <ListItemText style={{color: '#B1B2B4'}} primary={option.label}/>
-                    {option.subOptions ? expand ? <ExpandLess style={{color: '#B1B2B4'}}/> :
-                        <ExpandMore style={{color: '#B1B2B4'}}/> : null}
-                </ListItem>
-            )
-        }
-
-
-        const roleInfo = () => {
-            return (
-                <ListItem onClick={(e) => {
-                    setOpenLegend(true)
-                }}>
-                    <ListItemIcon>
-                        {localStorage.selectRole ?
-                            <div className="markBox">
-                                {
-                                    (localStorage.selectRole === 'AdminManager') ?
-                                        <div className="mark markA markS">S</div>
-                                        :
-                                        (localStorage.selectRole === 'DeveloperManager') ?
-                                            <div className="mark markD markM">M</div>
-                                            :
-                                            (localStorage.selectRole === 'DeveloperContributor') ?
-                                                <div className="mark markD markC">C</div>
-                                                :
-                                                (localStorage.selectRole === 'DeveloperViewer') ?
-                                                    <div className="mark markD markV">V</div>
-                                                    :
-                                                    (localStorage.selectRole === 'OperatorManager') ?
-                                                        <div className="mark markO markM">M</div>
-                                                        :
-                                                        (localStorage.selectRole === 'OperatorContributor') ?
-                                                            <div className="mark markO markC">C</div>
-                                                            :
-                                                            (localStorage.selectRole === 'OperatorViewer') ?
-                                                                <div className="mark markO markV">V</div>
-                                                                :
-                                                                <div className="mark markA markS">?</div>
-                                }
-                            </div> : null}
-                    </ListItemIcon>
-                    <ListItemText>
-                        <strong style={{
-                            color: '#BFC0C2',
-                            fontSize: 15
-                        }}> {localStorage.selectRole && localStorage.selectRole != 'null' ? localStorage.selectRole : 'Select Organization'}</strong>
-
-                    </ListItemText>
-                </ListItem>
-
-            )
-        }
-
-        const getRoleInfo = (role) => {
-            switch (role) {
-                case 'DeveloperViewer':
-                case 'DeveloperContributor':
-                    return 'DeveloperManager'
-                case 'OperatorViewer':
-                case 'OperatorContributor':
-                    return 'OperatorManager'
-                default:
-                    return role
-            }
-        }
-
-        const menuList = () => {
-            return options.map((option, i) => (
-                option.divider ?
-                    <Divider key={i}/> :
-                    option.roles.includes(getRoleInfo(getUserRole())) ?
-                        <div key={i}>
-                            {showOptionForm(i, option)}
-                            {option.subOptions ?
-                                <Collapse in={expand} timeout="auto" unmountOnExit>
-                                    <List component="div" disablePadding>
-                                        {option.subOptions.map((subOption, j) => (
-                                            showOptionForm(j, subOption)
-                                        ))}
-
-                                    </List>
-                                </Collapse> : null}
-                        </div> : null
-            ))
-        }
-
-        const versionInfo = () => (
-            <div className='version_' style={{position: 'absolute', bottom: 5, marginLeft: 10, color: '#B1B2B4'}}>
-                {process.env.REACT_APP_BUILD_VERSION ? 'v' + process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'}
-            </div>
-        )
-
-        /**
-         * Legend Block
-         * * */
-        const closeLegend = () => {
-            setOpenLegend(false)
-        }
-
-
+    const showOptionForm = (i, option) => {
         return (
-            <div className={classes.root} style={{height: 0}}>
-                {props.isShowHeader &&
-                <React.Fragment>
-                    <CssBaseline/>
-                    <MexHeader handleDrawerOpen={handleDrawerOpen} open={open} email={props.email} data={props.data}
-                               helpClick={props.helpClick} gotoUrl={props.gotoUrl}/>
-                </React.Fragment>
-                }
-                <Drawer
-                    variant="permanent"
-                    className={clsx(classes.drawer, {
+            <ListItem button key={option.label} onClick={() => {
+                option.pg !== undefined ? onOptionClick(option, i) : expandOptions(option)
+            }}>
+                <Tooltip title={option.label} aria-label="add">
+                    <ListItemIcon style={{color: '#B1B2B4'}}>{option.icon}
+                    </ListItemIcon>
+                </Tooltip>
+                <ListItemText style={{color: '#B1B2B4'}} primary={option.label}/>
+                {option.subOptions ? expand ? <ExpandLess style={{color: '#B1B2B4'}}/> :
+                    <ExpandMore style={{color: '#B1B2B4'}}/> : null}
+            </ListItem>
+        )
+    }
+
+
+    const roleInfo = () => {
+        return (
+            <ListItem onClick={(e) => {
+                setOpenLegend(true)
+            }}>
+                <ListItemIcon>
+                    {localStorage.selectRole ?
+                        <div className="markBox">
+                            {
+                                (localStorage.selectRole === 'AdminManager') ?
+                                    <div className="mark markA markS">S</div>
+                                    :
+                                    (localStorage.selectRole === 'DeveloperManager') ?
+                                        <div className="mark markD markM">M</div>
+                                        :
+                                        (localStorage.selectRole === 'DeveloperContributor') ?
+                                            <div className="mark markD markC">C</div>
+                                            :
+                                            (localStorage.selectRole === 'DeveloperViewer') ?
+                                                <div className="mark markD markV">V</div>
+                                                :
+                                                (localStorage.selectRole === 'OperatorManager') ?
+                                                    <div className="mark markO markM">M</div>
+                                                    :
+                                                    (localStorage.selectRole === 'OperatorContributor') ?
+                                                        <div className="mark markO markC">C</div>
+                                                        :
+                                                        (localStorage.selectRole === 'OperatorViewer') ?
+                                                            <div className="mark markO markV">V</div>
+                                                            :
+                                                            <div className="mark markA markS">?</div>
+                            }
+                        </div> : null}
+                </ListItemIcon>
+                <ListItemText>
+                    <strong style={{
+                        color: '#BFC0C2',
+                        fontSize: 15
+                    }}> {localStorage.selectRole && localStorage.selectRole != 'null' ? localStorage.selectRole : 'Select Organization'}</strong>
+
+                </ListItemText>
+            </ListItem>
+
+        )
+    }
+
+    const getRoleInfo = (role) => {
+        switch (role) {
+            case 'DeveloperViewer':
+            case 'DeveloperContributor':
+                return 'DeveloperManager'
+            case 'OperatorViewer':
+            case 'OperatorContributor':
+                return 'OperatorManager'
+            default:
+                return role
+        }
+    }
+
+    const menuList = () => {
+        return options.map((option, i) => (
+            option.divider ?
+                <Divider key={i}/> :
+                option.roles.includes(getRoleInfo(getUserRole())) ?
+                    <div key={i}>
+                        {showOptionForm(i, option)}
+                        {option.subOptions ?
+                            <Collapse in={expand} timeout="auto" unmountOnExit>
+                                <List component="div" disablePadding>
+                                    {option.subOptions.map((subOption, j) => (
+                                        showOptionForm(j, subOption)
+                                    ))}
+
+                                </List>
+                            </Collapse> : null}
+                    </div> : null
+        ))
+    }
+
+    const versionInfo = () => (
+        <div className='version_' style={{position: 'absolute', bottom: 5, marginLeft: 10, color: '#B1B2B4'}}>
+            {process.env.REACT_APP_BUILD_VERSION ? 'v' + process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'}
+        </div>
+    )
+
+    /**
+     * Legend Block
+     * * */
+    const closeLegend = () => {
+        setOpenLegend(false)
+    }
+
+
+    return (
+        <div className={classes.root} style={{height: 0}}>
+            {props.isShowHeader &&
+            <React.Fragment>
+                <CssBaseline/>
+                <MexHeader handleDrawerOpen={handleDrawerOpen} open={open} email={props.email} data={props.data}
+                           helpClick={props.helpClick} gotoUrl={props.gotoUrl}/>
+            </React.Fragment>
+            }
+            <Drawer
+                variant="permanent"
+                className={clsx(classes.drawer, {
+                    [classes.drawerOpen]: open,
+                    [classes.drawerClose]: !open,
+                })}
+                classes={{
+                    paper: clsx({
                         [classes.drawerOpen]: open,
                         [classes.drawerClose]: !open,
-                    })}
-                    classes={{
-                        paper: clsx({
-                            [classes.drawerOpen]: open,
-                            [classes.drawerClose]: !open,
-                        }),
-                    }}
-                    style={{zIndex: 1}}
-                >
-                    <div className={classes.toolbar}>
-                        <Image wrapped size='small' src='/assets/brand/logo_mex.svg'/>
-                        <IconButton style={{color: '#B1B2B4'}} onClick={handleDrawerClose}>
-                            {theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
-                        </IconButton>
-                    </div>
-                    <List style={{backgroundColor: '#292c33', height: '100%'}}>
-                        {roleInfo()}
-                        {menuList()}
-                        {versionInfo()}
-                    </List>
-                </Drawer>
-                <main className={classes.content}>
-                    {props.isShowHeader && <div className={classes.toolbar}/>}
-                    <div className='contents_body'>
-                        {page}
-                    </div>
-                </main>
-                <PopLegendViewer dimmer={false} open={openLegend} close={closeLegend}></PopLegendViewer>
-            </div>
-        );
-    }
-)
-
+                    }),
+                }}
+                style={{zIndex: 1}}
+            >
+                <div className={classes.toolbar}>
+                    <Image wrapped size='small' src='/assets/brand/logo_mex.svg'/>
+                    <IconButton style={{color: '#B1B2B4'}} onClick={handleDrawerClose}>
+                        {theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
+                    </IconButton>
+                </div>
+                <List style={{backgroundColor: '#292c33', height: '100%'}}>
+                    {roleInfo()}
+                    {menuList()}
+                    {versionInfo()}
+                </List>
+            </Drawer>
+            <main className={classes.content}>
+                {props.isShowHeader && <div className={classes.toolbar}/>}
+                <div className='contents_body'>
+                    {page}
+                </div>
+            </main>
+            <PopLegendViewer dimmer={false} open={openLegend} close={closeLegend}></PopLegendViewer>
+        </div>
+    );
+}
