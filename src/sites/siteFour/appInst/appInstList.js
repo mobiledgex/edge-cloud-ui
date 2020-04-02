@@ -23,7 +23,7 @@ class AppInstList extends React.Component {
         }
         this.action = '';
         this.data = {};
-        this.keys = Object.assign([], keys);
+        this.keys = keys();
     }
 
     onRegClose = (isEdited) => {
