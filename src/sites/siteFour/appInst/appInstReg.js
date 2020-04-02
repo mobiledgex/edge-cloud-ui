@@ -1,7 +1,8 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
+import uuid from 'uuid';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX, ICON_BUTTON, TEXT_AREA } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -176,6 +177,33 @@ class ClusterInstReg extends React.Component {
         }
     }
 
+    /**config blog */
+
+    removeConfigForm = (e, form) => {
+        if (form.parent) {
+            let updateForms = Object.assign([], this.state.forms)
+            updateForms.splice(form.parent.id, 1);
+            this.setState({
+                forms: updateForms
+            })
+        }
+
+    }
+
+    configForm = () => ([
+        { field: fields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, type: 'number', rows:2 }, width: 9, visible: true },
+        { field: fields.kind, label: 'Kind', formType: SELECT, rules: { required: true}, width: 4, visible: true, options: ['envVarsYaml', 'hemlCustomizationYaml'] },
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeConfigForm }
+    ])
+
+    getConfigForm = (form) => (
+        { uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form, width: 3, visible: true }
+    )
+
+    addConfigs = () => {
+        this.setState(prevState => ({ forms: [...prevState.forms, this.getConfigForm(this.configForm())] }))
+    }
+
     formKeys = () => {
         return [
             { label: 'App Instances', formType: 'Header', visible: true },
@@ -188,6 +216,7 @@ class ClusterInstReg extends React.Component {
             { field: fields.autoClusterInstance, label: 'Auto Cluster Instance', formType: CHECKBOX, visible: true, value: false },
             { field: fields.clusterName, label: 'Cluster', formType: 'Select', placeholder: 'Select Clusters', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
             { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: 'Select', placeholder: 'Select Privacy Policy', rules: { required: false }, visible: false, dependentData: [{ index: 1, field: fields.region }] },
+            { label: 'Configs', formType: 'Header', forms: [{ formType: ICON_BUTTON, icon: 'add', visible: true, update: true, onClick: this.addConfigs, style:{color:'white'} }], visible: true }
         ]
     }
 
@@ -234,6 +263,23 @@ class ClusterInstReg extends React.Component {
 
     onCreate = async (data) => {
         if (data) {
+            let forms = this.state.forms;
+            let configs = []
+            for (let i = 0; i < forms.length; i++) {
+                let form = forms[i];
+                if (form.uuid) {
+                    let uuid = form.uuid;
+                    let multiFormData = data[uuid]
+                    if (multiFormData) {
+                        configs.push(multiFormData)
+                    }
+                    data[uuid] = undefined
+                }
+            }
+            if (configs.length > 0) {
+                data[fields.configs] = configs
+            }
+
             let cloudlets = data[fields.cloudletName];
             data[fields.clusterName] = data[fields.autoClusterInstance] ? 'autocluster' + data[fields.appName].toLowerCase().replace(/ /g, "") : data[fields.clusterName]
             if (cloudlets && cloudlets.length > 0) {
