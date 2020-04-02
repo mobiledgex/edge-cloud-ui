@@ -353,7 +353,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
         }
 
         const versionInfo = () => (
-            <div style={{position: 'absolute', bottom: 5, marginLeft: 10, color: '#B1B2B4'}}>
+            <div className='version_display' style={{position: 'absolute', bottom: 5, marginLeft: 10, color: '#B1B2B4'}}>
                 {process.env.REACT_APP_BUILD_VERSION ? 'v'+process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'}
             </div>
         )
