@@ -161,7 +161,7 @@ export default function MiniDrawer(props) {
 
     const handleDrawerClose = () => {
         setNavState(0)
-        setOpen(false);
+        setOpen(!open);
     };
 
     const expandOptions = () => {
@@ -221,9 +221,9 @@ export default function MiniDrawer(props) {
                         </div> : null}
                 </ListItemIcon>
                 <ListItemText>
-                    <strong style={{ color: '#BFC0C2', fontSize: 12}}> 
+                    <strong style={{ color: '#BFC0C2', fontSize: 12}}>
                         {
-                            localStorage.selectRole && localStorage.selectRole != 'null' ? localStorage.selectRole : 
+                            localStorage.selectRole && localStorage.selectRole != 'null' ? localStorage.selectRole :
                             <div>
                                 <p>No Organization selected</p>
                                 <p>Click Manage to view and</p>
@@ -286,8 +286,13 @@ export default function MiniDrawer(props) {
     }
     return (
         <div className={classes.root}>
-            <CssBaseline />
-            <MexHeader handleDrawerOpen={handleDrawerOpen} open={open} email={props.email} data={props.data} helpClick={props.helpClick} gotoUrl={props.gotoUrl} />
+            {props.isShowHeader &&
+            <React.Fragment>
+                <CssBaseline/>
+                <MexHeader handleDrawerOpen={handleDrawerOpen} open={open} email={props.email} data={props.data}
+                           helpClick={props.helpClick} gotoUrl={props.gotoUrl}/>
+            </React.Fragment>
+            }
             <Drawer
                 variant="permanent"
                 className={clsx(classes.drawer, {
@@ -315,7 +320,7 @@ export default function MiniDrawer(props) {
                 </List>
             </Drawer>
             <main className={classes.content}>
-                <div className={classes.toolbar} />
+                {props.isShowHeader && <div className={classes.toolbar}/>}
                 <div className='contents_body'>
                     {page}
                 </div>
