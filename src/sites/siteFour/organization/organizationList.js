@@ -45,7 +45,7 @@ class OrganizationList extends React.Component {
         this.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
     }
 
-    onAudit = (data) => {
+    onAudit = (action, data) => {
         let orgName = data[fields.organizationName];
         this.gotoUrl('/site4', 'pg=audits&org=' + orgName)
     }
