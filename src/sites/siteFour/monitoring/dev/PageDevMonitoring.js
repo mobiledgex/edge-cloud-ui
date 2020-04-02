@@ -691,14 +691,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
 
         async refreshAllData() {
             clearInterval(this.intervalForAppInst)
-            toast({
-                type: 'success',
-                //icon: 'smile',
-                title: 'FETCH NEW DATA!',
-                animation: 'bounce',
-                time: 3 * 1000,
-                color: 'black',
-            });
+            showToast('FETCH NEW DATA!')
             await this.setState({
                 currentClassification: CLASSIFICATION.CLUSTER,
                 placeHolderStateTime: moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'),
@@ -1788,19 +1781,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                     <Grid.Row className='view_contents'>
                         <Grid.Column className='contents_body'>
                             {this.renderHeader()}
-                            <div style={{}}>
-                                <Card
-                                    hoverable
-                                    style={{width: '100%', height: '100%'}}
-                                    cover={<div style={{marginLeft: 40, marginTop: 5}}>
-                                        <img alt="example" src="/assets/brand/MobiledgeX_Logo_tm_white.svg" width={500}
-                                             height={250}/>
-                                    </div>}
-                                >
-                                    <div style={{fontSize: 45, fontFamily: 'Roboto Condensed'}}>
-                                        There is no app instance you can access..
-                                    </div>
-                                </Card>
+                            <div style={{marginTop: 25, marginLeft: 25,}}>
+                                <div style={{fontSize: 25, }}>
+                                    There is no app instance you can access..
+                                </div>
                             </div>
                         </Grid.Column>
                     </Grid.Row>
@@ -1841,7 +1825,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                                 {/*desc:---------------------------------*/}
                                 {/*desc:Content Header                   */}
                                 {/*desc:---------------------------------*/}
-                                <SemanticToastContainer position={"top-right"}/>
+                                <SemanticToastContainer position={"top-right"} color={'white'}/>
                                 {this.renderHeader()}
                                 {/*desc:---------------------------------*/}
                                 {/*desc:Legend                           */}
