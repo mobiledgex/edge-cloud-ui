@@ -6,7 +6,7 @@ import { SHOW_APP_INST, CREATE_APP_INST, UPDATE_APP_INST, DELETE_APP_INST, STREA
 
 let fields = formatter.fields;
 
-export const keys = [
+export const keys = () => ([
   { field: fields.region, label: 'Region', sortable: true, visible: true },
   { field: fields.organizationName, serverField: 'key#OS#app_key#OS#organization', sortable: true, label: 'Organization', visible: true },
   { field: fields.appName, serverField: 'key#OS#app_key#OS#name', sortable: true, label: 'App', visible: true },
@@ -26,8 +26,9 @@ export const keys = [
   { field: fields.runtimeInfo, serverField: 'runtime_info', label: 'Runtime', dataType: constant.TYPE_JSON },
   { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_JSON },
   { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
+  { field: fields.configs, serverField: 'configs', label: 'Configs',  dataType: constant.TYPE_JSON },
   { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
-]
+])
 
 export const getKey = (data, isCreate) => {
   let appinst = {}
@@ -121,5 +122,5 @@ const customData = (value) => {
 }
 
 export const getData = (response, body) => {
-  return formatter.formatData(response, body, keys, customData, true)
+  return formatter.formatData(response, body, keys(), customData, true)
 }
