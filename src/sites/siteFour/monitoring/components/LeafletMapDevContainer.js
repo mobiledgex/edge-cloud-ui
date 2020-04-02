@@ -355,7 +355,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 />
                                 {this.state.newCloudLetLocationList.length === 0 &&
                                 <Rectangle
-                                    bounds={[[50.1109, 5.6821], [37.5665, 95.978],]}
+                                    bounds={[[25.1109, 5.6821], [37.5665, 95.978],]}
 
                                     color={'green'}
                                     attribution={{
@@ -373,7 +373,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                         style={{
                                             cursor: 'pointer',
                                             pointerEvents: 'auto',
-                                            fontSize: 15,
+                                            fontSize: 12,
                                             background: 'green',
                                         }}
 
