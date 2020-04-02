@@ -4,7 +4,6 @@ const initialState = {
     isShowHeader: true
 };
 export default function HeaderReducer(state = initialState, action) {
-
     switch (action.type) {
         case TOGGLE_HEADER :
             return Object.assign({}, state, {
