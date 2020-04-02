@@ -122,7 +122,7 @@ export const streamCloudlet = (data) => {
 
 
 
-export const keys = [
+export const keys = () =>([
     { field: fields.region, label: 'Region', sortable: true, visible: true },
     { field: fields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet Name', sortable: true, visible: true },
     { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true },
@@ -139,8 +139,8 @@ export const keys = [
     { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
     { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
     { field: fields.containerVersion, serverField: 'container_version', label: 'Container Version' },
-    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
-]
+    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles:['AdminManager'] }
+])
 
 const customData = (value) => {
     value[fields.cloudletStatus] = 4
@@ -149,5 +149,5 @@ const customData = (value) => {
 }
 
 export const getData = (response, body) => {
-    return formatter.formatData(response, body, keys, customData, true)
+    return formatter.formatData(response, body, keys(), customData, true)
 }

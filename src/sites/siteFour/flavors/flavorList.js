@@ -3,7 +3,7 @@ import MexListView from '../../../container/MexListView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
-import { fields } from '../../../services/model/format';
+import { fields, isAdmin } from '../../../services/model/format';
 import { keys, showFlavors, deleteFlavor } from '../../../services/model/flavor';
 import FlavorReg from './flavorReg';
 
@@ -15,6 +15,7 @@ class FlavorList extends React.Component {
         }
         this.action = '';
         this.data = {}
+        this.keys = keys();
     }
 
     onRegClose = (isEdited)=>
@@ -43,8 +44,8 @@ class FlavorList extends React.Component {
             isRegion:true,
             requestType: [showFlavors],
             sortBy: [fields.region, fields.flavorName],
-            keys: keys,
-            onAdd: this.onAdd
+            keys: this.keys,
+            onAdd: isAdmin() ? this.onAdd : undefined
         })
     }
 

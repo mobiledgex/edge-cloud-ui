@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 
-import { fields } from '../../../services/model/format';
+import { fields, isAdmin } from '../../../services/model/format';
 import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/model/cloudlet';
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
 import ClouldletReg from './cloudletReg';
@@ -20,7 +20,7 @@ class CloudletList extends React.Component {
         }
         this.action = '';
         this.data = {};
-        this.keys = Object.assign([], keys);
+        this.keys = keys();
     }
 
     onRegClose = (isEdited)=>
@@ -53,7 +53,7 @@ class CloudletList extends React.Component {
             isMap: true,
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
-            onAdd: this.onAdd
+            onAdd: isAdmin() ? this.onAdd : undefined
         })
     }
 
@@ -62,7 +62,7 @@ class CloudletList extends React.Component {
    **/
 
     getCloudletInfoState = (data, isDetailView) => {
-        let id = data[fields.cloudletStatus]
+        let id = isDetailView ? data : data[fields.cloudletStatus]
         let state = 'Not Present';
         let color = 'red'
         switch (id) {
