@@ -159,6 +159,12 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
 
                                         reactLocalStorage.setObject(getUserId() + "_mon_theme", selectedChartColorList)
                                         reactLocalStorage.set(getUserId() + "_mon_theme_title", value)
+
+                                        await this.props.parent.setState({
+                                            chartColorList : selectedChartColorList,
+                                        })
+
+
                                     }}
                                     options={this.props.parent.state.themeOptions}
                                 />

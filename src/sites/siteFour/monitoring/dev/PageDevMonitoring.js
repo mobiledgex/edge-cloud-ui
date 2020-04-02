@@ -2,7 +2,7 @@ import 'react-hot-loader';
 import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Button, Checkbox, Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
+import {Button, Checkbox, Dropdown, Grid, Icon, Modal, Tab} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
@@ -10,6 +10,7 @@ import * as actions from '../../../../actions';
 import {Card, CircularProgress} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
 import {DatePicker, Select, Tooltip} from 'antd';
+import {Center, Legend, Center3, Center2, ClusterCluoudletLable} from '../PageMonitoringStyledComponent'
 
 import {
     defaultHwMapperListForCluster,
@@ -20,7 +21,8 @@ import {
     getUserId,
     makeAllLineChartData,
     makeBarChartDataForAppInst,
-    makeBarChartDataForCluster, makeGradientColorList2,
+    makeBarChartDataForCluster,
+    makeGradientColorList2,
     makeid,
     makeLineChartDataForAppInst,
     makeLineChartDataForBigModal,
@@ -80,7 +82,6 @@ import _ from "lodash";
 import PieChartContainer from "../components/PieChartContainer";
 import BigModalGraphContainer from "../components/BigModalGraphContainer";
 import BubbleChartContainer from "../components/BubbleChartContainer";
-import BarChartContainer from "../components/BarChartContainer";
 import LineChartContainer from "../components/LineChartContainer";
 import EventLogListContainer from "../components/EventLogListContainer";
 import PerformanceSummaryTableContainer from "../components/PerformanceSummaryTableContainer";
@@ -255,6 +256,7 @@ type State = {
     isFullScreenMap: boolean,
     isStackedLineChart: boolean,
     isGradientColor: boolean,
+    clusterList: any,
 
 
 }
@@ -262,7 +264,7 @@ type State = {
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class PageDevMonitoring extends Component<Props, State> {
         intervalForAppInst = null;
-        gridItemHeight = 420;
+        gridItemHeight = 320;
         webSocketInst: WebSocket = null;
         gridLayoutHeight = window.innerHeight * 0.825;
 
@@ -412,7 +414,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentWidgetWidth: 1,
                 isOpenEditView: false,
                 isFullScreenMap: false,
-                isStackedLineChart: true,
+                isStackedLineChart: false,
                 //isGradientColor: true,
             };
         }
@@ -804,11 +806,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
 
 
-          /*  return (
-                <BarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this}
-                                   loading={this.state.loading} chartDataSet={barChartDataSet}
-                                   pHardwareType={hwType} graphType={graphType}/>
-            )*/
+            /*  return (
+                  <BarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this}
+                                     loading={this.state.loading} chartDataSet={barChartDataSet}
+                                     pHardwareType={hwType} graphType={graphType}/>
+              )*/
 
 
             if (!isEmpty(barChartDataSet)) {
@@ -1590,7 +1592,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     selection
                                     loading={this.state.loading}
                                     options={this.state.clusterDropdownList}
-                                    style={PageMonitoringStyles.dropDown}
+                                    style={PageMonitoringStyles.dropDown0}
                                     onChange={async (e, {value}) => {
                                         await this.handleClusterDropdown(value.trim())
                                     }}
@@ -1816,8 +1818,34 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 {/*desc:---------------------------------*/}
                                 <SemanticToastContainer position={"top-right"}/>
                                 {this.renderHeader()}
-                                <div className="page_monitoring"
-                                     style={{overflowY: 'auto', height: this.gridLayoutHeight}}>
+                                {/*desc:---------------------------------*/}
+                                {/*desc:Legend                           */}
+                                {/*desc:---------------------------------*/}
+                                <Legend>
+                                    {this.state.filteredClusterUsageList.map((item, index) => {
+
+                                        return (
+                                            <Center2>
+                                                {/*<div style={{marginRight:0}}>
+                                                    {this.state.chartColorList[index]}
+                                                </div>*/}
+                                                <div style={{backgroundColor: this.state.chartColorList[index], width: 15, height: 15, borderRadius: 50, marginTop:1}}>
+
+                                                </div>
+                                                <ClusterCluoudletLable style={{marginLeft: 5, marginRight: 15, marginBottom: 0}}>{item.cluster}[{item.cloudlet}]</ClusterCluoudletLable>
+                                            </Center2>
+                                        )
+                                    })}
+                                </Legend>
+                                {/*  <Legend>
+                                    <Center2>
+
+                                        <MaterialIcon icon="fiber_manual_record" color={reactLocalStorage.getObject(getUserId() + "_mon_theme")[0]}/>
+                                        <MaterialIcon icon="fiber_manual_record" color={reactLocalStorage.getObject(getUserId() + "_mon_theme")[1]}/>
+
+                                    </Center2>
+                                </Legend>*/}
+                                <div className="page_monitoring" style={{overflowY: 'auto', height: this.gridLayoutHeight}}>
                                     <div className='page_monitoring_dashboard_dev'
                                          style={{marginBottom: 0}}>
                                         {this.state.currentClassification === CLASSIFICATION.CLUSTER

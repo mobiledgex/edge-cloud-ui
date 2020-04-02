@@ -57,6 +57,15 @@ export const PageMonitoringStyles = {
         fontSize: 25,
         color: 'white',
     },
+
+    dropDown0: {
+        //minWidth: 150,
+        minWidth: '280px',
+        //fontSize: '12px',
+        minHeight: '40px',
+        zIndex: 1,
+        //height: '50px',
+    },
     dropDown: {
         //minWidth: 150,
         minWidth: '350px',

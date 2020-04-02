@@ -23,6 +23,8 @@ import {Line as ReactChartJsLine} from "react-chartjs-2";
 import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
 import {Select} from "antd";
 import {Responsive, WidthProvider} from "react-grid-layout";
+import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const {Option} = Select;
@@ -1169,6 +1171,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this) => {
             }
         },
         legend: {
+            display: true,//@todo:리전드
             position: 'top',
             labels: {
                 boxWidth: 10,
@@ -1216,8 +1219,8 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this) => {
                     fontColor: 'white',
                     //maxRotation: 0.05,
                     //autoSkip: true,
-                    maxRotation: 45,
-                    minRotation: 45,
+                    maxRotation: 0,//xAxis rotation
+                    minRotation: 0,//xAxis rotation
                     padding: 10,
                     labelOffset: 0,
                     callback(value, index, label) {
