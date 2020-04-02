@@ -4,12 +4,12 @@ import { SHOW_USERS, DELETE_USER, ADD_USER_ROLE } from './endPointTypes'
 
 
 
-export const keys = [
-    { field: fields.organizationName, serverField: 'org', label: 'Username', sortable: true, visible: true },
-    { field: fields.username, serverField: 'username', label: 'Organization', sortable: true, visible: true },
+export const keys = () => ([
+    { field: fields.username, serverField: 'username', label: 'Username', sortable: true, visible: true },
+    { field: fields.organizationName, serverField: 'org', label: 'Organization', sortable: true, visible: true },
     { field: fields.role, serverField: 'role', label: 'Role Type', sortable: true, visible: true },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
-]
+])
 
 export const getKey = (data) => {
     return ({
@@ -38,5 +38,5 @@ const customData = (value) => {
 }
 
 export const getData = (response, body) => {
-    return formatData(response, body, keys, customData)
+    return formatData(response, body, keys(), customData)
 }

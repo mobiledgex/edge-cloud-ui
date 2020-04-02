@@ -103,7 +103,10 @@ class ClusterInstReg extends React.Component {
         let forms = this.state.forms
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.cloudletLocation) {
+            if (form.field === fields.cloudletLocation && !form.rules.disabled) {
+                let cloudlet = {}
+                cloudlet.cloudletLocation = {latitude:location.lat, longitude:location.long}
+                this.setState({mapData:[cloudlet]})
                 let childForms = form.forms;
                 for (let j = 0; j < childForms.length; j++) {
                     let childForm = childForms[j]
@@ -230,8 +233,7 @@ class ClusterInstReg extends React.Component {
             let operator = {}
             operator[fields.operatorName] = data[fields.operatorName];
             this.operatorList = [operator]
-
-
+            this.setState({mapData:[data]})
         }
     }
 
@@ -270,6 +272,14 @@ class ClusterInstReg extends React.Component {
                 else {
                     form.value = data[form.field]
                     this.checkForms(form, forms, true)
+                }
+            }
+            //Todo if more such functions required try to move it to mexforms
+            if(this.isUpdate)
+            {
+                if(form.field === fields.openRCData || form.field === fields.caCertdata)
+                {
+                    form.visible = false
                 }
             }
         }
