@@ -433,7 +433,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
 
             })
 
-            await this.loadInitDataForCluster();
+            await this.loadInitDataForCluster__FOR__DEV();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
@@ -1847,7 +1847,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                                 {/*desc:---------------------------------*/}
                                 {/*desc:Legend                           */}
                                 {/*desc:---------------------------------*/}
-
                                 {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
                                     <Legend>
                                         {this.state.loading ?
@@ -1876,7 +1875,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                                                     </Center2>
                                                 )
                                             })
-
                                         }
                                     </Legend>
                                     :
