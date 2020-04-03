@@ -128,6 +128,7 @@ const defaultPage = (options) => {
         else if (currentPage.includes('pg=' + option.pg)) {
             page = option.page
             break;
+        }
     }
     return page
 }

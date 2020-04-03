@@ -28,10 +28,7 @@ export const keys = () => ([
     { field: fields.autoPolicyName, serverField: 'auto_prov_policy', label: 'Auto Provisioning Policy' },
     { field: fields.privacyPolicyName, serverField: 'default_privacy_policy', label: 'Default Privacy Policy' },
     { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: constant.TYPE_JSON },
-<<<<<<< HEAD
     { field: fields.annotations, serverField: 'annotations', label: 'Annotations', visible: true },
-=======
->>>>>>> 151803e2ac9f3a0502077a2fbf5e5ea370e77ca2
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
