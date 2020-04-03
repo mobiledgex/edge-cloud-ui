@@ -1500,6 +1500,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                                 }}
                             >Reset
                             </MButton>
+                            <MButton
+                                size={'small'}
+                                style={{
+                                    width: 180,
+                                    backgroundColor: 'grey',
+                                    color: 'white'
+                                }}
+                                onClick={async () => {
+                                    this.resetGridPosition();
+                                }}
+                            >
+                                Reset layout
+                            </MButton>
                             <Button
                                 onClick={async () => {
                                     if (!this.state.loading) {
@@ -1610,58 +1623,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
             )
         }
 
-        makeClusterDropdown() {
-            return (
-                <div className="page_monitoring_dropdown_box">
-                    <div
-                        className="page_monitoring_dropdown_label"
-                        style={{backgroundColor: 'transparent', height: 20, marginTop: 5, marginLeft: this.state.isShowFilter ? 0 : 10}}
-                    >
-                        Cluster | Cloudlet
-                    </div>
-                    <Dropdown
-                        selectOnBlur={false}
-                        value={this.state.currentCluster}
-                        clearable={this.state.clusterSelectBoxClearable}
-                        disabled={this.state.loading}
-                        placeholder={this.state.clusterSelectBoxPlaceholder}
-                        selection
-                        loading={this.state.loading}
-                        options={this.state.clusterDropdownList}
-                        style={PageMonitoringStyles.dropDownForClusterCloudlet}
-                        onChange={async (e, {value}) => {
-                            await this.handleClusterDropdown(value.trim())
-                        }}
-                    />
-                </div>
-            )
-        }
-
-        makeAppInstDropdown() {
-            return (
-                <div className="page_monitoring_dropdown_box">
-                    <div className="page_monitoring_dropdown_label" style={{backgroundColor: 'transparent', height: 20, marginTop: 5, marginLeft: 3}}>
-                        App Inst
-                    </div>
-                    <Dropdown
-                        selectOnBlur={false}
-                        disabled={this.state.currentCluster === '' || this.state.loading || this.state.appInstDropdown.length === 0}
-                        clearable={this.state.appInstSelectBoxClearable}
-                        loading={this.state.loading}
-                        value={this.state.currentAppInst}
-                        placeholder={this.state.appInstSelectBoxPlaceholder}
-                        selection
-                        // style={PageMonitoringStyles.dropDown}
-                        options={this.state.allAppInstDropdown}
-                        onChange={async (e, {value}) => {
-                            await this.handleAppInstDropdown(value.trim())
-                        }}
-                        style={PageMonitoringStyles.dropDownForClusterCloudlet2}
-                    />
-                </div>
-            )
-        }
-
 
         renderDropdownFilterArea() {
 
@@ -1675,21 +1636,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                                 {this.makeAppInstDropdown()}
                             </div>
                             <div className='page_monitoring_select_column_end' style={{marginTop: 0}}>
-                                <div className='page_monitoring_select_toggle'>
-                                    <MButton
-                                        size={'small'}
-                                        style={{
-                                            width: 120,
-                                            backgroundColor: 'grey',
-                                            color: 'white'
-                                        }}
-                                        onClick={async () => {
-                                            this.resetGridPosition();
-                                        }}
-                                    >
-                                        Reset layout
-                                    </MButton>
-                                </div>
+                                {/*<div className='page_monitoring_select_toggle'>
+
+                                </div>*/}
                                 <div className='page_monitoring_select_toggle'>
                                     <div className='page_monitoring_select_toggle_label'>
                                         Stacked Line Chart
@@ -1767,6 +1716,60 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                 return null;
             }
         }
+
+        makeClusterDropdown() {
+            return (
+                <div className="page_monitoring_dropdown_box">
+                    <div
+                        className="page_monitoring_dropdown_label"
+                        style={{backgroundColor: 'transparent', height: 20, marginTop: 5, marginLeft: this.state.isShowFilter ? 0 : 10}}
+                    >
+                        Cluster | Cloudlet
+                    </div>
+                    <Dropdown
+                        selectOnBlur={false}
+                        value={this.state.currentCluster}
+                        clearable={this.state.clusterSelectBoxClearable}
+                        disabled={this.state.loading}
+                        placeholder={this.state.clusterSelectBoxPlaceholder}
+                        selection
+                        loading={this.state.loading}
+                        options={this.state.clusterDropdownList}
+                        style={PageMonitoringStyles.dropDownForClusterCloudlet}
+                        onChange={async (e, {value}) => {
+                            await this.handleClusterDropdown(value.trim())
+                        }}
+                    />
+                </div>
+            )
+        }
+
+        makeAppInstDropdown() {
+            return (
+                <div className="page_monitoring_dropdown_box">
+                    <div className="page_monitoring_dropdown_label" style={{backgroundColor: 'transparent', height: 20, marginTop: 5, marginLeft: 3}}>
+                        App Inst
+                    </div>
+                    <Dropdown
+                        selectOnBlur={false}
+                        disabled={this.state.currentCluster === '' || this.state.loading || this.state.appInstDropdown.length === 0}
+                        clearable={this.state.appInstSelectBoxClearable}
+                        loading={this.state.loading}
+                        value={this.state.currentAppInst}
+                        placeholder={this.state.appInstSelectBoxPlaceholder}
+                        selection
+                        // style={PageMonitoringStyles.dropDown}
+                        options={this.state.allAppInstDropdown}
+                        onChange={async (e, {value}) => {
+                            await this.handleAppInstDropdown(value.trim())
+                        }}
+                        style={PageMonitoringStyles.dropDownForClusterCloudlet2}
+                    />
+                </div>
+            )
+        }
+
+
 
         renderLegend() {
 
