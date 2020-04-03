@@ -270,7 +270,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
         intervalForAppInst = null;
         gridItemHeight = 320;
         webSocketInst: WebSocket = null;
-        gridLayoutHeight = window.innerHeight * 0.825;
+        gridLayoutHeight = window.innerHeight * 0.829;
 
         constructor(props) {
             super(props);
