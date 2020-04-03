@@ -91,6 +91,7 @@ import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout} from "react-grid-layout/lib/utils";
 import GradientBarChartContainer from "../components/GradientBarChartContainer";
+
 const {Option} = Select;
 const CheckboxGroup = Checkbox.Group;
 const FA = require('react-fontawesome')
@@ -420,7 +421,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                 isOpenEditView: false,
                 isFullScreenMap: false,
                 isStackedLineChart: true,
-                isShowFilter: true,
+                isShowFilter: false,
                 currentNavigation: '',
                 allAppInstDropdown: [],
             };
@@ -435,7 +436,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
 
             })
 
-            await this.loadInitDataForCluster();
+            await this.loadInitDataForCluster__FOR__DEV();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
@@ -1603,17 +1604,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                         </div>
                     </Grid.Row>
                     <div style={{backgroundColor: '#202329', marginLeft: 10, marginRight: 10,}}>
-                        {this.renderSelectBoxRow()}
+                        {this.renderFirstDropDownRow()}
                     </div>
                 </>
 
             )
         }
 
-        makeClusterDropdown(){
-            return(
+        makeClusterDropdown() {
+            return (
                 <div className="page_monitoring_dropdown_box">
-                    <div className="page_monitoring_dropdown_label">
+                    <div
+                        className="page_monitoring_dropdown_label"
+                        style={{backgroundColor: 'transparent', height: 20, marginTop: 5, marginLeft: this.state.isShowFilter ? 0 : 10}}
+                    >
                         Cluster | Cloudlet
                     </div>
                     <Dropdown
@@ -1634,8 +1638,33 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
             )
         }
 
+        makeAppInstDropdown() {
+            return (
+                <div className="page_monitoring_dropdown_box">
+                    <div className="page_monitoring_dropdown_label" style={{backgroundColor: 'transparent', height: 20, marginTop: 5, marginLeft: 3}}>
+                        App Inst
+                    </div>
+                    <Dropdown
+                        selectOnBlur={false}
+                        disabled={this.state.currentCluster === '' || this.state.loading || this.state.appInstDropdown.length === 0}
+                        clearable={this.state.appInstSelectBoxClearable}
+                        loading={this.state.loading}
+                        value={this.state.currentAppInst}
+                        placeholder={this.state.appInstSelectBoxPlaceholder}
+                        selection
+                        // style={PageMonitoringStyles.dropDown}
+                        options={this.state.allAppInstDropdown}
+                        onChange={async (e, {value}) => {
+                            await this.handleAppInstDropdown(value.trim())
+                        }}
+                        style={PageMonitoringStyles.dropDownForClusterCloudlet2}
+                    />
+                </div>
+            )
+        }
 
-        renderSelectBoxRow() {
+
+        renderFirstDropDownRow() {
 
             if (this.state.isShowFilter) {
                 return (
@@ -1643,53 +1672,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                         <div className='page_monitoring_select_area'>
 
                             <div className='page_monitoring_select_column'>
-                                {/*todo:##########################*/}
-                                {/*todo:Cluster_Dropdown         */}
-                                {/*todo:##########################*/}
                                 {this.makeClusterDropdown()}
-                                {/* <div style={{display: 'flex',}}>
-                                    <div className="page_monitoring_dropdown_label">
-                                        Cluster | Cloudlet
-                                    </div>
-                                    <TreeSelect
-                                        style={{width: '350px'}}
-                                        value={this.state.currentCluster === '' ? undefined : this.state.currentCluster}
-                                        dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
-                                        treeData={this.state.clusterDropdownList}
-                                        placeholder="Please select cloudlet"
-                                        treeDefaultExpandAll
-                                        onChange={async (value) => {
-
-                                            console.log("TreeSelect===>", value);
-
-                                            await this.handleClusterDropdown(value.trim())
-                                        }}
-                                    />
-                                </div>*/}
-                                {/*todo:---------------------------*/}
-                                {/*todo: App Instance_Dropdown      */}
-                                {/*todo:---------------------------*/}
-                                <div className="page_monitoring_dropdown_box" style={{marginLeft: 15,}}>
-                                    <div className="page_monitoring_dropdown_label">
-                                        App Inst
-                                    </div>
-                                    <Dropdown
-                                        selectOnBlur={false}
-                                        disabled={this.state.currentCluster === '' || this.state.loading || this.state.appInstDropdown.length === 0}
-                                        clearable={this.state.appInstSelectBoxClearable}
-                                        loading={this.state.loading}
-                                        value={this.state.currentAppInst}
-                                        placeholder={this.state.appInstSelectBoxPlaceholder}
-                                        selection
-                                        // style={PageMonitoringStyles.dropDown}
-                                        options={this.state.allAppInstDropdown}
-                                        onChange={async (e, {value}) => {
-                                            await this.handleAppInstDropdown(value.trim())
-                                        }}
-                                        style={PageMonitoringStyles.dropDownForClusterCloudlet2}
-                                    />
-                                </div>
-
+                                {this.makeAppInstDropdown()}
                             </div>
                             <div className='page_monitoring_select_column_end' style={{marginTop: 0}}>
                                 <div className='page_monitoring_select_toggle'>
@@ -1791,7 +1775,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
 
         renderLegend() {
 
-            //alert(this.state.currentClassification)
             let fullClusterList = '';
             let region = '';
             if (this.state.currentCluster) {
@@ -1803,66 +1786,72 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
 
             return (
                 <Legend>
-                    {this.state.loading ?
-                        <div style={{display: 'flex', width: '100%', justifyContent: 'center'}}>
-                            <CircularProgress style={{fontWeight: 'bold', color: '#1cecff'}}
-                                              color={'#1cecff'}
-                                              size={15}/>
+                    <div style={{display: 'flex', width: '100%'}}>
+                        {!this.state.isShowFilter &&
+                        <div>
+                            {this.makeClusterDropdown()}
                         </div>
-                        :
-                        <div style={{display: 'flex', width: '100%'}}>
-                            {/*<div style={{display: 'flex', justifyContent: 'flex-start', flex: .2, marginLeft: 15, backgroundColor: 'transparent'}}>
-                                {this.state.currentCluster !== undefined && fullClusterList}
-                            </div>*/}
-                            {this.state.currentClassification === 'Cluster' ?
-                                <div style={{display: 'flex', flex: 1, justifyContent: 'center', marginLeft: 0, backgroundColor: 'transparent'}}>
-                                    {this.state.filteredClusterUsageList.map((item, index) => {
-                                        return (
-                                            <Center2>
-                                                <div style={{
-                                                    backgroundColor: this.state.chartColorList[index],
-                                                    width: 15,
-                                                    height: 15,
-                                                    borderRadius: 50,
-                                                    marginTop: 3
-                                                }}>
+                        }
+                        {this.state.currentClassification === 'Cluster' ?
+                            <div style={{display: 'flex', flex: 1, justifyContent: 'center', marginLeft: 0, backgroundColor: 'transparent'}}>
+                                {this.state.filteredClusterUsageList.map((item, index) => {
+                                    return (
+                                        <Center2>
+                                            <div style={{
+                                                backgroundColor: this.state.chartColorList[index],
+                                                width: 15,
+                                                height: 15,
+                                                borderRadius: 50,
+                                                marginTop: 3
+                                            }}>
 
-                                                </div>
-                                                <ClusterCluoudletLable
-                                                    style={{
-                                                        marginLeft: 4,
-                                                        marginRight: 15,
-                                                        marginBottom: 0
-                                                    }}>{item.cluster}
-                                                    {` [`}{item.cloudlet}]
+                                            </div>
+                                            <ClusterCluoudletLable
+                                                style={{
+                                                    marginLeft: 4,
+                                                    marginRight: 15,
+                                                    marginBottom: 0
+                                                }}>{item.cluster}
+                                                {` [`}{item.cloudlet}]
 
-                                                </ClusterCluoudletLable>
-                                            </Center2>
-                                        )
-                                    })}
-                                </div>
-                                ://@desc : AppInst
-                                <div style={{display: 'flex', flex: 1, justifyContent: 'center', marginLeft: 0, backgroundColor: 'transparent'}}>
+                                            </ClusterCluoudletLable>
+                                        </Center2>
+                                    )
+                                })}
+                            </div>
+                            :
+                            <div style={{display: 'flex', flex: 1, justifyContent: 'center', marginLeft: 0, backgroundColor: 'transparent', height: 20, marginTop: 3,}}>
+                                <div style={{backgroundColor: 'transparent'}}>
                                     <div style={{
                                         backgroundColor: this.state.chartColorList[0],
                                         width: 15,
                                         height: 15,
                                         borderRadius: 50,
-                                        marginTop: 4
+                                        marginTop: 3
                                     }}>
                                     </div>
-                                    <ClusterCluoudletLable
-                                        style={{marginLeft: 5, marginRight: 15, marginBottom: 0}}>
-                                        {this.state.currentAppInst.split("|")[0]} {`| `}
-                                        {this.state.currentAppInst.split("|")[2]} {`| `}
-                                        {this.state.currentAppInst.split("|")[1]}
-                                    </ClusterCluoudletLable>
                                 </div>
+                                <ClusterCluoudletLable
+                                    style={{marginLeft: 5, marginRight: 15, marginBottom: 0}}>
+                                    {this.state.currentAppInst.split("|")[0]} {`| `}
+                                    {this.state.currentAppInst.split("|")[2]} {`| `}
+                                    {this.state.currentAppInst.split("|")[1]}
+                                </ClusterCluoudletLable>
+                            </div>
+                        }
 
-                            }
-                        </div>
-                    }
+                    </div>
                 </Legend>
+            )
+        }
+
+        renderSmallProgress() {
+            return (
+                <div style={{display: 'flex', width: '100%', justifyContent: 'center', height: 20}}>
+                    <CircularProgress style={{fontWeight: 'bold', color: '#1cecff'}}
+                                      color={'#1cecff'}
+                                      size={15}/>
+                </div>
             )
         }
 
