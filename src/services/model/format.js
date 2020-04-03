@@ -103,7 +103,10 @@ export const fields = {
     containerVersion:'containerVersion',
     configs:'configs',
     config:'config',
-    kind:'kind'
+    kind:'kind',
+    annotations:'annotations',
+    key:'key',
+    value:'value'
 }
 
 export const getUserRole = () => {
