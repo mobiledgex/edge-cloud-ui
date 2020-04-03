@@ -2,7 +2,7 @@ import React from 'react';
 import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX, TEXT_AREA } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX, TEXT_AREA, ICON_BUTTON } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -69,32 +69,39 @@ class ClusterInstReg extends React.Component {
 
     /**Deployment manifest block */
 
-    /**port block */
-
     portForm = () => ([
         { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number' }, width: 9, visible: true },
         { field: fields.protocol, label: 'Protocol', formType: SELECT, rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp'] },
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removePortForms }
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm }
     ])
+
+    getPortForm = (form) => {
+        return ({ uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form ? form : this.portForm(), width: 3, visible: true })
+    }
 
     multiPortForm = () => ([
         { field: fields.portRangeMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number' }, width: 4, visible: true },
         { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
         { field: fields.portRangeMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number' }, width: 4, visible: true },
         { field: fields.protocol, label: 'Protocol', formType: SELECT, rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp'] },
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removePortForms }
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm }
     ])
 
-    getPortForm = (form) => (
-        { uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form, width: 3, visible: true }
-    )
+    getMultiPortForm = (form) => {
+        return ({ uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form ? form : this.multiPortForm(), width: 3, visible: true })
+    }
 
-    getMultiPortForm = (form) => (
-        { uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form, width: 3, visible: true }
-    )
+    configForm = () =>([
+        { field: fields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, type: 'number', rows: 4 }, width: 9, visible: true },
+        { field: fields.kind, label: 'Kind', formType: SELECT, rules: { required: true }, width: 4, visible: true, options: ['Environment Variables', 'Helm Customization'] },
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm }
+    ])
 
+    getConfigForm = (form) => {
+        return ({ uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form ? form : this.configForm(), width: 3, visible: true })
+    }
 
-    removePortForms = (e, form) => {
+    removeMultiForm = (e, form) => {
         if (form.parent) {
             let updateForms = Object.assign([], this.state.forms)
             updateForms.splice(form.parent.id, 1);
@@ -102,17 +109,15 @@ class ClusterInstReg extends React.Component {
                 forms: updateForms
             })
         }
-
     }
 
-    addPortForms = () => {
-        this.setState(prevState => ({ forms: [...prevState.forms, this.getPortForm(this.portForm())] }))
+    addMultiForm = (e, form) =>
+    {
+        let parent  = form.parent;
+        let forms = this.state.forms;
+        forms.splice(parent.id + 1, 0, form.multiForm());
+        this.setState({forms:forms})
     }
-
-    addMultiPortForms = () => {
-        this.setState(prevState => ({ forms: [...prevState.forms, this.getMultiPortForm(this.multiPortForm())] }))
-    }
-    /**port block */
 
 
     updateImagePath = (forms, form)=>
@@ -262,6 +267,7 @@ class ClusterInstReg extends React.Component {
         if (data) {
             let forms = this.state.forms;
             let ports = ''
+            let configs = []
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i];
                 if (form.uuid) {
@@ -279,6 +285,10 @@ class ClusterInstReg extends React.Component {
                         else if (form.field === fields.deploymentManifest) {
                             data[fields.deploymentManifest] = multiFormData[fields.deploymentManifest]
                         }
+                        else if (multiFormData[fields.kind] && multiFormData[fields.config]) {
+                            multiFormData[fields.kind] = constant.configType(multiFormData[fields.kind])
+                            configs.push(multiFormData)
+                        }
                     }
                     data[uuid] = undefined
                 }
@@ -286,7 +296,9 @@ class ClusterInstReg extends React.Component {
             if (ports.length > 0) {
                 data[fields.accessPorts] = ports
             }
-
+            if (configs.length > 0) {
+                data[fields.configs] = configs
+            }
 
             let isUpdate = this.props.isUpdate;
             let valid = isUpdate ? await updateApp(this, data) : await createApp(this, data)
@@ -362,6 +374,9 @@ class ClusterInstReg extends React.Component {
             this.flavorList = await getFlavorList(this, { region: data[fields.region] })
             this.privacyPolicyList = await getPrivacyPolicyList(this, { region: data[fields.region] })
             this.autoProvPolicyList = await getAutoProvPolicyList(this, { region: data[fields.region] })
+            
+            let portForms = []
+            let configForms = []
             if (data[fields.accessPorts]) {
                 let portArray = data[fields.accessPorts].split(',')
                 for (let i = 0; i < portArray.length; i++) {
@@ -391,9 +406,32 @@ class ClusterInstReg extends React.Component {
                             portForm.value = portMinNo
                         }
                     }
-                    forms.push(this.getPortForm(portForms))
+                    forms.splice(19, 0, this.getPortForm(portForms))
                 }
             }
+
+            if(data[fields.configs])
+            {
+                let configs = data[fields.configs]
+                for(let i=0;i<configs.length;i++)
+                {
+                    let config = configs[i]
+                    let configForms = this.configForm()
+                    for (let j = 0; j < configForms.length; j++) {
+                        let configForm = configForms[j];
+                        if (configForm.field === fields.kind) {
+                            configForm.value = config[fields.kind]
+                        }
+                        else if (configForm.field === fields.config) {
+                            configForm.value = config[fields.config]
+                        }
+                    }
+                    forms.splice(20 + portForms.length, 0, this.getConfigForm(configForms))
+                }
+            }
+
+
+            
         }
     }
 
@@ -417,7 +455,8 @@ class ClusterInstReg extends React.Component {
             { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: CHECKBOX, visible: false, value: false, update: true },
             { field: fields.command, label: 'Command', formType: INPUT, placeholder: 'Enter Command', rules: { required: false }, visible: true, update: true, tip: 'Command that the container runs to start service' },
             { uuid: uuid(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, update: true, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
-            { label: 'Ports', formType: 'Header', forms: [{ formType: BUTTON, label: 'Add Port Mapping', visible: true, update: true, onClick: this.addPortForms }, { formType: BUTTON, label: 'Add Multiport Mapping', visible: true, onClick: this.addMultiPortForms }], visible: true, tip: 'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443' },
+            { label: 'Ports', formType: 'Header', forms: [{ formType: BUTTON, label: 'Add Port Mapping', visible: true, update: true, onClick: this.addMultiForm, multiForm:this.getPortForm }, { formType: BUTTON, label: 'Add Multiport Mapping', visible: true, onClick: this.addMultiForm, multiForm:this.getMultiPortForm }], visible: true,  tip: 'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443' },
+            { label: 'Configs', formType: 'Header', forms: [{ formType: BUTTON, label: 'Add', visible: true, update: true, onClick: this.addMultiForm, multiForm:this.getConfigForm}], visible: true }
         ]
     }
 

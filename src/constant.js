@@ -92,6 +92,21 @@ export const imageType = (id) => {
     }
 }
 
+export const configType = (id) => {
+    switch (id) {
+        case 'Helm Customization':
+            return 'hemlCustomizationYaml'
+        case 'Environment Variables':
+            return 'envVarsYaml'
+        case 'hemlCustomizationYaml':
+            return 'Helm Customization'
+        case 'envVarsYaml':
+            return 'Environment Variables'
+        default:
+            return id
+    }
+}
+
 
 export const IPSupport = (id) => {
     switch (id) {
