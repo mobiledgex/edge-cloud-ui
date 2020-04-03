@@ -50,6 +50,21 @@ const renderField = ({
         </div>
     </div>
 )
+const renderTextareaField = ({
+                         input,
+                         label,
+                         meta: { touched, error, warning }
+                     }) => (
+    <div>
+        <label>{"Contents"}</label>
+        <div>
+            <textarea {...input} style={{color:'black'}} placeholder={"Contents"} value={label} autoFocus></textarea>
+            {touched &&
+            ((error && <span>{error}</span>) ||
+                (warning && <span>{warning}</span>))}
+        </div>
+    </div>
+)
 const renderLabel = ({
                          input,
                          label,
@@ -82,7 +97,6 @@ class PopSendEmailView extends React.Component {
     render() {
         let { handleSubmit, pristine, reset, submitting, rawViewData } = this.props;
 
-        console.log("20200306 " + JSON.stringify(rawViewData))
         return (
             <form id={'eSendForm'} onSubmit={handleSubmit(submit)}>
                 <Field
@@ -107,14 +121,15 @@ class PopSendEmailView extends React.Component {
                     component={renderField}
                     label="From"
                     validate={email}
-                    warn={alphaNumeric}
+                    warn={aol}
                 />
-                <div>
-                    <label>Content</label>
-                    <div>
-                        <textarea style={{color:'black'}} name="content" placeholder="Content" rows="10" cols="40" >{"Dear MobiledgeX Support team,\nPlease investigate Trace ID : " + rawViewData.traceid}</textarea>
-                    </div>
-                </div>
+                <Field
+                    name="html"
+                    component={renderTextareaField}
+                    label={"Dear MobiledgeX Support team,\nPlease investigate Trace ID : " + rawViewData.traceid}
+                />
+                    {/*<label>Content</label>*/}
+                    {/*<textarea style={{color:'black'}} name="content" placeholder="Content" rows="10" cols="40" value={"Dear MobiledgeX Support team,\nPlease investigate Trace ID : " + rawViewData.traceid}></textarea>*/}
                 <div style={{display:'none'}}>
                     <button id={'popSendEmailSubmit'} type="submit" disabled={submitting}>
                         Submit
