@@ -9,12 +9,11 @@ import PopSendEmailView from './popSendEmailView';
 import { withRouter } from "react-router-dom";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import * as actions from "../actions";
-import View from "react-flexbox";
 import FlexBox from "flexbox-react";
 import CalendarTimeline from "../components/timeline/calendarTimeline";
-import HorizontalTimelineKJ from "../components/horizontal_timeline_kj/Components/HorizontalTimeline";
 import { hot } from "react-hot-loader/root";
 
+const sgmail = require('@sendgrid/mail')
 const countryOptions = [
     { key: '24', value: 24, flag: '24', text: 'Last 24 hours' },
     { key: '18', value: 18, flag: '18', text: 'Last 18 hours' },
@@ -30,16 +29,19 @@ const jsonView = (jsonObj, self) => {
 const mapStateToProps = (state) => {
     let submitSuccess = false;
     let submitContent = null;
+    let submitValues = null;
     if (state.form.fieldLevelValidation) {
         console.log('20191030 redux props.. ', state.form.fieldLevelValidation)
         if (state.form.fieldLevelValidation.submitSucceeded) {
             submitSuccess = true;
             submitContent = state.form.fieldLevelValidation.registeredFields;
+            submitValues = state.form.fieldLevelValidation.values;
         }
     }
     return {
         onSubmit: submitSuccess,
         sendingContent: submitContent,
+        sendingValues:submitValues,
         loading: state.loadingSpinner.loading,
         isLoading: state.LoadingReducer.isLoading,
     }
@@ -116,6 +118,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 {margin:'0 0 10px 0', padding: '5px 15px 15px', alignItems:'center', flexDirection:'column', height:'500px', width:'100%', overflow:'scroll'},
                 {margin:'0 0 10px 0', padding: '5px 15px 15px', alignItems:'center', flexDirection:'column', height:'28px', width:'100%'}
             ]
+
+            sgmail.setApiKey('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')
         }
 
         componentWillMount() {
@@ -246,6 +250,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     })
                     if(!check || storageTimeList.length > 200){
                         localStorage.removeItem('selectedTime')
+                        localStorage.removeItem('sendedTraceid')
                     }
 
                     let timelineList = []
@@ -272,7 +277,26 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             }
             //submit form
             if (nextProps.onSubmit) {
-                console.log('20191030 send mail contents == ', nextProps.sendingContent)
+                console.log('20191030 send mail contents == ', nextProps)
+                let msg = nextProps.sendingValues
+                let traceid = null;
+
+                nextProps.data.data.map((v, i) => {
+                    if(nextProps.sendingValues.html.indexOf(v.traceid) > (-1)){
+                        traceid = v.traceid
+                    }
+                })
+
+                this.setState({}, () => sgmail.send(msg)
+                                                            .then(() => {
+                                                                console.log('success')
+                                                                this.setStorageData(traceid, "trace")
+                                                                this.setState({ openSendEmail: false })
+                                                            })
+                                                            .catch((err) => {
+                                                                console.log('error = ' + err)
+                                                            })
+                )
             }
 
         };
@@ -352,7 +376,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             })
             let selectedIndex = value.value;
             let timelineDataOne = this.state.rawAllData[selectedIndex]
-            this.setStorageData(timelineDataOne.starttime)
+            this.setStorageData(timelineDataOne.starttime, "time")
             setTimeout(() => {
                 this.setRequestView(timelineDataOne)
                 this.setResponseView(timelineDataOne)
@@ -363,23 +387,40 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             }, 251)
         }
 
-        setStorageData(data) {
-            let timeList = [];
-            let storageTimeList = JSON.parse(localStorage.getItem("selectedTime"))
-            let makeDate = this.makeUTC(data)
-            let makeTime = this.makeNotUTC(data)
-            let newDate =  new Date(makeDate + " " + makeTime)
+        setStorageData(data, type) {
+            if(type === 'time'){
+                let timeList = [];
+                let storageTimeList = JSON.parse(localStorage.getItem("selectedTime"))
+                let makeDate = this.makeUTC(data)
+                let makeTime = this.makeNotUTC(data)
+                let newDate =  new Date(makeDate + " " + makeTime)
 
-            if (storageTimeList) {
-                timeList = storageTimeList
-                let storageTimeIndex = storageTimeList.findIndex(s => new Date(s).getTime() === newDate.getTime())
-                if(storageTimeIndex === (-1)){
-                    timeList.push(newDate)
+                if (storageTimeList) {
+                    timeList = storageTimeList
+                    let storageTimeIndex = storageTimeList.findIndex(s => new Date(s).getTime() === newDate.getTime())
+                    if(storageTimeIndex === (-1)){
+                        timeList.push(newDate)
+                        localStorage.setItem("selectedTime", JSON.stringify(timeList))
+                    }
+                } else {
+                    timeList[0] = newDate
                     localStorage.setItem("selectedTime", JSON.stringify(timeList))
                 }
-            } else {
-                timeList[0] = newDate
-                localStorage.setItem("selectedTime", JSON.stringify(timeList))
+            } else if(type === 'trace'){
+                let traceList = []
+                let storageTraceList = JSON.parse(localStorage.getItem("sendedTraceid"))
+
+                if (storageTraceList) {
+                    traceList = storageTraceList
+                    let storageTraceIndex = storageTraceList.findIndex(s => s.traceid === data)
+                    if(storageTraceIndex === (-1)){
+                        traceList.push(data)
+                        localStorage.setItem("sendedTraceid", JSON.stringify(traceList))
+                    }
+                } else {
+                    traceList[0] = data
+                    localStorage.setItem("sendedTraceid", JSON.stringify(traceList))
+                }
             }
         }
 
@@ -542,7 +583,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         onClickUnCheckedError = (e, v) => {
             let unCheckedToggle = this.state.unCheckedErrorToggle
             let value = {'value':'uncheck'}
-            console.log('20200327 ' + unCheckedToggle)
             if(unCheckedToggle){
                 value = {'value':'all'}
                 this.setState({unCheckedErrorToggle: false})
@@ -662,6 +702,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
 class SendEmailView extends React.Component {
     onSubmit = () => {
+        console.log('20200401')
         this.setState({ submitState: true })
     }
     onClear = () => {

@@ -172,6 +172,12 @@ export default class CalendarTimeline extends Component {
             storageTimeIndex = storageTimeList.findIndex(s => new Date(s).getTime() === new Date(item.itemTime).getTime())
         }
 
+        const storageTraceList = JSON.parse(localStorage.getItem("sendedTraceid"))
+        let storageTraceIndex = (-1);
+        if(storageTraceList){
+            storageTraceIndex = storageTraceList.findIndex(s => s === itemContext.title)
+        }
+
         return (
             <div
                 {...getItemProps({
@@ -204,6 +210,7 @@ export default class CalendarTimeline extends Component {
                     TRACE ID : {itemContext.title} <br />
 
                     <button style={{color:"black"}} onClick={this.props.onPopupEmail}>Send E-mail Trace ID</button>
+                    {(storageTraceIndex !== (-1))? 'V' :null}
                 </div>
 
                 {itemContext.useResizeHandle ? <div {...rightResizeProps} /> : null}
@@ -294,8 +301,8 @@ export default class CalendarTimeline extends Component {
                     minResizeWidth={550}
                     defaultTimeStart={defaultTimeStart}
                     defaultTimeEnd={defaultTimeEnd}
-                    visibleTimeStart={visibleTimeStart}
-                    visibleTimeEnd={visibleTimeEnd}
+                    // visibleTimeStart={visibleTimeStart}
+                    // visibleTimeEnd={visibleTimeEnd}
                     itemRenderer={this.itemRenderer}
                     groupRenderer={this.groupRenderer}
                     selected={[(this.props.timelineSelectedIndex).toString()]}
