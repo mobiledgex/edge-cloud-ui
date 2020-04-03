@@ -27,6 +27,7 @@ export const keys = () => ([
     { field: fields.revision, serverField: 'revision', label: 'Revision' },
     { field: fields.autoPolicyName, serverField: 'auto_prov_policy', label: 'Auto Provisioning Policy' },
     { field: fields.privacyPolicyName, serverField: 'default_privacy_policy', label: 'Default Privacy Policy' },
+    { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: constant.TYPE_JSON },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
@@ -71,6 +72,9 @@ export const getKey = (data, isCreate) => {
         }
         if (data[fields.accessType]) {
             app.access_type = constant.accessType(data[fields.accessType])
+        }
+        if (data[fields.configs]) {
+            app.configs = data[fields.configs]
         }
     }
     return ({
@@ -118,6 +122,15 @@ export const deleteApp = (data) => {
 const customData = (value) => {
     value[fields.accessType] = constant.accessType(value[fields.accessType])
     value[fields.imageType] = constant.imageType(value[fields.imageType])
+    if(value[fields.configs])
+    {
+        let configs = value[fields.configs]
+        for(let i=0;i<configs.length;i++)
+        {
+            let config = configs[i]
+            config.kind = constant.configType(config.kind)
+        }
+    }
 }
 
 export const getData = (response, body) => {
