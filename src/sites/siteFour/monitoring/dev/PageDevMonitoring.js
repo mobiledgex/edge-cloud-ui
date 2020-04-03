@@ -437,7 +437,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
 
             })
 
-            await this.loadInitDataForCluster();
+            await this.loadInitDataForCluster__FOR__DEV();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
@@ -750,7 +750,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                     loading={this.state.loading}
                     currentClassification={this.state.currentClassification}
                     parent={this}
-                    pHardwareType={hwType} chartDataSet={lineChartDataSet}
+                    pHardwareType={hwType}
+                    chartDataSet={lineChartDataSet}
                 />
             )
 
@@ -779,11 +780,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                     }
                 })
 
-                console.log("graphDatasets===>", graphDatasets);
-
                 let dataSets = [
                     {
-
                         backgroundColor: gradientList,
                         borderColor: gradientList,
                         borderWidth: 1,
@@ -829,11 +827,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
 
             if (!isEmpty(barChartDataSet)) {
                 let chartDatas = this.makeGradientBarCharData(barChartDataSet)
-                console.log("graphType===>", graphType);
+                console.log("makeGradientBarCharData===>", barChartDataSet.chartDataList.length);
                 return (
-                    <GradientBarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this}
-                                               loading={this.state.loading} chartDataSet={chartDatas}
-                                               pHardwareType={hwType} graphType={graphType}/>
+                    <GradientBarChartContainer
+                        isResizeComplete={this.state.isResizeComplete}
+                        parent={this}
+                        loading={this.state.loading}
+                        chartDataSet={chartDatas}
+                        pHardwareType={hwType}
+                        graphType={graphType}
+                        dataLength={barChartDataSet.chartDataList.length}
+                    />
                 )
             }
 
@@ -904,10 +908,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
 
         async handleClusterDropdown(selectedClusterOne) {
 
-            console.log("selectedClusterOne===>", selectedClusterOne);
-
             clearInterval(this.intervalForAppInst)
-
             await this.setState({
                 selectedClientLocationListOnAppInst: [],
             })
@@ -924,19 +925,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
 
 
             let allClusterUsageList = this.state.allClusterUsageList;
-            await this.setState({
-                dropdownRequestLoading: false,
-            });
-
             let allUsageList = allClusterUsageList;
             let filteredClusterUsageList = []
             allUsageList.map(item => {
                 if (item.cluster === selectedCluster && item.cloudlet === selectedCloudlet) {
                     filteredClusterUsageList.push(item)
                 }
-            })
-            await this.setState({
-                filteredClusterUsageList: filteredClusterUsageList,
             })
 
             let allClusterEventLogList = this.state.allClusterEventLogList
@@ -947,12 +941,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                 }
             })
 
-            await this.setState({
-                filteredClusterEventLogList: filteredClusterEventLogList,
-            })
-
             let appInstanceList = this.state.appInstanceList;
-
             let filteredAppInstList = []
             appInstanceList.map((item: TypeAppInstance, index) => {
                 if (item.ClusterInst === selectedCluster && item.Cloudlet === selectedCloudlet) {
@@ -960,11 +949,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                 }
             })
 
-
             let appInstDropdown = makeSelectBoxListWithValuePipe(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
-            //let groupdClusterList = reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET)
 
             await this.setState({
+                dropdownRequestLoading: false,
+                filteredClusterUsageList: filteredClusterUsageList,
+                filteredClusterEventLogList: filteredClusterEventLogList,
                 appInstDropdown: appInstDropdown,
                 allAppInstDropdown: appInstDropdown,
                 currentAppInst: '',
