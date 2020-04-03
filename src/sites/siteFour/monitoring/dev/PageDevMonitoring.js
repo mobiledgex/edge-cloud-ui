@@ -1194,19 +1194,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
 
         makeGridItemBodyByType(hwType, graphType) {
 
-            if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
+            if (graphType === GRID_ITEM_TYPE.LINE) {
                 return (
                     this.makeLineChartData(hwType,)
                 )
-            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BAR) {
+            } else if (graphType === GRID_ITEM_TYPE.BAR) {
                 return (
                     this.makeBarChartData(hwType, graphType)
                 )
-            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.COLUMN) {
+            } else if (graphType === GRID_ITEM_TYPE.COLUMN) {
                 return (
                     this.makeBarChartData(hwType, graphType)
                 )
-            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BUBBLE) {
+            } else if (graphType === GRID_ITEM_TYPE.BUBBLE) {
                 return (
                     <BubbleChartContainer
                         loading={this.state.loading}
@@ -1215,7 +1215,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                         bubbleChartData={this.state.bubbleChartData}
                         themeTitle={this.state.themeTitle}/>
                 )
-            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.MAP) {
+            } else if (graphType === GRID_ITEM_TYPE.MAP) {
                 return (
                     <LeafletMapWrapperForDev
                         currentWidgetWidth={this.state.currentWidgetWidth}
@@ -1229,21 +1229,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                         isFullScreenMap={false}
                     />
                 )
-            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
+            } else if (graphType === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
                 return (
                     this.state.loading ? renderPlaceHolderCircular() :
                         <PerformanceSummaryTableContainer parent={this}
                                                           clusterUsageList={this.state.filteredClusterUsageList}/>
                 )
-            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PIE) {
+            } else if (graphType === GRID_ITEM_TYPE.PIE) {
                 return (
                     <PieChartContainer/>
                 )
-            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST) {
+            } else if (graphType === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST) {
                 return (
                     <EventLogListContainer eventLogList={this.state.filteredClusterEventLogList}/>
                 )
-            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
+            } else if (graphType === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                 return (
                     <VirtualAppInstEventLogListContainer
                         currentAppInst={this.state.currentAppInst}
@@ -1254,7 +1254,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                 )
             }
         }
-
 
         showBigModal = (hwType, graphType) => {
 
