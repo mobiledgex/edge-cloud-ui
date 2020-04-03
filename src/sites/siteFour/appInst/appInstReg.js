@@ -15,7 +15,6 @@ import { getPrivacyPolicyList } from '../../../services/model/privacyPolicy';
 import { getClusterInstList } from '../../../services/model/clusterInstance';
 import { getAppList } from '../../../services/model/app';
 import { createAppInst } from '../../../services/model/appInstance';
-//autoclustermobiledgexsdkdemo
 
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 
@@ -131,10 +130,59 @@ class ClusterInstReg extends React.Component {
                 if (isInit === undefined || isInit === false) {
                     this.setState({ forms: forms })
                 }
-                break;
             }
         }
     }
+
+    versionValueChange = (currentForm, forms, isInit) => {
+        //hide cluster and autoCluster if deployment type is vm
+        let appName = undefined;
+        let dependentData = currentForm.dependentData
+        for (let i = 0; i < dependentData.length; i++) {
+            let form = forms[dependentData[i].index]
+            if (form.field === fields.appName) {
+                appName = form.value
+                break;
+            }
+        }
+        
+        for (let i = 0; i < this.appList.length; i++) {
+            let app = this.appList[i]
+            if (app[fields.appName] === appName && app[fields.version] === currentForm.value) {
+                forms = forms.filter((form) => {
+                    if (form.field === fields.autoClusterInstance) {
+                        form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_VM ? false : true
+                        form.value = false
+                        this.autoClusterValueChange(form, forms, isInit)
+                        return form
+                    }
+                    else if (form.field === fields.clusterName) {
+                        form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_VM ? false : true
+                        form.value = undefined
+                        return form
+                    }
+                    else if (form.label === 'Configs') {
+                        form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM ? true : false
+                        return form
+                    }
+                    else if (form.field === fields.configs) {
+                        if (app[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM) { 
+                            return form
+                        }
+                    }
+                    else
+                    {
+                        return form
+                    }
+                })
+                break;
+            }
+        }
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
+        }
+    }
+    
 
     regionValueChange = (currentForm, forms, isInit) => {
         let region = currentForm.value;
@@ -197,7 +245,7 @@ class ClusterInstReg extends React.Component {
     ])
 
     getConfigForm = (form) => (
-        { uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form, width: 3, visible: true }
+        { uuid: uuid(), field: fields.configs, formType: 'MultiForm', forms: form, width: 3, visible: true }
     )
 
     addConfigs = () => {
@@ -209,12 +257,12 @@ class ClusterInstReg extends React.Component {
             { label: 'App Instances', formType: 'Header', visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
             { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of' },
-            { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
+            { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: true }, fullData: true, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
             { field: fields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: true }, visible: true, dependentData: [{ index: 3, field: fields.appName }] },
             { field: fields.operatorName, label: 'Operator', formType: 'Select', placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
             { field: fields.cloudletName, label: 'Cloudlet', formType: 'MultiSelect', placeholder: 'Select Cloudlets', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 5, field: fields.operatorName }] },
-            { field: fields.autoClusterInstance, label: 'Auto Cluster Instance', formType: CHECKBOX, visible: true, value: false },
-            { field: fields.clusterName, label: 'Cluster', formType: 'Select', placeholder: 'Select Clusters', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
+            { field: fields.autoClusterInstance, label: 'Auto Cluster Instance', formType: CHECKBOX, visible: false, value: false },
+            { field: fields.clusterName, label: 'Cluster', formType: 'Select', placeholder: 'Select Clusters', rules: { required: true }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
             { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: 'Select', placeholder: 'Select Privacy Policy', rules: { required: false }, visible: false, dependentData: [{ index: 1, field: fields.region }] },
             { label: 'Configs', formType: 'Header', forms: [{ formType: ICON_BUTTON, icon: 'add', visible: true, update: true, onClick: this.addConfigs, style:{color:'white'} }], visible: true }
         ]
@@ -223,9 +271,6 @@ class ClusterInstReg extends React.Component {
     checkForms = (form, forms, isInit) => {
         if (form.field === fields.region) {
             this.regionValueChange(form, forms, isInit)
-        }
-        else if (form.field === fields.region) {
-            this.organizationValueChange(form, forms, isInit)
         }
         else if (form.field === fields.organizationName) {
             this.organizationValueChange(form, forms, isInit)
@@ -238,6 +283,9 @@ class ClusterInstReg extends React.Component {
         }
         else if (form.field === fields.appName) {
             this.appNameValueChange(form, forms, isInit)
+        }
+        else if (form.field === fields.version) {
+            this.versionValueChange(form, forms, isInit)
         }
     }
 
@@ -281,7 +329,10 @@ class ClusterInstReg extends React.Component {
             }
 
             let cloudlets = data[fields.cloudletName];
-            data[fields.clusterName] = data[fields.autoClusterInstance] ? 'autocluster' + data[fields.appName].toLowerCase().replace(/ /g, "") : data[fields.clusterName]
+            if(data[fields.clusterName] || data[fields.autoClusterInstance])
+            {
+                data[fields.clusterName] = data[fields.autoClusterInstance] ? 'autocluster' + data[fields.appName].toLowerCase().replace(/ /g, "") : data[fields.clusterName]
+            }
             if (cloudlets && cloudlets.length > 0) {
                 for (let i = 0; i < cloudlets.length; i++) {
                     let cloudlet = cloudlets[i];

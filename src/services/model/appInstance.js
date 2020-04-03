@@ -36,7 +36,7 @@ export const getKey = (data, isCreate) => {
     app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] },
     cluster_inst_key: {
       cloudlet_key: { name: data[fields.cloudletName], organization: data[fields.operatorName] },
-      cluster_key: { name: data[fields.clusterName] },
+      cluster_key: { name: data[fields.clusterName] ?  data[fields.clusterName] : 'DefaultVMCluster'},
       organization: data[fields.clusterdeveloper] ? data[fields.clusterdeveloper] : data[fields.organizationName]
     }
   }

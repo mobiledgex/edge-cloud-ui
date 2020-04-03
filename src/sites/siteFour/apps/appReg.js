@@ -98,7 +98,7 @@ class ClusterInstReg extends React.Component {
     ])
 
     getConfigForm = (form) => {
-        return ({ uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form ? form : this.configForm(), width: 3, visible: true })
+        return ({ uuid: uuid(), field: fields.configs, formType: 'MultiForm', forms: form ? form : this.configForm(), width: 3, visible: true })
     }
 
     removeMultiForm = (e, form) => {
@@ -146,26 +146,42 @@ class ClusterInstReg extends React.Component {
     }
 
     deploymentValueChange = (currentForm, forms, isInit) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i];
+        forms = forms.filter((form) => {
             if (form.field === fields.imageType) {
                 form.value = currentForm.value === constant.DEPLOYMENT_TYPE_HELM ? constant.IMAGE_TYPE_HELM : 
-                currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.IMAGE_TYPE_QCOW : 
-                constant.IMAGE_TYPE_DOCKER
+                currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.IMAGE_TYPE_QCOW : constant.IMAGE_TYPE_DOCKER
+                return form
             }
             else if (form.field === fields.imagePath) {
                 this.updateImagePath(forms, form)
+                return form
             }
             else if (form.field === fields.scaleWithCluster) {
                 form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? true : false
+                return form
             }
             else if (form.field === fields.accessType) {
                 form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.ACCESS_TYPE_DIRECT : constant.ACCESS_TYPE_DEFAULT_FOR_DEPLOYMENT
+                return form
             }
-        }
-        this.setState({
-            forms: forms
+            else if (form.label === 'Configs') {
+                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_HELM ? true : false
+                return form
+            }
+            else if (form.field === fields.configs) {
+                if (currentForm.value === constant.DEPLOYMENT_TYPE_HELM) {
+                    return form
+                }
+            }
+            else
+            {
+                return form
+            }
         })
+        
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
+        }
     }
 
     getFlavorInfo = async (region, form, forms) => {
@@ -456,7 +472,7 @@ class ClusterInstReg extends React.Component {
             { field: fields.command, label: 'Command', formType: INPUT, placeholder: 'Enter Command', rules: { required: false }, visible: true, update: true, tip: 'Command that the container runs to start service' },
             { uuid: uuid(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, update: true, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
             { label: 'Ports', formType: 'Header', forms: [{ formType: BUTTON, label: 'Add Port Mapping', visible: true, update: true, onClick: this.addMultiForm, multiForm:this.getPortForm }, { formType: BUTTON, label: 'Add Multiport Mapping', visible: true, onClick: this.addMultiForm, multiForm:this.getMultiPortForm }], visible: true,  tip: 'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443' },
-            { label: 'Configs', formType: 'Header', forms: [{ formType: BUTTON, label: 'Add', visible: true, update: true, onClick: this.addMultiForm, multiForm:this.getConfigForm}], visible: true }
+            { label: 'Configs', formType: 'Header', forms: [{ formType: BUTTON, label: 'Add', visible: true, update: true, onClick: this.addMultiForm, multiForm:this.getConfigForm}], visible: false }
         ]
     }
 
