@@ -1,5 +1,5 @@
 import 'react-hot-loader';
-import {Center0001, Center2, ClusterCluoudletLable, Legend, OuterHeader, AppInstLegend, Center, AppInstOuter} from '../PageMonitoringStyledComponent'
+import {Center0001, Center2, ClusterCluoudletLable, Legend, OuterHeader} from '../PageMonitoringStyledComponent'
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
@@ -11,7 +11,6 @@ import * as actions from '../../../../actions';
 import {Button as MButton, Card, CircularProgress} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
 import {DatePicker, Select, Tooltip} from 'antd';
-import {TreeSelect} from 'antd';
 
 import {
     defaultHwMapperListForCluster,
@@ -29,7 +28,7 @@ import {
     makeLineChartDataForBigModal,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
-    makeSelectBoxListWithValuePipe, makeSelectBoxListWithValuePipeForAppInst, makeTreeClusterCloudletList,
+    makeSelectBoxListWithValuePipe,
 } from "./PageDevMonitoringService";
 import {
     ADD_ITEM_LIST,
@@ -92,7 +91,6 @@ import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout} from "react-grid-layout/lib/utils";
 import GradientBarChartContainer from "../components/GradientBarChartContainer";
-
 const {Option} = Select;
 const CheckboxGroup = Checkbox.Group;
 const FA = require('react-fontawesome')
@@ -1612,6 +1610,30 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
             )
         }
 
+        makeClusterDropdown(){
+            return(
+                <div className="page_monitoring_dropdown_box">
+                    <div className="page_monitoring_dropdown_label">
+                        Cluster | Cloudlet
+                    </div>
+                    <Dropdown
+                        selectOnBlur={false}
+                        value={this.state.currentCluster}
+                        clearable={this.state.clusterSelectBoxClearable}
+                        disabled={this.state.loading}
+                        placeholder={this.state.clusterSelectBoxPlaceholder}
+                        selection
+                        loading={this.state.loading}
+                        options={this.state.clusterDropdownList}
+                        style={PageMonitoringStyles.dropDownForClusterCloudlet}
+                        onChange={async (e, {value}) => {
+                            await this.handleClusterDropdown(value.trim())
+                        }}
+                    />
+                </div>
+            )
+        }
+
 
         renderSelectBoxRow() {
 
@@ -1624,26 +1646,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                                 {/*todo:##########################*/}
                                 {/*todo:Cluster_Dropdown         */}
                                 {/*todo:##########################*/}
-
-                                <div className="page_monitoring_dropdown_box">
-                                    <div className="page_monitoring_dropdown_label">
-                                        Cluster | Cloudlet
-                                    </div>
-                                    <Dropdown
-                                        selectOnBlur={false}
-                                        value={this.state.currentCluster}
-                                        clearable={this.state.clusterSelectBoxClearable}
-                                        disabled={this.state.loading}
-                                        placeholder={this.state.clusterSelectBoxPlaceholder}
-                                        selection
-                                        loading={this.state.loading}
-                                        options={this.state.clusterDropdownList}
-                                        style={PageMonitoringStyles.dropDownForClusterCloudlet}
-                                        onChange={async (e, {value}) => {
-                                            await this.handleClusterDropdown(value.trim())
-                                        }}
-                                    />
-                                </div>
+                                {this.makeClusterDropdown()}
                                 {/* <div style={{display: 'flex',}}>
                                     <div className="page_monitoring_dropdown_label">
                                         Cluster | Cloudlet
@@ -1663,7 +1666,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                                         }}
                                     />
                                 </div>*/}
-
                                 {/*todo:---------------------------*/}
                                 {/*todo: App Instance_Dropdown      */}
                                 {/*todo:---------------------------*/}
