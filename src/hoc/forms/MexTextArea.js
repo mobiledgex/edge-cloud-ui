@@ -3,6 +3,7 @@ import { Icon, Popup, TextArea } from 'semantic-ui-react';
 const MexInput = (props) => {
 
     let form = props.form
+    let rules = form.rules
     const [value, setValue] = React.useState(props.form.value ? props.form.value : '')
 
     const onValueChange = (value) => {
@@ -12,7 +13,7 @@ const MexInput = (props) => {
 
     const getForm = () => (
         <TextArea
-            rows = {5}
+            rows = {rules ? rules.rows : 5}
             icon={form.error ? <Icon color='red' name='times circle outline' /> : null}
             label={props.label ? props.label : null}
             placeholder={form.placeholder ? form.placeholder : null}

@@ -18,6 +18,7 @@ class AppList extends React.Component {
         }
         this.action = '';
         this.data = {}
+        this.keys = keys()
     }
 
     onRegClose = (isEdited)=>
@@ -52,7 +53,7 @@ class AppList extends React.Component {
             requestType: [showApps],
             isRegion: true,
             sortBy: [fields.region, fields.appName],
-            keys: keys,
+            keys: this.keys,
             onAdd: this.onAdd
         })
     }
