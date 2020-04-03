@@ -1087,9 +1087,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
 
         makeGridSizeByType(graphType) {
             if (graphType === GRID_ITEM_TYPE.CLUSTER_LIST || graphType === GRID_ITEM_TYPE.PERFORMANCE_SUM || graphType === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST || graphType === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
-                return 2;
+                return 3;
             } else if (graphType === GRID_ITEM_TYPE.MAP) {
-                return 2;
+                return 1;
             } else {
                 return 1;
             }
@@ -1192,7 +1192,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
 
         }
 
-        ____makeGridItemBodyByType(hwType, graphType) {
+        makeGridItemBodyByType(hwType, graphType) {
 
             if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                 return (
@@ -1351,7 +1351,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                     {/*desc:############################*/}
                     <div className='page_monitoring_column_resizable'>
 
-                        {this.____makeGridItemBodyByType(hwType, graphType.toUpperCase())}
+                        {this.makeGridItemBodyByType(hwType, graphType.toUpperCase())}
                     </div>
                 </div>
             )
