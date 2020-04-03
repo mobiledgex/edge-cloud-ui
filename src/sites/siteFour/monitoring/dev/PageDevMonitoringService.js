@@ -1224,8 +1224,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this) => {
                     padding: 10,
                     labelOffset: 0,
                     callback(value, index, label) {
-                        if (index % 2 === 0)
-                            return '';
+                        //if (index % 2 === 0)return '';
                         return value;
 
                     },
