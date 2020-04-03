@@ -273,7 +273,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 if (newCloudLetLocationList[0] !== undefined) {
                     this.setState({
                         mapCenter: [newCloudLetLocationList[0].CloudletLocation.latitude, newCloudLetLocationList[0].CloudletLocation.longitude],
-                        zoom: this.state.zoom + 1,
+                        zoom: 4,
                     })
                 }
             })
