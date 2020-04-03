@@ -136,6 +136,7 @@ class ClusterInstReg extends React.Component {
 
     versionValueChange = (currentForm, forms, isInit) => {
         //hide cluster and autoCluster if deployment type is vm
+        let nForms = []
         let appName = undefined;
         let dependentData = currentForm.dependentData
         for (let i = 0; i < dependentData.length; i++) {
@@ -149,7 +150,7 @@ class ClusterInstReg extends React.Component {
         for (let i = 0; i < this.appList.length; i++) {
             let app = this.appList[i]
             if (app[fields.appName] === appName && app[fields.version] === currentForm.value) {
-                forms = forms.filter((form) => {
+                nForms = forms.filter((form) => {
                     if (form.field === fields.autoClusterInstance) {
                         form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_VM ? false : true
                         form.value = false
@@ -179,7 +180,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms })
+            this.setState({ forms: nForms })
         }
     }
     
