@@ -986,6 +986,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
         handleAppInstDropdown = async (pCurrentAppInst, isStreamBtnClick = false) => {
             clearInterval(this.intervalForAppInst)
 
+
             //@fixme: ################################
             //@fixme: requestShowAppInstClientWS
             //@fixme: ################################
@@ -1022,6 +1023,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
             let appInstDropdown = makeSelectBoxListWithValuePipe(filteredAppList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
             await this.setState({
                 appInstDropdown,
+            }, () => {
             })
 
 
@@ -1037,12 +1039,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                 this.setState({dropdownRequestLoading: false})
             }
 
-            console.log("allAppInstUsageList===>", allAppInstUsageList);
-
 
             let currentCluster = pCurrentAppInst.split("|")[2].trim() + " | " + pCurrentAppInst.split('|')[1].trim()
             pCurrentAppInst = pCurrentAppInst.trim();
             pCurrentAppInst = pCurrentAppInst.split("|")[0].trim() + " | " + pCurrentAppInst.split('|')[1].trim() + " | " + pCurrentAppInst.split('|')[2].trim()
+
+            console.log("pCurrentAppInst===>", pCurrentAppInst);
 
             await this.setState({
                 currentClassification: CLASSIFICATION.APPINST,
@@ -1052,8 +1054,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                 currentAppInst: pCurrentAppInst,
                 //currentCluster: currentCluster,
                 currentCluster: isEmpty(this.state.currentCluster) ? '' : this.state.currentCluster,
-                clusterSelectBoxPlaceholder: 'Select cluster'
-                //clusterSelectBoxPlaceholder: 'Select Cluster'
+                clusterSelectBoxPlaceholder: 'Select Cluster',
+                //appInstSelectBoxPlaceholder: pCurrentAppInst,
             }, () => {
                 //alert(this.state.currentClassification)
 
@@ -1083,10 +1085,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                 clearInterval(this.intervalForAppInst)
             }
 
-            this.setState({
-                currentAppInst: pCurrentAppInst,
-            }, () => {
-            })
         }
 
         makeGridSizeByType(graphType) {
