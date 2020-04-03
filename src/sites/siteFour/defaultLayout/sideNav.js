@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,7 +12,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MexHeader from './header'
-import { getUserRole } from '../../../services/model/format'
+import {getUserRole} from '../../../services/model/format'
 
 import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
 import AssignmentIndOutlinedIcon from '@material-ui/icons/AssignmentIndOutlined';
@@ -44,8 +44,8 @@ import AutoProvPolicy from '../policies/autoProvPolicyList/autoProvPolicyList';
 import PrivacyPolicy from '../policies/privacyPolicy/privacyPolicyList';
 import PageMonitoringMain from '../monitoring/PageMonitoringMain'
 
-import { Collapse, Tooltip } from '@material-ui/core';
-import { Image } from 'semantic-ui-react';
+import {Collapse, Tooltip} from '@material-ui/core';
+import {Image} from 'semantic-ui-react';
 import PopLegendViewer from '../../../container/popLegendViewer';
 
 const drawerWidth = 250;
@@ -95,24 +95,24 @@ const useStyles = makeStyles(theme => ({
 
 
 const options = [
-    { label: 'Organizations', icon: <SupervisorAccountOutlinedIcon />, pg: 0, page: <SiteFourPageOrganization />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
-    { label: 'Users & Roles', icon: <AssignmentIndOutlinedIcon />, pg: 1, page: <SiteFourPageUser />, roles: ['AdminManager'] },
-    { label: 'Accounts', icon: <DvrOutlinedIcon />, pg: 101, page: <SiteFourPageAccount />, roles: ['AdminManager'] },
-    { divider: true },
-    { label: 'Cloudlets', icon: <CloudQueueOutlinedIcon />, pg: 2, page: <SiteFourPageCloudlet />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
-    { label: 'Cloudlet Pools', icon: <CloudCircleOutlinedIcon />, pg: 7, page: <SiteFourPageCloudletPool />, roles: ['AdminManager'] },
-    { label: 'Flavors', icon: <FreeBreakfastOutlinedIcon />, pg: 3, page: <SiteFourPageFlavor />, roles: ['AdminManager', 'DeveloperManager'] },
-    { label: 'Cluster Instances', icon: <StorageOutlinedIcon />, pg: 4, page: <SiteFourPageClusterInst />, roles: ['AdminManager', 'DeveloperManager'] },
-    { label: 'Apps', icon: <AppsOutlinedIcon />, pg: 5, page: <SiteFourPageApps />, roles: ['AdminManager', 'DeveloperManager'] },
-    { label: 'App Instances', icon: <GamesOutlinedIcon />, pg: 6, page: <SiteFourPageAppInst />, roles: ['AdminManager', 'DeveloperManager'] },
-    { label: 'Monitoring', icon: <TvOutlinedIcon />, pg: 'Monitoring', page: <PageMonitoringMain />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
+    {label: 'Organizations', icon: <SupervisorAccountOutlinedIcon/>, pg: 0, page: <SiteFourPageOrganization/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']},
+    {label: 'Users & Roles', icon: <AssignmentIndOutlinedIcon/>, pg: 1, page: <SiteFourPageUser/>, roles: ['AdminManager']},
+    {label: 'Accounts', icon: <DvrOutlinedIcon/>, pg: 101, page: <SiteFourPageAccount/>, roles: ['AdminManager']},
+    {divider: true},
+    {label: 'Cloudlets', icon: <CloudQueueOutlinedIcon/>, pg: 2, page: <SiteFourPageCloudlet/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']},
+    {label: 'Cloudlet Pools', icon: <CloudCircleOutlinedIcon/>, pg: 7, page: <SiteFourPageCloudletPool/>, roles: ['AdminManager']},
+    {label: 'Flavors', icon: <FreeBreakfastOutlinedIcon/>, pg: 3, page: <SiteFourPageFlavor/>, roles: ['AdminManager', 'DeveloperManager']},
+    {label: 'Cluster Instances', icon: <StorageOutlinedIcon/>, pg: 4, page: <SiteFourPageClusterInst/>, roles: ['AdminManager', 'DeveloperManager']},
+    {label: 'Apps', icon: <AppsOutlinedIcon/>, pg: 5, page: <SiteFourPageApps/>, roles: ['AdminManager', 'DeveloperManager']},
+    {label: 'App Instances', icon: <GamesOutlinedIcon/>, pg: 6, page: <SiteFourPageAppInst/>, roles: ['AdminManager', 'DeveloperManager']},
+    {label: 'Monitoring', icon: <TvOutlinedIcon/>, pg: 'Monitoring', page: <PageMonitoringMain/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']},
     {
-        label: 'Policies', icon: <AlbumOutlinedIcon />, roles: ['AdminManager', 'DeveloperManager'], subOptions: [
-            { label: 'Auto Provisioning Policy', icon: <AdjustOutlinedIcon />, pg: 8, page: <AutoProvPolicy />, roles: ['AdminManager', 'DeveloperManager'] },
-            { label: 'Privacy Policy', icon: <AdjustOutlinedIcon />, pg: 9, page: <PrivacyPolicy />, roles: ['AdminManager', 'DeveloperManager'] },
+        label: 'Policies', icon: <AlbumOutlinedIcon/>, roles: ['AdminManager', 'DeveloperManager'], subOptions: [
+            {label: 'Auto Provisioning Policy', icon: <AdjustOutlinedIcon/>, pg: 8, page: <AutoProvPolicy/>, roles: ['AdminManager', 'DeveloperManager']},
+            {label: 'Privacy Policy', icon: <AdjustOutlinedIcon/>, pg: 9, page: <PrivacyPolicy/>, roles: ['AdminManager', 'DeveloperManager']},
         ]
     },
-    { label: 'Audit Logs', icon: <FeaturedPlayListOutlinedIcon />, pg: 'audits', page: <SiteFourPageAudits />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] }
+    {label: 'Audit Logs', icon: <FeaturedPlayListOutlinedIcon/>, pg: 'audits', page: <SiteFourPageAudits/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']}
 ]
 
 const defaultPage = (options) => {
@@ -120,28 +120,23 @@ const defaultPage = (options) => {
     let currentPage = path.substring(path.indexOf('pg='))
     for (let i = 0; i < options.length; i++) {
         let option = options[i]
-        if(option.subOptions)
-        {
+        if (option.subOptions) {
             return defaultPage(option.subOptions)
-        }
-        else if (currentPage === 'pg=' + option.pg) {
+        } else if (currentPage === 'pg=' + option.pg) {
             return option.page
         }
     }
-    return <SiteFourPageOrganization />
+    return <SiteFourPageOrganization/>
 }
 
-const navstate = ()=>
-{
-    if(localStorage.getItem('navigation'))
-    {
+const navstate = () => {
+    if (localStorage.getItem('navigation')) {
         return parseInt(localStorage.getItem('navigation'))
     }
     return 1
 }
 
-const setNavState = (flag)=>
-{
+const setNavState = (flag) => {
     return localStorage.setItem('navigation', flag)
 }
 
@@ -175,22 +170,25 @@ export default function MiniDrawer(props) {
 
     const showOptionForm = (i, option) => {
         return (
-            <ListItem button key={option.label} onClick={() => { option.pg !== undefined ? onOptionClick(option, i) : expandOptions(option) }}>
+            <ListItem button key={option.label} onClick={() => {
+                option.pg !== undefined ? onOptionClick(option, i) : expandOptions(option)
+            }}>
                 <Tooltip title={option.label} aria-label="add">
-                    <ListItemIcon style={{ color: '#B1B2B4' }}>{option.icon}
+                    <ListItemIcon style={{color: '#B1B2B4'}}>{option.icon}
                     </ListItemIcon>
                 </Tooltip>
-                <ListItemText style={{ color: '#B1B2B4' }} primary={option.label} />
-                {option.subOptions ? expand ? <ExpandLess style={{ color: '#B1B2B4' }} /> : <ExpandMore style={{ color: '#B1B2B4' }} /> : null}
+                <ListItemText style={{color: '#B1B2B4'}} primary={option.label}/>
+                {option.subOptions ? expand ? <ExpandLess style={{color: '#B1B2B4'}}/> : <ExpandMore style={{color: '#B1B2B4'}}/> : null}
             </ListItem>
         )
     }
 
 
-
     const roleInfo = () => {
         return (
-            <ListItem onClick={(e) => {setOpenLegend(localStorage.selectRole && localStorage.selectRole != 'null')}}>
+            <ListItem onClick={(e) => {
+                setOpenLegend(localStorage.selectRole && localStorage.selectRole != 'null')
+            }}>
                 <ListItemIcon>
                     {localStorage.selectRole ?
                         <div className="markBox">
@@ -221,14 +219,14 @@ export default function MiniDrawer(props) {
                         </div> : null}
                 </ListItemIcon>
                 <ListItemText>
-                    <strong style={{ color: '#BFC0C2', fontSize: 12}}>
+                    <strong style={{color: '#BFC0C2', fontSize: 12}}>
                         {
                             localStorage.selectRole && localStorage.selectRole != 'null' ? localStorage.selectRole :
-                            <div>
-                                <p>No Organization selected</p>
-                                <p>Click Manage to view and</p>
-                                <p>manage your Organization</p>
-                            </div>
+                                <div>
+                                    <p>No Organization selected</p>
+                                    <p>Click Manage to view and</p>
+                                    <p>manage your Organization</p>
+                                </div>
                         }
                     </strong>
 
@@ -254,7 +252,7 @@ export default function MiniDrawer(props) {
     const menuList = () => {
         return options.map((option, i) => (
             option.divider ?
-                <Divider key={i} /> :
+                <Divider key={i}/> :
                 option.roles.includes(getRoleInfo(getUserRole())) ?
                     <div key={i}>
                         {showOptionForm(i, option)}
@@ -272,8 +270,8 @@ export default function MiniDrawer(props) {
     }
 
     const versionInfo = () => (
-        <div style={{ position: 'absolute', bottom: 5, marginLeft: 10, color: '#B1B2B4' }}>
-            {process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'}
+        <div style={{position: 'absolute', bottom: 5, marginLeft: 10, color: '#B1B2B4'}}>
+            {process.env.REACT_APP_BUILD_VERSION ? "v" + process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'}
         </div>
     )
 
@@ -305,15 +303,15 @@ export default function MiniDrawer(props) {
                         [classes.drawerClose]: !open,
                     }),
                 }}
-                style={{zIndex:1}}
+                style={{zIndex: 1}}
             >
                 <div className={classes.toolbar}>
-                    <Image wrapped size='small' src='/assets/brand/logo_mex.svg' />
-                    <IconButton style={{ color: '#B1B2B4' }} onClick={handleDrawerClose}>
-                        {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                    <Image wrapped size='small' src='/assets/brand/logo_mex.svg'/>
+                    <IconButton style={{color: '#B1B2B4'}} onClick={handleDrawerClose}>
+                        {theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
                     </IconButton>
                 </div>
-                <List style={{ backgroundColor: '#292c33', height: '100%' }}>
+                <List style={{backgroundColor: '#292c33', height: '100%'}}>
                     {roleInfo()}
                     {menuList()}
                     {versionInfo()}
