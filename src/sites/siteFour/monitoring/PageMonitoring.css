@@ -418,7 +418,6 @@
 /*antd ui overriding css*/
 
 
-
 .react-ripples {
     font-size: 9pt;
     font-weight: normal;
@@ -438,7 +437,9 @@
     z-index: 999999999999999;
 }*/
 
-.ui.dropdown .menu { z-index: 999999 !important; }
+.ui.dropdown .menu {
+    z-index: 999999 !important;
+}
 
 .visible.menu.transition {
     z-index: 9999999999999999999999999;
@@ -454,3 +455,8 @@
     min-width: 300px;
 }
 */
+
+
+.ant-select-tree li .ant-select-tree-node-content-wrapper.ant-select-tree-node-selected {
+    background-color: darkslategrey !important;
+}

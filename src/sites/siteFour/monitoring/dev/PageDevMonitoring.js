@@ -10,6 +10,7 @@ import * as actions from '../../../../actions';
 import {Button as MButton, Card, CircularProgress} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
 import {DatePicker, Select, Tooltip} from 'antd';
+import {TreeSelect} from 'antd';
 import {Center0001, Center2, ClusterCluoudletLable, Legend, OuterHeader} from '../PageMonitoringStyledComponent'
 import {
     defaultHwMapperListForCluster,
@@ -27,7 +28,7 @@ import {
     makeLineChartDataForBigModal,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
-    makeSelectBoxListWithValuePipe,
+    makeSelectBoxListWithValuePipe, makeSelectBoxListWithValuePipeForAppInst,
 } from "./PageDevMonitoringService";
 import {
     ADD_ITEM_LIST,
@@ -90,6 +91,7 @@ import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout} from "react-grid-layout/lib/utils";
 import GradientBarChartContainer from "../components/GradientBarChartContainer";
+
 const {Option} = Select;
 const CheckboxGroup = Checkbox.Group;
 const FA = require('react-fontawesome')
@@ -430,7 +432,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
 
             })
 
-            await this.loadInitDataForCluster__FOR__DEV();
+            await this.loadInitDataForCluster();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
@@ -456,9 +458,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                 let clusterList = require('../zzz____TESTCODE____/Jsons/clusterList')
                 let cloudletList = require('../zzz____TESTCODE____/Jsons/cloudletList')
                 let appInstanceList = require('../zzz____TESTCODE____/Jsons/appInstanceList')
-                console.log('appInstanceList====>', appInstanceList);
-                console.log('clusterUsageList===>', clusterList);
-                let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
+                /*console.log('appInstanceList====>', appInstanceList);
+                console.log('clusterList===>', clusterList);*/
+                /*let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
+                console.log("clusterDropdownList===>", clusterDropdownList);*/
+
+                let clusterDropdownList = this.makeTreeClusterCloudletList(clusterList);
                 console.log("clusterDropdownList===>", clusterDropdownList);
 
 
@@ -566,9 +571,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                     })
                 }
 
-                console.log('clusterUsageList===>', clusterList);
+                console.log('clusterList===>', clusterList);
 
-                let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
+                //let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
+                let clusterDropdownList = this.makeTreeClusterCloudletList(clusterList);
+                console.log("clusterDropdownList===>", clusterDropdownList);
+
 
                 //@todo:#############################################
                 //@todo: getAllClusterEventLogList : real data
@@ -585,7 +593,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                 //@todo: getAppInst Event Logs : real data
                 //@todo:#############################################
                 let allAppInstEventLogs = await getAllAppInstEventLogs();
-                console.log("allAppInstEventLogs====>", allAppInstEventLogs);
                 await this.setState({
                     allAppInstEventLogs: allAppInstEventLogs,
                     filteredAppInstEventLogs: allAppInstEventLogs,
@@ -598,7 +605,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                 } catch (e) {
                     showToast(e.toString())
                 }
-                console.log('appInstanceListGroupByCloudlet===>', appInstanceListGroupByCloudlet);
 
                 await this.setState({
                     isReady: true,
@@ -649,7 +655,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                     maxCpu: maxCpu,
                     maxMem: maxMem,
                     isRequesting: false,
-                    currentCluster: '',
+                    currentCluster: undefined,
                 }, () => {
                     console.log("filteredClusterUsageList===>", this.state.filteredClusterUsageList);
                 })
@@ -680,8 +686,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
             await this.setState({
                 bubbleChartData: bubbleChartData,
                 dropdownRequestLoading: false,
-                currentCluster: '',
+                currentCluster: undefined,
                 currentAppInst: '',
+                appInstDropdown: [],
                 //currentTabIndex: 1,
             })
         }
@@ -708,7 +715,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
             await this.setState({
                 currentRegion: 'ALL',
                 currentCloudLet: '',
-                currentCluster: '',
+                currentCluster: undefined,
                 currentAppInst: '',
             })
 
@@ -921,11 +928,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
             })
             this.validateTerminal(filteredAppList)
 
-            let appInstDropdown = makeSelectBoxListWithValuePipe(filteredAppList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
+            let appInstDropdown = makeSelectBoxListWithValuePipeForAppInst(filteredAppList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
             await this.setState({
                 appInstDropdown,
             })
-
 
             let arrDateTime = getOneYearStartEndDatetime();
 
@@ -1025,13 +1031,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
             let allClusterEventLogList = this.state.allClusterEventLogList
             let filteredClusterEventLogList = []
             allClusterEventLogList.map(item => {
-                /*                "cluster",1                "cloudlet",3                */
                 if (item[1] === selectedCluster && item[3] === selectedCloudlet) {
                     filteredClusterEventLogList.push(item)
                 }
             })
 
-            console.log("filteredClusterEventLogList===>", filteredClusterEventLogList);
             await this.setState({
                 filteredClusterEventLogList: filteredClusterEventLogList,
             })
@@ -1044,18 +1048,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                     filteredAppInstList.push(item)
                 }
             })
-            console.log('appInstDropdown===filteredAppInstList>', filteredAppInstList);
-            let appInstDropdown = makeSelectBoxListWithValuePipe(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST, CLASSIFICATION.REGION)
-            console.log('appInstDropdown===>', appInstDropdown);
 
 
-            let groupdClusterList = reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET)
-
-            console.log("groupdClousterList===>", groupdClusterList);
-
-            let selectedCloudletCount = Object.keys(groupdClusterList)
-
-            console.log("selectedCloudletCount===>", selectedCloudletCount.length);
+            let appInstDropdown = makeSelectBoxListWithValuePipeForAppInst(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST, CLASSIFICATION.REGION)
+            //let groupdClusterList = reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET)
 
             await this.setState({
                 appInstDropdown: appInstDropdown,
@@ -1610,6 +1606,40 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
             )
         }
 
+        makeTreeClusterCloudletList(clusterOriginList) {
+
+            let ClusterList = []
+            clusterOriginList.map(item => {
+                console.log("Cloudlet===>", item.Cloudlet);
+                console.log("ClusterName===>", item.ClusterName);
+                ClusterList.push(item.ClusterName)
+            })
+            let uniqClusterList = [...new Set(ClusterList)];
+            let treeList = []
+            uniqClusterList.map(clusterOne => {
+                console.log("clusterOne===>", clusterOne);
+                let childrenCloudlets = []
+                clusterOriginList.map(item => {
+                    if (item.ClusterName === clusterOne) {
+                        childrenCloudlets.push({
+                            title: item.Cloudlet,
+                            value: clusterOne + " | " + item.Cloudlet,
+                        })
+                    }
+                })
+
+                let itemOne = {
+                    selectable: false,
+                    title: clusterOne,
+                    value: clusterOne,
+                    children: childrenCloudlets,
+                };
+
+                treeList.push(itemOne)
+
+            })
+            return treeList;
+        }
 
         renderSelectBoxRow() {
 
@@ -1622,7 +1652,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                                 {/*todo:##########################*/}
                                 {/*todo:Cluster_Dropdown         */}
                                 {/*todo:##########################*/}
-                                <div className="page_monitoring_dropdown_box">
+
+                                {/* <div className="page_monitoring_dropdown_box">
                                     <div className="page_monitoring_dropdown_label">
                                         Cluster | Cloudlet
                                     </div>
@@ -1640,12 +1671,31 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                                             await this.handleClusterDropdown(value.trim())
                                         }}
                                     />
+                                </div>*/}
+                                <div style={{display: 'flex',}}>
+                                    <div className="page_monitoring_dropdown_label">
+                                        Cluster | Cloudlet
+                                    </div>
+                                    <TreeSelect
+                                        style={{width: '350px'}}
+                                        value={this.state.currentCluster === '' ? undefined : this.state.currentCluster}
+                                        dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
+                                        treeData={this.state.clusterDropdownList}
+                                        placeholder="Please select cloudlet"
+                                        treeDefaultExpandAll
+                                        onChange={async (value) => {
+
+                                            console.log("TreeSelect===>", value);
+
+                                            await this.handleClusterDropdown(value.trim())
+                                        }}
+                                    />
                                 </div>
 
                                 {/*todo:---------------------------*/}
                                 {/*todo: App Instance_Dropdown      */}
                                 {/*todo:---------------------------*/}
-                                <div className="page_monitoring_dropdown_box">
+                                <div className="page_monitoring_dropdown_box" style={{marginLeft: 15,}}>
                                     <div className="page_monitoring_dropdown_label">
                                         App Inst
                                     </div>
@@ -1779,7 +1829,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                         <Grid.Column className='contents_body'>
                             {this.renderHeader()}
                             <div style={{marginTop: 25, marginLeft: 25,}}>
-                                <div style={{fontSize: 25, }}>
+                                <div style={{fontSize: 25,}}>
                                     There is no app instance you can access..
                                 </div>
                             </div>
@@ -1834,27 +1884,34 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                                                               color={'green'}
                                                               size={15}/>
                                             :
-                                            this.state.filteredClusterUsageList.map((item, index) => {
-                                                return (
-                                                    <Center2>
-                                                        <div style={{
-                                                            backgroundColor: this.state.chartColorList[index],
-                                                            width: 15,
-                                                            height: 15,
-                                                            borderRadius: 50,
-                                                            marginTop: 1
-                                                        }}>
+                                            <div style={{display: 'flex', width: '100%'}}>
+                                                <div style={{display: 'flex', justifyContent: 'flex-start', flex: .3, marginLeft: 15,}}>
+                                                    {this.state.currentCluster !== undefined && this.state.currentCluster.replace("|", ">")}
+                                                </div>
+                                                <div style={{display: 'flex', flex: .7}}>
+                                                    {this.state.filteredClusterUsageList.map((item, index) => {
+                                                        return (
+                                                            <Center2>
+                                                                <div style={{
+                                                                    backgroundColor: this.state.chartColorList[index],
+                                                                    width: 15,
+                                                                    height: 15,
+                                                                    borderRadius: 50,
+                                                                    marginTop: 1
+                                                                }}>
 
-                                                        </div>
-                                                        <ClusterCluoudletLable
-                                                            style={{
-                                                                marginLeft: 4,
-                                                                marginRight: 15,
-                                                                marginBottom: 0
-                                                            }}>{item.cluster} {` [`}{item.cloudlet}]</ClusterCluoudletLable>
-                                                    </Center2>
-                                                )
-                                            })
+                                                                </div>
+                                                                <ClusterCluoudletLable
+                                                                    style={{
+                                                                        marginLeft: 4,
+                                                                        marginRight: 15,
+                                                                        marginBottom: 0
+                                                                    }}>{item.cluster} {` [`}{item.cloudlet}]</ClusterCluoudletLable>
+                                                            </Center2>
+                                                        )
+                                                    })}
+                                                </div>
+                                            </div>
                                         }
                                     </Legend>
                                     :
@@ -1936,32 +1993,32 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
 {/*desc:Cluster Stream*/
 }
 {/*{this.state.currentClassification === CLASSIFICATION.CLUSTER &&
-                                <div className='page_monitoring_select_toggle'>
-                                    <div className='page_monitoring_select_toggle_label'>
-                                        Cluster Stream
-                                    </div>
-                                    <Checkbox toggle
-                                              onClick={async () => {
-                                                  await this.setState({
-                                                      isStream: !this.state.isStream,
-                                                  });
+                                            <div className='page_monitoring_select_toggle'>
+                                            <div className='page_monitoring_select_toggle_label'>
+                                            Cluster Stream
+                                            </div>
+                                            <Checkbox toggle
+                                            onClick={async () => {
+                                            await this.setState({
+                                            isStream: !this.state.isStream,
+                                            });
 
-                                                  if (!this.state.isStream) {
-                                                      clearInterval(this.intervalForAppInst)
-                                                  } else {
-                                                      //this.handleClusterDropdown(this.state.currentAppInst, true)
-                                                      setInterval(() => {
-                                                          this.intervalForAppInst = this.loadInitDataForCluster(true)
-                                                      }, 7000)
-                                                      //alert(this.state.currentCluster)
-                                                  }
+                                            if (!this.state.isStream) {
+                                            clearInterval(this.intervalForAppInst)
+                                            } else {
+                                            //this.handleClusterDropdown(this.state.currentAppInst, true)
+                                            setInterval(() => {
+                                            this.intervalForAppInst = this.loadInitDataForCluster(true)
+                                            }, 7000)
+                                            //alert(this.state.currentCluster)
+                                            }
 
-                                              }}
-                                              value={this.state.isStream}
-                                    />
-                                </div>
-                                }
-                                */
+                                            }}
+                                            value={this.state.isStream}
+                                            />
+                                            </div>
+                                            }
+                                            */
 }
 {/*desc:aspect_ratio*/
 }
@@ -1970,6 +2027,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
 {/*desc:aspect_ratio*/
 }
 {/* <div className='page_monitoring_select_toggle'>
-                                <MaterialIcon icon='aspect_ratio'/>
-                            </div>*/
+                                            <MaterialIcon icon='aspect_ratio'/>
+                                            </div>*/
 }
