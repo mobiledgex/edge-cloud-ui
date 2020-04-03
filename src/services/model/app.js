@@ -28,6 +28,7 @@ export const keys = () => ([
     { field: fields.autoPolicyName, serverField: 'auto_prov_policy', label: 'Auto Provisioning Policy' },
     { field: fields.privacyPolicyName, serverField: 'default_privacy_policy', label: 'Default Privacy Policy' },
     { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: constant.TYPE_JSON },
+    { field: fields.annotations, serverField: 'annotations', label: 'Annotations', visible: true },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
@@ -48,6 +49,9 @@ export const getKey = (data, isCreate) => {
         app.image_path = data[fields.imagePath]
         if (data[fields.accessPorts]) {
             app.access_ports = data[fields.accessPorts]
+        }
+        if (data[fields.annotations]) {
+            app.annotations = data[fields.annotations]
         }
         app.delete_ports = []
         app.default_flavor = { name: data[fields.flavorName] }
