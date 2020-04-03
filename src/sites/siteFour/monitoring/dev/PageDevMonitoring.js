@@ -436,7 +436,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
 
             })
 
-            await this.loadInitDataForCluster();
+            await this.loadInitDataForCluster__FOR__DEV();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
@@ -1931,7 +1931,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                             {/*todo:terminal button                   */}
                             {/*todo:---------------------------------*/}
                             {this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?
-                                <div className='page_monitoring_terminal_button' style={{marginBottom: 70}}
+                                <div className='page_monitoring_terminal_button' style={{marginBottom: 25}}
                                      onClick={() => this.setState({openTerminal: true})}
                                 >
                                 </div>
