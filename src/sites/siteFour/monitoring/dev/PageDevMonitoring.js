@@ -1,15 +1,12 @@
-import 'react-hot-loader';
 import {Center0001, Center2, ClusterCluoudletLable, Legend, OuterHeader} from '../PageMonitoringStyledComponent'
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
 import {Button, Checkbox, Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
-import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {Button as MButton, Card, CircularProgress} from '@material-ui/core'
-import {hot} from "react-hot-loader/root";
 import {DatePicker, Select, Tooltip} from 'antd';
 
 import {
@@ -91,13 +88,7 @@ import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout} from "react-grid-layout/lib/utils";
 import GradientBarChartContainer from "../components/GradientBarChartContainer";
-
-const {Option} = Select;
-const CheckboxGroup = Checkbox.Group;
-const FA = require('react-fontawesome')
-const {RangePicker} = DatePicker;
-const {Column, Row} = Grid;
-const {Pane} = Tab
+//import {hot} from "react-hot-loader/root";
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const mapStateToProps = (state) => {
     return {
@@ -264,10 +255,9 @@ type State = {
     isShowFilter: boolean,
     currentNavigation: string,
     allAppInstDropdown: any,
-
 }
 
-export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeight: true})(
+export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeight: true})(
     class PageDevMonitoring extends Component<Props, State> {
         intervalForAppInst = null;
         gridItemHeight = 320;
@@ -280,10 +270,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
             let ClusterHwMapperKey = getUserId() + "_layout_mapper"
             let appInstLayoutKey = getUserId() + "_layout2"
             let layoutMapperAppInstKey = getUserId() + "_layout2_mapper"
-
             let themeKey = getUserId() + "_mon_theme";
             let themeTitle = getUserId() + "_mon_theme_title";
-
             //@TODO: DELETE THEME COLOR
             /*reactLocalStorage.remove(themeTitle)
             reactLocalStorage.remove(themeKey)*/
@@ -1471,9 +1459,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
 
 
         renderHeader = () => {
-
             return (
-
                 <>
                     <Grid.Row className='content_title'>
                         <div className='content_title_wrap'>
@@ -1487,7 +1473,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                                     })
                                 }}
                             >
-                                Add
+                                add_09
                             </MButton>
                             {/*todo:---------------------------*/}
                             {/*todo:REFRESH, RESET BUTTON DIV  */}
@@ -1770,7 +1756,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
         }
 
 
-
         renderLegend() {
 
             let fullClusterList = '';
@@ -1955,8 +1940,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
         }
 
     }
-))))
-;
+))
 
 
 {/*desc:Cluster Stream*/

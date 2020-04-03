@@ -140,6 +140,7 @@
     "module": "dist/index.js",
     "typings": "dist/index.d.ts",
     "devDependencies": {
+        "craco-plugin-react-hot-reload": "^0.1.0",
         "react-scripts": "^3.4.1"
     },
     "scripts": {

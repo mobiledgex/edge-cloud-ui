@@ -23,11 +23,6 @@ import './css/pages/audit.css';
 import './css/pages/cloudletPool.css';
 import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
-import Test001 from "./sites/siteFour/monitoring/zzz____TESTCODE____/Pages/Test001";
-import Test003 from "./sites/siteFour/monitoring/zzz____TESTCODE____/Pages/LIneSeriesWebSocketTestForAppInst0001";
-import LIneChartTest from "./sites/siteFour/monitoring/zzz____TESTCODE____/Pages/LIneChartTest";
-import WebSocketTestForClusterInst
-    from "./sites/siteFour/monitoring/zzz____TESTCODE____/Pages/WebSocketTestForClusterInst";
 import BarChart0003 from "./sites/siteFour/monitoring/zzz____TESTCODE____/Pages/BarChart0003";
 import ColumnChart0003 from "./sites/siteFour/monitoring/zzz____TESTCODE____/Pages/ColumnChart0003";
 // API

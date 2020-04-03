@@ -9,7 +9,6 @@ import PageMonitoringForOperator from "./oper/PageOperMonitoring";
 import {Grid} from "semantic-ui-react";
 import PageMonitoringForDeveloper from "./dev/PageDevMonitoring";
 import PageMonitoringForAdmin from "./admin/PageAdminMonitoring";
-import {hot} from "react-hot-loader/root";
 
 
 const mapStateToProps = (state) => {
@@ -35,7 +34,7 @@ type State = {
 }
 
 
-export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class PageMonitoringMain extends Component<Props, State> {
         state = {
             date: '',
@@ -44,12 +43,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         constructor(props) {
             super(props);
         }
-
-
-        //todo@ sdlfksdlkflsdkflksdf
-        //todo@ sdlfksdlkflsdkflksdf
-        //todo@ sdlfksdlkflsdkflksdf
-        //todo@ sdlfksdlkflsdkflksdf
 
         componentWillMount(): void {
             let store = JSON.parse(localStorage.PROJECT_INIT);
@@ -90,6 +83,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
     }
-))));
+)))
 
 
