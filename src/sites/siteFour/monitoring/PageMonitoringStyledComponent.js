@@ -34,7 +34,7 @@ export const Center0001 = styled.div`
 
 
 export const Legend = styled.div`
-  justify-content: center;
+  justify-content: flex-start;
   text-align: center;
   flex-direction: row;
   display : flex;
