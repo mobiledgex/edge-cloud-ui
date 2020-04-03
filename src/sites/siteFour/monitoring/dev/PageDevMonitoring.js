@@ -986,7 +986,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
         handleAppInstDropdown = async (pCurrentAppInst, isStreamBtnClick = false) => {
             clearInterval(this.intervalForAppInst)
 
-
             //@fixme: ################################
             //@fixme: requestShowAppInstClientWS
             //@fixme: ################################
@@ -1039,8 +1038,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                 this.setState({dropdownRequestLoading: false})
             }
 
-
-            let currentCluster = pCurrentAppInst.split("|")[2].trim() + " | " + pCurrentAppInst.split('|')[1].trim()
+            //let currentCluster = pCurrentAppInst.split("|")[2].trim() + " | " + pCurrentAppInst.split('|')[1].trim()
             pCurrentAppInst = pCurrentAppInst.trim();
             pCurrentAppInst = pCurrentAppInst.split("|")[0].trim() + " | " + pCurrentAppInst.split('|')[1].trim() + " | " + pCurrentAppInst.split('|')[2].trim()
 
