@@ -112,14 +112,12 @@ export default class BubbleChart extends Component {
             colorCodes = appleColors;
         }
 
-        //'#0A84FF', '#30D158', '#5E5CE6', '#FF9F0A', '#FF375F'
-
-        //'#AE81FF', '#FD971F', '#E69F66', '#E6DB74', '#A6E22E'
 
 
+//const color = d3.scaleOrdinal(colors("6097326EDC1269BA27527536405330"));//green
         const color = d3.scaleOrdinal(colors(colorCodes));//green
 
-        //const color = d3.scaleOrdinal(colors("6097326EDC1269BA27527536405330"));//green
+
 
         const pack = d3.pack()
             .size([bubblesWidth * graph.zoom, bubblesWidth * graph.zoom])

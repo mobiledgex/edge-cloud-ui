@@ -1248,6 +1248,41 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this) => {
     return options;
 };
 
+export const makeTreeClusterCloudletList = (clusterOriginList) => {
+
+    let ClusterList = []
+    clusterOriginList.map(item => {
+        console.log("Cloudlet===>", item.Cloudlet);
+        console.log("ClusterName===>", item.ClusterName);
+        ClusterList.push(item.ClusterName)
+    })
+    let uniqClusterList = [...new Set(ClusterList)];
+    let treeList = []
+    uniqClusterList.map(clusterOne => {
+        console.log("clusterOne===>", clusterOne);
+        let childrenCloudlets = []
+        clusterOriginList.map(item => {
+            if (item.ClusterName === clusterOne) {
+                childrenCloudlets.push({
+                    title: item.Cloudlet,
+                    value: clusterOne + " | " + item.Cloudlet + " | " + item.Region,
+                })
+            }
+        })
+
+        let itemOne = {
+            selectable: false,
+            title: clusterOne,
+            value: clusterOne,
+            children: childrenCloudlets,
+        };
+
+        treeList.push(itemOne)
+
+    })
+    return treeList;
+}
+
 
 export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMonitoring) => {
     const lineChartData = (canvas) => {
@@ -1630,7 +1665,7 @@ export const makeSelectBoxListWithValuePipeForAppInst = (appInstList, keyName: s
             newArrList.push({
                 key: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim(),
                 value: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim(),
-                text: appInstList[i][keyName].trim(),
+                text: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim(),
             })
         }
     } else {
@@ -1638,7 +1673,7 @@ export const makeSelectBoxListWithValuePipeForAppInst = (appInstList, keyName: s
             newArrList.push({
                 key: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim(),
                 value: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim(),
-                text: appInstList[i][keyName].trim(),
+                text: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim(),
             })
         }
     }
@@ -1703,7 +1738,7 @@ export const GradientBarChartOptions1 = {
                 color: "#505050",
             },
             ticks: {
-                fontSize: 14,
+                fontSize: 13,
                 fontColor: 'white',
                 //maxRotation: 0.05,
                 //autoSkip: true,
@@ -1713,7 +1748,7 @@ export const GradientBarChartOptions1 = {
                 padding: 10,
                 labelOffset: 0,
                 callback(label, index, labels) {
-                    return [label.toString().split("[")[0], "[" + label.toString().split("[")[1]]
+                    return [label.toString().split("[")[0], "[" + label.toString().split("[")[1].substring(0, 19) + "...]"]
                 }
             },
             beginAtZero: false,
@@ -1858,9 +1893,9 @@ export const barChartOptions2 = {
                 minRotation: 0,
                 padding: 10,
                 labelOffset: 0,
-                /*callback(label, index, labels) {
+                callback(label, index, labels) {
                     return [label.toString().split("[")[0], "[" + label.toString().split("[")[1]]
-                }*/
+                }
             },
             beginAtZero: false,
             /* gridLines: {
