@@ -1927,11 +1927,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                                     </div>
                                 </div>
                             </div>
-                            {/*desc:---------------------------------*/}
-                            {/*desc:terminal button                   */}
-                            {/*desc:---------------------------------*/}
+                            {/*todo:---------------------------------*/}
+                            {/*todo:terminal button                   */}
+                            {/*todo:---------------------------------*/}
                             {this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?
-                                <div className='page_monitoring_terminal_button' style={{marginBottom: 25}}
+                                <div className='page_monitoring_terminal_button' style={{marginBottom: 70}}
                                      onClick={() => this.setState({openTerminal: true})}
                                 >
                                 </div>
