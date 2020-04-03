@@ -436,7 +436,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
 
             })
 
-            await this.loadInitDataForCluster__FOR__DEV();
+            await this.loadInitDataForCluster();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
@@ -974,10 +974,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
 
         handleAppInstDropdown = async (pCurrentAppInst, isStreamBtnClick = false) => {
             clearInterval(this.intervalForAppInst)
-
-            //@fixme: ################################
-            //@fixme: requestShowAppInstClientWS
-            //@fixme: ################################
+            //@desc: ################################
+            //@desc: requestShowAppInstClientWS
+            //@desc: ################################
             if (!isStreamBtnClick) {
                 await this.setState({
                     selectedClientLocationListOnAppInst: [],
@@ -1604,7 +1603,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                         </div>
                     </Grid.Row>
                     <div style={{backgroundColor: '#202329', marginLeft: 10, marginRight: 10,}}>
-                        {this.renderFirstDropDownRow()}
+                        {this.renderDropdownFilterArea()}
                     </div>
                 </>
 
@@ -1664,7 +1663,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
         }
 
 
-        renderFirstDropDownRow() {
+        renderDropdownFilterArea() {
 
             if (this.state.isShowFilter) {
                 return (
@@ -1680,24 +1679,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                                     <MButton
                                         size={'small'}
                                         style={{
-                                            width: 150,
-                                            backgroundColor: this.state.isStackedLineChart ? '#559901' : 'grey',
-                                            color: 'white'
-                                        }}
-                                        onClick={async () => {
-                                            this.setState({
-                                                isStackedLineChart: !this.state.isStackedLineChart,
-                                            }, () => {
-                                                //alert(this.state.isStackedLineChart)
-                                            })
-                                        }}
-                                    >Stacked Line Chart
-                                    </MButton>
-                                </div>
-                                <div className='page_monitoring_select_toggle'>
-                                    <MButton
-                                        size={'small'}
-                                        style={{
                                             width: 120,
                                             backgroundColor: 'grey',
                                             color: 'white'
@@ -1709,7 +1690,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                                         Reset layout
                                     </MButton>
                                 </div>
-
+                                <div className='page_monitoring_select_toggle'>
+                                    <div className='page_monitoring_select_toggle_label'>
+                                        Stacked Line Chart
+                                    </div>
+                                    <Checkbox toggle
+                                              checked={this.state.isStackedLineChart}
+                                              onChange={async () => {
+                                                  this.setState({
+                                                      isStackedLineChart: !this.state.isStackedLineChart,
+                                                  }, () => {
+                                                      //alert(this.state.isStackedLineChart)
+                                                  })
+                                              }}
+                                    />
+                                </div>
                                 {/*todo:---------------------------*/}
                                 {/*todo:FIX GRID BTN    (Switch)   */}
                                 {/*todo:---------------------------*/}
@@ -1933,7 +1928,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                             {/*desc:terminal button                   */}
                             {/*desc:---------------------------------*/}
                             {this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?
-                                <div className='page_monitoring_terminal_button' style={{marginBottom: 100}}
+                                <div className='page_monitoring_terminal_button' style={{marginBottom: 25}}
                                      onClick={() => this.setState({openTerminal: true})}
                                 >
                                 </div>
