@@ -421,8 +421,7 @@ class ClusterInstReg extends React.Component {
             this.organizationList = [organization]
             this.flavorList = await getFlavorList(this, { region: data[fields.region] })
             this.privacyPolicyList = await getPrivacyPolicyList(this, { region: data[fields.region] })
-            this.autoProvPolicyList = await getAutoProvPolicyList(this, { region: data[fields.region] })
-            
+            this.autoProvPolicyList = await getAutoProvPolicyList(this, { region: data[fields.region] })            
             let multiFormCount = 0
             if (data[fields.accessPorts]) {
                 let portArray = data[fields.accessPorts].split(',')
@@ -500,9 +499,6 @@ class ClusterInstReg extends React.Component {
                     multiFormCount += 1
                 }
             }
-
-
-            
         }
     }
 
