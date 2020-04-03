@@ -13,6 +13,7 @@ type Props = {
     graphType: string,
     chartDataSet: any,
     isResizeComplete: boolean,
+    dataLength: number,
 };
 type State = {
     currentClassification: any,
@@ -20,6 +21,7 @@ type State = {
     chartDataSet: any,
     graphType: string,
     isResizeComplete: boolean,
+    dataLength: number,
 };
 
 export default class GradientBarChartContainer extends React.Component<Props, State> {
@@ -32,15 +34,15 @@ export default class GradientBarChartContainer extends React.Component<Props, St
             themeTitle: '',
             chartDataSet: [],
             graphType: '',
+            dataLength: 0,
         }
     }
 
     componentDidMount(): void {
-        /*  this.setState({
-              bubbleChartData: this.props.bubbleChartData,
-          })*/
+        this.setState({
+            dataLength: this.props.dataLength,
+        })
     }
-
 
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
 
@@ -49,10 +51,9 @@ export default class GradientBarChartContainer extends React.Component<Props, St
                 chartDataSet: nextProps.chartDataSet,
                 pHardwareType: nextProps.pHardwareType,
                 graphType: nextProps.graphType,
+                dataLength: nextProps.dataLength,
             }, () => {
-
-               // alert(this.state.graphType)
-
+                // alert(this.state.graphType)
             })
         }
 
@@ -73,7 +74,11 @@ export default class GradientBarChartContainer extends React.Component<Props, St
                 <div className='page_monitoring_dual_container' style={{flex: 1}}>
                     <div className='page_monitoring_title_area'>
                         <div className='page_monitoring_title'>
-                            Top 5 {this.props.pHardwareType} usage
+                            {this.state.dataLength > 2 &&
+                            <React.Fragment>
+                                Top 5
+                            </React.Fragment>
+                            } {this.props.pHardwareType} usage
                             of {this.props.parent.convertToClassification(this.props.parent.state.currentClassification)}
                         </div>
                     </div>
