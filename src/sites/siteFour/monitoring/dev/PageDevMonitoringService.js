@@ -123,9 +123,9 @@ export const HARDWARE_TYPE_FOR_GRID = {
 };
 
 export const CHART_TYPE = {
-    LINE: 'line',
-    BAR: 'bar',
-    COLUMN: 'col',
+    LINE: 'LINE',
+    BAR: 'BAR',
+    COLUMN: 'COLUMN',
 }
 
 export const defaultHwMapperListForCluster = [
@@ -163,17 +163,17 @@ export const defaultHwMapperListForCluster = [
     {
         id: '7',
         hwType: HARDWARE_TYPE_FOR_GRID.CPU,
-        graphType: CHART_TYPE.BAR,
+        graphType: CHART_TYPE.COLUMN,
     },
     {
         id: '8',
         hwType: HARDWARE_TYPE_FOR_GRID.MEM,
-        graphType: CHART_TYPE.BAR,
+        graphType: CHART_TYPE.COLUMN,
     },
     {
         id: '9',
         hwType: HARDWARE_TYPE_FOR_GRID.DISK,
-        graphType: CHART_TYPE.BAR,
+        graphType: CHART_TYPE.COLUMN,
     },
 
 ];

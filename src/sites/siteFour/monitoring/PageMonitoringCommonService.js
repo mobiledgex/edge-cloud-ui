@@ -746,9 +746,6 @@ export const numberWithCommas = (x) => {
 
 export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
 
-
-    console.log("makeFormForClusterLevelMatric====>", dataOne);
-
     let dataForm = {
         "token": token,
         "params": {
@@ -768,8 +765,6 @@ export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, fetch
         }
     }
 
-    console.log("makeFormForClusterLevelMatricdataForm====>", dataForm);
-
     return dataForm;
 }
 
@@ -787,8 +782,6 @@ export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, fetc
             "selector": "*"
         }
     }
-
-    console.log("makeFormForCloudletLevelMatric====>", formBody);
 
     return formBody;
 }
