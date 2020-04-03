@@ -437,7 +437,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
 
             })
 
-            await this.loadInitDataForCluster__FOR__DEV();
+            await this.loadInitDataForCluster();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
@@ -961,7 +961,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
             })
 
 
-            let appInstDropdown = makeSelectBoxListWithValuePipeForAppInst(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST, CLASSIFICATION.REGION)
+            let appInstDropdown = makeSelectBoxListWithValuePipe(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
             //let groupdClusterList = reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET)
 
             await this.setState({
@@ -984,8 +984,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
 
 
         handleAppInstDropdown = async (pCurrentAppInst, isStreamBtnClick = false) => {
-
-
             clearInterval(this.intervalForAppInst)
 
             //@fixme: ################################
@@ -998,8 +996,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                 this.webSocketInst = requestShowAppInstClientWS(pCurrentAppInst, this);
             }
 
+
             await this.setState({
                 currentAppInst: pCurrentAppInst,
+                loading: true,
             })
 
             let AppName = pCurrentAppInst.split('|')[0].trim()
@@ -1010,7 +1010,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
             filteredAppList = filterByClassification(filteredAppList, AppName, 'AppName');
 
             console.log("filteredAppList===>", filteredAppList);
-
 
             //todo:Terminal
             //todo:Terminal
@@ -1025,7 +1024,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                 appInstDropdown,
             })
 
-            alert(JSON.stringify(appInstDropdown))
 
             let arrDateTime = getOneYearStartEndDatetime();
 
@@ -1039,20 +1037,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                 this.setState({dropdownRequestLoading: false})
             }
 
+            console.log("allAppInstUsageList===>", allAppInstUsageList);
+
+
             let currentCluster = pCurrentAppInst.split("|")[2].trim() + " | " + pCurrentAppInst.split('|')[1].trim()
             pCurrentAppInst = pCurrentAppInst.trim();
             pCurrentAppInst = pCurrentAppInst.split("|")[0].trim() + " | " + pCurrentAppInst.split('|')[1].trim() + " | " + pCurrentAppInst.split('|')[2].trim()
-
 
             await this.setState({
                 currentClassification: CLASSIFICATION.APPINST,
                 allAppInstUsageList: allAppInstUsageList,
                 filteredAppInstUsageList: allAppInstUsageList,
                 loading: false,
-                //currentAppInst: pCurrentAppInst,
+                currentAppInst: pCurrentAppInst,
                 //currentCluster: currentCluster,
                 currentCluster: isEmpty(this.state.currentCluster) ? '' : this.state.currentCluster,
-                clusterSelectBoxPlaceholder: 'Select Cluster'
+                clusterSelectBoxPlaceholder: 'Select cluster'
+                //clusterSelectBoxPlaceholder: 'Select Cluster'
             }, () => {
                 //alert(this.state.currentClassification)
 
@@ -1073,19 +1074,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchToProps)(sizeM
                 filteredAppInstEventLogs: filteredAppInstEventLogList,
                 currentTabIndex: 0,
             });
-
-
             //todo: ############################
             //todo: setStream
             //todo: ############################
-          /*  if (this.state.isStream) {
+            if (this.state.isStream) {
                 this.setAppInstInterval(filteredAppList)
             } else {
                 clearInterval(this.intervalForAppInst)
-            }*/
+            }
 
+            this.setState({
+                currentAppInst: pCurrentAppInst,
+            }, () => {
+            })
         }
-
 
         makeGridSizeByType(graphType) {
             if (graphType === GRID_ITEM_TYPE.CLUSTER_LIST || graphType === GRID_ITEM_TYPE.PERFORMANCE_SUM || graphType === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST || graphType === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
