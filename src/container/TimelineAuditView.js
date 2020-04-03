@@ -608,10 +608,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                         <div className="page_audit_history_option">
                             <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
                             <div className="page_audit_history_option_period">
-                                <div className="page_audit_history_label">
-                                Unchecked Error
-                                </div>
-                                <button style={{color:'black'}} onClick={this.onClickUnCheckedError}>{this.state.unCheckedErrorCount}</button>
+                                <button className="page_audit_error_box" onClick={this.onClickUnCheckedError}>
+                                    <div className="page_audit_error_label">Unchecked Error</div>
+                                    <div className="page_audit_error_number">{this.state.unCheckedErrorCount}</div>
+                                </button>
                             </div>
                             <div className="page_audit_history_option_period">
                                 <div className="page_audit_history_label">

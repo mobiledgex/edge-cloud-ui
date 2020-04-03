@@ -199,18 +199,13 @@ export default class CalendarTimeline extends Component {
 
                 <div
                     style={{
-                        height: 72,
-                        overflow: "hidden",
-                        paddingLeft: 3,
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap"
                     }}
                 >
                     {item.taskItem} ({item.itemTime})
                     {(storageTimeIndex !== (-1))? 'V' :null} <br />
-                    TRACE ID : {itemContext.title} <br />
+                    <span style={{fontWeight:600}}>TRACE ID</span> {itemContext.title} <br />
 
-                    <button style={{color:"black"}} onClick={this.props.onPopupEmail}>Send E-mail Trace ID</button>
+                    <button onClick={this.props.onPopupEmail}>Send E-mail Trace ID</button>
                     {(storageTraceIndex !== (-1))? 'V' :null}
                 </div>
 
@@ -284,15 +279,17 @@ export default class CalendarTimeline extends Component {
         const { groups, items, defaultTimeStart, defaultTimeEnd, visibleTimeStart, visibleTimeEnd } = this.state;
         return (
             <div>
-                <div style={{marginBottom:4}}>
-                    <button className='timeline_button_current' style={{color:'black'}} onClick={this.onCurrentClick}>{"current"}</button>
-                    <div style={{displat:'flex', flex:1,}}>
-                        <button className='timeline_button_arrow' style={{color:'black'}} onClick={this.onPrevClick}>
-                            <MaterialIcon icon={'keyboard_arrow_left'} />
-                        </button>
-                        <button className='timeline_button_arrow' style={{color:'black'}} onClick={this.onNextClick}>
-                            <MaterialIcon icon={'keyboard_arrow_right'} />
-                        </button>
+                <div>
+                    <div className='timeline_button_layout'>
+                        <button className='timeline_button_current' onClick={this.onCurrentClick}>{"Current Time"}</button>
+                        <div className='timeline_button_arrow_box'>
+                            <button className='timeline_button_arrow' onClick={this.onPrevClick}>
+                                <MaterialIcon icon={'keyboard_arrow_left'} />
+                            </button>
+                            <button className='timeline_button_arrow' onClick={this.onNextClick}>
+                                <MaterialIcon icon={'keyboard_arrow_right'} />
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <Timeline
@@ -310,8 +307,8 @@ export default class CalendarTimeline extends Component {
                     minResizeWidth={550}
                     defaultTimeStart={defaultTimeStart}
                     defaultTimeEnd={defaultTimeEnd}
-                    // visibleTimeStart={visibleTimeStart}
-                    // visibleTimeEnd={visibleTimeEnd}
+                    visibleTimeStart={visibleTimeStart}
+                    visibleTimeEnd={visibleTimeEnd}
                     itemRenderer={this.itemRenderer}
                     groupRenderer={this.groupRenderer}
                     selected={[(this.props.timelineSelectedIndex).toString()]}
