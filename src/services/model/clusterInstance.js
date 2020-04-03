@@ -6,7 +6,7 @@ import { TYPE_JSON, IPAccessLabel } from '../../constant';
 
 let fields = formatter.fields;
 
-export const keys = [
+export const keys = () => ([
     { field: fields.region, label: 'Region', sortable: true, visible: true },
     { field: fields.clusterName, serverField: 'key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster', visible: true },
     { field: fields.organizationName, serverField: 'key#OS#organization', sortable: true, label: 'Organization', visible: true },
@@ -24,7 +24,7 @@ export const keys = [
     { field: fields.reservable, serverField: 'reservable', label: 'Reservable', roles: ['AdminManager'] },
     { field: fields.reservedBy, serverField: 'reserved_by', label: 'Reserved By', roles: ['AdminManager'] },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
-]
+])
 
 export const multiDataRequest = (keys, mcRequestList) => {
     let cloudletDataList = [];
@@ -140,8 +140,9 @@ export const streamClusterInst = (data) => {
 
 const customData = (value) => {
     value[fields.ipAccess] = IPAccessLabel(value[fields.ipAccess])
+    value[fields.numberOfNodes] = value[fields.numberOfNodes] ? value[fields.numberOfNodes] : 0
 }
 
 export const getData = (response, body) => {
-    return formatter.formatData(response, body, keys, customData, true)
+    return formatter.formatData(response, body, keys(), customData, true)
 }

@@ -62,7 +62,7 @@ class ClusterInstReg extends React.Component {
     }
 
     deploymentManifestForm = () => ([
-        { field: fields.deploymentManifest, formType: TEXT_AREA, rules: { required: false }, width: 14, visible: true },
+        { field: fields.deploymentManifest, formType: TEXT_AREA, rules: { required: false }, update: true, width: 14, visible: true },
         { icon: 'browse', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.addManifestData },
         { icon: 'clear', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.clearManifestData }
     ])
