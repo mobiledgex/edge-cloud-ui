@@ -22,6 +22,7 @@ import {
     WHITE_LINE_COLOR
 } from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
+
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
     zoom: 13,
@@ -107,6 +108,7 @@ type State = {
     lineColor: string,
     cloudIcon: string,
     cloudletIconColor: string,
+    mapCenter: any,
 
 };
 
@@ -160,6 +162,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 clientObjKeys: [],
                 lineColor: 'yellow',
                 cloudletIconColor: 'green',
+                mapCenter: [43.4, 51.7],
 
             };
 
@@ -169,14 +172,16 @@ export default connect(mapStateToProps, mapDispatchProps)(
         componentDidMount = async () => {
             console.log('componentDidMount===>', this.props.markerList);
             let appInstanceListGroupByCloudlet = this.props.markerList
-            this.setCloudletLocation(appInstanceListGroupByCloudlet)
+            await this.setCloudletLocation(appInstanceListGroupByCloudlet)
+
+
         };
 
 
         async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
 
             if (this.props.markerList !== nextProps.markerList) {
-                console.log('markerList2222 nextProps_markerList===>', nextProps.markerList);
+                console.log('nextProps_markerList===>', nextProps.markerList);
                 let appInstanceListGroupByCloudlet = nextProps.markerList;
                 this.setCloudletLocation(appInstanceListGroupByCloudlet)
             }
@@ -189,11 +194,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 await this.setState({
                     clientObjKeys: [],
                 })
-                console.log("selectedClientLocationListOnAppInst==nextProps==>", nextProps.selectedClientLocationListOnAppInst);
-
                 let clientList = nextProps.selectedClientLocationListOnAppInst;
-
-                console.log("clientList===length=>", clientList.length);
                 //desc: duplication remove by client cellphone uuid
                 clientList = removeDuplicates(clientList, "uuid")
 
@@ -211,7 +212,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     clientList: groupedClientList,
                     clientObjKeys: clientObjKeys,
                 }, () => {
-                    console.log("selectedClientLocationListOnAppInst====>", this.state.clientList);
+                    //console.log("selectedClientLocationListOnAppInst====>", this.state.clientList);
+
                 })
             }
 
@@ -229,21 +231,18 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 let ClusterInst = '';
                 pAppInstanceListGroupByCloudlet[key].map((innerItem: TypeAppInstance, index) => {
 
-                    console.log("setCloudletLocation====>", innerItem);
 
                     if (index === (pAppInstanceListGroupByCloudlet[key].length - 1)) {
                         AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version + " | " + innerItem.Operator
                     } else {
                         AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version + " | " + innerItem.Operator + " , "
                     }
-                    console.log("Operator===>", innerItem.Operator);
 
                     CloudletLocation = innerItem.CloudletLocation;
                     Cloudlet = innerItem.Cloudlet;
 
                 })
 
-                console.log("setCloudletLocation===>", AppNames);
 
                 newCloudLetLocationList.push({
                     AppNames: AppNames,
@@ -263,18 +262,21 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 arrIsShowCloudlet.push(false);
             })
 
-
-            console.log('arrIsShowCloudlet===>', arrIsShowCloudlet);
-
-
             this.setState({
                 newCloudLetLocationList: newCloudLetLocationList,
                 arrIsShowCloudlet: arrIsShowCloudlet,
                 appInstanceListGroupByCloudlet: pAppInstanceListGroupByCloudlet,
             }, () => {
                 console.log('newCloudLetLocationList===>', this.state.newCloudLetLocationList);
-            })
 
+                //@desc: Move the center of the map to the center of the item.
+                if (newCloudLetLocationList[0] !== undefined) {
+                    this.setState({
+                        mapCenter: [newCloudLetLocationList[0].CloudletLocation.latitude, newCloudLetLocationList[0].CloudletLocation.longitude],
+                        zoom: this.state.zoom + 1,
+                    })
+                }
+            })
 
         }
 
@@ -324,7 +326,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     </div>
                     <div className='page_monitoring_container'>
                         <div style={{height: '100%', width: '100%', zIndex: 1}}>
-                            <Map center={[45.4, 51.7]}
+                            <Map center={this.state.mapCenter}
                                  duration={0.9}
                                  zoom={this.state.zoom}
                                  onZoomEnd={(e) => {
@@ -353,39 +355,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     style={{zIndex: 1}}
                                     //maxZoom={15}
                                 />
-                               {/* {this.state.newCloudLetLocationList.length === 0 &&
-                                <Rectangle
-                                    bounds={[[25.1109, 5.6821], [37.5665, 95.978],]}
-
-                                    color={'green'}
-                                    attribution={{
-                                        weight: 10,
-
-                                    }}
-                                >
-
-                                    <Tooltip
-                                        //offset={[14, -10]}//x,y
-                                        className='tooltip001'
-                                        opacity={0.8}
-                                        permanent
-                                        direction={'center'}
-                                        style={{
-                                            cursor: 'pointer',
-                                            pointerEvents: 'auto',
-                                            fontSize: 12,
-                                            background: 'green',
-                                        }}
-
-                                    >
-                                        <span>
-                                            There are no apps on the selected cluster | cloud
-                                        </span>
-                                    </Tooltip>
-                                </Rectangle>
-                                }
-                                */}
-
                                 <Control position="topleft">
                                     <Icon
                                         onClick={() => {
@@ -487,7 +456,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {/*@desc:#####################################..*/}
                                 {this.state.newCloudLetLocationList.map((outerItem, outerIndex) => {
                                     let listAppName = outerItem.AppNames.split(",")
-                                    console.log("outerItem====>", outerItem);
 
 
                                     if (outerItem.CloudletLocation.latitude != undefined) {
@@ -497,7 +465,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                 icon={this.props.cloudletIconColor === 'green' ? cloudGreenIcon : cloudBlueIcon}
                                                 className='marker1'
                                                 position={
-                                                    [outerItem.CloudletLocation.latitude, outerItem.CloudletLocation.longitude,]
+                                                    [outerItem.CloudletLocation.latitude, outerItem.CloudletLocation.longitude]
                                                 }
                                                 onClick={() => {
 
@@ -523,12 +491,11 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
                                                 >
 
-                                <span
-                                    className='toolTip'
-                                    style={{color: 'black'}}>{outerItem.Cloudlet}</span>
+                                                    <div
+                                                        className='toolTip'
+                                                        style={{color: 'black'}}>{outerItem.Cloudlet}</div>
                                                 </Tooltip>
                                                 <Popup className='popup1'>
-
                                                     {listAppName.map(AppFullName => {
 
                                                         let AppName = AppFullName.trim().split(" | ")[0].trim()

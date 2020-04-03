@@ -4,7 +4,7 @@ import PageDevMonitoring from "../dev/PageDevMonitoring";
 import {Bar, HorizontalBar} from "react-chartjs-2";
 import 'chartjs-plugin-labels'
 import {renderBarChartCore, renderPlaceHolderCircular} from "../PageMonitoringCommonService";
-import {GradientBarChartOptions1, barChartOptions2} from "../dev/PageDevMonitoringService";
+import {GradientBarChartOptions1, barChartOptions2, CHART_TYPE} from "../dev/PageDevMonitoringService";
 
 
 type Props = {
@@ -50,6 +50,8 @@ export default class GradientBarChartContainer extends React.Component<Props, St
                 pHardwareType: nextProps.pHardwareType,
                 graphType: nextProps.graphType,
             }, () => {
+
+               // alert(this.state.graphType)
 
             })
         }
