@@ -32,8 +32,36 @@ export const Center0001 = styled.div`
     //margin-right: 50px;
 `
 
+export const AppInstOuter = styled.div`
+    margin-left: 20px;
+    font-size: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    //background-color: green;
+    width: 100%;
+    //margin-right: 50px;
+`
+
 
 export const Legend = styled.div`
+  justify-content: flex-start;
+  text-align: center;
+  flex-direction: row;
+  display : flex;
+  align-self: center;
+  font-size: 13px;
+  border-width: 0.1px;
+  border-style: dotted;
+  border-color: dimgrey;
+  padding:5px;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 20px;
+  //marginLeft:50px;
+`;
+
+export const AppInstLegend = styled.div`
   justify-content: flex-start;
   text-align: center;
   flex-direction: row;
