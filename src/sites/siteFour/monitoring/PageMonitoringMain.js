@@ -4,10 +4,8 @@ import {Grid} from "semantic-ui-react";
 import PageMonitoringForDeveloper from "./dev/PageDevMonitoring";
 import PageMonitoringForAdmin from "./admin/PageAdminMonitoring";
 
-
 export default function PageMonitoringMain() {
     const [userRole, setUserRole] = useState(localStorage.getItem('selectRole'));
-
 
     const renderMainPage = () => {
         if (userRole.includes('Admin')) {
