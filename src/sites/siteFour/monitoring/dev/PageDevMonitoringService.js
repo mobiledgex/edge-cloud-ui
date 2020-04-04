@@ -24,6 +24,7 @@ import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
 import {Select} from "antd";
 import {Responsive, WidthProvider} from "react-grid-layout";
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import {CircularProgress} from "@material-ui/core";
 
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -884,6 +885,16 @@ export const convertHwTypePhrases = (pHardwareType) => {
     }
 
 };
+
+export const renderSmallProgress = () => {
+    return (
+        <div style={{display: 'flex', width: '100%', justifyContent: 'center', height: 20}}>
+            <CircularProgress style={{fontWeight: 'bold', color: '#1cecff'}}
+                              color={'#1cecff'}
+                              size={15}/>
+        </div>
+    )
+}
 
 
 export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: string, _this) => {
