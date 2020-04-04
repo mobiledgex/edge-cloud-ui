@@ -1828,15 +1828,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             )
         }
 
-        renderSmallProgress() {
-            return (
-                <div style={{display: 'flex', width: '100%', justifyContent: 'center', height: 20}}>
-                    <CircularProgress style={{fontWeight: 'bold', color: '#1cecff'}}
-                                      color={'#1cecff'}
-                                      size={15}/>
-                </div>
-            )
-        }
+
 
         render() {
             // todo: Components showing when the loading of graph data is not completed.
