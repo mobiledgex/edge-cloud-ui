@@ -15,7 +15,6 @@ import PageDevMonitoring from "./dev/PageDevMonitoring";
 
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
-
     try {
         //AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version;
         console.log("onmessage pCurrentAppInst===>", pCurrentAppInst);
@@ -821,12 +820,6 @@ export const getCloudletLevelMatric = async (serviceBody: any, pToken: string) =
 
 
 export const getAppLevelMetrics = async (serviceBodyForAppInstanceOneInfo: any) => {
-
-
-    console.log("serviceBodyForAppInstanceOneInfo===>", serviceBodyForAppInstanceOneInfo);
-
-
-
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     let result = await axios({
         url: '/api/v1/auth/metrics/app',
