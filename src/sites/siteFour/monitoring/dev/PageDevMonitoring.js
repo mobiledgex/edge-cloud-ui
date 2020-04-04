@@ -424,7 +424,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
             })
 
-            await this.loadInitDataForCluster__FOR__DEV();
+            await this.loadInitDataForCluster();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
@@ -1622,24 +1622,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 {this.makeAppInstDropdown()}
                             </div>
                             <div className='page_monitoring_select_column_end' style={{marginTop: 0}}>
-                                {/*<div className='page_monitoring_select_toggle'>
-
-                                </div>*/}
-                                <div className='page_monitoring_select_toggle'>
-                                    <div className='page_monitoring_select_toggle_label'>
-                                        Stacked Line Chart
-                                    </div>
-                                    <Checkbox toggle
-                                              checked={this.state.isStackedLineChart}
-                                              onChange={async () => {
-                                                  this.setState({
-                                                      isStackedLineChart: !this.state.isStackedLineChart,
-                                                  }, () => {
-                                                      //alert(this.state.isStackedLineChart)
-                                                  })
-                                              }}
-                                    />
-                                </div>
                                 {/*todo:---------------------------*/}
                                 {/*todo:FIX GRID BTN    (Switch)   */}
                                 {/*todo:---------------------------*/}
@@ -1655,41 +1637,56 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                         <div className='page_monitoring_select_toggle_label'>
                                             Fix Grid
                                         </div>
-                                        <Checkbox toggle
-                                                  checked={!this.state.isDraggable}
-                                                  onChange={async () => {
-                                                      await this.setState({
-                                                          isDraggable: !this.state.isDraggable,
-                                                          appInstanceListGroupByCloudlet: [],
-                                                      })
-                                                      this.setState({
-                                                          appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
-                                                      });
-                                                  }}
+                                        <Checkbox
+                                            toggle
+                                            checked={!this.state.isDraggable}
+                                            onChange={async () => {
+                                                await this.setState({
+                                                    isDraggable: !this.state.isDraggable,
+                                                    appInstanceListGroupByCloudlet: [],
+                                                })
+                                                this.setState({
+                                                    appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
+                                                });
+                                            }}
                                         />
                                     </div>
                                 </Tooltip>
+                                <div className='page_monitoring_select_toggle'>
+                                    <div className='page_monitoring_select_toggle_label'>
+                                        Stacked Line Chart
+                                    </div>
+                                    <Checkbox toggle
+                                              checked={this.state.isStackedLineChart}
+                                              onChange={async () => {
+                                                  this.setState({
+                                                      isStackedLineChart: !this.state.isStackedLineChart,
+                                                  }, () => {
+                                                      //alert(this.state.isStackedLineChart)
+                                                  })
+                                              }}
+                                    />
+                                </div>
                                 {this.state.currentClassification === CLASSIFICATION.APPINST &&
                                 <div className='page_monitoring_select_toggle'>
                                     <div className='page_monitoring_select_toggle_label'>
                                         Stream
                                     </div>
-                                    <Checkbox toggle
-                                              onClick={async () => {
-                                                  await this.setState({
-                                                      isStream: !this.state.isStream,
-                                                  });
+                                    <Checkbox
+                                        toggle
+                                        checked={this.state.isStream}
+                                        onClick={async () => {
+                                            await this.setState({
+                                                isStream: !this.state.isStream,
+                                            });
 
-                                                  if (!this.state.isStream) {
-                                                      clearInterval(this.intervalForAppInst)
-                                                  } else {
-                                                      this.handleAppInstDropdown(this.state.currentAppInst, true)
-                                                  }
+                                            if (!this.state.isStream) {
+                                                clearInterval(this.intervalForAppInst)
+                                            } else {
+                                                this.handleAppInstDropdown(this.state.currentAppInst, true)
+                                            }
 
-                                              }}
-                                              value={this.state.isStream}
-
-
+                                        }}
                                     />
                                 </div>
                                 }
@@ -1827,7 +1824,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 </Legend>
             )
         }
-
 
 
         render() {
