@@ -1473,7 +1473,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                     })
                                 }}
                             >
-                                add123123
+                                add
                             </MButton>
                             {/*todo:---------------------------*/}
                             {/*todo:REFRESH, RESET BUTTON DIV  */}
