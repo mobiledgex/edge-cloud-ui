@@ -23,8 +23,9 @@ import './css/pages/audit.css';
 import './css/pages/cloudletPool.css';
 import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
-import BarChart0003 from "./sites/siteFour/monitoring/zzz____TESTCODE____/Pages/BarChart0003";
-import ColumnChart0003 from "./sites/siteFour/monitoring/zzz____TESTCODE____/Pages/ColumnChart0003";
+import BarChart0003 from "./sites/siteFour/monitoring/aaa____TESTCODE____/Pages/BarChart0003";
+import ColumnChart0003 from "./sites/siteFour/monitoring/aaa____TESTCODE____/Pages/ColumnChart0003";
+import Test001 from "./sites/siteFour/monitoring/aaa____TESTCODE____/Pages/Test001";
 // API
 
 let self = null;
@@ -334,6 +335,7 @@ class App extends Component {
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
                     <Route exact path='/BarChart0003' component={BarChart0003} />
                     <Route exact path='/ColumnChart0003' component={ColumnChart0003} />
+                    <Route exact path='/Test001' component={Test001} />
 
                 </div>
             </Router>

@@ -447,9 +447,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 //FIXME : ############################
                 //@FIXME: fakeData22222222222
                 //FIXME : ############################
-                let clusterList = require('../zzz____TESTCODE____/Jsons/clusterList')
-                let cloudletList = require('../zzz____TESTCODE____/Jsons/cloudletList')
-                let appInstanceList = require('../zzz____TESTCODE____/Jsons/appInstanceList')
+                let clusterList = require('../aaa____TESTCODE____/Jsons/clusterList')
+                let cloudletList = require('../aaa____TESTCODE____/Jsons/cloudletList')
+                let appInstanceList = require('../aaa____TESTCODE____/Jsons/appInstanceList')
                 /*console.log('appInstanceList====>', appInstanceList);
                 console.log('clusterList===>', clusterList);*/
 
@@ -473,7 +473,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 //FIXME : ############################
                 //@fixme: fakeData __allAppInstEvLogListValues
                 //FIXME : ############################
-                let __allAppInstEvLogListValues = require('../zzz____TESTCODE____/Jsons/allAppInstEventLogList')
+                let __allAppInstEvLogListValues = require('../aaa____TESTCODE____/Jsons/allAppInstEventLogList')
                 await this.setState({
                     allAppInstEventLogs: __allAppInstEvLogListValues,
                     filteredAppInstEventLogs: __allAppInstEvLogListValues,
@@ -508,7 +508,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 //fixme: fakeData22222222222
                 //fixme: fakeData22222222222
                 let allClusterUsageList = []
-                allClusterUsageList = require('../zzz____TESTCODE____/Jsons/allClusterUsageList')
+                allClusterUsageList = require('../aaa____TESTCODE____/Jsons/allClusterUsageList')
                 console.log('filteredAppInstanceList===>', appInstanceList)
 
                 let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
@@ -1473,7 +1473,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                     })
                                 }}
                             >
-                                add
+                                add123123
                             </MButton>
                             {/*todo:---------------------------*/}
                             {/*todo:REFRESH, RESET BUTTON DIV  */}
@@ -1941,49 +1941,3 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
     }
 ))
-
-
-{/*desc:Cluster Stream*/
-}
-{/*desc:Cluster Stream*/
-}
-{/*desc:Cluster Stream*/
-}
-{/*{this.state.currentClassification === CLASSIFICATION.CLUSTER &&
-                                            <div className='page_monitoring_select_toggle'>
-                                            <div className='page_monitoring_select_toggle_label'>
-                                            Cluster Stream
-                                            </div>
-                                            <Checkbox toggle
-                                            onClick={async () => {
-                                            await this.setState({
-                                            isStream: !this.state.isStream,
-                                            });
-
-                                            if (!this.state.isStream) {
-                                            clearInterval(this.intervalForAppInst)
-                                            } else {
-                                            //this.handleClusterDropdown(this.state.currentAppInst, true)
-                                            setInterval(() => {
-                                            this.intervalForAppInst = this.loadInitDataForCluster(true)
-                                            }, 7000)
-                                            //alert(this.state.currentCluster)
-                                            }
-
-                                            }}
-                                            value={this.state.isStream}
-                                            />
-                                            </div>
-                                            }
-                                            */
-}
-{/*desc:aspect_ratio*/
-}
-{/*desc:aspect_ratio*/
-}
-{/*desc:aspect_ratio*/
-}
-{/* <div className='page_monitoring_select_toggle'>
-                                            <MaterialIcon icon='aspect_ratio'/>
-                                            </div>*/
-}
