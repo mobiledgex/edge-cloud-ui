@@ -657,7 +657,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                             </div>
                         </div>
                     </div>
-                    <div style={{height:'80%', width:this.getWidth()}}>
+                    <div style={{height:'fit-content', width:this.getWidth()}}>
                         {/*<div className="round_panel" style={{width:'100%'}}>*/}
                         {(this.state.timesList.length > 0) ?<CalendarTimeline timelineList={this.state.timelineList[0]} onItemSelectCallback={this.onItemSelect} onPopupEmail={this.onPopupEmail} statusCount={this.state.statusCount} timelineSelectedIndex={this.state.timelineSelectedIndex}/>:null}
                     </div>
@@ -666,20 +666,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                             <span style={{color:'#c8c9cb'}}>{(this.state.closeMap)?'Show':'Hide'}</span>
                             <Icon name={(this.state.closeMap)?'angle up':'angle down'}/>
                         </div>
+                        <div style={{display:'flex', flexDirection:'row', width:'100%'}}>
                             <div className="page_audit_code_left">
                                 <div className="page_audit_code_rawviewer">
                                     <div className="page_audit_code_rawviewer_title">
                                         Raw Viewer
-                                        <div className="page_audit_code">
                                     </div>
-                                    {this.state.isLoading2 &&
+                                    <div className="page_audit_code">
+                                        {this.state.isLoading2 &&
                                         <FlexBox style={{ position: 'absolute', bottom: '54%', left: '5%', zIndex: 9999999 }}>
-                                            <CircularProgress style={{ color: '#1cecff', zIndex: 9999999, fontSize: 10 }}
-                                                size={20} />
+                                            <CircularProgress style={{ color: '#1cecff', zIndex: 9999999, fontSize: 10 }} size={20} />
                                         </FlexBox>
-                                    }
-                                    <div className="page_audit_code_rawviewer_codebox">
-                                        {(this.state.rawViewData) ? jsonView(this.state.rawViewData, this) : null}
+                                        }
+                                        <div className="page_audit_code_rawviewer_codebox">
+                                            {(this.state.rawViewData) ? jsonView(this.state.rawViewData, this) : null}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
