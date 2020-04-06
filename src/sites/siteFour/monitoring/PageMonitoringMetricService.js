@@ -28,11 +28,10 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
-
         let organization = localStorage.selectOrg.toString()
-        let prefixUrl = (process.env.REACT_APP_API_ENDPOINT).replace('http', 'ws');
-        console.log("onmessage==REACT_APP_API_ENDPOINT==>", prefixUrl)
 
+
+        let prefixUrl = (process.env.REACT_APP_API_ENDPOINT).replace('http', 'ws');
         const webSocket = new WebSocket(`${prefixUrl}/ws/api/v1/auth/ctrl/ShowAppInstClient`)
 
         let showAppInstClientRequestForm = {

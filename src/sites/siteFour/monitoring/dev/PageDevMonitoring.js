@@ -409,14 +409,14 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 isOpenEditView: false,
                 isFullScreenMap: false,
                 isStackedLineChart: true,
-                isShowFilter: false,
+                isShowFilter: true,
                 currentNavigation: '',
                 allAppInstDropdown: [],
             };
         }
 
         componentDidMount = async () => {
-            this.props.toggleHeader(false);
+            this.props.toggleHeader(true);
             this.setState({
                 loading: true,
                 bubbleChartLoader: true,
@@ -652,7 +652,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     maxCpu: maxCpu,
                     maxMem: maxMem,
                     isRequesting: false,
-                    currentCluster: undefined,
+                    currentCluster: '',
                 }, () => {
                     console.log("filteredClusterUsageList===>", this.state.filteredClusterUsageList);
                 })
@@ -683,7 +683,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             await this.setState({
                 bubbleChartData: bubbleChartData,
                 dropdownRequestLoading: false,
-                currentCluster: undefined,
+                currentCluster: '',
                 currentAppInst: '',
                 appInstDropdown: [],
                 //currentTabIndex: 1,
@@ -712,7 +712,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             await this.setState({
                 currentRegion: 'ALL',
                 currentCloudLet: '',
-                currentCluster: undefined,
+                currentCluster: '',
                 currentAppInst: '',
             })
 
@@ -1457,6 +1457,24 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             }
         }
 
+        renderBreadCrumb() {
+
+            console.log("currentCluster===>", this.state.currentCluster);
+            if (this.state.currentCluster !== '' && this.state.currentAppInst === '') {
+                return this.state.currentCluster.replace('|', '>');
+            } else if (this.state.currentCluster === '' && this.state.currentAppInst !== '') {
+                let appInst = this.state.currentAppInst.toString().split("|")[0]
+                let cluster = this.state.currentAppInst.toString().split("|")[1]
+                let cloudlet = this.state.currentAppInst.toString().split("|")[2]
+                return cluster + " > " + cloudlet + " > " + appInst;
+            } else if (this.state.currentAppInst !== '') {
+                return this.state.currentCluster.replace('|', '>') + " > " + this.state.currentAppInst.toString().split("|")[0];
+            } else {
+                return null;
+            }
+
+        }
+
 
         renderHeader = () => {
             return (
@@ -1464,55 +1482,81 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     <Grid.Row className='content_title'>
                         <div className='content_title_wrap'>
                             <div className='content_title_label'>Monitoring</div>
-                            <MButton
-                                size={'small'}
-                                style={{width: 100, backgroundColor: '#559901', color: 'white'}}
-                                onClick={async () => {
-                                    this.setState({
-                                        isOpenEditView: true,
-                                    })
-                                }}
-                            >
-                                add
-                            </MButton>
-                            {/*todo:---------------------------*/}
-                            {/*todo:REFRESH, RESET BUTTON DIV  */}
-                            {/*todo:---------------------------*/}
-                            <MButton
-                                size={'small'}
-                                style={{width: 100, backgroundColor: 'grey', color: 'white'}}
-                                onClick={async () => {
-                                    await this.resetAllDataForDev();
-                                }}
-                            >Reset
-                            </MButton>
-                            <MButton
-                                size={'small'}
-                                style={{
-                                    width: 180,
-                                    backgroundColor: 'grey',
-                                    color: 'white'
-                                }}
-                                onClick={async () => {
-                                    this.resetGridPosition();
-                                }}
-                            >
-                                Reset layout
-                            </MButton>
-                            <Button
-                                onClick={async () => {
-                                    if (!this.state.loading) {
-                                        this.refreshAllData();
-                                    } else {
-                                        showToast('Currently loading, you can\'t request again.')
-                                    }
+                            <div style={{display: 'flex', justifyContent: 'space-between', width: '50%', backgroundColor: 'transparent', alignSelf: 'center'}}>
 
+                                <div style={{display: 'flex', alignSelf: 'center'}}>
+                                    <MButton
+                                        size={'small'}
+                                        style={{width: 100, backgroundColor: '#559901', color: 'white', height: 30}}
+                                        onClick={async () => {
+                                            this.setState({
+                                                isOpenEditView: true,
+                                            })
+                                        }}
+                                    >
+                                        add
+                                    </MButton>
+                                </div>
+                                <div style={{width: 10}}></div>
+                                {/*todo:---------------------------*/}
+                                {/*todo:REFRESH, RESET BUTTON DIV  */}
+                                {/*todo:---------------------------*/}
+                                <div style={{display: 'flex', alignSelf: 'center'}}>
+                                    <MButton
+                                        size={'small'}
+                                        style={{width: 100, backgroundColor: '#559901', color: 'white', height: 30}}
+                                        onClick={async () => {
+                                            await this.resetAllDataForDev();
+                                        }}
+                                    >Reset
+                                    </MButton>
+                                </div>
+                                <div style={{width: 10}}></div>
+                                <div style={{display: 'flex', alignSelf: 'center'}}>
+                                    <MButton
+                                        size={'small'}
+                                        style={{
+                                            width: 150,
+                                            backgroundColor: 'grey',
+                                            color: 'white',
+                                            height: 30,
+                                        }}
+                                        onClick={async () => {
+                                            this.resetGridPosition();
+                                        }}
+                                    >
+                                        Reset layout
+                                    </MButton>
+                                </div>
+                                <div style={{width: 10}}></div>
+                                <div style={{display: 'flex', alignSelf: 'center'}}>
+                                    <Button
+                                        onClick={async () => {
+                                            if (!this.state.loading) {
+                                                this.refreshAllData();
+                                            } else {
+                                                showToast('Currently loading, you can\'t request again.')
+                                            }
+
+                                        }}
+                                        className="ui circular icon button"
+                                    >
+                                        <i aria-hidden="true"
+                                           className="sync alternate icon"></i>
+                                    </Button>
+                                </div>
+                            </div>
+                            <div
+                                style={{
+                                    //backgroundColor: 'red',
+                                    width: '150%',
+                                    marginLeft: 0,
+                                    fontSize: 15,
+                                    //fontStyle: 'italic'
                                 }}
-                                className="ui circular icon button"
                             >
-                                <i aria-hidden="true"
-                                   className="sync alternate icon"></i>
-                            </Button>
+                                {this.renderBreadCrumb()}
+                            </div>
                             {this.state.intervalLoading &&
                             <div>
                                 <div style={{marginLeft: 15}}>
@@ -1561,7 +1605,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             desc:#######################################
                             */}
                             <OuterHeader>
-                                <Center0001 className='page_monitoring_select_toggle'>
+                                {/* <Center0001 className='page_monitoring_select_toggle'>
                                     <div className='page_monitoring_select_toggle_label'>
                                         Show Header
                                     </div>
@@ -1580,7 +1624,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                         checked={this.props.isShowHeader}
                                     >
                                     </Checkbox>
-                                </Center0001>
+                                </Center0001>*/}
                                 <Center0001 className='page_monitoring_select_toggle'>
                                     <div className='page_monitoring_select_toggle_label'>
                                         Show Filter
@@ -1767,11 +1811,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             return (
                 <Legend>
                     <div style={{display: 'flex', width: '100%'}}>
-                        {!this.state.isShowFilter &&
+                        {/*  {!this.state.isShowFilter &&
                         <div>
                             {this.makeClusterDropdown()}
                         </div>
-                        }
+                        }*/}
                         {this.state.currentClassification === 'Cluster' ?
                             <div style={{display: 'flex', flex: 1, justifyContent: 'center', marginLeft: 0, backgroundColor: 'transparent'}}>
                                 {this.state.filteredClusterUsageList.map((item, index) => {
@@ -1784,7 +1828,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                                 borderRadius: 50,
                                                 marginTop: 3
                                             }}>
-
                                             </div>
                                             <ClusterCluoudletLable
                                                 style={{
