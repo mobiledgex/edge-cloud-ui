@@ -907,10 +907,10 @@ export const getAllCloudletEventLogs = async (cloudletList) => {
             promiseList.push(getCloudletEventLog(cloudletOne.CloudletName, cloudletOne.Region))
         })
 
-        let AllCloudletEventLogList = await Promise.all(promiseList);
+        let allCloudletEventLogList = await Promise.all(promiseList);
 
         let newAllCloudletEventLogList = []
-        AllCloudletEventLogList.map(listOne => {
+        allCloudletEventLogList.map(listOne => {
             listOne.map(item => {
                 newAllCloudletEventLogList.push(item)
             })
