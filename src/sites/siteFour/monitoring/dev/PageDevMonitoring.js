@@ -445,7 +445,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
             })
 
-            await this.loadInitDataForCluster();
+            await this.loadInitDataForCluster__FOR__DEV();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
@@ -1631,7 +1631,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 </Center0001>
 
 
-                                <div style={{width: 10}}></div>
+                                <div style={{width: 20}}></div>
                                 <div style={{alignItems: 'center', display: 'flex', cursor: 'pointer'}}>
                                     <Ripples
                                         style={{display: 'flex', alignSelf: 'center', cursor: 'pointer'}}
@@ -1642,13 +1642,15 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                         }}
                                     >
                                         <MaterialIcon
-                                            color='#77BD25'
+                                            size={22}
+                                            color='rgb(118, 255, 3)'
+                                            //color={'#559901'}
                                             icon="add"
 
                                         />
                                     </Ripples>
                                 </div>
-                                <div style={{width: 10}}></div>
+                                <div style={{width: 20}}></div>
                                 <div style={{alignItems: 'center', display: 'flex', cursor: 'pointer'}}>
                                     <Ripples
                                         style={{display: 'flex', alignSelf: 'center', cursor: 'pointer'}}
@@ -1663,7 +1665,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                         }}
                                     >
                                         <MaterialIcon
-                                            color='#77BD25'
+                                            size={22}
+                                            color='rgb(118, 255, 3)'
+                                            //color={'#559901'}
                                             icon="refresh"
 
                                         />
