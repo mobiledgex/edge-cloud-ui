@@ -6,7 +6,7 @@ import {Button, Checkbox, Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
-import {Button as MButton, Card, CircularProgress} from '@material-ui/core'
+import {Button as MButton, Card, CircularProgress, withStyles} from '@material-ui/core'
 import {DatePicker, Select, Tooltip} from 'antd';
 
 import {
@@ -89,7 +89,21 @@ import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout} from "react-grid-layout/lib/utils";
 import GradientBarChartContainer from "../components/GradientBarChartContainer";
 import Ripples from "react-ripples";
-//import {hot} from "react-hot-loader/root";
+import Switch from "@material-ui/core/Switch";
+
+const CustomSwitch = withStyles({
+    switchBase: {
+        color: '#D32F2F',
+        '&$checked': {
+            color: '#388E3C',
+        },
+        '&$checked + $track': {
+            backgroundColor: '#388E3C',
+        },
+    },
+    checked: {},
+    track: {},
+})(Switch);
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const mapStateToProps = (state) => {
     return {
@@ -1561,53 +1575,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             desc :####################################
                             */}
                             <div style={{display: 'flex', justifyContent: 'flex-end', width: '100%', flex: .3,}}>
-
-                                {/*fixme:---------------------------*/}
-                                {/*fixme:Show Header                */}
-                                {/*fixme:---------------------------*/}
-                                {/*
-                                <Center0001 className='page_monitoring_select_toggle' style={{backgroundColor: 'transparent'}}>
-                                    <div className='page_monitoring_select_toggle_label' style={{fontSize: 19}}>
-                                        Show Header
-                                    </div>
-                                    <Checkbox
-                                        style={{marginRight: 10, marginTop: 4}}
-                                        toggle
-                                        //checked={!this.state.isDraggable}
-                                        onChange={async () => {
-                                            if (this.props.isShowHeader) {
-                                                this.props.toggleHeader(false)
-                                            } else {
-                                                this.props.toggleHeader(true)
-                                            }
-
-                                        }}
-                                        checked={this.props.isShowHeader}
-                                    >
-                                    </Checkbox>
-                                </Center0001>
-                                */}
-
-                                <Center0001 className='page_monitoring_select_toggle' style={{backgroundColor: 'transparent', width: 100}}>
-                                    <div className='page_monitoring_select_toggle_label' style={{fontSize: 19}}>
-                                        Filter
-                                    </div>
-                                    <div style={{alignItems: 'center', display: 'flex'}}>
-                                        <Checkbox
-                                            style={{marginRight: 10, marginTop: 0}}
-                                            toggle
-                                            //checked={!this.state.isDraggable}
-                                            onChange={async () => {
-                                                this.setState({
-                                                    isShowFilter: !this.state.isShowFilter,
-                                                })
-                                            }}
-                                            checked={this.state.isShowFilter}
-                                        >
-                                        </Checkbox>
-                                    </div>
-                                </Center0001>
-
                                 <div style={{width: 10}}></div>
                                 {/*todo:---------------------------*/}
                                 {/*todo:Initialize */}
@@ -1622,6 +1589,45 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                     >Initialize
                                     </MButton>
                                 </div>
+                                {/*fixme:---------------------------*/}
+                                {/*fixme:Show Header                */}
+                                {/*fixme:---------------------------*/}
+                                {/*<Center0001 className='page_monitoring_select_toggle' style={{backgroundColor: 'transparent'}}>
+                                    <div className='page_monitoring_select_toggle_label' style={{fontSize: 19}}>
+                                        Show Header
+                                    </div>
+                                    <CustomSwitch
+                                        size="small"
+                                        checked={this.props.isShowHeader}
+                                        color="primary" defaultChecked
+                                        onChange={async () => {
+                                            if (this.props.isShowHeader) {
+                                                this.props.toggleHeader(false)
+                                            } else {
+                                                this.props.toggleHeader(true)
+                                            }
+                                        }}
+                                    />
+                                </Center0001>*/}
+                                <Center0001 className='page_monitoring_select_toggle' style={{backgroundColor: 'transparent', width: 100, marginRight: 10}}>
+                                    <div className='page_monitoring_select_toggle_label' style={{fontSize: 19}}>
+                                        Filter
+                                    </div>
+                                    <div style={{alignItems: 'center', display: 'flex'}}>
+                                        <CustomSwitch
+                                            size="small"
+                                            checked={this.state.isShowFilter}
+                                            color="primary" defaultChecked
+                                            onChange={async () => {
+                                                this.setState({
+                                                    isShowFilter: !this.state.isShowFilter,
+                                                })
+                                            }}
+                                        />
+                                    </div>
+                                </Center0001>
+
+
                                 <div style={{width: 10}}></div>
                                 <div style={{alignItems: 'center', display: 'flex', cursor: 'pointer'}}>
                                     <Ripples
@@ -1666,16 +1672,14 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         </div>
                     </Grid.Row>
                     <div style={{backgroundColor: '#202329', marginLeft: 10, marginRight: 10,}}>
-                        {this.renderDropdownFilterArea()}
+                        {this.renderFilterArea()}
                     </div>
                 </>
 
             )
         }
 
-
-        renderDropdownFilterArea() {
-
+        renderFilterArea() {
             if (this.state.isShowFilter) {
                 return (
                     <div className='page_monitoring_select_row'>
@@ -1690,7 +1694,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                     <MButton
                                         size={'small'}
                                         style={{
-                                            width: 150,
+                                            width: 125,
                                             backgroundColor: 'grey',
                                             color: 'white',
                                             height: 30,
@@ -1718,9 +1722,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                         <div className='page_monitoring_select_toggle_label'>
                                             Fix Grid
                                         </div>
-                                        <Checkbox
-                                            toggle
-                                            checked={!this.state.isDraggable}
+
+                                        <CustomSwitch
+                                            size="small"
+                                            color="primary" defaultChecked
+
                                             onChange={async () => {
                                                 await this.setState({
                                                     isDraggable: !this.state.isDraggable,
@@ -1737,15 +1743,19 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                     <div className='page_monitoring_select_toggle_label'>
                                         Stacked Line Chart
                                     </div>
-                                    <Checkbox toggle
-                                              checked={this.state.isStackedLineChart}
-                                              onChange={async () => {
-                                                  this.setState({
-                                                      isStackedLineChart: !this.state.isStackedLineChart,
-                                                  }, () => {
-                                                      //alert(this.state.isStackedLineChart)
-                                                  })
-                                              }}
+
+                                    <CustomSwitch
+                                        size="small"
+                                        checked={this.state.isStackedLineChart}
+                                        color="primary" defaultChecked
+
+                                        onChange={async () => {
+                                            this.setState({
+                                                isStackedLineChart: !this.state.isStackedLineChart,
+                                            }, () => {
+                                                //alert(this.state.isStackedLineChart)
+                                            })
+                                        }}
                                     />
                                 </div>
                                 {this.state.currentClassification === CLASSIFICATION.APPINST &&
@@ -1753,10 +1763,12 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                     <div className='page_monitoring_select_toggle_label'>
                                         Stream
                                     </div>
-                                    <Checkbox
-                                        toggle
+                                    <CustomSwitch
+                                        size="small"
                                         checked={this.state.isStream}
-                                        onClick={async () => {
+                                        color="primary" defaultChecked
+
+                                        onChange={async () => {
                                             await this.setState({
                                                 isStream: !this.state.isStream,
                                             });
@@ -1766,7 +1778,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                             } else {
                                                 this.handleAppInstDropdown(this.state.currentAppInst, true)
                                             }
-
                                         }}
                                     />
                                 </div>
