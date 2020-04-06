@@ -121,8 +121,7 @@ const defaultPage = (options) => {
     let currentPage = path.substring(path.indexOf('pg='))
     for (let i = 0; i < options.length; i++) {
         let option = options[i]
-        if(option.subOptions)
-        {
+        if (option.subOptions) {
             page = defaultPage(option.subOptions)
         }
         else if (currentPage.includes('pg=' + option.pg)) {
@@ -133,17 +132,14 @@ const defaultPage = (options) => {
     return page
 }
 
-const navstate = ()=>
-{
-    if(localStorage.getItem('navigation'))
-    {
+const navstate = () => {
+    if (localStorage.getItem('navigation')) {
         return parseInt(localStorage.getItem('navigation'))
     }
     return 1
 }
 
-const setNavState = (flag)=>
-{
+const setNavState = (flag) => {
     return localStorage.setItem('navigation', flag)
 }
 
@@ -192,11 +188,11 @@ export default function MiniDrawer(props) {
 
     const roleInfo = () => {
         return (
-            <ListItem onClick={(e) => {setOpenLegend(localStorage.selectRole && localStorage.selectRole != 'null')}}>
+            <ListItem onClick={(e) => { setOpenLegend(localStorage.selectRole && localStorage.selectRole != 'null') }}>
                 <ListItemIcon>
-                    {localStorage.selectRole ?
-                        <div className="markBox">
-                            {
+                    <div className="markBox">
+                        {
+                            localStorage.selectRole ?
                                 (localStorage.selectRole === 'AdminManager') ?
                                     <div className="mark markA markS">S</div>
                                     :
@@ -218,19 +214,20 @@ export default function MiniDrawer(props) {
                                                         (localStorage.selectRole === 'OperatorViewer') ?
                                                             <div className="mark markO markV">V</div>
                                                             :
-                                                            <div className="mark markA markS">?</div>
-                            }
-                        </div> : null}
+                                                            <div className="mark markA markS">?</div> :
+                                <div className="mark markA markS">?</div>
+                        }
+                    </div>
                 </ListItemIcon>
                 <ListItemText>
-                    <strong style={{ color: '#BFC0C2', fontSize: 12}}> 
+                    <strong style={{ color: '#BFC0C2', fontSize: 12 }}>
                         {
-                            localStorage.selectRole && localStorage.selectRole != 'null' ? localStorage.selectRole : 
-                            <div>
-                                <p>No Organization selected</p>
-                                <p>Click Manage to view and</p>
-                                <p>manage your Organization</p>
-                            </div>
+                            localStorage.selectRole && localStorage.selectRole != 'null' ? localStorage.selectRole :
+                                <div>
+                                    <p>No Organization selected</p>
+                                    <p>Click Manage to view and</p>
+                                    <p>manage your Organization</p>
+                                </div>
                         }
                     </strong>
 
@@ -302,7 +299,7 @@ export default function MiniDrawer(props) {
                         [classes.drawerClose]: !open,
                     }),
                 }}
-                style={{zIndex:1}}
+                style={{ zIndex: 1 }}
             >
                 <div className={classes.toolbar}>
                     <Image wrapped size='small' src='/assets/brand/logo_mex.svg' />
