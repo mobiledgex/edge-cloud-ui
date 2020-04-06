@@ -1730,7 +1730,7 @@ export const GradientBarChartOptions1 = {
                 padding: 10,
                 labelOffset: 0,
                 callback(label, index, labels) {
-                    return [label.toString().split("[")[0], "[" + label.toString().split("[")[1].substring(0, 13) + "...]"]
+                    return [label.toString().split("[")[0].substring(0, 11)+"...", "[" + label.toString().split("[")[1].substring(0, 11).replace(']','') + "...]"]
                 }
             },
             beginAtZero: false,
