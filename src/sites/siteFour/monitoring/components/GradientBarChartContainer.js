@@ -85,6 +85,9 @@ export default class GradientBarChartContainer extends React.Component<Props, St
                     <div className='page_monitoring_container'>
 
                         {this.state.graphType === 'BAR' ?
+
+                            /*@desc 가로 barChart*/
+                            /*@desc 가로 barChart*/
                             <HorizontalBar
                                 options={barChartOptions2}
                                 data={this.state.chartDataSet}
