@@ -1560,8 +1560,35 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             desc :right options
                             desc :####################################
                             */}
-                            <div style={{display: 'flex', justifyContent: 'flex-end', width: '100%', flex: .3, }}>
-                                <Center0001 className='page_monitoring_select_toggle'>
+                            <div style={{display: 'flex', justifyContent: 'flex-end', width: '100%', flex: .3,}}>
+
+                                {/*fixme:---------------------------*/}
+                                {/*fixme:Show Header                */}
+                                {/*fixme:---------------------------*/}
+                                {/*
+                                <Center0001 className='page_monitoring_select_toggle' style={{backgroundColor: 'transparent'}}>
+                                    <div className='page_monitoring_select_toggle_label' style={{fontSize: 19}}>
+                                        Show Header
+                                    </div>
+                                    <Checkbox
+                                        style={{marginRight: 10, marginTop: 4}}
+                                        toggle
+                                        //checked={!this.state.isDraggable}
+                                        onChange={async () => {
+                                            if (this.props.isShowHeader) {
+                                                this.props.toggleHeader(false)
+                                            } else {
+                                                this.props.toggleHeader(true)
+                                            }
+
+                                        }}
+                                        checked={this.props.isShowHeader}
+                                    >
+                                    </Checkbox>
+                                </Center0001>
+                                */}
+
+                                <Center0001 className='page_monitoring_select_toggle' style={{backgroundColor: 'transparent', width: 100}}>
                                     <div className='page_monitoring_select_toggle_label' style={{fontSize: 19}}>
                                         Filter
                                     </div>
@@ -1580,6 +1607,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                         </Checkbox>
                                     </div>
                                 </Center0001>
+
                                 <div style={{width: 10}}></div>
                                 {/*todo:---------------------------*/}
                                 {/*todo:Initialize */}
