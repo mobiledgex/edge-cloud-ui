@@ -255,6 +255,7 @@ type State = {
     isShowFilter: boolean,
     currentNavigation: string,
     allAppInstDropdown: any,
+    isShowAppInstPopup:boolean,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeight: true})(
@@ -412,6 +413,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 isShowFilter: true,
                 currentNavigation: '',
                 allAppInstDropdown: [],
+                isShowAppInstPopup: false,
             };
         }
 
@@ -662,7 +664,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
         }
 
-        async resetAllDataForDev() {
+        async handleResetClicked() {
             clearInterval(this.intervalForAppInst)
             await this.setState({
                 currentGridIndex: -1,
@@ -686,6 +688,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 currentCluster: '',
                 currentAppInst: '',
                 appInstDropdown: [],
+                isShowAppInstPopup : !this.state.isShowAppInstPopup,
                 //currentTabIndex: 1,
             })
         }
@@ -1168,7 +1171,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
         }
 
-        makeGridItemBodyByType(hwType, graphType) {
+        ___makeGridItemBodyByType(hwType, graphType) {
 
             if (graphType === GRID_ITEM_TYPE.LINE) {
                 return (
@@ -1203,6 +1206,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         handleAppInstDropdown={this.handleAppInstDropdown}
                         markerList={this.state.appInstanceListGroupByCloudlet}
                         isFullScreenMap={false}
+                        isShowAppInstPopup={this.state.isShowAppInstPopup}
                     />
                 )
             } else if (graphType === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
@@ -1326,7 +1330,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     {/*desc:############################*/}
                     <div className='page_monitoring_column_resizable'>
 
-                        {this.makeGridItemBodyByType(hwType, graphType.toUpperCase())}
+                        {this.___makeGridItemBodyByType(hwType, graphType.toUpperCase())}
                     </div>
                 </div>
             )
@@ -1506,7 +1510,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                         size={'small'}
                                         style={{width: 100, backgroundColor: '#559901', color: 'white', height: 30}}
                                         onClick={async () => {
-                                            await this.resetAllDataForDev();
+                                            await this.handleResetClicked();
                                         }}
                                     >Reset
                                     </MButton>
