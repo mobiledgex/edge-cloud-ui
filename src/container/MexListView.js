@@ -150,11 +150,17 @@ class MexListView extends React.Component {
                 serverData.sendWSRequest(this, action.onClick(data), this.onDeleteWSResponse)
             }
             else {
+                let valid = false
                 let mcRequest = await serverData.sendRequest(this, action.onClick(data))
                 if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
                     this.props.handleAlertInfo('success', `${mcRequest.request.success} deleted successfully`)
                     dataList.splice(this.selectedRowIndex, 1)
                     this.setState({ dataList: dataList })
+                    valid = true;
+                }
+                if(action.onFinish)
+                {
+                    action.onFinish(data, valid)
                 }
             }
         }
