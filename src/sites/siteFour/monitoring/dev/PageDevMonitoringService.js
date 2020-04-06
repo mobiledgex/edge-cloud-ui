@@ -1198,7 +1198,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this) => {
                     color: "#505050",
                 },
                 ticks: {
-                    fontSize: 14,
+                    fontSize: 11,
                     fontColor: 'white',
                     //maxRotation: 0.05,
                     //autoSkip: true,
@@ -1720,7 +1720,7 @@ export const GradientBarChartOptions1 = {
                 color: "#505050",
             },
             ticks: {
-                fontSize: 13,
+                fontSize: 11,
                 fontColor: 'white',
                 //maxRotation: 0.05,
                 //autoSkip: true,
@@ -1730,7 +1730,7 @@ export const GradientBarChartOptions1 = {
                 padding: 10,
                 labelOffset: 0,
                 callback(label, index, labels) {
-                    return [label.toString().split("[")[0], "[" + label.toString().split("[")[1].substring(0, 19) + "...]"]
+                    return [label.toString().split("[")[0], "[" + label.toString().split("[")[1].substring(0, 13) + "...]"]
                 }
             },
             beginAtZero: false,
