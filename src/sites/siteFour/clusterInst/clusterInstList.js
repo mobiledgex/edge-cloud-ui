@@ -32,7 +32,6 @@ class ClusterInstView extends React.Component {
         this.setState({ currentView: null })
     }
 
-
     onAdd = (action, data) => {
         this.setState({ currentView: <ClusterInstReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose}/> })
     }
@@ -43,9 +42,6 @@ class ClusterInstView extends React.Component {
             { label: 'Delete', onClick: deleteClusterInst, ws: true }
         ]
     }
-
-    
-
 
     requestInfo = () => {
         return ({
