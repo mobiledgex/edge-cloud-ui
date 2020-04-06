@@ -445,7 +445,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
             })
 
-            await this.loadInitDataForCluster__FOR__DEV();
+            await this.loadInitDataForCluster();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
@@ -1582,7 +1582,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 {/*todo:---------------------------*/}
                                 {/*todo:Initialize */}
                                 {/*todo:---------------------------*/}
-                                <div style={{alignItems: 'center', display: 'flex'}}>
+                                <div style={{alignItems: 'center', display: 'flex', marginRight:-25}}>
                                     <MButton
                                         size={'small'}
                                         style={{width: 80, backgroundColor: '#559901', color: 'white', height: 30}}
