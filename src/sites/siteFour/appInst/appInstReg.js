@@ -425,6 +425,7 @@ class ClusterInstReg extends React.Component {
                 app[fields.region] = data[fields.region]
                 app[fields.organizationName] = data[fields.organizationName]
                 app[fields.version] = data[fields.version]
+                app[fields.deployment] = data[fields.deployment]
                 this.appList = [app];
 
                 let disabledFields = [fields.region, fields.organizationName, fields.appName, fields.version]
