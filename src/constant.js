@@ -35,6 +35,10 @@ export const LIVENESS_STATIC = 'Static'
 export const APP = 'App'
 export const YES = 'YES'
 
+export const ADMIN_MANAGER = 'AdminManager'
+export const OPERATOR_MANAGER = 'OperatorManager'
+export const OPERATOR_CONTRIBUTOR = 'OperatorContributor'
+
 export const getHeight = (height) => {
     return window.innerHeight - (height ? height : 85)
 }
