@@ -51,11 +51,20 @@ class OrganizationList extends React.Component {
         this.gotoUrl('/site4', 'pg=audits&org=' + orgName)
     }
 
+    onDelete = (data, success) => {
+        if (success && data[fields.organizationName] === localStorage.getItem('selectOrg')) {
+            localStorage.removeItem('selectRole')
+            localStorage.removeItem('selectOrg')
+            this.props.handleUserRole(undefined)
+            this.forceUpdate()
+        }
+    }
+
     actionMenu = () => {
         return [
             { label: 'Audit', onClick: this.onAudit },
             { label: 'Add User', onClick: this.onAdd },
-            { label: 'Delete', onClick: deleteOrganization }
+            { label: 'Delete', onClick: deleteOrganization, onFinish: this.onDelete}
         ]
     }
 
