@@ -72,7 +72,7 @@ export const defaultLayoutForCluster = [
     {i: '6', x: 0, y: 2, w: 1, h: 1, "add": false},//
     {i: '7', x: 1, y: 2, w: 1, h: 1, "add": false},//
     {i: '8', x: 2, y: 2, w: 1, h: 1, "add": false},//
-    {i: '9', x: 3, y: 2, w: 1, h: 1, "add": false},//
+    //{i: '9', x: 3, y: 2, w: 1, h: 1, "add": false},//
 
 ];
 
@@ -118,11 +118,11 @@ export const defaultHwMapperListForCluster = [
         hwType: HARDWARE_TYPE_FOR_GRID.DISK,
         graphType: CHART_TYPE.COLUMN,
     },
-    {
+  /*  {
         id: '9',
         hwType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
         graphType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
-    },
+    },*/
 
 ];
 
