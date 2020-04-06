@@ -25,7 +25,7 @@ import {
     makeLineChartDataForBigModal,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
-    makeSelectBoxListWithValuePipe,
+    makeSelectBoxListWithValuePipe, makeDropdownListWithValuePipeForAppInst, renderSmallProgress,
 } from "./PageDevMonitoringService";
 import {
     ADD_ITEM_LIST,
@@ -936,7 +936,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 }
             })
 
-            let appInstDropdown = makeSelectBoxListWithValuePipe(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
+            let appInstDropdown = makeDropdownListWithValuePipeForAppInst(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
 
             await this.setState({
                 dropdownRequestLoading: false,
@@ -1816,6 +1816,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             {this.makeClusterDropdown()}
                         </div>
                         }*/}
+                        {this.state.loading && <div style={{display: 'flex', alignSelf: 'center'}}>
+                            <CircularProgress style={{fontWeight: 'bold', color: '#1cecff'}}
+                                              color={'#1cecff'}
+                                              size={15}/>
+                        </div>}
                         {this.state.currentClassification === 'Cluster' ?
                             <div style={{display: 'flex', flex: 1, justifyContent: 'center', marginLeft: 0, backgroundColor: 'transparent'}}>
                                 {this.state.filteredClusterUsageList.map((item, index) => {
@@ -1856,9 +1861,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 </div>
                                 <ClusterCluoudletLable
                                     style={{marginLeft: 5, marginRight: 15, marginBottom: 0}}>
-                                    {this.state.currentAppInst.split("|")[0]} {`| `}
-                                    {this.state.currentAppInst.split("|")[2]} {`| `}
-                                    {this.state.currentAppInst.split("|")[1]}
+                                    {this.state.currentAppInst.split("|")[0]} {/*{`| `}*/}
+                                    {/*{this.state.currentAppInst.split("|")[2]} {`| `} //cluster
+                                    {this.state.currentAppInst.split("|")[1]} cloudlet*/}
                                 </ClusterCluoudletLable>
                             </div>
                         }
