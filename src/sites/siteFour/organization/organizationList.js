@@ -26,6 +26,7 @@ class OrganizationList extends React.Component {
 
     onRegClose = (isEdited)=>
     {
+        this.customizedData()
         this.setState({ currentView: null })
     }
 
