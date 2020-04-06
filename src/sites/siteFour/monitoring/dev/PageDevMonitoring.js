@@ -88,6 +88,7 @@ import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout} from "react-grid-layout/lib/utils";
 import GradientBarChartContainer from "../components/GradientBarChartContainer";
+import Ripples from "react-ripples";
 //import {hot} from "react-hot-loader/root";
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const mapStateToProps = (state) => {
@@ -255,7 +256,7 @@ type State = {
     isShowFilter: boolean,
     currentNavigation: string,
     allAppInstDropdown: any,
-    isShowAppInstPopup:boolean,
+    isShowAppInstPopup: boolean,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeight: true})(
@@ -688,7 +689,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 currentCluster: '',
                 currentAppInst: '',
                 appInstDropdown: [],
-                isShowAppInstPopup : !this.state.isShowAppInstPopup,
+                isShowAppInstPopup: !this.state.isShowAppInstPopup,
                 //currentTabIndex: 1,
             })
         }
@@ -1345,7 +1346,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     isDraggable={this.state.isDraggable}
                     //useCSSTransforms={true}
                     className={'layout page_monitoring_layout_dev'}
-                    cols={{lg: 3, md: 3, sm: 3, xs: 3, xxs: 3}}
+                    cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
                     layout={this.state.layoutForCluster}
                     rowHeight={this.gridItemHeight}
                     onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
@@ -1484,57 +1485,137 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             return (
                 <>
                     <Grid.Row className='content_title'>
-                        <div className='content_title_wrap'>
-                            <div className='content_title_label'>Monitoring</div>
-                            <div style={{display: 'flex', justifyContent: 'space-between', width: '50%', backgroundColor: 'transparent', alignSelf: 'center'}}>
+                        <div className='content_title_wrap' style={{display: 'flex'}}>
+                            <div className='content_title_label' style={{flex: .08}}>Monitoring</div>
+                            {/*
+                            desc :####################################
+                            desc :BreadCrumb Area
+                            desc :####################################
+                            */}
+                            <div
+                                style={{
+                                    width: '150%',
+                                    marginLeft: 0,
+                                    fontSize: 15,
+                                    flex: .6,
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'center',
+                                    //backgroundColor: 'red',
+                                }}
+                            >
+                                {this.renderBreadCrumb()}
+                            </div>
 
-                                <div style={{display: 'flex', alignSelf: 'center'}}>
+                            {/*
+                            desc :####################################
+                            desc :loading Area
+                            desc :####################################
+                            */}
+                            <div style={{flex: .05}}>
+                                {this.state.intervalLoading &&
+                                <div>
+                                    <div style={{marginLeft: 15}}>
+                                        <CircularProgress
+                                            style={{
+                                                color: this.state.currentClassification === CLASSIFICATION.APPINST ? 'grey' : 'green',
+                                                zIndex: 9999999,
+                                                fontSize: 10
+                                            }}
+                                            size={20}
+                                        />
+                                    </div>
+                                </div>
+                                }
+
+                                {this.state.webSocketLoading &&
+                                <div>
+                                    <div style={{marginLeft: 15}}>
+                                        <CircularProgress
+                                            style={{
+                                                color: 'green',
+                                                zIndex: 9999999,
+                                            }}
+                                            size={45}
+                                        />
+                                    </div>
+                                </div>
+                                }
+                                {this.props.isLoading &&
+                                <div>
+                                    <div style={{marginLeft: 15}}>
+                                        <CircularProgress
+                                            style={{
+                                                color: 'green',
+                                                zIndex: 9999999,
+                                                fontSize: 10
+                                            }}
+                                            size={20}
+                                        />
+                                    </div>
+                                </div>
+                                }
+                            </div>
+                            {/*
+                            desc :####################################
+                            desc :right options
+                            desc :####################################
+                            */}
+                            <div style={{display: 'flex', justifyContent: 'flex-end', width: '100%', flex: .3, }}>
+                                <Center0001 className='page_monitoring_select_toggle'>
+                                    <div className='page_monitoring_select_toggle_label' style={{fontSize: 19}}>
+                                        Filter
+                                    </div>
+                                    <div style={{alignItems: 'center', display: 'flex'}}>
+                                        <Checkbox
+                                            style={{marginRight: 10, marginTop: 0}}
+                                            toggle
+                                            //checked={!this.state.isDraggable}
+                                            onChange={async () => {
+                                                this.setState({
+                                                    isShowFilter: !this.state.isShowFilter,
+                                                })
+                                            }}
+                                            checked={this.state.isShowFilter}
+                                        >
+                                        </Checkbox>
+                                    </div>
+                                </Center0001>
+                                <div style={{width: 10}}></div>
+                                {/*todo:---------------------------*/}
+                                {/*todo:Initialize */}
+                                {/*todo:---------------------------*/}
+                                <div style={{alignItems: 'center', display: 'flex'}}>
                                     <MButton
                                         size={'small'}
-                                        style={{width: 100, backgroundColor: '#559901', color: 'white', height: 30}}
+                                        style={{width: 80, backgroundColor: '#559901', color: 'white', height: 30}}
+                                        onClick={async () => {
+                                            await this.handleResetClicked();
+                                        }}
+                                    >Initialize
+                                    </MButton>
+                                </div>
+                                <div style={{width: 10}}></div>
+                                <div style={{alignItems: 'center', display: 'flex', cursor: 'pointer'}}>
+                                    <Ripples
+                                        style={{display: 'flex', alignSelf: 'center', cursor: 'pointer'}}
                                         onClick={async () => {
                                             this.setState({
                                                 isOpenEditView: true,
                                             })
                                         }}
                                     >
-                                        add
-                                    </MButton>
+                                        <MaterialIcon
+                                            color='#77BD25'
+                                            icon="add"
+
+                                        />
+                                    </Ripples>
                                 </div>
                                 <div style={{width: 10}}></div>
-                                {/*todo:---------------------------*/}
-                                {/*todo:REFRESH, RESET BUTTON DIV  */}
-                                {/*todo:---------------------------*/}
-                                <div style={{display: 'flex', alignSelf: 'center'}}>
-                                    <MButton
-                                        size={'small'}
-                                        style={{width: 100, backgroundColor: '#559901', color: 'white', height: 30}}
-                                        onClick={async () => {
-                                            await this.handleResetClicked();
-                                        }}
-                                    >Reset
-                                    </MButton>
-                                </div>
-                                <div style={{width: 10}}></div>
-                                <div style={{display: 'flex', alignSelf: 'center'}}>
-                                    <MButton
-                                        size={'small'}
-                                        style={{
-                                            width: 150,
-                                            backgroundColor: 'grey',
-                                            color: 'white',
-                                            height: 30,
-                                        }}
-                                        onClick={async () => {
-                                            this.resetGridPosition();
-                                        }}
-                                    >
-                                        Reset layout
-                                    </MButton>
-                                </div>
-                                <div style={{width: 10}}></div>
-                                <div style={{display: 'flex', alignSelf: 'center'}}>
-                                    <Button
+                                <div style={{alignItems: 'center', display: 'flex', cursor: 'pointer'}}>
+                                    <Ripples
+                                        style={{display: 'flex', alignSelf: 'center', cursor: 'pointer'}}
+                                        color='#1cecff' during={500}
                                         onClick={async () => {
                                             if (!this.state.loading) {
                                                 this.refreshAllData();
@@ -1543,110 +1624,17 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                             }
 
                                         }}
-                                        className="ui circular icon button"
                                     >
-                                        <i aria-hidden="true"
-                                           className="sync alternate icon"></i>
-                                    </Button>
-                                </div>
-                            </div>
-                            <div
-                                style={{
-                                    //backgroundColor: 'red',
-                                    width: '150%',
-                                    marginLeft: 0,
-                                    fontSize: 15,
-                                    //fontStyle: 'italic'
-                                }}
-                            >
-                                {this.renderBreadCrumb()}
-                            </div>
-                            {this.state.intervalLoading &&
-                            <div>
-                                <div style={{marginLeft: 15}}>
-                                    <CircularProgress
-                                        style={{
-                                            color: this.state.currentClassification === CLASSIFICATION.APPINST ? 'grey' : 'green',
-                                            zIndex: 9999999,
-                                            fontSize: 10
-                                        }}
-                                        size={20}
-                                    />
-                                </div>
-                            </div>
-                            }
+                                        <MaterialIcon
+                                            color='#77BD25'
+                                            icon="refresh"
 
-                            {this.state.webSocketLoading &&
-                            <div>
-                                <div style={{marginLeft: 15}}>
-                                    <CircularProgress
-                                        style={{
-                                            color: 'green',
-                                            zIndex: 9999999,
-                                        }}
-                                        size={45}
-                                    />
+                                        />
+                                    </Ripples>
+                                </div>
+                                <div style={{width: 7}}>
                                 </div>
                             </div>
-                            }
-                            {this.props.isLoading &&
-                            <div>
-                                <div style={{marginLeft: 15}}>
-                                    <CircularProgress
-                                        style={{
-                                            color: 'green',
-                                            zIndex: 9999999,
-                                            fontSize: 10
-                                        }}
-                                        size={20}
-                                    />
-                                </div>
-                            </div>
-                            }
-                            {/*
-                            desc:#######################################
-                            desc:Show Header
-                            desc:#######################################
-                            */}
-                            <OuterHeader>
-                                {/* <Center0001 className='page_monitoring_select_toggle'>
-                                    <div className='page_monitoring_select_toggle_label'>
-                                        Show Header
-                                    </div>
-                                    <Checkbox
-                                        style={{marginRight: 10, marginTop: 4}}
-                                        toggle
-                                        //checked={!this.state.isDraggable}
-                                        onChange={async () => {
-                                            if (this.props.isShowHeader) {
-                                                this.props.toggleHeader(false)
-                                            } else {
-                                                this.props.toggleHeader(true)
-                                            }
-
-                                        }}
-                                        checked={this.props.isShowHeader}
-                                    >
-                                    </Checkbox>
-                                </Center0001>*/}
-                                <Center0001 className='page_monitoring_select_toggle'>
-                                    <div className='page_monitoring_select_toggle_label'>
-                                        Show Filter
-                                    </div>
-                                    <Checkbox
-                                        style={{marginRight: 10, marginTop: 4}}
-                                        toggle
-                                        //checked={!this.state.isDraggable}
-                                        onChange={async () => {
-                                            this.setState({
-                                                isShowFilter: !this.state.isShowFilter,
-                                            })
-                                        }}
-                                        checked={this.state.isShowFilter}
-                                    >
-                                    </Checkbox>
-                                </Center0001>
-                            </OuterHeader>
                         </div>
                     </Grid.Row>
                     <div style={{backgroundColor: '#202329', marginLeft: 10, marginRight: 10,}}>
@@ -1670,6 +1658,23 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 {this.makeAppInstDropdown()}
                             </div>
                             <div className='page_monitoring_select_column_end' style={{marginTop: 0}}>
+                                <div style={{display: 'flex', alignSelf: 'center'}}>
+                                    <MButton
+                                        size={'small'}
+                                        style={{
+                                            width: 150,
+                                            backgroundColor: 'grey',
+                                            color: 'white',
+                                            height: 30,
+                                        }}
+                                        onClick={async () => {
+                                            this.resetGridPosition();
+                                        }}
+                                    >
+                                        Reset layout
+                                    </MButton>
+                                </div>
+
                                 {/*todo:---------------------------*/}
                                 {/*todo:FIX GRID BTN    (Switch)   */}
                                 {/*todo:---------------------------*/}

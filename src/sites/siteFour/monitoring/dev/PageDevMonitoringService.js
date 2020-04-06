@@ -2,84 +2,13 @@ import 'react-hot-loader';
 
 import React from 'react';
 import '../PageMonitoring.css';
-import {
-    APP_INST_MATRIX_HW_USAGE_INDEX,
-    CHART_COLOR_LIST,
-    CLASSIFICATION,
-    HARDWARE_TYPE,
-    RECENT_DATA_LIMIT_COUNT,
-    USAGE_INDEX_FOR_CLUSTER
-} from "../../../../shared/Constants";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, CLASSIFICATION, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX_FOR_CLUSTER} from "../../../../shared/Constants";
 import BubbleChart from "../../../../components/BubbleChart";
 import PageDevMonitoring from "./PageDevMonitoring";
-import {
-    convertByteToMegaByte,
-    numberWithCommas,
-    PageMonitoringStyles,
-    renderUsageByType,
-    showToast
-} from "../PageMonitoringCommonService";
+import {convertByteToMegaByte, numberWithCommas, PageMonitoringStyles, renderUsageByType, showToast} from "../PageMonitoringCommonService";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
-import {Select} from "antd";
-import {Responsive, WidthProvider} from "react-grid-layout";
-import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import {CircularProgress} from "@material-ui/core";
-
-
-const ResponsiveReactGridLayout = WidthProvider(Responsive);
-const {Option} = Select;
-
-
-export const defaultLayoutForCluster = [
-    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},
-    {i: '2', x: 1, y: 0, w: 1, h: 1, "add": false},
-    {i: '3', x: 2, y: 0, w: 1, h: 1, "add": false},
-    {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false},
-    {i: '5', x: 1, y: 1, w: 1, h: 1, "add": false},
-    {i: '6', x: 2, y: 1, w: 1, h: 1, "add": false},
-    {i: '7', x: 0, y: 2, w: 1, h: 1, "add": false},
-    {i: '8', x: 1, y: 2, w: 1, h: 1, "add": false},
-    {i: '9', x: 2, y: 2, w: 1, h: 1, "add": false},
-
-    /*{i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},
-    {i: '2', x: 1, y: 0, w: 1, h: 1, "add": false},
-    {i: '3', x: 2, y: 0, w: 1, h: 1, "add": false},
-    {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false},
-    {i: '5', x: 1, y: 1, w: 1, h: 1, "add": false},*/
-
-    /*{i: '6', x: 2, y: 1, w: 1, h: 1, "add": false,},
-
-    {i: '7', x: 0, y: 2, w: 1, h: 1, "add": false,},
-    {i: '8', x: 1, y: 2, w: 1, h: 1, "add": false,},
-    {i: '9', x: 2, y: 2, w: 1, h: 1, "add": false,},*/
-
-    /*{i: '10', x: 0, y: 3, w: 1, h: 1, "add": fals
-    {i: '11', x: 1, y: 3, w: 1, h: 1, "add": false},
-    {i: '12', x: 2, y: 3, w: 1, h: 1, "add": false},
-
-    {i: '13', x: 0, y: 4, w: 1, h: 1, "add": false},
-    {i: '14', x: 1, y: 4, w: 1, h: 1, "add": false},
-    {i: '15', x: 2, y: 4, w: 1, h: 1, "add": false},
-
-    {i: '16', x: 0, y: 5, w: 1, h: 1, "add": false},
-    {i: '17', x: 1, y: 5, w: 1, h: 1, "add": false},
-    {i: '18', x: 2, y: 5, w: 1, h: 1, "add": false},*/
-];
-
-export const defaultLayoutForAppInst = [
-    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},
-    {i: '2', x: 1, y: 0, w: 1, h: 1, "add": false},
-    {i: '3', x: 2, y: 0, w: 1, h: 1, "add": false},
-    {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false},
-    {i: '5', x: 1, y: 1, w: 1, h: 1, "add": false},
-    {i: '6', x: 2, y: 1, w: 1, h: 1, "add": false},
-    {i: '7', x: 0, y: 2, w: 1, h: 1, "add": false},
-    /*{i: '8', x: 1, y: 2, w: 1, h: 1, "add": false},
-    {i: '9', x: 2, y: 2, w: 1, h: 1, "add": false},*/
-
-];
-
 
 export const HARDWARE_TYPE_FOR_GRID = {
     MAP: 'MAP',
@@ -129,6 +58,25 @@ export const CHART_TYPE = {
     COLUMN: 'COLUMN',
 }
 
+
+export const defaultLayoutForCluster = [
+
+    {i: '1', x: 1, y: 0, w: 2, h: 2, "add": false},//MAP
+
+    {i: '2', x: 3, y: 0, w: 1, h: 1, "add": false},//MEM
+    {i: '3', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
+
+    {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false},//DISK
+    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//NETWORK
+
+    {i: '6', x: 0, y: 2, w: 1, h: 1, "add": false},//
+    {i: '7', x: 1, y: 2, w: 1, h: 1, "add": false},//
+    {i: '8', x: 2, y: 2, w: 1, h: 1, "add": false},//
+    //{i: '9', x: 3, y: 2, w: 1, h: 1, "add": false},//
+
+];
+
+
 export const defaultHwMapperListForCluster = [
     {
         id: '1',
@@ -137,47 +85,66 @@ export const defaultHwMapperListForCluster = [
     },
     {
         id: '2',
-        hwType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
-        graphType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
+        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
+        graphType: CHART_TYPE.LINE,
     },
-
     {
         id: '3',
-        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
+        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
         graphType: CHART_TYPE.LINE,
     },
     {
         id: '4',
-        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
+        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
         graphType: CHART_TYPE.LINE,
     },
     {
         id: '5',
-        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
-        graphType: CHART_TYPE.LINE,
-    },
-    {
-        id: '6',
         hwType: HARDWARE_TYPE_FOR_GRID.RECVBYTES,
         graphType: CHART_TYPE.LINE,
     },
     {
-        id: '7',
+        id: '6',
         hwType: HARDWARE_TYPE_FOR_GRID.CPU,
         graphType: CHART_TYPE.COLUMN,
     },
     {
-        id: '8',
+        id: '7',
         hwType: HARDWARE_TYPE_FOR_GRID.MEM,
         graphType: CHART_TYPE.COLUMN,
     },
     {
-        id: '9',
+        id: '8',
         hwType: HARDWARE_TYPE_FOR_GRID.DISK,
         graphType: CHART_TYPE.COLUMN,
     },
+    /*{
+        id: '9',
+        hwType: HARDWARE_TYPE_FOR_GRID.RECVBYTES,
+        graphType: CHART_TYPE.COLUMN,
+    },*/
 
 ];
+
+
+export const defaultLayoutForAppInst = [
+    {i: '1', x: 1, y: 0, w: 2, h: 2, "add": false},//MAP
+
+    {i: '2', x: 3, y: 0, w: 1, h: 1, "add": false},//MEM
+    {i: '3', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
+
+    {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false},//DISK
+    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//NETWORK
+
+    {i: '6', x: 0, y: 2, w: 1, h: 1, "add": false},//
+    {i: '7', x: 1, y: 2, w: 1, h: 1, "add": false},//
+    {i: '8', x: 2, y: 2, w: 1, h: 1, "add": false},
+    {i: '9', x: 3, y: 2, w: 1, h: 1, "add": false},
+
+];
+
+
+
 
 export const defaultLayoutMapperForAppInst = [
 
@@ -186,37 +153,44 @@ export const defaultLayoutMapperForAppInst = [
         hwType: HARDWARE_TYPE_FOR_GRID.MAP,
         graphType: HARDWARE_TYPE_FOR_GRID.MAP,
     },
-    {
-        id: '2',
-        hwType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
-        graphType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
-    },
 
     {
-        id: '3',
+        id: '2',
         hwType: HARDWARE_TYPE_FOR_GRID.CPU,
         graphType: CHART_TYPE.LINE,
     },
     {
-        id: '4',
+        id: '3',
         hwType: HARDWARE_TYPE_FOR_GRID.MEM,
         graphType: CHART_TYPE.LINE,
     },
     {
-        id: '5',
+        id: '4',
         hwType: HARDWARE_TYPE_FOR_GRID.DISK,
         graphType: CHART_TYPE.LINE,
     },
     {
-        id: '6',
+        id: '5',
         hwType: HARDWARE_TYPE_FOR_GRID.RECVBYTES,
         graphType: CHART_TYPE.LINE,
     },
     {
-        id: '7',
+        id: '6',
         hwType: HARDWARE_TYPE_FOR_GRID.SENDBYTES,
         graphType: CHART_TYPE.LINE,
     },
+
+   /* {
+        id: '8',
+        hwType: HARDWARE_TYPE_FOR_GRID.ACTIVE_CONNECTION,
+        graphType: CHART_TYPE.LINE,
+    },
+
+    {
+        id: '9',
+        hwType: HARDWARE_TYPE_FOR_GRID.HANDLED_CONNECTION,
+        graphType: CHART_TYPE.LINE,
+    },*/
 ];
 
 
