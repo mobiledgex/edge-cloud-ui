@@ -1665,18 +1665,17 @@ export const makeSelectBoxListWithValuePipe = (appInstList, keyName: string, val
         }
     }
 
-
     return newArrList;
 };
 
-export const makeSelectBoxListWithValuePipeForAppInst = (appInstList, keyName: string, valueName: string, thirdValue: string, fourthValue: string = '') => {
+export const makeDropdownListWithValuePipeForAppInst = (appInstList, keyName: string, valueName: string, thirdValue: string, fourthValue: string = '') => {
     let newArrList = [];
     if (fourthValue !== '') {
         for (let i in appInstList) {
             newArrList.push({
                 key: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim(),
                 value: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim(),
-                text: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim(),
+                text: appInstList[i][keyName].trim(),
             })
         }
     } else {
@@ -1684,7 +1683,7 @@ export const makeSelectBoxListWithValuePipeForAppInst = (appInstList, keyName: s
             newArrList.push({
                 key: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim(),
                 value: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim(),
-                text: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim(),
+                text: appInstList[i][keyName].trim(),
             })
         }
     }
