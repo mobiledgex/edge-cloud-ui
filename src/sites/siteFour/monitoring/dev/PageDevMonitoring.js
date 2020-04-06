@@ -276,9 +276,10 @@ type State = {
 export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeight: true})(
     class PageDevMonitoring extends Component<Props, State> {
         intervalForAppInst = null;
-        gridItemHeight = 270;
+
         webSocketInst: WebSocket = null;
-        gridLayoutHeight = window.innerHeight * 0.829;
+        gridLayoutHeight = window.innerHeight * 0.875;
+        gridItemHeight = 270;
 
         constructor(props) {
             super(props);
@@ -425,7 +426,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 isOpenEditView: false,
                 isFullScreenMap: false,
                 isStackedLineChart: true,
-                isShowFilter: true,
+                isShowFilter: false,
                 currentNavigation: '',
                 allAppInstDropdown: [],
                 isShowAppInstPopup: false,
@@ -433,6 +434,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         }
 
         componentDidMount = async () => {
+            //fixme:isShowHeader
             this.props.toggleHeader(true);
             this.setState({
                 loading: true,
@@ -441,7 +443,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
             })
 
-            await this.loadInitDataForCluster();
+            await this.loadInitDataForCluster__FOR__DEV();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
@@ -1591,7 +1593,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 {/*fixme:---------------------------*/}
                                 {/*fixme:Show Header                */}
                                 {/*fixme:---------------------------*/}
-                                {/*<Center0001 className='page_monitoring_select_toggle' style={{backgroundColor: 'transparent'}}>
+                                {/*
+                                <Center0001 className='page_monitoring_select_toggle' style={{backgroundColor: 'transparent'}}>
                                     <div className='page_monitoring_select_toggle_label' style={{fontSize: 19}}>
                                         Show Header
                                     </div>
@@ -1607,7 +1610,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                             }
                                         }}
                                     />
-                                </Center0001>*/}
+                                </Center0001>
+                                */}
                                 <Center0001 className='page_monitoring_select_toggle' style={{backgroundColor: 'transparent', width: 100, marginRight: 10}}>
                                     <div className='page_monitoring_select_toggle_label' style={{fontSize: 19}}>
                                         Filter
@@ -1973,6 +1977,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             backgroundColor: '#292c33',
                             padding: 10,
                             color: 'white',
+                            marginBottom: -50,
                         }}>
                             <div>
                                 {/*desc:---------------------------------*/}
@@ -1986,7 +1991,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 {this.renderLegend()}
                                 <div className="page_monitoring"
                                      style={{overflowY: 'auto', height: this.gridLayoutHeight}}>
-                                    <div className='' style={{marginBottom: 150}}>
+                                    <div className='' style={{marginBottom: 50}}>
                                         {this.state.currentClassification === CLASSIFICATION.CLUSTER
                                             ? this.renderGridLayoutForCluster()
                                             : this.renderGridLayoutForAppInst()
