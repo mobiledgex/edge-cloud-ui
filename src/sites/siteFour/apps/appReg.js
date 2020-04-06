@@ -177,7 +177,7 @@ class ClusterInstReg extends React.Component {
                 return form
             }
             else if (form.field === fields.accessType) {
-                form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.ACCESS_TYPE_DIRECT : constant.ACCESS_TYPE_DEFAULT_FOR_DEPLOYMENT
+                form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.ACCESS_TYPE_DIRECT : constant.ACCESS_TYPE_LOAD_BALANCER
                 return form
             }
             else if (form.label === 'Configs' || form.label === 'Annotations') {
@@ -395,7 +395,7 @@ class ClusterInstReg extends React.Component {
                             form.options = [constant.DEPLOYMENT_TYPE_DOCKER, constant.DEPLOYMENT_TYPE_KUBERNETES, constant.DEPLOYMENT_TYPE_VM, constant.DEPLOYMENT_TYPE_HELM]
                             break;
                         case fields.accessType:
-                            form.options = [constant.ACCESS_TYPE_DEFAULT_FOR_DEPLOYMENT, constant.ACCESS_TYPE_DIRECT, constant.ACCESS_TYPE_LOAD_BALANCER]
+                            form.options = [constant.ACCESS_TYPE_DIRECT, constant.ACCESS_TYPE_LOAD_BALANCER]
                             break;
                         default:
                             form.options = undefined;
