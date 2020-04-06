@@ -276,7 +276,7 @@ type State = {
 export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeight: true})(
     class PageDevMonitoring extends Component<Props, State> {
         intervalForAppInst = null;
-        gridItemHeight = 320;
+        gridItemHeight = 270;
         webSocketInst: WebSocket = null;
         gridLayoutHeight = window.innerHeight * 0.829;
 
