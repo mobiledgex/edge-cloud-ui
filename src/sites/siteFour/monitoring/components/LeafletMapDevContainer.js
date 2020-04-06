@@ -94,6 +94,7 @@ type Props = {
     setLineColor: Function,
     setCloudletIconColor: Function,
     isLoading: boolean,
+    isShowAppInstPopup: boolean,
 
 };
 type State = {
@@ -139,6 +140,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
         constructor(props: Props) {
             super(props);
 
+            this.appInstPopup = React.createRef();
+
             this.state = {
                 zoom: 3,//mapZoom
                 appInstanceListGroupByCloudlet: '',
@@ -181,9 +184,15 @@ export default connect(mapStateToProps, mapDispatchProps)(
         async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
 
             if (this.props.markerList !== nextProps.markerList) {
-                console.log('nextProps_markerList===>', nextProps.markerList);
                 let appInstanceListGroupByCloudlet = nextProps.markerList;
                 this.setCloudletLocation(appInstanceListGroupByCloudlet)
+            }
+
+            //@desc : #############################
+            //@desc:   hide appInstInfoPopup
+            //@desc : #############################
+            if (this.props.isShowAppInstPopup !== nextProps.isShowAppInstPopup) {
+                this.appInstPopup.current.leafletElement.options.leaflet.map.closePopup();
             }
 
             //@desc : #############################
@@ -280,6 +289,9 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
         }
 
+        handleClickAppInst(fullAppInstOne) {
+            this.props.handleAppInstDropdown(fullAppInstOne)
+        }
 
         render() {
 
@@ -457,7 +469,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {this.state.newCloudLetLocationList.map((outerItem, outerIndex) => {
                                     let listAppName = outerItem.AppNames.split(",")
 
-
                                     if (outerItem.CloudletLocation.latitude != undefined) {
                                         return (
                                             <Marker
@@ -495,16 +506,18 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                         className='toolTip'
                                                         style={{color: 'black'}}>{outerItem.Cloudlet}</div>
                                                 </Tooltip>
-                                                <Popup className='popup1'>
-                                                    {listAppName.map(AppFullName => {
 
+                                                {/*desc:################################*/}
+                                                {/*desc:appInstPopup                    */}
+                                                {/*desc:################################*/}
+                                                <Popup className='popup1' ref={this.appInstPopup}>
+                                                    {listAppName.map(AppFullName => {
                                                         let AppName = AppFullName.trim().split(" | ")[0].trim()
                                                         let ClusterInst = AppFullName.trim().split(" | ")[1].trim()
                                                         let Region = AppFullName.trim().split(" | ")[2].trim()
                                                         let HealthCheck = AppFullName.trim().split(" | ")[3].trim()
                                                         let Version = AppFullName.trim().split(" | ")[4].trim()
                                                         let Operator = AppFullName.trim().split(" | ")[5].trim()
-
                                                         let lat = outerItem.CloudletLocation.latitude;
                                                         let long = outerItem.CloudletLocation.longitude;
 
@@ -513,25 +526,23 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                             long,
                                                         }
 
+                                                        let fullAppInstOne = AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version + " | " + Operator + " | " + JSON.stringify(serverLocation);
+
 
                                                         return (
                                                             <div style={{
-                                                                fontSize: 14, cursor: 'crosshair',
-
+                                                                fontSize: 14,
+                                                                cursor: 'crosshair',
                                                                 flexDirection: 'column',
-                                                                marginTop: 5, marginBottom: 5
+                                                                marginTop: 5,
+                                                                marginBottom: 5,
                                                             }}
                                                             >
                                                                 <Ripples
-                                                                    style={{marginLeft: 5}}
+                                                                    style={{marginLeft: 5,}}
                                                                     color='#1cecff' during={500}
                                                                     onClick={() => {
-
-                                                                        let dataSet = AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version + " | " + Operator + " | " + JSON.stringify(serverLocation);
-
-                                                                        console.log("dataSet====>", dataSet)
-
-                                                                        this.props.handleAppInstDropdown(dataSet)
+                                                                        this.handleClickAppInst(fullAppInstOne)
                                                                     }}
                                                                 >
                                                                     {AppName} [{Version}]

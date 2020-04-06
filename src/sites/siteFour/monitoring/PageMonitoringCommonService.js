@@ -212,7 +212,7 @@ export const renderLoaderArea = (_this) => (
             </Card>
             <div style={{position: 'absolute', top: '77%', left: '48%'}}>
                 <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row', marginTop: 350}}>
-                    {renderGridLoader2(150, 150)}
+                    {renderGridLoader2(200, 200)}
                 </div>
             </div>
         </Grid.Column>
@@ -224,7 +224,7 @@ export const renderGridLoader2 = (width, height) => {
     return (
         <GridLoader
             sizeUnit={"px"}
-            size={20}
+            size={22}
             color={'#70b2bc'}
             loading={true}
         />
