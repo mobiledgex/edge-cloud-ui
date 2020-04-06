@@ -1396,7 +1396,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
                     })}
 
-
                 </ResponsiveReactGridLayout>
 
             )
@@ -1987,8 +1986,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 {this.renderLegend()}
                                 <div className="page_monitoring"
                                      style={{overflowY: 'auto', height: this.gridLayoutHeight}}>
-                                    <div className='page_monitoring_dashboard_dev'
-                                         style={{marginBottom: 0}}>
+                                    <div className='' style={{marginBottom: 150}}>
                                         {this.state.currentClassification === CLASSIFICATION.CLUSTER
                                             ? this.renderGridLayoutForCluster()
                                             : this.renderGridLayoutForAppInst()
