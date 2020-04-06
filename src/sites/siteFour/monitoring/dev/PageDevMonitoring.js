@@ -435,7 +435,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
         componentDidMount = async () => {
             //fixme:isShowHeader
-            this.props.toggleHeader(true);
+            //fixme:isShowHeader
+            //fixme:isShowHeader
+            this.props.toggleHeader(false);
             this.setState({
                 loading: true,
                 bubbleChartLoader: true,
@@ -1593,7 +1595,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 {/*fixme:---------------------------*/}
                                 {/*fixme:Show Header                */}
                                 {/*fixme:---------------------------*/}
-                                {/*
                                 <Center0001 className='page_monitoring_select_toggle' style={{backgroundColor: 'transparent'}}>
                                     <div className='page_monitoring_select_toggle_label' style={{fontSize: 19}}>
                                         Show Header
@@ -1611,7 +1612,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                         }}
                                     />
                                 </Center0001>
-                                */}
                                 <Center0001 className='page_monitoring_select_toggle' style={{backgroundColor: 'transparent', width: 100, marginRight: 10}}>
                                     <div className='page_monitoring_select_toggle_label' style={{fontSize: 19}}>
                                         Filter
