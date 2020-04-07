@@ -2,7 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import uuid from 'uuid';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX, ICON_BUTTON, TEXT_AREA } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, BUTTON, CHECKBOX, ICON_BUTTON, TEXT_AREA } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -99,7 +99,7 @@ class ClusterInstReg extends React.Component {
                 form.rules.disabled = currentForm.value ? true : false
                 form.error = currentForm.value ? undefined : form.error
             }
-            else if (form.field === fields.privacyPolicyName) {
+            else if (form.field === fields.privacyPolicyName || form.field === fields.ipAccess) {
                 form.visible = currentForm.value
                 form.value = currentForm.value ? form.value : undefined
             }
@@ -155,6 +155,11 @@ class ClusterInstReg extends React.Component {
                         form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_VM ? false : true
                         form.value = false
                         this.autoClusterValueChange(form, forms, isInit)
+                        return form
+                    }
+                    else if (form.field === fields.ipAccess) {
+                        form.options = app[fields.accessType] === constant.ACCESS_TYPE_LOAD_BALANCER ? [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED] : [constant.IP_ACCESS_DEDICATED]
+                        form.value = undefined
                         return form
                     }
                     else if (form.field === fields.clusterName) {
@@ -263,8 +268,9 @@ class ClusterInstReg extends React.Component {
             { field: fields.operatorName, label: 'Operator', formType: 'Select', placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
             { field: fields.cloudletName, label: 'Cloudlet', formType: 'MultiSelect', placeholder: 'Select Cloudlets', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 5, field: fields.operatorName }] },
             { field: fields.autoClusterInstance, label: 'Auto Cluster Instance', formType: CHECKBOX, visible: false, value: false },
-            { field: fields.clusterName, label: 'Cluster', formType: 'Select', placeholder: 'Select Clusters', rules: { required: true }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
+            { field: fields.ipAccess, label: 'IP Access', formType: 'Select', placeholder: 'Select IP Access', visible: false },
             { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: 'Select', placeholder: 'Select Privacy Policy', rules: { required: false }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
+            { field: fields.clusterName, label: 'Cluster', formType: 'Select', placeholder: 'Select Clusters', rules: { required: true }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
             { label: 'Configs', formType: 'Header', forms: [{ formType: ICON_BUTTON, icon: 'add', visible: true, update: true, onClick: this.addConfigs, style:{color:'white'} }], visible: false }
         ]
     }
@@ -403,6 +409,9 @@ class ClusterInstReg extends React.Component {
                         case fields.version:
                             form.options = this.appList
                             break;
+                        case fields.ipAccess:
+                            form.options = [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED]
+                            break;
                         default:
                             form.options = undefined;
                     }
@@ -426,6 +435,7 @@ class ClusterInstReg extends React.Component {
                 app[fields.organizationName] = data[fields.organizationName]
                 app[fields.version] = data[fields.version]
                 app[fields.deployment] = data[fields.deployment]
+                app[fields.accessType] = data[fields.accessType]
                 this.appList = [app];
 
                 let disabledFields = [fields.region, fields.organizationName, fields.appName, fields.version]
