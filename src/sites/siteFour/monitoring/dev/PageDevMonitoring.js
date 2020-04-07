@@ -454,7 +454,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
             })
 
-            await this.loadInitDataForCluster__FOR__DEV();
+            await this.loadInitDataForCluster();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
@@ -872,7 +872,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         }
 
 
-        async resetGridPosition() {
+        async revertToDefaultLayout() {
             try {
                 reactLocalStorage.remove(getUserId() + "_layout")
                 reactLocalStorage.remove(getUserId() + "_layout2")
@@ -887,8 +887,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     layoutForCluster: defaultLayoutForCluster,
                     layoutMapperForCluster: defaultHwMapperListForCluster,
                     layoutForAppInst: defaultLayoutForAppInst,
-
-
                 })
             } catch (e) {
 
@@ -1543,10 +1541,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     <AMenu.Item
                         key="1"
                         onClick={async () => {
-                            this.resetGridPosition();
+                            this.revertToDefaultLayout();
                         }}
                     >
-                        Reset Layout
+                        Revert to default Layout
                     </AMenu.Item>
                     <AMenu.Item
                         key="1"
@@ -1669,7 +1667,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                     color: 'rgba(255, 255, 255, .8)',
                                     height: 29,
                                     alignSelf: 'center',
-                                    border: this.state.currentCluster !== '' ||  this.state.currentAppInst !== '' ? '1px dotted #4c4c4c' : null,
+                                    border: this.state.currentCluster !== '' || this.state.currentAppInst !== '' ? '1px dotted #4c4c4c' : null,
                                     //backgroundColor: 'blue',
                                 }}
                             >

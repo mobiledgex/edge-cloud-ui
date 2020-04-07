@@ -81,16 +81,12 @@ export const CHART_TYPE = {
 export const defaultLayoutForCluster = [
 
     {i: '1', x: 1, y: 0, w: 2, h: 2, "add": false},//MAP
-
     {i: '2', x: 3, y: 0, w: 1, h: 1, "add": false},//MEM
     {i: '3', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
-
     {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false},//DISK
     {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//NETWORK
     {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//
-    /*{i: '7', x: 1, y: 2, w: 1, h: 1, "add": false},//
-    {i: '8', x: 2, y: 2, w: 1, h: 1, "add": false},//*/
-    //{i: '9', x: 3, y: 2, w: 1, h: 1, "add": false},//
+
 
 ];
 
@@ -148,34 +144,26 @@ export const defaultHwMapperListForCluster = [
 
 export const defaultLayoutForAppInst = [
     {i: '1', x: 1, y: 0, w: 2, h: 2, "add": false},//MAP
-
-    {i: '2', x: 3, y: 0, w: 1, h: 1, "add": false},//MEM
+    //{i: '2', x: 3, y: 0, w: 1, h: 1, "add": false},//MEM
     {i: '3', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
-
     {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false},//DISK
     {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//NETWORK
-
-    {i: '6', x: 0, y: 2, w: 1, h: 1, "add": false},//
-    {i: '7', x: 1, y: 2, w: 1, h: 1, "add": false},//
-    {i: '8', x: 2, y: 2, w: 1, h: 1, "add": false},
-    {i: '9', x: 3, y: 2, w: 1, h: 1, "add": false},
 
 ];
 
 
 export const defaultLayoutMapperForAppInst = [
-
     {
         id: '1',
         hwType: HARDWARE_TYPE_FOR_GRID.MAP,
         graphType: HARDWARE_TYPE_FOR_GRID.MAP,
     },
 
-    {
+    /*{
         id: '2',
         hwType: HARDWARE_TYPE_FOR_GRID.CPU,
         graphType: CHART_TYPE.LINE,
-    },
+    },*/
     {
         id: '3',
         hwType: HARDWARE_TYPE_FOR_GRID.MEM,
@@ -188,14 +176,14 @@ export const defaultLayoutMapperForAppInst = [
     },
     {
         id: '5',
-        hwType: HARDWARE_TYPE_FOR_GRID.RECVBYTES,
+        hwType: HARDWARE_TYPE_FOR_GRID.ACTIVE_CONNECTION,
         graphType: CHART_TYPE.LINE,
     },
-    {
+    /*{
         id: '6',
         hwType: HARDWARE_TYPE_FOR_GRID.SENDBYTES,
         graphType: CHART_TYPE.LINE,
-    },
+    },*/
 
     /* {
          id: '8',
