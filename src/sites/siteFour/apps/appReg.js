@@ -28,6 +28,7 @@ class ClusterInstReg extends React.Component {
         this.privacyPolicyList = []
         this.autoProvPolicyList = []
         this.requestedRegionList = []
+        this.originalData = undefined
         //To avoid refetching data from server
     }
 
@@ -343,7 +344,7 @@ class ClusterInstReg extends React.Component {
             }
 
             let isUpdate = this.props.isUpdate;
-            let valid = isUpdate ? await updateApp(this, data) : await createApp(this, data)
+            let valid = isUpdate ? await updateApp(this, data, this.originalData) : await createApp(this, data)
             if (valid) {
                 this.props.handleAlertInfo('success', `App ${data[fields.appName]} ${isUpdate ? 'updated' : 'created'} successfully`)
                 this.props.onClose(true)
@@ -542,6 +543,7 @@ class ClusterInstReg extends React.Component {
     getFormData = async (data) => {
         let forms = this.formKeys()
         if (data) {
+            this.originalData = Object.assign({}, data)
             await this.loadDefaultData(forms, data)
         }
         else {
