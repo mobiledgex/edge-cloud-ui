@@ -1,4 +1,5 @@
 import * as formatter from './format'
+import _ from 'lodash';
 import { TYPE_JSON_NEW_LINE } from '../../constant';
 import * as serverData from './serverData'
 import * as constant from '../../constant'
@@ -48,7 +49,7 @@ export const getKey = (data, isCreate) => {
         app.image_type = constant.imageType(data[fields.imageType])
         app.image_path = data[fields.imagePath]
         if (data[fields.accessPorts]) {
-            app.access_ports = data[fields.accessPorts]
+            app.access_ports = data[fields.accessPorts].toLowerCase()
         }
         if (data[fields.annotations]) {
             app.annotations = data[fields.annotations]
@@ -110,9 +111,34 @@ export const createApp = async (self, data) => {
     return await serverData.sendRequest(self, request)
 }
 
-export const updateApp = async (self, data) => {
+const compareObjects = (obj1, obj2, ignoreCase) => {
+    if(ignoreCase)
+    {
+        return _.isEqual(obj1.toLowerCase(), obj2.toLowerCase())
+    }
+    return _.isEqual(obj1, obj2)
+}
+
+export const updateApp = async (self, data, originalData) => {
     let requestData = getKey(data, true)
-    requestData.app.fields = ['4', '7', '9.1', '16']
+    let updateFields = []
+    if(!compareObjects(data[fields.imagePath], originalData[fields.imagePath]))
+    {
+        updateFields.push("4")
+    }
+    if(!compareObjects(data[fields.accessPorts], originalData[fields.accessPorts], true))
+    {
+        updateFields.push("7")
+    }
+    if(!compareObjects(data[fields.flavorName], originalData[fields.flavorName]))
+    {
+        updateFields.push("9.1")
+    }
+    if(!compareObjects(data[fields.deploymentManifest], originalData[fields.deploymentManifest]))
+    {
+        updateFields.push("16")
+    }
+    requestData.app.fields = updateFields
     let request = { method: UPDATE_APP, data: requestData }
     return await serverData.sendRequest(self, request)
 }
