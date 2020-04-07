@@ -133,7 +133,7 @@ export default class VirtualAppInstEventLogListContainer extends React.Component
                         {/*Desc:tableBody*/}
                         {!this.props.parent.state.loading && this.state.eventLogList !== undefined &&
                         <FixedSizeList
-                            height={190}
+                            height={190}//desc:table_Body_Height
                             itemCount={this.state.eventLogList.length}
                             itemSize={50}
                             style={{backgroundColor: 'black', display: 'flex', alignSelf: 'center', marginTop: 0, marginRight: 0, overFlowY: 'auto'}}
