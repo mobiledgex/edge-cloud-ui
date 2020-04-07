@@ -76,127 +76,126 @@ export default class VirtualAppInstEventLogListContainer extends React.Component
                     >
                         App Inst Event Log
                     </div>
-                    <div style={PageMonitoringStyles.gridTitle2} className={'page_monitoring_title'}>
-                        {!this.props.parent.state.loading && this.props.parent.state.currentAppInst.toString()}
-
-                        {/*.split("|")[0].trim()*/}
+                    <div style={{flex: .4, marginRight: 70}}>
                     </div>
 
                 </div>
-                <Table className="" basic='very' sortable striped celled fixed collapsing styles={{zIndex: 999999999999}}>
-                    <div>
-                        <Table.Row style={PageMonitoringStyles.tableHeaderRow}>
-                            <Table.HeaderCell textAlign={'center'}>
-                                <div style={PageMonitoringStyles.gridHeader}>
-                                    TIME
-                                </div>
-                            </Table.HeaderCell>
-                            <Table.HeaderCell textAlign={'center'}>
-                                APP
-                            </Table.HeaderCell>
-                            <Table.HeaderCell textAlign={'center'}>
-                                CLUSTER
-                            </Table.HeaderCell>
-                            <Table.HeaderCell textAlign={'center'}>
-                                DEV
-                            </Table.HeaderCell>
-                            <Table.HeaderCell textAlign={'center'}>
-                                CLOUDLET
-                            </Table.HeaderCell>
-                            <Table.HeaderCell textAlign={'center'}>
-                                OPERATOR
-                            </Table.HeaderCell>
-                            <Table.HeaderCell textAlign={'center'}>
-                                EVENT
-                            </Table.HeaderCell>
-                            <Table.HeaderCell textAlign={'center'}>
-                                STATUS
-                            </Table.HeaderCell>
-                        </Table.Row>
-                    </div>
-                    {!this.props.parent.state.loading && this.state.eventLogList.length === 0 &&
-                    <Table.Body className="tbBodyList">
-                        <Table.Row warning={true} className='page_monitoring_popup_table_row' style={PageMonitoringStyles.noData2}>
-                            <Table.Cell positive={false}>No Event Log</Table.Cell>
-                        </Table.Row>
-                    </Table.Body>
-                    }
+                <div style={{marginTop: 15}}>
+                    <Table className="" basic='very' sortable striped celled fixed collapsing styles={{zIndex: 999999999999, overflowY: 'hidden'}}>
+                        <div>
+                            <Table.Row style={PageMonitoringStyles.tableHeaderRow}>
+                                <Table.HeaderCell textAlign={'center'}>
+                                    <div style={PageMonitoringStyles.gridHeader}>
+                                        TIME
+                                    </div>
+                                </Table.HeaderCell>
+                                <Table.HeaderCell textAlign={'center'}>
+                                    APP
+                                </Table.HeaderCell>
+                                <Table.HeaderCell textAlign={'center'}>
+                                    CLUSTER
+                                </Table.HeaderCell>
+                                <Table.HeaderCell textAlign={'center'}>
+                                    DEV
+                                </Table.HeaderCell>
+                                <Table.HeaderCell textAlign={'center'}>
+                                    CLOUDLET
+                                </Table.HeaderCell>
+                                <Table.HeaderCell textAlign={'center'}>
+                                    OPERATOR
+                                </Table.HeaderCell>
+                                <Table.HeaderCell textAlign={'center'}>
+                                    EVENT
+                                </Table.HeaderCell>
+                                <Table.HeaderCell textAlign={'center'}>
+                                    STATUS
+                                </Table.HeaderCell>
+                            </Table.Row>
+                        </div>
+                        {!this.props.parent.state.loading && this.state.eventLogList.length === 0 &&
+                        <Table.Body className="tbBodyList">
+                            <Table.Row warning={true} className='page_monitoring_popup_table_row' style={PageMonitoringStyles.noData2}>
+                                <Table.Cell positive={false}>No Event Log</Table.Cell>
+                            </Table.Row>
+                        </Table.Body>
+                        }
 
-                    <tbody style={{display: 'flex', marginTop: 0}}>
-                    {this.props.parent.state.loading &&
-                    <div
-                        style={PageMonitoringStyles.center3}>
-                        <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}/>
-                    </div>
-                    }
+                        <tbody style={{display: 'flex', marginTop: 0}}>
+                        {this.props.parent.state.loading &&
+                        <div
+                            style={PageMonitoringStyles.center3}>
+                            <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}/>
+                        </div>
+                        }
 
-                    {/*Desc:tableBody*/}
-                    {/*Desc:tableBody*/}
-                    {/*Desc:tableBody*/}
-                    {!this.props.parent.state.loading && this.state.eventLogList !== undefined &&
-                    <FixedSizeList
-                        height={gridHeight}
-                        itemCount={this.state.eventLogList.length}
-                        itemSize={50}
-                        style={{backgroundColor: 'black', display: 'flex', alignSelf: 'center', marginTop: -12.5, marginRight: -20}}
-                        width={gridWidth}
-                    >
-                        {({index, style}) => {
-                            return (
-                                <div style={{}}>
-                                    <tr className='' style={style}>
-                                        <td style={index % 2 === 1 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
-                                            <div>
-                                                {eventLogList[index][0].toString().split('T')[0]}
-                                                {`\n\n`}
-                                                {eventLogList[index][0].toString().split('T')[1].substring(0, 8)}
-                                            </div>
-                                        </td>
-                                        <td style={index % 2 === 1 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
-                                            <div>
-                                                {eventLogList[index][1]}
-                                            </div>
-                                        </td>
-                                        <td style={index % 2 === 1 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
-                                            <div>
-                                                {eventLogList[index][2]}
-                                            </div>
-                                        </td>
-                                        <td style={index % 2 === 1 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
-                                            <div>
-                                                {eventLogList[index][3]}
-                                            </div>
-                                        </td>
-                                        <td style={index % 2 === 1 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
-                                            <div>
-                                                {eventLogList[index][4]}
-                                            </div>
-                                        </td>
-                                        <td style={index % 2 === 1 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
-                                            <div>
-                                                {eventLogList[index][5]}
-                                            </div>
-                                        </td>
-                                        <td style={index % 2 === 1 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
-                                            <div>
-                                                {eventLogList[index][5]}
-                                            </div>
-                                        </td>
-                                        <td style={index % 2 === 1 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
-                                            <div>
-                                                {eventLogList[index][5]}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </div>
+                        {/*Desc:tableBody*/}
+                        {/*Desc:tableBody*/}
+                        {/*Desc:tableBody*/}
+                        {!this.props.parent.state.loading && this.state.eventLogList !== undefined &&
+                        <FixedSizeList
+                            height={190}
+                            itemCount={this.state.eventLogList.length}
+                            itemSize={50}
+                            style={{backgroundColor: 'black', display: 'flex', alignSelf: 'center', marginTop: 0, marginRight: 0, overFlowY: 'auto'}}
+                            width={gridWidth}
+                        >
+                            {({index, style}) => {
+                                return (
+                                    <div style={{}}>
+                                        <tr className='' style={style}>
+                                            <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
+                                                <div>
+                                                    {eventLogList[index][0].toString().split('T')[0]}
+                                                    {`\n\n`}
+                                                    {eventLogList[index][0].toString().split('T')[1].substring(0, 8)}
+                                                </div>
+                                            </td>
+                                            <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
+                                                <div>
+                                                    {eventLogList[index][1]}
+                                                </div>
+                                            </td>
+                                            <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
+                                                <div>
+                                                    {eventLogList[index][2]}
+                                                </div>
+                                            </td>
+                                            <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
+                                                <div>
+                                                    {eventLogList[index][3]}
+                                                </div>
+                                            </td>
+                                            <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
+                                                <div>
+                                                    {eventLogList[index][4]}
+                                                </div>
+                                            </td>
+                                            <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
+                                                <div>
+                                                    {eventLogList[index][5]}
+                                                </div>
+                                            </td>
+                                            <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
+                                                <div>
+                                                    {eventLogList[index][5]}
+                                                </div>
+                                            </td>
+                                            <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
+                                                <div>
+                                                    {eventLogList[index][5]}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </div>
 
-                            )
-                        }}
+                                )
+                            }}
 
-                    </FixedSizeList>
-                    }
-                    </tbody>
-                </Table>
+                        </FixedSizeList>
+                        }
+                        </tbody>
+                    </Table>
+                </div>
             </>
         )
     };
