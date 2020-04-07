@@ -54,9 +54,9 @@ export default hot(
                         }}
                         trigger={['click']}
                     >
-                        <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+                        <div className="ant-dropdown-link" onClick={e => e.preventDefault()}>
                             <Icon size='big' name='bars'/>
-                        </a>
+                        </div>
                     </Dropdown>
                 </div>
             )

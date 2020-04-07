@@ -57,7 +57,7 @@ export default class VirtualAppInstEventLogListContainer extends React.Component
 
     render() {
         let gridHeight = 305
-        let gridWidth = window.innerWidth*0.9;
+        let gridWidth = window.innerWidth * 0.9;
         let eventLogList = this.state.eventLogList;
 
         return (
@@ -67,13 +67,13 @@ export default class VirtualAppInstEventLogListContainer extends React.Component
                     width: '100%',
                     height: 45
                 }}>
-                    <div className='page_monitoring_title' style={{
-                        //backgroundColor: 'red',
-                        flex: .13,
-                        marginTop: 8,
-                        alignSelf: 'center',
-
-                    }}>
+                    <div className='page_monitoring_title'
+                         style={{
+                             flex: .38,
+                             marginTop: 5,
+                             fontFamily: 'Ubuntu'
+                         }}
+                    >
                         App Inst Event Log
                     </div>
                     <div style={PageMonitoringStyles.gridTitle2} className={'page_monitoring_title'}>
@@ -83,12 +83,13 @@ export default class VirtualAppInstEventLogListContainer extends React.Component
                     </div>
 
                 </div>
-                <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing styles={{zIndex: 999999999999}}>
-                    <Table.Header className="viewListTableHeader" styles={{zIndex: 99999999999}}>
-                        <Table.Row>
-
+                <Table className="" basic='very' sortable striped celled fixed collapsing styles={{zIndex: 999999999999}}>
+                    <div>
+                        <Table.Row style={PageMonitoringStyles.tableHeaderRow}>
                             <Table.HeaderCell textAlign={'center'}>
-                                TIME
+                                <div style={PageMonitoringStyles.gridHeader}>
+                                    TIME
+                                </div>
                             </Table.HeaderCell>
                             <Table.HeaderCell textAlign={'center'}>
                                 APP
@@ -112,7 +113,7 @@ export default class VirtualAppInstEventLogListContainer extends React.Component
                                 STATUS
                             </Table.HeaderCell>
                         </Table.Row>
-                    </Table.Header>
+                    </div>
                     {!this.props.parent.state.loading && this.state.eventLogList.length === 0 &&
                     <Table.Body className="tbBodyList">
                         <Table.Row warning={true} className='page_monitoring_popup_table_row' style={PageMonitoringStyles.noData2}>
@@ -125,75 +126,75 @@ export default class VirtualAppInstEventLogListContainer extends React.Component
                     {this.props.parent.state.loading &&
                     <div
                         style={PageMonitoringStyles.center3}>
-
                         <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}/>
-
                     </div>
                     }
 
+                    {/*Desc:tableBody*/}
+                    {/*Desc:tableBody*/}
+                    {/*Desc:tableBody*/}
                     {!this.props.parent.state.loading && this.state.eventLogList !== undefined &&
                     <FixedSizeList
-                        className="List"
                         height={gridHeight}
                         itemCount={this.state.eventLogList.length}
-                        itemSize={64}
-                        style={{backgroundColor: 'black', overFlowY: 'auto', display: 'flex', alignSelf: 'center'}}
+                        itemSize={50}
+                        style={{backgroundColor: 'black', display: 'flex', alignSelf: 'center', marginTop: -12.5, marginRight: -20}}
                         width={gridWidth}
                     >
                         {({index, style}) => {
                             return (
-                                <tr className='page_monitoring_popup_table_row' style={style}>
-                                    <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableData : PageMonitoringStyles.gridTableData2}>
-                                        <div style={{marginTop: 10}}>
-                                            {eventLogList[index][0].toString().split('T')[0]}
-                                            {`\n\n`}
-                                            {eventLogList[index][0].toString().split('T')[1].substring(0, 8)}
-                                        </div>
-                                    </td>
-                                    <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableData : PageMonitoringStyles.gridTableData2}>
-                                        <div style={{marginTop: 10}}>
-                                            {eventLogList[index][1]}
-                                        </div>
-                                    </td>
-                                    <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableData : PageMonitoringStyles.gridTableData2}>
-                                        <div style={{marginTop: 10}}>
-                                            {eventLogList[index][2]}
-                                        </div>
-                                    </td>
-                                    <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableData : PageMonitoringStyles.gridTableData2}>
-                                        <div style={{marginTop: 10}}>
-                                            {eventLogList[index][3]}
-                                        </div>
-                                    </td>
-                                    <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableData : PageMonitoringStyles.gridTableData2}>
-                                        <div style={{marginTop: 10}}>
-                                            {eventLogList[index][4]}
-                                        </div>
-                                    </td>
-                                    <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableData : PageMonitoringStyles.gridTableData2}>
-                                        <div style={{marginTop: 10}}>
-                                            {eventLogList[index][5]}
-                                        </div>
-                                    </td>
-                                    <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableData : PageMonitoringStyles.gridTableData2}>
-                                        <div style={{marginTop: 10}}>
-                                            {eventLogList[index][5]}
-                                        </div>
-                                    </td>
-                                    <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableData : PageMonitoringStyles.gridTableData2}>
-                                        <div style={{marginTop: 10}}>
-                                            {eventLogList[index][5]}
-                                        </div>
-                                    </td>
-                                </tr>
+                                <div style={{}}>
+                                    <tr className='' style={style}>
+                                        <td style={index % 2 === 1 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
+                                            <div>
+                                                {eventLogList[index][0].toString().split('T')[0]}
+                                                {`\n\n`}
+                                                {eventLogList[index][0].toString().split('T')[1].substring(0, 8)}
+                                            </div>
+                                        </td>
+                                        <td style={index % 2 === 1 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
+                                            <div>
+                                                {eventLogList[index][1]}
+                                            </div>
+                                        </td>
+                                        <td style={index % 2 === 1 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
+                                            <div>
+                                                {eventLogList[index][2]}
+                                            </div>
+                                        </td>
+                                        <td style={index % 2 === 1 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
+                                            <div>
+                                                {eventLogList[index][3]}
+                                            </div>
+                                        </td>
+                                        <td style={index % 2 === 1 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
+                                            <div>
+                                                {eventLogList[index][4]}
+                                            </div>
+                                        </td>
+                                        <td style={index % 2 === 1 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
+                                            <div>
+                                                {eventLogList[index][5]}
+                                            </div>
+                                        </td>
+                                        <td style={index % 2 === 1 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
+                                            <div>
+                                                {eventLogList[index][5]}
+                                            </div>
+                                        </td>
+                                        <td style={index % 2 === 1 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
+                                            <div>
+                                                {eventLogList[index][5]}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </div>
 
                             )
                         }}
 
                     </FixedSizeList>
                     }
-
-
                     </tbody>
                 </Table>
             </>

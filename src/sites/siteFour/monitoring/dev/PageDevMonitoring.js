@@ -446,8 +446,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         componentDidMount = async () => {
             //fixme:isShowHeader
             //fixme:isShowHeader
-            //fixme:isShowHeader
-            this.props.toggleHeader(true);
+            this.props.toggleHeader(false);
             this.setState({
                 loading: true,
                 bubbleChartLoader: true,
@@ -455,7 +454,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
             })
 
-            await this.loadInitDataForCluster();
+            await this.loadInitDataForCluster__FOR__DEV();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
@@ -1095,7 +1094,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
         makeGridSizeByType(graphType) {
             if (graphType === GRID_ITEM_TYPE.CLUSTER_LIST || graphType === GRID_ITEM_TYPE.PERFORMANCE_SUM || graphType === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST || graphType === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
-                return 3;
+                return 4;
             } else if (graphType === GRID_ITEM_TYPE.MAP) {
                 return 1;
             } else {
@@ -1105,7 +1104,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
         makeGridSizeHeightByType(graphType) {
             if (graphType === GRID_ITEM_TYPE.MAP) {
-                return 2;
+                return 1;
             } else {
                 return 1;
             }
@@ -1329,7 +1328,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         <div className="maxize page_monitoring_widget_icon"
                              onClick={this.showBigModal.bind(this, hwType, graphType)}
                         >
-                            <MaterialIcon icon='aspect_ratio'/>
+                            <MaterialIcon size={'tiny'} icon='aspect_ratio'/>
                         </div>
                         }
 
@@ -1341,7 +1340,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                  //alert('sdlfksldkflskdlf')
                              }}
                         >
-                            <MaterialIcon icon='create'/>
+                            <MaterialIcon size={'tiny'} icon='create'/>
                         </div>
 
                         <div className="remove page_monitoring_widget_icon"
@@ -1349,7 +1348,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                  this.removeGridItem(uniqueIndex)
                              }}
                         >
-                            <MaterialIcon icon='delete'/>
+                            <MaterialIcon size={'tiny'} icon='delete'/>
                         </div>
                     </div>
 
@@ -1507,9 +1506,17 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
         }
 
-        renderMenuListItems=()=>{
+        renderMenuListItems = () => {
             return (
                 <AMenu>
+                    <AMenu.Item
+                        key="1"
+                        onClick={async () => {
+                            await this.handleResetClicked();
+                        }}
+                    >
+                        Fetch Locally Stored Data
+                    </AMenu.Item>
                     <AMenu.Item
                         key="1"
                         onClick={() => {
@@ -1520,14 +1527,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     >
                         Add Item
                     </AMenu.Item>
-                    <AMenu.Item
-                        key="1"
-                        onClick={async () => {
-                            await this.handleResetClicked();
-                        }}
-                    >
-                        Fetch Locally Stored Data
-                    </AMenu.Item>
+
                     <AMenu.Item
                         key="1"
                         onClick={async () => {
@@ -1559,7 +1559,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
                             });
                         }}
-                        style={{display:'flex'}}
+                        style={{display: 'flex'}}
                     >
                         Fix Grid
                         <div style={{marginLeft: 5}}>
@@ -1572,7 +1572,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         </div>
                     </AMenu.Item>
                     <AMenu.Item
-                        style={{display:'flex'}}
+                        style={{display: 'flex'}}
                         key="1"
                         onClick={() => {
                             this.setState({
@@ -1640,9 +1640,19 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             desc :Fliter Area
                             desc :####################################
                             */}
-                            <div className='page_monitoring_select_area' style={{flex: .48, backgroundColor: 'transparent', justifyContent: 'flex-start'}}>
-                                {this.makeClusterDropdown()}
-                                {this.makeAppInstDropdown()}
+                            <div className='page_monitoring_select_area' style={{
+                                flex: .70,
+                                //backgroundColor: 'red',
+                                justifyContent: 'flex-start',
+                                display: 'flex',
+                            }}>
+                                <div style={{flex: .6}}>
+                                    {this.makeClusterDropdown()}
+                                </div>
+                                <div style={{flex: .4}}>
+                                    {this.makeAppInstDropdown()}
+                                </div>
+
                             </div>
                             {/*
                             desc :####################################
@@ -1651,16 +1661,21 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             */}
                             <div
                                 style={{
-                                    width: '150%',
-                                    marginLeft: 0,
-                                    fontSize: 15,
-                                    flex: .4,
+                                    marginLeft: 12,
+                                    fontSize: 12,
+                                    flex: .52,
                                     justifyContent: 'flex-start',
                                     alignItems: 'center',
-                                    backgroundColor: 'transparent',
+                                    color: 'rgba(255, 255, 255, .8)',
+                                    height: 29,
+                                    alignSelf: 'center',
+                                    border: this.state.currentCluster !== '' ||  this.state.currentAppInst !== '' ? '1px dotted #4c4c4c' : null,
+                                    //backgroundColor: 'blue',
                                 }}
                             >
-                                {this.renderBreadCrumb()}
+                                <div style={{marginTop: 7, marginLeft: 9}}>
+                                    {this.renderBreadCrumb()}
+                                </div>
                             </div>
 
                             {/*
@@ -1668,7 +1683,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             desc :loading Area
                             desc :####################################
                             */}
-                            <div style={{flex: .05}}>
+                            <div style={{flex: .025}}>
                                 {this.state.intervalLoading &&
                                 <div>
                                     <div style={{marginLeft: 15}}>
@@ -1716,7 +1731,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             desc : options list (right conner)
                             desc :####################################
                             */}
-                            <div style={{display: 'flex', justifyContent: 'flex-end', width: '100%', flex: .1,}}>
+                            <div style={{
+                                display: 'flex', justifyContent: 'flex-end', width: '100%', flex: .05,
+                                //backgroundColor: 'yellow'
+                            }}>
                                 <div style={{
                                     alignItems: 'center',
                                     display: 'flex',
@@ -1730,7 +1748,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                         overlay={this.renderMenuListItems}
                                         trigger={['hover']}
                                     >
-                                        <a
+                                        <div
                                             className="ant-dropdown-link"
                                             style={{
                                                 alignItems: 'center',
@@ -1749,7 +1767,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                                 //color={'#559901'}
                                                 icon="list"
                                             />
-                                        </a>
+                                        </div>
                                     </ADropdown>
                                 </div>
                             </div>
@@ -1766,7 +1784,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
                     <div
                         className="page_monitoring_dropdown_label"
-                        style={{backgroundColor: 'transparent', height: 20, marginTop: 5, marginLeft: this.state.isShowFilter ? 0 : 10}}
+                        style={{backgroundColor: 'transparent', height: 20, marginTop: 6, marginLeft: this.state.isShowFilter ? 0 : 10}}
                     >
                         Cluster | Cloudlet
                     </div>
@@ -1791,7 +1809,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         makeAppInstDropdown() {
             return (
                 <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
-                    <div className="page_monitoring_dropdown_label" style={{backgroundColor: 'transparent', height: 20, marginTop: 5, marginLeft: 3}}>
+                    <div className="page_monitoring_dropdown_label" style={{backgroundColor: 'transparent', height: 20, marginTop: 6, marginLeft: 3}}>
                         App Inst
                     </div>
                     <Dropdown

@@ -58,12 +58,13 @@ export default class AppInstEventLogListContainer extends React.Component<Props,
                     width: '100%',
                     height: 45
                 }}>
-                    <div className='page_monitoring_title' style={{
-                        backgroundColor: 'transparent',
-                        flex: .2,
-                        marginTop: 8,
-                        alignSelf: 'center',
-                    }}>
+                    <div className='page_monitoring_title'
+                         style={{
+                             flex: .38,
+                             marginTop: 5,
+                             fontFamily: 'Ubuntu'
+                         }}
+                    >
                         App Inst Event Log
                     </div>
                     <div style={{
@@ -72,43 +73,54 @@ export default class AppInstEventLogListContainer extends React.Component<Props,
                     }} className={'page_monitoring_title'}>
                         {this.props.parent.state.currentAppInst.toString()}
 
-                        {/*.split("|")[0].trim()*/}
                     </div>
-
                 </div>
-                <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing styles={{zIndex: 999999999999, overflowY: 'auto'}}>
-                    <Table.Header className="viewListTableHeader" styles={{zIndex: 99999999999}}>
-                        <Table.Row>
+                <Table basic='very' sortable striped celled fixed collapsing styles={{zIndex: 999999999999, overflowY: 'auto'}}>
+                    <div>
+                        <Table.Row style={PageMonitoringStyles.tableHeaderRow}>
                             <Table.HeaderCell>
-                                TIME
+                                <div style={PageMonitoringStyles.gridHeader}>
+                                    TIME
+                                </div>
                             </Table.HeaderCell>
                             <Table.HeaderCell>
-                                APP
+                                <div style={PageMonitoringStyles.gridHeader}>
+                                    APP
+                                </div>
                             </Table.HeaderCell>
                             <Table.HeaderCell>
-                                CLUSTER
+                                <div style={PageMonitoringStyles.gridHeader}>
+                                    CLUSTER
+                                </div>
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
+                                <div style={PageMonitoringStyles.gridHeader}>
+                                    DEV
+                                </div>
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
+                                <div style={PageMonitoringStyles.gridHeader}>
+                                    CLOUDLET
+                                </div>
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
+                                <div style={PageMonitoringStyles.gridHeader}>
+                                    OPERATOR
+                                </div>
 
                             </Table.HeaderCell>
                             <Table.HeaderCell>
-                                DEV
-
+                                <div style={PageMonitoringStyles.gridHeader}>
+                                    EVENT
+                                </div>
                             </Table.HeaderCell>
                             <Table.HeaderCell>
-                                CLOUDLET
-
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                OPERATOR
-
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                EVENT
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                STATUS
+                                <div style={PageMonitoringStyles.gridHeader}>
+                                    STATUS
+                                </div>
                             </Table.HeaderCell>
                         </Table.Row>
-                    </Table.Header>
+                    </div>
                     {this.state.eventLogList.length === 0 &&
                     <Table.Body className="tbBodyList">
                         <Table.Row warning={true} className='page_monitoring_popup_table_row' style={PageMonitoringStyles.noData2}>
@@ -128,16 +140,16 @@ export default class AppInstEventLogListContainer extends React.Component<Props,
 
                                                //let dataSet = AppInst + " | " + item.Cloudlet.trim() + " | " + Cluster + " | " + Region;
 
-                                             /*  let AppName = item[1]
-                                               let Cloudlet = item[4]
-                                               let Cluster = item[2]
-                                               let currentAppInst = AppName + " | " + Cloudlet + " | " + Cluster + " | ";
+                                               /*  let AppName = item[1]
+                                                 let Cloudlet = item[4]
+                                                 let Cluster = item[2]
+                                                 let currentAppInst = AppName + " | " + Cloudlet + " | " + Cluster + " | ";
 
-                                               this.setState({
-                                                   loading: true,
-                                               }, () => {
-                                                   this.props.handleAppInstDropdown(currentAppInst)
-                                               })*/
+                                                 this.setState({
+                                                     loading: true,
+                                                 }, () => {
+                                                     this.props.handleAppInstDropdown(currentAppInst)
+                                                 })*/
 
 
                                            }}

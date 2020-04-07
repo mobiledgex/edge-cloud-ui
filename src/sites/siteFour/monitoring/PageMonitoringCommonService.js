@@ -67,7 +67,7 @@ export const PageMonitoringStyles = {
         //height: '50px',
     },
     dropDownForClusterCloudlet: {
-        minWidth: '233px',
+        minWidth: '260px',
         fontSize: '11px',
         minHeight: '30px',
         zIndex: 1,
@@ -110,6 +110,83 @@ export const PageMonitoringStyles = {
         flex: .4,
         alignItems: 'center',
         fontSize: 13,
+    },
+    tableHeaderRow: {
+        height: 30, alignSelf: 'center', display: 'flex', justifyContent: 'center', alignItem: 'center',
+    },
+    gridHeader: {
+        height: 15,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItem: 'center',
+        marginTop: 3
+    },
+    gridHeaderAlignLeft: {
+        height: 15,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItem: 'flex-start',
+        marginTop: 3
+    },
+    gridTableCell: {
+        height: 50,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItem: 'center',
+        marginTop: 3,
+        fontFamily: 'Ubuntu'
+    },
+    tableRow: {
+        height: 50, alignSelf: 'center', display: 'flex', justifyContent: 'center', alignItem: 'center'
+    },
+    gridTableCellAlignLeft: {
+        height: 50,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItem: 'flex-start',
+        marginTop: 3,
+        fontFamily: 'Ubuntu'
+    },
+    gridTableCell2: {
+        height: 50,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItem: 'center',
+        marginTop: 25,
+        fontWeight: 'bold',
+        fontFamily: 'Ubuntu'
+    },
+    gridTableCell3: {
+        height: 50,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItem: 'center',
+        fontWeight: 'bold',
+        fontFamily: 'Ubuntu',
+        backgroundColor: '#17181e',
+    },
+    gridTableCell4: {
+        height: 50,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItem: 'center',
+        fontWeight: 'bold',
+        fontFamily: 'Ubuntu',
+        backgroundColor: '#1e2025',
+    },
+    cellFirstRow: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: 'Ubuntu'
+
     },
     noData: {
         fontSize: 30,

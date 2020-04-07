@@ -2,14 +2,33 @@ import 'react-hot-loader';
 
 import React from 'react';
 import '../PageMonitoring.css';
-import {APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, CLASSIFICATION, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX_FOR_CLUSTER} from "../../../../shared/Constants";
+import {
+    APP_INST_MATRIX_HW_USAGE_INDEX,
+    CHART_COLOR_LIST,
+    CLASSIFICATION,
+    HARDWARE_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    USAGE_INDEX_FOR_CLUSTER
+} from "../../../../shared/Constants";
 import BubbleChart from "../../../../components/BubbleChart";
 import PageDevMonitoring from "./PageDevMonitoring";
 import {convertByteToMegaByte, numberWithCommas, PageMonitoringStyles, renderUsageByType, showToast} from "../PageMonitoringCommonService";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
 import {CircularProgress} from "@material-ui/core";
-
+export const GRID_ITEM_TYPE = {
+    LINE: 'LINE',
+    BAR: 'BAR',
+    COLUMN: 'COLUMN',
+    BUBBLE: 'BUBBLE',
+    MAP: 'MAP',
+    TABLE: 'TABLE',
+    PIE: 'PIE',
+    CLUSTER_LIST: 'CLUSTER_LIST',
+    CLUSTER_EVENTLOG_LIST: 'CLUSTER_EVENTLOG_LIST',
+    APP_INST_EVENT_LOG: 'APP_INST_EVENT_LOG',
+    PERFORMANCE_SUM: 'PERFORMANCE_SUM'
+}
 export const HARDWARE_TYPE_FOR_GRID = {
     MAP: 'MAP',
     PIE: 'PIE',
@@ -68,10 +87,9 @@ export const defaultLayoutForCluster = [
 
     {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false},//DISK
     {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//NETWORK
-
-    {i: '6', x: 0, y: 2, w: 1, h: 1, "add": false},//
-    {i: '7', x: 1, y: 2, w: 1, h: 1, "add": false},//
-    {i: '8', x: 2, y: 2, w: 1, h: 1, "add": false},//
+    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//
+    /*{i: '7', x: 1, y: 2, w: 1, h: 1, "add": false},//
+    {i: '8', x: 2, y: 2, w: 1, h: 1, "add": false},//*/
     //{i: '9', x: 3, y: 2, w: 1, h: 1, "add": false},//
 
 ];
@@ -105,10 +123,11 @@ export const defaultHwMapperListForCluster = [
     },
     {
         id: '6',
-        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
-        graphType: CHART_TYPE.COLUMN,
+        hwType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
+        graphType:  GRID_ITEM_TYPE.PERFORMANCE_SUM,
     },
-    {
+
+   /* {
         id: '7',
         hwType: HARDWARE_TYPE_FOR_GRID.MEM,
         graphType: CHART_TYPE.COLUMN,
@@ -117,7 +136,7 @@ export const defaultHwMapperListForCluster = [
         id: '8',
         hwType: HARDWARE_TYPE_FOR_GRID.DISK,
         graphType: CHART_TYPE.COLUMN,
-    },
+    },*/
   /*  {
         id: '9',
         hwType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
@@ -1147,9 +1166,9 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this) => {
         pointDotStrokeWidth: 4,
         layout: {
             padding: {
-                left: 0,
-                right: 10,
-                top: 0,
+                left: 9,
+                right: 5,
+                top: 15,
                 bottom: 0
             }
         },
@@ -1397,7 +1416,7 @@ export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDat
             <div style={{
                 position: 'relative',
                 width: '99%',
-                height: '96%'
+                height: '99%'
             }}>
                 <ReactChartJsLine
                     data={lineChartDataForRendering}
