@@ -144,7 +144,7 @@ export default class PerformanceSummaryTableContainer extends React.Component<Pr
                                 >
                                     <Table.Cell>
                                         <div style={PageMonitoringStyles.gridTableCellAlignLeft}>
-                                            {item.cluster}<br/>[{item.cloudlet}]
+                                            {item.cluster.toString().substring(0, 15) + ".."}<br/>[{item.cloudlet.toString().substring(0, 15) + ".."}]
                                         </div>
                                     </Table.Cell>
                                     <Table.Cell>
@@ -204,11 +204,11 @@ export default class PerformanceSummaryTableContainer extends React.Component<Pr
                                             {numberWithCommas(item.sumUdpRecv.toFixed(2)) + ' '}
                                         </div>
                                     </Table.Cell>
-                                    <Table.Cell>
+                                  {/*  <Table.Cell>
                                         <div style={PageMonitoringStyles.gridTableCell2}>
                                             {numberWithCommas(item.sumUdpSent.toFixed(2)) + ' '}
                                         </div>
-                                    </Table.Cell>
+                                    </Table.Cell>*/}
 
                                 </Table.Row>
 
