@@ -18,10 +18,12 @@ export const keys = () => ([
   { field: fields.clusterName, serverField: 'key#OS#cluster_inst_key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster Instance', visible: true },
   { field: fields.privacyPolicyName, serverField: 'privacy_policy', label: 'Privacy Policy', visible: false },
   { field: fields.deployment, label: 'Deployment', sortable: true, visible: true },
+  { field: fields.accessType, label: 'Access Type'},
   { field: fields.uri, serverField: 'uri', label: 'URI' },
   { field: fields.liveness, serverField: 'liveness', label: 'Liveness' },
   { field: fields.mappedPorts, serverField: 'mapped_ports', label: 'Mapped Port', dataType: constant.TYPE_JSON },
   { field: fields.flavorName, serverField: 'flavor#OS#name', label: 'Flavor' },
+  { field: fields.ipAccess, serverField: 'auto_cluster_ip_access'},
   { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
   { field: fields.runtimeInfo, serverField: 'runtime_info', label: 'Runtime', dataType: constant.TYPE_JSON },
   { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_JSON },
@@ -48,6 +50,10 @@ export const getKey = (data, isCreate) => {
 
     if (data[fields.configs]) {
       appinst.configs = data[fields.configs]
+    }
+
+    if (data[fields.ipAccess]) {
+      appinst.auto_cluster_ip_access = constant.IPAccessLabel(data[fields.ipAccess])
     }
   }
   
@@ -78,6 +84,7 @@ export const multiDataRequest = (keys, mcRequestList) => {
         let app = appList[j]
         if (appInst[fields.appName] === app[fields.appName]) {
           appInst[fields.deployment] = app[fields.deployment];
+          appInst[fields.accessType] = app[fields.accessType];
           break;
         }
       }
@@ -119,6 +126,7 @@ export const streamAppInst = (data) => {
 
 const customData = (value) => {
   value[fields.liveness] = constant.liveness(value[fields.liveness])
+  value[fields.ipAccess] = value[fields.ipAccess] ? constant.IPAccessLabel(value[fields.ipAccess]) : undefined
 }
 
 export const getData = (response, body) => {
