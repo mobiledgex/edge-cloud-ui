@@ -169,7 +169,17 @@ export const PageMonitoringStyles = {
         alignItem: 'center',
         fontWeight: 'bold',
         fontFamily: 'Ubuntu',
-        backgroundColor: '#17181e',
+        backgroundColor: '#1e2025',
+    },
+    gridTableCell3Left: {
+        height: 50,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItem: 'flex-start',
+        fontWeight: 'bold',
+        fontFamily: 'Ubuntu',
+        backgroundColor: '#1e2025',
     },
     gridTableCell4: {
         height: 50,
@@ -179,7 +189,7 @@ export const PageMonitoringStyles = {
         alignItem: 'center',
         fontWeight: 'bold',
         fontFamily: 'Ubuntu',
-        backgroundColor: '#1e2025',
+        backgroundColor: '#23252c',
     },
     cellFirstRow: {
         display: 'flex',

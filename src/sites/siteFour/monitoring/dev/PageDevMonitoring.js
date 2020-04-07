@@ -288,7 +288,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
         webSocketInst: WebSocket = null;
         gridLayoutHeight = window.innerHeight * 0.875;
-        gridItemHeight = 270;
+        gridItemHeight = 265;
 
         constructor(props) {
             super(props);
