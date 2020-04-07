@@ -1501,14 +1501,15 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             } else {
                 return null;
             }
-
         }
-
 
 
         makeMenuListItems = () => {
             return (
                 <AMenu>
+                    {/*desc:#########################################*/}
+                    {/*desc:Fetch Locally Stored Data                */}
+                    {/*desc:#########################################*/}
                     <AMenu.Item
                         style={{display: 'flex'}}
                         key="1"
@@ -1568,7 +1569,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         </div>
                     </AMenu.Item>
                     {/*desc: ######################*/}
-                    {/*desc: Fix Grid*/}
+                    {/*desc: Fix Grid              */}
                     {/*desc: ######################*/}
                     <AMenu.Item style={{display: 'flex'}}
                                 key="1"
@@ -1742,8 +1743,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         </div>
                     </AMenu.Item>
                     }
-
-
                 </AMenu>
             )
         }
