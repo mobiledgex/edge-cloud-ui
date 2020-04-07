@@ -122,6 +122,15 @@ export const PageMonitoringStyles = {
         alignItem: 'center',
         marginTop: 3
     },
+    gridHeaderFirst: {
+        height: 15,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItem: 'center',
+        marginTop: 3,
+        width:500,
+    },
     gridHeaderAlignLeft: {
         height: 15,
         alignSelf: 'center',
