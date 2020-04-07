@@ -1504,7 +1504,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         }
 
 
-        makeMenuListItems = () => {
+        __makeMenuListItems = () => {
             return (
                 <AMenu>
                     {/*desc:#########################################*/}
@@ -1623,31 +1623,14 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             />
                         </div>
                     </AMenu.Item>
-                    {/*desc: ######################*/}
-                    {/*desc: Show Header            */}
-                    {/*desc: ######################*/}
-                    <AMenu.Item style={{display: 'flex'}}
-                                key="1"
-                                onClick={() => {
-                                    if (this.props.isShowHeader) {
-                                        this.props.toggleHeader(false)
-                                    } else {
-                                        this.props.toggleHeader(true)
-                                    }
-                                }}
-                    >
-                        <MaterialIcon icon={'crop_7_5'} color={'white'}/>
-                        <div style={PageMonitoringStyles.listItemTitle}>
-                            Show Header
-                        </div>
-                    </AMenu.Item>
                     {/*desc:#########################################*/}
                     {/*desc:____Menu Changing Graph Theme Color_____ */}
                     {/*desc:#########################################*/}
                     <SubMenu
                         key="sub3"
                         title={
-                            <div style={{display: 'flex'}}><MaterialIcon icon={'invert_colors'} color={'white'}/>
+                            <div style={{display: 'flex'}}>
+                                <MaterialIcon icon={'invert_colors'} color={'white'}/>
                                 <div style={PageMonitoringStyles.listItemTitle}>Change The Graph Theme</div>
                             </div>
                         }
@@ -1709,7 +1692,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         </AMenu.Item>
                         <AMenu.Item
                             key="5"
-                            onClick={async () => {
+                            onClick={async (value) => {
                                 await this.setState({
                                     themeTitle: THEME_OPTIONS.APPLE
                                 })
@@ -1719,6 +1702,24 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             APPLE
                         </AMenu.Item>
                     </SubMenu>
+                    {/*desc: ######################*/}
+                    {/*desc: Show Header            */}
+                    {/*desc: ######################*/}
+                    <AMenu.Item style={{display: 'flex'}}
+                                key="1"
+                                onClick={() => {
+                                    if (this.props.isShowHeader) {
+                                        this.props.toggleHeader(false)
+                                    } else {
+                                        this.props.toggleHeader(true)
+                                    }
+                                }}
+                    >
+                        <MaterialIcon icon={'crop_7_5'} color={'white'}/>
+                        <div style={PageMonitoringStyles.listItemTitle}>
+                            Show Header
+                        </div>
+                    </AMenu.Item>
                     {/*desc: ######################*/}
                     {/*desc: Stream             */}
                     {/*desc: ######################*/}
@@ -1863,7 +1864,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                     justifyContent: 'center',
                                 }}>
                                     <ADropdown
-                                        overlay={this.makeMenuListItems}
+                                        overlay={this.__makeMenuListItems}
                                         trigger={['click']}
                                     >
                                         <div

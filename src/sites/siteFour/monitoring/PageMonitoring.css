@@ -1,6 +1,11 @@
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Bungee|Candal|Righteous|Baloo+Bhai+2|Baloo+Bhaina+2|Ubuntu&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Acme|Roboto|Bungee|Barlow+Semi+Condensed|Candal|Encode+Sans+Condensed|Righteous|Karla|Roboto+Condensed&display=swap');
 
+
+.ant-dropdown-menu-submenu-arrow{
+    display: none;
+}
+
 .tooltip001 {
     font-size: 18px;
     background-color: transparent;
