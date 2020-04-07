@@ -8,7 +8,6 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {Button as MButton, Card, CircularProgress, withStyles} from '@material-ui/core'
 import {DatePicker, Select, Tooltip, Dropdown as ADropdown, Menu as AMenu} from 'antd';
-
 import {
     defaultHwMapperListForCluster,
     defaultLayoutForAppInst,

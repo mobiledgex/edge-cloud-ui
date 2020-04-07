@@ -2,7 +2,7 @@
 import * as React from 'react';
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import {Table} from "semantic-ui-react";
-import {Progress, Tooltip} from "antd";
+import {Progress} from "antd";
 import type {TypeClusterUsageList} from "../../../../shared/Types";
 import {numberWithCommas, PageMonitoringStyles} from "../PageMonitoringCommonService";
 import {handleLegendAndBubbleClickedEvent, makeLineChartDataForCluster, sortUsageListByTypeForCluster} from "../dev/PageDevMonitoringService";
@@ -104,8 +104,6 @@ export default class PerformanceSummaryTableContainer extends React.Component<Pr
                                     NETWORK RECV
                                 </div>
                             </Table.HeaderCell>
-
-
                             <Table.HeaderCell>
                                 <div style={PageMonitoringStyles.gridHeader}>
                                     NETWORK SENT
@@ -204,7 +202,7 @@ export default class PerformanceSummaryTableContainer extends React.Component<Pr
                                             {numberWithCommas(item.sumUdpRecv.toFixed(2)) + ' '}
                                         </div>
                                     </Table.Cell>
-                                  {/*  <Table.Cell>
+                                    {/*  <Table.Cell>
                                         <div style={PageMonitoringStyles.gridTableCell2}>
                                             {numberWithCommas(item.sumUdpSent.toFixed(2)) + ' '}
                                         </div>
