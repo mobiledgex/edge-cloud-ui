@@ -29,14 +29,16 @@
 .page_monitoring_select_area {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
     align-items: center;
+    justify-content: center;
+    align-self: center;
 }
 
 
 .page_monitoring_dropdown_box {
     display: flex;
     flex-direction: row;
+    margin-top: 12px;
 }
 
 .page_monitoring_datepicker_box {
