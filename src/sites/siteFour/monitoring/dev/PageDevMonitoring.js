@@ -1,13 +1,15 @@
-import {Center0001, Center2, ClusterCluoudletLable, Legend, OuterHeader} from '../PageMonitoringStyledComponent'
+import {Center2, ClusterCluoudletLable, Legend} from '../PageMonitoringStyledComponent'
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Button, Checkbox, Dropdown, Grid, Icon, Modal, Tab} from 'semantic-ui-react'
+import {Dropdown, Grid, Modal} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
-import {Button as MButton, Card, CircularProgress, withStyles} from '@material-ui/core'
-import {DatePicker, Select, Tooltip, Dropdown as ADropdown, Menu as AMenu} from 'antd';
+import {Card, CircularProgress, withStyles} from '@material-ui/core'
+import {Dropdown as ADropdown, Menu as AMenu,} from 'antd';
+
+const SubMenu = AMenu.SubMenu;
 import {
     defaultHwMapperListForCluster,
     defaultLayoutForAppInst,
@@ -18,13 +20,14 @@ import {
     makeAllLineChartData,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
+    makeDropdownListWithValuePipeForAppInst,
     makeGradientColorList2,
     makeid,
     makeLineChartDataForAppInst,
     makeLineChartDataForBigModal,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
-    makeSelectBoxListWithValuePipe, makeDropdownListWithValuePipeForAppInst, renderSmallProgress,
+    makeSelectBoxListWithValuePipe,
 } from "./PageDevMonitoringService";
 import {
     ADD_ITEM_LIST,
@@ -87,16 +90,7 @@ import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout} from "react-grid-layout/lib/utils";
 import GradientBarChartContainer from "../components/GradientBarChartContainer";
-import Ripples from "react-ripples";
 import Switch from "@material-ui/core/Switch";
-import Grow from "@material-ui/core/Grow";
-import Paper from "@material-ui/core/Paper";
-import ClickAwayListener from "@material-ui/core/ClickAwayListener";
-import MenuList from "@material-ui/core/MenuList";
-import MenuItem from "@material-ui/core/MenuItem";
-import Popper from "@material-ui/core/Popper";
-import Fade from "@material-ui/core/Fade";
-import Menu from "@material-ui/core/Menu";
 
 const CustomSwitch = withStyles({
     switchBase: {
@@ -453,7 +447,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
             })
 
-            await this.loadInitDataForCluster();
+            await this.loadInitDataForCluster__FOR__DEV();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
@@ -1450,39 +1444,46 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             )
         }
 
-        handleThemeChanges = (value) => {
-            if (value === THEME_OPTIONS.DEFAULT) {
-                this.setState({
+        handleThemeChanges = async (themeTitle) => {
+            if (themeTitle === THEME_OPTIONS.DEFAULT) {
+                await this.setState({
                     chartColorList: CHART_COLOR_LIST
                 })
             }
-            if (value === THEME_OPTIONS.BLUE) {
-                this.setState({
+            if (themeTitle === THEME_OPTIONS.BLUE) {
+                await this.setState({
                     chartColorList: CHART_COLOR_LIST2
                 })
             }
-            if (value === THEME_OPTIONS.GREEN) {
-                this.setState({
+            if (themeTitle === THEME_OPTIONS.GREEN) {
+                await this.setState({
                     chartColorList: CHART_COLOR_LIST3
                 })
             }
-            if (value === THEME_OPTIONS.RED) {
-                this.setState({
+            if (themeTitle === THEME_OPTIONS.RED) {
+                await this.setState({
                     chartColorList: CHART_COLOR_LIST4
                 })
             }
 
-            if (value === THEME_OPTIONS.MONOKAI) {
-                this.setState({
+            if (themeTitle === THEME_OPTIONS.MONOKAI) {
+                await this.setState({
                     chartColorList: CHART_COLOR_MONOKAI
                 })
             }
 
-            if (value === THEME_OPTIONS.APPLE) {
-                this.setState({
+            if (themeTitle === THEME_OPTIONS.APPLE) {
+                await this.setState({
                     chartColorList: CHART_COLOR_APPLE
                 })
             }
+
+            let selectedChartColorList = this.state.chartColorList;
+            reactLocalStorage.setObject(getUserId() + "_mon_theme", selectedChartColorList)
+            reactLocalStorage.set(getUserId() + "_mon_theme_title", themeTitle)
+            await this.setState({
+                chartColorList: selectedChartColorList,
+            })
         }
 
         renderBreadCrumb() {
@@ -1503,62 +1504,88 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
         }
 
-        renderMenuListItems = () => {
+
+
+        makeMenuListItems = () => {
             return (
                 <AMenu>
                     <AMenu.Item
+                        style={{display: 'flex'}}
                         key="1"
                         onClick={async () => {
                             await this.handleResetClicked();
                         }}
                     >
-                        Fetch Locally Stored Data
+                        <MaterialIcon icon={'history'} color={'white'}/>
+                        <div style={PageMonitoringStyles.listItemTitle}>
+                            Fetch Locally Stored Data
+                        </div>
                     </AMenu.Item>
-                    <AMenu.Item
-                        key="1"
-                        onClick={() => {
-                            this.setState({
-                                isOpenEditView: true,
-                            })
-                        }}
+                    <AMenu.Item style={{display: 'flex'}}
+                                key="1"
+                                onClick={() => {
+                                    this.setState({
+                                        isOpenEditView: true,
+                                    })
+                                }}
                     >
-                        Add Item
+                        <MaterialIcon icon={'add'} color={'white'}/>
+                        <div style={PageMonitoringStyles.listItemTitle}>
+                            Add Item
+                        </div>
+                    </AMenu.Item>
+                    {/*desc:#########################################*/}
+                    {/*desc:Reload                                  */}
+                    {/*desc:#########################################*/}
+                    <AMenu.Item style={{display: 'flex'}}
+                                key="1"
+                                onClick={async () => {
+                                    if (!this.state.loading) {
+                                        this.refreshAllData();
+                                    } else {
+                                        showToast('Currently loading, you can\'t request again.')
+                                    }
+                                }}
+                    >
+                        <MaterialIcon icon={'refresh'} color={'white'}/>
+                        <div style={PageMonitoringStyles.listItemTitle}>
+                            Reload
+                        </div>
                     </AMenu.Item>
 
-                    <AMenu.Item
-                        key="1"
-                        onClick={async () => {
-                            if (!this.state.loading) {
-                                this.refreshAllData();
-                            } else {
-                                showToast('Currently loading, you can\'t request again.')
-                            }
-                        }}
+                    {/*desc: ######################*/}
+                    {/*desc: Revert to default Layout*/}
+                    {/*desc: ######################*/}
+                    <AMenu.Item style={{display: 'flex'}}
+                                key="1"
+                                onClick={async () => {
+                                    this.revertToDefaultLayout();
+                                }}
                     >
-                        Reload
+                        <MaterialIcon icon={'grid_on'} color={'white'}/>
+                        <div style={PageMonitoringStyles.listItemTitle}>
+                            Revert To The Default Layout
+                        </div>
                     </AMenu.Item>
-                    <AMenu.Item
-                        key="1"
-                        onClick={async () => {
-                            this.revertToDefaultLayout();
-                        }}
+                    {/*desc: ######################*/}
+                    {/*desc: Fix Grid*/}
+                    {/*desc: ######################*/}
+                    <AMenu.Item style={{display: 'flex'}}
+                                key="1"
+                                onClick={async () => {
+                                    await this.setState({
+                                        isDraggable: !this.state.isDraggable,
+                                        appInstanceListGroupByCloudlet: [],
+                                    })
+                                    this.setState({
+                                        appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
+                                    });
+                                }}
                     >
-                        Revert to default Layout
-                    </AMenu.Item>
-                    <AMenu.Item
-                        key="1"
-                        onClick={async () => {
-                            await this.setState({
-                                isDraggable: !this.state.isDraggable,
-                                appInstanceListGroupByCloudlet: [],
-                            })
-                            this.setState({
-                                appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
-                            });
-                        }}
-                        style={{display: 'flex'}}
-                    >
-                        Fix Grid
+                        <MaterialIcon icon={'zoom_out_map'} color={'white'}/>
+                        <div style={PageMonitoringStyles.listItemTitle}>
+                            Fix Grid
+                        </div>
                         <div style={{marginLeft: 5}}>
                             <CustomSwitch
                                 size="small"
@@ -1568,19 +1595,25 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             />
                         </div>
                     </AMenu.Item>
-                    <AMenu.Item
-                        style={{display: 'flex'}}
-                        key="1"
-                        onClick={() => {
-                            this.setState({
-                                isStackedLineChart: !this.state.isStackedLineChart,
-                            }, () => {
-                                //alert(this.state.isStackedLineChart)
-                            })
-                        }}
+
+                    {/*desc: ######################*/}
+                    {/*desc:Stacked Line Chart     */}
+                    {/*desc: ######################*/}
+                    <AMenu.Item style={{display: 'flex'}}
+                                key="1"
+                                onClick={() => {
+                                    this.setState({
+                                        isStackedLineChart: !this.state.isStackedLineChart,
+                                    }, () => {
+                                        //alert(this.state.isStackedLineChart)
+                                    })
+                                }}
                     >
-                        Stacked Line Chart
-                        <div style={{marginLeft: 5}}>
+                        <MaterialIcon icon={'show_chart'} color={'white'}/>
+                        <div style={PageMonitoringStyles.listItemTitle}>
+                            Stacked Line Chart
+                        </div>
+                        <div style={PageMonitoringStyles.listItemTitle}>
                             <CustomSwitch
                                 size="small"
                                 checked={this.state.isStackedLineChart}
@@ -1589,35 +1622,124 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             />
                         </div>
                     </AMenu.Item>
-                    <AMenu.Item
-                        key="1"
-                        onClick={() => {
-                            if (this.props.isShowHeader) {
-                                this.props.toggleHeader(false)
-                            } else {
-                                this.props.toggleHeader(true)
-                            }
-                        }}
+                    {/*desc: ######################*/}
+                    {/*desc: Show Header            */}
+                    {/*desc: ######################*/}
+                    <AMenu.Item style={{display: 'flex'}}
+                                key="1"
+                                onClick={() => {
+                                    if (this.props.isShowHeader) {
+                                        this.props.toggleHeader(false)
+                                    } else {
+                                        this.props.toggleHeader(true)
+                                    }
+                                }}
                     >
-                        Show Header
+                        <MaterialIcon icon={'crop_7_5'} color={'white'}/>
+                        <div style={PageMonitoringStyles.listItemTitle}>
+                            Show Header
+                        </div>
                     </AMenu.Item>
-
-                    {this.state.currentClassification === CLASSIFICATION.APPINST &&
-                    <AMenu.Item
-                        key="1"
-                        onClick={async () => {
-                            await this.setState({
-                                isStream: !this.state.isStream,
-                            });
-
-                            if (!this.state.isStream) {
-                                clearInterval(this.intervalForAppInst)
-                            } else {
-                                this.handleAppInstDropdown(this.state.currentAppInst, true)
-                            }
-                        }}
+                    {/*desc:#########################################*/}
+                    {/*desc:____Menu Changing Graph Theme Color_____ */}
+                    {/*desc:#########################################*/}
+                    <SubMenu
+                        key="sub3"
+                        title={
+                            <div style={{display: 'flex'}}><MaterialIcon icon={'invert_colors'} color={'white'}/>
+                                <div style={PageMonitoringStyles.listItemTitle}>Change The Graph Theme</div>
+                            </div>
+                        }
                     >
-                        Stream
+                        <AMenu.Item
+                            key="1"
+                            onClick={async () => {
+                                await this.setState({
+                                    themeTitle: THEME_OPTIONS.DEFAULT
+                                })
+                                this.handleThemeChanges(this.state.themeTitle)
+                            }}
+                        >
+                            DEFAULT
+                        </AMenu.Item>
+                        <AMenu.Item
+                            key="2"
+                            onClick={async () => {
+                                await this.setState({
+                                    themeTitle: THEME_OPTIONS.GREEN
+                                })
+                                this.handleThemeChanges(this.state.themeTitle)
+                            }}
+                        >
+                            GREEN
+                        </AMenu.Item>
+                        <AMenu.Item
+                            key="3"
+                            onClick={async () => {
+                                await this.setState({
+                                    themeTitle: THEME_OPTIONS.BLUE
+                                })
+                                this.handleThemeChanges(this.state.themeTitle)
+                            }}
+                        >
+                            BLUE
+                        </AMenu.Item>
+                        <AMenu.Item
+                            key="4"
+                            onClick={async () => {
+                                await this.setState({
+                                    themeTitle: THEME_OPTIONS.RED
+                                })
+                                this.handleThemeChanges(this.state.themeTitle)
+                            }}
+                        >
+                            RED
+                        </AMenu.Item>
+                        <AMenu.Item
+                            key="5"
+                            onClick={async () => {
+                                await this.setState({
+                                    themeTitle: THEME_OPTIONS.MONOKAI
+                                })
+                                this.handleThemeChanges(this.state.themeTitle)
+                            }}
+                        >
+                            MONOKAI
+                        </AMenu.Item>
+                        <AMenu.Item
+                            key="5"
+                            onClick={async () => {
+                                await this.setState({
+                                    themeTitle: THEME_OPTIONS.APPLE
+                                })
+                                this.handleThemeChanges(this.state.themeTitle)
+                            }}
+                        >
+                            APPLE
+                        </AMenu.Item>
+                    </SubMenu>
+                    {/*desc: ######################*/}
+                    {/*desc: Stream             */}
+                    {/*desc: ######################*/}
+                    {this.state.currentClassification === CLASSIFICATION.APPINST &&
+                    <AMenu.Item style={{display: 'flex'}}
+                                key="1"
+                                onClick={async () => {
+                                    await this.setState({
+                                        isStream: !this.state.isStream,
+                                    });
+
+                                    if (!this.state.isStream) {
+                                        clearInterval(this.intervalForAppInst)
+                                    } else {
+                                        this.handleAppInstDropdown(this.state.currentAppInst, true)
+                                    }
+                                }}
+                    >
+                        <MaterialIcon icon={'schedule'} color={'white'}/>
+                        <div style={PageMonitoringStyles.listItemTitle}>
+                            Stream
+                        </div>
                     </AMenu.Item>
                     }
 
@@ -1742,8 +1864,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                     justifyContent: 'center',
                                 }}>
                                     <ADropdown
-                                        overlay={this.renderMenuListItems}
-                                        trigger={['hover']}
+                                        overlay={this.makeMenuListItems}
+                                        trigger={['click']}
                                     >
                                         <div
                                             className="ant-dropdown-link"

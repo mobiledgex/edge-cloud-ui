@@ -16,6 +16,7 @@ import {convertByteToMegaByte, numberWithCommas, PageMonitoringStyles, renderUsa
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
 import {CircularProgress} from "@material-ui/core";
+
 export const GRID_ITEM_TYPE = {
     LINE: 'LINE',
     BAR: 'BAR',
@@ -120,24 +121,24 @@ export const defaultHwMapperListForCluster = [
     {
         id: '6',
         hwType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
-        graphType:  GRID_ITEM_TYPE.PERFORMANCE_SUM,
+        graphType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
     },
 
-   /* {
-        id: '7',
-        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
-        graphType: CHART_TYPE.COLUMN,
-    },
-    {
-        id: '8',
-        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
-        graphType: CHART_TYPE.COLUMN,
-    },*/
-  /*  {
-        id: '9',
-        hwType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
-        graphType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
-    },*/
+    /* {
+         id: '7',
+         hwType: HARDWARE_TYPE_FOR_GRID.MEM,
+         graphType: CHART_TYPE.COLUMN,
+     },
+     {
+         id: '8',
+         hwType: HARDWARE_TYPE_FOR_GRID.DISK,
+         graphType: CHART_TYPE.COLUMN,
+     },*/
+    /*  {
+          id: '9',
+          hwType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
+          graphType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
+      },*/
 
 ];
 
@@ -1209,8 +1210,12 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this) => {
                     fontColor: 'white',
                     //maxRotation: 0.05,
                     //autoSkip: true,
-                    maxRotation: 0,//xAxis rotation
-                    minRotation: 0,//xAxis rotation
+                    maxRotation: 45,//xAxis text rotation
+                    minRotation: 45,//xAxis text rotation
+                    /*
+                    maxRotation: 45,//xAxis text rotation
+                    minRotation: 45,//xAxis text rotation
+                    */
                     padding: 10,
                     labelOffset: 0,
                     callback(value, index, label) {
@@ -1384,7 +1389,7 @@ export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTi
 
 export const convertToClassification = (pClassification) => {
     if (pClassification === CLASSIFICATION.APPINST) {
-        return "App Instance"
+        return "App Inst"
     } else {
         return pClassification.toString().replace("_", " ")
     }
@@ -1737,7 +1742,7 @@ export const GradientBarChartOptions1 = {
                 padding: 10,
                 labelOffset: 0,
                 callback(label, index, labels) {
-                    return [label.toString().split("[")[0].substring(0, 11)+"...", "[" + label.toString().split("[")[1].substring(0, 11).replace(']','') + "...]"]
+                    return [label.toString().split("[")[0].substring(0, 11) + "...", "[" + label.toString().split("[")[1].substring(0, 11).replace(']', '') + "...]"]
                 }
             },
             beginAtZero: false,

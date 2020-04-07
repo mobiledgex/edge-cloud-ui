@@ -62,8 +62,6 @@ export const ITEM_TYPE = [
 ]
 
 
-
-
 export const lineGraphOptions = {
     animation: {
         duration: 1000
@@ -170,8 +168,6 @@ export const APP_INST_USAGE_TYPE_INDEX = {
     BYTESSENT: 15,
     BYTESRECVD: 16,
 }
-
-
 
 
 export const APP_PERFORMANCE_VALUES = {
@@ -403,8 +399,6 @@ export const INSTANCE_TEST_OPTIONS = [
     {text: 'kyungjoon_inst', value: 'kyungjoon_inst'},
     {text: 'sdfkjh__inst', value: 'sdfkjh__inst'},
     {text: 'inki__inst', value: 'inki__inst'},
-
-
 ]
 
 export const HARDWARE_TYPE_FOR_CLOUDLET = {

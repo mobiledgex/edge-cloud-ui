@@ -202,11 +202,11 @@ export default class PerformanceSummaryTableContainer extends React.Component<Pr
                                             {numberWithCommas(item.sumUdpRecv.toFixed(2)) + ' '}
                                         </div>
                                     </Table.Cell>
-                                    {/*  <Table.Cell>
+                                    <Table.Cell>
                                         <div style={PageMonitoringStyles.gridTableCell2}>
                                             {numberWithCommas(item.sumUdpSent.toFixed(2)) + ' '}
                                         </div>
-                                    </Table.Cell>*/}
+                                    </Table.Cell>
 
                                 </Table.Row>
 

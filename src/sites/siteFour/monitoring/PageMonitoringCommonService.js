@@ -15,6 +15,9 @@ import {barChartOption, columnChartOption} from "./PageMonitoringUtils";
 import {Card} from "@material-ui/core";
 
 export const PageMonitoringStyles = {
+    listItemTitle: {
+        marginLeft: 10,
+    },
     icon: {
         fontSize: 29,
         width: 37,
@@ -129,7 +132,7 @@ export const PageMonitoringStyles = {
         justifyContent: 'center',
         alignItem: 'center',
         marginTop: 3,
-        width:500,
+        width: 500,
     },
     gridHeaderAlignLeft: {
         height: 15,
