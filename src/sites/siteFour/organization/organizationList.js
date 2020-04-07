@@ -24,14 +24,13 @@ class OrganizationList extends React.Component {
         this.keys = keys()
     }
 
-    onRegClose = (isEdited)=>
-    {
+    onRegClose = (isEdited) => {
         this.customizedData()
         this.setState({ currentView: null })
     }
 
     onAdd = (action, data) => {
-        this.setState({ currentView: <OrganizationReg data={data} action={action ? 'AddUser' : null} onClose={this.onRegClose}/> })
+        this.setState({ currentView: <OrganizationReg data={data} action={action ? 'AddUser' : null} onClose={this.onRegClose} /> })
     }
 
     /**Action menu block */
@@ -64,7 +63,7 @@ class OrganizationList extends React.Component {
         return [
             { label: 'Audit', onClick: this.onAudit },
             { label: 'Add User', onClick: this.onAdd },
-            { label: 'Delete', onClick: deleteOrganization, onFinish: this.onDelete}
+            { label: 'Delete', onClick: deleteOrganization, onFinish: this.onDelete }
         ]
     }
 
@@ -76,7 +75,7 @@ class OrganizationList extends React.Component {
 
     getManage = (data) => {
         return (
-            <Button  size={'small'} style={{ width: 100, backgroundColor: localStorage.selectOrg === data[fields.organizationName] ? '#559901' : 'grey', color: 'white' }}>
+            <Button size={'small'} style={{ width: 100, backgroundColor: localStorage.selectOrg === data[fields.organizationName] ? '#559901' : 'grey', color: 'white' }}>
                 <label>Manage</label>
             </Button>)
     }
@@ -127,8 +126,7 @@ class OrganizationList extends React.Component {
         if (mcRequest && mcRequest.response) {
             let userRoles = mcRequest.response.data
             this.props.handleRoleInfo(userRoles)
-            for(let i=0;i<userRoles.length;i++)
-            {
+            for (let i = 0; i < userRoles.length; i++) {
                 let userRole = userRoles[i]
                 if (userRole.role.indexOf('Admin') > -1) {
                     this.props.handleUserRole(userRole.role);
@@ -138,13 +136,11 @@ class OrganizationList extends React.Component {
                 }
             }
         }
-        if(!isAdmin)
-        {
+        if (!isAdmin) {
             key.visible = true;
             key.customizedData = this.getManage;
         }
-        else
-        {
+        else {
             key.visible = false;
         }
         this.forceUpdate()
@@ -163,14 +159,14 @@ class OrganizationList extends React.Component {
     * Customized data block
     * ** */
 
-   componentDidMount() {
+    componentDidMount() {
         this.customizedData()
     }
 
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <div style={{ width: '100%'}}>
+                <div style={{ width: '100%' }}>
                     <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} onClick={this.onListViewClick} />
                 </div>
         )

@@ -106,7 +106,8 @@ export const fields = {
     kind:'kind',
     annotations:'annotations',
     key:'key',
-    value:'value'
+    value:'value',
+    publicImages:'publicImages'
 }
 
 export const getUserRole = () => {
