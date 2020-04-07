@@ -177,6 +177,9 @@ class ClusterInstReg extends React.Component {
                 return form
             }
             else if (form.field === fields.accessType) {
+                form.options =  (currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES || currentForm.value === constant.DEPLOYMENT_TYPE_HELM)?  
+                                [constant.ACCESS_TYPE_LOAD_BALANCER] : 
+                                [constant.ACCESS_TYPE_LOAD_BALANCER, constant.ACCESS_TYPE_DIRECT]
                 form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.ACCESS_TYPE_DIRECT : constant.ACCESS_TYPE_LOAD_BALANCER
                 return form
             }
