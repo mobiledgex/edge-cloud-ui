@@ -26,6 +26,8 @@ import './css/components/timelineH.css';
 import BarChart0003 from "./sites/siteFour/monitoring/aaa____TESTCODE____/Pages/BarChart0003";
 import ColumnChart0003 from "./sites/siteFour/monitoring/aaa____TESTCODE____/Pages/ColumnChart0003";
 import Test001 from "./sites/siteFour/monitoring/aaa____TESTCODE____/Pages/Test001";
+import Test004 from "./sites/siteFour/monitoring/aaa____TESTCODE____/Pages/Test004";
+import Test006 from "./sites/siteFour/monitoring/aaa____TESTCODE____/Pages/Test006";
 // API
 
 let self = null;
@@ -336,6 +338,7 @@ class App extends Component {
                     <Route exact path='/BarChart0003' component={BarChart0003} />
                     <Route exact path='/ColumnChart0003' component={ColumnChart0003} />
                     <Route exact path='/Test001' component={Test001} />
+                    <Route exact path='/Test006' component={Test006} />
 
                 </div>
             </Router>
