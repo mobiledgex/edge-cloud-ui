@@ -2,12 +2,12 @@ import {Center0001, Center2, ClusterCluoudletLable, Legend, OuterHeader} from '.
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Button, Checkbox, Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
+import {Button, Checkbox, Dropdown, Grid, Icon, Modal, Tab} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {Button as MButton, Card, CircularProgress, withStyles} from '@material-ui/core'
-import {DatePicker, Select, Tooltip} from 'antd';
+import {DatePicker, Select, Tooltip, Dropdown as ADropdown, Menu as AMenu} from 'antd';
 
 import {
     defaultHwMapperListForCluster,
@@ -90,6 +90,14 @@ import type {Layout} from "react-grid-layout/lib/utils";
 import GradientBarChartContainer from "../components/GradientBarChartContainer";
 import Ripples from "react-ripples";
 import Switch from "@material-ui/core/Switch";
+import Grow from "@material-ui/core/Grow";
+import Paper from "@material-ui/core/Paper";
+import ClickAwayListener from "@material-ui/core/ClickAwayListener";
+import MenuList from "@material-ui/core/MenuList";
+import MenuItem from "@material-ui/core/MenuItem";
+import Popper from "@material-ui/core/Popper";
+import Fade from "@material-ui/core/Fade";
+import Menu from "@material-ui/core/Menu";
 
 const CustomSwitch = withStyles({
     switchBase: {
@@ -271,6 +279,7 @@ type State = {
     currentNavigation: string,
     allAppInstDropdown: any,
     isShowAppInstPopup: boolean,
+    isShowPopOverMenu: boolean,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeight: true})(
@@ -400,7 +409,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 },
                 hwListForCluster: HARDWARE_OPTIONS_FOR_CLUSTER,
                 hwListForAppInst: HARDWARE_OPTIONS_FOR_APPINST,
-                isDraggable: true,
+                isDraggable: false,
                 isUpdateEnableForMap: false,
                 isShowBigGraph: false,
                 popupGraphHWType: '',
@@ -418,7 +427,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 isResizeComplete: false,
                 allAppInstEventLogs: [],
                 filteredAppInstEventLogs: [],
-                isFixGrid: false,
+                isFixGrid: true,
                 webSocketLoading: false,
                 selectedClientLocationListOnAppInst: [],
                 isMapUpdate: true,
@@ -430,6 +439,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 currentNavigation: '',
                 allAppInstDropdown: [],
                 isShowAppInstPopup: false,
+                isShowPopOverMenu: false,
             };
         }
 
@@ -437,7 +447,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             //fixme:isShowHeader
             //fixme:isShowHeader
             //fixme:isShowHeader
-            this.props.toggleHeader(false);
+            this.props.toggleHeader(true);
             this.setState({
                 loading: true,
                 bubbleChartLoader: true,
@@ -445,7 +455,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
             })
 
-            await this.loadInitDataForCluster__FOR__DEV();
+            await this.loadInitDataForCluster();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
@@ -1497,6 +1507,127 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
         }
 
+        renderMenuListItems=()=>{
+            return (
+                <AMenu>
+                    <AMenu.Item
+                        key="1"
+                        onClick={() => {
+                            this.setState({
+                                isOpenEditView: true,
+                            })
+                        }}
+                    >
+                        Add Item
+                    </AMenu.Item>
+                    <AMenu.Item
+                        key="1"
+                        onClick={async () => {
+                            await this.handleResetClicked();
+                        }}
+                    >
+                        Fetch Locally Stored Data
+                    </AMenu.Item>
+                    <AMenu.Item
+                        key="1"
+                        onClick={async () => {
+                            if (!this.state.loading) {
+                                this.refreshAllData();
+                            } else {
+                                showToast('Currently loading, you can\'t request again.')
+                            }
+                        }}
+                    >
+                        Reload
+                    </AMenu.Item>
+                    <AMenu.Item
+                        key="1"
+                        onClick={async () => {
+                            this.resetGridPosition();
+                        }}
+                    >
+                        Reset Layout
+                    </AMenu.Item>
+                    <AMenu.Item
+                        key="1"
+                        onClick={async () => {
+                            await this.setState({
+                                isDraggable: !this.state.isDraggable,
+                                appInstanceListGroupByCloudlet: [],
+                            })
+                            this.setState({
+                                appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
+                            });
+                        }}
+                        style={{display:'flex'}}
+                    >
+                        Fix Grid
+                        <div style={{marginLeft: 5}}>
+                            <CustomSwitch
+                                size="small"
+                                checked={!this.state.isDraggable}
+                                color="primary"
+
+                            />
+                        </div>
+                    </AMenu.Item>
+                    <AMenu.Item
+                        style={{display:'flex'}}
+                        key="1"
+                        onClick={() => {
+                            this.setState({
+                                isStackedLineChart: !this.state.isStackedLineChart,
+                            }, () => {
+                                //alert(this.state.isStackedLineChart)
+                            })
+                        }}
+                    >
+                        Stacked Line Chart
+                        <div style={{marginLeft: 5}}>
+                            <CustomSwitch
+                                size="small"
+                                checked={this.state.isStackedLineChart}
+                                color="primary"
+
+                            />
+                        </div>
+                    </AMenu.Item>
+                    <AMenu.Item
+                        key="1"
+                        onClick={() => {
+                            if (this.props.isShowHeader) {
+                                this.props.toggleHeader(false)
+                            } else {
+                                this.props.toggleHeader(true)
+                            }
+                        }}
+                    >
+                        Show Header
+                    </AMenu.Item>
+
+                    {this.state.currentClassification === CLASSIFICATION.APPINST &&
+                    <AMenu.Item
+                        key="1"
+                        onClick={async () => {
+                            await this.setState({
+                                isStream: !this.state.isStream,
+                            });
+
+                            if (!this.state.isStream) {
+                                clearInterval(this.intervalForAppInst)
+                            } else {
+                                this.handleAppInstDropdown(this.state.currentAppInst, true)
+                            }
+                        }}
+                    >
+                        Stream
+                    </AMenu.Item>
+                    }
+
+
+                </AMenu>
+            )
+        }
 
         renderHeader = () => {
             return (
@@ -1504,6 +1635,15 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     <Grid.Row className='content_title'>
                         <div className='content_title_wrap' style={{display: 'flex'}}>
                             <div className='content_title_label' style={{flex: .08}}>Monitoring</div>
+                            {/*
+                            desc :####################################
+                            desc :Fliter Area
+                            desc :####################################
+                            */}
+                            <div className='page_monitoring_select_area' style={{flex: .48, backgroundColor: 'transparent', justifyContent: 'flex-start'}}>
+                                {this.makeClusterDropdown()}
+                                {this.makeAppInstDropdown()}
+                            </div>
                             {/*
                             desc :####################################
                             desc :BreadCrumb Area
@@ -1514,10 +1654,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                     width: '150%',
                                     marginLeft: 0,
                                     fontSize: 15,
-                                    flex: .6,
+                                    flex: .4,
                                     justifyContent: 'flex-start',
                                     alignItems: 'center',
-                                    //backgroundColor: 'red',
+                                    backgroundColor: 'transparent',
                                 }}
                             >
                                 {this.renderBreadCrumb()}
@@ -1543,7 +1683,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                     </div>
                                 </div>
                                 }
-
                                 {this.state.webSocketLoading &&
                                 <div>
                                     <div style={{marginLeft: 15}}>
@@ -1574,234 +1713,57 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             </div>
                             {/*
                             desc :####################################
-                            desc :right options
+                            desc : options list (right conner)
                             desc :####################################
                             */}
-                            <div style={{display: 'flex', justifyContent: 'flex-end', width: '100%', flex: .3,}}>
-                                <div style={{width: 10}}></div>
-                                {/*todo:---------------------------*/}
-                                {/*todo:Initialize */}
-                                {/*todo:---------------------------*/}
-                                <div style={{alignItems: 'center', display: 'flex', marginRight:-25}}>
-                                    <MButton
-                                        size={'small'}
-                                        style={{width: 80, backgroundColor: '#559901', color: 'white', height: 30}}
-                                        onClick={async () => {
-                                            await this.handleResetClicked();
-                                        }}
-                                    >Initialize
-                                    </MButton>
-                                </div>
-                                {/*fixme:---------------------------*/}
-                                {/*fixme:Show Header                */}
-                                {/*fixme:---------------------------*/}
-                                <Center0001 className='page_monitoring_select_toggle' style={{backgroundColor: 'transparent'}}>
-                                    <div className='page_monitoring_select_toggle_label' style={{fontSize: 19}}>
-                                        Show Header
-                                    </div>
-                                    <CustomSwitch
-                                        size="small"
-                                        checked={this.props.isShowHeader}
-                                        color="primary" defaultChecked
-                                        onChange={async () => {
-                                            if (this.props.isShowHeader) {
-                                                this.props.toggleHeader(false)
-                                            } else {
-                                                this.props.toggleHeader(true)
-                                            }
-                                        }}
-                                    />
-                                </Center0001>
-                                <Center0001 className='page_monitoring_select_toggle' style={{backgroundColor: 'transparent', width: 100, marginRight: 10}}>
-                                    <div className='page_monitoring_select_toggle_label' style={{fontSize: 19}}>
-                                        Filter
-                                    </div>
-                                    <div style={{alignItems: 'center', display: 'flex'}}>
-                                        <CustomSwitch
-                                            size="small"
-                                            checked={this.state.isShowFilter}
-                                            color="primary" defaultChecked
-                                            onChange={async () => {
-                                                this.setState({
-                                                    isShowFilter: !this.state.isShowFilter,
-                                                })
+                            <div style={{display: 'flex', justifyContent: 'flex-end', width: '100%', flex: .1,}}>
+                                <div style={{
+                                    alignItems: 'center',
+                                    display: 'flex',
+                                    cursor: 'pointer',
+                                    //backgroundColor: 'red',
+                                    height: 30, width: 50,
+                                    alignSelf: 'center',
+                                    justifyContent: 'center',
+                                }}>
+                                    <ADropdown
+                                        overlay={this.renderMenuListItems}
+                                        trigger={['hover']}
+                                    >
+                                        <a
+                                            className="ant-dropdown-link"
+                                            style={{
+                                                alignItems: 'center',
+                                                display: 'flex',
+                                                cursor: 'pointer',
+                                                alignSelf: 'center',
+                                                justifyContent: 'center',
+                                                width: 150,
+                                                //backgroundColor: 'red'
                                             }}
-                                        />
-                                    </div>
-                                </Center0001>
-
-
-                                <div style={{width: 20}}></div>
-                                <div style={{alignItems: 'center', display: 'flex', cursor: 'pointer'}}>
-                                    <Ripples
-                                        style={{display: 'flex', alignSelf: 'center', cursor: 'pointer'}}
-                                        onClick={async () => {
-                                            this.setState({
-                                                isOpenEditView: true,
-                                            })
-                                        }}
-                                    >
-                                        <MaterialIcon
-                                            size={22}
-                                            color='rgb(118, 255, 3)'
-                                            //color={'#559901'}
-                                            icon="add"
-
-                                        />
-                                    </Ripples>
-                                </div>
-                                <div style={{width: 20}}></div>
-                                <div style={{alignItems: 'center', display: 'flex', cursor: 'pointer'}}>
-                                    <Ripples
-                                        style={{display: 'flex', alignSelf: 'center', cursor: 'pointer'}}
-                                        color='#1cecff' during={500}
-                                        onClick={async () => {
-                                            if (!this.state.loading) {
-                                                this.refreshAllData();
-                                            } else {
-                                                showToast('Currently loading, you can\'t request again.')
-                                            }
-
-                                        }}
-                                    >
-                                        <MaterialIcon
-                                            size={22}
-                                            color='rgb(118, 255, 3)'
-                                            //color={'#559901'}
-                                            icon="refresh"
-
-                                        />
-                                    </Ripples>
-                                </div>
-                                <div style={{width: 7}}>
+                                            onClick={e => e.preventDefault()}
+                                        >
+                                            <MaterialIcon
+                                                size={25}
+                                                color='rgb(118, 255, 3)'
+                                                //color={'#559901'}
+                                                icon="list"
+                                            />
+                                        </a>
+                                    </ADropdown>
                                 </div>
                             </div>
                         </div>
                     </Grid.Row>
-                    <div style={{backgroundColor: '#202329', marginLeft: 10, marginRight: 10,}}>
-                        {this.renderFilterArea()}
-                    </div>
                 </>
 
             )
         }
 
-        renderFilterArea() {
-            if (this.state.isShowFilter) {
-                return (
-                    <div className='page_monitoring_select_row'>
-                        <div className='page_monitoring_select_area'>
-
-                            <div className='page_monitoring_select_column'>
-                                {this.makeClusterDropdown()}
-                                {this.makeAppInstDropdown()}
-                            </div>
-                            <div className='page_monitoring_select_column_end' style={{marginTop: 0}}>
-                                <div style={{display: 'flex', alignSelf: 'center'}}>
-                                    <MButton
-                                        size={'small'}
-                                        style={{
-                                            width: 125,
-                                            backgroundColor: 'grey',
-                                            color: 'white',
-                                            height: 30,
-                                        }}
-                                        onClick={async () => {
-                                            this.resetGridPosition();
-                                        }}
-                                    >
-                                        Reset layout
-                                    </MButton>
-                                </div>
-
-                                {/*todo:---------------------------*/}
-                                {/*todo:FIX GRID BTN    (Switch)   */}
-                                {/*todo:---------------------------*/}
-                                <Tooltip
-                                    placement="topLeft"
-                                    title={
-                                        <div>
-                                            <p>To release or freeze a grid item, double click grid item!</p>
-                                        </div>
-                                    }
-                                >
-                                    <div className='page_monitoring_select_toggle'>
-                                        <div className='page_monitoring_select_toggle_label'>
-                                            Fix Grid
-                                        </div>
-
-                                        <CustomSwitch
-                                            size="small"
-                                            color="primary" defaultChecked
-
-                                            onChange={async () => {
-                                                await this.setState({
-                                                    isDraggable: !this.state.isDraggable,
-                                                    appInstanceListGroupByCloudlet: [],
-                                                })
-                                                this.setState({
-                                                    appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
-                                                });
-                                            }}
-                                        />
-                                    </div>
-                                </Tooltip>
-                                <div className='page_monitoring_select_toggle'>
-                                    <div className='page_monitoring_select_toggle_label'>
-                                        Stacked Line Chart
-                                    </div>
-
-                                    <CustomSwitch
-                                        size="small"
-                                        checked={this.state.isStackedLineChart}
-                                        color="primary" defaultChecked
-
-                                        onChange={async () => {
-                                            this.setState({
-                                                isStackedLineChart: !this.state.isStackedLineChart,
-                                            }, () => {
-                                                //alert(this.state.isStackedLineChart)
-                                            })
-                                        }}
-                                    />
-                                </div>
-                                {this.state.currentClassification === CLASSIFICATION.APPINST &&
-                                <div className='page_monitoring_select_toggle'>
-                                    <div className='page_monitoring_select_toggle_label'>
-                                        Stream
-                                    </div>
-                                    <CustomSwitch
-                                        size="small"
-                                        checked={this.state.isStream}
-                                        color="primary" defaultChecked
-
-                                        onChange={async () => {
-                                            await this.setState({
-                                                isStream: !this.state.isStream,
-                                            });
-
-                                            if (!this.state.isStream) {
-                                                clearInterval(this.intervalForAppInst)
-                                            } else {
-                                                this.handleAppInstDropdown(this.state.currentAppInst, true)
-                                            }
-                                        }}
-                                    />
-                                </div>
-                                }
-                            </div>
-                        </div>
-
-                    </div>
-                )
-            } else {
-                return null;
-            }
-        }
 
         makeClusterDropdown() {
             return (
-                <div className="page_monitoring_dropdown_box">
+                <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
                     <div
                         className="page_monitoring_dropdown_label"
                         style={{backgroundColor: 'transparent', height: 20, marginTop: 5, marginLeft: this.state.isShowFilter ? 0 : 10}}
@@ -1828,7 +1790,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
         makeAppInstDropdown() {
             return (
-                <div className="page_monitoring_dropdown_box">
+                <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
                     <div className="page_monitoring_dropdown_label" style={{backgroundColor: 'transparent', height: 20, marginTop: 5, marginLeft: 3}}>
                         App Inst
                     </div>
@@ -1845,7 +1807,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         onChange={async (e, {value}) => {
                             await this.handleAppInstDropdown(value.trim())
                         }}
-                        style={PageMonitoringStyles.dropDownForClusterCloudlet2}
+                        style={PageMonitoringStyles.dropDownForAppInst}
                     />
                 </div>
             )

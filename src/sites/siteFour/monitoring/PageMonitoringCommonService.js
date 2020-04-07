@@ -80,6 +80,14 @@ export const PageMonitoringStyles = {
         zIndex: 1,
         //height: '50px',
     },
+
+    dropDownForAppInst: {
+        minWidth: '180px',
+        fontSize: '11px',
+        minHeight: '30px',
+        zIndex: 1,
+        //height: '50px',
+    },
     dropDown2: {
         //minWidth: 150,
         minWidth: '180px',
