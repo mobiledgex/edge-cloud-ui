@@ -1,6 +1,8 @@
 import React from "react";
 import _ from "lodash";
 import MonitoringLayout from "./layout";
+//
+import TestWidget from "../container/TestWidget";
 
 export default class MonitoringAdmin extends React.Component {
     state = {
@@ -31,6 +33,7 @@ export default class MonitoringAdmin extends React.Component {
                 <MonitoringLayout
                     initialLayout={generateLayout(this.props.sizeInfo)}
                     sizeInfo={this.props.sizeInfo}
+                    items={generateComponent()}
                 ></MonitoringLayout>
             </div>
         );
@@ -63,8 +66,13 @@ const generateLayout = sizeInfo => {
             w: itemWidth[i],
             h: itemHeight[i],
             i: title,
+            idx: i,
             static: false,
             isDraggable: true
         };
     });
+};
+
+const generateComponent = info => {
+    return [<TestWidget chartType={"line chart"} />];
 };

@@ -50,42 +50,44 @@ export default class MonitoringLayout extends React.Component {
         compactType: "vertical",
         mounted: false,
         layouts: { lg: this.props.initialLayout },
-        toolbox: { lg: [] }
+        toolbox: { lg: [] },
+        headerSize: 30,
+        padding: 3
     };
 
     componentDidMount() {
         this.setState({ mounted: true });
     }
 
-    generateDOM() {
+    generateDOM(items) {
         return _.map(this.state.layouts[this.state.currentBreakpoint], l => {
             return (
                 <div
                     key={l.i}
                     className={l.static ? "static" : "cancelDrageBar"}
                     style={{
+                        display: "grid",
+                        gridTemplateRows: "30px auto",
                         borderWidth: 1,
                         borderColor: "green",
-                        backgroundColor: "#2f4f4f"
+                        backgroundColor: "#2f4f4f",
+                        padding: "3px"
                     }}
                 >
-                    <HeaderComponent defaultProps={l.i}></HeaderComponent>
+                    <HeaderComponent
+                        defaultProps={l.i}
+                        onPutItem={this.onPutItem}
+                        idx={l}
+                    ></HeaderComponent>
                     <div
-                        className="hide-button"
-                        onClick={this.onPutItem.bind(this, l)}
+                        style={{
+                            borderRadius: "10px",
+                            padding: "10px",
+                            border: "1px solid #696969"
+                        }}
                     >
-                        dd
+                        {items[0]}
                     </div>
-                    {l.static ? (
-                        <span
-                            className="text"
-                            title="This item is static and cannot be removed or resized."
-                        >
-                            Static - {l.i}
-                        </span>
-                    ) : (
-                        <span className="text">{l.i}</span>
-                    )}
                 </div>
             );
         });
@@ -134,6 +136,7 @@ export default class MonitoringLayout extends React.Component {
     };
 
     onPutItem = item => {
+        console.log("20200408-", item, this);
         this.setState(prevState => {
             return {
                 toolbox: {
@@ -168,19 +171,6 @@ export default class MonitoringLayout extends React.Component {
     render() {
         return (
             <div>
-                <div>
-                    Current Breakpoint: {this.state.currentBreakpoint} (
-                    {this.props.cols[this.state.currentBreakpoint]} columns)
-                </div>
-                <div>
-                    Compaction type:{" "}
-                    {_.capitalize(this.state.compactType) || "No Compaction"}
-                </div>
-                <button onClick={this.onNewLayout}>Generate New Layout</button>
-                <button onClick={this.onCompactTypeChange}>
-                    Change Compaction Type
-                </button>
-
                 <ToolBox
                     items={
                         this.state.toolbox[this.state.currentBreakpoint] || []
@@ -204,10 +194,10 @@ export default class MonitoringLayout extends React.Component {
                     autoSize={true}
                     // cols : If size of width reduced then compact the sizing and arange items in vertical
                     cols={{ lg: 12, md: 3, sm: 3, xs: 3, xxs: 2 }}
-                    rowHeight={this.props.sizeInfo.height / 3 - 70} // TODO : value 70 is maby height of header
+                    rowHeight={this.props.sizeInfo.height / 3 - 50} // TODO : value 70 is maby height of header
                     draggableHandle=".react-grid-dragHandleExample"
                 >
-                    {this.generateDOM()}
+                    {this.generateDOM(this.props.items)}
                 </ResponsiveReactGridLayout>
             </div>
         );
