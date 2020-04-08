@@ -12,6 +12,8 @@ import * as actions from "../actions";
 import FlexBox from "flexbox-react";
 import CalendarTimeline from "../components/timeline/calendarTimeline";
 import { hot } from "react-hot-loader/root";
+import { IconButton } from '@material-ui/core';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 const sgmail = require('@sendgrid/mail')
 const countryOptions = [
@@ -424,12 +426,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             }
         }
 
-
         setAllView(dummyConts, sId) {
-            if (dummyConts && dummyConts['traceid']) _self.setState({
+            if (dummyConts && dummyConts['traceid']) {
+                _self.setState({
                 rawViewData: dummyConts,
                 currentTraceid: dummyConts['traceid']
             })
+        }
         }
 
         onItemSelect = (item, i) => {
@@ -596,8 +599,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             return window.innerHeight - 72
         }
 
+        refreshData = ()=>
+        {
+            this.setState({rawAllData:[], rawViewData :[], requestData: [], responseData: [], currentTraceid: 'traceId', isLoading2: false})
+            this.props.refreshData()
+        }
+
         render() {
-            const state = this.state;
             return (
                 <div className="page_audit" style={{height:this.getHeight()}}>
                     <div className="page_audit_history">
@@ -639,8 +647,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                     selection
                                     options={countryOptions}
                                     onChange={this.dropDownOnDateChange}
-                                    style={{ width: 200 }}
+                                    style={{ width: 200, height:30 }}
                                 />
+                                <IconButton aria-label="refresh">
+                                    <RefreshIcon style={{ color: '#76ff03', marginTop:-6 }} onClick={(e)=>{this.refreshData()}}/>
+                                </IconButton>
                             </div>
                         </div>
                     </div>

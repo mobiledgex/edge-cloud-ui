@@ -1,5 +1,6 @@
 import * as formatter from './format'
 import * as serverData from './serverData'
+import * as constant from '../../constant'
 import uuid from 'uuid'
 import { SHOW_CLUSTER_INST, STREAM_CLUSTER_INST, CREATE_CLUSTER_INST, UPDATE_CLUSTER_INST, DELETE_CLUSTER_INST, SHOW_CLOUDLET, SHOW_ORG_CLOUDLET } from './endPointTypes'
 import { TYPE_JSON, IPAccessLabel } from '../../constant';
@@ -140,7 +141,8 @@ export const streamClusterInst = (data) => {
 
 const customData = (value) => {
     value[fields.ipAccess] = IPAccessLabel(value[fields.ipAccess])
-    value[fields.numberOfNodes] = value[fields.numberOfNodes] ? value[fields.numberOfNodes] : 0
+    value[fields.reservable] = value[fields.reservable] ? value[fields.reservable] : false
+    value[fields.numberOfNodes] = value[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES ? value[fields.numberOfNodes] ? value[fields.numberOfNodes] : 0 : undefined
 }
 
 export const getData = (response, body) => {

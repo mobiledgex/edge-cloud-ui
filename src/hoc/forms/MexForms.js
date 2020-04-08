@@ -43,8 +43,6 @@ const MexForms = (props) => {
                 return <ContactSupportOutlinedIcon />
             default:
                 return id
-
-
         }
     }
 
@@ -182,7 +180,7 @@ const MexForms = (props) => {
                     <MexButton
                         form={form}
                         key={index}
-                        onClick={onSubmit} /> :
+                        onClick={(e) => { form.onClick(e, form) }} /> :
                     null)
     }
 
@@ -191,9 +189,11 @@ const MexForms = (props) => {
         let subForms = form.forms
         return (
             <div key={index} style={{ width: '100%' }}>
+                <br/>
                 <h2 style={{ color: "white", display: 'inline' }}>{form.label}
                     {
                         subForms ? subForms.map((subForm, i) => {
+                            subForm.parent = { id: index, form: form }
                             return loadButton(subForm, i)
                         }) : null
                     }
@@ -340,7 +340,10 @@ const MexForms = (props) => {
                     <Form.Group inline>
                         {forms.map((form, i) => {
                             return (form.formType === BUTTON ?
-                                loadButton(form, i)
+                                <MexButton
+                                    form={form}
+                                    key={i}
+                                    onClick={onSubmit} />
                                 : null)
                         })}
                     </Form.Group>

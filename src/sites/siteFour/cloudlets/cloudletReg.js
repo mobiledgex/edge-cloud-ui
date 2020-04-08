@@ -83,6 +83,8 @@ class ClusterInstReg extends React.Component {
                     if (multiFormData) {
                         if (form.field === fields.cloudletLocation) {
                             multiFormData.timestamp = {}
+                            multiFormData.latitude = parseInt(multiFormData.latitude)
+                            multiFormData.longitude = parseInt(multiFormData.longitude)
                             data[fields.cloudletLocation] = multiFormData
                         }
                     }
@@ -238,8 +240,8 @@ class ClusterInstReg extends React.Component {
     }
 
     locationForm = () => ([
-        { field: fields.latitude, label: 'Latitude', formType: INPUT, placeholder: '-90 ~ 90', rules: { required: true }, width: 8, visible: true },
-        { field: fields.longitude, label: 'Longitude', formType: INPUT, placeholder: '-180 ~ 180', rules: { required: true }, width: 8, visible: true }
+        { field: fields.latitude, label: 'Latitude', formType: INPUT, placeholder: '-90 ~ 90', rules: { required: true, type:'number'}, width: 8, visible: true },
+        { field: fields.longitude, label: 'Longitude', formType: INPUT, placeholder: '-180 ~ 180', rules: { required: true, type:'number'}, width: 8, visible: true }
     ])
 
     formKeys = () => {
