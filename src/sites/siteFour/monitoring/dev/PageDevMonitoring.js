@@ -73,7 +73,7 @@ import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraph from "../components/MiniModalGraphContainer";
 import {reactLocalStorage} from "reactjs-localstorage";
-import LeafletMapWrapperForDev from "../components/LeafletMapDevContainer";
+import LeafletMapWrapperForDev from "../components/MapForDevContainer";
 import {Responsive, WidthProvider} from "react-grid-layout";
 import _ from "lodash";
 import PieChartContainer from "../components/PieChartContainer";
