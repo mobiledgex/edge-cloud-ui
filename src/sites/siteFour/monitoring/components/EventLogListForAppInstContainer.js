@@ -6,7 +6,6 @@ import {CircularProgress} from "@material-ui/core";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import {FixedSizeList} from "react-window";
 import '../PageMonitoring.css'
-
 const {Row, Cell, Body, Header, HeaderCell} = Table
 type Props = {
     eventLogList: any,
@@ -20,7 +19,6 @@ type State = {
 };
 
 export default class EventLogListForAppInstContainer extends React.Component<Props, State> {
-
     constructor(props: Props) {
         super(props)
         this.state = {
@@ -33,23 +31,15 @@ export default class EventLogListForAppInstContainer extends React.Component<Pro
     componentDidMount(): void {
         this.setState({
             eventLogList: this.props.eventLogList,
-        }, () => {
-            //alert(JSON.stringify(this.state.eventLogList))
-            //  alert(this.state.eventLogList.length)
-        })
+        });
     }
-
 
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
 
         if (this.props.eventLogList !== nextProps.eventLogList) {
             this.setState({
                 eventLogList: nextProps.eventLogList,
-            }, () => {
-                //alert(JSON.stringify(this.state.eventLogList))
-
-                //alert(this.state.eventLogList.length)
-            })
+            });
         }
 
     }
@@ -98,18 +88,6 @@ export default class EventLogListForAppInstContainer extends React.Component<Pro
                                         EVENT[STATUS]
                                     </div>
                                 </Table.HeaderCell>
-                                {/* <Table.HeaderCell textAlign={'center'}>
-                                    CLUSTER
-                                </Table.HeaderCell>
-                                <Table.HeaderCell textAlign={'center'}>
-                                    DEV
-                                </Table.HeaderCell>
-                                <Table.HeaderCell textAlign={'center'}>
-                                    CLOUDLET
-                                </Table.HeaderCell>
-                                <Table.HeaderCell textAlign={'center'}>
-                                    OPERATOR
-                                </Table.HeaderCell>*/}
                             </Table.Row>
                         </div>
                         {!this.props.parent.state.loading && this.state.eventLogList.length === 0 &&
@@ -168,26 +146,6 @@ export default class EventLogListForAppInstContainer extends React.Component<Pro
                                                     </div>
                                                 </div>
                                             </td>
-                                            {/* <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
-                                                <div>
-                                                    {eventLogList[index][2]}
-                                                </div>
-                                            </td>
-                                            <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
-                                                <div>
-                                                    {eventLogList[index][3]}
-                                                </div>
-                                            </td>
-                                            <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
-                                                <div>
-                                                    {eventLogList[index][4]}
-                                                </div>
-                                            </td>
-                                            <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
-                                                <div>
-                                                    {eventLogList[index][5]}
-                                                </div>
-                                            </td>*/}
                                         </tr>
                                     </div>
 

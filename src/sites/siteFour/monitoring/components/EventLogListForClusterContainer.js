@@ -3,13 +3,10 @@ import React, {useEffect, useState} from 'react';
 import {Table} from "semantic-ui-react";
 import {PageMonitoringStyles, renderPlaceHolderCircular} from "../PageMonitoringCommonService";
 import '../PageMonitoring.css'
-import CircularProgress from "@material-ui/core/CircularProgress";
 
 
 export default function EventLogListForClusterContainer(props) {
-
     const [eventLogList, setEventLogList] = useState([]);
-
     useEffect(() => {
         setEventLogList(props.eventLogList)
     }, []);
