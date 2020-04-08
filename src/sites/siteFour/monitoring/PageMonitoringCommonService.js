@@ -237,6 +237,20 @@ export const PageMonitoringStyles = {
         fontSize: 12,
         verticalAlign: 'center'
     },
+    gridTableCell3Dash2: {
+        height: 50,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItem: 'center',
+        fontWeight: 'bold',
+        fontFamily: 'Ubuntu',
+        backgroundColor: '#1e2025',
+        flexDirection: 'column',
+        fontSize: 12,
+        verticalAlign: 'center',
+        marginRight: -25,
+    },
 
     gridTableCell3: {
         height: 50,
