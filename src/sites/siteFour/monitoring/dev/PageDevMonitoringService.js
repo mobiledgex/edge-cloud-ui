@@ -16,6 +16,7 @@ import {convertByteToMegaByte, numberWithCommas, PageMonitoringStyles, renderUsa
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
 import {CircularProgress} from "@material-ui/core";
+import {reactLocalStorage} from "reactjs-localstorage";
 
 export const GRID_ITEM_TYPE = {
     LINE: 'LINE',
@@ -82,11 +83,13 @@ export const CHART_TYPE = {
 export const defaultLayoutForCluster = [
 
     {i: '1', x: 1, y: 0, w: 2, h: 2, "add": false},//MAP
-    {i: '2', x: 3, y: 0, w: 1, h: 1, "add": false},//MEM
-    {i: '3', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
-    {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false},//DISK
-    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//NETWORK
-    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//
+
+    {i: '2', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
+    {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
+
+    {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//bubble
+    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//appinst event log
+    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
 
 
 ];
@@ -110,13 +113,13 @@ export const defaultHwMapperListForCluster = [
     },
     {
         id: '4',
-        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
-        graphType: CHART_TYPE.LINE,
+        hwType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
+        graphType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
     },
     {
         id: '5',
-        hwType: HARDWARE_TYPE_FOR_GRID.RECVBYTES,
-        graphType: CHART_TYPE.LINE,
+        hwType: GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST,
+        graphType: GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST,
     },
     {
         id: '6',
@@ -143,13 +146,18 @@ export const defaultHwMapperListForCluster = [
 ];
 
 
+/*
+desc:#####################################
+desc:defaultLayoutForAppInst
+desc:#######################################
+ */
 export const defaultLayoutForAppInst = [
     {i: '1', x: 1, y: 0, w: 2, h: 2, "add": false},//MAP
-    //{i: '2', x: 3, y: 0, w: 1, h: 1, "add": false},//MEM
-    {i: '3', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
-    {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false},//DISK
-    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//NETWORK
-
+    {i: '2', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
+    {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
+    {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//DISK
+    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},
+    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
 ];
 
 
@@ -159,12 +167,11 @@ export const defaultLayoutMapperForAppInst = [
         hwType: HARDWARE_TYPE_FOR_GRID.MAP,
         graphType: HARDWARE_TYPE_FOR_GRID.MAP,
     },
-
-    /*{
+    {
         id: '2',
         hwType: HARDWARE_TYPE_FOR_GRID.CPU,
         graphType: CHART_TYPE.LINE,
-    },*/
+    },
     {
         id: '3',
         hwType: HARDWARE_TYPE_FOR_GRID.MEM,
@@ -177,8 +184,13 @@ export const defaultLayoutMapperForAppInst = [
     },
     {
         id: '5',
-        hwType: HARDWARE_TYPE_FOR_GRID.ACTIVE_CONNECTION,
-        graphType: CHART_TYPE.LINE,
+        hwType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
+        graphType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
+    },
+    {
+        id: '6',
+        hwType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
+        graphType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
     },
     /*{
         id: '6',
@@ -208,6 +220,32 @@ export const defaultHwMapperListForCluster = {
     '4': HARDWARE_TYPE_FOR_GRID.RECVBYTES,
     '5': HARDWARE_TYPE_FOR_GRID.SENDBYTES,
 }*/
+
+export const revertToDefaultLayout = async (_this: PageDevMonitoring) => {
+    try {
+        reactLocalStorage.remove(getUserId() + "_layout")
+        reactLocalStorage.remove(getUserId() + "_layout2")
+        reactLocalStorage.remove(getUserId() + "_layout_mapper")
+        reactLocalStorage.remove(getUserId() + "_layout2_mapper")
+        await _this.setState({
+            layoutForCluster: [],
+            layoutMapperForCluster: [],
+            layoutForAppInst: [],
+        });
+
+        await _this.setState({
+            layoutForCluster: defaultLayoutForCluster,
+            layoutMapperForCluster: defaultHwMapperListForCluster,
+            layoutForAppInst: defaultLayoutForAppInst,
+            layoutMapperForAppInst: defaultLayoutMapperForAppInst,
+        })
+
+
+    } catch (e) {
+        showToast(e.toString())
+    }
+
+}
 
 
 export const makeid = (length) => {

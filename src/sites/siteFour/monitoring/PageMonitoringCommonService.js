@@ -117,6 +117,9 @@ export const PageMonitoringStyles = {
     tableHeaderRow: {
         height: 30, alignSelf: 'center', display: 'flex', justifyContent: 'center', alignItem: 'center',
     },
+    tableHeaderRow2: {
+        height: 30, display: 'flex'
+    },
     gridHeader: {
         height: 15,
         alignSelf: 'center',
@@ -124,6 +127,24 @@ export const PageMonitoringStyles = {
         justifyContent: 'center',
         alignItem: 'center',
         marginTop: 3
+    },
+    gridHeaderSmall: {
+        height: 15,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItem: 'flex-start',
+        marginTop: 3,
+        fontSize: 12,
+    },
+    gridHeaderSmallCenter: {
+        height: 15,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItem: 'center',
+        marginTop: 3,
+        fontSize: 12,
     },
     gridHeaderFirst: {
         height: 15,
@@ -154,6 +175,12 @@ export const PageMonitoringStyles = {
     tableRow: {
         height: 50, alignSelf: 'center', display: 'flex', justifyContent: 'center', alignItem: 'center'
     },
+    tableRowCompact: {
+        height: 40, alignSelf: 'center', display: 'flex', justifyContent: 'center', alignItem: 'center'
+    },
+    tableRowFat: {
+        height: 60, alignSelf: 'center', display: 'flex', justifyContent: 'center', alignItem: 'center'
+    },
     gridTableCellAlignLeft: {
         height: 50,
         alignSelf: 'center',
@@ -173,16 +200,7 @@ export const PageMonitoringStyles = {
         fontWeight: 'bold',
         fontFamily: 'Ubuntu'
     },
-    gridTableCell3: {
-        height: 50,
-        alignSelf: 'center',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItem: 'center',
-        fontWeight: 'bold',
-        fontFamily: 'Ubuntu',
-        backgroundColor: '#1e2025',
-    },
+
     gridTableCell3Left: {
         height: 50,
         alignSelf: 'center',
@@ -193,7 +211,7 @@ export const PageMonitoringStyles = {
         fontFamily: 'Ubuntu',
         backgroundColor: '#1e2025',
     },
-    gridTableCell4: {
+    gridTableCell3Dash: {
         height: 50,
         alignSelf: 'center',
         display: 'flex',
@@ -201,7 +219,47 @@ export const PageMonitoringStyles = {
         alignItem: 'center',
         fontWeight: 'bold',
         fontFamily: 'Ubuntu',
+        backgroundColor: '#1e2025',
+        flexDirection: 'column',
+        fontSize: 12,
+        verticalAlign: 'center'
+    },
+    gridTableCell3Dash1: {
+        height: 50,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItem: 'center',
+        fontWeight: 'bold',
+        fontFamily: 'Ubuntu',
+        backgroundColor: '#1e2025',
+        flexDirection: 'column',
+        fontSize: 12,
+        verticalAlign: 'center'
+    },
+
+    gridTableCell3: {
+        height: 50,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItem: 'flex-start',
+        fontWeight: 'bold',
+        fontFamily: 'Ubuntu',
+        backgroundColor: '#1e2025',
+        fontSize: 12,
+    },
+    gridTableCell4: {
+
+        height: 50,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItem: 'flex-start',
+        fontWeight: 'bold',
+        fontFamily: 'Ubuntu',
         backgroundColor: '#23252c',
+        fontSize: 12,
     },
     cellFirstRow: {
         display: 'flex',
@@ -265,9 +323,28 @@ export const PageMonitoringStyles = {
         fontFamily: 'Karla'
         //backgroundColor:'red'
     },
+    center4: {
+        display: 'flex',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        minHeight: 350,
+        fontSize: 29,
+        fontFamily: 'Karla',
+        marginTop: -100,
+        //backgroundColor:'red'
+    },
     noData2: {
-        width: '100%', backgroundColor: 'blue', fontSize: 15, display: 'flex'
-        , alignItems: 'center', justifyContent: 'center',
+        width: '100%',
+        backgroundColor: 'blue',
+        fontSize: 18,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontWeight: 'bold',
+        color: 'orange'
+
     },
     gridTableData: {flex: .15, backgroundColor: '#181A1F', height: 64, marginTop: 0, textAlign: 'center'},
     gridTableData2: {flex: .15, backgroundColor: '#1e2025', height: 64, marginTop: 0, textAlign: 'center'},

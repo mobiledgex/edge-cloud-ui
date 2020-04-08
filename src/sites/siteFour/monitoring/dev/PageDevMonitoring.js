@@ -8,8 +8,6 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {Card, CircularProgress, withStyles} from '@material-ui/core'
 import {Dropdown as ADropdown, Menu as AMenu,} from 'antd';
-
-const SubMenu = AMenu.SubMenu;
 import {
     defaultHwMapperListForCluster,
     defaultLayoutForAppInst,
@@ -82,9 +80,9 @@ import PieChartContainer from "../components/PieChartContainer";
 import BigModalGraphContainer from "../components/BigModalGraphContainer";
 import BubbleChartContainer from "../components/BubbleChartContainer";
 import LineChartContainer from "../components/LineChartContainer";
-import EventLogListContainer from "../components/EventLogListContainer";
+import MiniClusterEventLogListContainer from "../components/MiniClusterEventLogListContainer";
 import PerformanceSummaryTableContainer from "../components/PerformanceSummaryTableContainer";
-import VirtualAppInstEventLogListContainer from "../components/VirtualAppInstEventLogListContainer";
+import MiniAppInstEventLogListContainerForVirtualScroll from "../components/MiniAppInstEventLogListContainerForVirtualScroll";
 import MaterialIcon from "material-icons-react";
 import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
@@ -92,6 +90,7 @@ import type {Layout} from "react-grid-layout/lib/utils";
 import GradientBarChartContainer from "../components/GradientBarChartContainer";
 import Switch from "@material-ui/core/Switch";
 
+const ASubMenu = AMenu.SubMenu;
 const CustomSwitch = withStyles({
     switchBase: {
         color: '#D32F2F',
@@ -293,7 +292,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             let themeTitle = getUserId() + "_mon_theme_title";
             //@TODO: DELETE THEME COLOR
             /*reactLocalStorage.remove(themeTitle)
-            reactLocalStorage.remove(themeKey)*/
+            reactLocalStorage.remove(themeKey)
+            */
+            //@TODO: DELETE SAVED LAYOUTS
+            /*reactLocalStorage.remove(clusterLayoutKey)
+            reactLocalStorage.remove(ClusterHwMapperKey)
+            reactLocalStorage.remove(appInstLayoutKey)
+            reactLocalStorage.remove(layoutMapperAppInstKey)*/
 
             this.state = {
                 layoutForCluster: isEmpty(reactLocalStorage.get(clusterLayoutKey)) ? defaultLayoutForCluster : reactLocalStorage.getObject(clusterLayoutKey),
@@ -447,7 +452,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
             })
 
-            await this.loadInitDataForCluster__FOR__DEV();
+            await this.loadInitDataForCluster();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
@@ -473,13 +478,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 let clusterList = require('../aaa____TESTCODE____/Jsons/clusterList')
                 let cloudletList = require('../aaa____TESTCODE____/Jsons/cloudletList')
                 let appInstanceList = require('../aaa____TESTCODE____/Jsons/appInstanceList')
-                /*console.log('appInstanceList====>', appInstanceList);
-                console.log('clusterList===>', clusterList);*/
-
-
-                /*let clusterDropdownList = makeTreeClusterCloudletList(clusterList);
-                console.log("clusterDropdownList===>", clusterDropdownList);*/
-
                 let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
                 console.log("clusterDropdownList===>", clusterDropdownList);
 
@@ -588,16 +586,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     })
                 }
 
-                console.log('clusterList===>', clusterList);
-
-                //let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
-                /*let clusterDropdownList = makeTreeClusterCloudletList(clusterList);
-                console.log("clusterDropdownList===>", clusterDropdownList);*/
-
                 let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
-                console.log("clusterDropdownList===>", clusterDropdownList);
-
-
                 //@todo:#############################################
                 //@todo: getAllClusterEventLogList : real data
                 //@todo:#############################################
@@ -865,30 +854,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         }
 
 
-        async revertToDefaultLayout() {
-            try {
-                reactLocalStorage.remove(getUserId() + "_layout")
-                reactLocalStorage.remove(getUserId() + "_layout2")
-                reactLocalStorage.remove(getUserId() + "_layout_mapper")
-                await this.setState({
-                    layoutForCluster: [],
-                    layoutMapperForCluster: [],
-                    layoutForAppInst: [],
-                });
-
-                await this.setState({
-                    layoutForCluster: defaultLayoutForCluster,
-                    layoutMapperForCluster: defaultHwMapperListForCluster,
-                    layoutForAppInst: defaultLayoutForAppInst,
-                })
-            } catch (e) {
-
-                showToast(e.toString())
-            }
-
-        }
-
-
         validateTerminal = (appInst) => {
             if (appInst && appInst.length > 0) {
                 let runtime = appInst[0].Runtime
@@ -1084,7 +1049,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         }
 
         makeGridSizeByType(graphType) {
-            if (graphType === GRID_ITEM_TYPE.CLUSTER_LIST || graphType === GRID_ITEM_TYPE.PERFORMANCE_SUM || graphType === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST || graphType === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
+            if (graphType === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
                 return 4;
             } else if (graphType === GRID_ITEM_TYPE.MAP) {
                 return 1;
@@ -1192,19 +1157,19 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
         ___makeGridItemBodyByType(hwType, graphType) {
 
-            if (graphType === GRID_ITEM_TYPE.LINE) {
+            if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                 return (
                     this.makeLineChartData(hwType,)
                 )
-            } else if (graphType === GRID_ITEM_TYPE.BAR) {
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BAR) {
                 return (
                     this.makeBarChartData(hwType, graphType)
                 )
-            } else if (graphType === GRID_ITEM_TYPE.COLUMN) {
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.COLUMN) {
                 return (
                     this.makeBarChartData(hwType, graphType)
                 )
-            } else if (graphType === GRID_ITEM_TYPE.BUBBLE) {
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BUBBLE) {
                 return (
                     <BubbleChartContainer
                         loading={this.state.loading}
@@ -1213,7 +1178,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         bubbleChartData={this.state.bubbleChartData}
                         themeTitle={this.state.themeTitle}/>
                 )
-            } else if (graphType === GRID_ITEM_TYPE.MAP) {
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.MAP) {
                 return (
                     <LeafletMapWrapperForDev
                         currentWidgetWidth={this.state.currentWidgetWidth}
@@ -1228,23 +1193,23 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         isShowAppInstPopup={this.state.isShowAppInstPopup}
                     />
                 )
-            } else if (graphType === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
                 return (
                     this.state.loading ? renderPlaceHolderCircular() :
                         <PerformanceSummaryTableContainer parent={this}
                                                           clusterUsageList={this.state.filteredClusterUsageList}/>
                 )
-            } else if (graphType === GRID_ITEM_TYPE.PIE) {
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PIE) {
                 return (
                     <PieChartContainer/>
                 )
-            } else if (graphType === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST) {
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST) {
                 return (
-                    <EventLogListContainer eventLogList={this.state.filteredClusterEventLogList}/>
+                    <MiniClusterEventLogListContainer eventLogList={this.state.filteredClusterEventLogList} parent={this}/>
                 )
-            } else if (graphType === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                 return (
-                    <VirtualAppInstEventLogListContainer
+                    <MiniAppInstEventLogListContainerForVirtualScroll
                         currentAppInst={this.state.currentAppInst}
                         parent={this}
                         handleAppInstDropdown={this.handleAppInstDropdown}
@@ -1348,7 +1313,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     {/*@desc:__makeGridItem BodyByType  */}
                     {/*desc:############################*/}
                     <div className='page_monitoring_column_resizable'>
-
                         {this.___makeGridItemBodyByType(hwType, graphType.toUpperCase())}
                     </div>
                 </div>
@@ -1560,7 +1524,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     <AMenu.Item style={{display: 'flex'}}
                                 key="1"
                                 onClick={async () => {
-                                    this.revertToDefaultLayout();
+                                    revertToDefaultLayout();
                                 }}
                     >
                         <MaterialIcon icon={'grid_on'} color={'white'}/>
@@ -1626,7 +1590,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     {/*desc:#########################################*/}
                     {/*desc:____Menu Changing Graph Theme Color_____ */}
                     {/*desc:#########################################*/}
-                    <SubMenu
+                    <ASubMenu
                         key="sub3"
                         title={
                             <div style={{display: 'flex'}}>
@@ -1701,7 +1665,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         >
                             APPLE
                         </AMenu.Item>
-                    </SubMenu>
+                    </ASubMenu>
                     {/*desc: ######################*/}
                     {/*desc: Show Header            */}
                     {/*desc: ######################*/}
