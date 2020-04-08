@@ -6,6 +6,7 @@ import {connect} from 'react-redux';
 import * as actions from '../../../actions';
 import * as serviceMC from '../../../services/serviceMC';
 import TimelineAuditView from "../../../container/TimelineAuditView";
+import {Card, Toolbar} from "@material-ui/core";
 
 
 let _self = null;
@@ -247,15 +248,25 @@ class SiteFourPageAudits extends React.Component {
         const {viewMode} = this.state;
         let randomValue = Math.round(Math.random() * 100);
         return (
-            (viewMode === 'listView') ?
-                <TimelineAuditView data={this.state.devData} randomValue={randomValue}
-                                      headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Audit'}
-                                      userToken={this.userToken} mounted={this.state.auditMounted}
-                                      handleSelectedAudit={this.selectedAudit}>
-                                    
-                </TimelineAuditView>
-                :
-                <div></div>
+
+            <Card style={{ width: '100%', backgroundColor: '#292c33', padding: 10, color: 'white' }}>
+                <Toolbar>
+                    <label className='content_title_label'>Audit Logs</label>
+                </Toolbar>
+
+                <div className="mexListView">
+                {(viewMode === 'listView') ?
+                    <TimelineAuditView data={this.state.devData} randomValue={randomValue}
+                                          headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Audit'}
+                                          userToken={this.userToken} mounted={this.state.auditMounted}
+                                          handleSelectedAudit={this.selectedAudit}>
+
+                    </TimelineAuditView>
+                    :
+                    <div></div>
+                }
+                </div>
+            </Card>
 
         );
     }

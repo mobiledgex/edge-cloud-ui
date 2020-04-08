@@ -142,7 +142,7 @@
     display: flex;
     flex-grow: 1;
     margin: 0 20px 0 0;
-    width: calc(50% - 10px);
+    /*width: calc(50% - 10px);*/
     height: 100%;
 }
 .page_audit_code_rawviewer {
@@ -173,7 +173,7 @@
     display: flex;
     flex-grow: 1;
     flex-direction: column;
-    width: calc(50% - 10px);
+    /*width: calc(50% - 10px);*/
     height: 100%;
 }
 .page_audit_code_request {

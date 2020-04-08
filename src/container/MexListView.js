@@ -261,7 +261,8 @@ class MexListView extends React.Component {
                             ))
                         }
                     </Table.Body>
-                </Table> </div>)
+                </Table>
+            </div>)
     }
 
     getActionMenu = () => {
@@ -416,7 +417,7 @@ class MexListView extends React.Component {
 
     render() {
         return (
-            <Card style={{ width: '100%', height: '100%', backgroundColor: '#292c33', padding: 10, color: 'white' }}>
+            <Card style={{ width: '100%', backgroundColor: '#292c33', padding: 10, color: 'white' }}>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} stepsArray={this.state.stepsArray} />
                 <MexToolbar requestInfo={this.props.requestInfo} onAction={this.onToolbarAction} isDetail={this.state.isDetail} />
