@@ -128,6 +128,16 @@ export const PageMonitoringStyles = {
         alignItem: 'center',
         marginTop: 3
     },
+    gridHeaderSmall2: {
+        height: 15,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItem: 'center',
+        marginTop: 3,
+        fontSize: 10,
+        marginRight: 10,
+    },
     gridHeaderSmall: {
         height: 15,
         alignSelf: 'center',

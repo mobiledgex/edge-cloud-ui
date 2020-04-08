@@ -1,29 +1,50 @@
-import React from 'react';
-import {Bar, HorizontalBar, Line} from 'react-chartjs-2';
-import 'chartjs-plugin-streaming';
+// @flow
+import * as React from 'react';
+import {Modal as AModal, Radio} from "antd";
+import {Button, Dropdown} from "semantic-ui-react";
+import {PageMonitoringStyles, showToast} from "../PageMonitoringCommonService";
+import {
+    CHART_COLOR_APPLE,
+    CHART_COLOR_LIST,
+    CHART_COLOR_LIST2,
+    CHART_COLOR_LIST3,
+    CHART_COLOR_LIST4,
+    CHART_COLOR_MONOKAI,
+    CLASSIFICATION,
+    EVENT_LOG_ITEM_LIST,
+    GRID_ITEM_TYPE,
+    HARDWARE_TYPE,
+    THEME_OPTIONS
+} from "../../../../shared/Constants";
+import {reactLocalStorage} from "reactjs-localstorage";
+import {demoLineChartData, getUserId, simpleGraphOptions} from "../dev/PageDevMonitoringService";
+import {Bar, HorizontalBar, Line} from "react-chartjs-2";
+import {Center2, ClusterCluoudletLable} from "../PageMonitoringStyledComponent";
 
-import {Modal as AModal} from 'antd';
-import {barChartOptions2, demoLineChartData, GradientBarChartOptions1, makeGradientColorList, simpleGraphOptions} from "../../dev/PageDevMonitoringService";
-import {CHART_COLOR_LIST} from "../../../../../shared/Constants";
-import {Center2, ClusterCluoudletLable} from "../../PageMonitoringStyledComponent";
-import {Dropdown} from "semantic-ui-react";
-import {PageMonitoringStyles} from "../../PageMonitoringCommonService";
+
+const FA = require('react-fontawesome')
+type Props = {
+    isOpenEditView: any,
 
 
-type Props = {};
-type State = {};
+};
+type State = {
+    isOpenEditView: any,
+    currentItemType: number,
+    currentHwType: string,
+    isShowHWDropDown: boolean,
+    isShowEventLog: boolean,
 
+};
 
-export default class Test001 extends React.Component<Props, State> {
+export default class AddItemPopupContainer2 extends React.Component<Props, State> {
 
     state = {
         type: 'line'
     }
 
-    renderChart() {
-
-
-        if (this.state.type === 'line') {
+    renderChart(type) {
+        if (type === 'line') {
             return (
                 <Line
                     width={window.innerWidth * 0.9}
@@ -33,9 +54,7 @@ export default class Test001 extends React.Component<Props, State> {
                     options={simpleGraphOptions}
                 />
             )
-        }
-
-        if (this.state.type === 'horizontal_bar') {
+        } else if (type === 'horizontal_bar') {
 
             return (
                 <HorizontalBar
@@ -46,9 +65,7 @@ export default class Test001 extends React.Component<Props, State> {
                     options={simpleGraphOptions}
                 />
             )
-        }
-
-        if (this.state.type === 'bar') {
+        } else {
             return (
                 <Bar
                     width={window.innerWidth * 0.9}
@@ -62,19 +79,31 @@ export default class Test001 extends React.Component<Props, State> {
     }
 
 
+    async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
+        if (this.props.isOpenEditView2 !== nextProps.isOpenEditView2) {
+            this.forceUpdate()
+        }
+    }
+
+
+    closePopupWindow() {
+        this.props.parent.setState({
+            isOpenEditView2: false,
+        })
+    }
+
     render() {
         return (
-
             <div style={{flex: 1, display: 'flex'}}>
                 <AModal
                     mask={false}
-                    visible={true}
+                    visible={this.props.isOpenEditView2}
                     onOk={() => {
-                        //this.closePopupWindow();
+                        this.closePopupWindow();
                     }}
                     //maskClosable={true}
                     onCancel={() => {
-                        //this.closePopupWindow();
+                        this.closePopupWindow();
 
                     }}
                     closable={true}
@@ -119,7 +148,7 @@ export default class Test001 extends React.Component<Props, State> {
 
                         </div>
                         <div style={{backgroundColor: 'black'}}>
-                            {this.renderChart()}
+                            {this.renderChart(this.state.type)}
                         </div>
                         <div style={{marginTop: 30}}>
                             <div style={{marginBottom: 10}}>
@@ -158,8 +187,4 @@ export default class Test001 extends React.Component<Props, State> {
             </div>
         )
     }
-}
-
-
-
-
+};

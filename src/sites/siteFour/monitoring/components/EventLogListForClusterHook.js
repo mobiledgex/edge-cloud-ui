@@ -1,15 +1,19 @@
-// @flow
 import React, {useEffect, useState} from 'react';
 import {Table} from "semantic-ui-react";
 import {PageMonitoringStyles, renderPlaceHolderCircular} from "../PageMonitoringCommonService";
 import '../PageMonitoring.css'
 
 
-export default function EventLogListForClusterContainer(props) {
+export default function EventLogListForClusterHook(props) {
     const [eventLogList, setEventLogList] = useState([]);
+
     useEffect(() => {
-        setEventLogList(props.eventLogList)
-    }, []);
+        if (props.eventLogList !== undefined) {
+
+        } else {
+            setEventLogList([])
+        }
+    }, [props.eventLogList]);
 
     return (
         <>
@@ -61,12 +65,12 @@ export default function EventLogListForClusterContainer(props) {
 
                     </Table.Row>
                 </div>
-                {eventLogList.length === 0 &&
-                <Table.Body className="tbBodyList">
-                    <Table.Row warning={true} className='page_monitoring_popup_table_row' style={PageMonitoringStyles.noData2}>
+                {!props.parent.state.loading && eventLogList.length === 0 &&
+                <table style={{height: 155, width: 360, backgroundColor: 'transparent'}}>
+                    <tr colspan={3} style={{height: 155, display: 'flex', fontSize: 15, justifyContent: 'center', alignItems: 'center', marginLeft: 0,}}>
                         No Event Log
-                    </Table.Row>
-                </Table.Body>
+                    </tr>
+                </table>
                 }
                 {/*
                         "time",0  "cluster",1  "dev",2 "cloudlet",3 "operator",4 "flavor",5  "vcpu",6   "ram",7 "disk",8"other",9 "event",10"status",11

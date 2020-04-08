@@ -1281,6 +1281,187 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this) => {
     return options;
 };
 
+export const demoLineChartData = (canvas) => {
+    let gradientList = makeGradientColorList(canvas, 305,CHART_COLOR_LIST, true);
+
+    let dataSets=[
+        {
+            label: 'AppInst1',
+            lineTension: 0.1,
+            fill: true,
+            backgroundColor: gradientList[0],
+            borderColor: gradientList[0],
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: 'rgba(75,192,192,1)',
+            pointBackgroundColor: '#fff',
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data: [25, 35, 40, 55, 59, 75, 89]
+        },
+        {
+            label: 'AppInst2',
+            lineTension: 0.1,
+            fill: true,
+            backgroundColor: gradientList[1],
+            borderColor: gradientList[1],
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data: [65, 59, 80, 81, 56, 55, 40]
+        },
+        {
+            label: 'App Inst3',
+            lineTension: 0.1,
+            fill: true,
+            backgroundColor: gradientList[2],
+            borderColor: gradientList[2],
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data: [3, 5, 8, 8, 5, 15, 20]
+        },
+        {
+            label: 'App Inst4',
+            lineTension: 0.1,
+            fill: true,
+            backgroundColor: gradientList[3],
+            borderColor: gradientList[3],
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data: [31, 51, 28, 38, 55, 75, 20]
+        },
+        {
+            label: 'App Inst4',
+            lineTension: 0.1,
+            fill: true,
+            backgroundColor: gradientList[4],
+            borderColor: gradientList[4],
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data: [21, 41, 68, 138, 5, 7, 2]
+        }
+
+    ]
+
+    return {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: dataSets,
+    }
+};
+
+export const simpleGraphOptions = {
+    stacked: true,
+    animation: {
+        duration: 500
+    },
+    maintainAspectRatio: false,//@todo
+    responsive: true,//@todo
+    datasetStrokeWidth: 3,
+    pointDotStrokeWidth: 4,
+    layout: {
+        padding: {
+            left: 9,
+            right: 5,
+            top: 15,
+            bottom: 0
+        }
+    },
+    legend: {
+        display: false,//@todo:리전드display
+        position: 'top',
+        labels: {
+            boxWidth: 10,
+            fontColor: 'white',
+            fillStyle: 'red',
+        },//@todo: lineChart 리전드 클릭 이벤트.
+        onHover: (e, item) => {
+            //alert(`Item with text ${item.text} and index ${item.index} hovered`)
+        },
+    },
+    scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero: true,
+                min: 0,
+                //max: 100,//todo max value
+                fontColor: 'white',
+            },
+            gridLines: {
+                color: "#505050",
+            },
+            stacked: true,
+
+        }],
+        xAxes: [{
+            /*ticks: {
+                fontColor: 'white'
+            },*/
+            gridLines: {
+                color: "white",
+            },
+            ticks: {
+                fontSize: 11,
+                fontColor: 'white',
+                //maxRotation: 0.05,
+                //autoSkip: true,
+                maxRotation: 45,//xAxis text rotation
+                minRotation: 45,//xAxis text rotation
+                /*
+                maxRotation: 45,//xAxis text rotation
+                minRotation: 45,//xAxis text rotation
+                */
+                padding: 10,
+                labelOffset: 0,
+                callback(value, index, label) {
+                    return value;
+
+                },
+            },
+            beginAtZero: false,
+            /* gridLines: {
+                 drawTicks: true,
+             },*/
+        }],
+        backgroundColor: {
+            fill: "#1e2124"
+        },
+    },//scales
+    onClick: function (c, i) {
+        if (i.length > 0) {
+            console.log('onClick===>', i);
+        }
+
+    }
+}
+
 export const makeTreeClusterCloudletList = (clusterOriginList) => {
 
     let ClusterList = []

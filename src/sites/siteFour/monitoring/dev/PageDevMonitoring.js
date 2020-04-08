@@ -80,7 +80,7 @@ import PieChartContainer from "../components/PieChartContainer";
 import BigModalGraphContainer from "../components/BigModalGraphContainer";
 import BubbleChartContainer from "../components/BubbleChartContainer";
 import LineChartContainer from "../components/LineChartContainer";
-import EventLogListForClusterContainer from "../components/EventLogListForClusterContainer";
+import EventLogListForClusterHook from "../components/EventLogListForClusterHook";
 import PerformanceSummaryTableContainer from "../components/PerformanceSummaryTableContainer";
 import EventLogListForAppInstContainer from "../components/EventLogListForAppInstContainer";
 import MaterialIcon from "material-icons-react";
@@ -88,6 +88,7 @@ import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout} from "react-grid-layout/lib/utils";
 import GradientBarChartContainer from "../components/GradientBarChartContainer";
+import AddItemPopupContainer2 from '../components/AddItemPopupContainer2'
 import Switch from "@material-ui/core/Switch";
 
 const ASubMenu = AMenu.SubMenu;
@@ -272,6 +273,7 @@ type State = {
     allAppInstDropdown: any,
     isShowAppInstPopup: boolean,
     isShowPopOverMenu: boolean,
+    isOpenEditView2: boolean,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeight: true})(
@@ -438,6 +440,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 allAppInstDropdown: [],
                 isShowAppInstPopup: false,
                 isShowPopOverMenu: false,
+                isOpenEditView2: false,
             };
         }
 
@@ -1027,8 +1030,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             //todo: filtered AppInstEventLogList
             //todo: ############################
             let _allAppInstEventLog = this.state.allAppInstEventLogs;
+
             let filteredAppInstEventLogList = _allAppInstEventLog.filter(item => {
-                if (item[1] === AppName && item[2] === ClusterInst && item[4] === Cloudlet) {
+                if (item[1].trim() === AppName && item[4].trim() === ClusterInst) {
                     return true;
                 }
             })
@@ -1205,7 +1209,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST) {
                 return (
-                    <EventLogListForClusterContainer eventLogList={this.state.filteredClusterEventLogList} parent={this}/>
+                    <EventLogListForClusterHook eventLogList={this.state.filteredClusterEventLogList} parent={this}/>
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                 return (
@@ -1499,6 +1503,19 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             Add Item
                         </div>
                     </AMenu.Item>
+                    <AMenu.Item style={{display: 'flex'}}
+                                key="1"
+                                onClick={() => {
+                                    this.setState({
+                                        isOpenEditView2: true,
+                                    })
+                                }}
+                    >
+                        <MaterialIcon icon={'add'} color={'white'}/>
+                        <div style={PageMonitoringStyles.listItemTitle}>
+                            Add Item2
+                        </div>
+                    </AMenu.Item>
                     {/*desc:#########################################*/}
                     {/*desc:Reload                                  */}
                     {/*desc:#########################################*/}
@@ -1667,24 +1684,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         </AMenu.Item>
                     </ASubMenu>
                     {/*desc: ######################*/}
-                    {/*desc: Show Header            */}
-                    {/*desc: ######################*/}
-                    <AMenu.Item style={{display: 'flex'}}
-                                key="1"
-                                onClick={() => {
-                                    if (this.props.isShowHeader) {
-                                        this.props.toggleHeader(false)
-                                    } else {
-                                        this.props.toggleHeader(true)
-                                    }
-                                }}
-                    >
-                        <MaterialIcon icon={'crop_7_5'} color={'white'}/>
-                        <div style={PageMonitoringStyles.listItemTitle}>
-                            Show Header
-                        </div>
-                    </AMenu.Item>
-                    {/*desc: ######################*/}
                     {/*desc: Stream             */}
                     {/*desc: ######################*/}
                     {this.state.currentClassification === CLASSIFICATION.APPINST &&
@@ -1708,6 +1707,24 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         </div>
                     </AMenu.Item>
                     }
+                    {/*desc: ######################*/}
+                    {/*desc: Show Header            */}
+                    {/*desc: ######################*/}
+                    <AMenu.Item style={{display: 'flex'}}
+                                key="1"
+                                onClick={() => {
+                                    if (this.props.isShowHeader) {
+                                        this.props.toggleHeader(false)
+                                    } else {
+                                        this.props.toggleHeader(true)
+                                    }
+                                }}
+                    >
+                        <MaterialIcon icon={'crop_7_5'} color={'white'}/>
+                        <div style={PageMonitoringStyles.listItemTitle}>
+                            Show Header
+                        </div>
+                    </AMenu.Item>
                 </AMenu>
             )
         }
@@ -2020,6 +2037,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 <div style={{width: '100%', height: '100%',}}>
 
                     <AddItemPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}/>
+                    <AddItemPopupContainer2 parent={this} isOpenEditView2={this.state.isOpenEditView2}/>
 
                     <ModalGraph selectedClusterUsageOne={this.state.selectedClusterUsageOne}
                                 selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
