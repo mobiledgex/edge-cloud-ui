@@ -15,8 +15,53 @@ import PageDevMonitoring from "./PageDevMonitoring";
 import {convertByteToMegaByte, numberWithCommas, PageMonitoringStyles, renderUsageByType, showToast} from "../PageMonitoringCommonService";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
-import {CircularProgress} from "@material-ui/core";
+import {CircularProgress, createMuiTheme} from "@material-ui/core";
 import {reactLocalStorage} from "reactjs-localstorage";
+
+export const materialUiDarkTheme = createMuiTheme({
+    palette: {
+        type: "dark",
+        primary: {
+            main: '#77BD25',
+        },
+    },
+    overrides: {
+        MuiMenuItem: {
+            selected: {
+                // Works (without the need for !important)
+                background: 'linear-gradient(45deg, red 30%, orange 90%)',
+            },
+            root: {
+                '&$selected': {
+                    backgroundColor: '#77BD25',
+                },
+            },
+
+        },
+        MuiSelect: {
+            selected: {
+                // Works (must use !important):
+                backgroundColor: 'black !important',
+                // Works (must use !important):
+                // background: 'red !important',
+            },
+            root: {
+                '&$selected': {
+                    backgroundColor: '#77BD25',
+                },
+            },
+
+        },
+        /*MuiButton: {
+            root: {
+                //fontSize: '1rem',
+                backgroundColor: '#77BD25 !important',
+                color: 'black',
+            },
+        },*/
+    },
+});
+
 
 export const GRID_ITEM_TYPE = {
     LINE: 'LINE',

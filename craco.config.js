@@ -103,7 +103,7 @@ module.exports = {
                                             '@text-color': '#fff',
                                             '@text-color-secondary': 'fade(@light, 45)',
                                             '@disabled-color': 'fade(@light, 25)',
-                                            '@primary-5': '#40a9ff',
+                                            '@primary-5': '#0b4c06',
                                             '@primary-6': '#096dd9',
                                             //todo:'@primary-color': '#77BD25',
                                             '@primary-color': '#77BD25',
