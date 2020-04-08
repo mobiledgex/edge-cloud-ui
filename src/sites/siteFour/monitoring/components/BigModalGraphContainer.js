@@ -208,7 +208,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     height={window.innerHeight * 0.8}
                                     data={this.state.chartDataForRendering}
                                     //options={lineGraphOptions}
-                                    options={makeLineChartOptions(this.state.popupGraphHWType, this.state.chartDataForRendering, this.props.parent)}
+                                    options={makeLineChartOptions(this.state.popupGraphHWType, this.state.chartDataForRendering, this.props.parent, true)}
                                     //data={data222}
                                 />
                             </div>

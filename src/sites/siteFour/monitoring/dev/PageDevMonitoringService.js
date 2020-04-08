@@ -118,8 +118,8 @@ export const defaultHwMapperListForCluster = [
     },
     {
         id: '5',
-        hwType: GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST,
-        graphType: GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST,
+        hwType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
+        graphType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
     },
     {
         id: '6',
@@ -1180,7 +1180,7 @@ export const addUnitNameForUsage = (value, hardwareType, _this) => {
 };
 
 
-export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this) => {
+export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBig = false) => {
 
     let options = {
         stacked: true,
@@ -1247,9 +1247,9 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this) => {
                     fontSize: 11,
                     fontColor: 'white',
                     //maxRotation: 0.05,
-                    //autoSkip: true,
-                    maxRotation: 45,//xAxis text rotation
-                    minRotation: 45,//xAxis text rotation
+                    autoSkip: true,
+                    maxRotation: 0,//xAxis text rotation
+                    minRotation: 0,//xAxis text rotation
                     /*
                     maxRotation: 45,//xAxis text rotation
                     minRotation: 45,//xAxis text rotation
@@ -1257,9 +1257,12 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this) => {
                     padding: 10,
                     labelOffset: 0,
                     callback(value, index, label) {
-                        //if (index % 2 === 0)return '';
-                        return value;
-
+                        if (isBig) {
+                            return value
+                        } else {
+                            if (index % 2 === 0) return '';
+                            return value;
+                        }
                     },
                 },
                 beginAtZero: false,
@@ -1282,9 +1285,9 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this) => {
 };
 
 export const demoLineChartData = (canvas) => {
-    let gradientList = makeGradientColorList(canvas, 305,CHART_COLOR_LIST, true);
+    let gradientList = makeGradientColorList(canvas, 305, CHART_COLOR_LIST, true);
 
-    let dataSets=[
+    let dataSets = [
         {
             label: 'AppInst1',
             lineTension: 0.1,
@@ -1431,9 +1434,9 @@ export const simpleGraphOptions = {
                 fontSize: 11,
                 fontColor: 'white',
                 //maxRotation: 0.05,
-                //autoSkip: true,
-                maxRotation: 45,//xAxis text rotation
-                minRotation: 45,//xAxis text rotation
+                autoSkip: true,
+                maxRotation: 0,//xAxis text rotation
+                minRotation: 0,//xAxis text rotation
                 /*
                 maxRotation: 45,//xAxis text rotation
                 minRotation: 45,//xAxis text rotation
