@@ -1,19 +1,20 @@
 // @flow
 import * as React from 'react';
-import {Modal as AModal} from "antd";
-import {Dropdown} from "semantic-ui-react";
-import {PageMonitoringStyles} from "../PageMonitoringCommonService";
+import {Modal as AModal, Tabs} from "antd";
 import {CHART_COLOR_LIST} from "../../../../shared/Constants";
-import {demoLineChartData, simpleGraphOptions} from "../dev/PageDevMonitoringService";
+import {demoLineChartData, materialUiDarkTheme, simpleGraphOptions} from "../dev/PageDevMonitoringService";
 import {Bar, HorizontalBar, Line} from "react-chartjs-2";
 import {Center2, ClusterCluoudletLable} from "../PageMonitoringStyledComponent";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import {Button, ThemeProvider} from "@material-ui/core";
+import FormControl from "@material-ui/core/FormControl";
+import '../PageMonitoring.css'
 
-
+const {TabPane} = Tabs;
 const FA = require('react-fontawesome')
 type Props = {
-    isOpenEditView: any,
-
-
+    isOpenEditView2:any,
 };
 type State = {
     isOpenEditView: any,
@@ -102,105 +103,175 @@ export default class AddItemPopupContainer2 extends React.Component<Props, State
 
     render() {
         return (
-            <div style={{flex: 1, display: 'flex'}}>
-                <AModal
-                    mask={false}
-                    visible={this.props.isOpenEditView2}
-                    onOk={() => {
-                        this.closePopupWindow();
-                    }}
-                    //maskClosable={true}
-                    onCancel={() => {
-                        this.closePopupWindow();
+            <ThemeProvider theme={materialUiDarkTheme}>
+                <div style={{flex: 1, display: 'flex'}}>
+                    <AModal
+                        mask={false}
+                        visible={this.props.isOpenEditView2}
+                        onOk={() => {
+                            this.closePopupWindow();
+                        }}
+                        //maskClosable={true}
+                        onCancel={() => {
+                            this.closePopupWindow();
 
-                    }}
-                    closable={true}
-                    bodyStyle={{
-                        height: window.innerHeight * 0.95,
-                        marginTop: 0,
-                        marginLeft: 0,
-                        backgroundColor: 'rgb(41, 44, 51)'
-                    }}
-                    width={'100%'}
-                    style={{padding: '10px', top: 0, minWidth: 1200}}
-                    footer={null}
-                >
-                    <div style={{height: 1000}}>
-                        <div style={{display: 'flex', width: '100%',}}>
-                            {this.renderPrevBtn2()}
-                            <div className='page_monitoring_popup_title'>
-                                Add Item [{this.props.parent.state.currentClassification}]
+                        }}
+                        closable={true}
+                        bodyStyle={{
+                            height: window.innerHeight * 0.95,
+                            marginTop: 0,
+                            marginLeft: 0,
+                            backgroundColor: 'rgb(41, 44, 51)'
+                        }}
+                        width={'100%'}
+                        style={{padding: '10px', top: 0, minWidth: 1200}}
+                        footer={null}
+                    >
+                        <div style={{height: 1000}}>
+                            <div style={{display: 'flex', width: '100%',}}>
+                                {this.renderPrevBtn2()}
+                                <div className='page_monitoring_popup_title'>
+                                    Add Item [{this.props.parent.state.currentClassification}]
+                                </div>
                             </div>
-                        </div>
-                        {/*todo:리전드 area*/}
-                        {/*todo:리전드 area*/}
-                        {/*todo:리전드 area*/}
-                        <div style={{display: 'flex', marginBottom: 15, marginLeft: 10, marginTop: 25}}>
-                            {CHART_COLOR_LIST.map((item, index) => {
-                                if (index < 5) {
-                                    return (
-                                        <Center2>
-                                            <div style={{
-                                                backgroundColor: item,
-                                                width: 15,
-                                                height: 15,
-                                                borderRadius: 50,
-                                                marginTop: 3
-                                            }}>
-                                            </div>
-                                            <ClusterCluoudletLable
-                                                style={{
-                                                    marginLeft: 4,
-                                                    marginRight: 15,
-                                                    marginBottom: 0
+                            {/*todo:리전드 area*/}
+                            {/*todo:리전드 area*/}
+                            {/*todo:리전드 area*/}
+                            <div style={{display: 'flex', marginBottom: 15, marginLeft: 10, marginTop: 25}}>
+                                {CHART_COLOR_LIST.map((item, index) => {
+                                    if (index < 5) {
+                                        return (
+                                            <Center2>
+                                                <div style={{
+                                                    backgroundColor: item,
+                                                    width: 15,
+                                                    height: 15,
+                                                    borderRadius: 50,
+                                                    marginTop: 3
                                                 }}>
-                                                appInst{index}
+                                                </div>
+                                                <ClusterCluoudletLable
+                                                    style={{
+                                                        marginLeft: 4,
+                                                        marginRight: 15,
+                                                        marginBottom: 0
+                                                    }}>
+                                                    appInst{index}
 
-                                            </ClusterCluoudletLable>
-                                        </Center2>
-                                    )
-                                }
-                            })}
-
-                        </div>
-                        <div style={{backgroundColor: 'black'}}>
-                            {this.renderChart(this.state.type)}
-                        </div>
-                        <div style={{marginTop: 30}}>
-                            <div style={{marginBottom: 10}}>
-                                Chart Type
-                            </div>
-                            <Dropdown
-                                selectOnBlur={false}
-                                value={this.state.type}
-                                selection
-                                // style={PageMonitoringStyles.dropDown}
-                                options={[
-                                    {
-                                        text: 'line',
-                                        value: 'line',
-                                    },
-                                    {
-                                        text: 'bar',
-                                        value: 'bar',
-                                    },
-                                    {
-                                        text: 'horizontal_bar',
-                                        value: 'horizontal_bar',
+                                                </ClusterCluoudletLable>
+                                            </Center2>
+                                        )
                                     }
-                                ]}
-                                onChange={async (e, {value}) => {
-                                    this.setState({
-                                        type: value,
-                                    })
-                                }}
-                                style={PageMonitoringStyles.dropDownForAppInst}
-                            />
-                        </div>
-                    </div>
-                </AModal>
+                                })}
 
-            </div>
+                            </div>
+                            <div style={{backgroundColor: 'black'}}>
+                                {this.renderChart(this.state.type)}
+                            </div>
+                            {/*todo:##############################################*/}
+                            {/*todo:Tabs                                          */}
+                            {/*todo:##############################################*/}
+                            <Tabs
+                                animated={false}
+                                style={{marginTop: 25}}
+                                defaultActiveKey="1"
+                                onChange={(key) => {
+
+                                }}
+                            >
+                                {/*todo:##############################################*/}
+                                {/*todo:Tabs1                                      */}
+                                {/*todo:##############################################*/}
+                                <TabPane tab="Tab 1" key="1" style={{minHeight: "100%", maxHeight: "100%"}}>
+                                    <div style={{backgroundColor: 'transparent'}}>
+                                        <div style={{marginBottom: 20}}>
+                                            Chart
+                                        </div>
+                                        <div style={{marginTop: 10, display: 'flex', flexDirection: 'column'}}>
+                                            <div style={{display: 'flex'}}>
+                                                <FormControl style={{minWidth: 150}}>
+                                                    <Select
+                                                        MenuProps={{
+                                                            getContentAnchorEl: null,
+                                                            anchorOrigin: {
+                                                                vertical: "bottom",
+                                                                horizontal: "left",
+                                                            }
+                                                        }}
+                                                        labelId="demo-simple-select-label"
+                                                        id="demo-simple-select"
+                                                        value={this.state.type}
+                                                        onChange={(e) => {
+                                                            this.setState({
+                                                                type: e.target.value,
+                                                            })
+                                                        }}
+                                                    >
+                                                        <MenuItem style={{}} value={'line'}>LINE</MenuItem>
+                                                        <MenuItem style={{}} value={'bar'}>BAR</MenuItem>
+                                                        <MenuItem style={{}} value={'horizontal_bar'}>HORIZONTAL_BAR</MenuItem>
+                                                    </Select>
+                                                </FormControl>
+                                            </div>
+                                            <div style={{marginTop: 25, display: 'flex'}}>
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={() => {
+                                                        this.closePopupWindow();
+                                                    }}
+                                                >
+                                                    Save
+                                                </Button>
+                                                <div style={{width: 20}}/>
+                                                <Button
+                                                    style={{backgroundColor: 'grey'}}
+                                                    onClick={() => {
+                                                        this.closePopupWindow();
+                                                    }}
+                                                >
+                                                    Cancel
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </TabPane>
+                                {/*desc:##############################################*/}
+                                {/*desc:Tabs2                                      */}
+                                {/*desc:##############################################*/}
+                                <TabPane tab="Tab 2" key="2">
+                                    <div>
+                                        tab2
+                                    </div>
+                                    <div>
+                                        tab2
+                                    </div>
+                                    <div>
+                                        tab2
+                                    </div>
+                                    <div>
+                                        tab2
+                                    </div>
+                                    <div>
+                                        tab2
+                                    </div>
+
+                                </TabPane>
+                                {/*desc:##############################################*/}
+                                {/*desc:Tabs3                                      */}
+                                {/*desc:##############################################*/}
+                                <TabPane tab="Tab 3" key="3">
+                                    tab3
+                                </TabPane>
+                            </Tabs>
+
+
+                        </div>
+                    </AModal>
+
+                </div>
+            </ThemeProvider>
+
         )
     }
 };

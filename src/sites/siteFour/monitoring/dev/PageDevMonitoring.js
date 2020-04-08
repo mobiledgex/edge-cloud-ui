@@ -1513,7 +1513,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     >
                         <MaterialIcon icon={'add'} color={'white'}/>
                         <div style={PageMonitoringStyles.listItemTitle}>
-                            Add Item2
+                            Add Item for test
                         </div>
                     </AMenu.Item>
                     {/*desc:#########################################*/}
