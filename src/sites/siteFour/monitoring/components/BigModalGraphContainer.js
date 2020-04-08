@@ -8,7 +8,7 @@ import {Line} from "react-chartjs-2";
 import {Chart as Bar_Column_Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {barChartOption, columnChartOption} from "../PageMonitoringUtils";
-import LeafletMapWrapperForDev from "./LeafletMapDevContainer";
+import LeafletMapWrapperForDev from "./MapForDevContainer";
 import {hot} from "react-hot-loader/root";
 import {withRouter} from "react-router-dom";
 import {connect} from "react-redux";
