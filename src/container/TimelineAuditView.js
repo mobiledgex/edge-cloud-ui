@@ -666,55 +666,55 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 />
                             </div>
                         </div>
-                        {/*<div style={{width:this.getWidth(), overFlow:'hidden'}}>*/}
-                        {/*    {(this.state.timesList.length > 0) ?*/}
-                        {/*        <CalendarTimeline timelineList={this.state.timelineList[0]} onItemSelectCallback={this.onItemSelect} onPopupEmail={this.onPopupEmail} statusCount={this.state.statusCount} timelineSelectedIndex={this.state.timelineSelectedIndex}/>*/}
-                        {/*        :null*/}
-                        {/*    }*/}
-                        {/*</div>*/}
+                        <div style={{width:this.getWidth(), overFlow:'hidden'}}>
+                            {(this.state.timesList.length > 0) ?
+                                <CalendarTimeline timelineList={this.state.timelineList[0]} onItemSelectCallback={this.onItemSelect} onPopupEmail={this.onPopupEmail} statusCount={this.state.statusCount} timelineSelectedIndex={this.state.timelineSelectedIndex}/>
+                                :null
+                            }
+                        </div>
                     </div>
-                    <div style={(!this.state.closeMap)?this.mapzoneStyle[0]:this.mapzoneStyle[1]}>
-                        <div style={{display:'block', width:'100%'}}>
-                            <div style={{margin:'5px 0', cursor:'pointer', display:'flex', alignItems:'column', justifyContent:'center'}} onClick={this.onCloseMap}>
-                                <span style={{color:'#c8c9cb'}}>{(this.state.closeMap)?'Show':'Hide'}</span>
-                                <Icon name={(this.state.closeMap)?'angle up':'angle down'}/>
+                    <div style={{margin:'5px 0', cursor:'pointer', display:'flex', alignItems:'column', justifyContent:'center'}} onClick={this.onCloseMap}>
+                        <span style={{color:'#c8c9cb'}}>{(this.state.closeMap)?'Show':'Hide'}</span>
+                        <Icon name={(this.state.closeMap)?'angle up':'angle down'}/>
+                    </div>
+                    <div className="page_audit_code" style={{display:(this.state.closeMap)?'none':'flex'}}>
+                        <div className="page_audit_code_left">
+                            <div className="page_audit_code_rawviewer">
+                                <div className="page_audit_code_rawviewer_title">
+                                    Raw Viewer
+                                </div>
+                                {this.state.isLoading2 &&
+                                <FlexBox style={{ position: 'absolute', bottom: '54%', left: '5%', zIndex: 9999999 }}>
+                                    <CircularProgress style={{ color: '#1cecff', zIndex: 9999999, fontSize: 10 }}
+                                                      size={20} />
+                                </FlexBox>
+                                }
+                                <div className="page_audit_code_rawviewer_codebox">
+                                    {(this.state.rawViewData) ? jsonView(this.state.rawViewData, this) : null}
+                                </div>
                             </div>
                         </div>
-                        <div style={{display:(this.state.closeMap)?'none':'block', width:this.getWidth(), marginTop:10,}}>
-                            <div style={{display:'flex', width:'100%', flexDirection:'row'}}>
-                                <div className="page_audit_code_left">
-                                    <div className="page_audit_code_rawviewer">
-                                        <div className="page_audit_code_rawviewer_title">
-                                            Raw Viewer
-                                        </div>
-                                        <div className="page_audit_code_rawviewer_codebox">
-                                            {(this.state.rawViewData) ? jsonView(this.state.rawViewData, this) : null}
-                                        </div>
-                                    </div>
+                        <div className="page_audit_code_right">
+                            <div className="page_audit_code_request">
+                                <div className="page_audit_code_request_title">
+                                    Request
                                 </div>
-                                <div className="page_audit_code_right">
-                                    <div className="page_audit_code_request">
-                                        <div className="page_audit_code_request_title">
-                                            Request
-                                        </div>
-                                        <div className="page_audit_code_request_codebox">
-                                            {(this.state.requestData) ? jsonView(this.state.requestData, this) : null}
-                                        </div>
-                                    </div>
-                                    <div className="page_audit_code_response">
-                                        <div className="page_audit_code_response_title">
-                                            Response
-                                        </div>
-                                        <div className="page_audit_code_response_codebox">
-                                            {(this.state.responseData) ? jsonView(this.state.responseData, this) : null}
-                                        </div>
-                                    </div>
+                                <div className="page_audit_code_request_codebox">
+                                    {(this.state.requestData) ? jsonView(this.state.requestData, this) : null}
+                                </div>
+                            </div>
+                            <div className="page_audit_code_response">
+                                <div className="page_audit_code_response_title">
+                                    Response
+                                </div>
+                                <div className="page_audit_code_response_codebox">
+                                    {(this.state.responseData) ? jsonView(this.state.responseData, this) : null}
                                 </div>
                             </div>
                         </div>
                     </div>
                     <SendEmailView dimmer={true} open={this.state.openSendEmail} close={this.close}
-                                   callback={this.submitSendEmail} rawViewData={this.state.rawViewData}> </SendEmailView>
+                                   callback={this.submitSendEmail} rawViewData={this.state.rawViewData}/>
                 </div>
             )
         }
