@@ -1,5 +1,5 @@
 // @flow
-import React, {useState, useEffect} from 'react';
+import * as React from 'react';
 import {Modal as AModal} from "antd";
 import {Dropdown} from "semantic-ui-react";
 import {PageMonitoringStyles} from "../PageMonitoringCommonService";
@@ -8,40 +8,43 @@ import {demoLineChartData, simpleGraphOptions} from "../dev/PageDevMonitoringSer
 import {Bar, HorizontalBar, Line} from "react-chartjs-2";
 import {Center2, ClusterCluoudletLable} from "../PageMonitoringStyledComponent";
 
-const FA = require('react-fontawesome')
 
+const FA = require('react-fontawesome')
 type Props = {
     isOpenEditView: any,
+
+
+};
+type State = {
+    isOpenEditView: any,
+    currentItemType: number,
+    currentHwType: string,
+    isShowHWDropDown: boolean,
+    isShowEventLog: boolean,
+
 };
 
-export default function AddItemPopupContainer2(props) {
+export default class AddItemPopupContainer2 extends React.Component<Props, State> {
 
-    const [itemType, setItemType] = useState(['line'])
-    const [itemComp, setItemComp] = useState(null);
+    state = {
+        type: 'line'
+    }
 
+    renderChart(type) {
+        if (type === 'line' || type === undefined) {
+            return (
+                <Line
+                    width={window.innerWidth * 0.9}
+                    ref="chart"
+                    height={window.innerHeight * 0.35}
+                    data={demoLineChartData}
+                    options={simpleGraphOptions}
+                    redraw={true}
+                />
+            )
+        } else if (type === 'horizontal_bar') {
 
-    useEffect(() => {
-
-        renderChart(itemType);
-    }, [])
-
-
-    function renderChart(paramItemType) {
-
-        if (paramItemType === 'line' || paramItemType === undefined) {
-
-            setItemComp(<Line
-                width={window.innerWidth * 0.9}
-                ref="chart"
-                height={window.innerHeight * 0.35}
-                data={demoLineChartData}
-                options={simpleGraphOptions}
-                redraw={true}
-            />)
-        }
-        if (paramItemType === 'horizontal_bar') {
-
-            setItemComp(
+            return (
                 <HorizontalBar
                     width={window.innerWidth * 0.9}
                     ref="chart"
@@ -51,10 +54,8 @@ export default function AddItemPopupContainer2(props) {
                     options={simpleGraphOptions}
                 />
             )
-        }
-
-        if (paramItemType === 'bar') {
-            setItemComp(
+        } else {
+            return (
                 <Bar
                     width={window.innerWidth * 0.9}
                     ref="chart"
@@ -67,130 +68,139 @@ export default function AddItemPopupContainer2(props) {
         }
     }
 
+    async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
+        if (this.props.isOpenEditView2 !== nextProps.isOpenEditView2) {
+            this.forceUpdate();
+        }
+    }
 
-    function closePopupWindow() {
-        props.parent.setState({
+
+    closePopupWindow() {
+        this.props.parent.setState({
             isOpenEditView2: false,
         })
     }
 
-    function renderPrevBtn2() {
+    renderPrevBtn2() {
         return (
-            <div
-                style={{
-                    flex: .025,
-                    backgroundColor: 'transparent',
-                    width: 120,
-                    display: 'flex',
-                    alignSelf: 'center',
-                    justifyContent: 'center'
-                }}
-                onClick={() => {
-                    closePopupWindow();
-                }}
-            >
+            <div style={{
+                flex: .025,
+                backgroundColor: 'transparent',
+                width: 120,
+                display: 'flex',
+                alignSelf: 'center',
+                justifyContent: 'center'
+            }} onClick={() => {
+                this.closePopupWindow();
+            }}>
+                {/*<ArrowBack  style={{fontSize: 30, color: 'white'}} color={'white'}/>*/}
                 <FA name="arrow-circle-left" style={{fontSize: 40, color: 'white'}}/>
+
             </div>
         )
     }
 
-    return (
-        <div style={{flex: 1, display: 'flex'}}>
-            <AModal
-                mask={false}
-                visible={props.isOpenEditView2}
-                onOk={() => {
-                    closePopupWindow();
-                }}
-                //maskClosable={true}
-                onCancel={() => {
-                    closePopupWindow();
+    render() {
+        return (
+            <div style={{flex: 1, display: 'flex'}}>
+                <AModal
+                    mask={false}
+                    visible={this.props.isOpenEditView2}
+                    onOk={() => {
+                        this.closePopupWindow();
+                    }}
+                    //maskClosable={true}
+                    onCancel={() => {
+                        this.closePopupWindow();
 
-                }}
-                closable={true}
-                bodyStyle={{
-                    height: window.innerHeight * 0.95,
-                    marginTop: 0,
-                    marginLeft: 0,
-                    backgroundColor: 'rgb(41, 44, 51)'
-                }}
-                width={'100%'}
-                style={{padding: '10px', top: 0, minWidth: 1200}}
-                footer={null}
-            >
-                <div style={{height: 1000}}>
-                    <div style={{display: 'flex', width: '100%',}}>
-                        {renderPrevBtn2()}
-                        <div className='page_monitoring_popup_title'>
-                            Add Item [{props.parent.state.currentClassification}]
+                    }}
+                    closable={true}
+                    bodyStyle={{
+                        height: window.innerHeight * 0.95,
+                        marginTop: 0,
+                        marginLeft: 0,
+                        backgroundColor: 'rgb(41, 44, 51)'
+                    }}
+                    width={'100%'}
+                    style={{padding: '10px', top: 0, minWidth: 1200}}
+                    footer={null}
+                >
+                    <div style={{height: 1000}}>
+                        <div style={{display: 'flex', width: '100%',}}>
+                            {this.renderPrevBtn2()}
+                            <div className='page_monitoring_popup_title'>
+                                Add Item [{this.props.parent.state.currentClassification}]
+                            </div>
                         </div>
-                    </div>
-                    {/*todo:리전드 area*/}
-                    {/*todo:리전드 area*/}
-                    {/*todo:리전드 area*/}
-                    <div style={{display: 'flex', marginBottom: 15, marginLeft: 10, marginTop: 25}}>
-                        {CHART_COLOR_LIST.map((item, index) => {
-                            if (index < 5) {
-                                return (
-                                    <Center2>
-                                        <div style={{
-                                            backgroundColor: item,
-                                            width: 15,
-                                            height: 15,
-                                            borderRadius: 50,
-                                            marginTop: 3
-                                        }}>
-                                        </div>
-                                        <ClusterCluoudletLable
-                                            style={{
-                                                marginLeft: 4,
-                                                marginRight: 15,
-                                                marginBottom: 0
+                        {/*todo:리전드 area*/}
+                        {/*todo:리전드 area*/}
+                        {/*todo:리전드 area*/}
+                        <div style={{display: 'flex', marginBottom: 15, marginLeft: 10, marginTop: 25}}>
+                            {CHART_COLOR_LIST.map((item, index) => {
+                                if (index < 5) {
+                                    return (
+                                        <Center2>
+                                            <div style={{
+                                                backgroundColor: item,
+                                                width: 15,
+                                                height: 15,
+                                                borderRadius: 50,
+                                                marginTop: 3
                                             }}>
-                                            appInst{index}
+                                            </div>
+                                            <ClusterCluoudletLable
+                                                style={{
+                                                    marginLeft: 4,
+                                                    marginRight: 15,
+                                                    marginBottom: 0
+                                                }}>
+                                                appInst{index}
 
-                                        </ClusterCluoudletLable>
-                                    </Center2>
-                                )
-                            }
-                        })}
-
-                    </div>
-                    <div style={{backgroundColor: 'black'}}>
-                        {itemComp}
-                    </div>
-                    <div style={{marginTop: 30}}>
-                        <div style={{marginBottom: 10}}>
-                            Chart Type
-                        </div>
-                        <Dropdown
-                            selectOnBlur={false}
-                            value={itemType}
-                            selection
-                            // style={PageMonitoringStyles.dropDown}
-                            options={[
-                                {
-                                    text: 'line',
-                                    value: 'line',
-                                },
-                                {
-                                    text: 'bar',
-                                    value: 'bar',
-                                },
-                                {
-                                    text: 'horizontal_bar',
-                                    value: 'horizontal_bar',
+                                            </ClusterCluoudletLable>
+                                        </Center2>
+                                    )
                                 }
-                            ]}
-                            onChange={async (e, {value}) => {
-                                renderChart(value)
-                            }}
-                            style={PageMonitoringStyles.dropDownForAppInst}
-                        />
-                    </div>
-                </div>
-            </AModal>
+                            })}
 
-        </div>
-    )
+                        </div>
+                        <div style={{backgroundColor: 'black'}}>
+                            {this.renderChart(this.state.type)}
+                        </div>
+                        <div style={{marginTop: 30}}>
+                            <div style={{marginBottom: 10}}>
+                                Chart Type
+                            </div>
+                            <Dropdown
+                                selectOnBlur={false}
+                                value={this.state.type}
+                                selection
+                                // style={PageMonitoringStyles.dropDown}
+                                options={[
+                                    {
+                                        text: 'line',
+                                        value: 'line',
+                                    },
+                                    {
+                                        text: 'bar',
+                                        value: 'bar',
+                                    },
+                                    {
+                                        text: 'horizontal_bar',
+                                        value: 'horizontal_bar',
+                                    }
+                                ]}
+                                onChange={async (e, {value}) => {
+                                    this.setState({
+                                        type: value,
+                                    })
+                                }}
+                                style={PageMonitoringStyles.dropDownForAppInst}
+                            />
+                        </div>
+                    </div>
+                </AModal>
+
+            </div>
+        )
+    }
 };
