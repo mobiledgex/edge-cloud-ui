@@ -25,7 +25,7 @@ import {
     makeLineChartDataForBigModal,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
-    makeSelectBoxListWithValuePipe,
+    makeSelectBoxListWithValuePipe, revertToDefaultLayout,
 } from "./PageDevMonitoringService";
 import {
     ADD_ITEM_LIST,
@@ -1524,7 +1524,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     <AMenu.Item style={{display: 'flex'}}
                                 key="1"
                                 onClick={async () => {
-                                    revertToDefaultLayout();
+                                    await revertToDefaultLayout(this);
                                 }}
                     >
                         <MaterialIcon icon={'grid_on'} color={'white'}/>
