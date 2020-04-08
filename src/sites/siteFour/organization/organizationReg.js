@@ -25,7 +25,7 @@ const stepData = [
     },
     {
         step: "Step 3",
-        description: "Review your Organization"
+        description: "Review Organization"
     }
 ]
 
