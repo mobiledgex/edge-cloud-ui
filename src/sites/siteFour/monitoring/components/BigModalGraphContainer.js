@@ -199,7 +199,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }
                             <div className='page_monitoring_popup_title_divide'/>
                         </div>
-
                         {this.state.graphType === GRID_ITEM_TYPE.LINE ?
                             <div>
                                 <Line
