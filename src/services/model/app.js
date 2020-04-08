@@ -112,11 +112,22 @@ export const createApp = async (self, data) => {
 }
 
 const compareObjects = (obj1, obj2, ignoreCase) => {
-    if(ignoreCase)
+    if(obj1 === undefined && obj2 === undefined)
+    {
+        return true
+    }
+    else if(obj1 === undefined || obj2 === undefined)
+    {
+        return false
+    }
+    else if(ignoreCase)
     {
         return _.isEqual(obj1.toLowerCase(), obj2.toLowerCase())
     }
-    return _.isEqual(obj1, obj2)
+    else
+    {
+        return _.isEqual(obj1, obj2)
+    }
 }
 
 export const updateApp = async (self, data, originalData) => {
