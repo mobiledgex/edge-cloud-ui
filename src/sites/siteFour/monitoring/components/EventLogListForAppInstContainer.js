@@ -6,6 +6,7 @@ import {CircularProgress} from "@material-ui/core";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import {FixedSizeList} from "react-window";
 import '../PageMonitoring.css'
+
 const {Row, Cell, Body, Header, HeaderCell} = Table
 type Props = {
     eventLogList: any,
@@ -74,17 +75,17 @@ export default class EventLogListForAppInstContainer extends React.Component<Pro
                         <div>
                             <Table.Row style={PageMonitoringStyles.tableHeaderRow}>
                                 <Table.HeaderCell textAlign={'center'}>
-                                    <div style={PageMonitoringStyles.gridHeader}>
+                                    <div style={PageMonitoringStyles.gridHeaderSmall2}>
                                         TIME
                                     </div>
                                 </Table.HeaderCell>
                                 <Table.HeaderCell textAlign={'center'}>
-                                    <div style={PageMonitoringStyles.gridHeader}>
+                                    <div style={PageMonitoringStyles.gridHeaderSmall2}>
                                         APP
                                     </div>
                                 </Table.HeaderCell>
                                 <Table.HeaderCell textAlign={'center'}>
-                                    <div style={PageMonitoringStyles.gridHeader}>
+                                    <div style={PageMonitoringStyles.gridHeaderSmall2}>
                                         EVENT[STATUS]
                                     </div>
                                 </Table.HeaderCell>
@@ -122,7 +123,7 @@ export default class EventLogListForAppInstContainer extends React.Component<Pro
                                     <div style={{}}>
                                         <tr className='' style={style}>
                                             <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
-                                                <div>
+                                                <div style={{fontSize: 9}}>
                                                     {eventLogList[index][0].toString().split('T')[0]}
                                                     {`\n\n`}
                                                     {eventLogList[index][0].toString().split('T')[1].substring(0, 8)}
@@ -130,19 +131,19 @@ export default class EventLogListForAppInstContainer extends React.Component<Pro
                                             </td>
                                             {/*appName*/}
                                             <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
-                                                <div>
+                                                <div style={{fontSize: 9}}>
                                                     {eventLogList[index][1].toString().substring(0, 15) + ".."}
                                                 </div>
                                             </td>
                                             <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
                                                 {/*event*/}
-                                                <div>
+                                                <div style={{fontSize: 10, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                                                     <div>
-                                                        {eventLogList[index][5]}
+                                                        {eventLogList[index][9]}
                                                     </div>
                                                     {/*Status*/}
                                                     <div>
-                                                        [{eventLogList[index][6]}]
+                                                        [{eventLogList[index][10]}]
                                                     </div>
                                                 </div>
                                             </td>
