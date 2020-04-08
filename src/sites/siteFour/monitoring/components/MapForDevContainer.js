@@ -22,6 +22,7 @@ import {
     WHITE_LINE_COLOR
 } from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
+import MaterialIcon from "material-icons-react";
 
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
@@ -362,17 +363,17 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {this.props.isLoading && renderPlaceHolderLottiePinJump3()}
                                 <TileLayer
                                     url={this.props.currentTyleLayer}
-                                    //url={'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'}
                                     minZoom={2}
                                     style={{zIndex: 1}}
-                                    //maxZoom={15}
                                 />
-                                <Control position="topleft">
+                                <Control position="topright" style={{marginTop:3}}>
                                     <Icon
-                                        onClick={() => {
-                                            this.setState({
+                                        icon={'history'} color={'black'}
+                                        onClick={async () => {
+                                            await this.setState({
                                                 zoom: 3,
                                             })
+                                            await this.props.parent.handleResetClicked();
                                         }}
                                         name='redo'
                                         style={{
@@ -383,7 +384,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                             height: 26,
                                             width: 27,
                                             cursor: 'pointer'
-                                        }}/>
+                                        }}
+                                    />
                                 </Control>
                                 {/*@desc:#####################################..*/}
                                 {/*@desc: topRight Radio Btns changing MapTyle...*/}
@@ -486,7 +488,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                         newCloudLetLocationList: toggleNewCloudletLocationList,
                                                         isUpdateEnable: true,
                                                     })
-
                                                     //this.props.handleSelectCloudletForMapkerClicked(item.CloudletName)
                                                 }}
                                             >

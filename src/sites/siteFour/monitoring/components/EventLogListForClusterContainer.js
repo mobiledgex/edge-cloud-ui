@@ -77,7 +77,7 @@ export default function EventLogListForClusterContainer(props) {
                             return (
                                 <Table.Row style={PageMonitoringStyles.tableRowFat} className='gridTableCell'>
                                     <Table.Cell style={{flex: .3, padding: 0, alignSelf: 'center'}}>
-                                        <div style={PageMonitoringStyles.gridTableCell3Dash1}>
+                                        <div style={PageMonitoringStyles.gridTableCell3Dash2}>
                                             {item[0].toString().split('T')[0]}
                                             {`\n\n`}
                                             {item[0].toString().split('T')[1].substring(0, 8)}
