@@ -2,8 +2,16 @@
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Acme|Roboto|Bungee|Barlow+Semi+Condensed|Candal|Encode+Sans+Condensed|Righteous|Karla|Roboto+Condensed&display=swap');
 
 
-.ant-dropdown-menu-submenu-arrow{
+.ant-dropdown-menu-submenu-arrow {
     display: none;
+}
+
+.gridTableCell:hover {
+    background-color: dimgrey;
+}
+
+tbody:hover {
+    background-color: transparent;
 }
 
 .tooltip001 {

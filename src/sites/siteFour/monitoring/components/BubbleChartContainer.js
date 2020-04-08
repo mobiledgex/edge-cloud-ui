@@ -72,9 +72,9 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
 
             function renderZoomLevel(listLength) {
                 if (listLength <= 4) {
-                    return 0.45;
+                    return 0.35;
                 } else {
-                    return 0.5;
+                    return 0.4;
                 }
             }
 
@@ -113,12 +113,15 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                     }}>
                                         <div className='page_monitoring_title'
                                              style={{
-                                                 //backgroundColor: 'red',
+                                                 fontFamily: 'Ubuntu',
                                                  display: 'flex',
                                                  flex: 1,
+                                                 marginTop: 5,
+
                                              }}
                                         >
-                                            {this.props.isBig === undefined ? <div style={{flex: .9}}>
+                                            {this.props.isBig === undefined ?
+                                                <div style={{flex: .9, marginTop: 5,}}>
                                                     Cluster Bubble Chart
                                                 </div>
                                                 : <div style={{width: window.innerWidth * 0.9}}>
@@ -127,7 +130,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                             }
                                             <div style={{flex: .1, marginRight: 80,}}>
                                                 <Dropdown
-                                                    style={{fontSize: 11, zIndex:999999999}}
+                                                    style={{fontSize: 11, zIndex: 999999999}}
                                                     disabled={this.props.parent.state.bubbleChartLoader}
                                                     clearable={this.props.parent.state.regionSelectBoxClearable}
                                                     placeholder='SELECT HARDWARE'
@@ -164,7 +167,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                 <div className='page_monitoring_container'>
                                     <BubbleChart
                                         className='bubbleChart'
-                                        style={{height: this.props.isBig ? window.innerHeight : 350, marginLeft:-350}}
+                                        style={{height: this.props.isBig ? window.innerHeight : 350, marginLeft: -350}}
                                         graph={{
                                             zoom: renderZoomLevel(allClusterUsageList.length),
                                             //zoom: 0.10,

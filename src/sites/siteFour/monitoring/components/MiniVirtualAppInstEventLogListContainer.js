@@ -18,7 +18,7 @@ type State = {
     loading: boolean,
 };
 
-export default class VirtualAppInstEventLogListContainer extends React.Component<Props, State> {
+export default class MiniVirtualAppInstEventLogListContainer extends React.Component<Props, State> {
 
 
     constructor(props: Props) {
@@ -56,8 +56,6 @@ export default class VirtualAppInstEventLogListContainer extends React.Component
 
 
     render() {
-        let gridHeight = 305
-        let gridWidth = window.innerWidth * 0.9;
         let eventLogList = this.state.eventLogList;
 
         return (
@@ -69,9 +67,10 @@ export default class VirtualAppInstEventLogListContainer extends React.Component
                 }}>
                     <div className='page_monitoring_title'
                          style={{
-                             flex: .38,
+                             flex: .6,
                              marginTop: 5,
-                             fontFamily: 'Ubuntu'
+                             fontFamily: 'Ubuntu',
+                             //backgroundColor: 'red',
                          }}
                     >
                         App Inst Event Log
@@ -90,9 +89,16 @@ export default class VirtualAppInstEventLogListContainer extends React.Component
                                     </div>
                                 </Table.HeaderCell>
                                 <Table.HeaderCell textAlign={'center'}>
-                                    APP
+                                    <div style={PageMonitoringStyles.gridHeader}>
+                                        APP
+                                    </div>
                                 </Table.HeaderCell>
                                 <Table.HeaderCell textAlign={'center'}>
+                                    <div style={PageMonitoringStyles.gridHeader}>
+                                        EVENT[STATUS]
+                                    </div>
+                                </Table.HeaderCell>
+                                {/* <Table.HeaderCell textAlign={'center'}>
                                     CLUSTER
                                 </Table.HeaderCell>
                                 <Table.HeaderCell textAlign={'center'}>
@@ -103,13 +109,7 @@ export default class VirtualAppInstEventLogListContainer extends React.Component
                                 </Table.HeaderCell>
                                 <Table.HeaderCell textAlign={'center'}>
                                     OPERATOR
-                                </Table.HeaderCell>
-                                <Table.HeaderCell textAlign={'center'}>
-                                    EVENT
-                                </Table.HeaderCell>
-                                <Table.HeaderCell textAlign={'center'}>
-                                    STATUS
-                                </Table.HeaderCell>
+                                </Table.HeaderCell>*/}
                             </Table.Row>
                         </div>
                         {!this.props.parent.state.loading && this.state.eventLogList.length === 0 &&
@@ -137,7 +137,7 @@ export default class VirtualAppInstEventLogListContainer extends React.Component
                             itemCount={this.state.eventLogList.length}
                             itemSize={50}
                             style={{backgroundColor: 'black', display: 'flex', alignSelf: 'center', marginTop: 0, marginRight: 0, overFlowY: 'auto'}}
-                            width={gridWidth}
+                            width={400}
                         >
                             {({index, style}) => {
                                 return (
@@ -150,12 +150,25 @@ export default class VirtualAppInstEventLogListContainer extends React.Component
                                                     {eventLogList[index][0].toString().split('T')[1].substring(0, 8)}
                                                 </div>
                                             </td>
+                                            {/*appName*/}
                                             <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
                                                 <div>
-                                                    {eventLogList[index][1]}
+                                                    {eventLogList[index][1].toString().substring(0,15)+".."}
                                                 </div>
                                             </td>
                                             <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
+                                                {/*event*/}
+                                                <div>
+                                                    <div>
+                                                        {eventLogList[index][5]}
+                                                    </div>
+                                                    {/*Status*/}
+                                                    <div>
+                                                        [{eventLogList[index][6]}]
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            {/* <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
                                                 <div>
                                                     {eventLogList[index][2]}
                                                 </div>
@@ -174,17 +187,7 @@ export default class VirtualAppInstEventLogListContainer extends React.Component
                                                 <div>
                                                     {eventLogList[index][5]}
                                                 </div>
-                                            </td>
-                                            <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
-                                                <div>
-                                                    {eventLogList[index][5]}
-                                                </div>
-                                            </td>
-                                            <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
-                                                <div>
-                                                    {eventLogList[index][5]}
-                                                </div>
-                                            </td>
+                                            </td>*/}
                                         </tr>
                                     </div>
 

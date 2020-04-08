@@ -16,7 +16,7 @@ type State = {
     loading: boolean,
 };
 
-export default class AppInstEventLogListContainer extends React.Component<Props, State> {
+export default class AppInstEventLogListContainer_temp extends React.Component<Props, State> {
 
 
     constructor(props: Props) {
