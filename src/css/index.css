@@ -43,7 +43,7 @@ body, button, input, textarea, optgroup, select, textarea,
 }
 
 .table-no-resized {
-    height: '100%';
+    height: 100%;
     display: flex;
     overflow: hidden;
 }
@@ -953,7 +953,7 @@ body, button, input, textarea, optgroup, select, textarea,
 }
 
 .contents_body {
-    height: '100%';
+    height: 100%;
     padding: 0px;
 }
 
@@ -993,7 +993,7 @@ body, button, input, textarea, optgroup, select, textarea,
 }
 
 .mexListView{
-    height: calc(100% - 35px);
+    height: calc(100% - 48px); /* title Area Height */
 }
 
 .round_panel {
@@ -1902,4 +1902,9 @@ body ::-webkit-scrollbar-track {
 .view_left_container.left_menu_hide .ui.secondary.menu.view_left_menu.main_menu {
     height: calc(100% - 234px);
     overflow-y: auto;
+}
+
+/* Rahul 코드 오버로딩*/
+.MuiToolbar-regular {
+    min-height: 48px !important;
 }
