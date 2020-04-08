@@ -14,7 +14,7 @@ import '../PageMonitoring.css'
 const {TabPane} = Tabs;
 const FA = require('react-fontawesome')
 type Props = {
-    isOpenEditView2:any,
+    isOpenEditView2: any,
 };
 type State = {
     isOpenEditView: any,
@@ -116,7 +116,7 @@ export default class AddItemPopupContainer2 extends React.Component<Props, State
                             this.closePopupWindow();
 
                         }}
-                        closable={true}
+                        closable={false}
                         bodyStyle={{
                             height: window.innerHeight * 0.95,
                             marginTop: 0,
@@ -183,11 +183,15 @@ export default class AddItemPopupContainer2 extends React.Component<Props, State
                                 {/*todo:Tabs1                                      */}
                                 {/*todo:##############################################*/}
                                 <TabPane tab="Tab 1" key="1" style={{minHeight: "100%", maxHeight: "100%"}}>
-                                    <div style={{backgroundColor: 'transparent'}}>
-                                        <div style={{marginBottom: 20}}>
-                                            Chart
+                                    <div style={{backgroundColor: 'transparent', display: 'flex'}}>
+                                        <div style={{
+                                            height: 30, marginBottom: 3, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            backgroundColor: 'blue',
+                                        }}>
+                                            TYPE
                                         </div>
-                                        <div style={{marginTop: 10, display: 'flex', flexDirection: 'column'}}>
+                                        <div style={{width: 50}}/>
+                                        <div style={{marginTop: 0, display: 'flex', flexDirection: 'column'}}>
                                             <div style={{display: 'flex'}}>
                                                 <FormControl style={{minWidth: 150}}>
                                                     <Select
@@ -213,27 +217,28 @@ export default class AddItemPopupContainer2 extends React.Component<Props, State
                                                     </Select>
                                                 </FormControl>
                                             </div>
-                                            <div style={{marginTop: 25, display: 'flex'}}>
-                                                <Button
-                                                    variant="contained"
-                                                    color="primary"
-                                                    onClick={() => {
-                                                        this.closePopupWindow();
-                                                    }}
-                                                >
-                                                    Save
-                                                </Button>
-                                                <div style={{width: 20}}/>
-                                                <Button
-                                                    style={{backgroundColor: 'grey'}}
-                                                    onClick={() => {
-                                                        this.closePopupWindow();
-                                                    }}
-                                                >
-                                                    Cancel
-                                                </Button>
-                                            </div>
+
                                         </div>
+                                    </div>
+                                    <div style={{marginTop: 25, display: 'flex'}}>
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={() => {
+                                                this.closePopupWindow();
+                                            }}
+                                        >
+                                            Save
+                                        </Button>
+                                        {/* <div style={{width: 20}}/>
+                                        <Button
+                                            style={{backgroundColor: 'grey'}}
+                                            onClick={() => {
+                                                this.closePopupWindow();
+                                            }}
+                                        >
+                                            Cancel
+                                        </Button>*/}
                                     </div>
                                 </TabPane>
                                 {/*desc:##############################################*/}
