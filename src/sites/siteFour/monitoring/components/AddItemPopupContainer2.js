@@ -44,7 +44,7 @@ export default class AddItemPopupContainer2 extends React.Component<Props, State
     }
 
     renderChart(type) {
-        if (type === 'line') {
+        if (type === 'line' || type === undefined) {
             return (
                 <Line
                     width={window.innerWidth * 0.9}
@@ -52,6 +52,7 @@ export default class AddItemPopupContainer2 extends React.Component<Props, State
                     height={window.innerHeight * 0.35}
                     data={demoLineChartData}
                     options={simpleGraphOptions}
+                    redraw={true}
                 />
             )
         } else if (type === 'horizontal_bar') {
@@ -62,6 +63,7 @@ export default class AddItemPopupContainer2 extends React.Component<Props, State
                     ref="chart"
                     height={window.innerHeight * 0.35}
                     data={demoLineChartData}
+                    redraw={true}
                     options={simpleGraphOptions}
                 />
             )
@@ -72,6 +74,7 @@ export default class AddItemPopupContainer2 extends React.Component<Props, State
                     ref="chart"
                     height={window.innerHeight * 0.35}
                     data={demoLineChartData}
+                    redraw={true}
                     options={simpleGraphOptions}
                 />
             )
@@ -81,7 +84,7 @@ export default class AddItemPopupContainer2 extends React.Component<Props, State
 
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
         if (this.props.isOpenEditView2 !== nextProps.isOpenEditView2) {
-            this.forceUpdate()
+            this.forceUpdate();
         }
     }
 
@@ -90,6 +93,25 @@ export default class AddItemPopupContainer2 extends React.Component<Props, State
         this.props.parent.setState({
             isOpenEditView2: false,
         })
+    }
+
+    renderPrevBtn2() {
+        return (
+            <div style={{
+                flex: .025,
+                backgroundColor: 'transparent',
+                width: 120,
+                display: 'flex',
+                alignSelf: 'center',
+                justifyContent: 'center'
+            }} onClick={() => {
+                this.closePopupWindow();
+            }}>
+                {/*<ArrowBack  style={{fontSize: 30, color: 'white'}} color={'white'}/>*/}
+                <FA name="arrow-circle-left" style={{fontSize: 40, color: 'white'}}/>
+
+            </div>
+        )
     }
 
     render() {
@@ -118,8 +140,16 @@ export default class AddItemPopupContainer2 extends React.Component<Props, State
                     footer={null}
                 >
                     <div style={{height: 1000}}>
-                        <h2>Line Example</h2>
-                        <div style={{display: 'flex', marginBottom: 15, marginLeft: 10,}}>
+                        <div style={{display: 'flex', width: '100%',}}>
+                            {this.renderPrevBtn2()}
+                            <div className='page_monitoring_popup_title'>
+                                Add Item [{this.props.parent.state.currentClassification}]
+                            </div>
+                        </div>
+                        {/*todo:리전드 area*/}
+                        {/*todo:리전드 area*/}
+                        {/*todo:리전드 area*/}
+                        <div style={{display: 'flex', marginBottom: 15, marginLeft: 10, marginTop: 25}}>
                             {CHART_COLOR_LIST.map((item, index) => {
                                 if (index < 5) {
                                     return (
@@ -152,7 +182,7 @@ export default class AddItemPopupContainer2 extends React.Component<Props, State
                         </div>
                         <div style={{marginTop: 30}}>
                             <div style={{marginBottom: 10}}>
-                                CharT Type
+                                Chart Type
                             </div>
                             <Dropdown
                                 selectOnBlur={false}
