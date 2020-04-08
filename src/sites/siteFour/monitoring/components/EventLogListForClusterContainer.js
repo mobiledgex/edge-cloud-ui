@@ -6,7 +6,7 @@ import '../PageMonitoring.css'
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 
-export default function MiniClusterEventLogListContainer(props) {
+export default function EventLogListForClusterContainer(props) {
 
     const [eventLogList, setEventLogList] = useState([]);
 

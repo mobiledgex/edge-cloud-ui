@@ -80,9 +80,9 @@ import PieChartContainer from "../components/PieChartContainer";
 import BigModalGraphContainer from "../components/BigModalGraphContainer";
 import BubbleChartContainer from "../components/BubbleChartContainer";
 import LineChartContainer from "../components/LineChartContainer";
-import MiniClusterEventLogListContainer from "../components/MiniClusterEventLogListContainer";
+import EventLogListForClusterContainer from "../components/EventLogListForClusterContainer";
 import PerformanceSummaryTableContainer from "../components/PerformanceSummaryTableContainer";
-import MiniAppInstEventLogListContainerForVirtualScroll from "../components/MiniAppInstEventLogListContainerForVirtualScroll";
+import EventLogListForAppInstContainer from "../components/EventLogListForAppInstContainer";
 import MaterialIcon from "material-icons-react";
 import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
@@ -1205,11 +1205,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST) {
                 return (
-                    <MiniClusterEventLogListContainer eventLogList={this.state.filteredClusterEventLogList} parent={this}/>
+                    <EventLogListForClusterContainer eventLogList={this.state.filteredClusterEventLogList} parent={this}/>
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                 return (
-                    <MiniAppInstEventLogListContainerForVirtualScroll
+                    <EventLogListForAppInstContainer
                         currentAppInst={this.state.currentAppInst}
                         parent={this}
                         handleAppInstDropdown={this.handleAppInstDropdown}

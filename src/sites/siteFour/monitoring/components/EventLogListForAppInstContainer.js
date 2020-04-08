@@ -5,6 +5,7 @@ import {PageMonitoringStyles} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import {FixedSizeList} from "react-window";
+import '../PageMonitoring.css'
 
 const {Row, Cell, Body, Header, HeaderCell} = Table
 type Props = {
@@ -18,8 +19,7 @@ type State = {
     loading: boolean,
 };
 
-export default class MiniVirtualAppInstEventLogListContainer extends React.Component<Props, State> {
-
+export default class EventLogListForAppInstContainer extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
@@ -68,7 +68,7 @@ export default class MiniVirtualAppInstEventLogListContainer extends React.Compo
                     <div className='page_monitoring_title'
                          style={{
                              flex: .6,
-                             marginTop: 5,
+                             marginTop: 10,
                              fontFamily: 'Ubuntu',
                              //backgroundColor: 'red',
                          }}
@@ -79,7 +79,7 @@ export default class MiniVirtualAppInstEventLogListContainer extends React.Compo
                     </div>
 
                 </div>
-                <div style={{marginTop: 15}}>
+                <div style={{marginTop: 11}}>
                     <Table className="" basic='very' sortable striped celled fixed collapsing styles={{zIndex: 999999999999, overflowY: 'hidden'}}>
                         <div>
                             <Table.Row style={PageMonitoringStyles.tableHeaderRow}>
@@ -113,17 +113,17 @@ export default class MiniVirtualAppInstEventLogListContainer extends React.Compo
                             </Table.Row>
                         </div>
                         {!this.props.parent.state.loading && this.state.eventLogList.length === 0 &&
-                        <Table.Body className="tbBodyList">
-                            <Table.Row warning={true} className='page_monitoring_popup_table_row' style={PageMonitoringStyles.noData2}>
-                                <Table.Cell positive={false}>No Event Log</Table.Cell>
-                            </Table.Row>
-                        </Table.Body>
+                        <table style={{height: 190, width: 400, backgroundColor: 'transparent'}}>
+                            <tr colspan={3} style={{height: 190, display: 'flex', fontSize: 15, justifyContent: 'center', alignItems: 'center', marginLeft: 10,}}>
+                                No Event Log
+                            </tr>
+                        </table>
                         }
 
                         <tbody style={{display: 'flex', marginTop: 0}}>
                         {this.props.parent.state.loading &&
                         <div
-                            style={PageMonitoringStyles.center3}>
+                            style={PageMonitoringStyles.center4}>
                             <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}/>
                         </div>
                         }
@@ -153,7 +153,7 @@ export default class MiniVirtualAppInstEventLogListContainer extends React.Compo
                                             {/*appName*/}
                                             <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
                                                 <div>
-                                                    {eventLogList[index][1].toString().substring(0,15)+".."}
+                                                    {eventLogList[index][1].toString().substring(0, 15) + ".."}
                                                 </div>
                                             </td>
                                             <td style={index % 2 === 0 ? PageMonitoringStyles.gridTableCell3 : PageMonitoringStyles.gridTableCell4}>
