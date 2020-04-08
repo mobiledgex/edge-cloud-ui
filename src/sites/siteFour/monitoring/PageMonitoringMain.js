@@ -1,95 +1,92 @@
-import 'react-semantic-toasts/styles/react-semantic-alert.css';
-import React, {Component} from 'react';
-import sizeMe from 'react-sizeme';
-import {withRouter} from 'react-router-dom';
-import {connect} from 'react-redux';
-import * as actions from '../../../actions';
-import './PageMonitoring.css'
+import "react-semantic-toasts/styles/react-semantic-alert.css";
+import React, { Component } from "react";
+import sizeMe from "react-sizeme";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import * as actions from "../../../actions";
+import "./PageMonitoring.css";
 import PageMonitoringForOperator from "./oper/PageOperMonitoring";
-import {Grid} from "semantic-ui-react";
+import { Grid } from "semantic-ui-react";
 import PageMonitoringForDeveloper from "./dev/PageDevMonitoring";
-import PageMonitoringForAdmin from "./admin/PageAdminMonitoring";
-import {hot} from "react-hot-loader/root";
+//import PageMonitoringForAdmin from "./admin/PageAdminMonitoring";
+import MonitoringAdmin from "./admin";
+import { hot } from "react-hot-loader/root";
 
-
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
-        isLoading: state.LoadingReducer.isLoading,
-    }
+        isLoading: state.LoadingReducer.isLoading
+    };
 };
-const mapDispatchProps = (dispatch) => {
+const mapDispatchProps = dispatch => {
     return {
-        toggleLoading: (data) => {
-            dispatch(actions.toggleLoading(data))
+        toggleLoading: data => {
+            dispatch(actions.toggleLoading(data));
         }
     };
 };
 
 type Props = {
     handleLoadingSpinner: Function,
-    toggleLoading: Function,
-}
+    toggleLoading: Function
+};
 
 type State = {
-    date: string,
-}
+    date: string
+};
 
+export default hot(
+    withRouter(
+        connect(
+            mapStateToProps,
+            mapDispatchProps
+        )(
+            sizeMe({ monitorHeight: true })(
+                class PageMonitoringMain extends Component<Props, State> {
+                    state = {
+                        date: ""
+                    };
 
-export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
-    class PageMonitoringMain extends Component<Props, State> {
-        state = {
-            date: '',
-        };
+                    constructor(props) {
+                        super(props);
+                    }
 
-        constructor(props) {
-            super(props);
-        }
+                    //todo@ sdlfksdlkflsdkflksdf
+                    //todo@ sdlfksdlkflsdkflksdf
+                    //todo@ sdlfksdlkflsdkflksdf
+                    //todo@ sdlfksdlkflsdkflksdf
 
+                    componentWillMount(): void {
+                        let store = JSON.parse(localStorage.PROJECT_INIT);
+                        let token = store ? store.userToken : "null";
+                        console.log("token===>", token);
+                        let userRole = localStorage.getItem("selectRole");
+                        console.log("userRole====>", userRole);
 
-        //todo@ sdlfksdlkflsdkflksdf
-        //todo@ sdlfksdlkflsdkflksdf
-        //todo@ sdlfksdlkflsdkflksdf
-        //todo@ sdlfksdlkflsdkflksdf
+                        this.setState({
+                            userRole: userRole
+                        });
+                    }
 
-        componentWillMount(): void {
-            let store = JSON.parse(localStorage.PROJECT_INIT);
-            let token = store ? store.userToken : 'null';
-            console.log('token===>', token);
-            let userRole = localStorage.getItem('selectRole')
-            console.log('userRole====>', userRole);
+                    renderMainPage(sizeInfo) {
+                        if (this.state.userRole.includes("Admin")) {
+                            return <MonitoringAdmin sizeInfo={sizeInfo} />;
+                        } else if (this.state.userRole.includes("Operator")) {
+                            return <PageMonitoringForOperator />;
+                        } else {
+                            //Developer***
+                            return <PageMonitoringForDeveloper />;
+                        }
+                    }
 
-            this.setState({
-                userRole: userRole,
-            })
-        }
-
-
-        renderMainPage() {
-            if (this.state.userRole.includes('Admin')) {
-                return (
-                    <PageMonitoringForAdmin/>
-                )
-            } else if (this.state.userRole.includes('Operator')) {
-                return (
-                    <PageMonitoringForOperator/>
-                )
-            } else {//Developer***
-                return (
-                    <PageMonitoringForDeveloper/>
-                )
-            }
-        }
-
-        render() {
-            return (
-                <Grid.Row className='view_contents'>
-                    {this.renderMainPage()}
-                </Grid.Row>
-
-            );
-        }
-
-    }
-))));
-
-
+                    render() {
+                        return (
+                            <Grid.Row className="view_contents">
+                                {this.renderMainPage({ ...this.props.size })}
+                            </Grid.Row>
+                        );
+                    }
+                }
+            )
+        )
+    )
+);
