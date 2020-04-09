@@ -10,6 +10,7 @@ import {Grid} from "semantic-ui-react";
 import PageMonitoringForDeveloper from "./dev/PageDevMonitoring";
 import PageMonitoringForAdmin from "./admin/PageAdminMonitoring";
 import {hot} from "react-hot-loader/root";
+import {Card} from "@material-ui/core";
 
 
 const mapStateToProps = (state) => {
@@ -82,9 +83,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         render() {
             return (
-                <Grid.Row className='view_contents'>
+                <Card style={{ width: '100%', height: '100%', backgroundColor: '#292c33', padding: 10, color: 'white' }}>
                     {this.renderMainPage()}
-                </Grid.Row>
+                </Card>
 
             );
         }
