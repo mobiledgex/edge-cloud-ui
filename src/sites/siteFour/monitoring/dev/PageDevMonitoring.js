@@ -1159,8 +1159,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
         }
 
-        ___makeGridItemBodyByType(hwType, graphType) {
-
+        makeGridItemBodyByType(hwType, graphType) {
             if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                 return (
                     this.makeLineChartData(hwType,)
@@ -1324,7 +1323,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     {/*@desc:__makeGridItem BodyByType  */}
                     {/*desc:############################*/}
                     <div className='page_monitoring_column_resizable'>
-                        {this.___makeGridItemBodyByType(hwType, graphType.toUpperCase())}
+                        {this.makeGridItemBodyByType(hwType, graphType.toUpperCase())}
                     </div>
                 </div>
             )
@@ -1480,7 +1479,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         }
 
 
-        __makeMenuListItems = () => {
+        makeMenuListItems = () => {
             return (
                 <AMenu>
                     {/*desc:#########################################*/}
@@ -1557,35 +1556,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             Revert To The Default Layout
                         </div>
                     </AMenu.Item>
-                    {/*desc: ######################*/}
-                    {/*desc: Fix Grid              */}
-                    {/*desc: ######################*/}
-                    {/*<AMenu.Item style={{display: 'flex'}}
-                                key="1"
-                                onClick={async () => {
-                                    await this.setState({
-                                        isDraggable: !this.state.isDraggable,
-                                        appInstanceListGroupByCloudlet: [],
-                                    })
-                                    this.setState({
-                                        appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
-                                    });
-                                }}
-                    >
-                        <MaterialIcon icon={'zoom_out_map'} color={'white'}/>
-                        <div style={PageMonitoringStyles.listItemTitle}>
-                            Fix Grid
-                        </div>
-                        <div style={{marginLeft: 5}}>
-                            <CustomSwitch
-                                size="small"
-                                checked={!this.state.isDraggable}
-                                color="primary"
-
-                            />
-                        </div>
-                    </AMenu.Item>*/}
-
                     {/*desc: ######################*/}
                     {/*desc:Stacked Line Chart     */}
                     {/*desc: ######################*/}
@@ -1715,24 +1685,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         </div>
                     </AMenu.Item>
                     }
-                    {/*desc: ######################*/}
-                    {/*desc: Show Header            */}
-                    {/*desc: ######################*/}
-                    {/*<AMenu.Item style={{display: 'flex'}}
-                                key="1"
-                                onClick={() => {
-                                    if (this.props.isShowHeader) {
-                                        this.props.toggleHeader(false)
-                                    } else {
-                                        this.props.toggleHeader(true)
-                                    }
-                                }}
-                    >
-                        <MaterialIcon icon={'crop_7_5'} color={'white'}/>
-                        <div style={PageMonitoringStyles.listItemTitle}>
-                            Show Header
-                        </div>
-                    </AMenu.Item>*/}
                 </AMenu>
             )
         }
@@ -1743,7 +1695,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     <Toolbar className='monitoring_title'>
                         <label className='content_title_label'>Monitoring</label>
                         <div className='page_monitoring_select_area' style={{
-                            width:'fit-content',
+                            width: 'fit-content',
                             //backgroundColor: 'red',
                         }}>
                             <div>
@@ -1761,13 +1713,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             */}
                         <div
                             style={{
-                                display:'flex',
-                                flex:1,
+                                display: 'flex',
+                                flex: 1,
                                 justifyContent: 'flex-start',
                                 alignItems: 'center',
                                 color: 'rgba(255, 255, 255, .8)',
                                 height: 28,
-                                padding:'0 10px',
+                                padding: '0 10px',
                                 alignSelf: 'center',
                                 border: this.state.currentCluster !== '' || this.state.currentAppInst !== '' ? '1px dotted #4c4c4c' : null,
                                 //backgroundColor: 'blue',
@@ -1845,7 +1797,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 justifyContent: 'center',
                             }}>
                                 <ADropdown
-                                    overlay={this.__makeMenuListItems}
+                                    overlay={this.makeMenuListItems}
                                     trigger={['click']}
                                 >
                                     <div
@@ -1883,7 +1835,12 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
                     <div
                         className="page_monitoring_dropdown_label"
-                        style={{backgroundColor: 'transparent', height: 20, marginTop: 6, marginLeft: this.state.isShowFilter ? 0 : 10}}
+                        style={{
+                            backgroundColor: 'transparent',
+                            height: 20,
+                            marginTop: 6,
+                            marginLeft: this.state.isShowFilter ? 0 : 10
+                        }}
                     >
                         Cluster | Cloudlet
                     </div>
@@ -1908,7 +1865,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         makeAppInstDropdown() {
             return (
                 <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
-                    <div className="page_monitoring_dropdown_label" style={{backgroundColor: 'transparent', height: 20, marginTop: 6, marginLeft: 3}}>
+                    <div className="page_monitoring_dropdown_label"
+                         style={{backgroundColor: 'transparent', height: 20, marginTop: 6, marginLeft: 3}}>
                         App Inst
                     </div>
                     <Dropdown
@@ -1944,16 +1902,14 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
             return (
                 <Legend>
-                    <div style={{width: '100%'}}>
-                        {/*  {!this.state.isShowFilter &&
-                        <div>
-                            {this.makeClusterDropdown()}
-                        </div>
-                        }*/}
-                        {this.state.loading && <div style={{display: 'flex', alignSelf: 'center'}}>
-                            <CircularProgress style={{fontWeight: 'bold', color: '#1cecff'}}
-                                              color={'#1cecff'}
-                                              size={15}/>
+                    <div style={{width: '100%', display: 'flex'}}>
+                        {this.state.loading &&
+                        <div style={{display: 'flex', alignSelf: 'center',}}>
+                            <CircularProgress
+                                style={{fontWeight: 'bold', color: '#1cecff'}}
+                                color={'#1cecff'}
+                                size={15}
+                            />
                         </div>}
                         {this.state.currentClassification === 'Cluster' ?
                             <div style={{
@@ -1971,7 +1927,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                                 width: 15,
                                                 height: 15,
                                                 borderRadius: 50,
-                                                marginTop: 3
+                                                marginTop: 2,
                                             }}>
                                             </div>
                                             <ClusterCluoudletLable
@@ -1994,7 +1950,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 justifyContent: 'center',
                                 marginLeft: 0,
                                 backgroundColor: 'transparent',
-                                height: 20,
                                 marginTop: 3,
                             }}>
                                 <div style={{backgroundColor: 'transparent'}}>
@@ -2003,15 +1958,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                         width: 15,
                                         height: 15,
                                         borderRadius: 50,
-                                        marginTop: 3
+                                        marginTop: 0
                                     }}>
                                     </div>
                                 </div>
                                 <ClusterCluoudletLable
                                     style={{marginLeft: 5, marginRight: 15, marginBottom: 0}}>
-                                    {this.state.currentAppInst.split("|")[0]} {/*{`| `}*/}
-                                    {/*{this.state.currentAppInst.split("|")[2]} {`| `} //cluster
-                                    {this.state.currentAppInst.split("|")[1]} cloudlet*/}
+                                    {this.state.currentAppInst.split("|")[0]}
                                 </ClusterCluoudletLable>
                             </div>
                         }
@@ -2034,8 +1987,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 return (
                     <div style={{width: '100%', height: '100%',}}>
                         {this.renderHeader()}
-                        <div style={{marginTop: 25, marginLeft: 25, background:'none'}}>
-                            <div style={{fontSize: 25, color:'rgba(255,255,255,.6)' }}>
+                        <div style={{marginTop: 25, marginLeft: 25, background: 'none'}}>
+                            <div style={{fontSize: 25, color: 'rgba(255,255,255,.6)'}}>
                                 There is no app instance you can access..
                             </div>
                         </div>

@@ -7,24 +7,8 @@ import '../node_modules/react-resizable/css/styles.css';
 import App from './App';
 import store from './store';
 import {Provider} from 'react-redux';
-import {createMuiTheme, ThemeProvider} from "@material-ui/core";
-
-const theme = createMuiTheme({
-    palette: {
-        type: "dark",
-        primary: {
-            main: '#77BD25',
-        },
-    },
-    overrides: {
-        MuiIconButton: {
-            root: {
-                color: 'white !important'
-            },
-        },
-    }
-});
-
+import {ThemeProvider} from "@material-ui/core";
+import {theme} from './constant'
 
 ReactDOM.render(
     <ThemeProvider theme={theme}>
@@ -35,5 +19,6 @@ ReactDOM.render(
     ,
     document.getElementById('root')
 );
+
 
 

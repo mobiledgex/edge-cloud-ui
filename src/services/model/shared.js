@@ -1,6 +1,8 @@
 import React from 'react'
 import { Popup, Icon } from 'semantic-ui-react';
 import { fields } from './format';
+import {createMuiTheme} from "@material-ui/core";
+
 
 export const additionalDetail = (data) => {
     return (
