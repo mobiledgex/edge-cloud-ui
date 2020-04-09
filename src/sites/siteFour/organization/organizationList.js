@@ -1,16 +1,16 @@
 import React from 'react';
 import MexListView from '../../../container/MexListView';
-import {withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 //redux
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import {fields} from '../../../services/model/format';
-import {keys, showOrganizations, deleteOrganization} from '../../../services/model/organization';
+import { fields } from '../../../services/model/format';
+import { keys, showOrganizations, deleteOrganization } from '../../../services/model/organization';
 import OrganizationReg from './organizationReg';
 import * as serverData from '../../../services/model/serverData'
 import * as constant from '../../../services/model/shared';
 
-import {Button} from '@material-ui/core';
+import { Button } from '@material-ui/core';
 
 class OrganizationList extends React.Component {
     constructor(props) {
@@ -25,11 +25,12 @@ class OrganizationList extends React.Component {
     }
 
     onRegClose = (isEdited) => {
-        this.setState({currentView: null})
+        this.customizedData()
+        this.setState({ currentView: null })
     }
 
     onAdd = (action, data) => {
-        this.setState({currentView: <OrganizationReg data={data} action={action ? 'AddUser' : null} onClose={this.onRegClose}/>})
+        this.setState({ currentView: <OrganizationReg data={data} action={action ? 'AddUser' : null} onClose={this.onRegClose} /> })
     }
 
     /**Action menu block */
@@ -41,19 +42,28 @@ class OrganizationList extends React.Component {
             search: subPath
         });
         this.props.history.location.search = subPath;
-        this.props.handleChangeSite({mainPath: mainPath, subPath: subPath})
+        this.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
     }
 
-    onAudit = (data) => {
+    onAudit = (action, data) => {
         let orgName = data[fields.organizationName];
         this.gotoUrl('/site4', 'pg=audits&org=' + orgName)
     }
 
+    onDelete = (data, success) => {
+        if (success && data[fields.organizationName] === localStorage.getItem('selectOrg')) {
+            localStorage.removeItem('selectRole')
+            localStorage.removeItem('selectOrg')
+            this.props.handleUserRole(undefined)
+            this.forceUpdate()
+        }
+    }
+
     actionMenu = () => {
         return [
-            {label: 'Audit', onClick: this.onAudit},
-            {label: 'Add User', onClick: this.onAdd},
-            {label: 'Delete', onClick: deleteOrganization}
+            { label: 'Audit', onClick: this.onAudit },
+            { label: 'Add User', onClick: this.onAdd },
+            { label: 'Delete', onClick: deleteOrganization, onFinish: this.onDelete }
         ]
     }
 
@@ -65,7 +75,7 @@ class OrganizationList extends React.Component {
 
     getManage = (data) => {
         return (
-            <Button size={'small'} style={{width: 100, backgroundColor: localStorage.selectOrg === data[fields.organizationName] ? '#559901' : 'grey', color: 'white'}}>
+            <Button size={'small'} style={{ width: 100, backgroundColor: localStorage.selectOrg === data[fields.organizationName] ? '#559901' : 'grey', color: 'white' }}>
                 <label>Manage</label>
             </Button>)
     }
@@ -129,7 +139,8 @@ class OrganizationList extends React.Component {
         if (!isAdmin) {
             key.visible = true;
             key.customizedData = this.getManage;
-        } else {
+        }
+        else {
             key.visible = false;
         }
         this.forceUpdate()
@@ -155,8 +166,8 @@ class OrganizationList extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <div style={{width: '100%', height:'100%'}}>
-                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} onClick={this.onListViewClick}/>
+                <div style={{ width: '100%' }}>
+                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} onClick={this.onListViewClick} />
                 </div>
         )
     }
@@ -171,15 +182,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleUserRole: (data) => {
-            dispatch(actions.showUserRole(data))
-        },
-        handleRoleInfo: (data) => {
-            dispatch(actions.roleInfo(data))
-        },
-        handleChangeSite: (data) => {
-            dispatch(actions.changeSite(data))
-        }
+        handleUserRole: (data) => { dispatch(actions.showUserRole(data)) },
+        handleRoleInfo: (data) => { dispatch(actions.roleInfo(data)) },
+        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) }
     };
 };
 
