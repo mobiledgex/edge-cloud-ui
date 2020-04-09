@@ -56,7 +56,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
         return (
             <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
                 <div className='page_monitoring_dual_container' style={{flex: 1}}>
-                    <div className='page_monitoring_title_area'>
+                    <div className='page_monitoring_title_area draggable' style={{backgroundColor: 'transparent'}}>
                         <div className='page_monitoring_title' style={{fontFamily: 'Ubuntu'}}>
                             {convertToClassification(this.props.currentClassification)} {this.state.pHardwareType !== undefined && this.state.pHardwareType.replace("_", "")} Usage
                         </div>

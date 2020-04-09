@@ -19,7 +19,7 @@ type State = {
     loading: boolean,
 };
 
-export default class EventLogListForAppInstContainer extends React.Component<Props, State> {
+export default class AppInstEventLogListContainer extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props)
         this.state = {
@@ -56,18 +56,16 @@ export default class EventLogListForAppInstContainer extends React.Component<Pro
                     width: '100%',
                     height: 45
                 }}>
-                    <div className='page_monitoring_title'
+                    <div className='page_monitoring_title draggable'
                          style={{
-                             flex: .6,
+                             flex: 1,
                              marginTop: 10,
                              fontFamily: 'Ubuntu',
-                             //backgroundColor: 'red',
                          }}
                     >
                         App Inst Event Log
                     </div>
-                    <div style={{flex: .4, marginRight: 70}}>
-                    </div>
+
 
                 </div>
                 <div style={{marginTop: 11}}>

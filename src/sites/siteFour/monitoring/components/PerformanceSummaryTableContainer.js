@@ -61,18 +61,16 @@ export default class PerformanceSummaryTableContainer extends React.Component<Pr
                     width: '100%',
                     height: 45
                 }}>
-                    <div className='page_monitoring_title'
+                    <div className='page_monitoring_title draggable'
                          style={{
-                             flex: .38,
+                             flex: 1,
                              marginTop: 5,
-                             fontFamily: 'Ubuntu'
+                             fontFamily: 'Ubuntu',
+                             //backgroundColor:'red'
                          }}
                     >
                         Performance Summary
                     </div>
-                    <div style={{flex: .4, marginRight: 70}}>
-                    </div>
-
                 </div>
                 <Table className="" basic='very' sortable striped celled fixed collapsing
                        styles={{zIndex: 999999999999}}>
