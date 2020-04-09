@@ -405,14 +405,18 @@ export const groupByKey_ = (array, key) => {
 
 
 export const renderLoaderArea = (_this) => (
-    <div style={{width:'100%', height:'100%'}}>
-        <div style={{width:'100%', height:'100%'}}>
+    <div style={{width: '100%', height: '100%',}}>
+        <div style={{width: '100%', height: '100%'}}>
             {_this.renderHeader()}
         </div>
-        <div style={{position: 'absolute', top: '77%', left: '48%'}}>
-            <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row', marginTop: 350}}>
-                {renderGridLoader2(200, 200)}
-            </div>
+        <div style={{position: 'absolute', top: '40%', left: '40%', zIndex: 999999999999999}}>
+            <GridLoader
+                style={{zIndex: 99999999999}}
+                sizeUnit={"px"}
+                size={22}
+                color={'#70b2bc'}
+                loading={true}
+            />
         </div>
     </div>
 )
@@ -421,6 +425,7 @@ export const renderLoaderArea = (_this) => (
 export const renderGridLoader2 = (width, height) => {
     return (
         <GridLoader
+            style={{zIndex: 99999999999}}
             sizeUnit={"px"}
             size={18}
             color={'#70b2bc'}
