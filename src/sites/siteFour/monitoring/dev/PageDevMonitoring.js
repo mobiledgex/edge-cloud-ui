@@ -6,7 +6,7 @@ import {Dropdown, Grid, Modal} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
-import {Card, CircularProgress, withStyles} from '@material-ui/core'
+import {Card, CircularProgress, Toolbar, withStyles} from '@material-ui/core'
 import {Dropdown as ADropdown, Menu as AMenu,} from 'antd';
 import {
     defaultHwMapperListForCluster,
@@ -1742,18 +1742,16 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         renderHeader = () => {
             return (
                 <>
-                    <div className='content_title_wrap' style={{display: 'flex', marginBottom: 0}}>
-                        <div className='content_title_label' style={{flex: .08, marginBottom: 0, marginLeft: 3,}}>Monitoring</div>
+                    <Toolbar className='monitoring_title'>
+                        <label className='content_title_label'>Monitoring</label>
                         <div className='page_monitoring_select_area' style={{
-                            flex: .70,
+                            width:'fit-content',
                             //backgroundColor: 'red',
-                            justifyContent: 'flex-start',
-                            display: 'flex',
                         }}>
-                            <div style={{flex: .6}}>
+                            <div>
                                 {this.makeClusterDropdown()}
                             </div>
-                            <div style={{flex: .4}}>
+                            <div>
                                 {this.makeAppInstDropdown()}
                             </div>
 
@@ -1765,19 +1763,19 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             */}
                         <div
                             style={{
-                                marginLeft: 12,
-                                fontSize: 12,
-                                flex: .52,
+                                display:'flex',
+                                flex:1,
                                 justifyContent: 'flex-start',
                                 alignItems: 'center',
                                 color: 'rgba(255, 255, 255, .8)',
-                                height: 29,
+                                height: 28,
+                                padding:'0 10px',
                                 alignSelf: 'center',
                                 border: this.state.currentCluster !== '' || this.state.currentAppInst !== '' ? '1px dotted #4c4c4c' : null,
                                 //backgroundColor: 'blue',
                             }}
                         >
-                            <div style={{marginTop: 7, marginLeft: 9}}>
+                            <div>
                                 {this.renderBreadCrumb()}
                             </div>
                         </div>
@@ -1787,7 +1785,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             desc :loading Area
                             desc :####################################
                             */}
-                        <div style={{flex: .025}}>
+                        <div>
                             {this.state.intervalLoading &&
                             <div>
                                 <div style={{marginLeft: 15}}>
@@ -1836,7 +1834,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             desc :####################################
                             */}
                         <div style={{
-                            display: 'flex', justifyContent: 'flex-end', width: '100%', flex: .05,
+                            display: 'flex', justifyContent: 'flex-end',
                             //backgroundColor: 'yellow'
                         }}>
                             <div style={{
@@ -1844,7 +1842,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 display: 'flex',
                                 cursor: 'pointer',
                                 //backgroundColor: 'red',
-                                height: 30, width: 50,
+                                height: 30, width: 30,
                                 alignSelf: 'center',
                                 justifyContent: 'center',
                             }}>
@@ -1875,7 +1873,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 </ADropdown>
                             </div>
                         </div>
-                    </div>
+                    </Toolbar>
                 </>
 
             )
@@ -1887,7 +1885,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
                     <div
                         className="page_monitoring_dropdown_label"
-                        style={{backgroundColor: 'transparent', height: 20, marginTop: 6, marginLeft: this.state.isShowFilter ? 0 : 10}}
+                        style={{backgroundColor: 'transparent', height: 20}}
                     >
                         Cluster | Cloudlet
                     </div>
@@ -1912,7 +1910,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         makeAppInstDropdown() {
             return (
                 <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
-                    <div className="page_monitoring_dropdown_label" style={{backgroundColor: 'transparent', height: 20, marginTop: 6, marginLeft: 3}}>
+                    <div className="page_monitoring_dropdown_label" style={{backgroundColor: 'transparent', height: 20}}>
                         App Inst
                     </div>
                     <Dropdown
@@ -1948,7 +1946,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
             return (
                 <Legend>
-                    <div style={{display: 'flex', width: '100%'}}>
+                    <div style={{width: '100%'}}>
                         {/*  {!this.state.isShowFilter &&
                         <div>
                             {this.makeClusterDropdown()}
@@ -2022,16 +2020,14 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
             if (this.state.isNoData) {
                 return (
-                    <Grid.Row className='view_contents'>
-                        <Grid.Column className='contents_body'>
-                            {this.renderHeader()}
-                            <div style={{marginTop: 25, marginLeft: 25,}}>
-                                <div style={{fontSize: 25,}}>
-                                    There is no app instance you can access..
-                                </div>
+                    <div style={{width: '100%', height: '100%',}}>
+                        {this.renderHeader()}
+                        <div style={{marginTop: 25, marginLeft: 25, background:'none'}}>
+                            <div style={{fontSize: 25, color:'rgba(255,255,255,.6)' }}>
+                                There is no app instance you can access..
                             </div>
-                        </Grid.Column>
-                    </Grid.Row>
+                        </div>
+                    </div>
                 )
             }
 
@@ -2059,48 +2055,38 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
                         loading={this.state.loading}
                     />
-                    <Grid.Row className=''>
-                        <Card style={{
-                            width: '100%',
-                            backgroundColor: '#292c33',
-                            paddingTop: 10,
-                            marginBottom: -10,
-                            color: 'white',
-                        }}>
-                            <div>
-                                {/*desc:---------------------------------*/}
-                                {/*desc:Content Header                   */}
-                                {/*desc:---------------------------------*/}
-                                <SemanticToastContainer position={"top-right"} color={'white'}/>
-                                {this.renderHeader()}
-                                {/*desc:---------------------------------*/}
-                                {/*desc:Legend                           */}
-                                {/*desc:---------------------------------*/}
-                                {this.renderLegend()}
-                                <div className="page_monitoring"
-                                     style={{overflowY: 'auto', height: this.gridLayoutHeight}}>
-                                    <div className='' style={{marginBottom: 50}}>
-                                        {this.state.currentClassification === CLASSIFICATION.CLUSTER
-                                            ? this.renderGridLayoutForCluster()
-                                            : this.renderGridLayoutForAppInst()
-                                        }
-                                    </div>
+
+                    <div style={{width: '100%', height: '100%',}}>
+                        <div style={{width: '100%', height: '100%',}}>
+                            {/*desc:---------------------------------*/}
+                            {/*desc:Content Header                   */}
+                            {/*desc:---------------------------------*/}
+                            <SemanticToastContainer position={"top-right"} color={'white'}/>
+                            {this.renderHeader()}
+                            {/*desc:---------------------------------*/}
+                            {/*desc:Legend                           */}
+                            {/*desc:---------------------------------*/}
+                            {this.renderLegend()}
+                            <div className="page_monitoring" style={{overflowY: 'auto', height: 'calc(100% - 70px)'}}>
+                                <div className='' style={{marginBottom: 50}}>
+                                    {this.state.currentClassification === CLASSIFICATION.CLUSTER
+                                        ? this.renderGridLayoutForCluster()
+                                        : this.renderGridLayoutForAppInst()
+                                    }
                                 </div>
                             </div>
-                            {/*todo:---------------------------------*/}
-                            {/*todo:terminal button                   */}
-                            {/*todo:---------------------------------*/}
-                            {this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?
-                                <div className='page_monitoring_terminal_button' style={{marginBottom: 25}}
-                                     onClick={() => this.setState({openTerminal: true})}
-                                >
-                                </div>
-                                : null
-                            }
-                        </Card>
-
-
-                    </Grid.Row>
+                        </div>
+                        {/*todo:---------------------------------*/}
+                        {/*todo:terminal button                   */}
+                        {/*todo:---------------------------------*/}
+                        {this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?
+                            <div className='page_monitoring_terminal_button' style={{marginBottom: 25}}
+                                 onClick={() => this.setState({openTerminal: true})}
+                            >
+                            </div>
+                            : null
+                        }
+                    </div>
                     <Modal style={{width: '100%', height: '100%'}} open={this.state.openTerminal}>
                         <TerminalViewer data={this.state.terminalData} onClose={() => {
                             this.setState({openTerminal: false})
