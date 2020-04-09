@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useEffect, useState} from 'react';
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import TableContainer from "@material-ui/core/TableContainer";
 import Paper from "@material-ui/core/Paper";
@@ -7,11 +8,6 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import Table from "@material-ui/core/Table";
-import {useEffect, useState} from "react";
-import {CircularProgress} from "@material-ui/core";
-import {
-    renderPlaceHolderCircular3
-} from "../PageMonitoringCommonService";
 
 const {Row, Cell, Body, Header, HeaderCell} = Table
 type Props = {
@@ -19,23 +15,12 @@ type Props = {
     columnList: any,
     parent: PageDevMonitoring,
 };
-type State = {
-    eventLogList: any,
-    columnList: any,
-    loading: boolean,
-};
 
 
 export default function AppInstEventLogListHook(props) {
-
-    const [eventLogList, setEventLogList] = useState([]);
+    //const [eventLogList, setEventLogList] = useState([]);
 
     useEffect(() => {
-        if (props.eventLogList !== undefined) {
-
-        } else {
-            setEventLogList([])
-        }
     }, [props.eventLogList]);
 
 

@@ -470,101 +470,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             }
         }
 
-        async loadInitDataForCluster__FOR__DEV(isInterval: boolean = false) {
-            try {
-                clearInterval(this.intervalForAppInst)
-                this.setState({dropdownRequestLoading: true})
-
-                //FIXME : ############################
-                //@FIXME: fakeData22222222222
-                //FIXME : ############################
-                let clusterList = require('../aaa____TESTCODE____/Jsons/clusterList')
-                let cloudletList = require('../aaa____TESTCODE____/Jsons/cloudletList')
-                let appInstanceList = require('../aaa____TESTCODE____/Jsons/appInstanceList')
-                let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
-                console.log("clusterDropdownList===>", clusterDropdownList);
-
-
-                //FIXME : ############################
-                //FIXME : FAKEDATA ClusterEventLog
-                //FIXME : ############################
-                await this.setState({
-                    allClusterEventLogList: [],
-                    filteredClusterEventLogList: []
-                })
-
-
-                //FIXME : ############################
-                //@fixme: fakeData __allAppInstEvLogListValues
-                //FIXME : ############################
-                let __allAppInstEvLogListValues = require('../aaa____TESTCODE____/Jsons/allAppInstEventLogList')
-                await this.setState({
-                    allAppInstEventLogs: __allAppInstEvLogListValues,
-                    filteredAppInstEventLogs: __allAppInstEvLogListValues,
-                })
-
-
-                let appInstanceListGroupByCloudlet = []
-                try {
-                    appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
-                } catch (e) {
-                    showToast(e.toString())
-                }
-                console.log('appInstanceListGroupByCloudlet===>', appInstanceListGroupByCloudlet);
-
-                await this.setState({
-                    isReady: true,
-                    clusterDropdownList: clusterDropdownList,
-                    dropDownCloudletList: cloudletList,
-                    clusterList: clusterList,
-                    isAppInstaceDataReady: true,
-                    appInstanceList: appInstanceList,
-                    filteredAppInstanceList: appInstanceList,
-                    dropdownRequestLoading: false,
-
-                });
-
-                if (!isInterval) {
-                    this.setState({
-                        appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
-                    })
-                }
-                //fixme: fakeData22222222222
-                //fixme: fakeData22222222222
-                let allClusterUsageList = []
-                allClusterUsageList = require('../aaa____TESTCODE____/Jsons/allClusterUsageList')
-                console.log('filteredAppInstanceList===>', appInstanceList)
-
-                let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
-                await this.setState({
-                    bubbleChartData: bubbleChartData,
-                })
-
-                let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
-                    return o.sumCpuUsage;
-                }));
-
-                let maxMem = Math.max.apply(Math, allClusterUsageList.map(function (o) {
-                    return o.sumMemUsage;
-                }));
-
-                console.log('allClusterUsageList333====>', allClusterUsageList);
-
-                await this.setState({
-                    clusterListLoading: false,
-                    allCloudletUsageList: allClusterUsageList,
-                    allClusterUsageList: allClusterUsageList,
-                    filteredClusterUsageList: allClusterUsageList,
-                    maxCpu: maxCpu,
-                    maxMem: maxMem,
-                    isRequesting: false,
-                    currentCluster: '',
-                })
-            } catch (e) {
-
-            }
-        }
-
         showModalClusterLineChart(lineChartDataOne, index) {
             this.setState({
                 selectedClusterUsageOne: lineChartDataOne,
@@ -577,9 +482,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             try {
                 clearInterval(this.intervalForAppInst)
                 this.setState({dropdownRequestLoading: true})
-                //@todo:#####################################################################
-                //@todo: real_data (cloudletList ,clusterList, appnInstList)
-                //@todo:#####################################################################
+
+
+                //@todo:#############################################
+                //@todo: (cloudletList ,clusterList, appnInstList)
+                //@todo:#############################################
                 let cloudletList = await getCloudletList()
                 let clusterList = await getClusterList();
                 let appInstList: Array<TypeAppInstance> = await getAppInstList();
@@ -591,15 +498,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
                 let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
                 //@todo:#############################################
-                //@todo: getAllClusterEventLogList : real data
+                //@todo: getAllClusterEventLogList
                 //@todo:#############################################
                 let allClusterEventLogList = await getAllClusterEventLogList(clusterList);
-                console.log("allClusterEventLogList===>", allClusterEventLogList);
                 await this.setState({
                     allClusterEventLogList: allClusterEventLogList,
                     filteredClusterEventLogList: allClusterEventLogList
                 })
-
 
                 //@todo:#############################################
                 //@todo: getAppInst Event Logs : real data
@@ -821,7 +726,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             }
 
 
-            /*  return (
+            /*
+              return (
                   <BarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this}
                                      loading={this.state.loading} chartDataSet={barChartDataSet}
                                      pHardwareType={hwType} graphType={graphType}/>
