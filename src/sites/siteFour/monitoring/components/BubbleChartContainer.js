@@ -105,7 +105,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                             // marginLeft: 0, marginRight: 0, marginBottom: 10,
                         }}>
                             <>
-                                <div className='page_monitoring_title_area' style={{}}>
+                                <div className='page_monitoring_title_area draggable' style={{}}>
 
                                     <div style={{
                                         width: '100%',
@@ -121,7 +121,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                              }}
                                         >
                                             {this.props.isBig === undefined ?
-                                                <div style={{flex: .9, marginTop: 5,}}>
+                                                <div style={{flex: .9, marginTop: 5}}>
                                                     Cluster Bubble Chart
                                                 </div>
                                                 : <div style={{width: window.innerWidth * 0.9}}>

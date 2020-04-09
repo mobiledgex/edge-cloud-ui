@@ -4,7 +4,7 @@ import {PageMonitoringStyles, renderPlaceHolderCircular} from "../PageMonitoring
 import '../PageMonitoring.css'
 
 
-export default function EventLogListForClusterHook(props) {
+export default function ClusterEventLogListHook(props) {
     const [eventLogList, setEventLogList] = useState([]);
 
     useEffect(() => {

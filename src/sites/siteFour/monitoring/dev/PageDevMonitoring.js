@@ -80,9 +80,9 @@ import PieChartContainer from "../components/PieChartContainer";
 import BigModalGraphContainer from "../components/BigModalGraphContainer";
 import BubbleChartContainer from "../components/BubbleChartContainer";
 import LineChartContainer from "../components/LineChartContainer";
-import EventLogListForClusterHook from "../components/EventLogListForClusterHook";
+import ClusterEventLogListHook from "../components/ClusterEventLogListHook";
 import PerformanceSummaryTableContainer from "../components/PerformanceSummaryTableContainer";
-import EventLogListForAppInstContainer from "../components/EventLogListForAppInstContainer";
+import AppInstEventLogListContainer from "../components/AppInstEventLogListContainer";
 import MaterialIcon from "material-icons-react";
 import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
@@ -1210,11 +1210,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST) {
                 return (
-                    <EventLogListForClusterHook eventLogList={this.state.filteredClusterEventLogList} parent={this}/>
+                    <ClusterEventLogListHook eventLogList={this.state.filteredClusterEventLogList} parent={this}/>
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                 return (
-                    <EventLogListForAppInstContainer
+                    <AppInstEventLogListContainer
                         currentAppInst={this.state.currentAppInst}
                         parent={this}
                         handleAppInstDropdown={this.handleAppInstDropdown}
@@ -1275,8 +1275,19 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     }}
                 >
 
-                    <div className='page_monitoring_widget_icon_area'
-                         style={{position: 'absolute', right: 25, top: 10}}>
+                    <div
+                        class='draggable'
+                        style={{
+                            position: 'absolute', right: 25, top: 10,
+                            display: 'inline-block',
+                            width: '100px',
+                            lineHeight: '1.2',
+                            fontSize: '18px',
+                            marginLeft: '15px',
+                            cursor: 'pointer',
+                            textAlign: 'right',
+                            marginRight: '-15px',
+                        }}>
 
                         {/*desc:############################*/}
                         {/*desc:    maximize button         */}
@@ -1289,7 +1300,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         <div className="maxize page_monitoring_widget_icon"
                              onClick={this.showBigModal.bind(this, hwType, graphType)}
                         >
-                            <MaterialIcon size={'tiny'} icon='aspect_ratio'/>
+                            <MaterialIcon size={'tiny'} icon='aspect_ratio' color={'white'}/>
                         </div>
                         }
 
@@ -1297,11 +1308,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         {/*desc:    edit btn                */}
                         {/*desc:############################*/}
                         <div className="edit page_monitoring_widget_icon"
-                             onClick={() => {
-                                 //alert('sdlfksldkflskdlf')
-                             }}
                         >
-                            <MaterialIcon size={'tiny'} icon='create'/>
+                            <MaterialIcon size={'tiny'} icon='create' color={'white'}/>
                         </div>
 
                         <div className="remove page_monitoring_widget_icon"
@@ -1309,7 +1317,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                  this.removeGridItem(uniqueIndex)
                              }}
                         >
-                            <MaterialIcon size={'tiny'} icon='delete'/>
+                            <MaterialIcon size={'tiny'} icon='delete' color={'white'}/>
                         </div>
                     </div>
 
@@ -1329,8 +1337,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             return (
                 <ResponsiveReactGridLayout
                     isResizable={true}
+                    draggableHandle=".draggable"
                     verticalCompact={false}
-                    isDraggable={this.state.isDraggable}
+                    isDraggable={true}
                     //useCSSTransforms={true}
                     className={'layout page_monitoring_layout_dev'}
                     cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
@@ -1378,7 +1387,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         renderGridLayoutForAppInst = () => {
             return (
                 <ResponsiveReactGridLayout
-                    isDraggable={this.state.isDraggable}
+                    isDraggable={true}
                     useCSSTransforms={true}
                     isResizable={true}
                     className={'layout page_monitoring_layout_dev'}
@@ -1553,7 +1562,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     {/*desc: ######################*/}
                     {/*desc: Fix Grid              */}
                     {/*desc: ######################*/}
-                    <AMenu.Item style={{display: 'flex'}}
+                    {/*<AMenu.Item style={{display: 'flex'}}
                                 key="1"
                                 onClick={async () => {
                                     await this.setState({
@@ -1577,7 +1586,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
                             />
                         </div>
-                    </AMenu.Item>
+                    </AMenu.Item>*/}
 
                     {/*desc: ######################*/}
                     {/*desc:Stacked Line Chart     */}
@@ -1734,7 +1743,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             return (
                 <>
                     <div className='content_title_wrap' style={{display: 'flex', marginBottom: 0}}>
-                        <div className='content_title_label' style={{flex: .08, marginBottom: 0,}}>Monitoring</div>
+                        <div className='content_title_label' style={{flex: .08, marginBottom: 0, marginLeft: 3,}}>Monitoring</div>
                         <div className='page_monitoring_select_area' style={{
                             flex: .70,
                             //backgroundColor: 'red',

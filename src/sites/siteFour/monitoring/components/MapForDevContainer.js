@@ -300,7 +300,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 <React.Fragment>
                     <div>
                         {!this.props.isFullScreenMap &&
-                        <div className='page_monitoring_title_area'>
+                        <div className='page_monitoring_title_area draggable'>
                             <div style={{
                                 display: 'flex',
                                 width: '100%',
@@ -318,7 +318,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                         }
 
                         {this.props.parent.state.mapPopUploading &&
-                        <div className='page_monitoring_title_area'>
+                        <div className='page_monitoring_title_area draggable'>
                             <div className='page_monitoring_title' style={{
                                 backgroundColor: 'transparent',
                                 flex: .65

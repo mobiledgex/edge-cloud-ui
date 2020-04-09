@@ -72,7 +72,7 @@ export default class GradientBarChartContainer extends React.Component<Props, St
 
             <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
                 <div className='page_monitoring_dual_container' style={{flex: 1}}>
-                    <div className='page_monitoring_title_area'>
+                    <div className='page_monitoring_title_area draggable'>
                         <div className='page_monitoring_title'>
                             {this.state.dataLength > 2 &&
                             <React.Fragment>
