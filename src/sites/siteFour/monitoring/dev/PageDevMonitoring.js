@@ -82,7 +82,7 @@ import BubbleChartContainer from "../components/BubbleChartContainer";
 import LineChartContainer from "../components/LineChartContainer";
 import ClusterEventLogListHook from "../components/ClusterEventLogListHook";
 import PerformanceSummaryTableContainer from "../components/PerformanceSummaryTableContainer";
-import AppInstEventLogListContainer from "../components/AppInstEventLogListContainer";
+import AppInstEventLogListHook from "../components/AppInstEventLogListHook";
 import MaterialIcon from "material-icons-react";
 import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
@@ -1213,14 +1213,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     <ClusterEventLogListHook eventLogList={this.state.filteredClusterEventLogList} parent={this}/>
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
-                return (
-                    <AppInstEventLogListContainer
+                return this.state.loading ? renderPlaceHolderCircular() :
+                    <AppInstEventLogListHook
                         currentAppInst={this.state.currentAppInst}
                         parent={this}
                         handleAppInstDropdown={this.handleAppInstDropdown}
                         eventLogList={this.state.filteredAppInstEventLogs}
                     />
-                )
             }
         }
 
@@ -1743,7 +1742,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             return (
                 <>
                     <div className='content_title_wrap' style={{display: 'flex', marginTop: 10}}>
-                        <div className='content_title_label' style={{flex: .08, marginBottom: 0, marginLeft: 3,}}>Monitoring</div>
+                        <div className='content_title_label'
+                             style={{flex: .08, marginBottom: 0, marginLeft: 3,}}>Monitoring
+                        </div>
                         <div className='page_monitoring_select_area' style={{
                             flex: .70,
                             //backgroundColor: 'red',
@@ -1887,7 +1888,12 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
                     <div
                         className="page_monitoring_dropdown_label"
-                        style={{backgroundColor: 'transparent', height: 20, marginTop: 6, marginLeft: this.state.isShowFilter ? 0 : 10}}
+                        style={{
+                            backgroundColor: 'transparent',
+                            height: 20,
+                            marginTop: 6,
+                            marginLeft: this.state.isShowFilter ? 0 : 10
+                        }}
                     >
                         Cluster | Cloudlet
                     </div>
@@ -1912,7 +1918,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         makeAppInstDropdown() {
             return (
                 <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
-                    <div className="page_monitoring_dropdown_label" style={{backgroundColor: 'transparent', height: 20, marginTop: 6, marginLeft: 3}}>
+                    <div className="page_monitoring_dropdown_label"
+                         style={{backgroundColor: 'transparent', height: 20, marginTop: 6, marginLeft: 3}}>
                         App Inst
                     </div>
                     <Dropdown
@@ -1960,7 +1967,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                               size={15}/>
                         </div>}
                         {this.state.currentClassification === 'Cluster' ?
-                            <div style={{display: 'flex', flex: 1, justifyContent: 'center', marginLeft: 0, backgroundColor: 'transparent'}}>
+                            <div style={{
+                                display: 'flex',
+                                flex: 1,
+                                justifyContent: 'center',
+                                marginLeft: 0,
+                                backgroundColor: 'transparent'
+                            }}>
                                 {this.state.filteredClusterUsageList.map((item, index) => {
                                     return (
                                         <Center2>
@@ -1986,7 +1999,15 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 })}
                             </div>
                             :
-                            <div style={{display: 'flex', flex: 1, justifyContent: 'center', marginLeft: 0, backgroundColor: 'transparent', height: 20, marginTop: 3,}}>
+                            <div style={{
+                                display: 'flex',
+                                flex: 1,
+                                justifyContent: 'center',
+                                marginLeft: 0,
+                                backgroundColor: 'transparent',
+                                height: 20,
+                                marginTop: 3,
+                            }}>
                                 <div style={{backgroundColor: 'transparent'}}>
                                     <div style={{
                                         backgroundColor: this.state.chartColorList[0],

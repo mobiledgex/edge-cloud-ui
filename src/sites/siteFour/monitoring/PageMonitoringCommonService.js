@@ -470,23 +470,16 @@ export const renderPlaceHolderCircular = (type: string = '') => {
     return (
         <div className='page_monitoring_blank_box'
              style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%', zIndex: 999999999999999999999}}>
-            {/*<Lottie
-                options={{
-                    loop: true,
-                    autoplay: true,
-                    animationData: require('../../../lotties/14112-heartrate_777'),
-                    rendererSettings: {
-                        preserveAspectRatio: 'xMidYMid slice'
-                    }
-                }}
-                speed={2.5}
-                height={150}
-                width={150}
-                isStopped={false}
-                isPaused={false}
-            />*/}
             <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}
             />
+        </div>
+    )
+}
+
+export const renderPlaceHolderCircular3 = (type: string = '') => {
+    return (
+        <div style={{height: '100%', width: '100%', zIndex: 999999999999999999999}}>
+            <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}/>
         </div>
     )
 }
