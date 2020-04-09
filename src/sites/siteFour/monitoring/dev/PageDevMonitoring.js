@@ -485,7 +485,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 clearInterval(this.intervalForAppInst)
                 this.setState({dropdownRequestLoading: true})
                 //@todo:#####################################################################
-                //@todo: real_data (cloudletList ,clusterList, appnInstList)
+                //@todo:  (cloudletList ,clusterList, appnInstList)
                 //@todo:#####################################################################
                 let cloudletList = await getCloudletList()
                 let clusterList = await getClusterList();
@@ -498,7 +498,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
                 let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
                 //@todo:#############################################
-                //@todo: getAllClusterEventLogList : real data
+                //@todo: getAllClusterEventLogList :
                 //@todo:#############################################
                 let allClusterEventLogList = await getAllClusterEventLogList(clusterList);
                 console.log("allClusterEventLogList===>", allClusterEventLogList);
@@ -509,7 +509,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
 
                 //@todo:#############################################
-                //@todo: getAppInst Event Logs : real data
+                //@todo: getAppInst Event Logs :
                 //@todo:#############################################
                 let allAppInstEventLogs = await getAllAppInstEventLogs();
                 await this.setState({
@@ -545,7 +545,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 let allClusterUsageList = []
 
                 //@todo:#############################################
-                //todo: real data (allClusterUsageList)
+                //todo:  (allClusterUsageList)
                 //@todo:#############################################
                 try {
                     allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
@@ -1756,7 +1756,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 justifyContent: 'center',
                             }}>
                                 <ADropdown
-                                    overlay={this.__makeMenuListItems}
+                                    overlay={this.makeMenuListItems}
                                     trigger={['click']}
                                 >
                                     <div
