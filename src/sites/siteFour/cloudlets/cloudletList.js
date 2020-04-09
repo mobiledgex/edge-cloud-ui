@@ -4,11 +4,11 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 
-import { fields, isAdmin } from '../../../services/model/format';
+import { fields, getUserRole } from '../../../services/model/format';
 import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/model/cloudlet';
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
 import ClouldletReg from './cloudletReg';
-
+import * as constant from '../../../constant'
 import * as shared from '../../../services/model/shared';
 import { Button } from 'semantic-ui-react';
 
@@ -39,7 +39,16 @@ class CloudletList extends React.Component {
         ]
     }
 
-    
+    canAdd = ()=>
+    {
+        let  valid  = false
+        let role = getUserRole();
+        if(role === constant.ADMIN_MANAGER || role === constant.OPERATOR_MANAGER || role === constant.OPERATOR_CONTRIBUTOR)
+        {
+            valid = true
+        }
+        return valid
+    }
 
 
     requestInfo = () => {
@@ -53,7 +62,7 @@ class CloudletList extends React.Component {
             isMap: true,
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
-            onAdd: isAdmin() ? this.onAdd : undefined
+            onAdd: this.canAdd() ? this.onAdd : undefined
         })
     }
 

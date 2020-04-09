@@ -33,10 +33,23 @@ export const PLATFORM_TYPE_FAKEINFRA = 'Fakeinfra'
 export const IP_SUPPORT_DYNAMIC = 'Dynamic'
 export const LIVENESS_STATIC = 'Static'
 export const APP = 'App'
-export const YES = 'YES'
+export const YES = 'Yes'
+export const NO = 'No'
+
+export const ADMIN_MANAGER = 'AdminManager'
+export const OPERATOR_MANAGER = 'OperatorManager'
+export const OPERATOR_CONTRIBUTOR = 'OperatorContributor'
 
 export const getHeight = (height) => {
     return window.innerHeight - (height ? height : 85)
+}
+
+export const showYesNo = (data, isDetailView)=>
+{
+    if(isDetailView)
+    {
+        return data ? YES : NO
+    }
 }
 
 export const IPAccessLabel = (id) => {
@@ -87,6 +100,21 @@ export const imageType = (id) => {
             return IMAGE_TYPE_HELM
         case IMAGE_TYPE_HELM:
             return 3
+        default:
+            return id
+    }
+}
+
+export const configType = (id) => {
+    switch (id) {
+        case 'Helm Customization':
+            return 'hemlCustomizationYaml'
+        case 'Environment Variables':
+            return 'envVarsYaml'
+        case 'hemlCustomizationYaml':
+            return 'Helm Customization'
+        case 'envVarsYaml':
+            return 'Environment Variables'
         default:
             return id
     }

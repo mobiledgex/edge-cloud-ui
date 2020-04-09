@@ -1,7 +1,8 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
+import uuid from 'uuid';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, BUTTON, CHECKBOX, ICON_BUTTON, TEXT_AREA } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -14,7 +15,6 @@ import { getPrivacyPolicyList } from '../../../services/model/privacyPolicy';
 import { getClusterInstList } from '../../../services/model/clusterInstance';
 import { getAppList } from '../../../services/model/app';
 import { createAppInst } from '../../../services/model/appInstance';
-//autoclustermobiledgexsdkdemo
 
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 
@@ -99,7 +99,7 @@ class ClusterInstReg extends React.Component {
                 form.rules.disabled = currentForm.value ? true : false
                 form.error = currentForm.value ? undefined : form.error
             }
-            else if (form.field === fields.privacyPolicyName) {
+            else if (form.field === fields.privacyPolicyName || form.field === fields.ipAccess) {
                 form.visible = currentForm.value
                 form.value = currentForm.value ? form.value : undefined
             }
@@ -130,10 +130,65 @@ class ClusterInstReg extends React.Component {
                 if (isInit === undefined || isInit === false) {
                     this.setState({ forms: forms })
                 }
-                break;
             }
         }
     }
+
+    versionValueChange = (currentForm, forms, isInit) => {
+        //hide cluster and autoCluster if deployment type is vm
+        let nForms = []
+        let appName = undefined;
+        let dependentData = currentForm.dependentData
+        for (let i = 0; i < dependentData.length; i++) {
+            let form = forms[dependentData[i].index]
+            if (form.field === fields.appName) {
+                appName = form.value
+                break;
+            }
+        }
+        
+        for (let i = 0; i < this.appList.length; i++) {
+            let app = this.appList[i]
+            if (app[fields.appName] === appName && app[fields.version] === currentForm.value) {
+                nForms = forms.filter((form) => {
+                    if (form.field === fields.autoClusterInstance) {
+                        form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_VM ? false : true
+                        form.value = false
+                        this.autoClusterValueChange(form, forms, isInit)
+                        return form
+                    }
+                    else if (form.field === fields.ipAccess) {
+                        form.options = app[fields.accessType] === constant.ACCESS_TYPE_LOAD_BALANCER ? [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED] : [constant.IP_ACCESS_DEDICATED]
+                        form.value = undefined
+                        return form
+                    }
+                    else if (form.field === fields.clusterName) {
+                        form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_VM ? false : true
+                        form.value = undefined
+                        return form
+                    }
+                    else if (form.label === 'Configs') {
+                        form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM ? true : false
+                        return form
+                    }
+                    else if (form.field === fields.configs) {
+                        if (app[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM) { 
+                            return form
+                        }
+                    }
+                    else
+                    {
+                        return form
+                    }
+                })
+                break;
+            }
+        }
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: nForms })
+        }
+    }
+    
 
     regionValueChange = (currentForm, forms, isInit) => {
         let region = currentForm.value;
@@ -176,27 +231,53 @@ class ClusterInstReg extends React.Component {
         }
     }
 
+    /**config blog */
+
+    removeConfigForm = (e, form) => {
+        if (form.parent) {
+            let updateForms = Object.assign([], this.state.forms)
+            updateForms.splice(form.parent.id, 1);
+            this.setState({
+                forms: updateForms
+            })
+        }
+
+    }
+
+    configForm = () => ([
+        { field: fields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, type: 'number', rows:2 }, width: 9, visible: true },
+        { field: fields.kind, label: 'Kind', formType: SELECT, rules: { required: true}, width: 4, visible: true, options: ['envVarsYaml', 'hemlCustomizationYaml'] },
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeConfigForm }
+    ])
+
+    getConfigForm = (form) => (
+        { uuid: uuid(), field: fields.configs, formType: 'MultiForm', forms: form, width: 3, visible: true }
+    )
+
+    addConfigs = () => {
+        this.setState(prevState => ({ forms: [...prevState.forms, this.getConfigForm(this.configForm())] }))
+    }
+
     formKeys = () => {
         return [
             { label: 'App Instances', formType: 'Header', visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
             { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of' },
-            { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
+            { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: true }, fullData: true, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
             { field: fields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: true }, visible: true, dependentData: [{ index: 3, field: fields.appName }] },
             { field: fields.operatorName, label: 'Operator', formType: 'Select', placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
             { field: fields.cloudletName, label: 'Cloudlet', formType: 'MultiSelect', placeholder: 'Select Cloudlets', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 5, field: fields.operatorName }] },
-            { field: fields.autoClusterInstance, label: 'Auto Cluster Instance', formType: CHECKBOX, visible: true, value: false },
-            { field: fields.clusterName, label: 'Cluster', formType: 'Select', placeholder: 'Select Clusters', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
-            { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: 'Select', placeholder: 'Select Privacy Policy', rules: { required: false }, visible: false, dependentData: [{ index: 1, field: fields.region }] },
+            { field: fields.autoClusterInstance, label: 'Auto Cluster Instance', formType: CHECKBOX, visible: false, value: false },
+            { field: fields.ipAccess, label: 'IP Access', formType: 'Select', placeholder: 'Select IP Access', visible: false },
+            { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: 'Select', placeholder: 'Select Privacy Policy', rules: { required: false }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
+            { field: fields.clusterName, label: 'Cluster', formType: 'Select', placeholder: 'Select Clusters', rules: { required: true }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
+            { label: 'Configs', formType: 'Header', forms: [{ formType: ICON_BUTTON, icon: 'add', visible: true, update: true, onClick: this.addConfigs, style:{color:'white'} }], visible: false }
         ]
     }
 
     checkForms = (form, forms, isInit) => {
         if (form.field === fields.region) {
             this.regionValueChange(form, forms, isInit)
-        }
-        else if (form.field === fields.region) {
-            this.organizationValueChange(form, forms, isInit)
         }
         else if (form.field === fields.organizationName) {
             this.organizationValueChange(form, forms, isInit)
@@ -209,6 +290,9 @@ class ClusterInstReg extends React.Component {
         }
         else if (form.field === fields.appName) {
             this.appNameValueChange(form, forms, isInit)
+        }
+        else if (form.field === fields.version) {
+            this.versionValueChange(form, forms, isInit)
         }
     }
 
@@ -234,8 +318,28 @@ class ClusterInstReg extends React.Component {
 
     onCreate = async (data) => {
         if (data) {
+            let forms = this.state.forms;
+            let configs = []
+            for (let i = 0; i < forms.length; i++) {
+                let form = forms[i];
+                if (form.uuid) {
+                    let uuid = form.uuid;
+                    let multiFormData = data[uuid]
+                    if (multiFormData) {
+                        configs.push(multiFormData)
+                    }
+                    data[uuid] = undefined
+                }
+            }
+            if (configs.length > 0) {
+                data[fields.configs] = configs
+            }
+
             let cloudlets = data[fields.cloudletName];
-            data[fields.clusterName] = data[fields.autoClusterInstance] ? 'autocluster' + data[fields.appName].toLowerCase().replace(/ /g, "") : data[fields.clusterName]
+            if(data[fields.clusterName] || data[fields.autoClusterInstance])
+            {
+                data[fields.clusterName] = data[fields.autoClusterInstance] ? 'autocluster' + data[fields.appName].toLowerCase().replace(/ /g, "") : data[fields.clusterName]
+            }
             if (cloudlets && cloudlets.length > 0) {
                 for (let i = 0; i < cloudlets.length; i++) {
                     let cloudlet = cloudlets[i];
@@ -305,6 +409,9 @@ class ClusterInstReg extends React.Component {
                         case fields.version:
                             form.options = this.appList
                             break;
+                        case fields.ipAccess:
+                            form.options = [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED]
+                            break;
                         default:
                             form.options = undefined;
                     }
@@ -327,6 +434,8 @@ class ClusterInstReg extends React.Component {
                 app[fields.region] = data[fields.region]
                 app[fields.organizationName] = data[fields.organizationName]
                 app[fields.version] = data[fields.version]
+                app[fields.deployment] = data[fields.deployment]
+                app[fields.accessType] = data[fields.accessType]
                 this.appList = [app];
 
                 let disabledFields = [fields.region, fields.organizationName, fields.appName, fields.version]

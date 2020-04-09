@@ -35,7 +35,6 @@ class MexListView extends React.Component {
             uuid: 0,
             refresh: true,
         };
-        this.wsResponseCount = 0;
         this.requestCount = 0;
         this.keys = props.requestInfo.keys;
         this.selectedRowIndex = {};
@@ -133,28 +132,13 @@ class MexListView extends React.Component {
     }
 
     onDeleteWSResponse = (mcRequest) => {
-        this.wsResponseCount += 1;
-        let code = 200;
-        let message = '';
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let response = mcRequest.response.data
-                code = response.code
-                message = response.data.message
-            }
+        if (mcRequest && mcRequest.response && mcRequest.response.data) {
+            let data = mcRequest.response.data
+            let code = data.code
+            let message = data.data.message
+            code === 200 && message === 'Deleting' ? this.dataFromServer(this.selectedRegion) : this.props.handleAlertInfo('error', message)
         }
-
-        if (this.wsResponseCount === 1) {
-            setTimeout(() => {
-                if (code === 200) {
-                    this.dataFromServer(this.selectedRegion);
-                }
-                else {
-                    this.props.handleAlertInfo('error', message)
-                }
-                this.props.handleLoadingSpinner(false);
-            }, 3000)
-        }
+        this.props.handleLoadingSpinner(false)
     }
 
     onDelete = async (action) => {
@@ -162,16 +146,21 @@ class MexListView extends React.Component {
         let data = dataList[this.selectedRowIndex]
         if (data) {
             if (action.ws) {
-                this.wsResponseCount = 0
                 this.props.handleLoadingSpinner(true);
                 serverData.sendWSRequest(this, action.onClick(data), this.onDeleteWSResponse)
             }
             else {
+                let valid = false
                 let mcRequest = await serverData.sendRequest(this, action.onClick(data))
                 if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
                     this.props.handleAlertInfo('success', `${mcRequest.request.success} deleted successfully`)
                     dataList.splice(this.selectedRowIndex, 1)
                     this.setState({ dataList: dataList })
+                    valid = true;
+                }
+                if(action.onFinish)
+                {
+                    action.onFinish(data, valid)
                 }
             }
         }
@@ -246,13 +235,13 @@ class MexListView extends React.Component {
                     <div className='panel_worldmap' style={{ height: 300 }}>
                         <Map dataList={this.state.dataList} id={this.props.requestInfo.id} />
                     </div> : null}
-                <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing style={{ height: isMap ? '55%' : '97%' }}>
+                <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing style={{ height: isMap ?  'calc(100% - 312px)' : '100%' }}>
                     <Table.Header>
                         <Table.Row>
                             {this.makeHeader()}
                         </Table.Row>
                     </Table.Header>
-                    <Table.Body style={{ "overflow": "auto", height: isMap ? this.getHeight() - 315 : this.getHeight() }}>
+                    <Table.Body style={{ "overflow": "auto", height: '100%' }}>
                         {
                             this.state.dataList.map((item, i) => (
                                 <Table.Row key={i}>
@@ -331,10 +320,11 @@ class MexListView extends React.Component {
         let responseData = null;
         let stepsArray = this.state.stepsArray;
         if (stepsArray && stepsArray.length > 0) {
-            stepsArray.map((item, i) => {
+            stepsArray = stepsArray.filter((item) => {
                 if (request.uuid === item.uuid) {
                     if (mcRequest.response) {
                         responseData = item;
+                        return item
                     }
                     else {
                         if (item.steps && item.steps.length > 1) {
@@ -345,12 +335,14 @@ class MexListView extends React.Component {
                             this.dataFromServer(this.selectedRegion)
                         }
 
-                        if (this.state.uuid === 0) {
-                            stepsArray.splice(i, 1);
+                        if (this.state.uuid !== 0) {
+                            return item
                         }
                     }
                 }
+                return item
             })
+
         }
 
         if (mcRequest.response) {
@@ -365,15 +357,12 @@ class MexListView extends React.Component {
                         item.steps.push(step)
                     }
                 })
-
             }
         }
 
         this.setState({
             stepsArray: stepsArray
         })
-
-
     }
 
     onCloseStepper = () => {
@@ -479,24 +468,39 @@ class MexListView extends React.Component {
     onServerResponse = (mcRequestList) => {
         this.requestCount -= 1
         let requestInfo = this.props.requestInfo
-        let dataList = this.state.dataList
+        let newDataList = []
+
         if (mcRequestList && mcRequestList.length > 0) {
             if (this.props.multiDataRequest) {
-                dataList = [...dataList, ...this.props.multiDataRequest(requestInfo.keys, mcRequestList)]
+                newDataList = this.props.multiDataRequest(requestInfo.keys, mcRequestList)
             }
             else {
                 let mcRequest = mcRequestList[0]
                 if (mcRequest.response && mcRequest.response.data) {
-                    dataList = [...dataList, ...mcRequest.response.data]
+                    newDataList = mcRequest.response.data
                 }
             }
 
         }
 
-        if (dataList.length > 0 && requestInfo.sortBy) {
-            dataList = _.orderBy(dataList, requestInfo.sortBy)
-            this.streamProgress(dataList)
+        let dataList = this.state.dataList
+        if (mcRequestList && mcRequestList.length > 0 && dataList.length > 0) {
+            let requestData = mcRequestList[0].request.data
+            if(requestData.region)
+            {
+                dataList = dataList.filter(function( obj ) {
+                    return obj[fields.region] !== requestData.region;
+                });
+            }
         }
+
+        if(newDataList.length > 0)
+        {
+            newDataList = _.orderBy(newDataList, requestInfo.sortBy)
+            this.streamProgress(newDataList)
+            dataList = [...dataList, ...newDataList]
+        }
+        
         if (this.requestCount === 0 && dataList.length === 0) {
             this.props.handleAlertInfo('error', 'Requested data is empty')
         }

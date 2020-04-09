@@ -3,10 +3,8 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 //redux
 import * as actions from '../../../actions';
-
-
-
 //model
+import * as constant from '../../../constant';
 import * as shared from '../../../services/model/shared';
 import { fields } from '../../../services/model/format';
 import { keys, showClusterInsts, deleteClusterInst, streamClusterInst, multiDataRequest } from '../../../services/model/clusterInstance';
@@ -32,7 +30,6 @@ class ClusterInstView extends React.Component {
         this.setState({ currentView: null })
     }
 
-
     onAdd = (action, data) => {
         this.setState({ currentView: <ClusterInstReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose}/> })
     }
@@ -43,9 +40,6 @@ class ClusterInstView extends React.Component {
             { label: 'Delete', onClick: deleteClusterInst, ws: true }
         ]
     }
-
-    
-
 
     requestInfo = () => {
         return ({
@@ -72,7 +66,7 @@ class ClusterInstView extends React.Component {
                 key.customizedData = shared.showProgress
             }
             if (key.field === fields.reservable) {
-                key.customizedData = shared.showYesNo
+                key.customizedData = constant.showYesNo
             }
         }
     }
