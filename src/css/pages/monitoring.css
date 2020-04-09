@@ -878,4 +878,5 @@ page_monitoring_dashboard_dev {
 
 .monitoring_title.MuiToolbar-regular {
     min-height: 36px !important;
+    margin: 0 0 5px 0;
 }

@@ -1635,7 +1635,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {/*desc:---------------------------------*/}
                             <SemanticToastContainer position={"top-right"}/>
                             {this.renderHeader()}
-                            <div className="page_monitoring" style={{overflowY: 'auto', height: 'calc(100% - 98px)'}}>
+                            <div className="page_monitoring" style={{overflowY: 'auto', height: 'calc(100% - 102px)'}}>
                                 <div className='page_monitoring_dashboard_dev'
                                      style={{marginBottom: 110}}>
                                     {this.state.currentClassification === CLASSIFICATION.CLUSTER
