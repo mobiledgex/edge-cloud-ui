@@ -3,8 +3,7 @@ import * as React from 'react';
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import {Bar, HorizontalBar} from "react-chartjs-2";
 import 'chartjs-plugin-labels'
-import {renderBarChartCore, renderPlaceHolderCircular} from "../PageMonitoringCommonService";
-import {GradientBarChartOptions1, barChartOptions2, CHART_TYPE} from "../dev/PageDevMonitoringService";
+import {barChartOptions2, GradientBarChartOptions1} from "../dev/PageDevMonitoringService";
 
 
 type Props = {

@@ -1,5 +1,3 @@
-import 'react-hot-loader';
-
 import React from 'react';
 import '../PageMonitoring.css';
 import {
