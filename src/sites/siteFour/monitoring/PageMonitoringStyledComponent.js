@@ -45,19 +45,19 @@ export const AppInstOuter = styled.div`
 
 
 export const Legend = styled.div`
+  display : flex;
   justify-content: flex-start;
   text-align: center;
   flex-direction: row;
-  display : flex;
   align-self: center;
   font-size: 13px;
   border-width: 0.1px;
   border-style: dotted;
   border-color: dimgrey;
   padding:5px;
-  margin-top: 10px;
+  //margin-top: 10px;
   margin-left: 10px;
-  margin-right: 20px;
+  margin-right: 10px;
   //marginLeft:50px;
 `;
 

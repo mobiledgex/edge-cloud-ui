@@ -53,6 +53,8 @@ const drawerWidth = 250;
 const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
+        width:'100%',
+        height:'100%'
     },
     drawer: {
         width: drawerWidth,
@@ -86,10 +88,12 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: '#292c33',
         // necessary for content to be below app bar
         ...theme.mixins.toolbar,
+        minHeight: '48px !important',
     },
     content: {
         flexGrow: 1,
-        margin: 5
+        margin: 5,
+        marginTop: 53 /* header height(48) + margin(5) */
     },
 }));
 
@@ -319,7 +323,7 @@ export default function MiniDrawer(props) {
                 </List>
             </Drawer>
             <main className={classes.content}>
-                {props.isShowHeader && <div className={classes.toolbar}/>}
+                {/*{props.isShowHeader && <div className={classes.toolbar}/>}*/}
                 <div className='contents_body'>
                     {page}
                 </div>
