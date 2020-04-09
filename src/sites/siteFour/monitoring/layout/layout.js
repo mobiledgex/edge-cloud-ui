@@ -60,8 +60,8 @@ export default class MonitoringLayout extends React.Component {
     }
 
     generateDOM(items) {
-        return _.map(this.state.layouts[this.state.currentBreakpoint], l => {
-            return (
+        return this.state.layouts[this.state.currentBreakpoint].map(
+            (l, idx) => (
                 <div
                     key={l.i}
                     className={l.static ? "static" : "cancelDrageBar"}
@@ -86,11 +86,11 @@ export default class MonitoringLayout extends React.Component {
                             border: "1px solid #696969"
                         }}
                     >
-                        {items[0]}
+                        {items[idx]}
                     </div>
                 </div>
-            );
-        });
+            )
+        );
     }
 
     onBreakpointChange = breakpoint => {

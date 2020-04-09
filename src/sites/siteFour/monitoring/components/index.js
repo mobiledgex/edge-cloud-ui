@@ -1,1 +1,1 @@
-export TimeSeries from "../../../../charts/plotly/timeSeries";
+export { TimeSeries } from "../../../../charts/plotly/timeSeries";

@@ -1,0 +1,29 @@
+import React from "react";
+import ContainerWrapper from "./ContainerWrapper";
+import sizeMe from "react-sizeme";
+import TimeSeries from "../../../../charts/plotly/timeseries";
+
+class ChartWidget extends React.Component {
+    render() {
+        const { data, chartType, size } = this.props;
+        return (
+            <div style={{ height: "100%" }}>
+                {chartType}
+                {size.width + ":" + size.height}
+                {chartType === "timeseries" ? (
+                    <TimeSeries></TimeSeries>
+                ) : (
+                    <DataGrid data={data}></DataGrid>
+                )}
+            </div>
+        );
+    }
+}
+
+export default sizeMe({ monitorHeight: true })(ContainerWrapper()(ChartWidget));
+
+class DataGrid extends React.Component {
+    render() {
+        return <div>DataGrid chart</div>;
+    }
+}

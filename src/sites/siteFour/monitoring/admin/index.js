@@ -2,7 +2,7 @@ import React from "react";
 import _ from "lodash";
 import MonitoringLayout from "../layout/layout";
 //
-import TestWidget from "../container/TestWidget";
+import ChartWidget from "../container/ChartWidget";
 
 export default class MonitoringAdmin extends React.Component {
     state = {
@@ -68,5 +68,9 @@ const generateLayout = sizeInfo => {
 };
 
 const generateComponent = info => {
-    return [<TestWidget chartType={"line chart"} />];
+    return [
+        <ChartWidget url={"https://test1"} chartType={"timeseries"} />,
+        <ChartWidget url={"https://test2"} chartType={"column"} />,
+        <ChartWidget url={"https://test2"} chartType={"map"} />
+    ];
 };

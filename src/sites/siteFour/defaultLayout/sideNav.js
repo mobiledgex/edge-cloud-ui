@@ -234,7 +234,6 @@ export default function MiniDrawer(props) {
     const handleDrawerOpen = () => {
         setNavState(1);
         setOpen(true);
-        console.log("good open side...");
         var event;
         if (typeof Event === "function") {
             event = new Event("resize");
@@ -249,7 +248,6 @@ export default function MiniDrawer(props) {
     const handleDrawerClose = () => {
         setNavState(0);
         setOpen(false);
-        console.log("good close side...");
         var event;
         if (typeof Event === "function") {
             event = new Event("resize");

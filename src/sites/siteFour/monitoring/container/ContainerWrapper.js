@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 
-const ContainerWrapper = (url, chartType) => WrapperComponent => {
+const ContainerWrapper = () => WrapperComponent => {
     return class extends React.Component {
         state = {
             data: null,
@@ -9,7 +9,7 @@ const ContainerWrapper = (url, chartType) => WrapperComponent => {
         };
         async initialize() {
             try {
-                const response = await axios.get(url);
+                const response = await axios.get(this.props.url);
                 this.setState({
                     data: response.data
                 });
@@ -18,7 +18,7 @@ const ContainerWrapper = (url, chartType) => WrapperComponent => {
             }
         }
         componentDidMount() {
-            this.setState({ chartType: chartType });
+            this.setState({ chartType: this.props.chartType });
             this.initialize();
         }
         render() {
