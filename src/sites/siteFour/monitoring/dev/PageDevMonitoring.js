@@ -445,9 +445,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         }
 
         componentDidMount = async () => {
+            //fixme:####################
             //fixme:isShowHeader
-            //fixme:isShowHeader
-            this.props.toggleHeader(false);
+            //fixme:####################
+            this.props.toggleHeader(true);
             this.setState({
                 loading: true,
                 bubbleChartLoader: true,
@@ -1622,7 +1623,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 await this.setState({
                                     themeTitle: THEME_OPTIONS.DEFAULT
                                 })
-                                this.handleThemeChanges(this.state.themeTitle)
+                                await this.handleThemeChanges(this.state.themeTitle)
                             }}
                         >
                             DEFAULT
@@ -1633,7 +1634,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 await this.setState({
                                     themeTitle: THEME_OPTIONS.GREEN
                                 })
-                                this.handleThemeChanges(this.state.themeTitle)
+                                await this.handleThemeChanges(this.state.themeTitle)
                             }}
                         >
                             GREEN
@@ -1644,7 +1645,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 await this.setState({
                                     themeTitle: THEME_OPTIONS.BLUE
                                 })
-                                this.handleThemeChanges(this.state.themeTitle)
+                                await this.handleThemeChanges(this.state.themeTitle)
                             }}
                         >
                             BLUE
@@ -1655,7 +1656,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 await this.setState({
                                     themeTitle: THEME_OPTIONS.RED
                                 })
-                                this.handleThemeChanges(this.state.themeTitle)
+                                await this.handleThemeChanges(this.state.themeTitle)
                             }}
                         >
                             RED
@@ -1666,7 +1667,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 await this.setState({
                                     themeTitle: THEME_OPTIONS.MONOKAI
                                 })
-                                this.handleThemeChanges(this.state.themeTitle)
+                                await this.handleThemeChanges(this.state.themeTitle)
                             }}
                         >
                             MONOKAI
@@ -1677,7 +1678,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 await this.setState({
                                     themeTitle: THEME_OPTIONS.APPLE
                                 })
-                                this.handleThemeChanges(this.state.themeTitle)
+                                await this.handleThemeChanges(this.state.themeTitle)
                             }}
                         >
                             APPLE
@@ -1697,7 +1698,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                     if (!this.state.isStream) {
                                         clearInterval(this.intervalForAppInst)
                                     } else {
-                                        this.handleAppInstDropdown(this.state.currentAppInst, true)
+                                        await this.handleAppInstDropdown(this.state.currentAppInst, true)
                                     }
                                 }}
                     >
@@ -1710,7 +1711,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     {/*desc: ######################*/}
                     {/*desc: Show Header            */}
                     {/*desc: ######################*/}
-                    <AMenu.Item style={{display: 'flex'}}
+                    {/*<AMenu.Item style={{display: 'flex'}}
                                 key="1"
                                 onClick={() => {
                                     if (this.props.isShowHeader) {
@@ -1724,7 +1725,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         <div style={PageMonitoringStyles.listItemTitle}>
                             Show Header
                         </div>
-                    </AMenu.Item>
+                    </AMenu.Item>*/}
                 </AMenu>
             )
         }
@@ -1732,147 +1733,140 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         renderHeader = () => {
             return (
                 <>
-                    <Grid.Row className='content_title'>
-                        <div className='content_title_wrap' style={{display: 'flex'}}>
-                            <div className='content_title_label' style={{flex: .08}}>Monitoring</div>
-                            {/*
-                            desc :####################################
-                            desc :Fliter Area
-                            desc :####################################
-                            */}
-                            <div className='page_monitoring_select_area' style={{
-                                flex: .70,
-                                //backgroundColor: 'red',
-                                justifyContent: 'flex-start',
-                                display: 'flex',
-                            }}>
-                                <div style={{flex: .6}}>
-                                    {this.makeClusterDropdown()}
-                                </div>
-                                <div style={{flex: .4}}>
-                                    {this.makeAppInstDropdown()}
-                                </div>
-
+                    <div className='content_title_wrap' style={{display: 'flex', marginBottom: 0}}>
+                        <div className='content_title_label' style={{flex: .08, marginBottom: 0,}}>Monitoring</div>
+                        <div className='page_monitoring_select_area' style={{
+                            flex: .70,
+                            //backgroundColor: 'red',
+                            justifyContent: 'flex-start',
+                            display: 'flex',
+                        }}>
+                            <div style={{flex: .6}}>
+                                {this.makeClusterDropdown()}
                             </div>
-                            {/*
+                            <div style={{flex: .4}}>
+                                {this.makeAppInstDropdown()}
+                            </div>
+
+                        </div>
+                        {/*
                             desc :####################################
                             desc :BreadCrumb Area
                             desc :####################################
                             */}
-                            <div
-                                style={{
-                                    marginLeft: 12,
-                                    fontSize: 12,
-                                    flex: .52,
-                                    justifyContent: 'flex-start',
-                                    alignItems: 'center',
-                                    color: 'rgba(255, 255, 255, .8)',
-                                    height: 29,
-                                    alignSelf: 'center',
-                                    border: this.state.currentCluster !== '' || this.state.currentAppInst !== '' ? '1px dotted #4c4c4c' : null,
-                                    //backgroundColor: 'blue',
-                                }}
-                            >
-                                <div style={{marginTop: 7, marginLeft: 9}}>
-                                    {this.renderBreadCrumb()}
-                                </div>
+                        <div
+                            style={{
+                                marginLeft: 12,
+                                fontSize: 12,
+                                flex: .52,
+                                justifyContent: 'flex-start',
+                                alignItems: 'center',
+                                color: 'rgba(255, 255, 255, .8)',
+                                height: 29,
+                                alignSelf: 'center',
+                                border: this.state.currentCluster !== '' || this.state.currentAppInst !== '' ? '1px dotted #4c4c4c' : null,
+                                //backgroundColor: 'blue',
+                            }}
+                        >
+                            <div style={{marginTop: 7, marginLeft: 9}}>
+                                {this.renderBreadCrumb()}
                             </div>
+                        </div>
 
-                            {/*
+                        {/*
                             desc :####################################
                             desc :loading Area
                             desc :####################################
                             */}
-                            <div style={{flex: .025}}>
-                                {this.state.intervalLoading &&
-                                <div>
-                                    <div style={{marginLeft: 15}}>
-                                        <CircularProgress
-                                            style={{
-                                                color: this.state.currentClassification === CLASSIFICATION.APPINST ? 'grey' : 'green',
-                                                zIndex: 9999999,
-                                                fontSize: 10
-                                            }}
-                                            size={20}
-                                        />
-                                    </div>
+                        <div style={{flex: .025}}>
+                            {this.state.intervalLoading &&
+                            <div>
+                                <div style={{marginLeft: 15}}>
+                                    <CircularProgress
+                                        style={{
+                                            color: this.state.currentClassification === CLASSIFICATION.APPINST ? 'grey' : 'green',
+                                            zIndex: 9999999,
+                                            fontSize: 10
+                                        }}
+                                        size={20}
+                                    />
                                 </div>
-                                }
-                                {this.state.webSocketLoading &&
-                                <div>
-                                    <div style={{marginLeft: 15}}>
-                                        <CircularProgress
-                                            style={{
-                                                color: 'green',
-                                                zIndex: 9999999,
-                                            }}
-                                            size={45}
-                                        />
-                                    </div>
-                                </div>
-                                }
-                                {this.props.isLoading &&
-                                <div>
-                                    <div style={{marginLeft: 15}}>
-                                        <CircularProgress
-                                            style={{
-                                                color: 'green',
-                                                zIndex: 9999999,
-                                                fontSize: 10
-                                            }}
-                                            size={20}
-                                        />
-                                    </div>
-                                </div>
-                                }
                             </div>
-                            {/*
+                            }
+                            {this.state.webSocketLoading &&
+                            <div>
+                                <div style={{marginLeft: 15}}>
+                                    <CircularProgress
+                                        style={{
+                                            color: 'green',
+                                            zIndex: 9999999,
+                                        }}
+                                        size={45}
+                                    />
+                                </div>
+                            </div>
+                            }
+                            {this.props.isLoading &&
+                            <div>
+                                <div style={{marginLeft: 15}}>
+                                    <CircularProgress
+                                        style={{
+                                            color: 'green',
+                                            zIndex: 9999999,
+                                            fontSize: 10
+                                        }}
+                                        size={20}
+                                    />
+                                </div>
+                            </div>
+                            }
+                        </div>
+                        {/*
                             desc :####################################
                             desc : options list (right conner)
                             desc :####################################
                             */}
+                        <div style={{
+                            display: 'flex', justifyContent: 'flex-end', width: '100%', flex: .05,
+                            //backgroundColor: 'yellow'
+                        }}>
                             <div style={{
-                                display: 'flex', justifyContent: 'flex-end', width: '100%', flex: .05,
-                                //backgroundColor: 'yellow'
+                                alignItems: 'center',
+                                display: 'flex',
+                                cursor: 'pointer',
+                                //backgroundColor: 'red',
+                                height: 30, width: 50,
+                                alignSelf: 'center',
+                                justifyContent: 'center',
                             }}>
-                                <div style={{
-                                    alignItems: 'center',
-                                    display: 'flex',
-                                    cursor: 'pointer',
-                                    //backgroundColor: 'red',
-                                    height: 30, width: 50,
-                                    alignSelf: 'center',
-                                    justifyContent: 'center',
-                                }}>
-                                    <ADropdown
-                                        overlay={this.__makeMenuListItems}
-                                        trigger={['click']}
+                                <ADropdown
+                                    overlay={this.__makeMenuListItems}
+                                    trigger={['click']}
+                                >
+                                    <div
+                                        className="ant-dropdown-link"
+                                        style={{
+                                            alignItems: 'center',
+                                            display: 'flex',
+                                            cursor: 'pointer',
+                                            alignSelf: 'center',
+                                            justifyContent: 'center',
+                                            width: 150,
+                                            //backgroundColor: 'red'
+                                        }}
+                                        onClick={e => e.preventDefault()}
                                     >
-                                        <div
-                                            className="ant-dropdown-link"
-                                            style={{
-                                                alignItems: 'center',
-                                                display: 'flex',
-                                                cursor: 'pointer',
-                                                alignSelf: 'center',
-                                                justifyContent: 'center',
-                                                width: 150,
-                                                //backgroundColor: 'red'
-                                            }}
-                                            onClick={e => e.preventDefault()}
-                                        >
-                                            <MaterialIcon
-                                                size={25}
-                                                color='rgb(118, 255, 3)'
-                                                //color={'#559901'}
-                                                icon="list"
-                                            />
-                                        </div>
-                                    </ADropdown>
-                                </div>
+                                        <MaterialIcon
+                                            size={25}
+                                            color='rgb(118, 255, 3)'
+                                            //color={'#559901'}
+                                            icon="list"
+                                        />
+                                    </div>
+                                </ADropdown>
                             </div>
                         </div>
-                    </Grid.Row>
+                    </div>
                 </>
 
             )
@@ -2056,13 +2050,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
                         loading={this.state.loading}
                     />
-                    <Grid.Row className='view_contents'>
+                    <Grid.Row className=''>
                         <Card style={{
                             width: '100%',
                             backgroundColor: '#292c33',
-                            padding: 10,
+                            paddingTop: 10,
+                            marginBottom: -10,
                             color: 'white',
-                            marginBottom: -50,
                         }}>
                             <div>
                                 {/*desc:---------------------------------*/}
