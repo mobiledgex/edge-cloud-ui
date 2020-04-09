@@ -185,7 +185,7 @@ export default class MonitoringLayout extends React.Component {
                     onBreakpointChange={this.onBreakpointChange}
                     onLayoutChange={this.onLayoutChange}
                     // WidthProvider option
-                    measureBeforeMount={false}
+                    measureBeforeMount={true}
                     // I like to have it animate on mount. If you don't, delete `useCSSTransforms` (it's default `true`)
                     // and set `measureBeforeMount={true}`.
                     useCSSTransforms={this.state.mounted}
