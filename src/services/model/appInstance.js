@@ -2,7 +2,7 @@ import * as formatter from './format'
 import uuid from 'uuid'
 import * as constant from '../../constant'
 import * as serverData from './serverData'
-import { SHOW_APP_INST, CREATE_APP_INST, UPDATE_APP_INST, DELETE_APP_INST, STREAM_APP_INST, SHOW_APP } from './endPointTypes'
+import { SHOW_APP_INST, CREATE_APP_INST, UPDATE_APP_INST, DELETE_APP_INST, STREAM_APP_INST, SHOW_APP, REFRESH_APP_INST } from './endPointTypes'
 
 let fields = formatter.fields;
 
@@ -29,6 +29,7 @@ export const keys = () => ([
   { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_JSON },
   { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
   { field: fields.configs, serverField: 'configs', label: 'Configs',  dataType: constant.TYPE_JSON },
+  { field: fields.revision, serverField: 'revision', label: 'Revision' },
   { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
@@ -85,6 +86,7 @@ export const multiDataRequest = (keys, mcRequestList) => {
         if (appInst[fields.appName] === app[fields.appName]) {
           appInst[fields.deployment] = app[fields.deployment];
           appInst[fields.accessType] = app[fields.accessType];
+          appInst[fields.updateAvailable] = appInst[fields.revision] < app[fields.revision];
           break;
         }
       }
@@ -119,6 +121,11 @@ export const deleteAppInst = (data) => {
   return { uuid: data.uuid, method: DELETE_APP_INST, data: requestData, success: `App Instance ${data[fields.appName]}` }
 }
 
+export const refreshAppInst = (data) => {
+  let requestData = getKey(data)
+  return { uuid: data.uuid, method: REFRESH_APP_INST, data: requestData, success: `App Instance ${data[fields.appName]}` }
+}
+
 export const streamAppInst = (data) => {
   let requestData = getKey(data)
   return { uuid: data.uuid, method: STREAM_APP_INST, data: requestData }
@@ -127,6 +134,7 @@ export const streamAppInst = (data) => {
 const customData = (value) => {
   value[fields.liveness] = constant.liveness(value[fields.liveness])
   value[fields.ipAccess] = value[fields.ipAccess] ? constant.IPAccessLabel(value[fields.ipAccess]) : undefined
+  value[fields.revision] = value[fields.revision] ? value[fields.revision] : 0
 }
 
 export const getData = (response, body) => {

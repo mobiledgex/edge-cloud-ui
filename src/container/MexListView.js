@@ -15,6 +15,7 @@ import * as actions from '../actions';
 import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP } from './MexToolbar';
 import MexDetailViewer from '../hoc/dataViewer/DetailViewer';
 import MexMessageStream, { CODE_FINISH } from '../hoc/stepper/mexMessageStream';
+import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiStream'
 import { getUserRole } from '../services/model/format';
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import Map from '../libs/simpleMaps/with-react-motion/index_clusters';
@@ -30,6 +31,7 @@ class MexListView extends React.Component {
             currentView: null,
             isDetail: false,
             stepsArray: [],
+            multiStepsArray:[],
             showMap: true,
             dialogMessageInfo: {},
             uuid: 0,
@@ -166,16 +168,49 @@ class MexListView extends React.Component {
         }
     }
 
+    onUpdateResponse = (mcRequest) =>
+    {
+        let dataList = this.state.dataList
+        let data = dataList[this.selectedRowIndex]
+        this.props.handleLoadingSpinner(false)
+        if (mcRequest) {
+            let responseData = undefined;
+            if (mcRequest.response && mcRequest.response.data) {
+                responseData = mcRequest.response.data;
+            }
+            this.setState({ multiStepsArray: updateStepper(this.state.multiStepsArray, data[this.props.requestInfo.nameField], responseData) })
+        }
+    }
+    
+    onUpdate = async (action) =>
+    { 
+        let dataList = this.state.dataList
+        let data = dataList[this.selectedRowIndex]
+        if(data[fields.updateAvailable])
+        {
+            this.props.handleLoadingSpinner(true)
+            serverData.sendWSRequest(this, action.onClick(data), this.onUpdateResponse)
+        }
+    }
+
     onDialogClose = (valid) => {
         let action = this.state.dialogMessageInfo.action;
         this.setState({ dialogMessageInfo: {} })
         if (valid) {
-            this.onDelete(action)
+            switch (action.label) {
+                case 'Delete':
+                    this.onDelete(action)
+                    break;
+                case 'Update':
+                    this.onUpdate(action)
+                    break;
+
+            }
         }
     }
 
-    onDeleteWarning = async (action, data) => {
-        this.setState({ dialogMessageInfo: { message: `Are you sure you want to delete ${data[this.props.requestInfo.nameField]}?`, action: action } });
+    onWarning = async (action, data, actionLabel) => {
+        this.setState({ dialogMessageInfo: { message: `Are you sure you want to ${actionLabel} ${data[this.props.requestInfo.nameField]}?`, action: action } });
     }
 
     /***Action Block */
@@ -186,7 +221,10 @@ class MexListView extends React.Component {
         let data = this.state.dataList[this.selectedRowIndex];
         switch (action.label) {
             case 'Delete':
-                this.onDeleteWarning(action, data)
+                this.onWarning(action, data, 'delete')
+                break
+            case 'Update':
+                this.onWarning(action, data, 'update')
                 break;
             default:
                 action.onClick(action, data)
@@ -378,6 +416,13 @@ class MexListView extends React.Component {
         })
     }
 
+    multiStepperClose = () => {
+        this.setState({
+            multiStepsArray: []
+        })
+        this.dataFromServer(this.selectedRegion)
+    }
+
     onProgress(data) {
         this.setState({
             uuid: data.uuid
@@ -408,6 +453,7 @@ class MexListView extends React.Component {
             <Card style={{ width: '100%', height: '100%', backgroundColor: '#292c33', padding: 10, color: 'white' }}>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} stepsArray={this.state.stepsArray} />
+                <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} header='App' />
                 <MexToolbar requestInfo={this.props.requestInfo} onAction={this.onToolbarAction} isDetail={this.state.isDetail} />
                 {this.state.currentView ? this.state.currentView : this.listView()}
                 {this.getActionMenu()}

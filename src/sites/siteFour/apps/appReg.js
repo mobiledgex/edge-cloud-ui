@@ -359,7 +359,7 @@ class ClusterInstReg extends React.Component {
                 }
             }
             else{
-                this.props.handleAlertInfo('error', 'At least one port is mandatory ')
+                this.props.handleAlertInfo('error', 'At least one port is mandatory')
             }
         }
     }

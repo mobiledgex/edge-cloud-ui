@@ -173,7 +173,7 @@ const MultiStream = (props) => {
                         <DialogContent style={{ background: '#24252b', maxHeight: 600 }}>
                             <Grid container spacing={2} style={{ paddingLeft: 10,paddingRight: 10 }}>
                                 <Grid item xs={3}>
-                                    <h4 style={{ padding: '13px 0', color: '#88dd00' }}><strong>Cloudlet</strong></h4>
+                                    <h4 style={{ padding: '13px 0', color: '#88dd00' }}><strong>{props.header ? props.header : 'Cloudlet'}</strong></h4>
                                 </Grid>
                                 <Grid item xs={9}>
                                     <h4 style={{ padding: '13px 0', color: '#88dd00' }} align="center"><strong>Progress</strong></h4>

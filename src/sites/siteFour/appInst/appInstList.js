@@ -1,17 +1,19 @@
 import React from 'react';
 import MexListView from '../../../container/MexListView';
 import { withRouter } from 'react-router-dom';
+import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
 
 import { fields } from '../../../services/model/format';
-import { keys, showAppInsts, deleteAppInst, streamAppInst, multiDataRequest } from '../../../services/model/appInstance';
+import { keys, showAppInsts, deleteAppInst, streamAppInst, refreshAppInst, multiDataRequest } from '../../../services/model/appInstance';
 import { showApps } from '../../../services/model/app';
 import AppInstReg from './appInstReg';
 import * as constant from '../../../services/model/shared';
 import TerminalViewer from '../../../container/TerminalViewer';
 import * as serviceMC from '../../../services/serviceMC';
 import { Dialog } from '@material-ui/core';
+import { Icon } from 'semantic-ui-react';
 
 class AppInstList extends React.Component {
     constructor(props) {
@@ -19,7 +21,8 @@ class AppInstList extends React.Component {
         this.state = {
             currentView: null,
             terminalData: [],
-            openTerminal: false
+            openTerminal: false,
+            stepsArray:[]
         }
         this.action = '';
         this.data = {};
@@ -88,10 +91,16 @@ class AppInstList extends React.Component {
         }
     }
 
+    onUpdateVisible = (data)=>
+    {
+        return data[fields.updateAvailable]
+    }
+
     actionMenu = () => {
         return [
             { label: 'Delete', onClick: deleteAppInst, ws: true },
-            { label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal }
+            { label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
+            { label: 'Update', visible: this.onUpdateVisible, onClick: refreshAppInst }
         ]
     }
 
@@ -114,11 +123,24 @@ class AppInstList extends React.Component {
    * Customized data block
    **/
 
+    getUpdate = (data, isDetailView) => {
+        return (
+            isDetailView ? data : 
+            data[fields.updateAvailable] ? 
+                <label><Icon color = {'orange'} name={'arrow alternate circle up outline'}/>&nbsp;{data[fields.region]}  </label> :
+                <label>{data[fields.region]}</label>
+        )
+    }
+
     customizedData = () => {
         for (let i = 0; i < this.keys.length; i++) {
             let key = this.keys[i]
             if (key.field === fields.state) {
                 key.customizedData = constant.showProgress
+            }
+            if(key.field === fields.region)
+            {
+                key.customizedData = this.getUpdate
             }
         }
     }
@@ -135,7 +157,7 @@ class AppInstList extends React.Component {
         return (
             this.state.currentView ? this.state.currentView :
                 <div style={{ width: '100%' }}>
-                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} />
+                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest}/>
                     <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen open={this.state.openTerminal} onClose={() => { this.setState({ openTerminal: false }) }}>
                         <TerminalViewer data={this.state.terminalData} onClose={() => {
                             this.setState({ openTerminal: false })
@@ -151,6 +173,7 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchProps = (dispatch) => {
     return {
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) }
     };
 };
 

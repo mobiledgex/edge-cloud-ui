@@ -25,11 +25,11 @@ export const keys = () => ([
     { field: fields.scaleWithCluster, serverField: 'scale_with_cluster', label: 'Scale With Cluster' },
     { field: fields.officialFQDN, serverField: 'official_fqdn', label: 'Official FQDN' },
     { field: fields.androidPackageName, serverField: 'android_package_name', label: '' },
-    { field: fields.revision, serverField: 'revision', label: 'Revision' },
     { field: fields.autoPolicyName, serverField: 'auto_prov_policy', label: 'Auto Provisioning Policy' },
     { field: fields.privacyPolicyName, serverField: 'default_privacy_policy', label: 'Default Privacy Policy' },
     { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: constant.TYPE_JSON },
     { field: fields.annotations, serverField: 'annotations', label: 'Annotations', visible: true },
+    { field: fields.revision, serverField: 'revision', label: 'Revision' },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
@@ -163,6 +163,7 @@ export const deleteApp = (data) => {
 const customData = (value) => {
     value[fields.accessType] = constant.accessType(value[fields.accessType])
     value[fields.imageType] = constant.imageType(value[fields.imageType])
+    value[fields.revision] = value[fields.revision] ? value[fields.revision] : 0
     if(value[fields.configs])
     {
         let configs = value[fields.configs]
