@@ -2,11 +2,11 @@ import {Center2, ClusterCluoudletLable, Legend} from '../PageMonitoringStyledCom
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Dropdown, Grid, Modal} from 'semantic-ui-react'
+import {Dropdown, Modal} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
-import {Card, CircularProgress, Toolbar, withStyles} from '@material-ui/core'
+import {CircularProgress, Toolbar, withStyles} from '@material-ui/core'
 import {Dropdown as ADropdown, Menu as AMenu,} from 'antd';
 import {
     defaultHwMapperListForCluster,
@@ -25,7 +25,8 @@ import {
     makeLineChartDataForBigModal,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
-    makeSelectBoxListWithValuePipe, revertToDefaultLayout,
+    makeSelectBoxListWithValuePipe,
+    revertToDefaultLayout,
 } from "./PageDevMonitoringService";
 import {
     ADD_ITEM_LIST,
@@ -725,14 +726,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 barChartDataSet = []
             }
 
-
-            /*
-              return (
-                  <BarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this}
-                                     loading={this.state.loading} chartDataSet={barChartDataSet}
-                                     pHardwareType={hwType} graphType={graphType}/>
-              )*/
-
+            /*return ( <BarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this} loading={this.state.loading} chartDataSet={barChartDataSet}  pHardwareType={hwType} graphType={graphType}/>)*/
 
             if (!isEmpty(barChartDataSet)) {
                 let chartDatas = this.makeGradientBarCharData(barChartDataSet)
@@ -1964,12 +1958,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         }}/>
                     </Modal>
                 </div>
-
-
             )//return End
-
-
         }
-
     }
 ))

@@ -10,7 +10,6 @@ import {HARDWARE_OPTIONS_FOR_CLUSTER} from "../../../../shared/Constants";
 type Props = {
     bubbleChartData: any,
     currentHardwareType: string,
-    bubbleChartData: any,
     themeTitle: string,
     parent: PageDevMonitoring,
     isBubbleChartMaked: boolean,
