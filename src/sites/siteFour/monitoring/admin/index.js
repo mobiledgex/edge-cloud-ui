@@ -69,8 +69,23 @@ const generateLayout = sizeInfo => {
 
 const generateComponent = info => {
     return [
-        <ChartWidget url={"https://test1"} chartType={"timeseries"} />,
-        <ChartWidget url={"https://test2"} chartType={"column"} />,
-        <ChartWidget url={"https://test2"} chartType={"map"} />
+        <ChartWidget url={"https://test1"} chartType={"gauge"} />,
+        <ChartWidget
+            url={"https://test2"}
+            chartType={"timeseries"}
+            type={"scatter"}
+        />,
+        <ChartWidget url={"https://test2"} chartType={"map"} />,
+        <ChartWidget
+            url={"https://test2"}
+            chartType={"timeseries"}
+            type={"scatter"}
+        />,
+        <ChartWidget
+            url={"https://test2"}
+            chartType={"timeseries"}
+            type={"bar"}
+        />,
+        <ChartWidget url={"https://test2"} chartType={"datagrid"} />
     ];
 };

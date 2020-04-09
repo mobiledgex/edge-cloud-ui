@@ -5,13 +5,13 @@ import TimeSeries from "../../../../charts/plotly/timeseries";
 
 class ChartWidget extends React.Component {
     render() {
-        const { data, chartType, size } = this.props;
+        const { data, chartType, type, size } = this.props;
         return (
             <div style={{ height: "100%" }}>
                 {chartType}
                 {size.width + ":" + size.height}
                 {chartType === "timeseries" ? (
-                    <TimeSeries></TimeSeries>
+                    <TimeSeries size={size} type={type}></TimeSeries>
                 ) : (
                     <DataGrid data={data}></DataGrid>
                 )}

@@ -1,4 +1,5 @@
 import React from "react";
+import _ from "lodash";
 import Plot from "react-plotly.js";
 import ContainerDimensions from "react-container-dimensions";
 
@@ -14,20 +15,22 @@ class TimeSeries extends React.Component {
     constructor() {
         super();
         this.state = {
-            vWidth: 600,
-            vHeight: 300,
+            vWidth: 300,
+            vHeight: 170,
             data: [],
             chartData: [
                 {
                     x: [1, 2, 3, 4, 5],
-                    y: [1, 2, 4, 8, 16]
+                    y: [0, 0, 0, 0, 0],
+                    type: "scatter"
                 }
             ],
             layout: {
                 datarevision: 0
             },
             currentKey: "",
-            revision: 10
+            revision: 10,
+            mode: "line+markers"
         };
         this.colors = ["#22cccc", "#6699ff", "#ff710a", "#ffce03"];
         this.colorsErr = ["#22cccc", "#ff3355", "#6699ff", "#ffce03"];
@@ -43,6 +46,27 @@ class TimeSeries extends React.Component {
             );
         }
     }
+    componentDidMount() {
+        if (this.props.size) {
+            setTimeout(
+                () =>
+                    this.setState({
+                        vWidth: this.props.size.width,
+                        vHeight: this.props.size.height
+                    }),
+                1000
+            );
+            let cloneData = _.cloneDeep(this.state.chartData);
+            cloneData[0].type = this.props.type;
+            this.setState({ chartData: cloneData || "scatter" });
+        }
+        console.log(
+            "20200409 chart size ... ",
+            this.props.size,
+            "  type : ",
+            this.props.type
+        );
+    }
     reloadChart(data, series, names, dataId, dataType) {
         let xaxis = series;
 
@@ -52,7 +76,8 @@ class TimeSeries extends React.Component {
 
         if (!dataId) {
             seriesData = data.map((item, i) => ({
-                type: "scatter",
+                type: this.state.type,
+                mode: this.state.mode,
                 x: series,
                 y: item,
                 yaxis: i === 0 ? "y" : i === 1 ? "y2" : i === 2 ? "y3" : "y",
@@ -73,7 +98,8 @@ class TimeSeries extends React.Component {
             });
             seriesData = [
                 {
-                    type: "scatter",
+                    type: this.state.type,
+                    mode: this.state.mode,
                     x: series,
                     y: sData,
                     yaxis: "y",
@@ -101,6 +127,7 @@ class TimeSeries extends React.Component {
 
     render() {
         let { error } = this.props;
+        console.log("20200409 ---------- render ------------");
         return (
             <div
                 className="plotContainer"
@@ -111,6 +138,7 @@ class TimeSeries extends React.Component {
                 }}
             >
                 <Plot
+                    className={"plotly-chart"}
                     style={{
                         backgroundColor: "transparent",
                         overflow: "hidden"
@@ -119,8 +147,8 @@ class TimeSeries extends React.Component {
                     layout={{
                         title: null,
                         autosize: true,
-                        width: 400,
-                        height: 350,
+                        width: this.state.vWidth,
+                        height: this.state.vHeight,
                         margin: this.props.margin,
                         paper_bgcolor: "transparent",
                         plot_bgcolor: "transparent",
