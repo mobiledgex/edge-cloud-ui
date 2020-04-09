@@ -1,4 +1,5 @@
 import * as formatter from './format'
+import _ from 'lodash';
 import { TYPE_JSON_NEW_LINE } from '../../constant';
 import * as serverData from './serverData'
 import * as constant from '../../constant'
@@ -6,7 +7,7 @@ import { SHOW_APP, CREATE_APP, UPDATE_APP, DELETE_APP } from './endPointTypes'
 
 let fields = formatter.fields
 
-export const keys = [
+export const keys = () => ([
     { field: fields.region, label: 'Region', sortable: true, visible: true },
     { field: fields.organizationName, serverField: 'key#OS#organization', sortable: true, label: 'Organization', visible: true },
     { field: fields.appName, serverField: 'key#OS#name', label: 'App', sortable: true, visible: true },
@@ -27,8 +28,10 @@ export const keys = [
     { field: fields.revision, serverField: 'revision', label: 'Revision' },
     { field: fields.autoPolicyName, serverField: 'auto_prov_policy', label: 'Auto Provisioning Policy' },
     { field: fields.privacyPolicyName, serverField: 'default_privacy_policy', label: 'Default Privacy Policy' },
+    { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: constant.TYPE_JSON },
+    { field: fields.annotations, serverField: 'annotations', label: 'Annotations', visible: true },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
-]
+])
 
 export const getKey = (data, isCreate) => {
 
@@ -46,7 +49,10 @@ export const getKey = (data, isCreate) => {
         app.image_type = constant.imageType(data[fields.imageType])
         app.image_path = data[fields.imagePath]
         if (data[fields.accessPorts]) {
-            app.access_ports = data[fields.accessPorts]
+            app.access_ports = data[fields.accessPorts].toLowerCase()
+        }
+        if (data[fields.annotations]) {
+            app.annotations = data[fields.annotations]
         }
         app.delete_ports = []
         app.default_flavor = { name: data[fields.flavorName] }
@@ -71,6 +77,9 @@ export const getKey = (data, isCreate) => {
         }
         if (data[fields.accessType]) {
             app.access_type = constant.accessType(data[fields.accessType])
+        }
+        if (data[fields.configs]) {
+            app.configs = data[fields.configs]
         }
     }
     return ({
@@ -102,9 +111,34 @@ export const createApp = async (self, data) => {
     return await serverData.sendRequest(self, request)
 }
 
-export const updateApp = async (self, data) => {
+const compareObjects = (obj1, obj2, ignoreCase) => {
+    if(ignoreCase)
+    {
+        return _.isEqual(obj1.toLowerCase(), obj2.toLowerCase())
+    }
+    return _.isEqual(obj1, obj2)
+}
+
+export const updateApp = async (self, data, originalData) => {
     let requestData = getKey(data, true)
-    requestData.app.fields = ['4', '7', '9.1', '16']
+    let updateFields = []
+    if(!compareObjects(data[fields.imagePath], originalData[fields.imagePath]))
+    {
+        updateFields.push("4")
+    }
+    if(!compareObjects(data[fields.accessPorts], originalData[fields.accessPorts], true))
+    {
+        updateFields.push("7")
+    }
+    if(!compareObjects(data[fields.flavorName], originalData[fields.flavorName]))
+    {
+        updateFields.push("9.1")
+    }
+    if(!compareObjects(data[fields.deploymentManifest], originalData[fields.deploymentManifest]))
+    {
+        updateFields.push("16")
+    }
+    requestData.app.fields = updateFields
     let request = { method: UPDATE_APP, data: requestData }
     return await serverData.sendRequest(self, request)
 }
@@ -118,8 +152,17 @@ export const deleteApp = (data) => {
 const customData = (value) => {
     value[fields.accessType] = constant.accessType(value[fields.accessType])
     value[fields.imageType] = constant.imageType(value[fields.imageType])
+    if(value[fields.configs])
+    {
+        let configs = value[fields.configs]
+        for(let i=0;i<configs.length;i++)
+        {
+            let config = configs[i]
+            config.kind = constant.configType(config.kind)
+        }
+    }
 }
 
 export const getData = (response, body) => {
-    return formatter.formatData(response, body, keys, customData)
+    return formatter.formatData(response, body, keys(), customData)
 }

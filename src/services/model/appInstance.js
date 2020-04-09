@@ -6,7 +6,7 @@ import { SHOW_APP_INST, CREATE_APP_INST, UPDATE_APP_INST, DELETE_APP_INST, STREA
 
 let fields = formatter.fields;
 
-export const keys = [
+export const keys = () => ([
   { field: fields.region, label: 'Region', sortable: true, visible: true },
   { field: fields.organizationName, serverField: 'key#OS#app_key#OS#organization', sortable: true, label: 'Organization', visible: true },
   { field: fields.appName, serverField: 'key#OS#app_key#OS#name', sortable: true, label: 'App', visible: true },
@@ -18,16 +18,19 @@ export const keys = [
   { field: fields.clusterName, serverField: 'key#OS#cluster_inst_key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster Instance', visible: true },
   { field: fields.privacyPolicyName, serverField: 'privacy_policy', label: 'Privacy Policy', visible: false },
   { field: fields.deployment, label: 'Deployment', sortable: true, visible: true },
+  { field: fields.accessType, label: 'Access Type'},
   { field: fields.uri, serverField: 'uri', label: 'URI' },
   { field: fields.liveness, serverField: 'liveness', label: 'Liveness' },
   { field: fields.mappedPorts, serverField: 'mapped_ports', label: 'Mapped Port', dataType: constant.TYPE_JSON },
   { field: fields.flavorName, serverField: 'flavor#OS#name', label: 'Flavor' },
+  { field: fields.ipAccess, serverField: 'auto_cluster_ip_access'},
   { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
   { field: fields.runtimeInfo, serverField: 'runtime_info', label: 'Runtime', dataType: constant.TYPE_JSON },
   { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_JSON },
   { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
+  { field: fields.configs, serverField: 'configs', label: 'Configs',  dataType: constant.TYPE_JSON },
   { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
-]
+])
 
 export const getKey = (data, isCreate) => {
   let appinst = {}
@@ -35,7 +38,7 @@ export const getKey = (data, isCreate) => {
     app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] },
     cluster_inst_key: {
       cloudlet_key: { name: data[fields.cloudletName], organization: data[fields.operatorName] },
-      cluster_key: { name: data[fields.clusterName] },
+      cluster_key: { name: data[fields.clusterName] ?  data[fields.clusterName] : 'DefaultVMCluster'},
       organization: data[fields.clusterdeveloper] ? data[fields.clusterdeveloper] : data[fields.organizationName]
     }
   }
@@ -43,6 +46,14 @@ export const getKey = (data, isCreate) => {
   if (isCreate) {
     if (data[fields.privacyPolicyName]) {
       appinst.privacy_policy = data[fields.privacyPolicyName]
+    }
+
+    if (data[fields.configs]) {
+      appinst.configs = data[fields.configs]
+    }
+
+    if (data[fields.ipAccess]) {
+      appinst.auto_cluster_ip_access = constant.IPAccessLabel(data[fields.ipAccess])
     }
   }
   
@@ -73,6 +84,7 @@ export const multiDataRequest = (keys, mcRequestList) => {
         let app = appList[j]
         if (appInst[fields.appName] === app[fields.appName]) {
           appInst[fields.deployment] = app[fields.deployment];
+          appInst[fields.accessType] = app[fields.accessType];
           break;
         }
       }
@@ -114,8 +126,9 @@ export const streamAppInst = (data) => {
 
 const customData = (value) => {
   value[fields.liveness] = constant.liveness(value[fields.liveness])
+  value[fields.ipAccess] = value[fields.ipAccess] ? constant.IPAccessLabel(value[fields.ipAccess]) : undefined
 }
 
 export const getData = (response, body) => {
-  return formatter.formatData(response, body, keys, customData, true)
+  return formatter.formatData(response, body, keys(), customData, true)
 }

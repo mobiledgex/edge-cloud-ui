@@ -23,7 +23,7 @@ class AppInstList extends React.Component {
         }
         this.action = '';
         this.data = {};
-        this.keys = Object.assign([], keys);
+        this.keys = keys();
     }
 
     onRegClose = (isEdited) => {
@@ -134,7 +134,7 @@ class AppInstList extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <div style={{ width: '100%' }}>
+                <div style={{ width: '100%', height:'100%' }}>
                     <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} />
                     <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen open={this.state.openTerminal} onClose={() => { this.setState({ openTerminal: false }) }}>
                         <TerminalViewer data={this.state.terminalData} onClose={() => {
