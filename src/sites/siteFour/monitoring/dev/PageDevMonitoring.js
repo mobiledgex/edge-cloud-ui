@@ -25,7 +25,8 @@ import {
     makeLineChartDataForBigModal,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
-    makeSelectBoxListWithValuePipe, revertToDefaultLayout,
+    makeSelectBoxListWithValuePipe,
+    revertToDefaultLayout,
 } from "./PageDevMonitoringService";
 import {
     ADD_ITEM_LIST,
@@ -468,101 +469,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             clearInterval(this.intervalForAppInst)
             if (!isEmpty(this.webSocketInst)) {
                 this.webSocketInst.close();
-            }
-        }
-
-        async loadInitDataForCluster__FOR__DEV(isInterval: boolean = false) {
-            try {
-                clearInterval(this.intervalForAppInst)
-                this.setState({dropdownRequestLoading: true})
-
-                //FIXME : ############################
-                //@FIXME: fakeData22222222222
-                //FIXME : ############################
-                let clusterList = require('../aaa____TESTCODE____/Jsons/clusterList')
-                let cloudletList = require('../aaa____TESTCODE____/Jsons/cloudletList')
-                let appInstanceList = require('../aaa____TESTCODE____/Jsons/appInstanceList')
-                let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
-                console.log("clusterDropdownList===>", clusterDropdownList);
-
-
-                //FIXME : ############################
-                //FIXME : FAKEDATA ClusterEventLog
-                //FIXME : ############################
-                await this.setState({
-                    allClusterEventLogList: [],
-                    filteredClusterEventLogList: []
-                })
-
-
-                //FIXME : ############################
-                //@fixme: fakeData __allAppInstEvLogListValues
-                //FIXME : ############################
-                let __allAppInstEvLogListValues = require('../aaa____TESTCODE____/Jsons/allAppInstEventLogList')
-                await this.setState({
-                    allAppInstEventLogs: __allAppInstEvLogListValues,
-                    filteredAppInstEventLogs: __allAppInstEvLogListValues,
-                })
-
-
-                let appInstanceListGroupByCloudlet = []
-                try {
-                    appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
-                } catch (e) {
-                    showToast(e.toString())
-                }
-                console.log('appInstanceListGroupByCloudlet===>', appInstanceListGroupByCloudlet);
-
-                await this.setState({
-                    isReady: true,
-                    clusterDropdownList: clusterDropdownList,
-                    dropDownCloudletList: cloudletList,
-                    clusterList: clusterList,
-                    isAppInstaceDataReady: true,
-                    appInstanceList: appInstanceList,
-                    filteredAppInstanceList: appInstanceList,
-                    dropdownRequestLoading: false,
-
-                });
-
-                if (!isInterval) {
-                    this.setState({
-                        appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
-                    })
-                }
-                //fixme: fakeData22222222222
-                //fixme: fakeData22222222222
-                let allClusterUsageList = []
-                allClusterUsageList = require('../aaa____TESTCODE____/Jsons/allClusterUsageList')
-                console.log('filteredAppInstanceList===>', appInstanceList)
-
-                let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
-                await this.setState({
-                    bubbleChartData: bubbleChartData,
-                })
-
-                let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
-                    return o.sumCpuUsage;
-                }));
-
-                let maxMem = Math.max.apply(Math, allClusterUsageList.map(function (o) {
-                    return o.sumMemUsage;
-                }));
-
-                console.log('allClusterUsageList333====>', allClusterUsageList);
-
-                await this.setState({
-                    clusterListLoading: false,
-                    allCloudletUsageList: allClusterUsageList,
-                    allClusterUsageList: allClusterUsageList,
-                    filteredClusterUsageList: allClusterUsageList,
-                    maxCpu: maxCpu,
-                    maxMem: maxMem,
-                    isRequesting: false,
-                    currentCluster: '',
-                })
-            } catch (e) {
-
             }
         }
 
@@ -1160,7 +1066,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
         }
 
-        ___makeGridItemBodyByType(hwType, graphType) {
+        makeGridItemBodyByType(hwType, graphType) {
 
             if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                 return (
@@ -1325,7 +1231,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     {/*@desc:__makeGridItem BodyByType  */}
                     {/*desc:############################*/}
                     <div className='page_monitoring_column_resizable'>
-                        {this.___makeGridItemBodyByType(hwType, graphType.toUpperCase())}
+                        {this.makeGridItemBodyByType(hwType, graphType.toUpperCase())}
                     </div>
                 </div>
             )
@@ -1481,7 +1387,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         }
 
 
-        __makeMenuListItems = () => {
+        makeMenuListItems = () => {
             return (
                 <AMenu>
                     {/*desc:#########################################*/}
@@ -1512,7 +1418,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             Add Item
                         </div>
                     </AMenu.Item>
-                    <AMenu.Item style={{display: 'flex'}}
+                  {/*  <AMenu.Item style={{display: 'flex'}}
                                 key="1"
                                 onClick={() => {
                                     this.setState({
@@ -1524,7 +1430,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         <div style={PageMonitoringStyles.listItemTitle}>
                             Add Item for test
                         </div>
-                    </AMenu.Item>
+                    </AMenu.Item>*/}
                     {/*desc:#########################################*/}
                     {/*desc:Reload                                  */}
                     {/*desc:#########################################*/}
@@ -1743,7 +1649,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 <>
                     <div className='content_title_wrap' style={{display: 'flex', marginTop: 10}}>
                         <div className='content_title_label'
-                             style={{flex: .08, marginBottom: 0, marginLeft: 3,}}>Monitoring
+                             style={{flex: .08, marginBottom: 0, marginLeft: 5,}}>Monitoring
                         </div>
                         <div className='page_monitoring_select_area' style={{
                             flex: .70,
