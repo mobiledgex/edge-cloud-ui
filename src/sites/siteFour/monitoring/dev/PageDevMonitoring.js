@@ -57,7 +57,7 @@ import {
     makeBubbleChartDataForCluster,
     PageMonitoringStyles,
     renderLoaderArea,
-    renderPlaceHolderCircular,
+    renderPlaceHolderCircular, renderPlaceHolderLottiePinJump,
     showToast
 } from "../PageMonitoringCommonService";
 import {
@@ -460,6 +460,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
+                isReady: true,
             })
         }
 
@@ -1410,7 +1411,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             Add Item
                         </div>
                     </AMenu.Item>
-                    <AMenu.Item style={{display: 'flex'}}
+                  {/*  <AMenu.Item style={{display: 'flex'}}
                                 key="1"
                                 onClick={() => {
                                     this.setState({
@@ -1422,7 +1423,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         <div style={PageMonitoringStyles.listItemTitle}>
                             Add Item for test
                         </div>
-                    </AMenu.Item>
+                    </AMenu.Item>*/}
                     {/*desc:#########################################*/}
                     {/*desc:Reload                                  */}
                     {/*desc:#########################################*/}
@@ -1879,7 +1880,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             // todo: Components showing when the loading of graph data is not completed.
             if (!this.state.isReady) {
                 return (
+
+                    //renderPlaceHolderCircular()
                     renderLoaderArea(this)
+                    //renderPlaceHolderLottiePinJump()
                 )
             }
 
