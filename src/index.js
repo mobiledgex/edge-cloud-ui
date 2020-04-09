@@ -17,26 +17,11 @@ const theme = createMuiTheme({
         },
     },
     overrides: {
-        MuiToolbar: {
-            regular: {
-                height: "50px",
-                minHeight: "50px",
-                '@media (min-width: 600px)': {
-                    minHeight: "50px"
-                }
-            },
-        },
         MuiIconButton: {
             root: {
                 color: 'white !important'
             },
         },
-        MuiCard: {
-            root: {
-                marginTop: '-30px  !important'
-            },
-        }
-
     }
 });
 
@@ -50,6 +35,5 @@ ReactDOM.render(
     ,
     document.getElementById('root')
 );
-
 
 
