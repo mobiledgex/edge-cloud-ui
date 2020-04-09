@@ -1326,7 +1326,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
 
                 <>
-                    <Toolbar>
+                    <Toolbar className='monitoring_title'>
                         <label className='content_title_label'>Monitoring</label>
                         <Button positive={true}
                                 onClick={async () => {
@@ -1635,7 +1635,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {/*desc:---------------------------------*/}
                             <SemanticToastContainer position={"top-right"}/>
                             {this.renderHeader()}
-                            <div className="page_monitoring" style={{overflowY: 'auto', height: 'calc(100% - 111px)'}}>
+                            <div className="page_monitoring" style={{overflowY: 'auto', height: 'calc(100% - 98px)'}}>
                                 <div className='page_monitoring_dashboard_dev'
                                      style={{marginBottom: 110}}>
                                     {this.state.currentClassification === CLASSIFICATION.CLUSTER
