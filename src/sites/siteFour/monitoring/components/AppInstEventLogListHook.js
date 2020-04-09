@@ -19,23 +19,11 @@ type Props = {
     columnList: any,
     parent: PageDevMonitoring,
 };
-type State = {
-    eventLogList: any,
-    columnList: any,
-    loading: boolean,
-};
-
 
 export default function AppInstEventLogListHook(props) {
 
-    const [eventLogList, setEventLogList] = useState([]);
 
     useEffect(() => {
-        if (props.eventLogList !== undefined) {
-
-        } else {
-            setEventLogList([])
-        }
     }, [props.eventLogList]);
 
 
