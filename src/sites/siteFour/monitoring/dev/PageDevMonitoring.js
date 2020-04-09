@@ -296,12 +296,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             /*reactLocalStorage.remove(themeTitle)
             reactLocalStorage.remove(themeKey)
             */
-            //@TODO: DELETE SAVED LAYOUTS
-            /*reactLocalStorage.remove(clusterLayoutKey)
-            reactLocalStorage.remove(ClusterHwMapperKey)
-            reactLocalStorage.remove(appInstLayoutKey)
-            reactLocalStorage.remove(layoutMapperAppInstKey)*/
-
             this.state = {
                 layoutForCluster: isEmpty(reactLocalStorage.get(clusterLayoutKey)) ? defaultLayoutForCluster : reactLocalStorage.getObject(clusterLayoutKey),
                 layoutMapperForCluster: isEmpty(reactLocalStorage.get(ClusterHwMapperKey)) ? defaultHwMapperListForCluster : reactLocalStorage.getObject(ClusterHwMapperKey),
