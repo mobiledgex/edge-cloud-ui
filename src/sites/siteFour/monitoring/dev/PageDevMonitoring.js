@@ -1742,7 +1742,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         renderHeader = () => {
             return (
                 <>
-                    <div className='content_title_wrap' style={{display: 'flex', marginBottom: 0}}>
+                    <div className='content_title_wrap' style={{display: 'flex', marginTop: 10}}>
                         <div className='content_title_label' style={{flex: .08, marginBottom: 0, marginLeft: 3,}}>Monitoring</div>
                         <div className='page_monitoring_select_area' style={{
                             flex: .70,
