@@ -343,19 +343,23 @@ class ClusterInstReg extends React.Component {
             }
             if (ports.length > 0) {
                 data[fields.accessPorts] = ports
-            }
-            if (annotations.length > 0) {
-                data[fields.annotations] = annotations
-            }
-            if (configs.length > 0) {
-                data[fields.configs] = configs
-            }
 
-            let isUpdate = this.props.isUpdate;
-            let valid = isUpdate ? await updateApp(this, data, this.originalData) : await createApp(this, data)
-            if (valid) {
-                this.props.handleAlertInfo('success', `App ${data[fields.appName]} ${isUpdate ? 'updated' : 'created'} successfully`)
-                this.props.onClose(true)
+                if (annotations.length > 0) {
+                    data[fields.annotations] = annotations
+                }
+                if (configs.length > 0) {
+                    data[fields.configs] = configs
+                }
+    
+                let isUpdate = this.props.isUpdate;
+                let valid = isUpdate ? await updateApp(this, data, this.originalData) : await createApp(this, data)
+                if (valid) {
+                    this.props.handleAlertInfo('success', `App ${data[fields.appName]} ${isUpdate ? 'updated' : 'created'} successfully`)
+                    this.props.onClose(true)
+                }
+            }
+            else{
+                this.props.handleAlertInfo('error', 'At least one port is mandatory ')
             }
         }
     }
