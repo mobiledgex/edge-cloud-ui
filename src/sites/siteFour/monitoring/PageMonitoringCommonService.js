@@ -413,7 +413,7 @@ export const renderLoaderArea = (_this) => (
             <GridLoader
                 style={{zIndex: 99999999999}}
                 sizeUnit={"px"}
-                size={22}
+                size={21}
                 color={'#70b2bc'}
                 loading={true}
             />

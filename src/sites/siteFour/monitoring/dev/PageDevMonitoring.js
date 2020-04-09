@@ -1880,10 +1880,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             // todo: Components showing when the loading of graph data is not completed.
             if (!this.state.isReady) {
                 return (
-
-                    //renderPlaceHolderCircular()
                     renderLoaderArea(this)
-                    //renderPlaceHolderLottiePinJump()
                 )
             }
 
