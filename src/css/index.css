@@ -1218,6 +1218,7 @@ body, button, input, textarea, optgroup, select, textarea,
     margin-right:20px !important;
 }
 
+
 /*.content_title div {*/
 /*    display: inline-block !important;*/
 /*    vertical-align: middle;*/
@@ -1907,4 +1908,8 @@ body ::-webkit-scrollbar-track {
 /* Rahul 코드 오버로딩*/
 .MuiToolbar-regular {
     min-height: 48px !important;
+}
+
+.MuiToolbar-root>label, .MuiToolbar-root>button, .MuiToolbar-root>button.ui.button {
+    margin-right:20px !important;
 }
