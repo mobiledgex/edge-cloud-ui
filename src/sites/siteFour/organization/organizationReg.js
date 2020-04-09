@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { withRouter } from 'react-router-dom';
 import { Item, Step, Grid, Card, List, Form, Header, Button } from 'semantic-ui-react';
 //Mex
-import MexForms, { SELECT, INPUT } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, INPUT, CHECKBOX } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -303,7 +303,7 @@ class OrganizationReg extends React.Component {
             { field: fields.username, label: 'Username', formType: INPUT, placeholder: 'Select Username', rules: { required: true }, visible: true },
             { field: fields.organizationName, label: 'Organization', formType: INPUT, placeholder: 'Enter Organization Name', rules: { disabled: true }, visible: true, value: data[fields.organizationName] },
             { field: fields.type, label: 'Type', formType: INPUT, placeholder: 'Enter Type', rules: { disabled: true }, visible: true, value: data[fields.type] },
-            { field: fields.role, label: 'Role', formType: 'Select', placeholder: 'Select Role', rules: { required: true }, visible: true },
+            { field: fields.role, label: 'Role', formType: SELECT, placeholder: 'Select Role', rules: { required: true }, visible: true },
         ]
     }
 
@@ -314,6 +314,7 @@ class OrganizationReg extends React.Component {
             { field: fields.organizationName, label: 'Organization Name', formType: INPUT, placeholder: 'Enter Organization Name', rules: { required: true }, visible: true, },
             { field: fields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: true }, visible: true, },
             { field: fields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: true }, visible: true, },
+            { field: fields.publicImages, label: 'Public Image', formType: CHECKBOX, visible: true, value:false }
         ]
     }
 

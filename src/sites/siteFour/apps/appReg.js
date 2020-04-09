@@ -2,7 +2,7 @@ import React from 'react';
 import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX, TEXT_AREA } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX, TEXT_AREA, ICON_BUTTON } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -28,6 +28,7 @@ class ClusterInstReg extends React.Component {
         this.privacyPolicyList = []
         this.autoProvPolicyList = []
         this.requestedRegionList = []
+        this.originalData = undefined
         //To avoid refetching data from server
     }
 
@@ -69,32 +70,49 @@ class ClusterInstReg extends React.Component {
 
     /**Deployment manifest block */
 
-    /**port block */
-
     portForm = () => ([
         { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number' }, width: 9, visible: true },
         { field: fields.protocol, label: 'Protocol', formType: SELECT, rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp'] },
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removePortForms }
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm }
     ])
+
+    getPortForm = (form) => {
+        return ({ uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form ? form : this.portForm(), width: 3, visible: true })
+    }
+
+    annotationForm = () => ([
+        { field: fields.key, label: 'Key', formType: INPUT, rules: { required: true }, width: 6, visible: true },
+        { field: fields.value, label: 'Value', formType: INPUT, rules: { required: true }, width: 6, visible: true },
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 4, onClick: this.removeMultiForm }
+    ])
+
+    getAnnotationForm = (form) => {
+        return ({ uuid: uuid(), field: fields.annotations, formType: 'MultiForm', forms: form ? form : this.annotationForm(), width: 3, visible: true })
+    }
 
     multiPortForm = () => ([
         { field: fields.portRangeMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number' }, width: 4, visible: true },
         { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
         { field: fields.portRangeMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number' }, width: 4, visible: true },
         { field: fields.protocol, label: 'Protocol', formType: SELECT, rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp'] },
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removePortForms }
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm }
     ])
 
-    getPortForm = (form) => (
-        { uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form, width: 3, visible: true }
-    )
+    getMultiPortForm = (form) => {
+        return ({ uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form ? form : this.multiPortForm(), width: 3, visible: true })
+    }
 
-    getMultiPortForm = (form) => (
-        { uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form, width: 3, visible: true }
-    )
+    configForm = () =>([
+        { field: fields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, type: 'number', rows: 4 }, width: 9, visible: true },
+        { field: fields.kind, label: 'Kind', formType: SELECT, rules: { required: true }, width: 4, visible: true, options: ['Environment Variables', 'Helm Customization'] },
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm }
+    ])
 
+    getConfigForm = (form) => {
+        return ({ uuid: uuid(), field: fields.configs, formType: 'MultiForm', forms: form ? form : this.configForm(), width: 3, visible: true })
+    }
 
-    removePortForms = (e, form) => {
+    removeMultiForm = (e, form) => {
         if (form.parent) {
             let updateForms = Object.assign([], this.state.forms)
             updateForms.splice(form.parent.id, 1);
@@ -102,17 +120,15 @@ class ClusterInstReg extends React.Component {
                 forms: updateForms
             })
         }
-
     }
 
-    addPortForms = () => {
-        this.setState(prevState => ({ forms: [...prevState.forms, this.getPortForm(this.portForm())] }))
+    addMultiForm = (e, form) =>
+    {
+        let parent  = form.parent;
+        let forms = this.state.forms;
+        forms.splice(parent.id + 1, 0, form.multiForm());
+        this.setState({forms:forms})
     }
-
-    addMultiPortForms = () => {
-        this.setState(prevState => ({ forms: [...prevState.forms, this.getMultiPortForm(this.multiPortForm())] }))
-    }
-    /**port block */
 
 
     updateImagePath = (forms, form)=>
@@ -120,6 +136,7 @@ class ClusterInstReg extends React.Component {
         let organizationName = undefined;
         let version = undefined;
         let deployment = undefined;
+        let appName  = undefined;
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
             if (form.field === fields.organizationName) {
@@ -131,36 +148,59 @@ class ClusterInstReg extends React.Component {
             else if (form.field === fields.deployment) {
                 deployment = form.value
             }
+            else if (form.field === fields.appName) {
+                appName = form.value
+            }
         }
         if(deployment && version && organizationName)
         {
             form.value = deployment === constant.DEPLOYMENT_TYPE_VM ? 
                 `https://artifactory.mobiledgex.net/artifactory/repo-${organizationName}` : 
-                `docker.mobiledgex.net/${organizationName}/images/server-ping-threaded:${version}`
+                deployment === constant.DEPLOYMENT_TYPE_HELM ?
+                `https://chart.registry.com/charts:${organizationName}/${appName}` : 
+                `docker.mobiledgex.net/${organizationName}/images/${appName}:${version}`
         }
     }
 
     deploymentValueChange = (currentForm, forms, isInit) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i];
+        forms = forms.filter((form) => {
             if (form.field === fields.imageType) {
                 form.value = currentForm.value === constant.DEPLOYMENT_TYPE_HELM ? constant.IMAGE_TYPE_HELM : 
-                currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.IMAGE_TYPE_QCOW : 
-                constant.IMAGE_TYPE_DOCKER
+                currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.IMAGE_TYPE_QCOW : constant.IMAGE_TYPE_DOCKER
+                return form
             }
             else if (form.field === fields.imagePath) {
                 this.updateImagePath(forms, form)
+                return form
             }
             else if (form.field === fields.scaleWithCluster) {
                 form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? true : false
+                return form
             }
             else if (form.field === fields.accessType) {
-                form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.ACCESS_TYPE_DIRECT : constant.ACCESS_TYPE_DEFAULT_FOR_DEPLOYMENT
+                form.options =  (currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES || currentForm.value === constant.DEPLOYMENT_TYPE_HELM)?  
+                                [constant.ACCESS_TYPE_LOAD_BALANCER] : 
+                                [constant.ACCESS_TYPE_LOAD_BALANCER, constant.ACCESS_TYPE_DIRECT]
+                form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.ACCESS_TYPE_DIRECT : constant.ACCESS_TYPE_LOAD_BALANCER
+                return form
             }
-        }
-        this.setState({
-            forms: forms
+            else if (form.label === 'Configs' || form.label === 'Annotations') {
+                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_HELM ? true : false
+                return form
+            }
+            else if (form.field === fields.configs || form.field === fields.annotations) {
+                if (currentForm.value === constant.DEPLOYMENT_TYPE_HELM) {
+                    return form
+                }
+            }
+            else
+            {
+                return form
+            }
         })
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
+        }
     }
 
     getFlavorInfo = async (region, form, forms) => {
@@ -243,7 +283,7 @@ class ClusterInstReg extends React.Component {
         else if (form.field === fields.organizationName) {
             this.organizationValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.version) {
+        else if (form.field === fields.version || form.field === fields.appName) {
             this.versionValueChange(form, forms, isInit)
         }
         else if (form.field === fields.deployment) {
@@ -262,6 +302,8 @@ class ClusterInstReg extends React.Component {
         if (data) {
             let forms = this.state.forms;
             let ports = ''
+            let annotations = ''
+            let configs = []
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i];
                 if (form.uuid) {
@@ -279,6 +321,14 @@ class ClusterInstReg extends React.Component {
                         else if (form.field === fields.deploymentManifest) {
                             data[fields.deploymentManifest] = multiFormData[fields.deploymentManifest]
                         }
+                        else if (multiFormData[fields.key] && multiFormData[fields.value]) {
+                            annotations = annotations.length > 0 ? annotations + ',' : annotations
+                            annotations = annotations + `${multiFormData[fields.key]}=${multiFormData[fields.value]}`
+                        }
+                        else if (multiFormData[fields.kind] && multiFormData[fields.config]) {
+                            multiFormData[fields.kind] = constant.configType(multiFormData[fields.kind])
+                            configs.push(multiFormData)
+                        }
                     }
                     data[uuid] = undefined
                 }
@@ -286,10 +336,15 @@ class ClusterInstReg extends React.Component {
             if (ports.length > 0) {
                 data[fields.accessPorts] = ports
             }
-
+            if (annotations.length > 0) {
+                data[fields.annotations] = annotations
+            }
+            if (configs.length > 0) {
+                data[fields.configs] = configs
+            }
 
             let isUpdate = this.props.isUpdate;
-            let valid = isUpdate ? await updateApp(this, data) : await createApp(this, data)
+            let valid = isUpdate ? await updateApp(this, data, this.originalData) : await createApp(this, data)
             if (valid) {
                 this.props.handleAlertInfo('success', `App ${data[fields.appName]} ${isUpdate ? 'updated' : 'created'} successfully`)
                 this.props.onClose(true)
@@ -344,7 +399,7 @@ class ClusterInstReg extends React.Component {
                             form.options = [constant.DEPLOYMENT_TYPE_DOCKER, constant.DEPLOYMENT_TYPE_KUBERNETES, constant.DEPLOYMENT_TYPE_VM, constant.DEPLOYMENT_TYPE_HELM]
                             break;
                         case fields.accessType:
-                            form.options = [constant.ACCESS_TYPE_DEFAULT_FOR_DEPLOYMENT, constant.ACCESS_TYPE_DIRECT, constant.ACCESS_TYPE_LOAD_BALANCER]
+                            form.options = [constant.ACCESS_TYPE_DIRECT, constant.ACCESS_TYPE_LOAD_BALANCER]
                             break;
                         default:
                             form.options = undefined;
@@ -361,7 +416,8 @@ class ClusterInstReg extends React.Component {
             this.organizationList = [organization]
             this.flavorList = await getFlavorList(this, { region: data[fields.region] })
             this.privacyPolicyList = await getPrivacyPolicyList(this, { region: data[fields.region] })
-            this.autoProvPolicyList = await getAutoProvPolicyList(this, { region: data[fields.region] })
+            this.autoProvPolicyList = await getAutoProvPolicyList(this, { region: data[fields.region] })            
+            let multiFormCount = 0
             if (data[fields.accessPorts]) {
                 let portArray = data[fields.accessPorts].split(',')
                 for (let i = 0; i < portArray.length; i++) {
@@ -391,7 +447,51 @@ class ClusterInstReg extends React.Component {
                             portForm.value = portMinNo
                         }
                     }
-                    forms.push(this.getPortForm(portForms))
+                    forms.splice(19, 0, this.getPortForm(portForms))
+                    multiFormCount += 1
+                }
+            }
+
+            if (data[fields.annotations]) {
+                let annotationArray = data[fields.annotations].split(',')
+                for (let i = 0; i < annotationArray.length; i++) {
+                    let annotation = annotationArray[i].split('=')
+                    let annotationForms = this.annotationForm()
+                    let key = annotation[0]
+                    let value = annotation[1]
+
+                    for (let j = 0; j < annotationForms.length; j++) {
+                        let annotationForm = annotationForms[j];
+                        if (annotationForm.field === fields.key) {
+                            annotationForm.value = key
+                        }
+                        else if (annotationForm.field === fields.value) {
+                            annotationForm.value = value
+                        }
+                    }
+                    forms.splice(20 + multiFormCount, 0, this.getAnnotationForm(annotationForms))
+                    multiFormCount += 1
+                }
+            }
+
+            if(data[fields.configs])
+            {
+                let configs = data[fields.configs]
+                for(let i=0;i<configs.length;i++)
+                {
+                    let config = configs[i]
+                    let configForms = this.configForm()
+                    for (let j = 0; j < configForms.length; j++) {
+                        let configForm = configForms[j];
+                        if (configForm.field === fields.kind) {
+                            configForm.value = config[fields.kind]
+                        }
+                        else if (configForm.field === fields.config) {
+                            configForm.value = config[fields.config]
+                        }
+                    }
+                    forms.splice(21 + multiFormCount, 0, this.getConfigForm(configForms))
+                    multiFormCount += 1
                 }
             }
         }
@@ -402,7 +502,7 @@ class ClusterInstReg extends React.Component {
             { label: 'Apps', formType: 'Header', visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
             { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of' },
-            { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true }, visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
+            { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true, onBlur:true }, visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
             { field: fields.version, label: 'App Version', formType: INPUT, placeholder: 'Enter App Version', rules: { required: true, onBlur:true }, visible: true, tip: 'App version' },
             { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
             { field: fields.accessType, label: 'Access Type', formType: SELECT, placeholder: 'Select Access Type', rules: { required: true }, visible: true },
@@ -417,7 +517,9 @@ class ClusterInstReg extends React.Component {
             { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: CHECKBOX, visible: false, value: false, update: true },
             { field: fields.command, label: 'Command', formType: INPUT, placeholder: 'Enter Command', rules: { required: false }, visible: true, update: true, tip: 'Command that the container runs to start service' },
             { uuid: uuid(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, update: true, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
-            { label: 'Ports', formType: 'Header', forms: [{ formType: BUTTON, label: 'Add Port Mapping', visible: true, update: true, onClick: this.addPortForms }, { formType: BUTTON, label: 'Add Multiport Mapping', visible: true, onClick: this.addMultiPortForms }], visible: true, tip: 'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443' },
+            { label: 'Ports', formType: 'Header', forms: [{ formType: BUTTON, label: 'Add Port Mapping', visible: true, update: true, onClick: this.addMultiForm, multiForm:this.getPortForm }, { formType: BUTTON, label: 'Add Multiport Mapping', visible: true, onClick: this.addMultiForm, multiForm:this.getMultiPortForm }], visible: true, tip: 'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443'},
+            { label: 'Annotations', formType: 'Header', forms: [{ formType: BUTTON, label: 'Add Annotation', visible: true, update: true, onClick: this.addMultiForm, multiForm:this.getAnnotationForm }], visible: false },
+            { label: 'Configs', formType: 'Header', forms: [{ formType: BUTTON, label: 'Add', visible: true, update: true, onClick: this.addMultiForm, multiForm:this.getConfigForm}], visible: false }
         ]
     }
 
@@ -441,6 +543,7 @@ class ClusterInstReg extends React.Component {
     getFormData = async (data) => {
         let forms = this.formKeys()
         if (data) {
+            this.originalData = Object.assign({}, data)
             await this.loadDefaultData(forms, data)
         }
         else {
