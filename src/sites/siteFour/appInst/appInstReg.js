@@ -102,6 +102,11 @@ class ClusterInstReg extends React.Component {
             else if (form.field === fields.privacyPolicyName || form.field === fields.ipAccess) {
                 form.visible = currentForm.value
                 form.value = currentForm.value ? form.value : undefined
+                // disable as default
+                if(form.field === fields.privacyPolicyName) {
+                    form.visible = false
+                    form.rules.disabled =  true
+                }
             }
         }
         if (isInit === undefined || isInit === false) {
@@ -146,7 +151,7 @@ class ClusterInstReg extends React.Component {
                 break;
             }
         }
-        
+
         for (let i = 0; i < this.appList.length; i++) {
             let app = this.appList[i]
             if (app[fields.appName] === appName && app[fields.version] === currentForm.value) {
@@ -172,7 +177,7 @@ class ClusterInstReg extends React.Component {
                         return form
                     }
                     else if (form.field === fields.configs) {
-                        if (app[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM) { 
+                        if (app[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM) {
                             return form
                         }
                     }
@@ -188,7 +193,7 @@ class ClusterInstReg extends React.Component {
             this.setState({ forms: nForms })
         }
     }
-    
+
 
     regionValueChange = (currentForm, forms, isInit) => {
         let region = currentForm.value;
@@ -229,6 +234,33 @@ class ClusterInstReg extends React.Component {
                 }
             }
         }
+    }
+
+    ipAccessValueChange = (currentForm, forms, isInit) => {
+            let updateForms = Object.assign([], this.state.forms)
+            console.log('20200410 currentForm.field...', currentForm.value)
+            if (currentForm.value !== "Dedicated") {
+                // only support the Privacy Policy for clusters with IpAccessDedicated
+                // hide privacyPolicyList
+                for (let i = 0; i < updateForms.length; i++) {
+                    let form = updateForms[i]
+                    if (form.field === fields.privacyPolicyName) {
+                        form.visible = false
+                        form.rules.disabled =  true
+                    }
+                }
+
+            } else {
+                for (let i = 0; i < updateForms.length; i++) {
+                    let form = updateForms[i]
+                    if (form.field === fields.privacyPolicyName) {
+                        form.visible = true
+                        form.rules.disabled =  false
+                    }
+
+                }
+            }
+            this.setState({forms: updateForms})
     }
 
     /**config blog */
@@ -293,6 +325,9 @@ class ClusterInstReg extends React.Component {
         }
         else if (form.field === fields.version) {
             this.versionValueChange(form, forms, isInit)
+        }
+        else if (form.field === fields.ipAccess) {
+            this.ipAccessValueChange(form, forms, isInit)
         }
     }
 
