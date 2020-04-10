@@ -283,7 +283,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         //desc:todo:desc:todo:desc//desc:todo:desc:todo:desc//desc:todo:desc:todo:desc//desc:todo:desc:todo:desc//desc:todo:desc:todo:desc//desc:todo:desc:todo:desc//desc:todo:desc:todo:desc//desc:todo:desc:todo:desc
         //gridLayoutHeight = window.innerHeight * 0.870;
         //gridLayoutHeight = window.innerHeight * 0.870;
-        gridItemHeight = 258;
+        gridItemHeight = 259;
 
         constructor(props) {
             super(props);
@@ -1578,7 +1578,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         renderHeader = () => {
             return (
                 <>
-                    <Toolbar className='monitoring_title' style={{backgroundColor: 'transparent', marginTop: 10}}>
+                    <Toolbar className='monitoring_title' style={{backgroundColor: 'transparent', marginTop: 0}}>
                         <label className='content_title_label' style={{marginBottom: 3}}>Monitoring</label>
                         <div className='page_monitoring_select_area'
                              style={{
