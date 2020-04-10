@@ -583,7 +583,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
         async refreshAllData() {
             clearInterval(this.intervalForAppInst)
-            showToast('FETCH NEW DATA!')
             await this.setState({
                 currentClassification: CLASSIFICATION.CLUSTER,
                 placeHolderStateTime: moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'),
