@@ -279,7 +279,7 @@ class MexListView extends React.Component {
                             {this.makeHeader()}
                         </Table.Row>
                     </Table.Header>
-                    <Table.Body style={{ overFlow: "auto", height: '100%' }}>
+                    <Table.Body style={{ overflow: "auto", height: '100%' }}>
                         {
                             this.state.dataList.map((item, i) => (
                                 <Table.Row key={i}>
