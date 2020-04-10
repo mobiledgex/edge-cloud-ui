@@ -284,6 +284,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         //gridLayoutHeight = window.innerHeight * 0.870;
         //gridLayoutHeight = window.innerHeight * 0.870;
         gridItemHeight = 258;
+
         constructor(props) {
             super(props);
             let clusterLayoutKey = getUserId() + "_layout"
@@ -1577,12 +1578,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         renderHeader = () => {
             return (
                 <>
-                    <Toolbar className='monitoring_title'>
-                        <label className='content_title_label'>Monitoring</label>
-                        <div className='page_monitoring_select_area' style={{
-                            width: 'fit-content',
-                            //backgroundColor: 'red',
-                        }}>
+                    <Toolbar className='monitoring_title' style={{backgroundColor: 'transparent', marginTop: 10}}>
+                        <label className='content_title_label' style={{marginBottom: 3}}>Monitoring</label>
+                        <div className='page_monitoring_select_area'
+                             style={{
+                                 width: 'fit-content',
+                                 //backgroundColor: 'red',
+                             }}>
                             <div>
                                 {this.makeClusterDropdown()}
                             </div>
