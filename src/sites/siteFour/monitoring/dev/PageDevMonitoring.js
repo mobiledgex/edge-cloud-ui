@@ -6,7 +6,7 @@ import {Dropdown, Modal} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
-import {CircularProgress, lighten, LinearProgress, Toolbar, withStyles} from '@material-ui/core'
+import {CircularProgress, LinearProgress, Toolbar, withStyles} from '@material-ui/core'
 import {Dropdown as ADropdown, Menu as AMenu,} from 'antd';
 import {
     defaultHwMapperListForCluster,
