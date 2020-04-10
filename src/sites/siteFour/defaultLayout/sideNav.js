@@ -14,6 +14,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import MexHeader from './header'
 import {getUserRole} from '../../../services/model/format'
 import * as constant from '../../../constant'
+
 import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
 import AssignmentIndOutlinedIcon from '@material-ui/icons/AssignmentIndOutlined';
 import DvrOutlinedIcon from '@material-ui/icons/DvrOutlined';
@@ -120,17 +121,20 @@ const options = [
 ]
 
 const defaultPage = (options) => {
+    let page = <SiteFourPageOrganization />
     let path = window.location + '';
     let currentPage = path.substring(path.indexOf('pg='))
     for (let i = 0; i < options.length; i++) {
         let option = options[i]
         if (option.subOptions) {
-            return defaultPage(option.subOptions)
-        } else if (currentPage === 'pg=' + option.pg) {
-            return option.page
+            page = defaultPage(option.subOptions)
+        }
+        else if (currentPage.includes('pg=' + option.pg)) {
+            page = option.page
+            break;
         }
     }
-    return <SiteFourPageOrganization/>
+    return page
 }
 
 const navstate = () => {
@@ -323,7 +327,6 @@ export default function MiniDrawer(props) {
                 </List>
             </Drawer>
             <main className={classes.content}>
-
                 <div className='contents_body'>
                     {page}
                 </div>
