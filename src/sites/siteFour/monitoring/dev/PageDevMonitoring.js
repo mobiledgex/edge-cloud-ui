@@ -281,8 +281,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         intervalForAppInst = null;
 
         webSocketInst: WebSocket = null;
-        gridLayoutHeight = window.innerHeight * 0.875;
-        gridItemHeight = 265;
+        gridLayoutHeight = window.innerHeight * 0.873;
+        gridItemHeight = 263;
 
         constructor(props) {
             super(props);
@@ -1405,7 +1405,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             Add Item
                         </div>
                     </AMenu.Item>
-                  {/*  <AMenu.Item style={{display: 'flex'}}
+                    {/*  <AMenu.Item style={{display: 'flex'}}
                                 key="1"
                                 onClick={() => {
                                     this.setState({
