@@ -279,6 +279,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
     class PageDevMonitoring extends Component<Props, State> {
         intervalForAppInst = null;
         webSocketInst: WebSocket = null;
+
+        //desc:todo:desc:todo:desc
+        //gridLayoutHeight = window.innerHeight * 0.870;
         //gridLayoutHeight = window.innerHeight * 0.870;
         gridItemHeight = 258;
         constructor(props) {
