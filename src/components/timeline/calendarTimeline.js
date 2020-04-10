@@ -278,7 +278,7 @@ export default class CalendarTimeline extends Component {
     render() {
         const { groups, items, defaultTimeStart, defaultTimeEnd, visibleTimeStart, visibleTimeEnd } = this.state;
         return (
-            <div>
+            <div style={{height:'100%'}}>
                 <div>
                     <div className='timeline_button_layout'>
                         <button className='timeline_button_current' onClick={this.onCurrentClick}>{"Current Time"}</button>
@@ -313,6 +313,7 @@ export default class CalendarTimeline extends Component {
                     groupRenderer={this.groupRenderer}
                     selected={[(this.props.timelineSelectedIndex).toString()]}
                     onItemSelect={this.handleItemSelect}
+                    style={{height:'calc(100% - 32px)'}}
                 >
                     <TimelineHeaders className="sticky">
                         <SidebarHeader>

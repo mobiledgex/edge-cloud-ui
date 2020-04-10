@@ -307,7 +307,7 @@
     display: block;
     overflow: hidden;
     white-space: nowrap;
-    max-height: 80%;
+    max-height: calc(100% - 72px);
     overflow-y: scroll;
 }
 

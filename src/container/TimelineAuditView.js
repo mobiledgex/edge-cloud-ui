@@ -609,7 +609,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         render() {
             return (
                 <div style={{display:'flex', height:'100%', flexDirection: 'column'}}>
-                    <div className="page_audit_history" style={{height:(this.state.closeMap)? '100%' : '50%', overflow:'auto'}}>
+                    <div className="page_audit_history">
                         <div className="page_audit_history_option">
                             <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
                             <div className="page_audit_history_option_period">
@@ -664,12 +664,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 </IconButton>
                             </div>
                         </div>
-                        <div style={{width:this.getWidth(), overFlow:'hidden'}}>
-                            {(this.state.timesList.length > 0) ?
-                                <CalendarTimeline timelineList={this.state.timelineList[0]} onItemSelectCallback={this.onItemSelect} onPopupEmail={this.onPopupEmail} statusCount={this.state.statusCount} timelineSelectedIndex={this.state.timelineSelectedIndex}/>
-                                :null
-                            }
-                        </div>
+                    </div>
+                    <div  style={{width:this.getWidth(), height:(this.state.closeMap)? '100%' : '50%', overflow:'hidden'}}>
+                        {(this.state.timesList.length > 0) ?
+                            <CalendarTimeline timelineList={this.state.timelineList[0]} onItemSelectCallback={this.onItemSelect} onPopupEmail={this.onPopupEmail} statusCount={this.state.statusCount} timelineSelectedIndex={this.state.timelineSelectedIndex}/>
+                            :null
+                        }
                     </div>
                     <div style={{margin:'5px 0', cursor:'pointer', display:'flex', alignItems:'column', justifyContent:'center'}} onClick={this.onCloseMap}>
                         <span style={{color:'#c8c9cb'}}>{(this.state.closeMap)?'Show':'Hide'}</span>

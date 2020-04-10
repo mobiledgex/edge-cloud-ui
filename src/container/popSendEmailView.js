@@ -99,6 +99,8 @@ class PopSendEmailView extends React.Component {
 
         return (
             <form id={'eSendForm'} onSubmit={handleSubmit(submit)}>
+                <div className='sendMail_form_row'>
+                <label>to</label>
                 <Field
                     name="to"
                     type="email"
@@ -107,6 +109,7 @@ class PopSendEmailView extends React.Component {
                     validate={email}
                     warn={aol}
                 />
+                </div>
                 <Field
                     name="subject"
                     type="text"
