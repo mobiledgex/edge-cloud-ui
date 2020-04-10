@@ -327,7 +327,6 @@ export default function MiniDrawer(props) {
                 </List>
             </Drawer>
             <main className={classes.content}>
-                {/*{props.isShowHeader && <div className={classes.toolbar}/>}*/}
                 <div className='contents_body'>
                     {page}
                 </div>
