@@ -7,7 +7,7 @@ import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
-import {Card, CircularProgress} from '@material-ui/core'
+import {Card, CircularProgress, Toolbar} from '@material-ui/core'
 import {hot} from "react-hot-loader/root";
 import {DatePicker, Select, Tooltip} from 'antd';
 
@@ -1326,88 +1326,86 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
 
                 <>
-                    <Grid.Row className='content_title'>
-                        <div className='content_title_wrap'>
-                            <div className='content_title_label'>Monitoring</div>
-                            <Button positive={true}
-                                    onClick={async () => {
-                                        this.setState({
-                                            isOpenEditView: true,
-                                        })
+                    <Toolbar className='monitoring_title'>
+                        <label className='content_title_label'>Monitoring</label>
+                        <Button positive={true}
+                                onClick={async () => {
+                                    this.setState({
+                                        isOpenEditView: true,
+                                    })
+                                }}
+                        >Add
+                        </Button>
+
+
+                        {/*todo:---------------------------*/}
+                        {/*todo:REFRESH, RESET BUTTON DIV  */}
+                        {/*todo:---------------------------*/}
+                        <Button
+                            onClick={async () => {
+                                await this.resetAllDataForDev();
+                            }}
+                        >Reset
+                        </Button>
+                        <Button
+                            onClick={async () => {
+                                if (!this.state.loading) {
+                                    this.refreshAllData();
+                                } else {
+                                    showToast('Currently loading, you can\'t request again.')
+                                }
+
+                            }}
+                            className="ui circular icon button"
+                        >
+                            <i aria-hidden="true"
+                               className="sync alternate icon"></i>
+                        </Button>
+
+                        {this.state.intervalLoading &&
+                        <div>
+                            <div style={{marginLeft: 15}}>
+                                <CircularProgress
+                                    style={{
+                                        color: this.state.currentClassification === CLASSIFICATION.APPINST ? 'grey' : 'green',
+                                        zIndex: 9999999,
+                                        fontSize: 10
                                     }}
-                            >Add
-                            </Button>
-
-
-                            {/*todo:---------------------------*/}
-                            {/*todo:REFRESH, RESET BUTTON DIV  */}
-                            {/*todo:---------------------------*/}
-                            <Button
-                                onClick={async () => {
-                                    await this.resetAllDataForDev();
-                                }}
-                            >Reset
-                            </Button>
-                            <Button
-                                onClick={async () => {
-                                    if (!this.state.loading) {
-                                        this.refreshAllData();
-                                    } else {
-                                        showToast('Currently loading, you can\'t request again.')
-                                    }
-
-                                }}
-                                className="ui circular icon button"
-                            >
-                                <i aria-hidden="true"
-                                   className="sync alternate icon"></i>
-                            </Button>
-
-                            {this.state.intervalLoading &&
-                            <div>
-                                <div style={{marginLeft: 15}}>
-                                    <CircularProgress
-                                        style={{
-                                            color: this.state.currentClassification === CLASSIFICATION.APPINST ? 'grey' : 'green',
-                                            zIndex: 9999999,
-                                            fontSize: 10
-                                        }}
-                                        size={20}
-                                    />
-                                </div>
+                                    size={20}
+                                />
                             </div>
-                            }
-
-                            {this.state.webSocketLoading &&
-                            <div>
-                                <div style={{marginLeft: 15}}>
-                                    <CircularProgress
-                                        style={{
-                                            color: 'green',
-                                            zIndex: 9999999,
-                                        }}
-                                        size={45}
-                                    />
-                                </div>
-                            </div>
-                            }
-                            {this.props.isLoading &&
-                            <div>
-                                <div style={{marginLeft: 15}}>
-                                    <CircularProgress
-                                        style={{
-                                            color: 'green',
-                                            zIndex: 9999999,
-                                            fontSize: 10
-                                        }}
-                                        size={20}
-                                    />
-                                </div>
-                            </div>
-                            }
                         </div>
-                    </Grid.Row>
-                    <div style={{backgroundColor: '#202329', marginLeft: 10, marginRight: 10,}}>
+                        }
+
+                        {this.state.webSocketLoading &&
+                        <div>
+                            <div style={{marginLeft: 15}}>
+                                <CircularProgress
+                                    style={{
+                                        color: 'green',
+                                        zIndex: 9999999,
+                                    }}
+                                    size={45}
+                                />
+                            </div>
+                        </div>
+                        }
+                        {this.props.isLoading &&
+                        <div>
+                            <div style={{marginLeft: 15}}>
+                                <CircularProgress
+                                    style={{
+                                        color: 'green',
+                                        zIndex: 9999999,
+                                        fontSize: 10
+                                    }}
+                                    size={20}
+                                />
+                            </div>
+                        </div>
+                        }
+                    </Toolbar>
+                    <div style={{backgroundColor: '#202329'}}>
                         {this.renderSelectBoxRow()}
                     </div>
                 </>
@@ -1587,26 +1585,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             if (this.state.isNoData) {
                 return (
-                    <Grid.Row className='view_contents'>
-                        <Grid.Column className='contents_body'>
-                            {this.renderHeader()}
-                            <div style={{}}>
-                                <Card
-                                    hoverable
-                                    style={{width: '100%', height: '100%'}}
-                                    cover={<div style={{marginLeft: 40, marginTop: 5}}>
-                                        <img alt="example" src="/assets/brand/MobiledgeX_Logo_tm_white.svg" width={500}
-                                             height={250}/>
-                                    </div>}
-                                >
-                                    <div style={{fontSize: 45, fontFamily: 'Roboto Condensed'}}>
-                                        There is no app instance you can access..
-                                    </div>
-                                </Card>
-                            </div>
-                        </Grid.Column>
-                    </Grid.Row>
-                )
+                    <div style={{width: '100%', height: '100%',}}>
+                        {this.renderHeader()}
+                        <div style={{}}>
+                            <Card
+                                hoverable
+                                style={{width: '100%', height: '100%', background:'none'}}
+                                cover={<div style={{marginLeft: 40, marginTop: 5}}>
+                                    <img alt="example" src="/assets/brand/MobiledgeX_Logo_tm_white.svg" width={500}
+                                         height={250}/>
+                                </div>}
+                            >
+                                <div style={{fontSize: 24, color:'rgba(255,255,255,.6)', fontFamily: 'Roboto Condensed'}}>
+                                    There is no app instance you can access..
+                                </div>
+                            </Card>
+                        </div>
+                    </div>)
             }
 
             return (
@@ -1632,43 +1627,36 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
                         loading={this.state.loading}
                     />
-                    <Grid.Row className='view_contents'>
-                        <Card style={{
-                            width: '100%',
-                            backgroundColor: '#292c33',
-                            padding: 10,
-                            color: 'white',
-                        }}>
-                            <div>
-                                {/*desc:---------------------------------*/}
-                                {/*desc:Content Header                   */}
-                                {/*desc:---------------------------------*/}
-                                <SemanticToastContainer position={"top-right"}/>
-                                {this.renderHeader()}
-                                <div className="page_monitoring" style={{overflowY: 'auto', height: 1200}}>
-                                    <div className='page_monitoring_dashboard_dev'
-                                         style={{marginBottom: 110}}>
-                                        {this.state.currentClassification === CLASSIFICATION.CLUSTER
-                                            ? this.renderGridLayoutForCluster()
-                                            : this.renderGridLayoutForAppInst()
-                                        }
-                                    </div>
+
+                    <div style={{width:'100%',height:'100%'}}>
+                        <div style={{width:'100%',height:'100%'}}>
+                            {/*desc:---------------------------------*/}
+                            {/*desc:Content Header                   */}
+                            {/*desc:---------------------------------*/}
+                            <SemanticToastContainer position={"top-right"}/>
+                            {this.renderHeader()}
+                            <div className="page_monitoring" style={{overflowY: 'auto', height: 'calc(100% - 102px)'}}>
+                                <div className='page_monitoring_dashboard_dev'
+                                     style={{marginBottom: 110}}>
+                                    {this.state.currentClassification === CLASSIFICATION.CLUSTER
+                                        ? this.renderGridLayoutForCluster()
+                                        : this.renderGridLayoutForAppInst()
+                                    }
                                 </div>
                             </div>
-                            {/*desc:---------------------------------*/}
-                            {/*desc:terminal button                   */}
-                            {/*desc:---------------------------------*/}
-                            {this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?
-                                <div className='page_monitoring_terminal_button' style={{marginBottom: 100}}
-                                     onClick={() => this.setState({openTerminal: true})}
-                                >
-                                </div>
-                                : null
-                            }
-                        </Card>
+                        </div>
+                        {/*desc:---------------------------------*/}
+                        {/*desc:terminal button                   */}
+                        {/*desc:---------------------------------*/}
+                        {this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?
+                            <div className='page_monitoring_terminal_button' style={{marginBottom: 100}}
+                                 onClick={() => this.setState({openTerminal: true})}
+                            >
+                            </div>
+                            : null
+                        }
+                    </div>
 
-
-                    </Grid.Row>
                     <Modal style={{width: '100%', height: '100%'}} open={this.state.openTerminal}>
                         <TerminalViewer data={this.state.terminalData} onClose={() => {
                             this.setState({openTerminal: false})

@@ -1043,24 +1043,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             if (this.state.isNoData) {
                 return (
-                    <Grid.Row className='view_contents'>
-                        <Grid.Column className='contents_body'>
-                            {this.renderHeader()}
-                            <div style={{}}>
-                                <Card
-                                    hoverable
-                                    style={{width: '100%', height: '100%'}}
-                                    cover={<div style={{marginLeft: 40, marginTop: 5}}>
-                                        <img alt="example" src="/assets/brand/MobiledgeX_Logo_tm_white.svg" width={500} height={250}/>
-                                    </div>}
-                                >
-                                    <div style={{fontSize: 45, fontFamily:'Roboto Condensed'}}>
-                                        There is no cloudlet you can access...
-                                    </div>
-                                </Card>
-                            </div>
-                        </Grid.Column>
-                    </Grid.Row>
+                    <div style={{width: '100%', height: '100%'}}>
+                        {this.renderHeader()}
+                        <div style={{}}>
+                            <Card
+                                hoverable
+                                style={{width: '100%', height: '100%'}}
+                                cover={<div style={{marginLeft: 40, marginTop: 5}}>
+                                    <img alt="example" src="/assets/brand/MobiledgeX_Logo_tm_white.svg" width={500} height={250}/>
+                                </div>}
+                            >
+                                <div style={{fontSize: 45, fontFamily:'Roboto Condensed'}}>
+                                    There is no cloudlet you can access...
+                                </div>
+                            </Card>
+                        </div>
+                    </div>
                 )
             }
 

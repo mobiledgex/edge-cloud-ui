@@ -182,26 +182,16 @@ export const groupByKey_ = (array, key) => {
 
 
 export const renderLoaderArea = (_this) => (
-    <Grid.Row className='view_contents' style={{height: window.height, width: window.width}}>
-        <Grid.Column className='contents_body'>
-
-            <Card style={{
-                width: '100%',
-                backgroundColor: '#292c33',
-                padding: 10,
-                color: 'white',
-            }}>
-                <div>
-                    {_this.renderHeader()}
-                </div>
-            </Card>
-            <div style={{position: 'absolute', top: '77%', left: '48%'}}>
-                <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row', marginTop: 350}}>
-                    {renderGridLoader2(150, 150)}
-                </div>
+    <div style={{width:'100%', height:'100%'}}>
+        <div style={{width:'100%', height:'100%'}}>
+            {_this.renderHeader()}
+        </div>
+        <div style={{position: 'absolute', top: '77%', left: '48%'}}>
+            <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row', marginTop: 350}}>
+                {renderGridLoader2(150, 150)}
             </div>
-        </Grid.Column>
-    </Grid.Row>
+        </div>
+    </div>
 )
 
 
