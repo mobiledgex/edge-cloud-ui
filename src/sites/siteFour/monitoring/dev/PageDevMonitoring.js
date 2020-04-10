@@ -1569,6 +1569,14 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         <div style={PageMonitoringStyles.listItemTitle}>
                             Stream
                         </div>
+                        <div style={PageMonitoringStyles.listItemTitle}>
+                            <CustomSwitch
+                                size="small"
+                                checked={this.state.isStream}
+                                color="primary"
+
+                            />
+                        </div>
                     </AMenu.Item>
                     }
                 </AMenu>
