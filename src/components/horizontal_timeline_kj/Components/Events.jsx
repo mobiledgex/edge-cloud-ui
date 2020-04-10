@@ -26,6 +26,7 @@ const EventsBar = ({events, selectedIndex, styles, handleDateClick, labelWidth})
                     distanceFromOrigin={event.distance}
                     label={event.label}
                     date={event.date}
+                    status={event.status}
                     index={index}
                     key={index}
                     onClick={handleDateClick}

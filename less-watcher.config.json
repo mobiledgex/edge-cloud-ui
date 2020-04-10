@@ -1,6 +1,7 @@
 {
   "watchFolder": "src/css/",
-  "outputFolder": "src/css/antTheme/",
+  "outputFolder": "dist",
+  "mainFile": "main.less",
   "sourceMap": true,
   "runOnce": false,
   "enableJs": true

@@ -43,7 +43,22 @@ const renderField = ({
     <div>
         <label>{label}</label>
         <div>
-            <input {...input} placeholder={label} type={type} />
+            <input {...input} style={{color:'black'}} placeholder={label} type={type} />
+            {touched &&
+            ((error && <span>{error}</span>) ||
+                (warning && <span>{warning}</span>))}
+        </div>
+    </div>
+)
+const renderTextareaField = ({
+                         input,
+                         label,
+                         meta: { touched, error, warning }
+                     }) => (
+    <div>
+        <label>{"Contents"}</label>
+        <div>
+            <textarea {...input} style={{color:'black'}} placeholder={"Contents"} value={label} autoFocus></textarea>
             {touched &&
             ((error && <span>{error}</span>) ||
                 (warning && <span>{warning}</span>))}
@@ -80,42 +95,41 @@ class PopSendEmailView extends React.Component {
     }
 
     render() {
-        let { handleSubmit, pristine, reset, submitting } = this.props;
+        let { handleSubmit, pristine, reset, submitting, rawViewData } = this.props;
+
         return (
             <form id={'eSendForm'} onSubmit={handleSubmit(submit)}>
                 <Field
-                    name="email"
+                    name="to"
                     type="email"
                     component={renderField}
-                    label="Email"
+                    label="to"
                     validate={email}
                     warn={aol}
                 />
                 <Field
-                    name="username"
+                    name="subject"
                     type="text"
-                    value={'support@mobiledgex.com'}
-                    component={renderLabel}
-                    label="Username"
-                    validate={[required, maxLength15, minLength2]}
-                    warn={alphaNumeric}
-                />
+                    label="Subject"
+                    validate={required}
+                    component={renderField}
 
-                <Field
-                    name="age"
-                    type="number"
-                    component={renderField}
-                    label="Age"
-                    validate={[required, number, minValue13]}
-                    warn={tooYoung}
                 />
                 <Field
-                    name="phone"
-                    type="number"
+                    name="from"
+                    type="email"
                     component={renderField}
-                    label="Phone number"
-                    validate={[required, phoneNumber]}
+                    label="From"
+                    validate={email}
+                    warn={aol}
                 />
+                <Field
+                    name="html"
+                    component={renderTextareaField}
+                    label={"Dear MobiledgeX Support team,\nPlease investigate Trace ID : " + rawViewData.traceid}
+                />
+                    {/*<label>Content</label>*/}
+                    {/*<textarea style={{color:'black'}} name="content" placeholder="Content" rows="10" cols="40" value={"Dear MobiledgeX Support team,\nPlease investigate Trace ID : " + rawViewData.traceid}></textarea>*/}
                 <div style={{display:'none'}}>
                     <button id={'popSendEmailSubmit'} type="submit" disabled={submitting}>
                         Submit

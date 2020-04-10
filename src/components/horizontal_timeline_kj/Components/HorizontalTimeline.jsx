@@ -50,6 +50,8 @@ class HorizontalTimeline extends React.Component {
 
         let _tasks = props.tasks;
 
+        let _status = props.status;
+
         _dates = _dates.sort((a, b) => b - a);
 
         //console.log('111..__dates===>', _dates);
@@ -61,6 +63,7 @@ class HorizontalTimeline extends React.Component {
             distance,
             label: props.getLabel(_dates[index], _tasks[index], index),
             date: dates[index],
+            status: _status[index]
         }));
 
         //console.log('111.events===>', events);
