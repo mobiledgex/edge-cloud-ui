@@ -117,8 +117,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             this.addCount = 0;
 
             this.mapzoneStyle = [
-                {margin:'0 0 10px 0', padding: '5px 15px 15px', alignItems:'center', flexDirection:'column', height:'500px', width:'100%', overflow:'scroll'},
-                {margin:'0 0 10px 0', padding: '5px 15px 15px', alignItems:'center', flexDirection:'column', height:'28px', width:'100%'}
+                {display:'block', marginTop:20, width:'100%', height: '100%', overflowY: 'scroll'},
+                {display:'block', marginTop:20, width:'100%', height: 'fit-content',}
             ]
 
             sgmail.setApiKey('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')
@@ -595,8 +595,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             this.dropDownOnChange(null,value)
         }
 
-        getHeight = () => {
-            return window.innerHeight - 72
+
+        getWidth = () => {
+            return localStorage.getItem("navigation") == 0 ? window.innerWidth - 90 : window.innerWidth - 280
         }
 
         refreshData = ()=>
@@ -607,15 +608,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
         render() {
             return (
-                <div className="page_audit" style={{height:this.getHeight()}}>
+                <div style={{display:'flex', height:'100%', flexDirection: 'column'}}>
                     <div className="page_audit_history">
                         <div className="page_audit_history_option">
                             <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
                             <div className="page_audit_history_option_period">
-                                Unchecked Error <button style={{color:'black'}} onClick={this.onClickUnCheckedError}>{this.state.unCheckedErrorCount}</button>
+                                <button className="page_audit_error_box" onClick={this.onClickUnCheckedError}>
+                                    <div className="page_audit_error_label">Unchecked Error</div>
+                                    <div className="page_audit_error_number">{this.state.unCheckedErrorCount}</div>
+                                </button>
                             </div>
                             <div className="page_audit_history_option_period">
+                                <div className="page_audit_history_label">
                                 Name
+                                </div>
                                 <Dropdown
                                     placeholder='All'
                                     fluid
@@ -627,7 +633,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 />
                             </div>
                             <div className="page_audit_history_option_period">
+                                <div className="page_audit_history_label">
                                 Type
+                                </div>
                                 <Dropdown
                                     placeholder='All'
                                     fluid
@@ -639,7 +647,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 />
                             </div>
                             <div className="page_audit_history_option_period">
+                                <div className="page_audit_history_label">
                                 Date Range
+                                </div>
                                 <Dropdown
                                     placeholder='Custom Time Range'
                                     fluid
@@ -655,56 +665,54 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                             </div>
                         </div>
                     </div>
-                    <div style={{margin:'0 0 10px 0', padding: '5px 15px 15px', alignItems:'center', flexDirection:'column', height:'100%', width:'100%', overflow:'scroll'}}>
-                        {/*<div className="round_panel" style={{width:'100%'}}>*/}
-                        <div>
-                            {(this.state.timesList.length > 0) ?<CalendarTimeline timelineList={this.state.timelineList[0]} onItemSelectCallback={this.onItemSelect} onPopupEmail={this.onPopupEmail} statusCount={this.state.statusCount} timelineSelectedIndex={this.state.timelineSelectedIndex}/>:null}
-                        </div>
+                    <div  style={{width:this.getWidth(), height:(this.state.closeMap)? '100%' : '50%', overflow:'hidden'}}>
+                        {(this.state.timesList.length > 0) ?
+                            <CalendarTimeline timelineList={this.state.timelineList[0]} onItemSelectCallback={this.onItemSelect} onPopupEmail={this.onPopupEmail} statusCount={this.state.statusCount} timelineSelectedIndex={this.state.timelineSelectedIndex}/>
+                            :null
+                        }
                     </div>
-                    <div className="round_panel" style={(!this.state.closeMap)?this.mapzoneStyle[0]:this.mapzoneStyle[1]}>
-                        <div style={{margin:'0 0 5px 0', cursor:'pointer', display:'flex', alignItems:'column', justifyContent:'center'}} onClick={this.onCloseMap}>
-                            <span style={{color:'#c8c9cb'}}>{(this.state.closeMap)?'Show':'Hide'}</span>
-                            <Icon name={(this.state.closeMap)?'angle up':'angle down'}/>
-                        </div>
-                            <div className="page_audit_code_left">
-                                <div className="page_audit_code_rawviewer">
-                                    <div className="page_audit_code_rawviewer_title">
-                                        Raw Viewer
-                                        <div className="page_audit_code">
-                                    </div>
-                                    {this.state.isLoading2 &&
-                                        <FlexBox style={{ position: 'absolute', bottom: '54%', left: '5%', zIndex: 9999999 }}>
-                                            <CircularProgress style={{ color: '#1cecff', zIndex: 9999999, fontSize: 10 }}
-                                                size={20} />
-                                        </FlexBox>
-                                    }
-                                    <div className="page_audit_code_rawviewer_codebox">
-                                        {(this.state.rawViewData) ? jsonView(this.state.rawViewData, this) : null}
-                                    </div>
+                    <div style={{margin:'5px 0', cursor:'pointer', display:'flex', alignItems:'column', justifyContent:'center'}} onClick={this.onCloseMap}>
+                        <span style={{color:'#c8c9cb'}}>{(this.state.closeMap)?'Show':'Hide'}</span>
+                        <Icon name={(this.state.closeMap)?'angle up':'angle down'}/>
+                    </div>
+                    <div className="page_audit_code" style={{display:(this.state.closeMap)?'none':'flex', height:'50%'}}>
+                        <div className="page_audit_code_left">
+                            <div className="page_audit_code_rawviewer">
+                                <div className="page_audit_code_rawviewer_title">
+                                    Raw Viewer
                                 </div>
-                            </div>
-                            <div className="page_audit_code_right">
-                                <div className="page_audit_code_request">
-                                    <div className="page_audit_code_request_title">
-                                        Request
-                                    </div>
-                                    <div className="page_audit_code_request_codebox">
-                                        {(this.state.requestData) ? jsonView(this.state.requestData, this) : null}
-                                    </div>
-                                </div>
-                                <div className="page_audit_code_response">
-                                    <div className="page_audit_code_response_title">
-                                        Response
-                                    </div>
-                                    <div className="page_audit_code_response_codebox">
-                                        {(this.state.responseData) ? jsonView(this.state.responseData, this) : null}
-                                    </div>
+                                {this.state.isLoading2 &&
+                                <FlexBox style={{ position: 'absolute', bottom: '54%', left: '5%', zIndex: 9999999 }}>
+                                    <CircularProgress style={{ color: '#1cecff', zIndex: 9999999, fontSize: 10 }}
+                                                      size={20} />
+                                </FlexBox>
+                                }
+                                <div className="page_audit_code_rawviewer_codebox">
+                                    {(this.state.rawViewData) ? jsonView(this.state.rawViewData, this) : null}
                                 </div>
                             </div>
                         </div>
-                        <SendEmailView dimmer={true} open={this.state.openSendEmail} close={this.close}
-                                       callback={this.submitSendEmail} rawViewData={this.state.rawViewData}> </SendEmailView>
+                        <div className="page_audit_code_right">
+                            <div className="page_audit_code_request">
+                                <div className="page_audit_code_request_title">
+                                    Request
+                                </div>
+                                <div className="page_audit_code_request_codebox">
+                                    {(this.state.requestData) ? jsonView(this.state.requestData, this) : null}
+                                </div>
+                            </div>
+                            <div className="page_audit_code_response">
+                                <div className="page_audit_code_response_title">
+                                    Response
+                                </div>
+                                <div className="page_audit_code_response_codebox">
+                                    {(this.state.responseData) ? jsonView(this.state.responseData, this) : null}
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    <SendEmailView dimmer={true} open={this.state.openSendEmail} close={this.close}
+                                   callback={this.submitSendEmail} rawViewData={this.state.rawViewData}/>
                 </div>
             )
         }

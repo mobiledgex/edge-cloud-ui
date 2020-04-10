@@ -4,6 +4,7 @@ import moment from "moment";
 import Timeline,{TimelineHeaders, SidebarHeader, DateHeader, CustomHeader} from "react-calendar-timeline";
 import 'react-calendar-timeline/lib/Timeline.css'
 import randomColor from "randomcolor";
+import MaterialIcon from "material-icons-react";
 
 
 var keys = {
@@ -72,7 +73,7 @@ export default class CalendarTimeline extends Component {
                 groups.push({
                     id: (tIndex+1),
                     title: renderValue,
-                    border: '1px solid red'
+                    border: '1px solid #db2828'
                 })
             }
         })
@@ -143,12 +144,12 @@ export default class CalendarTimeline extends Component {
                                     canMove: startValue > new Date().getTime(),
                                     canResize: startValue > new Date().getTime() ? (endValue > new Date().getTime() ? 'both' : 'left') : (endValue > new Date().getTime() ? 'right' : false),
                                     className: (moment(startDate).day() === 6 || moment(startDate).day() === 0) ? 'item-weekend' : '',
-                                    bgColor: (status[index].status === 200) ? "#79BF1466" : "#bf000066",
-                                    selectedBgColor: (status[index].status === 200) ? "#79BF14DD" : "#bf0000DD",
+                                    bgColor: "#202329",
+                                    selectedBgColor: "#202329",
                                     itemTime: item,
                                     taskItem: tValue,
-                                    borderColor: (status[index].status === 200) ? "#79BF1466" : "#bf000066",
-                                    selectedBorderColor: (status[index].status === 200) ? "#79BF14DD" : "#bf0000DD"
+                                    borderColor: (status[index].status === 200) ? "#21ba45" : "#db2828",
+                                    selectedBorderColor: (status[index].status === 200) ? "#21ba45" : "#db2828"
                                 })
                             }
                         })
@@ -164,8 +165,8 @@ export default class CalendarTimeline extends Component {
 
     itemRenderer = ({ item, timelineContext, itemContext, getItemProps, getResizeProps }) => {
         const { left: leftResizeProps, right: rightResizeProps } = getResizeProps();
-        const backgroundColor = itemContext.selected ? (itemContext.dragging ? "red" : item.selectedBgColor) : item.bgColor;
-        const borderColor = itemContext.selected ? (itemContext.resizing ? "red" : item.borderColor) : item.borderColor;
+        const backgroundColor = itemContext.selected ? (itemContext.dragging ? "#db2828" : item.selectedBgColor) : item.bgColor;
+        const borderColor = itemContext.selected ? (itemContext.resizing ? "#db2828" : item.borderColor) : item.borderColor;
         const storageTimeList = JSON.parse(localStorage.getItem("selectedTime"))
         let storageTimeIndex = (-1);
         if(storageTimeList){
@@ -198,18 +199,13 @@ export default class CalendarTimeline extends Component {
 
                 <div
                     style={{
-                        height: 72,
-                        overflow: "hidden",
-                        paddingLeft: 3,
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap"
                     }}
                 >
                     {item.taskItem} ({item.itemTime})
                     {(storageTimeIndex !== (-1))? 'V' :null} <br />
-                    TRACE ID : {itemContext.title} <br />
+                    <span style={{fontWeight:600}}>TRACE ID</span> {itemContext.title} <br />
 
-                    <button style={{color:"black"}} onClick={this.props.onPopupEmail}>Send E-mail Trace ID</button>
+                    <button onClick={this.props.onPopupEmail}>Send E-mail Trace ID</button>
                     {(storageTraceIndex !== (-1))? 'V' :null}
                 </div>
 
@@ -220,7 +216,7 @@ export default class CalendarTimeline extends Component {
 
     groupRenderer = ({group}) => {
         return (
-            <div style={(group.status) ? {border:'1px solid red'} : {border:'1px solid green'}}>
+            <div style={(group.status) ? {border:'1px solid #db2828'} : {border:'1px solid #21ba45'}}>
                 <span className="title">{group.title}</span>
             </div>
         )
@@ -282,15 +278,25 @@ export default class CalendarTimeline extends Component {
     render() {
         const { groups, items, defaultTimeStart, defaultTimeEnd, visibleTimeStart, visibleTimeEnd } = this.state;
         return (
-            <div>
-                <button style={{color:'black'}} onClick={this.onPrevClick}>{"< Prev"}</button>
-                <button style={{color:'black'}} onClick={this.onCurrentClick}>{"current"}</button>
-                <button style={{color:'black'}} onClick={this.onNextClick}>{"Next >"}</button>
+            <div style={{height:'100%'}}>
+                <div>
+                    <div className='timeline_button_layout'>
+                        <button className='timeline_button_current' onClick={this.onCurrentClick}>{"Current Time"}</button>
+                        <div className='timeline_button_arrow_box'>
+                            <button className='timeline_button_arrow' onClick={this.onPrevClick}>
+                                <MaterialIcon icon={'keyboard_arrow_left'} />
+                            </button>
+                            <button className='timeline_button_arrow' onClick={this.onNextClick}>
+                                <MaterialIcon icon={'keyboard_arrow_right'} />
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 <Timeline
                     groups={groups}
                     items={items}
                     keys={keys}
-                    sidebarWidth={150}
+                    sidebarWidth={180}
                     canMove
                     canSelect
                     itemsSorted
@@ -301,19 +307,29 @@ export default class CalendarTimeline extends Component {
                     minResizeWidth={550}
                     defaultTimeStart={defaultTimeStart}
                     defaultTimeEnd={defaultTimeEnd}
-                    // visibleTimeStart={visibleTimeStart}
-                    // visibleTimeEnd={visibleTimeEnd}
+                    visibleTimeStart={visibleTimeStart}
+                    visibleTimeEnd={visibleTimeEnd}
                     itemRenderer={this.itemRenderer}
                     groupRenderer={this.groupRenderer}
                     selected={[(this.props.timelineSelectedIndex).toString()]}
                     onItemSelect={this.handleItemSelect}
+                    style={{height:'calc(100% - 32px)'}}
                 >
                     <TimelineHeaders className="sticky">
                         <SidebarHeader>
                             {({ getRootProps }) => {
                                 return <div {...getRootProps()}>
-                                    <div>normal : {this.props.statusCount[0].normalCount}</div>
-                                    <div>error: {this.props.statusCount[0].errorCount}</div>
+                                    <div className='timeline_header_summary'>
+                                        <div className='timeline_header_summary_column'>
+                                            <div className='timeline_header_summary_label'>Normal</div>
+                                            <div className='timeline_header_summary_normal'>{this.props.statusCount[0].normalCount}</div>
+                                        </div>
+                                        <div className='timeline_header_summary_column'>
+                                            <div className='timeline_header_summary_label'>Error</div>
+                                            <div className='timeline_header_summary_error'>{this.props.statusCount[0].errorCount}</div>
+                                        </div>
+
+                                    </div>
                                 </div>;
                             }}
                         </SidebarHeader>
