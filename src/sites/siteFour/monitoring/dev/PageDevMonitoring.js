@@ -1874,10 +1874,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             // todo: Components showing when the loading of graph data is not completed.
             if (!this.state.isReady) {
                 return (
-
-                    //renderPlaceHolderCircular()
                     renderLoaderArea(this)
-                    //renderPlaceHolderLottiePinJump()
                 )
             }
 
@@ -1943,7 +1940,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         {/*todo:terminal button                   */}
                         {/*todo:---------------------------------*/}
                         {this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?
-                            <div className='page_monitoring_terminal_button' style={{marginBottom: 25}}
+                            <div className='page_monitoring_terminal_button' style={{marginBottom: 10}}
                                  onClick={() => this.setState({openTerminal: true})}
                             >
                             </div>
