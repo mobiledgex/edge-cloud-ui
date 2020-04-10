@@ -117,7 +117,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             this.addCount = 0;
 
             this.mapzoneStyle = [
-                {display:'block', marginTop:20, width:'100%', height: this.getHeight('code'), overflowY: 'scroll'},
+                {display:'block', marginTop:20, width:'100%', height: '100%', overflowY: 'scroll'},
                 {display:'block', marginTop:20, width:'100%', height: 'fit-content',}
             ]
 
@@ -595,19 +595,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             this.dropDownOnChange(null,value)
         }
 
-        getHeight = (item) => {
-            let height = 500;
-            if (item === 'body'){
-                height = window.innerHeight - 64 - 10 - 20 - 64
-            } else if (this.state.closeMap && item === 'timeline') {
-                height = window.innerHeight - 64 - 10 - 20 - 64 - 28 - 20
-            } else if (!this.state.closeMap && item === 'timeline') {
-                height = (window.innerHeight - 64 - 10 - 20 - 64) / 2
-            } else if (item === 'code') {
-                height = (window.innerHeight - 64 - 10 - 20 - 64) / 2
-            }
-            return height
-        }
 
         getWidth = () => {
             return window.innerWidth - 100
@@ -621,8 +608,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
         render() {
             return (
-                <div style={{display:'flex', height:this.getHeight('body'), flexDirection: 'column'}}>
-                    <div className="page_audit_history" style={{height:this.getHeight('timeline'), overFlow:'auto'}}>
+                <div style={{display:'flex', height:'100%', flexDirection: 'column'}}>
+                    <div className="page_audit_history" style={{height:(this.state.closeMap)? '100%' : '50%', overflow:'auto'}}>
                         <div className="page_audit_history_option">
                             <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
                             <div className="page_audit_history_option_period">
@@ -688,7 +675,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                         <span style={{color:'#c8c9cb'}}>{(this.state.closeMap)?'Show':'Hide'}</span>
                         <Icon name={(this.state.closeMap)?'angle up':'angle down'}/>
                     </div>
-                    <div className="page_audit_code" style={{display:(this.state.closeMap)?'none':'flex'}}>
+                    <div className="page_audit_code" style={{display:(this.state.closeMap)?'none':'flex', height:'50%'}}>
                         <div className="page_audit_code_left">
                             <div className="page_audit_code_rawviewer">
                                 <div className="page_audit_code_rawviewer_title">
