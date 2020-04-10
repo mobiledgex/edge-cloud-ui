@@ -87,11 +87,11 @@ export default function Header(props) {
                     </IconButton>
                     <IconButton aria-label="show 4 new mails" color="inherit"
                                 onClick={(e) => props.gotoUrl('/site1', 'pg=0')}>
-                        <PublicOutlinedIcon fontSize='large'/>
+                        <PublicOutlinedIcon fontSize='default'/>
                     </IconButton>
                     <IconButton aria-label="show 17 new notifications" color="inherit"
                                 onClick={(e) => props.helpClick()}>
-                        <HelpOutlineOutlinedIcon fontSize='large'/>
+                        <HelpOutlineOutlinedIcon fontSize='default'/>
                     </IconButton>
                     <HeaderGlobalMini email={props.email} data={props.data}/>
                 </div>

@@ -156,8 +156,8 @@ class OrganizationList extends React.Component {
     }
 
     /**
-    * Customized data block
-    * ** */
+     * Customized data block
+     * ** */
 
     componentDidMount() {
         this.customizedData()

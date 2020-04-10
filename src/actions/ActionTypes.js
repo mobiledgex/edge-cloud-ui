@@ -47,7 +47,8 @@ export const STATE_STREAM = 'STATE_STREAM';
 export const RESET_MAP = 'RESET_MAP';
 export const SUBMIT_OBJ = 'SUBMIT_OBJ';
 export const CHANGE_NEXT = 'CHANGE_NEXT';
-
 export const SET_MAP_TYLE_LAYER = 'SET_MAP_TYLE_LAYER';
 export const SET_LINE_COLOR = 'LINE_COLOR';
 export const SET_CLOUDLET_ICON_COLOR = 'CLOUDLET_ICON_COLOR';
+export const TOGGLE_HEADER = 'TOGGLE_HEADER';
+export const TOGGLE_LOADING= 'TOGGLE_LOADING';

@@ -1,5 +1,3 @@
-import 'react-hot-loader';
-
 import React from 'react';
 import '../PageMonitoring.css';
 import {
@@ -12,72 +10,70 @@ import {
 } from "../../../../shared/Constants";
 import BubbleChart from "../../../../components/BubbleChart";
 import PageDevMonitoring from "./PageDevMonitoring";
-import {
-    convertByteToMegaByte,
-    numberWithCommas,
-    PageMonitoringStyles,
-    renderUsageByType,
-    showToast
-} from "../PageMonitoringCommonService";
+import {convertByteToMegaByte, numberWithCommas, PageMonitoringStyles, renderUsageByType, showToast} from "../PageMonitoringCommonService";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
-import {Select} from "antd";
-import {Responsive, WidthProvider} from "react-grid-layout";
+import {CircularProgress, createMuiTheme} from "@material-ui/core";
+import {reactLocalStorage} from "reactjs-localstorage";
 
-const ResponsiveReactGridLayout = WidthProvider(Responsive);
-const {Option} = Select;
+export const materialUiDarkTheme = createMuiTheme({
+    palette: {
+        type: "dark",
+        primary: {
+            main: '#77BD25',
+        },
+    },
+    overrides: {
+        MuiMenuItem: {
+            selected: {
+                // Works (without the need for !important)
+                background: 'linear-gradient(45deg, red 30%, orange 90%)',
+            },
+            root: {
+                '&$selected': {
+                    backgroundColor: '#77BD25',
+                },
+            },
 
-export const defaultLayoutForAppInst = [
-    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},
-    {i: '2', x: 1, y: 0, w: 1, h: 1, "add": false},
-    {i: '3', x: 2, y: 0, w: 1, h: 1, "add": false},
-    {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false},
-    {i: '5', x: 1, y: 1, w: 1, h: 1, "add": false},
-    /*{i: '6', x: 2, y: 1, w: 1, h: 1, "add": false},
-    {i: '7', x: 0, y: 2, w: 1, h: 1, "add": false},
-    {i: '8', x: 1, y: 2, w: 1, h: 1, "add": false},
-    {i: '9', x: 2, y: 2, w: 1, h: 1, "add": false},*/
+        },
+        MuiSelect: {
+            selected: {
+                // Works (must use !important):
+                backgroundColor: 'black !important',
+                // Works (must use !important):
+                // background: 'red !important',
+            },
+            root: {
+                '&$selected': {
+                    backgroundColor: '#77BD25',
+                },
+            },
 
-];
-
-export const defaultLayoutForCluster = [
-    {i: '1', x: 0, y: 0, w: 2, h: 2, "add": false},
-    {i: '2', x: 2, y: 0, w: 1, h: 1, "add": false},
-    {i: '3', x: 2, y: 1, w: 1, h: 1, "add": false},
-    {i: '4', x: 0, y: 2, w: 1, h: 1, "add": false},
-    {i: '5', x: 1, y: 2, w: 1, h: 1, "add": false},
-    {i: '6', x: 2, y: 2, w: 1, h: 1, "add": false},
-
-
-    /*{i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},
-    {i: '2', x: 1, y: 0, w: 1, h: 1, "add": false},
-    {i: '3', x: 2, y: 0, w: 1, h: 1, "add": false},
-    {i: '4', x: 0, y: 1, w: 1, h: 1, "add": false},
-    {i: '5', x: 1, y: 1, w: 1, h: 1, "add": false},*/
-
-
-
-
-    /*{i: '6', x: 2, y: 1, w: 1, h: 1, "add": false,},
-
-    {i: '7', x: 0, y: 2, w: 1, h: 1, "add": false,},
-    {i: '8', x: 1, y: 2, w: 1, h: 1, "add": false,},
-    {i: '9', x: 2, y: 2, w: 1, h: 1, "add": false,},*/
-
-    /*{i: '10', x: 0, y: 3, w: 1, h: 1, "add": fals
-    {i: '11', x: 1, y: 3, w: 1, h: 1, "add": false},
-    {i: '12', x: 2, y: 3, w: 1, h: 1, "add": false},
-
-    {i: '13', x: 0, y: 4, w: 1, h: 1, "add": false},
-    {i: '14', x: 1, y: 4, w: 1, h: 1, "add": false},
-    {i: '15', x: 2, y: 4, w: 1, h: 1, "add": false},
-
-    {i: '16', x: 0, y: 5, w: 1, h: 1, "add": false},
-    {i: '17', x: 1, y: 5, w: 1, h: 1, "add": false},
-    {i: '18', x: 2, y: 5, w: 1, h: 1, "add": false},*/
-];
+        },
+        /*MuiButton: {
+            root: {
+                //fontSize: '1rem',
+                backgroundColor: '#77BD25 !important',
+                color: 'black',
+            },
+        },*/
+    },
+});
 
 
+export const GRID_ITEM_TYPE = {
+    LINE: 'LINE',
+    BAR: 'BAR',
+    COLUMN: 'COLUMN',
+    BUBBLE: 'BUBBLE',
+    MAP: 'MAP',
+    TABLE: 'TABLE',
+    PIE: 'PIE',
+    CLUSTER_LIST: 'CLUSTER_LIST',
+    CLUSTER_EVENTLOG_LIST: 'CLUSTER_EVENTLOG_LIST',
+    APP_INST_EVENT_LOG: 'APP_INST_EVENT_LOG',
+    PERFORMANCE_SUM: 'PERFORMANCE_SUM'
+}
 export const HARDWARE_TYPE_FOR_GRID = {
     MAP: 'MAP',
     PIE: 'PIE',
@@ -118,7 +114,29 @@ export const HARDWARE_TYPE_FOR_GRID = {
     HANDLED_CONNECTION: 'HANDLED_CONNECTION',//13
     ACCEPTS_CONNECTION: 'ACCEPTS_CONNECTION',//14 (index)
 
+};
+
+export const CHART_TYPE = {
+    LINE: 'LINE',
+    BAR: 'BAR',
+    COLUMN: 'COLUMN',
 }
+
+
+export const defaultLayoutForCluster = [
+
+    {i: '1', x: 1, y: 0, w: 2, h: 2, "add": false},//MAP
+
+    {i: '2', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
+    {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
+
+    {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//bubble
+    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//appinst event log
+    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
+
+
+];
+
 
 export const defaultHwMapperListForCluster = [
     {
@@ -128,35 +146,65 @@ export const defaultHwMapperListForCluster = [
     },
     {
         id: '2',
-        hwType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
-        graphType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
+        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
+        graphType: CHART_TYPE.LINE,
     },
-
     {
         id: '3',
-        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
-        graphType: 'line',
+        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
+        graphType: CHART_TYPE.LINE,
     },
     {
         id: '4',
-        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
-        graphType: 'line',
+        hwType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
+        graphType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
     },
     {
         id: '5',
-        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
-        graphType: 'line',
+        hwType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
+        graphType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
     },
     {
         id: '6',
-        hwType: HARDWARE_TYPE_FOR_GRID.RECVBYTES,
-        graphType: 'line',
+        hwType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
+        graphType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
     },
 
-]
+    /* {
+         id: '7',
+         hwType: HARDWARE_TYPE_FOR_GRID.MEM,
+         graphType: CHART_TYPE.COLUMN,
+     },
+     {
+         id: '8',
+         hwType: HARDWARE_TYPE_FOR_GRID.DISK,
+         graphType: CHART_TYPE.COLUMN,
+     },*/
+    /*  {
+          id: '9',
+          hwType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
+          graphType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
+      },*/
+
+];
+
+
+/*
+desc:#####################################
+desc:defaultLayoutForAppInst
+desc:#######################################
+ */
+export const defaultLayoutForAppInst = [
+    {i: '1', x: 1, y: 0, w: 2, h: 2, "add": false},//MAP
+    {i: '2', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
+    {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
+    {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//DISK
+    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},
+    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
+];
+
 
 export const defaultLayoutMapperForAppInst = [
-
     {
         id: '1',
         hwType: HARDWARE_TYPE_FOR_GRID.MAP,
@@ -164,36 +212,47 @@ export const defaultLayoutMapperForAppInst = [
     },
     {
         id: '2',
-        hwType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
-        graphType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
+        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
+        graphType: CHART_TYPE.LINE,
     },
-
     {
         id: '3',
-        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
-        graphType: 'line',
+        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
+        graphType: CHART_TYPE.LINE,
     },
     {
         id: '4',
-        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
-        graphType: 'line',
+        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
+        graphType: CHART_TYPE.LINE,
     },
     {
         id: '5',
-        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
-        graphType: 'line',
+        hwType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
+        graphType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
     },
     {
         id: '6',
-        hwType: HARDWARE_TYPE_FOR_GRID.RECVBYTES,
-        graphType: 'line',
+        hwType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
+        graphType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
     },
-    {
-        id: '7',
+    /*{
+        id: '6',
         hwType: HARDWARE_TYPE_FOR_GRID.SENDBYTES,
-        graphType: 'line',
-    },
-]
+        graphType: CHART_TYPE.LINE,
+    },*/
+
+    /* {
+         id: '8',
+         hwType: HARDWARE_TYPE_FOR_GRID.ACTIVE_CONNECTION,
+         graphType: CHART_TYPE.LINE,
+     },
+
+     {
+         id: '9',
+         hwType: HARDWARE_TYPE_FOR_GRID.HANDLED_CONNECTION,
+         graphType: CHART_TYPE.LINE,
+     },*/
+];
 
 
 /*
@@ -205,6 +264,32 @@ export const defaultHwMapperListForCluster = {
     '5': HARDWARE_TYPE_FOR_GRID.SENDBYTES,
 }*/
 
+export const revertToDefaultLayout = async (_this: PageDevMonitoring) => {
+    try {
+        reactLocalStorage.remove(getUserId() + "_layout")
+        reactLocalStorage.remove(getUserId() + "_layout2")
+        reactLocalStorage.remove(getUserId() + "_layout_mapper")
+        reactLocalStorage.remove(getUserId() + "_layout2_mapper")
+        await _this.setState({
+            layoutForCluster: [],
+            layoutMapperForCluster: [],
+            layoutForAppInst: [],
+        });
+
+        await _this.setState({
+            layoutForCluster: defaultLayoutForCluster,
+            layoutMapperForCluster: defaultHwMapperListForCluster,
+            layoutForAppInst: defaultLayoutForAppInst,
+            layoutMapperForAppInst: defaultLayoutMapperForAppInst,
+        })
+
+
+    } catch (e) {
+        showToast(e.toString())
+    }
+
+}
+
 
 export const makeid = (length) => {
     let result = '';
@@ -214,7 +299,7 @@ export const makeid = (length) => {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
-}
+};
 
 export const console_log = (msg, color = 'green') => {
     color = color || "black";
@@ -256,13 +341,13 @@ export const console_log = (msg, color = 'green') => {
     } else {
         console.log("%c" + msg, "color:" + color + ";font-weight:bold;font-size:14pt; background-color:black;");
     }
-}
+};
 
 
 export const getUserId = () => {
-    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
     return store.email;
-}
+};
 
 
 export const filterByClassification = (originalList, selectOne, filterKey,) => {
@@ -270,30 +355,30 @@ export const filterByClassification = (originalList, selectOne, filterKey,) => {
         //todo:리전인 경우.....
         if (filterKey === CLASSIFICATION.REGION) {
             if (selectOne !== 'ALL') {
-                let filteredList = []
+                let filteredList = [];
                 originalList.map(item => {
                     if (item[filterKey] === selectOne) {
                         filteredList.push(item);
                     }
-                })
+                });
                 return filteredList;
             } else {
                 return originalList;
             }
         } else {
-            let filteredInstanceList = []
+            let filteredInstanceList = [];
             originalList.map(item => {
                 if (item[filterKey] === selectOne) {
                     filteredInstanceList.push(item);
                 }
-            })
+            });
             return filteredInstanceList;
         }
     } catch (e) {
 
     }
 
-}
+};
 
 export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, userType = '') => {
     if (hardwareType === HARDWARE_TYPE.CPU) {
@@ -332,7 +417,7 @@ export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, userTyp
     if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
         return numberWithCommas((usageOne.sumRecvBytes / 1000000).toFixed(0)) + " MByte"
     }
-}
+};
 
 
 export const sortUsageListByTypeForCluster = (usageList, hardwareType) => {
@@ -357,7 +442,7 @@ export const sortUsageListByTypeForCluster = (usageList, hardwareType) => {
     }
 
     return usageList;
-}
+};
 
 export const sortByKey = (arrList, key) => {
 
@@ -366,19 +451,19 @@ export const sortByKey = (arrList, key) => {
 
 
     return arrList;
-}
+};
 
 
 export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageDevMonitoring) => {
 
     console.log(`renderBarGraphForCluster===>${hardwareType}`, usageList);
-    usageList = sortUsageListByTypeForCluster(usageList, hardwareType)
+    usageList = sortUsageListByTypeForCluster(usageList, hardwareType);
 
     if (usageList.length === 0) {
         return "";
     } else {
         let chartDataList = [];
-        chartDataList.push(["Element", hardwareType + " USAGE", {role: "style"}, {role: 'annotation'}])
+        chartDataList.push(["Element", hardwareType + " USAGE", {role: "style"}, {role: 'annotation'}]);
         for (let index = 0; index < usageList.length; index++) {
             if (index < 5) {
                 let barDataOne = [
@@ -386,7 +471,7 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageD
                     renderUsageByType(usageList[index], hardwareType, _this),
                     _this.state.chartColorList[index],
                     renderUsageLabelByTypeForCluster(usageList[index], hardwareType)
-                ]
+                ];
                 chartDataList.push(barDataOne);
             }
         }
@@ -394,10 +479,10 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageD
         let chartDataSet = {
             chartDataList,
             hardwareType,
-        }
+        };
         return chartDataSet
     }
-}
+};
 
 
 /**
@@ -433,7 +518,7 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
             return "";
         } else {
             let chartDataList = [];
-            chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
+            chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}]);
             for (let index = 0; index < typedUsageList.length; index++) {
                 if (index < 5) {
                     let barDataOne = [
@@ -441,7 +526,7 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
                         renderUsageByType(typedUsageList[index], hardwareType, _this),
                         CHART_COLOR_LIST[index],
                         renderUsageLabelByTypeForCluster(typedUsageList[index], hardwareType, _this)
-                    ]
+                    ];
                     chartDataList.push(barDataOne);
                 }
             }
@@ -449,7 +534,7 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
             let chartDataSet = {
                 chartDataList,
                 hardwareType,
-            }
+            };
             return chartDataSet
         }
     } catch (e) {
@@ -457,7 +542,7 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
     }
 
 
-}
+};
 
 
 export const handleHardwareTabChanges = async (_this: PageDevMonitoring, selectedValueOne) => {
@@ -484,7 +569,7 @@ export const handleHardwareTabChanges = async (_this: PageDevMonitoring, selecte
             })
         }
     }
-}
+};
 
 
 /**
@@ -508,7 +593,7 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
         let appInstanceList = _this.state.appInstanceList;
 
 
-        let boxWidth = (window.innerWidth - 300) / 3 - 20
+        let boxWidth = (window.innerWidth - 300) / 3 - 20;
 
         function renderZoomLevel(appInstanceListLength) {
             if (appInstanceListLength <= 4) {
@@ -576,8 +661,8 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
                         }}
                         bubbleClickFun={async (cluster_cloudlet, index) => {
                             try {
-                                let lineChartDataSet = makeLineChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this)
-                                cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
+                                let lineChartDataSet = makeLineChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this);
+                                cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1];
                                 handleLegendAndBubbleClickedEvent(_this, cluster_cloudlet, lineChartDataSet)
                             } catch (e) {
 
@@ -587,8 +672,8 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
                         }}
                         legendClickFun={async (cluster_cloudlet, index) => {
                             try {
-                                let lineChartDataSet = makeLineChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this)
-                                cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
+                                let lineChartDataSet = makeLineChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this);
+                                cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1];
                                 handleLegendAndBubbleClickedEvent(_this, cluster_cloudlet, lineChartDataSet)
                             } catch (e) {
 
@@ -604,7 +689,8 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
     }
 
 
-}
+};
+/*
 
 export const makeLineChartDataForAppInstAll = (hardwareUsageList: Array, hardwareType: string = 'all', _this: PageDevMonitoring) => {
     console.log("hardwareType===>", hardwareType);
@@ -620,27 +706,27 @@ export const makeLineChartDataForAppInstAll = (hardwareUsageList: Array, hardwar
     } else {
 
 
-        let instanceAppName = ''
+        let instanceAppName = '';
         let instanceNameList = [];
-        let usageSetList = []
-        let dateTimeList = []
+        let usageSetList = [];
+        let dateTimeList = [];
 
         hardwareUsageList.map((item: TypeAppInstanceUsage2, index) => {
 
-            let seriesValues = []
-            let seriesValues2 = []
-            let seriesValues3 = []
-            let seriesValues4 = []
-            let seriesValues5 = []
-            seriesValues = item.cpuSeriesValue
-            seriesValues2 = item.memSeriesValue
-            seriesValues3 = item.diskSeriesValue
-            seriesValues4 = item.networkSeriesValue
-            seriesValues5 = item.connectionsSeriesValue
+            let seriesValues = [];
+            let seriesValues2 = [];
+            let seriesValues3 = [];
+            let seriesValues4 = [];
+            let seriesValues5 = [];
+            seriesValues = item.cpuSeriesValue;
+            seriesValues2 = item.memSeriesValue;
+            seriesValues3 = item.diskSeriesValue;
+            seriesValues4 = item.networkSeriesValue;
+            seriesValues5 = item.connectionsSeriesValue;
 
             console.log(`seriesValues===${hardwareType}>`, seriesValues);
 
-            instanceAppName = item.instance.AppName
+            instanceAppName = item.instance.AppName;
             let usageList = [];
 
             for (let j in seriesValues) {
@@ -658,9 +744,9 @@ export const makeLineChartDataForAppInstAll = (hardwareUsageList: Array, hardwar
                 usageOne3 = seriesValues3[j][APP_INST_MATRIX_HW_USAGE_INDEX.DISK];
                 usageOne4 = seriesValues4[j][APP_INST_MATRIX_HW_USAGE_INDEX.SENDBYTES];
                 usageOne5 = seriesValues4[j][APP_INST_MATRIX_HW_USAGE_INDEX.RECVBYTES];
-                /*usageOne6 = seriesValues5[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE.toString()];
+                /!*usageOne6 = seriesValues5[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE.toString()];
                 usageOne7 = seriesValues5[j][APP_INST_MATRIX_HW_USAGE_INDEX.HANDLED.toString()];
-                usageOne8 = seriesValues5[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACCEPTS.toString()];*/
+                usageOne8 = seriesValues5[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACCEPTS.toString()];*!/
 
                 usageList.push(usageOne);
                 usageList.push(usageOne2);
@@ -670,18 +756,18 @@ export const makeLineChartDataForAppInstAll = (hardwareUsageList: Array, hardwar
                 dateTimeList.push(seriesValues[j]["0"].toString().split("T")[1]);
             }
 
-            instanceNameList.push(instanceAppName)
+            instanceNameList.push(instanceAppName);
             usageSetList.push(usageList);
 
-        })
+        });
 
 
-        console_log(hardwareType)
+        console_log(hardwareType);
         console.log(`usageSetList===${hardwareType}>`, usageSetList);
 
 
         //@todo: CUT LIST INTO RECENT_DATA_LIMIT_COUNT
-        let newDateTimeList = []
+        let newDateTimeList = [];
         for (let i in dateTimeList) {
             if (i < RECENT_DATA_LIMIT_COUNT) {
                 let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
@@ -698,7 +784,8 @@ export const makeLineChartDataForAppInstAll = (hardwareUsageList: Array, hardwar
         }
     }
 
-}
+};
+*/
 
 
 export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareType: string = 'all', _this: PageDevMonitoring) => {
@@ -713,17 +800,17 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
     } else {
 
 
-        let instanceAppName = ''
+        let instanceAppName = '';
         let instanceNameList = [];
-        let usageSetList = []
-        let dateTimeList = []
+        let usageSetList = [];
+        let dateTimeList = [];
 
         if (hardwareType === 'all') {
 
         } else {
             hardwareUsageList.map((item: TypeAppInstanceUsage2, index) => {
 
-                let seriesValues = []
+                let seriesValues = [];
                 if (hardwareType === HARDWARE_TYPE.CPU) {
                     seriesValues = item.cpuSeriesValue
                 } else if (hardwareType === HARDWARE_TYPE.MEM) {
@@ -738,7 +825,7 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
 
                 console.log(`seriesValues===${hardwareType}>`, seriesValues);
 
-                instanceAppName = item.instance.AppName
+                instanceAppName = item.instance.AppName;
                 let usageList = [];
 
                 for (let j in seriesValues) {
@@ -763,23 +850,20 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
 
                     usageList.push(usageOne);
                     let dateOne = seriesValues[j]["0"];
-                    dateOne = dateOne.toString().split("T")
+                    dateOne = dateOne.toString().split("T");
 
                     dateTimeList.push(dateOne[1]);
                 }
 
-                instanceNameList.push(instanceAppName)
+                instanceNameList.push(instanceAppName);
                 usageSetList.push(usageList);
 
             })
         }
 
 
-        console.log("usageSetList===>", usageSetList);
-
-
         //@todo: CUT LIST INTO RECENT_DATA_LIMIT_COUNT
-        let newDateTimeList = []
+        let newDateTimeList = [];
         for (let i in dateTimeList) {
             if (i < RECENT_DATA_LIMIT_COUNT) {
                 let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
@@ -796,51 +880,51 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
         }
     }
 
-}
+};
 
 export const makeAllLineChartData = (_this) => {
-    let completedLineCharDataSetList = []
-    let lineChartDataSet = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.CPU, _this)
-    let lineChartDataSet2 = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.MEM, _this)
-    let lineChartDataSet3 = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.DISK, _this)
-    let lineChartDataSet4 = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.RECVBYTES, _this)
-    let lineChartDataSet5 = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.SENDBYTES, _this)
+    let completedLineCharDataSetList = [];
+    let lineChartDataSet = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.CPU, _this);
+    let lineChartDataSet2 = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.MEM, _this);
+    let lineChartDataSet3 = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.DISK, _this);
+    let lineChartDataSet4 = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.RECVBYTES, _this);
+    let lineChartDataSet5 = makeLineChartDataForAppInst(_this.state.filteredAppInstUsageList, HARDWARE_TYPE.SENDBYTES, _this);
     /*let lineChartDataSet6 = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, HARDWARE_TYPE.ACTIVE_CONNECTION, this)
     let lineChartDataSet7 = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, HARDWARE_TYPE.ACCEPTS_CONNECTION, this)
     let lineChartDataSet8 = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, HARDWARE_TYPE.HANDLED_CONNECTION, this)*/
 
-    completedLineCharDataSetList.push(lineChartDataSet)
-    completedLineCharDataSetList.push(lineChartDataSet2)
-    completedLineCharDataSetList.push(lineChartDataSet3)
-    completedLineCharDataSetList.push(lineChartDataSet4)
-    completedLineCharDataSetList.push(lineChartDataSet5)
+    completedLineCharDataSetList.push(lineChartDataSet);
+    completedLineCharDataSetList.push(lineChartDataSet2);
+    completedLineCharDataSetList.push(lineChartDataSet3);
+    completedLineCharDataSetList.push(lineChartDataSet4);
+    completedLineCharDataSetList.push(lineChartDataSet5);
     /*completedLineCharDataSetList.push(lineChartDataSet6)
     completedLineCharDataSetList.push(lineChartDataSet7)
     completedLineCharDataSetList.push(lineChartDataSet8)*/
 
-    let newLevelTypeNameList = []
-    let newDateTimeList = []
-    let newUsageSetList = []
-    let newHWTypeList = []
+    let newLevelTypeNameList = [];
+    let newDateTimeList = [];
+    let newUsageSetList = [];
+    let newHWTypeList = [];
     completedLineCharDataSetList.map(item => {
-        let newLevelTypeNameOne = item.levelTypeNameList["0"] + "[" + item.hardwareType + "]"
-        let usageSetListOne = item.usageSetList
-        newLevelTypeNameList.push(newLevelTypeNameOne)
+        let newLevelTypeNameOne = item.levelTypeNameList["0"] + "[" + item.hardwareType + "]";
+        let usageSetListOne = item.usageSetList;
+        newLevelTypeNameList.push(newLevelTypeNameOne);
         newUsageSetList.push(usageSetListOne[0]);
         newDateTimeList = item.newDateTimeList;
         newHWTypeList.push(item.hardwareType);
 
-    })
+    });
 
     lineChartDataSet = {
         hardwareType: 'ALL',
         levelTypeNameList: newLevelTypeNameList,
         usageSetList: newUsageSetList,
         newDateTimeList: newDateTimeList,
-    }
+    };
 
     return lineChartDataSet;
-}
+};
 
 
 export const convertHwTypePhrases = (pHardwareType) => {
@@ -861,20 +945,30 @@ export const convertHwTypePhrases = (pHardwareType) => {
         return "Disk"
     }
 
+};
+
+export const renderSmallProgress = () => {
+    return (
+        <div style={{display: 'flex', width: '100%', justifyContent: 'center', height: 20}}>
+            <CircularProgress style={{fontWeight: 'bold', color: '#1cecff'}}
+                              color={'#1cecff'}
+                              size={15}/>
+        </div>
+    )
 }
 
 
 export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: string, _this) => {
-    pUsageList = sortUsageListByTypeForCluster(pUsageList, hardwareType)
+    pUsageList = sortUsageListByTypeForCluster(pUsageList, hardwareType);
 
     if (pUsageList.length === 0) {
         return "";
     } else {
-        let classificationName = ''
+        let classificationName = '';
         let levelTypeNameList = [];
-        let usageSetList = []
-        let dateTimeList = []
-        let series = []
+        let usageSetList = [];
+        let dateTimeList = [];
+        let series = [];
         for (let i in pUsageList) {
 
             if (hardwareType === HARDWARE_TYPE.CPU) {
@@ -926,19 +1020,19 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
                 }
                 usageList.push(usageOne);
                 let dateOne = series[j]["0"];
-                dateOne = dateOne.toString().split("T")
+                dateOne = dateOne.toString().split("T");
                 dateTimeList.push(dateOne[1]);
             }
 
-            levelTypeNameList.push(classificationName)
+            levelTypeNameList.push(classificationName);
             usageSetList.push(usageList);
         }
 
         console.log('usageSetList====>', usageSetList);
 
 
-        //@todo: CUST LIST INTO RECENT_DATA_LIMIT_COUNT
-        let newDateTimeList = []
+        //@todo: CUS LIST INTO RECENT_DATA_LIMIT_COUNT
+        let newDateTimeList = [];
         for (let i in dateTimeList) {
             if (i < RECENT_DATA_LIMIT_COUNT) {
                 let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
@@ -953,14 +1047,14 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
             usageSetList,
             newDateTimeList,
             hardwareType,
-        }
+        };
 
-        console.log("lineChartDataSet===>", lineChartDataSet)
+        console.log("lineChartDataSet===>", lineChartDataSet);
 
         return lineChartDataSet
     }
 
-}
+};
 
 /**
  *
@@ -971,7 +1065,7 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
 export const makeGradientColor = (canvas, height) => {
     const ctx = canvas.getContext("2d");
 
-    let gradientList = []
+    let gradientList = [];
     const gradient = ctx.createLinearGradient(0, 0, 0, height);
 
     //'rgb(222,0,0)', 'rgb(255,150,0)', 'rgb(255,246,0)', 'rgb(91,203,0)', 'rgb(0,150,255)'
@@ -994,15 +1088,26 @@ export const makeGradientColor = (canvas, height) => {
     gradient5.addColorStop(0, 'rgb(0,150,255)');
     gradient5.addColorStop(1, 'rgba(0,150,255,0)');
 
-    gradientList.push(gradient)
-    gradientList.push(gradient2)
-    gradientList.push(gradient3)
-    gradientList.push(gradient4)
-    gradientList.push(gradient5)
+    gradientList.push(gradient);
+    gradientList.push(gradient2);
+    gradientList.push(gradient3);
+    gradientList.push(gradient4);
+    gradientList.push(gradient5);
 
     return gradientList;
-}
+};
 
+export const hexToRGB = (hex, alpha) => {
+    var r = parseInt(hex.slice(1, 3), 16),
+        g = parseInt(hex.slice(3, 5), 16),
+        b = parseInt(hex.slice(5, 7), 16);
+
+    if (alpha) {
+        return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")";
+    } else {
+        return "rgb(" + r + ", " + g + ", " + b + ")";
+    }
+}
 
 export const makeGradientColorOne = (canvas, height) => {
     const ctx = canvas.getContext("2d");
@@ -1010,12 +1115,58 @@ export const makeGradientColorOne = (canvas, height) => {
     gradient.addColorStop(0, 'rgb(111,253,255)');
     gradient.addColorStop(1.0, 'rgb(62,113,243)');
     return gradient;
-}
+};
 
 
-export const getColorOne = () => {
-    return 'rgb(111,253,255)';
-}
+export const makeGradientColorList = (canvas, height, colorList, isBig = false) => {
+    //let colorList= ['red', 'blue', 'green', 'yellow', 'grey']
+    console.log("colorList===>", colorList);
+    const ctx = canvas.getContext("2d");
+    let gradientList = [];
+    if (isBig) {
+        colorList.map(item => {
+            const gradient = ctx.createLinearGradient(0, 0, 0, height);
+            gradient.addColorStop(0.1, hexToRGB(item, 0.1));
+            gradient.addColorStop(0.2, hexToRGB(item, 0.2));
+            gradient.addColorStop(0.3, hexToRGB(item, 0.3));
+            gradient.addColorStop(0.4, hexToRGB(item, 0.4));
+            gradient.addColorStop(0.5, hexToRGB(item, 0.5));
+            gradient.addColorStop(0.6, hexToRGB(item, 0.6));
+            gradient.addColorStop(0.7, hexToRGB(item, 0.7));
+            gradient.addColorStop(0.8, hexToRGB(item, 0.8));
+            gradient.addColorStop(0.9, hexToRGB(item, 0.9));
+            gradientList.push(gradient);
+        })
+    } else {
+        colorList.map(item => {
+            const gradient = ctx.createLinearGradient(0, 0, 0, height);
+            gradient.addColorStop(0, hexToRGB(item, 0.2));
+            gradient.addColorStop(0.5, hexToRGB(item, 0.5));
+            gradient.addColorStop(1, hexToRGB(item, 0.85));
+            gradientList.push(gradient);
+        })
+    }
+
+    return gradientList;
+};
+
+
+export const makeGradientColorList2 = (canvas, height, colorList, isBig = false) => {
+    //let colorList= ['red', 'blue', 'green', 'yellow', 'grey']
+    console.log("colorList===>", colorList);
+    const ctx = canvas.getContext("2d");
+    let gradientList = [];
+
+    colorList.map(item => {
+        const gradient = ctx.createLinearGradient(0, 0, 0, height);
+        gradient.addColorStop(0, hexToRGB(item, 0.4));
+        gradient.addColorStop(0.5, hexToRGB(item, 0.7));
+        gradient.addColorStop(1, hexToRGB(item, 0.98));
+        gradientList.push(gradient);
+    })
+
+    return gradientList;
+};
 
 
 /**
@@ -1028,27 +1179,29 @@ export const handleLegendAndBubbleClickedEvent = (_this: PageDevMonitoring, clic
 
     let selectedIndex = 0;
     lineChartDataSet.levelTypeNameList.map((item, jIndex) => {
-        let newItem = item.toString().replace('\n', "|").replace("[", '').replace("]", '')
-        clickedItem = clickedItem.toString().replace('\n', "|").replace("[", '').replace("]", '')
+        let newItem = item.toString().replace('\n', "|").replace("[", '').replace("]", '');
+        clickedItem = clickedItem.toString().replace('\n', "|").replace("[", '').replace("]", '');
         if (clickedItem === newItem) {
             selectedIndex = jIndex;
         }
-    })
+    });
     let selectedLineChartDataSetOne = {
         levelTypeNameList: lineChartDataSet.levelTypeNameList[selectedIndex],
         usageSetList: lineChartDataSet.usageSetList[selectedIndex],
         newDateTimeList: lineChartDataSet.newDateTimeList,
         hardwareType: lineChartDataSet.hardwareType,
-    }
+    };
 
     _this.showModalClusterLineChart(selectedLineChartDataSetOne, selectedIndex)
-}
+};
 
 export const addUnitNameForUsage = (value, hardwareType, _this) => {
 
     if (_this.state.currentClassification === CLASSIFICATION.CLUSTER) {
 
         if (hardwareType === HARDWARE_TYPE.CPU || hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
+            return value + " %";
+        } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
             return value + " %";
         } else if (hardwareType === HARDWARE_TYPE.SENDBYTES || hardwareType === HARDWARE_TYPE.RECVBYTES) {
             return convertByteToMegaByte(value, hardwareType)
@@ -1060,17 +1213,17 @@ export const addUnitNameForUsage = (value, hardwareType, _this) => {
 
     } else if (_this.state.currentClassification === CLASSIFICATION.APPINST) {
         if (hardwareType === HARDWARE_TYPE.CPU) {
-            return value + " %";
+            return value.toString().substring(0, 9) + " %";
         } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM || hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
             return convertByteToMegaByte(value, hardwareType)
         } else {
             return value;
         }
     }
-}
+};
 
 
-export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, context: MonitoringContextInterface) => {
+export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBig = false) => {
 
     let options = {
         stacked: true,
@@ -1083,13 +1236,14 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, cont
         pointDotStrokeWidth: 4,
         layout: {
             padding: {
-                left: 0,
-                right: 10,
-                top: 0,
+                left: 9,
+                right: 5,
+                top: 15,
                 bottom: 0
             }
         },
         legend: {
+            display: false,//@todo:리전드display
             position: 'top',
             labels: {
                 boxWidth: 10,
@@ -1133,17 +1287,25 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, cont
                     color: "#505050",
                 },
                 ticks: {
-                    fontSize: 14,
+                    fontSize: 11,
                     fontColor: 'white',
                     //maxRotation: 0.05,
-                    //autoSkip: true,
-                    maxRotation: 45,
-                    minRotation: 45,
+                    autoSkip: true,
+                    maxRotation: 0,//xAxis text rotation
+                    minRotation: 0,//xAxis text rotation
+                    /*
+                    maxRotation: 45,//xAxis text rotation
+                    minRotation: 45,//xAxis text rotation
+                    */
                     padding: 10,
                     labelOffset: 0,
                     callback(value, index, label) {
-                        return value;
-
+                        if (isBig) {
+                            return value
+                        } else {
+                            if (index % 2 === 0) return '';
+                            return value;
+                        }
                     },
                 },
                 beginAtZero: false,
@@ -1161,32 +1323,246 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, cont
             }
 
         }
-    }//options
-
+    };//options
     return options;
+};
+
+export const demoLineChartData = (canvas) => {
+    let gradientList = makeGradientColorList(canvas, 305, CHART_COLOR_LIST, true);
+
+    let dataSets = [
+        {
+            label: 'AppInst1',
+            lineTension: 0.1,
+            fill: true,
+            backgroundColor: gradientList[0],
+            borderColor: gradientList[0],
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: 'rgba(75,192,192,1)',
+            pointBackgroundColor: '#fff',
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data: [25, 35, 40, 55, 59, 75, 89]
+        },
+        {
+            label: 'AppInst2',
+            lineTension: 0.1,
+            fill: true,
+            backgroundColor: gradientList[1],
+            borderColor: gradientList[1],
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data: [65, 59, 80, 81, 56, 55, 40]
+        },
+        {
+            label: 'App Inst3',
+            lineTension: 0.1,
+            fill: true,
+            backgroundColor: gradientList[2],
+            borderColor: gradientList[2],
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data: [3, 5, 8, 8, 5, 15, 20]
+        },
+        {
+            label: 'App Inst4',
+            lineTension: 0.1,
+            fill: true,
+            backgroundColor: gradientList[3],
+            borderColor: gradientList[3],
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data: [31, 51, 28, 38, 55, 75, 20]
+        },
+        {
+            label: 'App Inst4',
+            lineTension: 0.1,
+            fill: true,
+            backgroundColor: gradientList[4],
+            borderColor: gradientList[4],
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data: [21, 41, 68, 138, 5, 7, 2]
+        }
+
+    ]
+
+    return {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: dataSets,
+    }
+};
+
+export const simpleGraphOptions = {
+    stacked: true,
+    animation: {
+        duration: 500
+    },
+    maintainAspectRatio: false,//@todo
+    responsive: true,//@todo
+    datasetStrokeWidth: 3,
+    pointDotStrokeWidth: 4,
+    layout: {
+        padding: {
+            left: 9,
+            right: 5,
+            top: 15,
+            bottom: 0
+        }
+    },
+    legend: {
+        display: false,//@todo:리전드display
+        position: 'top',
+        labels: {
+            boxWidth: 10,
+            fontColor: 'white',
+            fillStyle: 'red',
+        },//@todo: lineChart 리전드 클릭 이벤트.
+        onHover: (e, item) => {
+            //alert(`Item with text ${item.text} and index ${item.index} hovered`)
+        },
+    },
+    scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero: true,
+                min: 0,
+                //max: 100,//todo max value
+                fontColor: 'white',
+            },
+            gridLines: {
+                color: "#505050",
+            },
+            stacked: true,
+
+        }],
+        xAxes: [{
+            /*ticks: {
+                fontColor: 'white'
+            },*/
+            gridLines: {
+                color: "white",
+            },
+            ticks: {
+                fontSize: 11,
+                fontColor: 'white',
+                //maxRotation: 0.05,
+                autoSkip: true,
+                maxRotation: 0,//xAxis text rotation
+                minRotation: 0,//xAxis text rotation
+                /*
+                maxRotation: 45,//xAxis text rotation
+                minRotation: 45,//xAxis text rotation
+                */
+                padding: 10,
+                labelOffset: 0,
+                callback(value, index, label) {
+                    return value;
+
+                },
+            },
+            beginAtZero: false,
+            /* gridLines: {
+                 drawTicks: true,
+             },*/
+        }],
+        backgroundColor: {
+            fill: "#1e2124"
+        },
+    },//scales
+    onClick: function (c, i) {
+        if (i.length > 0) {
+            console.log('onClick===>', i);
+        }
+
+    }
+}
+
+export const makeTreeClusterCloudletList = (clusterOriginList) => {
+
+    let ClusterList = []
+    clusterOriginList.map(item => {
+        console.log("Cloudlet===>", item.Cloudlet);
+        console.log("ClusterName===>", item.ClusterName);
+        ClusterList.push(item.ClusterName)
+    })
+    let uniqClusterList = [...new Set(ClusterList)];
+    let treeList = []
+    uniqClusterList.map(clusterOne => {
+        console.log("clusterOne===>", clusterOne);
+        let childrenCloudlets = []
+        clusterOriginList.map(item => {
+            if (item.ClusterName === clusterOne) {
+                childrenCloudlets.push({
+                    title: item.Cloudlet,
+                    value: clusterOne + " | " + item.Cloudlet + " | " + item.Region,
+                })
+            }
+        })
+
+        let itemOne = {
+            selectable: false,
+            title: clusterOne,
+            value: clusterOne,
+            children: childrenCloudlets,
+        };
+
+        treeList.push(itemOne)
+
+    })
+    return treeList;
 }
 
 
-export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring) => {
-
-
+export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMonitoring) => {
     const lineChartData = (canvas) => {
+        let gradientList = makeGradientColorList(canvas, 305, _this.state.chartColorList, true);
+        let levelTypeNameList = lineChartDataSet.levelTypeNameList
+        let usageSetList = lineChartDataSet.usageSetList
+        let newDateTimeList = lineChartDataSet.newDateTimeList
+
         let finalSeriesDataSets = [];
         for (let index in usageSetList) {
             //@todo: top5 만을 추린다
-
             if (index < 5) {
-
-                let datasetsOne = {
+                let dataSetsOne = {
                     label: levelTypeNameList[index],
                     radius: 0,
                     borderWidth: 3.5,//todo:라인 두께
-                    fill: false,
+                    fill: _this.state.isStackedLineChart,// @desc:fill BackgroundArea
+                    backgroundColor: _this.state.isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
+                    borderColor: _this.state.isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
                     lineTension: 0.5,
-                    /*backgroundColor:  gradientList[index],
-                    borderColor: gradientList[index],*/
-                    backgroundColor: _this.state.chartColorList[index],
-                    borderColor: _this.state.chartColorList[index],
                     data: usageSetList[index],
                     borderCapStyle: 'butt',
                     borderDash: [],
@@ -1202,7 +1578,65 @@ export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTi
                     pointRadius: 1,
                     pointHitRadius: 10,
 
-                }
+                };
+
+                finalSeriesDataSets.push(dataSetsOne)
+            }
+        }
+        return {
+            labels: newDateTimeList,
+            datasets: finalSeriesDataSets,
+        }
+    };
+    return lineChartData;
+}
+
+
+/**
+ *
+ * @param levelTypeNameList
+ * @param usageSetList
+ * @param newDateTimeList
+ * @param _this
+ * @param isGradientColor
+ * @returns {function(*=): {datasets: [], labels: *}}
+ */
+export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring, isGradientColor = false) => {
+
+
+    const lineChartData = (canvas) => {
+
+        let gradientList = makeGradientColorList(canvas, 305, _this.state.chartColorList);
+        let finalSeriesDataSets = [];
+        for (let index in usageSetList) {
+            //@todo: top5 만을 추린다
+
+            if (index < 5) {
+
+                let datasetsOne = {
+                    label: levelTypeNameList[index],
+                    radius: 0,
+                    borderWidth: 3.5,//todo:라인 두께
+                    fill: isGradientColor,// @desc:fill@desc:fill@desc:fill@desc:fill
+                    backgroundColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
+                    borderColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
+                    lineTension: 0.5,
+                    data: usageSetList[index],
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: 'rgba(75,192,192,1)',
+                    pointBackgroundColor: '#fff',
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+                    pointHoverBorderColor: 'rgba(220,220,220,1)',
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+
+                };
 
                 finalSeriesDataSets.push(datasetsOne)
             }
@@ -1213,18 +1647,18 @@ export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTi
             labels: newDateTimeList,
             datasets: finalSeriesDataSets,
         }
-    }
+    };
 
     return lineChartData;
-}
+};
 
 export const convertToClassification = (pClassification) => {
     if (pClassification === CLASSIFICATION.APPINST) {
-        return "App Instance"
+        return "App Inst"
     } else {
-        return pClassification
+        return pClassification.toString().replace("_", " ")
     }
-}
+};
 
 
 export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDataSet, context) => {
@@ -1235,16 +1669,16 @@ export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDat
         let hardwareType = lineChartDataSet.hardwareType;
 
 
-        const lineChartDataForRendering = makeTop5LineChartData(levelTypeNameList, usageSetList, newDateTimeList, _this)
+        const lineChartDataForRendering = makeTop5LineChartData(levelTypeNameList, usageSetList, newDateTimeList, _this, _this.state.isStackedLineChart);
         return (
             <div style={{
                 position: 'relative',
                 width: '99%',
-                height: '96%'
+                height: '99%'
             }}>
                 <ReactChartJsLine
                     data={lineChartDataForRendering}
-                    options={makeLineChartOptions(hardwareType, lineChartDataSet, _this, context)}
+                    options={makeLineChartOptions(hardwareType, lineChartDataSet, _this)}
                 />
             </div>
         );
@@ -1252,7 +1686,7 @@ export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDat
 
         showToast(e.toString())
     }
-}
+};
 
 
 export const renderLineChartCoreForDev_AppInst = (_this: PageDevMonitoring, lineChartDataSet) => {
@@ -1298,7 +1732,7 @@ export const renderLineChartCoreForDev_AppInst = (_this: PageDevMonitoring, line
                         pointRadius: 1,
                         pointHitRadius: 10,
 
-                    }
+                    };
 
                     finalSeriesDataSets.push(datasetsOne)
                 }
@@ -1308,7 +1742,7 @@ export const renderLineChartCoreForDev_AppInst = (_this: PageDevMonitoring, line
                 labels: newDateTimeList,
                 datasets: finalSeriesDataSets,
             }
-        }
+        };
 
         let height = 500 + 100;
         let options = {
@@ -1404,7 +1838,7 @@ export const renderLineChartCoreForDev_AppInst = (_this: PageDevMonitoring, line
                 }
 
             }
-        }//options
+        };//options
 
 
         //todo :#######################
@@ -1432,7 +1866,7 @@ export const renderLineChartCoreForDev_AppInst = (_this: PageDevMonitoring, line
     } catch (e) {
         // showToast(e.toString())
     }
-}
+};
 
 
 export const makeSelectBoxListWithKeyValuePipe = (arrList, keyName, valueName) => {
@@ -1445,7 +1879,7 @@ export const makeSelectBoxListWithKeyValuePipe = (arrList, keyName, valueName) =
         })
     }
     return newArrList;
-}
+};
 
 
 export const makeSelectBoxListWithKey = (arrList, keyName) => {
@@ -1458,7 +1892,7 @@ export const makeSelectBoxListWithKey = (arrList, keyName) => {
         })
     }
     return newArrList;
-}
+};
 
 export const makeSelectBoxListWithValuePipe = (appInstList, keyName: string, valueName: string, thirdValue: string, fourthValue: string = '') => {
     let newArrList = [];
@@ -1480,9 +1914,31 @@ export const makeSelectBoxListWithValuePipe = (appInstList, keyName: string, val
         }
     }
 
+    return newArrList;
+};
+
+export const makeDropdownListWithValuePipeForAppInst = (appInstList, keyName: string, valueName: string, thirdValue: string, fourthValue: string = '') => {
+    let newArrList = [];
+    if (fourthValue !== '') {
+        for (let i in appInstList) {
+            newArrList.push({
+                key: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim(),
+                value: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim(),
+                text: appInstList[i][keyName].trim(),
+            })
+        }
+    } else {
+        for (let i in appInstList) {
+            newArrList.push({
+                key: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim(),
+                value: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim(),
+                text: appInstList[i][keyName].trim(),
+            })
+        }
+    }
 
     return newArrList;
-}
+};
 
 
 export const removeDuplication = (originalArray, prop) => {
@@ -1497,6 +1953,297 @@ export const removeDuplication = (originalArray, prop) => {
         newArray.push(lookupObject[i]);
     }
     return newArray;
+};
+
+export const GradientBarChartOptions1 = {
+    animation: {
+        duration: 500
+    },
+    legend: {
+        display: false
+    },
+    maintainAspectRatio: false,//@todo
+    responsive: true,//@todo
+    datasetStrokeWidth: 3,
+    pointDotStrokeWidth: 4,
+    layout: {
+        padding: {
+            left: 0,
+            right: 10,
+            top: 25,
+            bottom: 10
+        }
+    },
+    scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero: true,
+                fontColor: 'white',
+                callback(value, index, label) {
+                    return value;
+                },
+            },
+            gridLines: {
+                color: "#505050",
+            },
+            //stacked: true
+
+        }],
+        xAxes: [{
+            /*ticks: {
+                fontColor: 'white'
+            },*/
+            gridLines: {
+                color: "#505050",
+            },
+            ticks: {
+                fontSize: 11,
+                fontColor: 'white',
+                //maxRotation: 0.05,
+                //autoSkip: true,
+                autoSkip: false,
+                maxRotation: 0,
+                minRotation: 0,
+                padding: 10,
+                labelOffset: 0,
+                callback(label, index, labels) {
+                    return [label.toString().split("[")[0].substring(0, 11) + "...", "[" + label.toString().split("[")[1].substring(0, 11).replace(']', '') + "...]"]
+                }
+            },
+            beginAtZero: false,
+            /* gridLines: {
+                 drawTicks: true,
+             },*/
+        }],
+        backgroundColor: {
+            fill: "#1e2124"
+        },
+    },
+    plugins: {
+        labels: {
+            // render 'label', 'value', 'percentage', 'image' or custom function, default is 'percentage'
+            render: function (args) {
+                // args will be something like:
+                // { label: 'Label', value: 123, percentage: 50, index: 0, dataset: {...} }
+                return args.value + '%';
+                // return object if it is image
+                // return { src: 'image.png', width: 16, height: 16 };
+            },
+
+            // precision for percentage, default is 0
+            precision: 0,
+
+            // identifies whether or not labels of value 0 are displayed, default is false
+            showZero: true,
+
+            // font size, default is defaultFontSize
+            fontSize: 22,
+
+            // font color, can be color array for each data or function for dynamic color, default is defaultFontColor
+            fontColor: '#fff',
+
+            // font style, default is defaultFontStyle
+            fontStyle: 'normal',
+
+            // font family, default is defaultFontFamily
+            fontFamily: "Acme",
+
+            // draw text shadows under labels, default is false
+            textShadow: true,
+
+            // text shadow intensity, default is 6
+            shadowBlur: 30,
+
+            // text shadow X offset, default is 3
+            shadowOffsetX: 5,
+
+            // text shadow Y offset, default is 3
+            shadowOffsetY: 5,
+
+            // text shadow color, default is 'rgba(0,0,0,0.3)'
+            shadowColor: 'rgba(255,255,255,0.75)',
+
+            // draw label in arc, default is false
+            // bar chart ignores this
+            arc: true,
+
+            // position to draw label, available value is 'default', 'border' and 'outside'
+            // bar chart ignores this
+            // default is 'default'
+            position: 'default',
+
+            // draw label even it's overlap, default is true
+            // bar chart ignores this
+            overlap: true,
+
+            // show the real calculated percentages from the values and don't apply the additional logic to fit the percentages to 100 in total, default is false
+            showActualPercentages: true,
+
+            // set images when `render` is 'image'
+            images: [
+                {
+                    src: 'image.png',
+                    width: 16,
+                    height: 16
+                }
+            ],
+
+            // add padding when position is `outside`
+            // default is 2
+            outsidePadding: 4,
+
+            // add margin of text when position is `outside` or `border`
+            // default is 2
+            textMargin: 4
+        }
+    }
+
+}
+
+export const barChartOptions2 = {
+    animation: {
+        duration: 500
+    },
+    legend: {
+        display: false
+    },
+    maintainAspectRatio: false,//@todo
+    responsive: true,//@todo
+    datasetStrokeWidth: 3,
+    pointDotStrokeWidth: 4,
+    layout: {
+        padding: {
+            left: 0,
+            right: 10,
+            top: 25,
+            bottom: 10
+        }
+    },
+    scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero: true,
+                fontColor: 'white',
+                callback(label, index, labels) {
+                    return [label.toString().split("[")[0], "[" + label.toString().split("[")[1]]
+                }
+            },
+            gridLines: {
+                color: "#505050",
+            },
+            //stacked: true
+
+
+        }],
+        xAxes: [{
+            /*ticks: {
+                fontColor: 'white'
+            },*/
+            gridLines: {
+                color: "#505050",
+            },
+            ticks: {
+                fontSize: 14,
+                fontColor: 'white',
+                //maxRotation: 0.05,
+                //autoSkip: true,
+                autoSkip: false,
+                maxRotation: 0,
+                minRotation: 0,
+                padding: 10,
+                labelOffset: 0,
+                callback(label, index, labels) {
+                    return [label.toString().split("[")[0], "[" + label.toString().split("[")[1]]
+                }
+            },
+            beginAtZero: false,
+            /* gridLines: {
+                 drawTicks: true,
+             },*/
+        }],
+        backgroundColor: {
+            fill: "#1e2124"
+        },
+    },
+    plugins: {
+        labels: {
+            // render 'label', 'value', 'percentage', 'image' or custom function, default is 'percentage'
+            render: function (args) {
+                // args will be something like:
+                // { label: 'Label', value: 123, percentage: 50, index: 0, dataset: {...} }
+                return args.value + '%';
+                // return object if it is image
+                // return { src: 'image.png', width: 16, height: 16 };
+            },
+
+            // precision for percentage, default is 0
+            precision: 0,
+
+            // identifies whether or not labels of value 0 are displayed, default is false
+            showZero: true,
+
+            // font size, default is defaultFontSize
+            fontSize: 24,
+
+            // font color, can be color array for each data or function for dynamic color, default is defaultFontColor
+            fontColor: '#fff',
+
+            // font style, default is defaultFontStyle
+            fontStyle: 'normal',
+
+            // font family, default is defaultFontFamily
+            fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+
+            // draw text shadows under labels, default is false
+            textShadow: true,
+
+            // text shadow intensity, default is 6
+            shadowBlur: 30,
+
+            // text shadow X offset, default is 3
+            shadowOffsetX: 5,
+
+            // text shadow Y offset, default is 3
+            shadowOffsetY: 5,
+
+            // text shadow color, default is 'rgba(0,0,0,0.3)'
+            shadowColor: 'rgba(255,255,255,0.75)',
+
+            // draw label in arc, default is false
+            // bar chart ignores this
+            arc: true,
+
+            // position to draw label, available value is 'default', 'border' and 'outside'
+            // bar chart ignores this
+            // default is 'default'
+            position: 'border',
+
+            // draw label even it's overlap, default is true
+            // bar chart ignores this
+            overlap: true,
+
+            // show the real calculated percentages from the values and don't apply the additional logic to fit the percentages to 100 in total, default is false
+            showActualPercentages: true,
+
+            // set images when `render` is 'image'
+            images: [
+                {
+                    src: 'image.png',
+                    width: 16,
+                    height: 16
+                }
+            ],
+
+            // add padding when position is `outside`
+            // default is 2
+            outsidePadding: 2,
+
+            // add margin of text when position is `outside` or `border`
+            // default is 2
+            textMargin: 4
+        }
+    }
+
 }
 
 

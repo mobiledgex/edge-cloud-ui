@@ -1,6 +1,7 @@
 import React from 'react'
-import { Popup, Icon } from 'semantic-ui-react';
-import { fields } from './format';
+import {Icon, Popup} from 'semantic-ui-react';
+import {fields} from './format';
+
 
 export const additionalDetail = (data) => {
     return (
