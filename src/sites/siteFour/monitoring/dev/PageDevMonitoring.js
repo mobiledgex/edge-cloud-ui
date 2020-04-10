@@ -6,7 +6,7 @@ import {Dropdown, Modal} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
-import {CircularProgress, Toolbar, withStyles} from '@material-ui/core'
+import {CircularProgress, lighten, LinearProgress, Toolbar, withStyles} from '@material-ui/core'
 import {Dropdown as ADropdown, Menu as AMenu,} from 'antd';
 import {
     defaultHwMapperListForCluster,
@@ -55,7 +55,6 @@ import {
     isEmpty,
     makeBubbleChartDataForCluster,
     PageMonitoringStyles,
-    renderLoaderArea,
     renderPlaceHolderCircular,
     showToast
 } from "../PageMonitoringCommonService";
@@ -90,7 +89,6 @@ import type {Layout, LayoutItem} from "react-grid-layout/lib/utils";
 import GradientBarChartContainer from "../components/GradientBarChartContainer";
 import AddItemPopupContainer2 from '../components/AddItemPopupContainer2'
 import Switch from "@material-ui/core/Switch";
-import {sendSyncRequest} from "../../../../services/serviceMC";
 
 const ASubMenu = AMenu.SubMenu;
 const CustomSwitch = withStyles({
@@ -107,6 +105,16 @@ const CustomSwitch = withStyles({
     track: {},
 })(Switch);
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
+
+const ColorLinearProgress = withStyles({
+    colorPrimary: {
+        backgroundColor: 'rgb(50,44,51)',
+    },
+    barColorPrimary: {
+        backgroundColor: '#24add0',
+    },
+})(LinearProgress);
+
 const mapStateToProps = (state) => {
     return {
         isLoading: state.LoadingReducer.isLoading,
@@ -317,7 +325,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 filteredMemUsageList: [],
                 filteredDiskUsageList: [],
                 filteredNetworkUsageList: [],
-                isReady: false,
                 counter: 0,
                 appInstanceList: [],
                 allAppInstanceList: [],
@@ -456,7 +463,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
-                isReady: true,
             })
         }
 
@@ -479,10 +485,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         async loadInitDataForCluster(isInterval: boolean = false) {
             let promiseList = []
             let promiseList2 = []
-
             try {
                 clearInterval(this.intervalForAppInst)
                 await this.setState({dropdownRequestLoading: true})
+
                 //@todo:#############################################
                 //@todo: (cloudletList ,clusterList, appnInstList)
                 //@todo:#############################################
@@ -493,8 +499,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 let cloudletList = cloudletList_clusterList_appInstList[0]
                 let clusterList = cloudletList_clusterList_appInstList[1];
                 let appInstList = cloudletList_clusterList_appInstList[2];
-
                 let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
+
                 //@todo:#########################################################################
                 //@todo: getAllClusterEventLogList, getAllAppInstEventLogs ,allClusterUsageList
                 //@todo:#########################################################################
@@ -1747,7 +1753,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         }
 
 
-        renderLegend() {
+        makeLegend() {
             let fullClusterList = '';
             let region = '';
             if (this.state.currentCluster) {
@@ -1760,14 +1766,31 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 <Legend>
                     <div style={{width: '100%', display: 'flex'}}>
                         {this.state.loading &&
-                        <div style={{display: 'flex', alignSelf: 'center',}}>
-                            <CircularProgress
+                        <div style={{
+                            display: 'flex',
+                            alignSelf: 'center',
+                            position: 'absolute',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            width: '100%',
+                            //backgroundColor: 'red'
+                        }}>
+                            {/*  <CircularProgress
                                 style={{fontWeight: 'bold', color: '#1cecff'}}
-                                color={'#1cecff'}
+                                color='#1cecff'
                                 size={15}
+                            />*/}
+                            <ColorLinearProgress
+                                variant={'query'}
+                                style={{
+                                    marginLeft: -10,
+                                    width: '7%',
+                                    alignContent: 'center',
+                                    justifyContent: 'center',
+                                }}
                             />
                         </div>}
-                        {this.state.currentClassification === 'Cluster' ?
+                        {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER ?
                             <div style={{
                                 display: 'flex',
                                 flex: 1,
@@ -1799,7 +1822,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                     )
                                 })}
                             </div>
-                            :
+                            : !this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST &&
                             <div style={{
                                 display: 'flex',
                                 flex: 1,
@@ -1832,13 +1855,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
 
         render() {
-            // todo: Components showing when the loading of graph data is not completed.
-            if (!this.state.isReady) {
-                return (
-                    renderLoaderArea(this)
-                )
-            }
-
             if (this.state.isNoData) {
                 return (
                     <div style={{width: '100%', height: '100%',}}>
@@ -1887,7 +1903,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             {/*desc:---------------------------------*/}
                             {/*desc:Legend                           */}
                             {/*desc:---------------------------------*/}
-                            {this.renderLegend()}
+                            {this.makeLegend()}
                             <div className="page_monitoring" style={{overflowY: 'auto', height: 'calc(100% - 70px)'}}>
                                 <div className='' style={{marginBottom: 50}}>
                                     {this.state.currentClassification === CLASSIFICATION.CLUSTER
