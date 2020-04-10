@@ -90,6 +90,7 @@ import type {Layout, LayoutItem} from "react-grid-layout/lib/utils";
 import GradientBarChartContainer from "../components/GradientBarChartContainer";
 import AddItemPopupContainer2 from '../components/AddItemPopupContainer2'
 import Switch from "@material-ui/core/Switch";
+import {sendSyncRequest} from "../../../../services/serviceMC";
 
 const ASubMenu = AMenu.SubMenu;
 const CustomSwitch = withStyles({
@@ -476,51 +477,52 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         }
 
         async loadInitDataForCluster(isInterval: boolean = false) {
+            let promiseList = []
+            let promiseList2 = []
+
             try {
                 clearInterval(this.intervalForAppInst)
-                this.setState({dropdownRequestLoading: true})
-
-
+                await this.setState({dropdownRequestLoading: true})
                 //@todo:#############################################
                 //@todo: (cloudletList ,clusterList, appnInstList)
                 //@todo:#############################################
-                let cloudletList = await getCloudletList()
-                let clusterList = await getClusterList();
-                let appInstList: Array<TypeAppInstance> = await getAppInstList();
-                if (appInstList.length === 0) {
-                    this.setState({
-                        isNoData: true,
-                    })
-                }
+                promiseList.push(getCloudletList())
+                promiseList.push(getClusterList())
+                promiseList.push(getAppInstList())
+                let cloudletList_clusterList_appInstList = await Promise.all(promiseList);
+                let cloudletList = cloudletList_clusterList_appInstList[0]
+                let clusterList = cloudletList_clusterList_appInstList[1];
+                let appInstList = cloudletList_clusterList_appInstList[2];
 
                 let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
-                //@todo:#############################################
-                //@todo: getAllClusterEventLogList
-                //@todo:#############################################
-                let allClusterEventLogList = await getAllClusterEventLogList(clusterList);
-                await this.setState({
-                    allClusterEventLogList: allClusterEventLogList,
-                    filteredClusterEventLogList: allClusterEventLogList
-                })
+                //@todo:#########################################################################
+                //@todo: getAllClusterEventLogList, getAllAppInstEventLogs ,allClusterUsageList
+                //@todo:#########################################################################
+                promiseList2.push(getAllClusterEventLogList(clusterList))
+                promiseList2.push(getAllAppInstEventLogs());
+                promiseList2.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
+                let allClusterEventLogs_allAppInstEventLogs_allClusterUsageList = await Promise.all(promiseList2);
+                let allClusterEventLogList = allClusterEventLogs_allAppInstEventLogs_allClusterUsageList[0];
+                let allAppInstEventLogs = allClusterEventLogs_allAppInstEventLogs_allClusterUsageList[1];
+                let allClusterUsageList = allClusterEventLogs_allAppInstEventLogs_allClusterUsageList[2];
 
-                //@todo:#############################################
-                //@todo: getAppInst Event Logs : real data
-                //@todo:#############################################
-                let allAppInstEventLogs = await getAllAppInstEventLogs();
+                let appInstanceListGroupByCloudlet = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
+                let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
+                let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
+                    return o.sumCpuUsage;
+                }));
+                let maxMem = Math.max.apply(Math, allClusterUsageList.map(function (o) {
+                    return o.sumMemUsage;
+                }));
+
                 await this.setState({
+                    isNoData: appInstList.length === 0,
+                    appInstanceListGroupByCloudlet: !isInterval && appInstanceListGroupByCloudlet,
+                    bubbleChartData: bubbleChartData,
+                    allClusterEventLogList: allClusterEventLogList,
+                    filteredClusterEventLogList: allClusterEventLogList,
                     allAppInstEventLogs: allAppInstEventLogs,
                     filteredAppInstEventLogs: allAppInstEventLogs,
-                })
-
-
-                let appInstanceListGroupByCloudlet = []
-                try {
-                    appInstanceListGroupByCloudlet = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
-                } catch (e) {
-                    showToast(e.toString())
-                }
-
-                await this.setState({
                     isReady: true,
                     clusterDropdownList: clusterDropdownList,
                     dropDownCloudletList: cloudletList,
@@ -529,39 +531,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     appInstanceList: appInstList,
                     filteredAppInstanceList: appInstList,
                     dropdownRequestLoading: false,
-
-                });
-
-                if (!isInterval) {
-                    this.setState({
-                        appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
-                    })
-                }
-                let allClusterUsageList = []
-
-                //@todo:#############################################
-                //todo: real data (allClusterUsageList)
-                //@todo:#############################################
-                try {
-                    allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
-                } catch (e) {
-
-                }
-
-                let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
-                await this.setState({
-                    bubbleChartData: bubbleChartData,
-                })
-
-                let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
-                    return o.sumCpuUsage;
-                }));
-
-                let maxMem = Math.max.apply(Math, allClusterUsageList.map(function (o) {
-                    return o.sumMemUsage;
-                }));
-
-                await this.setState({
                     clusterListLoading: false,
                     allCloudletUsageList: allClusterUsageList,
                     allClusterUsageList: allClusterUsageList,
@@ -570,11 +539,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     maxMem: maxMem,
                     isRequesting: false,
                     currentCluster: '',
-                }, () => {
-                    console.log("filteredClusterUsageList===>", this.state.filteredClusterUsageList);
-                })
+                });
             } catch (e) {
-
+                //showToast(e.toString())
             }
 
         }
