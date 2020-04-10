@@ -1,5 +1,51 @@
-@import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Bungee|Candal|Righteous&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Bungee|Candal|Righteous|Baloo+Bhai+2|Baloo+Bhaina+2|Ubuntu&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Acme|Roboto|Bungee|Barlow+Semi+Condensed|Candal|Encode+Sans+Condensed|Righteous|Karla|Roboto+Condensed&display=swap');
+/*DESC:MUI*/
+/*DESC:MUI*/
+/*DESC:MUI*/
+.MuiPaper-root {
+    color: #fff;
+    transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    background-color: black;
+}
+
+.content_title_wrap {
+    display: flex;
+    width: 100%;
+    height: 32px !important;
+    flex-direction: row;
+    align-items: flex-start;
+    padding-left: 20px;
+}
+
+.content_title_label2 {
+    display: flex;
+    align-items: flex-end;
+    font-size: 25px;
+    justify-content: flex-end;
+    margin-left: 5px;
+}
+
+.table_row {
+    background-color: #00ffcc !important;
+}
+
+
+/*DESC:###################*/
+/*DESC:###################*/
+/*DESC:###################*/
+
+.ant-dropdown-menu-submenu-arrow {
+    display: none;
+}
+
+.gridTableCell:hover {
+    background-color: dimgrey;
+}
+
+tbody:hover {
+    background-color: transparent;
+}
 
 .tooltip001 {
     font-size: 18px;
@@ -10,13 +56,19 @@
     font-style: italic;
 }
 
-/*.page_monitoring_select_area .ui.selection.dropdown {*/
-/*    margin-right: 20px;*/
-/*    margin-bottom: 10px;*/
-/*    z-index: -50;*/
-/*    !* min-width: 250px; *!*/
-/*}*/
 
+/*dropdown start*/
+.selected {
+    font-weight: normal !important;
+    font-size: 11px !important;
+}
+
+.item {
+    font-weight: normal !important;
+    font-size: 11px !important;
+}
+
+/*dropdown end*/
 
 #button-wrapper {
     position: absolute;
@@ -57,6 +109,7 @@
     background-color: #262626
 }
 
+
 .bottomGridArea {
     zIndex: 999999
 }
@@ -78,7 +131,7 @@
     background-color: rgba(71, 82, 102, 0.65);
     font-weight: bold;
     color: white;
-    font-size: 12px;
+    font-size: 9px;
     /*width: 300px;*/
 }
 
@@ -93,7 +146,7 @@
     font-size: 12px;
 }
 
-.mapLoader{
+.mapLoader {
     position: absolute;
     left: 305px;
 }
@@ -411,7 +464,47 @@
 /*antd ui overriding css*/
 
 
+.react-ripples {
+    font-size: 9pt;
+    font-weight: normal;
+}
+
+.ui.toggle.checkbox input:checked ~ label:before {
+    background-color: rgba(68, 119, 0, 1) !important;
+}
+
+.bubble-chart {
+    margin-left: -100px;
+}
+
+/*.ui.selection.active.dropdown .menu {
+    border-color: #96c8da;
+    box-shadow: 0 2px 3px 0 rgba(34,36,38,.15);
+    z-index: 999999999999999;
+}*/
+
+.ui.dropdown .menu {
+    z-index: 999999 !important;
+}
+
+.visible.menu.transition {
+    z-index: 9999999999999999999999999;
+}
+
+.version_display {
+    font-size: 10pt;
+}
+
+/*
+.ui.selection.active.dropdown .menu {
+    border-top: solid 1px rgba(255,255,255,.05) !important;
+    min-width: 300px;
+}
+*/
 
 
+.ant-select-tree li .ant-select-tree-node-content-wrapper.ant-select-tree-node-selected {
+    background-color: darkslategrey !important;
+}
 
 

@@ -235,13 +235,13 @@ class MexListView extends React.Component {
                     <div className='panel_worldmap' style={{ height: 300 }}>
                         <Map dataList={this.state.dataList} id={this.props.requestInfo.id} />
                     </div> : null}
-                <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing style={{ height: isMap ? '55%' : '97%' }}>
+                <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing style={{ height: isMap ?  'calc(100% - 312px)' : '100%' }}>
                     <Table.Header>
                         <Table.Row>
                             {this.makeHeader()}
                         </Table.Row>
                     </Table.Header>
-                    <Table.Body style={{ "overflow": "auto", height: isMap ? this.getHeight() - 315 : this.getHeight() }}>
+                    <Table.Body style={{ overFlow: "auto", height: '100%' }}>
                         {
                             this.state.dataList.map((item, i) => (
                                 <Table.Row key={i}>

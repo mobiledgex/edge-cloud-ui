@@ -2,6 +2,8 @@ import * as types from './ActionTypes';
 import {SET_MAP_TYLE_LAYER} from "./ActionTypes";
 import {SET_LINE_COLOR} from "./ActionTypes";
 import {SET_CLOUDLET_ICON_COLOR} from "./ActionTypes";
+import {TOGGLE_HEADER} from "./ActionTypes";
+import {TOGGLE_LOADING} from "./ActionTypes";
 
 export function changeSite(state) {
     return {
@@ -193,12 +195,16 @@ export function loadingSpinner(loading) {
     }
 }
 
-export const toggleLoading = (isLoading) => {
-    return {
-        type: "toggleLoading",
-        isLoading
-    }
-}
+export const toggleLoading = (isLoading) => ({
+    type: TOGGLE_LOADING,
+    isLoading
+})
+
+export const toggleHeader = (value) => ({
+    type: TOGGLE_HEADER, //type
+    isShowHeader: value //action
+})
+
 
 export const setMapTyleLayer = (value) => ({
     type: SET_MAP_TYLE_LAYER,
