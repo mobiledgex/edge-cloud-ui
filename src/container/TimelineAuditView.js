@@ -597,7 +597,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
 
         getWidth = () => {
-            return window.innerWidth - 100
+            return localStorage.getItem("navigation") == 0 ? window.innerWidth - 90 : window.innerWidth - 280
         }
 
         refreshData = ()=>
