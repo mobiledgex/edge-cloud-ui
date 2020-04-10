@@ -21,7 +21,7 @@ import '../PageMonitoring.css'
 import {PageMonitoringStyles, renderLoaderArea, renderPlaceHolderCircular, showToast} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
 import {handleBubbleChartDropDownForCloudlet, makeBarChartDataForCloudlet, makeLineChartForCloudlet, renderBottomGridAreaForCloudlet} from "./PageOperMonitoringService";
-import LeafletMap from "../components/LeafletMapOperContainer";
+import LeafletMap from "../components/MapForOperContainer";
 import {filterByClassification, makeSelectBoxListWithKey, sortByKey} from "../dev/PageDevMonitoringService";
 
 import {getAllCloudletEventLogs, getCloudletEventLog, getCloudletLevelUsageList, getCloudletList,} from '../PageMonitoringMetricService'
@@ -1043,24 +1043,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             if (this.state.isNoData) {
                 return (
-                    <Grid.Row className='view_contents'>
-                        <Grid.Column className='contents_body'>
-                            {this.renderHeader()}
-                            <div style={{}}>
-                                <Card
-                                    hoverable
-                                    style={{width: '100%', height: '100%'}}
-                                    cover={<div style={{marginLeft: 40, marginTop: 5}}>
-                                        <img alt="example" src="/assets/brand/MobiledgeX_Logo_tm_white.svg" width={500} height={250}/>
-                                    </div>}
-                                >
-                                    <div style={{fontSize: 45, fontFamily:'Roboto Condensed'}}>
-                                        There is no cloudlet you can access...
-                                    </div>
-                                </Card>
-                            </div>
-                        </Grid.Column>
-                    </Grid.Row>
+                    <div style={{width: '100%', height: '100%'}}>
+                        {this.renderHeader()}
+                        <div style={{}}>
+                            <Card
+                                hoverable
+                                style={{width: '100%', height: '100%'}}
+                                cover={<div style={{marginLeft: 40, marginTop: 5}}>
+                                    <img alt="example" src="/assets/brand/MobiledgeX_Logo_tm_white.svg" width={500} height={250}/>
+                                </div>}
+                            >
+                                <div style={{fontSize: 45, fontFamily:'Roboto Condensed'}}>
+                                    There is no cloudlet you can access...
+                                </div>
+                            </Card>
+                        </div>
+                    </div>
                 )
             }
 

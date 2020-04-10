@@ -2,9 +2,8 @@ const initialState = {
     isLoading: false
 };
 export default function LoadingReducer(state = initialState, action) {
-
     switch (action.type) {
-        case "toggleLoading" :
+        case "TOGGLE_LOADING" :
             return Object.assign({}, state, {
                 isLoading: action.isLoading
             })

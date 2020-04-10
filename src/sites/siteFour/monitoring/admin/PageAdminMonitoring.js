@@ -661,7 +661,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*1_column*/}
                     {/*1_column*/}
                     <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
+                        <div className='page_monitoring_title_area '>
                             <div className='page_monitoring_title'>
                                 TOP5 of CPU Usage
                             </div>

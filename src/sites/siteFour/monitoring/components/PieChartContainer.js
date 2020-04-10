@@ -51,7 +51,7 @@ export default class PieChartContainer extends React.Component<Props, State> {
             <div style={{height: 500}}>
 
                 <div style={{height: '100%'}}>
-                    <div className='page_monitoring_title_area' style={{display: 'flex', flexDirection: 'row'}}>
+                    <div className='page_monitoring_title_area draggable' style={{display: 'flex', flexDirection: 'row'}}>
                         <div className='page_monitoring_title_select' style={{flex: .7}}>
                             Mem
                         </div>
