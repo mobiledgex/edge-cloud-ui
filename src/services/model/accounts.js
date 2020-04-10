@@ -1,4 +1,5 @@
 import * as formatter from './format'
+import * as constant from '../../constant'
 import {SHOW_ACCOUNTS, DELETE_ACCOUNT} from './endPointTypes'
 
 let fields = formatter.fields
@@ -35,6 +36,8 @@ export const deleteAccount = (data) => {
 }
 
 const customData = (value) => {
+    value[fields.emailVerified] = value[fields.emailVerified] ? value[fields.emailVerified] : false
+    value[fields.locked] = value[fields.locked] ? value[fields.locked] : false
 }
 
 export const getData = (response, body) => {

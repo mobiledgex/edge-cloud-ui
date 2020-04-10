@@ -15,6 +15,9 @@ import {barChartOption, columnChartOption} from "./PageMonitoringUtils";
 import {Card} from "@material-ui/core";
 
 export const PageMonitoringStyles = {
+    listItemTitle: {
+        marginLeft: 10,
+    },
     icon: {
         fontSize: 29,
         width: 37,
@@ -57,11 +60,34 @@ export const PageMonitoringStyles = {
         fontSize: 25,
         color: 'white',
     },
-    dropDown: {
+
+    dropDown0: {
         //minWidth: 150,
-        minWidth: '350px',
+        minWidth: '280px',
         //fontSize: '12px',
         minHeight: '40px',
+        zIndex: 1,
+        //height: '50px',
+    },
+    dropDownForClusterCloudlet: {
+        minWidth: '260px',
+        fontSize: '11px',
+        minHeight: '30px',
+        zIndex: 1,
+        //height: '50px',
+    },
+    dropDownForClusterCloudlet2: {
+        minWidth: '320px',
+        fontSize: '11px',
+        minHeight: '30px',
+        zIndex: 1,
+        //height: '50px',
+    },
+
+    dropDownForAppInst: {
+        minWidth: '180px',
+        fontSize: '11px',
+        minHeight: '30px',
         zIndex: 1,
         //height: '50px',
     },
@@ -87,6 +113,184 @@ export const PageMonitoringStyles = {
         flex: .4,
         alignItems: 'center',
         fontSize: 13,
+    },
+    tableHeaderRow: {
+        height: 22, alignSelf: 'center', display: 'flex', justifyContent: 'center', alignItem: 'center',
+    },
+    tableHeaderRow2: {
+        height: 30, display: 'flex'
+    },
+    gridHeader: {
+        height: 15,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItem: 'center',
+        marginTop: 3
+    },
+    gridHeaderSmall2: {
+        height: 15,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItem: 'center',
+        marginTop: 3,
+        fontSize: 10,
+        marginRight: 10,
+    },
+    gridHeaderSmall: {
+        height: 15,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItem: 'flex-start',
+        marginTop: 3,
+        fontSize: 12,
+    },
+    gridHeaderSmallCenter: {
+        height: 15,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItem: 'center',
+        marginTop: 3,
+        fontSize: 12,
+    },
+    gridHeaderFirst: {
+        height: 15,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItem: 'center',
+        marginTop: 3,
+        width: 500,
+    },
+    gridHeaderAlignLeft: {
+        height: 15,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItem: 'flex-start',
+        marginTop: 3
+    },
+    gridTableCell: {
+        height: 50,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItem: 'center',
+        marginTop: 3,
+        fontFamily: 'Ubuntu'
+    },
+    tableRow: {
+        height: 50, alignSelf: 'center', display: 'flex', justifyContent: 'center', alignItem: 'center'
+    },
+    tableRowCompact: {
+        height: 40, alignSelf: 'center', display: 'flex', justifyContent: 'center', alignItem: 'center'
+    },
+    tableRowFat: {
+        height: 60, alignSelf: 'center', display: 'flex', justifyContent: 'center', alignItem: 'center'
+    },
+    gridTableCellAlignLeft: {
+        height: 50,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItem: 'flex-start',
+        marginTop: 3,
+        fontFamily: 'Ubuntu'
+    },
+    gridTableCell2: {
+        height: 50,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItem: 'center',
+        marginTop: 25,
+        fontWeight: 'bold',
+        fontFamily: 'Ubuntu'
+    },
+
+    gridTableCell3Left: {
+        height: 50,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItem: 'flex-start',
+        fontWeight: 'bold',
+        fontFamily: 'Ubuntu',
+        backgroundColor: '#1e2025',
+    },
+    gridTableCell3Dash: {
+        height: 50,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItem: 'center',
+        fontWeight: 'bold',
+        fontFamily: 'Ubuntu',
+        backgroundColor: '#1e2025',
+        flexDirection: 'column',
+        fontSize: 12,
+        verticalAlign: 'center'
+    },
+    gridTableCell3Dash1: {
+        height: 50,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItem: 'center',
+        fontWeight: 'bold',
+        fontFamily: 'Ubuntu',
+        backgroundColor: '#1e2025',
+        flexDirection: 'column',
+        fontSize: 12,
+        verticalAlign: 'center'
+    },
+    gridTableCell3Dash2: {
+        height: 50,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItem: 'center',
+        fontWeight: 'bold',
+        fontFamily: 'Ubuntu',
+        backgroundColor: '#1e2025',
+        flexDirection: 'column',
+        fontSize: 12,
+        verticalAlign: 'center',
+        marginRight: -25,
+    },
+
+    gridTableCell3: {
+        height: 50,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItem: 'flex-start',
+        fontWeight: 'bold',
+        fontFamily: 'Ubuntu',
+        backgroundColor: '#1e2025',
+        fontSize: 12,
+    },
+    gridTableCell4: {
+
+        height: 50,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItem: 'flex-start',
+        fontWeight: 'bold',
+        fontFamily: 'Ubuntu',
+        backgroundColor: '#23252c',
+        fontSize: 12,
+    },
+    cellFirstRow: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: 'Ubuntu'
+
     },
     noData: {
         fontSize: 30,
@@ -143,9 +347,28 @@ export const PageMonitoringStyles = {
         fontFamily: 'Karla'
         //backgroundColor:'red'
     },
+    center4: {
+        display: 'flex',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        minHeight: 350,
+        fontSize: 29,
+        fontFamily: 'Karla',
+        marginTop: -100,
+        //backgroundColor:'red'
+    },
     noData2: {
-        width: '100%', backgroundColor: 'blue', fontSize: 15, display: 'flex'
-        , alignItems: 'center', justifyContent: 'center',
+        width: '100%',
+        backgroundColor: 'blue',
+        fontSize: 18,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontWeight: 'bold',
+        color: 'orange'
+
     },
     gridTableData: {flex: .15, backgroundColor: '#181A1F', height: 64, marginTop: 0, textAlign: 'center'},
     gridTableData2: {flex: .15, backgroundColor: '#1e2025', height: 64, marginTop: 0, textAlign: 'center'},
@@ -182,14 +405,18 @@ export const groupByKey_ = (array, key) => {
 
 
 export const renderLoaderArea = (_this) => (
-    <div style={{width:'100%', height:'100%'}}>
-        <div style={{width:'100%', height:'100%'}}>
+    <div style={{width: '100%', height: '100%',}}>
+        <div style={{width: '100%', height: '100%'}}>
             {_this.renderHeader()}
         </div>
-        <div style={{position: 'absolute', top: '77%', left: '48%'}}>
-            <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row', marginTop: 350}}>
-                {renderGridLoader2(150, 150)}
-            </div>
+        <div style={{position: 'absolute', top: '40%', left: '40%', zIndex: 999999999999999}}>
+            <GridLoader
+                style={{zIndex: 99999999999}}
+                sizeUnit={"px"}
+                size={22}
+                color={'#70b2bc'}
+                loading={true}
+            />
         </div>
     </div>
 )
@@ -198,8 +425,9 @@ export const renderLoaderArea = (_this) => (
 export const renderGridLoader2 = (width, height) => {
     return (
         <GridLoader
+            style={{zIndex: 99999999999}}
             sizeUnit={"px"}
-            size={20}
+            size={18}
             color={'#70b2bc'}
             loading={true}
         />
@@ -209,7 +437,7 @@ export const renderGridLoader2 = (width, height) => {
 
 export const renderCircleLoaderForMap = (width, height) => {
     return (
-        <div style={{zIndex: 99999999999, marginLeft: 20, marginBottom: 0, height: 20, }}>
+        <div style={{zIndex: 99999999999, marginLeft: 20, marginBottom: 0, height: 20,}}>
             <PulseLoader
                 sizeUnit={"px"}
                 size={20}
@@ -237,23 +465,16 @@ export const renderPlaceHolderCircular = (type: string = '') => {
     return (
         <div className='page_monitoring_blank_box'
              style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%', zIndex: 999999999999999999999}}>
-            {/*<Lottie
-                options={{
-                    loop: true,
-                    autoplay: true,
-                    animationData: require('../../../lotties/14112-heartrate_777'),
-                    rendererSettings: {
-                        preserveAspectRatio: 'xMidYMid slice'
-                    }
-                }}
-                speed={2.5}
-                height={150}
-                width={150}
-                isStopped={false}
-                isPaused={false}
-            />*/}
             <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}
             />
+        </div>
+    )
+}
+
+export const renderPlaceHolderCircular3 = (type: string = '') => {
+    return (
+        <div style={{height: '100%', width: '100%', zIndex: 999999999999999999999}}>
+            <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}/>
         </div>
     )
 }
@@ -419,7 +640,7 @@ export const convertByteToMegaByte2 = (value, hardwareType) => {
 }
 
 
-export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDateTimeList, hardwareType) => {
+export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDateTimeList, hardwareType, isGradientColor = false) => {
 
     const lineChartData = (canvas) => {
         let gradientList = makeGradientColor(canvas, height);
@@ -430,7 +651,7 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
                 let datasetsOne = {
                     label: paramLevelTypeNameList[i],
                     backgroundColor: gradientList[i],//todo: 리전드box area fill True/false
-                    fill: false,//todo: 라인차트 area fill True/false
+                    //fill: isGradientColor,//todo: 라인차트 area fill True/false
                     //backgroundColor: '',
                     borderColor: gradientList[i],
                     borderWidth: 3.7, //lineBorder
@@ -721,9 +942,6 @@ export const numberWithCommas = (x) => {
 
 export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
 
-
-    console.log("makeFormForClusterLevelMatric====>", dataOne);
-
     let dataForm = {
         "token": token,
         "params": {
@@ -743,8 +961,6 @@ export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, fetch
         }
     }
 
-    console.log("dataForm====>", dataForm);
-
     return dataForm;
 }
 
@@ -762,8 +978,6 @@ export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, fetc
             "selector": "*"
         }
     }
-
-    console.log("makeFormForCloudletLevelMatric====>", formBody);
 
     return formBody;
 }
@@ -799,9 +1013,10 @@ export const showToast = (title: string, time = 2) => {
         type: 'success',
         //icon: 'smile',
         title: title,
-        //animation: 'swing left',
-        time: time * 1000,
-        color: 'black',
+        animation: 'swing left',
+        time: time * 750,
+        color: '#77BD25',
+        size: 'tiny'
     });
 }
 export const showToast2 = (title: string, time = 2) => {

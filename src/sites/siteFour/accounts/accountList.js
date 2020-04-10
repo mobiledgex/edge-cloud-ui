@@ -141,7 +141,7 @@ class OrganizationList extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <div style={{ width: '100%' }}>
+                <div style={{ width: '100%', height:'100%' }}>
                     <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                     <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} refreshToggle={this.state.refreshViewToggle} />
                 </div>

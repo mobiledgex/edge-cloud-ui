@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,7 +12,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MexHeader from './header'
-import { getUserRole } from '../../../services/model/format'
+import {getUserRole} from '../../../services/model/format'
 import * as constant from '../../../constant'
 
 import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
@@ -45,8 +45,8 @@ import AutoProvPolicy from '../policies/autoProvPolicyList/autoProvPolicyList';
 import PrivacyPolicy from '../policies/privacyPolicy/privacyPolicyList';
 import PageMonitoringMain from '../monitoring/PageMonitoringMain'
 
-import { Collapse, Tooltip } from '@material-ui/core';
-import { Image } from 'semantic-ui-react';
+import {Collapse, Tooltip} from '@material-ui/core';
+import {Image} from 'semantic-ui-react';
 import PopLegendViewer from '../../../container/popLegendViewer';
 
 const drawerWidth = 250;
@@ -54,7 +54,8 @@ const drawerWidth = 250;
 const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
-        height: '100%',
+        width:'100%',
+        height:'100%'
     },
     drawer: {
         width: drawerWidth,
@@ -88,35 +89,35 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: '#292c33',
         // necessary for content to be below app bar
         ...theme.mixins.toolbar,
-        minHeight: '48px !important'
+        minHeight: '48px !important',
     },
     content: {
         flexGrow: 1,
         margin: 5,
-        marginTop:53 //header height + margin
+        marginTop: 53 /* header height(48) + margin(5) */
     },
 }));
 
 
 const options = [
-    { label: 'Organizations', icon: <SupervisorAccountOutlinedIcon />, pg: 0, page: <SiteFourPageOrganization />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
-    { label: 'Users & Roles', icon: <AssignmentIndOutlinedIcon />, pg: 1, page: <SiteFourPageUser />, roles: ['AdminManager'] },
-    { label: 'Accounts', icon: <DvrOutlinedIcon />, pg: 101, page: <SiteFourPageAccount />, roles: ['AdminManager'] },
-    { divider: true },
-    { label: 'Cloudlets', icon: <CloudQueueOutlinedIcon />, pg: 2, page: <SiteFourPageCloudlet />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
-    { label: 'Cloudlet Pools', icon: <CloudCircleOutlinedIcon />, pg: 7, page: <SiteFourPageCloudletPool />, roles: [constant.ADMIN_MANAGER, constant.OPERATOR_MANAGER, constant.OPERATOR_CONTRIBUTOR] },
-    { label: 'Flavors', icon: <FreeBreakfastOutlinedIcon />, pg: 3, page: <SiteFourPageFlavor />, roles: ['AdminManager', 'DeveloperManager'] },
-    { label: 'Cluster Instances', icon: <StorageOutlinedIcon />, pg: 4, page: <SiteFourPageClusterInst />, roles: ['AdminManager', 'DeveloperManager'] },
-    { label: 'Apps', icon: <AppsOutlinedIcon />, pg: 5, page: <SiteFourPageApps />, roles: ['AdminManager', 'DeveloperManager'] },
-    { label: 'App Instances', icon: <GamesOutlinedIcon />, pg: 6, page: <SiteFourPageAppInst />, roles: ['AdminManager', 'DeveloperManager'] },
-    { label: 'Monitoring', icon: <TvOutlinedIcon />, pg: 'Monitoring', page: <PageMonitoringMain />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
+    {label: 'Organizations', icon: <SupervisorAccountOutlinedIcon/>, pg: 0, page: <SiteFourPageOrganization/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']},
+    {label: 'Users & Roles', icon: <AssignmentIndOutlinedIcon/>, pg: 1, page: <SiteFourPageUser/>, roles: ['AdminManager']},
+    {label: 'Accounts', icon: <DvrOutlinedIcon/>, pg: 101, page: <SiteFourPageAccount/>, roles: ['AdminManager']},
+    {divider: true},
+    {label: 'Cloudlets', icon: <CloudQueueOutlinedIcon/>, pg: 2, page: <SiteFourPageCloudlet/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']},
+    {label: 'Cloudlet Pools', icon: <CloudCircleOutlinedIcon/>, pg: 7, page: <SiteFourPageCloudletPool/>, roles: [constant.ADMIN_MANAGER, constant.OPERATOR_MANAGER, constant.OPERATOR_CONTRIBUTOR]},
+    {label: 'Flavors', icon: <FreeBreakfastOutlinedIcon/>, pg: 3, page: <SiteFourPageFlavor/>, roles: ['AdminManager', 'DeveloperManager']},
+    {label: 'Cluster Instances', icon: <StorageOutlinedIcon/>, pg: 4, page: <SiteFourPageClusterInst/>, roles: ['AdminManager', 'DeveloperManager']},
+    {label: 'Apps', icon: <AppsOutlinedIcon/>, pg: 5, page: <SiteFourPageApps/>, roles: ['AdminManager', 'DeveloperManager']},
+    {label: 'App Instances', icon: <GamesOutlinedIcon/>, pg: 6, page: <SiteFourPageAppInst/>, roles: ['AdminManager', 'DeveloperManager']},
+    {label: 'Monitoring', icon: <TvOutlinedIcon/>, pg: 'Monitoring', page: <PageMonitoringMain/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']},
     {
-        label: 'Policies', icon: <AlbumOutlinedIcon />, roles: ['AdminManager', 'DeveloperManager'], subOptions: [
-            { label: 'Auto Provisioning Policy', icon: <AdjustOutlinedIcon />, pg: 8, page: <AutoProvPolicy />, roles: ['AdminManager', 'DeveloperManager'] },
-            { label: 'Privacy Policy', icon: <AdjustOutlinedIcon />, pg: 9, page: <PrivacyPolicy />, roles: ['AdminManager', 'DeveloperManager'] },
+        label: 'Policies', icon: <AlbumOutlinedIcon/>, roles: ['AdminManager', 'DeveloperManager'], subOptions: [
+            {label: 'Auto Provisioning Policy', icon: <AdjustOutlinedIcon/>, pg: 8, page: <AutoProvPolicy/>, roles: ['AdminManager', 'DeveloperManager']},
+            {label: 'Privacy Policy', icon: <AdjustOutlinedIcon/>, pg: 9, page: <PrivacyPolicy/>, roles: ['AdminManager', 'DeveloperManager']},
         ]
     },
-    { label: 'Audit Logs', icon: <FeaturedPlayListOutlinedIcon />, pg: 'audits', page: <SiteFourPageAudits />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] }
+    {label: 'Audit Logs', icon: <FeaturedPlayListOutlinedIcon/>, pg: 'audits', page: <SiteFourPageAudits/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']}
 ]
 
 const defaultPage = (options) => {
@@ -163,7 +164,7 @@ export default function MiniDrawer(props) {
 
     const handleDrawerClose = () => {
         setNavState(0)
-        setOpen(false);
+        setOpen(!open);
     };
 
     const expandOptions = () => {
@@ -177,26 +178,29 @@ export default function MiniDrawer(props) {
 
     const showOptionForm = (i, option) => {
         return (
-            <ListItem button key={option.label} onClick={() => { option.pg !== undefined ? onOptionClick(option, i) : expandOptions(option) }}>
+            <ListItem button key={option.label} onClick={() => {
+                option.pg !== undefined ? onOptionClick(option, i) : expandOptions(option)
+            }}>
                 <Tooltip title={option.label} aria-label="add">
-                    <ListItemIcon style={{ color: '#B1B2B4' }}>{option.icon}
+                    <ListItemIcon style={{color: '#B1B2B4'}}>{option.icon}
                     </ListItemIcon>
                 </Tooltip>
-                <ListItemText style={{ color: '#B1B2B4' }} primary={option.label} />
-                {option.subOptions ? expand ? <ExpandLess style={{ color: '#B1B2B4' }} /> : <ExpandMore style={{ color: '#B1B2B4' }} /> : null}
+                <ListItemText style={{color: '#B1B2B4'}} primary={option.label}/>
+                {option.subOptions ? expand ? <ExpandLess style={{color: '#B1B2B4'}}/> : <ExpandMore style={{color: '#B1B2B4'}}/> : null}
             </ListItem>
         )
     }
 
 
-
     const roleInfo = () => {
         return (
-            <ListItem onClick={(e) => { setOpenLegend(localStorage.selectRole && localStorage.selectRole != 'null') }}>
+            <ListItem onClick={(e) => {
+                setOpenLegend(localStorage.selectRole && localStorage.selectRole != 'null')
+            }}>
                 <ListItemIcon>
-                    <div className="markBox">
-                        {
-                            localStorage.selectRole ?
+                    {localStorage.selectRole ?
+                        <div className="markBox">
+                            {
                                 (localStorage.selectRole === 'AdminManager') ?
                                     <div className="mark markA markS">S</div>
                                     :
@@ -218,13 +222,12 @@ export default function MiniDrawer(props) {
                                                         (localStorage.selectRole === 'OperatorViewer') ?
                                                             <div className="mark markO markV">V</div>
                                                             :
-                                                            <div className="mark markA markS">?</div> :
-                                <div className="mark markA markS">?</div>
-                        }
-                    </div>
+                                                            <div className="mark markA markS">?</div>
+                            }
+                        </div> : null}
                 </ListItemIcon>
                 <ListItemText>
-                    <strong style={{ color: '#BFC0C2', fontSize: 12 }}>
+                    <strong style={{color: '#BFC0C2', fontSize: 12}}>
                         {
                             localStorage.selectRole && localStorage.selectRole != 'null' ? localStorage.selectRole :
                                 <div>
@@ -257,7 +260,7 @@ export default function MiniDrawer(props) {
     const menuList = () => {
         return options.map((option, i) => (
             option.divider ?
-                <Divider key={i} /> :
+                <Divider key={i}/> :
                 option.roles.includes(getRoleInfo(getUserRole())) ?
                     <div key={i}>
                         {showOptionForm(i, option)}
@@ -275,8 +278,8 @@ export default function MiniDrawer(props) {
     }
 
     const versionInfo = () => (
-        <div style={{ position: 'absolute', bottom: 5, marginLeft: 10, color: '#B1B2B4' }}>
-            {process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'}
+        <div style={{position: 'absolute', bottom: 5, marginLeft: 10, color: '#B1B2B4'}}>
+            {process.env.REACT_APP_BUILD_VERSION ? "v" + process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'}
         </div>
     )
 
@@ -289,8 +292,13 @@ export default function MiniDrawer(props) {
     }
     return (
         <div className={classes.root}>
-            <CssBaseline />
-            <MexHeader handleDrawerOpen={handleDrawerOpen} open={open} email={props.email} data={props.data} helpClick={props.helpClick} gotoUrl={props.gotoUrl} />
+            {props.isShowHeader &&
+            <React.Fragment>
+                <CssBaseline/>
+                <MexHeader handleDrawerOpen={handleDrawerOpen} open={open} email={props.email} data={props.data}
+                           helpClick={props.helpClick} gotoUrl={props.gotoUrl}/>
+            </React.Fragment>
+            }
             <Drawer
                 variant="permanent"
                 className={clsx(classes.drawer, {
@@ -303,22 +311,22 @@ export default function MiniDrawer(props) {
                         [classes.drawerClose]: !open,
                     }),
                 }}
-                style={{ zIndex: 1 }}
+                style={{zIndex: 1}}
             >
                 <div className={classes.toolbar}>
-                    <Image wrapped size='small' src='/assets/brand/logo_mex.svg' />
-                    <IconButton style={{ color: '#B1B2B4' }} onClick={handleDrawerClose}>
-                        {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                    <Image wrapped size='small' src='/assets/brand/logo_mex.svg'/>
+                    <IconButton style={{color: '#B1B2B4'}} onClick={handleDrawerClose}>
+                        {/*{theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}*/}
+                        {!open ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
                     </IconButton>
                 </div>
-                <List style={{ backgroundColor: '#292c33', height: '100%' }}>
+                <List style={{backgroundColor: '#292c33', height: '100%'}}>
                     {roleInfo()}
                     {menuList()}
                     {versionInfo()}
                 </List>
             </Drawer>
             <main className={classes.content}>
-                {/*<div className={classes.toolbar} />*/}
                 <div className='contents_body'>
                     {page}
                 </div>
