@@ -1,15 +1,13 @@
 import React from 'react';
-import {Button, Image, Popup, Icon} from 'semantic-ui-react';
-import { withRouter } from 'react-router-dom';
+import {Button, Icon, Popup} from 'semantic-ui-react';
+import {withRouter} from 'react-router-dom';
 //redux
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import * as actions from '../actions';
 import * as serviceMC from '../services/serviceMC';
 import PopProfileViewer from '../container/popProfileViewer';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
-import { IconButton } from '@material-ui/core';
-import AccountBoxOutlinedIcon from '@material-ui/icons/AccountBoxOutlined';
-import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
+import {IconButton} from '@material-ui/core';
 
 
 // const StyledMenu = withStyles({
