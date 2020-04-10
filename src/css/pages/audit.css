@@ -360,7 +360,8 @@
     font-size: 14px !important;
     padding: 5px 10px;
     background: #202329 !important;
-    height: fit-content !important;
+    /* block by @Smith : It's not resizeable height of item */
+    /* height: fit-content !important; */
     color: rgba(255,255,255,.7);
 }
 

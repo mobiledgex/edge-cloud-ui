@@ -179,21 +179,32 @@ export default class CalendarTimeline extends Component {
             storageTraceIndex = storageTraceList.findIndex(s => s === itemContext.title)
         }
 
+        let properties = getItemProps();
+        let additional = {};
+        let customStyles = {
+            ...properties.style,
+            ...additional,
+            backgroundColor,
+            color: item.color,
+            borderColor,
+            borderStyle: "solid",
+            borderWidth: 1,
+            borderRadius: 4,
+            borderLeftWidth: itemContext.selected ? 3 : 1,
+            borderRightWidth: itemContext.selected ? 3 : 1,
+            lineHeight: 'unset',
+        };
+
+    
+        let newHeight = 0;
+        newHeight = 90; //height of item
+        customStyles.overflow = "hidden";
+        customStyles.height = newHeight + "px";
+        properties.style = customStyles;
+
         return (
             <div
-                {...getItemProps({
-                    style: {
-                        backgroundColor,
-                        color: item.color,
-                        borderColor,
-                        borderStyle: "solid",
-                        borderWidth: 1,
-                        borderRadius: 4,
-                        borderLeftWidth: itemContext.selected ? 3 : 1,
-                        borderRightWidth: itemContext.selected ? 3 : 1,
-                        minHeight: 75
-                    }
-                })}
+                {...properties}
             >
                 {itemContext.useResizeHandle ? <div {...leftResizeProps} /> : null}
 
@@ -296,13 +307,13 @@ export default class CalendarTimeline extends Component {
                     groups={groups}
                     items={items}
                     keys={keys}
-                    sidebarWidth={180}
+                    lineHeight={100} // size of vertical gap
                     canMove
                     canSelect
                     itemsSorted
                     itemTouchSendsClick={false}
                     stackItems
-                    itemHeightRatio={0.75}
+                    //itemHeightRatio={0.75}
                     showCursorLine
                     minResizeWidth={550}
                     defaultTimeStart={defaultTimeStart}
