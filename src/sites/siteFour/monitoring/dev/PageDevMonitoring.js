@@ -279,10 +279,9 @@ type State = {
 export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeight: true})(
     class PageDevMonitoring extends Component<Props, State> {
         intervalForAppInst = null;
-
         webSocketInst: WebSocket = null;
-        gridLayoutHeight = window.innerHeight * 0.873;
-        gridItemHeight = 263;
+        gridLayoutHeight = window.innerHeight * 0.870;
+        gridItemHeight = 258;
 
         constructor(props) {
             super(props);
@@ -1149,7 +1148,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         makeGridItemOne(uniqueIndex, hwType, graphType, item) {
             return (
                 <div
-                    key={uniqueIndex} data-grid={item} style={{margin: 0, backgroundColor: '#292c33'}}
+                    key={uniqueIndex}
+                    data-grid={item}
+                    style={{margin: 0, backgroundColor: '#292c33'}}
                     onDoubleClick={async () => {
                         await this.setState({
                             isFixGrid: true,
@@ -1159,18 +1160,14 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         this.setState({
                             appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
                         });
-                        setTimeout(() => {
-                            this.setState({
-                                isFixGrid: false,
-                            })
-                        }, 500)
                     }}
                 >
 
                     <div
                         class='draggable'
                         style={{
-                            position: 'absolute', right: 25, top: 10,
+                            position: 'absolute',
+                            right: 25, top: 10,
                             display: 'inline-block',
                             width: '100px',
                             lineHeight: '1.2',
@@ -1266,7 +1263,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             graphType = this.state.layoutMapperForCluster.find(x => x.id === uniqueIndex).graphType
                             graphType = graphType.toUpperCase()
                         }
-                        console.log("hwType===>", hwType);
                         return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
                     })}
 
@@ -1304,8 +1300,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             hwType = this.state.layoutMapperForAppInst.find(x => x.id === uniqueIndex).hwType
                             graphType = this.state.layoutMapperForAppInst.find(x => x.id === uniqueIndex).graphType
                         }
-                        console.log("hwType===>", hwType);
-
                         return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
 
                     })}
