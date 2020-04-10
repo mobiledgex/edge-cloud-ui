@@ -115,7 +115,7 @@ export const PageMonitoringStyles = {
         fontSize: 13,
     },
     tableHeaderRow: {
-        height: 30, alignSelf: 'center', display: 'flex', justifyContent: 'center', alignItem: 'center',
+        height: 22, alignSelf: 'center', display: 'flex', justifyContent: 'center', alignItem: 'center',
     },
     tableHeaderRow2: {
         height: 30, display: 'flex'
