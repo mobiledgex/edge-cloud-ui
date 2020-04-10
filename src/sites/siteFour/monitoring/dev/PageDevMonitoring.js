@@ -283,7 +283,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         //desc:todo:desc:todo:desc//desc:todo:desc:todo:desc//desc:todo:desc:todo:desc//desc:todo:desc:todo:desc//desc:todo:desc:todo:desc//desc:todo:desc:todo:desc//desc:todo:desc:todo:desc//desc:todo:desc:todo:desc
         //gridLayoutHeight = window.innerHeight * 0.870;
         //gridLayoutHeight = window.innerHeight * 0.870;
-        gridItemHeight = 259;
+        gridItemHeight = 256;
 
         constructor(props) {
             super(props);
