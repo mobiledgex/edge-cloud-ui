@@ -1146,6 +1146,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             cursor: 'pointer',
                             textAlign: 'right',
                             marginRight: '-15px',
+                            //backgroundColor: 'red',
                         }}>
 
                         {/*desc:############################*/}
@@ -1244,9 +1245,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         renderGridLayoutForAppInst = () => {
             return (
                 <ResponsiveReactGridLayout
+                    isResizable={true}
+                    draggableHandle=".draggable"
                     isDraggable={true}
                     useCSSTransforms={true}
-                    isResizable={true}
                     className={'layout page_monitoring_layout_dev'}
                     cols={{lg: 3, md: 3, sm: 3, xs: 3, xxs: 3}}
                     layout={this.state.layoutForAppInst}
