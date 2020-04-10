@@ -50,14 +50,13 @@ import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData} from "..
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 
-
 import {
     getOneYearStartEndDatetime,
     isEmpty,
     makeBubbleChartDataForCluster,
     PageMonitoringStyles,
     renderLoaderArea,
-    renderPlaceHolderCircular, renderPlaceHolderLottiePinJump,
+    renderPlaceHolderCircular,
     showToast
 } from "../PageMonitoringCommonService";
 import {
@@ -87,7 +86,7 @@ import AppInstEventLogListHook from "../components/AppInstEventLogListHook";
 import MaterialIcon from "material-icons-react";
 import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
-import type {Layout} from "react-grid-layout/lib/utils";
+import type {Layout, LayoutItem} from "react-grid-layout/lib/utils";
 import GradientBarChartContainer from "../components/GradientBarChartContainer";
 import AddItemPopupContainer2 from '../components/AddItemPopupContainer2'
 import Switch from "@material-ui/core/Switch";
@@ -280,9 +279,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
     class PageDevMonitoring extends Component<Props, State> {
         intervalForAppInst = null;
         webSocketInst: WebSocket = null;
-        gridLayoutHeight = window.innerHeight * 0.870;
+        //gridLayoutHeight = window.innerHeight * 0.870;
         gridItemHeight = 258;
-
         constructor(props) {
             super(props);
             let clusterLayoutKey = getUserId() + "_layout"
@@ -1027,14 +1025,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 });
                 reactLocalStorage.setObject(getUserId() + "_layout2", this.state.layoutForAppInst)
                 reactLocalStorage.setObject(getUserId() + "_layout2_mapper", this.state.layoutMapperForAppInst)
-
             }
-
-
         }
 
         removeGridItem(i) {
-
             if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                 let removedLayout = _.reject(this.state.layoutForCluster, {i: i});
                 reactLocalStorage.setObject(getUserId() + "_layout", removedLayout)
@@ -1229,7 +1223,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     draggableHandle=".draggable"
                     verticalCompact={false}
                     isDraggable={true}
-                    //useCSSTransforms={true}
                     className={'layout page_monitoring_layout_dev'}
                     cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
                     layout={this.state.layoutForCluster}
@@ -1725,9 +1718,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     <div
                         className="page_monitoring_dropdown_label"
                         style={{
-                            backgroundColor: 'transparent',
-                            height: 20,
-                            marginTop: 6,
                             marginLeft: this.state.isShowFilter ? 0 : 10
                         }}
                     >
@@ -1754,8 +1744,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         makeAppInstDropdown() {
             return (
                 <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
-                    <div className="page_monitoring_dropdown_label"
-                         style={{backgroundColor: 'transparent', height: 20, marginTop: 6, marginLeft: 3}}>
+                    <div className="page_monitoring_dropdown_label">
                         App Inst
                     </div>
                     <Dropdown
@@ -1779,7 +1768,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
 
         renderLegend() {
-
             let fullClusterList = '';
             let region = '';
             if (this.state.currentCluster) {
@@ -1788,7 +1776,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 region = this.state.currentCluster.split(" | ")[2]
                 fullClusterList = cloudlet + " > " + cluster;
             }
-
             return (
                 <Legend>
                     <div style={{width: '100%', display: 'flex'}}>
