@@ -121,17 +121,20 @@ const options = [
 ]
 
 const defaultPage = (options) => {
+    let page = <SiteFourPageOrganization />
     let path = window.location + '';
     let currentPage = path.substring(path.indexOf('pg='))
     for (let i = 0; i < options.length; i++) {
         let option = options[i]
         if (option.subOptions) {
-            return defaultPage(option.subOptions)
-        } else if (currentPage === 'pg=' + option.pg) {
-            return option.page
+            page = defaultPage(option.subOptions)
+        }
+        else if (currentPage.includes('pg=' + option.pg)) {
+            page = option.page
+            break;
         }
     }
-    return <SiteFourPageOrganization/>
+    return page
 }
 
 const navstate = () => {
