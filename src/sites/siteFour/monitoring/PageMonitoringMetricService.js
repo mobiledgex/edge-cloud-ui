@@ -297,7 +297,6 @@ export const getCloudletList = async () => {
             data: {region: REGION.US, org: localStorage.selectOrg}
         };
         let promiseList = []
-
         promiseList.push(sendSyncRequest(this, requestData))
         promiseList.push(sendSyncRequest(this, requestData2))
         let orgCloudletList = await Promise.all(promiseList);
