@@ -156,8 +156,8 @@ class AppInstList extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <div style={{ width: '100%' }}>
-                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest}/>
+                <div style={{ width: '100%', height: '100%' }}>
+                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} />
                     <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen open={this.state.openTerminal} onClose={() => { this.setState({ openTerminal: false }) }}>
                         <TerminalViewer data={this.state.terminalData} onClose={() => {
                             this.setState({ openTerminal: false })

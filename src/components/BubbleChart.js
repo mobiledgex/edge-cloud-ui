@@ -84,7 +84,7 @@ export default class BubbleChart extends Component {
 
         //6097326EDC1269BA27527536405330
         let colorCodes = 'DE0000FF9600FFF6005BCB000096FF'
-        if (this.props.themeTitle === THEME_OPTIONS.EUNDEW) {
+        if (this.props.themeTitle === THEME_OPTIONS.DEFAULT) {
             let eundewColorCodes = 'DE0000FF9600FFF6005BCB000096FF00FFFF0080800000FF000080FF00FF800080800000808080808000'
             colorCodes = eundewColorCodes;
         }
@@ -112,14 +112,12 @@ export default class BubbleChart extends Component {
             colorCodes = appleColors;
         }
 
-        //'#0A84FF', '#30D158', '#5E5CE6', '#FF9F0A', '#FF375F'
-
-        //'#AE81FF', '#FD971F', '#E69F66', '#E6DB74', '#A6E22E'
 
 
+//const color = d3.scaleOrdinal(colors("6097326EDC1269BA27527536405330"));//green
         const color = d3.scaleOrdinal(colors(colorCodes));//green
 
-        //const color = d3.scaleOrdinal(colors("6097326EDC1269BA27527536405330"));//green
+
 
         const pack = d3.pack()
             .size([bubblesWidth * graph.zoom, bubblesWidth * graph.zoom])
@@ -180,7 +178,7 @@ export default class BubbleChart extends Component {
             .attr("transform", function (d) {
                 //todo: Bubble chart location setting...
                 //todo: Bubble chart location setting...
-                return "translate(" + (width * 5 / 10) + "," + (width * graph.offsetY) + ")"; //버블차트 위치
+                return "translate(" + ((width * 3 / 16)-0) + "," + (width * graph.offsetY-30) + ")"; //버블차트 위치
             });
         ;
 
@@ -234,7 +232,7 @@ export default class BubbleChart extends Component {
                 return "url(#clip-" + d.id + ")";
             })
             .style("font-weight", (d) => {
-                return valueFont.weight ? valueFont.weight : 600;
+                return valueFont.weight ? valueFont.weight : 300;
             })
             .style("font-family", valueFont.family)
             .style("fill", () => {
@@ -265,7 +263,7 @@ export default class BubbleChart extends Component {
                 return "url(#clip-" + d.id + ")";
             })
             .style("font-weight", (d) => {
-                return labelFont.weight ? labelFont.weight : 600;
+                return labelFont.weight ? labelFont.weight : 300;
             })
             .style("font-family", labelFont.family)
             .style("fill", () => {
@@ -280,7 +278,6 @@ export default class BubbleChart extends Component {
             .text(function (d) {
                 return d.label;//Label그리는 부분..
             });
-
 
         // Center the texts inside the circles.
         d3.selectAll(".label-text").attr("x", function (d) {

@@ -10,7 +10,6 @@ import {HARDWARE_OPTIONS_FOR_CLUSTER} from "../../../../shared/Constants";
 type Props = {
     bubbleChartData: any,
     currentHardwareType: string,
-    bubbleChartData: any,
     themeTitle: string,
     parent: PageDevMonitoring,
     isBubbleChartMaked: boolean,
@@ -66,25 +65,26 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                 </div>
             )
         } else {
-            let appInstanceList = this.props.parent.state.appInstanceList;
+            let allClusterUsageList = this.props.parent.state.allClusterUsageList;
 
             let boxWidth = (window.innerWidth - 300) / 3 - 20
 
-            function renderZoomLevel(appInstanceListLength) {
-                if (appInstanceListLength <= 4) {
-                    return 0.5;
+            function renderZoomLevel(listLength) {
+                if (listLength <= 4) {
+                    return 0.35;
                 } else {
-                    return 0.6;
+                    return 0.4;
                 }
             }
 
 
-            function renderOffsetY(appInstanceListLength) {
-                if (appInstanceListLength === 0) {
+            function renderOffsetY(listLength) {
+                console.log("renderOffsetY===>", listLength);
+                if (listLength === 0) {
                     return 0.05;
-                } else if (appInstanceListLength === 1) {
-                    return 0.05;
-                } else if (appInstanceListLength <= 4) {
+                } else if (listLength === 1) {
+                    return 0.5;
+                } else if (listLength <= 4) {
                     return 0.05;
                 } else {
                     return 0.00;
@@ -104,7 +104,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                             // marginLeft: 0, marginRight: 0, marginBottom: 10,
                         }}>
                             <>
-                                <div className='page_monitoring_title_area' style={{}}>
+                                <div className='page_monitoring_title_area draggable' style={{}}>
 
                                     <div style={{
                                         width: '100%',
@@ -112,13 +112,16 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                     }}>
                                         <div className='page_monitoring_title'
                                              style={{
-                                                 //backgroundColor: 'red',
+                                                 fontFamily: 'Ubuntu',
                                                  display: 'flex',
                                                  flex: 1,
+                                                 marginTop: 5,
+
                                              }}
                                         >
-                                            {this.props.isBig === undefined ? <div style={{flex: .9}}>
-                                                    Bubble Chart
+                                            {this.props.isBig === undefined ?
+                                                <div style={{flex: .9, marginTop: 5}}>
+                                                    Cluster Bubble Chart
                                                 </div>
                                                 : <div style={{width: window.innerWidth * 0.9}}>
 
@@ -126,6 +129,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                             }
                                             <div style={{flex: .1, marginRight: 80,}}>
                                                 <Dropdown
+                                                    style={{fontSize: 11, zIndex: 999999999}}
                                                     disabled={this.props.parent.state.bubbleChartLoader}
                                                     clearable={this.props.parent.state.regionSelectBoxClearable}
                                                     placeholder='SELECT HARDWARE'
@@ -162,19 +166,19 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                 <div className='page_monitoring_container'>
                                     <BubbleChart
                                         className='bubbleChart'
-                                        style={{height: this.props.isBig ? window.innerHeight : 350}}
+                                        style={{height: this.props.isBig ? window.innerHeight : 350, marginLeft: -350}}
                                         graph={{
-                                            zoom: renderZoomLevel(appInstanceList.length),
-                                            //zoom: 0.70,
-                                            offsetX: 0.15,
-                                            offsetY: renderOffsetY(appInstanceList.length)
+                                            zoom: renderZoomLevel(allClusterUsageList.length),
+                                            //zoom: 0.10,
+                                            offsetX: 0.70,
+                                            offsetY: renderOffsetY(allClusterUsageList.length)
                                         }}
                                         themeTitle={themeTitle}
                                         width={this.props.isBig ? window.innerWidth * 0.8 : window.innerWidth * 0.3}
-                                        height={this.props.isBig ? window.innerHeight : 450}
+                                        height={this.props.isBig ? window.innerHeight : 300}
                                         padding={0} // optional value, number that set the padding between bubbles
-                                        showLegend={true} // optional value, pass false to disable the legend.
-                                        legendPercentage={20} // number that represent the % of with that legend going to use.
+                                        showLegend={false} // optional value, pass false to disable the legend.
+                                        legendPercentage={0} // number that represent the % of with that legend going to use.
                                         legendFont={{
                                             //family: 'Candal',
                                             size: 9,
@@ -192,9 +196,10 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                             //family: 'Righteous',
                                             size: 14,
                                             color: 'black',
-                                            weight: 'bold',
+                                            //weight: 'bold',
                                         }}
                                         bubbleClickFun={async (cluster_cloudlet, index) => {
+
                                             try {
                                                 let lineChartDataSet = makeLineChartDataForCluster(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
                                                 cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
