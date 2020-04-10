@@ -13,6 +13,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MexHeader from './header'
 import {getUserRole} from '../../../services/model/format'
+import * as constant from '../../../constant'
 
 import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
 import AssignmentIndOutlinedIcon from '@material-ui/icons/AssignmentIndOutlined';
@@ -104,7 +105,7 @@ const options = [
     {label: 'Accounts', icon: <DvrOutlinedIcon/>, pg: 101, page: <SiteFourPageAccount/>, roles: ['AdminManager']},
     {divider: true},
     {label: 'Cloudlets', icon: <CloudQueueOutlinedIcon/>, pg: 2, page: <SiteFourPageCloudlet/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']},
-    {label: 'Cloudlet Pools', icon: <CloudCircleOutlinedIcon/>, pg: 7, page: <SiteFourPageCloudletPool/>, roles: ['AdminManager']},
+    {label: 'Cloudlet Pools', icon: <CloudCircleOutlinedIcon/>, pg: 7, page: <SiteFourPageCloudletPool/>, roles: [constant.ADMIN_MANAGER, constant.OPERATOR_MANAGER, constant.OPERATOR_CONTRIBUTOR]},
     {label: 'Flavors', icon: <FreeBreakfastOutlinedIcon/>, pg: 3, page: <SiteFourPageFlavor/>, roles: ['AdminManager', 'DeveloperManager']},
     {label: 'Cluster Instances', icon: <StorageOutlinedIcon/>, pg: 4, page: <SiteFourPageClusterInst/>, roles: ['AdminManager', 'DeveloperManager']},
     {label: 'Apps', icon: <AppsOutlinedIcon/>, pg: 5, page: <SiteFourPageApps/>, roles: ['AdminManager', 'DeveloperManager']},
@@ -120,17 +121,20 @@ const options = [
 ]
 
 const defaultPage = (options) => {
+    let page = <SiteFourPageOrganization />
     let path = window.location + '';
     let currentPage = path.substring(path.indexOf('pg='))
     for (let i = 0; i < options.length; i++) {
         let option = options[i]
         if (option.subOptions) {
-            return defaultPage(option.subOptions)
-        } else if (currentPage === 'pg=' + option.pg) {
-            return option.page
+            page = defaultPage(option.subOptions)
+        }
+        else if (currentPage.includes('pg=' + option.pg)) {
+            page = option.page
+            break;
         }
     }
-    return <SiteFourPageOrganization/>
+    return page
 }
 
 const navstate = () => {
@@ -323,7 +327,6 @@ export default function MiniDrawer(props) {
                 </List>
             </Drawer>
             <main className={classes.content}>
-                {/*{props.isShowHeader && <div className={classes.toolbar}/>}*/}
                 <div className='contents_body'>
                     {page}
                 </div>
