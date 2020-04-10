@@ -194,7 +194,6 @@ export default class CalendarTimeline extends Component {
                         minHeight: 75
                     }
                 })}
-                style={{height:500, overFlow:'hidden'}}
             >
                 {itemContext.useResizeHandle ? <div {...leftResizeProps} /> : null}
 
