@@ -829,7 +829,7 @@ page_monitoring_dashboard_dev {
 
 .page_monitoring_terminal_button {
     position: absolute;
-    bottom: 24px;
+    bottom: 0px;
     right: 24px;
     background-image: url("../../assets/terminal_btn_off.png");
     width: 192px;
