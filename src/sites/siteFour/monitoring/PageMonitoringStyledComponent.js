@@ -9,6 +9,7 @@ export const Center = styled.div`
   display : flex;
 `;
 
+
 export const OuterHeader = styled.div`
     margin-left: 20px;
     font-size: 20px;
@@ -58,6 +59,7 @@ export const Legend = styled.div`
   //margin-top: 10px;
   margin-left: 10px;
   margin-right: 10px;
+  height: 25px;
   //marginLeft:50px;
 `;
 
