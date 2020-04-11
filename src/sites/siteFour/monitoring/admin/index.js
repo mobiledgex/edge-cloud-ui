@@ -1,10 +1,11 @@
 import React from "react";
 import _ from "lodash";
+import sizeMe from "react-sizeme";
 import MonitoringLayout from "../layout/layout";
 //
 import ChartWidget from "../container/ChartWidget";
 
-export default class MonitoringAdmin extends React.Component {
+class MonitoringAdmin extends React.Component {
     state = {
         currentBreakpoint: "lg",
         compactType: "vertical",
@@ -18,8 +19,8 @@ export default class MonitoringAdmin extends React.Component {
     }
 
     render() {
-        let containerWidth = this.props.sizeInfo.width;
-        let containerHeight = this.props.sizeInfo.height;
+        let containerWidth = this.props.size.width;
+        let containerHeight = this.props.size.height;
         return (
             <div
                 style={{
@@ -31,8 +32,8 @@ export default class MonitoringAdmin extends React.Component {
                 <div>{containerWidth}</div>
                 <div>{containerHeight}</div>
                 <MonitoringLayout
-                    initialLayout={generateLayout(this.props.sizeInfo)}
-                    sizeInfo={this.props.sizeInfo}
+                    initialLayout={generateLayout(this.props.size)}
+                    sizeInfo={this.props.size}
                     items={generateComponent()}
                 ></MonitoringLayout>
             </div>
@@ -52,7 +53,7 @@ let itemWidth = [3, 3, 6, 3, 3, 12];
 let itemHeight = [1, 1, 2, 1, 1, 1]; // impact from setting rowHeight for grid layout props
 const raw = 3;
 
-const generateLayout = sizeInfo => {
+const generateLayout = size => {
     return headerTitle.map((title, i) => {
         return {
             x: itemX[i],
@@ -66,6 +67,8 @@ const generateLayout = sizeInfo => {
         };
     });
 };
+
+export default sizeMe({ monitorHeight: true })(MonitoringAdmin);
 
 const generateComponent = info => {
     return [
