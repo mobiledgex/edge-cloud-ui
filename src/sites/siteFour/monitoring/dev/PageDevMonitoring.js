@@ -6,7 +6,7 @@ import {Dropdown, Modal} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
-import {CircularProgress, Toolbar, withStyles} from '@material-ui/core'
+import {CircularProgress, LinearProgress, Toolbar, withStyles} from '@material-ui/core'
 import {Dropdown as ADropdown, Menu as AMenu,} from 'antd';
 import {
     defaultHwMapperListForCluster,
@@ -55,7 +55,6 @@ import {
     isEmpty,
     makeBubbleChartDataForCluster,
     PageMonitoringStyles,
-    renderLoaderArea,
     renderPlaceHolderCircular,
     showToast
 } from "../PageMonitoringCommonService";
@@ -106,6 +105,16 @@ const CustomSwitch = withStyles({
     track: {},
 })(Switch);
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
+
+const ColorLinearProgress = withStyles({
+    colorPrimary: {
+        backgroundColor: 'rgb(50,44,51)',
+    },
+    barColorPrimary: {
+        backgroundColor: '#24add0',
+    },
+})(LinearProgress);
+
 const mapStateToProps = (state) => {
     return {
         isLoading: state.LoadingReducer.isLoading,
@@ -316,7 +325,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 filteredMemUsageList: [],
                 filteredDiskUsageList: [],
                 filteredNetworkUsageList: [],
-                isReady: false,
                 counter: 0,
                 appInstanceList: [],
                 allAppInstanceList: [],
@@ -455,7 +463,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
-                isReady: true,
             })
         }
 
@@ -476,51 +483,52 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         }
 
         async loadInitDataForCluster(isInterval: boolean = false) {
+            let promiseList = []
+            let promiseList2 = []
             try {
                 clearInterval(this.intervalForAppInst)
-                this.setState({dropdownRequestLoading: true})
-
+                await this.setState({dropdownRequestLoading: true})
 
                 //@todo:#############################################
                 //@todo: (cloudletList ,clusterList, appnInstList)
                 //@todo:#############################################
-                let cloudletList = await getCloudletList()
-                let clusterList = await getClusterList();
-                let appInstList: Array<TypeAppInstance> = await getAppInstList();
-                if (appInstList.length === 0) {
-                    this.setState({
-                        isNoData: true,
-                    })
-                }
-
+                promiseList.push(getCloudletList())
+                promiseList.push(getClusterList())
+                promiseList.push(getAppInstList())
+                let cloudletList_clusterList_appInstList = await Promise.all(promiseList);
+                let cloudletList = cloudletList_clusterList_appInstList[0]
+                let clusterList = cloudletList_clusterList_appInstList[1];
+                let appInstList = cloudletList_clusterList_appInstList[2];
                 let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
-                //@todo:#############################################
-                //@todo: getAllClusterEventLogList
-                //@todo:#############################################
-                let allClusterEventLogList = await getAllClusterEventLogList(clusterList);
-                await this.setState({
-                    allClusterEventLogList: allClusterEventLogList,
-                    filteredClusterEventLogList: allClusterEventLogList
-                })
 
-                //@todo:#############################################
-                //@todo: getAppInst Event Logs : real data
-                //@todo:#############################################
-                let allAppInstEventLogs = await getAllAppInstEventLogs();
+                //@todo:#########################################################################
+                //@todo: getAllClusterEventLogList, getAllAppInstEventLogs ,allClusterUsageList
+                //@todo:#########################################################################
+                promiseList2.push(getAllClusterEventLogList(clusterList))
+                promiseList2.push(getAllAppInstEventLogs());
+                promiseList2.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
+                let allClusterEventLogs_allAppInstEventLogs_allClusterUsageList = await Promise.all(promiseList2);
+                let allClusterEventLogList = allClusterEventLogs_allAppInstEventLogs_allClusterUsageList[0];
+                let allAppInstEventLogs = allClusterEventLogs_allAppInstEventLogs_allClusterUsageList[1];
+                let allClusterUsageList = allClusterEventLogs_allAppInstEventLogs_allClusterUsageList[2];
+
+                let appInstanceListGroupByCloudlet = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
+                let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
+                let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
+                    return o.sumCpuUsage;
+                }));
+                let maxMem = Math.max.apply(Math, allClusterUsageList.map(function (o) {
+                    return o.sumMemUsage;
+                }));
+
                 await this.setState({
+                    isNoData: appInstList.length === 0,
+                    appInstanceListGroupByCloudlet: !isInterval && appInstanceListGroupByCloudlet,
+                    bubbleChartData: bubbleChartData,
+                    allClusterEventLogList: allClusterEventLogList,
+                    filteredClusterEventLogList: allClusterEventLogList,
                     allAppInstEventLogs: allAppInstEventLogs,
                     filteredAppInstEventLogs: allAppInstEventLogs,
-                })
-
-
-                let appInstanceListGroupByCloudlet = []
-                try {
-                    appInstanceListGroupByCloudlet = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
-                } catch (e) {
-                    showToast(e.toString())
-                }
-
-                await this.setState({
                     isReady: true,
                     clusterDropdownList: clusterDropdownList,
                     dropDownCloudletList: cloudletList,
@@ -529,39 +537,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     appInstanceList: appInstList,
                     filteredAppInstanceList: appInstList,
                     dropdownRequestLoading: false,
-
-                });
-
-                if (!isInterval) {
-                    this.setState({
-                        appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
-                    })
-                }
-                let allClusterUsageList = []
-
-                //@todo:#############################################
-                //todo: real data (allClusterUsageList)
-                //@todo:#############################################
-                try {
-                    allClusterUsageList = await getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT);
-                } catch (e) {
-
-                }
-
-                let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
-                await this.setState({
-                    bubbleChartData: bubbleChartData,
-                })
-
-                let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
-                    return o.sumCpuUsage;
-                }));
-
-                let maxMem = Math.max.apply(Math, allClusterUsageList.map(function (o) {
-                    return o.sumMemUsage;
-                }));
-
-                await this.setState({
                     clusterListLoading: false,
                     allCloudletUsageList: allClusterUsageList,
                     allClusterUsageList: allClusterUsageList,
@@ -570,11 +545,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     maxMem: maxMem,
                     isRequesting: false,
                     currentCluster: '',
-                }, () => {
-                    console.log("filteredClusterUsageList===>", this.state.filteredClusterUsageList);
-                })
+                });
             } catch (e) {
-
+                //showToast(e.toString())
             }
 
         }
@@ -1569,6 +1542,14 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         <div style={PageMonitoringStyles.listItemTitle}>
                             Stream
                         </div>
+                        <div style={PageMonitoringStyles.listItemTitle}>
+                            <CustomSwitch
+                                size="small"
+                                checked={this.state.isStream}
+                                color="primary"
+
+                            />
+                        </div>
                     </AMenu.Item>
                     }
                 </AMenu>
@@ -1772,7 +1753,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         }
 
 
-        renderLegend() {
+        makeLegend() {
             let fullClusterList = '';
             let region = '';
             if (this.state.currentCluster) {
@@ -1785,14 +1766,31 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 <Legend>
                     <div style={{width: '100%', display: 'flex'}}>
                         {this.state.loading &&
-                        <div style={{display: 'flex', alignSelf: 'center',}}>
-                            <CircularProgress
+                        <div style={{
+                            display: 'flex',
+                            alignSelf: 'center',
+                            position: 'absolute',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            width: '100%',
+                            //backgroundColor: 'red'
+                        }}>
+                            {/*  <CircularProgress
                                 style={{fontWeight: 'bold', color: '#1cecff'}}
-                                color={'#1cecff'}
+                                color='#1cecff'
                                 size={15}
+                            />*/}
+                            <ColorLinearProgress
+                                variant={'query'}
+                                style={{
+                                    marginLeft: -10,
+                                    width: '7%',
+                                    alignContent: 'center',
+                                    justifyContent: 'center',
+                                }}
                             />
                         </div>}
-                        {this.state.currentClassification === 'Cluster' ?
+                        {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER ?
                             <div style={{
                                 display: 'flex',
                                 flex: 1,
@@ -1824,7 +1822,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                     )
                                 })}
                             </div>
-                            :
+                            : !this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST &&
                             <div style={{
                                 display: 'flex',
                                 flex: 1,
@@ -1857,13 +1855,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
 
         render() {
-            // todo: Components showing when the loading of graph data is not completed.
-            if (!this.state.isReady) {
-                return (
-                    renderLoaderArea(this)
-                )
-            }
-
             if (this.state.isNoData) {
                 return (
                     <div style={{width: '100%', height: '100%',}}>
@@ -1912,7 +1903,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             {/*desc:---------------------------------*/}
                             {/*desc:Legend                           */}
                             {/*desc:---------------------------------*/}
-                            {this.renderLegend()}
+                            {this.makeLegend()}
                             <div className="page_monitoring" style={{overflowY: 'auto', height: 'calc(100% - 70px)'}}>
                                 <div className='' style={{marginBottom: 50}}>
                                     {this.state.currentClassification === CLASSIFICATION.CLUSTER
