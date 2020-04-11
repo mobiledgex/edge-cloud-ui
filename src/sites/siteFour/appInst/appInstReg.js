@@ -235,11 +235,11 @@ class ClusterInstReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.privacyPolicyName) {
-                form.visible = currentForm.value === constant.IP_ACCESS_DEDICATED ? true : false 
+                form.visible = currentForm.value === constant.IP_ACCESS_DEDICATED ? true : false
             }
         }
          if (isInit === undefined || isInit === false) {
-            this.setState({ forms: nForms })
+            this.setState({ forms: forms })
         }
     }
 
