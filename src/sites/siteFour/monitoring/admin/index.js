@@ -25,7 +25,7 @@ class MonitoringAdmin extends React.Component {
             <div
                 style={{
                     width: "100%",
-                    height: `${containerHeight}px`,
+                    height: "100%",
                     backgroundColor: "#ababab"
                 }}
             >
@@ -34,7 +34,7 @@ class MonitoringAdmin extends React.Component {
                 <MonitoringLayout
                     initialLayout={generateLayout(this.props.size)}
                     sizeInfo={this.props.size}
-                    items={generateComponent()}
+                    items={generateComponent(this.props.size)}
                 ></MonitoringLayout>
             </div>
         );
@@ -70,25 +70,51 @@ const generateLayout = size => {
 
 export default sizeMe({ monitorHeight: true })(MonitoringAdmin);
 
-const generateComponent = info => {
+const generatWidget = info => (
+    <ChartWidget
+        url={info.url}
+        chartType={info.chartType}
+        type={info.type}
+        size={info.sizeInfo}
+    />
+);
+const generateComponent = sizeInfo => {
     return [
-        <ChartWidget url={"https://test1"} chartType={"gauge"} />,
-        <ChartWidget
-            url={"https://test2"}
-            chartType={"timeseries"}
-            type={"scatter"}
-        />,
-        <ChartWidget url={"https://test2"} chartType={"map"} />,
-        <ChartWidget
-            url={"https://test2"}
-            chartType={"timeseries"}
-            type={"scatter"}
-        />,
-        <ChartWidget
-            url={"https://test2"}
-            chartType={"timeseries"}
-            type={"bar"}
-        />,
-        <ChartWidget url={"https://test2"} chartType={"datagrid"} />
+        generatWidget({
+            url: "https://test1",
+            chartType: "gauge",
+            type: "",
+            sizeInfo: sizeInfo
+        }),
+        generatWidget({
+            url: "https://test2",
+            chartType: "timeseries",
+            type: "scatter",
+            sizeInfo: sizeInfo
+        }),
+        generatWidget({
+            url: "https://test3",
+            chartType: "map",
+            type: "scatter",
+            sizeInfo: sizeInfo
+        }),
+        generatWidget({
+            url: "https://test4",
+            chartType: "timeseries",
+            type: "scatter",
+            sizeInfo: sizeInfo
+        }),
+        generatWidget({
+            url: "https://test5",
+            chartType: "timeseries",
+            type: "bar",
+            sizeInfo: sizeInfo
+        }),
+        generatWidget({
+            url: "https://test6",
+            chartType: "gauge",
+            type: "",
+            sizeInfo: sizeInfo
+        })
     ];
 };

@@ -32,6 +32,8 @@ class TimeSeries extends React.Component {
             revision: 10,
             mode: "line+markers"
         };
+        this.wGab = 10;
+        this.hGab = 25;
         this.colors = ["#22cccc", "#6699ff", "#ff710a", "#ffce03"];
         this.colorsErr = ["#22cccc", "#ff3355", "#6699ff", "#ffce03"];
     }
@@ -44,6 +46,18 @@ class TimeSeries extends React.Component {
                 nextProps.single,
                 nextProps.dataType
             );
+        }
+        console.log(
+            "20200409 chart size ... receive -----------------",
+            nextProps.size,
+            "  type : ",
+            nextProps.type
+        );
+        if (nextProps.size) {
+            this.setState({
+                vWidth: nextProps.size.width,
+                vHeight: nextProps.size.height
+            });
         }
     }
     componentDidMount() {
@@ -147,8 +161,8 @@ class TimeSeries extends React.Component {
                     layout={{
                         title: null,
                         autosize: true,
-                        width: this.state.vWidth,
-                        height: this.state.vHeight,
+                        width: this.state.vWidth - this.wGab,
+                        height: this.state.vHeight - this.hGab,
                         margin: this.props.margin,
                         paper_bgcolor: "transparent",
                         plot_bgcolor: "transparent",
@@ -243,9 +257,9 @@ class TimeSeries extends React.Component {
 }
 TimeSeries.defaultProps = {
     margin: {
-        l: 50,
-        r: 15,
-        b: 35,
+        l: 45,
+        r: 3,
+        b: 25,
         t: 5,
         pad: 0
     },

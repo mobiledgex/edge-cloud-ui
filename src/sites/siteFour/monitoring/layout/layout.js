@@ -194,7 +194,7 @@ export default class MonitoringLayout extends React.Component {
                     autoSize={true}
                     // cols : If size of width reduced then compact the sizing and arange items in vertical
                     cols={{ lg: 12, md: 3, sm: 3, xs: 3, xxs: 2 }}
-                    rowHeight={this.props.sizeInfo.height / 3 - 50} // TODO : value 70 is maby height of header
+                    rowHeight={this.props.sizeInfo.height / 3 - 26} // TODO : value 70 is maby height of header
                     draggableHandle=".react-grid-dragHandleExample"
                 >
                     {this.generateDOM(this.props.items)}

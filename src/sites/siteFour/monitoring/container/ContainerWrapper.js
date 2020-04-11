@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import { SizeMe } from "react-sizeme";
 
 const ContainerWrapper = () => WrapperComponent => {
     return class extends React.Component {
@@ -24,11 +25,16 @@ const ContainerWrapper = () => WrapperComponent => {
         render() {
             const { data, chartType } = this.state;
             return (
-                <WrapperComponent
-                    {...this.props}
-                    data={data}
-                    chartType={chartType}
-                ></WrapperComponent>
+                <SizeMe monitorHeight={true}>
+                    {({ size }) => (
+                        <WrapperComponent
+                            {...this.props}
+                            data={data}
+                            chartType={chartType}
+                            size={size}
+                        ></WrapperComponent>
+                    )}
+                </SizeMe>
             );
         }
     };

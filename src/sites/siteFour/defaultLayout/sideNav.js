@@ -252,7 +252,10 @@ export default function MiniDrawer(props) {
         resizeItems();
     };
 
-    /** code by @Smith : resize items of layout */
+    /**
+     * code by @Smith : resize items of layout
+     * need to resize for chart
+     */
     const resizeItems = () => {
         var event;
         if (typeof Event === "function") {
@@ -262,7 +265,7 @@ export default function MiniDrawer(props) {
             event = document.createEvent("Event");
             event.initEvent("resize", true, true);
         }
-        setTimeout(() => window.dispatchEvent(event), 1000);
+        setTimeout(() => window.dispatchEvent(event), 600);
     };
 
     const expandOptions = () => {

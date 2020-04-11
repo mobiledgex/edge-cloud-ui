@@ -142,6 +142,10 @@
     "devDependencies": {
         "babel-eslint": "^10.1.0",
         "craco-plugin-react-hot-reload": "^0.1.0",
+        "@typescript-eslint/eslint-plugin": "^2.27.0",
+        "@typescript-eslint/parser": "^2.27.0",
+        "eslint": "^6.8.0",
+        "eslint-plugin-react": "^7.19.0",
         "react-scripts": "^3.4.1"
     },
     "scripts": {
