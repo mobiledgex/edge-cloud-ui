@@ -10,12 +10,11 @@ import {
     showToast
 } from "./PageMonitoringCommonService";
 import {formatData} from "../../../services/formatter/formatComputeInstance";
-import {makeFormForAppInstance} from "./admin/PageAdminMonitoringService";
+import {makeFormForAppLevelUsageList} from "./admin/PageAdminMonitoringService";
 import PageDevMonitoring from "./dev/PageDevMonitoring";
 
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
-
     try {
         //AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version;
         console.log("onmessage pCurrentAppInst===>", pCurrentAppInst);
@@ -29,11 +28,10 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
-
         let organization = localStorage.selectOrg.toString()
-        let prefixUrl = (process.env.REACT_APP_API_ENDPOINT).replace('http', 'ws');
-        console.log("onmessage==REACT_APP_API_ENDPOINT==>", prefixUrl)
 
+
+        let prefixUrl = (process.env.REACT_APP_API_ENDPOINT).replace('http', 'ws');
         const webSocket = new WebSocket(`${prefixUrl}/ws/api/v1/auth/ctrl/ShowAppInstClient`)
 
         let showAppInstClientRequestForm = {
@@ -299,7 +297,6 @@ export const getCloudletList = async () => {
             data: {region: REGION.US, org: localStorage.selectOrg}
         };
         let promiseList = []
-
         promiseList.push(sendSyncRequest(this, requestData))
         promiseList.push(sendSyncRequest(this, requestData2))
         let orgCloudletList = await Promise.all(promiseList);
@@ -311,7 +308,7 @@ export const getCloudletList = async () => {
         let mergedCloudletList = [];
         orgCloudletList.map(item => {
             //@todo : null check
-            if (item.response.data["0"].Region !== '') {
+            if (item.response.data.length > 0) {
                 let cloudletList = item.response.data;
                 cloudletList.map(item => {
                     mergedCloudletList.push(item);
@@ -320,7 +317,6 @@ export const getCloudletList = async () => {
         })
 
         console.log("mergedCloudletList====>", mergedCloudletList);
-
         console.log("mergedCloudletList====selectOrg>", localStorage.selectOrg)
 
         //todo: current org에 관한것만 flitering
@@ -335,7 +331,7 @@ export const getCloudletList = async () => {
 
         return mergedCloudletList;
     } catch (e) {
-        showToast('getCloudletList===>' + e.toString())
+        showToast('getCloudletList=ERROR!!!==>' + e.toString())
     }
 }
 
@@ -386,7 +382,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
         for (let index = 0; index < appInstanceList.length; index++) {
             //todo: Create a data FORM format for requests
-            let instanceInfoOneForm = makeFormForAppInstance(appInstanceList[index], pHardwareType, store.userToken, recentDataLimitCount, pStartTime, pEndTime)
+            let instanceInfoOneForm = makeFormForAppLevelUsageList(appInstanceList[index], pHardwareType, store.userToken, recentDataLimitCount, pStartTime, pEndTime)
             instanceBodyList.push(instanceInfoOneForm);
         }
 
@@ -413,6 +409,8 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
         })
 
         console.log("usageListForAllInstance===>", usageListForAllInstance);
+
+
 
         let allUsageList = []
         usageListForAllInstance.map((item, index) => {
@@ -791,7 +789,6 @@ export const getCloudletLevelUsageList = async (cloudletList, pHardwareType, rec
 
         })
 
-
         return usageList;
     } catch (e) {
         alert(e.toString())
@@ -909,10 +906,10 @@ export const getAllCloudletEventLogs = async (cloudletList) => {
             promiseList.push(getCloudletEventLog(cloudletOne.CloudletName, cloudletOne.Region))
         })
 
-        let AllCloudletEventLogList = await Promise.all(promiseList);
+        let allCloudletEventLogList = await Promise.all(promiseList);
 
         let newAllCloudletEventLogList = []
-        AllCloudletEventLogList.map(listOne => {
+        allCloudletEventLogList.map(listOne => {
             listOne.map(item => {
                 newAllCloudletEventLogList.push(item)
             })
@@ -1061,6 +1058,8 @@ export const getAppInstEventLogByRegion = async (region = 'EU') => {
                     }
                 }
             }
+
+
         }
 
         console.log("getAppInstEventLogs====>", form)

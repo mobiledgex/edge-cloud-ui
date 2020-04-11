@@ -1,4 +1,5 @@
 import { fields } from "./services/model/format"
+import {createMuiTheme} from "@material-ui/core";
 
 export const TYPE_JSON = 'JSON'
 export const TYPE_JSON_NEW_LINE = 'JSON_NEW_LINE'
@@ -33,7 +34,8 @@ export const PLATFORM_TYPE_FAKEINFRA = 'Fakeinfra'
 export const IP_SUPPORT_DYNAMIC = 'Dynamic'
 export const LIVENESS_STATIC = 'Static'
 export const APP = 'App'
-export const YES = 'YES'
+export const YES = 'Yes'
+export const NO = 'No'
 
 export const ADMIN_MANAGER = 'AdminManager'
 export const OPERATOR_MANAGER = 'OperatorManager'
@@ -41,6 +43,14 @@ export const OPERATOR_CONTRIBUTOR = 'OperatorContributor'
 
 export const getHeight = (height) => {
     return window.innerHeight - (height ? height : 85)
+}
+
+export const showYesNo = (data, isDetailView)=>
+{
+    if(isDetailView)
+    {
+        return data ? YES : NO
+    }
 }
 
 export const IPAccessLabel = (id) => {
@@ -213,3 +223,20 @@ export const filterData = (selectedDatas, dataList, field) => {
     }
     return dataList
 }
+
+
+export const theme = createMuiTheme({
+    palette: {
+        type: "dark",
+        primary: {
+            main: '#77BD25',
+        },
+    },
+    overrides: {
+        MuiIconButton: {
+            root: {
+                color: 'white !important'
+            },
+        },
+    }
+});

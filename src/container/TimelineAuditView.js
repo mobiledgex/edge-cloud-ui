@@ -13,6 +13,8 @@ import View from "react-flexbox";
 import FlexBox from "flexbox-react";
 import HorizontalTimelineKJ from "../components/horizontal_timeline_kj/Components/HorizontalTimeline";
 import { hot } from "react-hot-loader/root";
+import { IconButton } from '@material-ui/core';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 const countryOptions = [
     { key: '24', value: '24', flag: '24', text: 'Last 24hours' },
@@ -247,15 +249,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             }, 251)
         }
 
-
-
-
-
         setAllView(dummyConts, sId) {
-            if (dummyConts && dummyConts['traceid']) _self.setState({
+            if (dummyConts && dummyConts['traceid']) {
+                _self.setState({
                 rawViewData: dummyConts,
                 currentTraceid: dummyConts['traceid']
             })
+        }
         }
 
         setRequestView(dummyConts, sId) {
@@ -322,14 +322,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             return window.innerHeight - 72
         }
 
+        refreshData = ()=>
+        {
+            this.setState({rawAllData:[], rawViewData :[], requestData: [], responseData: [], currentTraceid: 'traceId', isLoading2: false})
+            this.props.refreshData()
+        }
+
         render() {
-            const state = this.state;
             return (
                 <div className="page_audit" style={{height:this.getHeight()}}>
                     <div className="page_audit_history">
                         <div className="page_audit_history_option">
                             <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
-
                             <div className="page_audit_history_option_period">
                                 <Dropdown
                                     placeholder='Custom Time Range'
@@ -337,8 +341,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                     search
                                     selection
                                     options={countryOptions}
-                                    style={{ width: 200 }}
+                                    style={{ width: 200, height:30 }}
                                 />
+                                <IconButton aria-label="refresh">
+                                    <RefreshIcon style={{ color: '#76ff03', marginTop:-6 }} onClick={(e)=>{this.refreshData()}}/>
+                                </IconButton>
                             </div>
                         </div>
                         <div className="page_audit_history_timeline" >

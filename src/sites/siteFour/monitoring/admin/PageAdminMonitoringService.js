@@ -63,7 +63,7 @@ export const makeSelectBoxListByClassification_byKey = (arrList, keyName) => {
 }
 
 
-export const makeFormForAppInstance = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
+export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
 
     let appName = dataOne.AppName;
     if (dataOne.AppName.includes('[')) {
@@ -71,53 +71,6 @@ export const makeFormForAppInstance = (dataOne, valid = "*", token, fetchingData
     }
 
     if (pStartTime !== '' && pEndTime !== '') {
-
-
-      /*
-            AppName: "KYUNGJOON_APP001"
-​​
-            Cloudlet: "DemoRahul"
-            ​​
-            CloudletLocation: Object { latitude: -10, longitude: -55, timestamp: {} }
-            ​​
-            ClusterInst: "autoclusterkyungjoon-app001"
-            ​​
-            Created: "seconds : 1584354577"
-            ​​
-            Edit: Array(10) [ "Region", "DeveloperName", "AppName", … ]
-                ​​
-            ​​
-            Flavor: "m4.large"
-            ​​
-            HealthCheck: undefined
-            ​​
-            Liveness: 1
-            ​​
-            Mapped_port: Array [ {…} ]
-                ​​
-            Operator: "TDG"
-            ​​
-            OrganizationName: "MobiledgeX"
-            ​​
-            Progress: ""
-            ​​
-            Region: "EU"
-            ​​
-            Revision: 1
-            ​​
-            Runtime: Object { container_ids: (1) […] }
-            ​​
-            State: 5
-            ​​
-            Status: Object {  }
-            ​​
-            URI: "autoclusterkyungjoon-app001.demorahul.tdg.mobiledgex.net"
-            ​​
-            Version: "1.0"
-            ​​
-            uuid: "077a4a59-c7a9-445c-8af9-dad10444fdfb"
-        */
-
 
         let form = {
             "token": token,
@@ -143,7 +96,7 @@ export const makeFormForAppInstance = (dataOne, valid = "*", token, fetchingData
                 "endtime": pEndTime,
             }
         }
-        console.log("makeFormForAppInstance1111====>", form);
+        console.log("makeFormForAppInstance111====>", form);
         return form;
 
 

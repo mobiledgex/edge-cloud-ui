@@ -1,92 +1,36 @@
-import "react-semantic-toasts/styles/react-semantic-alert.css";
-import React, { Component } from "react";
-import sizeMe from "react-sizeme";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import * as actions from "../../../actions";
-import "./PageMonitoring.css";
+import React, { useState, useEffect } from "react";
 import PageMonitoringForOperator from "./oper/PageOperMonitoring";
-import { Grid } from "semantic-ui-react";
 import PageMonitoringForDeveloper from "./dev/PageDevMonitoring";
-//import PageMonitoringForAdmin from "./admin/PageAdminMonitoring";
 import MonitoringAdmin from "./admin";
-import { hot } from "react-hot-loader/root";
+import { Card } from "@material-ui/core";
 
-const mapStateToProps = state => {
-    return {
-        isLoading: state.LoadingReducer.isLoading
-    };
-};
-const mapDispatchProps = dispatch => {
-    return {
-        toggleLoading: data => {
-            dispatch(actions.toggleLoading(data));
+export default function PageMonitoringMain() {
+    const [userRole, setUserRole] = useState(
+        localStorage.getItem("selectRole")
+    );
+
+    const renderMainPage = () => {
+        if (userRole.includes("Admin")) {
+            return <MonitoringAdmin />;
+        } else if (userRole.includes("Operator")) {
+            return <PageMonitoringForOperator />;
+        } else {
+            //Developer***
+            return <PageMonitoringForDeveloper />;
         }
     };
-};
 
-type Props = {
-    handleLoadingSpinner: Function,
-    toggleLoading: Function
-};
-
-type State = {
-    date: string
-};
-
-export default hot(
-    withRouter(
-        connect(
-            mapStateToProps,
-            mapDispatchProps
-        )(
-            sizeMe({ monitorHeight: true })(
-                class PageMonitoringMain extends Component<Props, State> {
-                    state = {
-                        date: ""
-                    };
-
-                    constructor(props) {
-                        super(props);
-                    }
-
-                    //todo@ sdlfksdlkflsdkflksdf
-                    //todo@ sdlfksdlkflsdkflksdf
-                    //todo@ sdlfksdlkflsdkflksdf
-                    //todo@ sdlfksdlkflsdkflksdf
-
-                    componentWillMount(): void {
-                        let store = JSON.parse(localStorage.PROJECT_INIT);
-                        let token = store ? store.userToken : "null";
-                        console.log("token===>", token);
-                        let userRole = localStorage.getItem("selectRole");
-                        console.log("userRole====>", userRole);
-
-                        this.setState({
-                            userRole: userRole
-                        });
-                    }
-
-                    renderMainPage(sizeInfo) {
-                        if (this.state.userRole.includes("Admin")) {
-                            return <MonitoringAdmin sizeInfo={sizeInfo} />;
-                        } else if (this.state.userRole.includes("Operator")) {
-                            return <PageMonitoringForOperator />;
-                        } else {
-                            //Developer***
-                            return <PageMonitoringForDeveloper />;
-                        }
-                    }
-
-                    render() {
-                        return (
-                            <Grid.Row className="view_contents">
-                                {this.renderMainPage({ ...this.props.size })}
-                            </Grid.Row>
-                        );
-                    }
-                }
-            )
-        )
-    )
-);
+    return (
+        <Card
+            style={{
+                width: "100%",
+                height: "100%",
+                backgroundColor: "#292c33",
+                padding: 10,
+                color: "white"
+            }}
+        >
+            {renderMainPage()}
+        </Card>
+    );
+}

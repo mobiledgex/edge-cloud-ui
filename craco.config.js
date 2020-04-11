@@ -1,6 +1,6 @@
 /*craco.config.js*/
 const path = require('path');
-
+reactHotReloadPlugin = require('craco-plugin-react-hot-reload');
 const loaderNameMatches = function (rule, loaderName) {
     return rule && rule.loader && typeof rule.loader === 'string' &&
         (rule.loader.indexOf(`${path.sep}${loaderName}${path.sep}`) !== -1 ||
@@ -48,7 +48,7 @@ module.exports = {
                 'jsx-a11y/accessible-emoji': 'off',
                 'react/jsx-pascal-case': 'off',
                 'jsx-a11y/iframe-has-title': 'off',
-
+                'react-hooks/exhaustive-deps': 'off'
             }
         }
     },
@@ -67,10 +67,9 @@ module.exports = {
         ],
     },
     plugins: [
-        /*{
+        {
             plugin: reactHotReloadPlugin
-        },*/
-
+        },
         {
             plugin: {
                 overrideWebpackConfig: ({webpackConfig}) => {
@@ -104,7 +103,7 @@ module.exports = {
                                             '@text-color': '#fff',
                                             '@text-color-secondary': 'fade(@light, 45)',
                                             '@disabled-color': 'fade(@light, 25)',
-                                            '@primary-5': '#40a9ff',
+                                            '@primary-5': '#0b4c06',
                                             '@primary-6': '#096dd9',
                                             //todo:'@primary-color': '#77BD25',
                                             '@primary-color': '#77BD25',

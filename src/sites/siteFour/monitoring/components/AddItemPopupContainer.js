@@ -99,72 +99,23 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                     }}
                     closable={false}
                     bodyStyle={{
-                        height: window.innerHeight * 0.65,
-                        // marginTop: -90,
+                        height: window.innerHeight * 0.45,
+                        marginTop: 0,
+                        marginLeft: 0,
                         backgroundColor: 'rgb(41, 44, 51)'
-
                     }}
                     width={'100%'}
                     style={{padding: '10px', top: 0, minWidth: 1200}}
-
                     footer={null}
                 >
                     <div style={{width: '100%'}}>
-                        <div style={{display:'flex', width:'100%',}}>
+                        <div style={{display: 'flex', width: '100%',}}>
                             {this.renderPrevBtn2()}
                             <div className='page_monitoring_popup_title'>
-                                Add Item
+                                Add Item [{this.props.parent.state.currentClassification}]
                             </div>
                         </div>
                         <div className='page_monitoring_popup_title_divide'/>
-                        {/*todo:theme*/}
-                        {/*todo:theme*/}
-                        <div className='page_monitoring_form_row'>
-                            <div className='page_monitoring_form_column_left'>
-                                Theme
-                            </div>
-                            <div className='page_monitoring_form_column_right'>
-                                <Dropdown
-                                    selectOnBlur={false}
-                                    placeholder="Select Theme"
-                                    selection
-                                    value={this.props.parent.state.themeTitle}
-                                    //style={{width: 190, marginBottom: 10, marginLeft: 5}}
-                                    onChange={async (e, {value}) => {
-                                        await this.props.parent.setState({
-                                            themeTitle: value,
-                                        })
-                                        this.props.parent.handleThemeChanges(value)
-                                        let selectedChartColorList = [];
-                                        if (value === THEME_OPTIONS.EUNDEW) {
-                                            selectedChartColorList = CHART_COLOR_LIST;
-                                        }
-                                        if (value === THEME_OPTIONS.BLUE) {
-                                            selectedChartColorList = CHART_COLOR_LIST2;
-                                        }
-                                        if (value === THEME_OPTIONS.GREEN) {
-                                            selectedChartColorList = CHART_COLOR_LIST3;
-                                        }
-                                        if (value === THEME_OPTIONS.RED) {
-                                            selectedChartColorList = CHART_COLOR_LIST4;
-                                        }
-
-                                        if (value === THEME_OPTIONS.MONOKAI) {
-                                            selectedChartColorList = CHART_COLOR_MONOKAI;
-                                        }
-
-                                        if (value === THEME_OPTIONS.APPLE) {
-                                            selectedChartColorList = CHART_COLOR_APPLE;
-                                        }
-
-                                        reactLocalStorage.setObject(getUserId() + "_mon_theme", selectedChartColorList)
-                                        reactLocalStorage.set(getUserId() + "_mon_theme_title", value)
-                                    }}
-                                    options={this.props.parent.state.themeOptions}
-                                />
-                            </div>
-                        </div>
-
                         {/*todo:Radio.Group*/}
                         {/*todo:Radio.Group*/}
                         {/*todo:Radio.Group*/}
