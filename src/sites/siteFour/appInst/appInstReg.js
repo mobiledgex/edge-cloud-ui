@@ -237,30 +237,15 @@ class ClusterInstReg extends React.Component {
     }
 
     ipAccessValueChange = (currentForm, forms, isInit) => {
-            let updateForms = Object.assign([], this.state.forms)
-            console.log('20200410 currentForm.field...', currentForm.value)
-            if (currentForm.value !== "Dedicated") {
-                // only support the Privacy Policy for clusters with IpAccessDedicated
-                // hide privacyPolicyList
-                for (let i = 0; i < updateForms.length; i++) {
-                    let form = updateForms[i]
-                    if (form.field === fields.privacyPolicyName) {
-                        form.visible = false
-                        form.rules.disabled =  true
-                    }
-                }
-
-            } else {
-                for (let i = 0; i < updateForms.length; i++) {
-                    let form = updateForms[i]
-                    if (form.field === fields.privacyPolicyName) {
-                        form.visible = true
-                        form.rules.disabled =  false
-                    }
-
-                }
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (form.field === fields.privacyPolicyName) {
+                form.visible = currentForm.value === constant.IP_ACCESS_DEDICATED ? true : false 
             }
-            this.setState({forms: updateForms})
+        }
+         if (isInit === undefined || isInit === false) {
+            this.setState({ forms: nForms })
+        }
     }
 
     /**config blog */
