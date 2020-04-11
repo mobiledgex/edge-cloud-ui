@@ -100,7 +100,7 @@ class AppInstList extends React.Component {
         return [
             { label: 'Delete', onClick: deleteAppInst, ws: true },
             { label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
-            { label: 'Update', visible: this.onUpdateVisible, onClick: refreshAppInst }
+            { label: 'Upgrade', visible: this.onUpdateVisible, onClick: refreshAppInst }
         ]
     }
 

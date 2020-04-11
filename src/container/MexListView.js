@@ -178,7 +178,7 @@ class MexListView extends React.Component {
             if (mcRequest.response && mcRequest.response.data) {
                 responseData = mcRequest.response.data;
             }
-            this.setState({ multiStepsArray: updateStepper(this.state.multiStepsArray, data[this.props.requestInfo.nameField], responseData) })
+            this.setState({ multiStepsArray: updateStepper(this.state.multiStepsArray, data[this.props.requestInfo.nameField], responseData, mcRequest.wsObj) })
         }
     }
     
@@ -201,7 +201,7 @@ class MexListView extends React.Component {
                 case 'Delete':
                     this.onDelete(action)
                     break;
-                case 'Update':
+                case 'Upgrade':
                     this.onUpdate(action)
                     break;
 
@@ -223,8 +223,8 @@ class MexListView extends React.Component {
             case 'Delete':
                 this.onWarning(action, data, 'delete')
                 break
-            case 'Update':
-                this.onWarning(action, data, 'update')
+            case 'Upgrade':
+                this.onWarning(action, data, 'upgrade')
                 break;
             default:
                 action.onClick(action, data)
@@ -417,6 +417,9 @@ class MexListView extends React.Component {
     }
 
     multiStepperClose = () => {
+        this.state.multiStepsArray.map(item=>{
+            item.wsObj.close()
+        })
         this.setState({
             multiStepsArray: []
         })

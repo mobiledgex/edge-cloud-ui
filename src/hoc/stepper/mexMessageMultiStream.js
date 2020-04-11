@@ -72,7 +72,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export const updateStepper = (stepsArray, id, data) => {
+export const updateStepper = (stepsArray, id, data, wsObj) => {
     let currentSteps = null;
     if (stepsArray && stepsArray.length > 0) {
         stepsArray.map((item, i) => {
@@ -90,7 +90,7 @@ export const updateStepper = (stepsArray, id, data) => {
     if (data) {
         let step = { code: data.code, message: data.data.message }
         if (currentSteps === null) {
-            stepsArray.push({ id: id, steps: [step] })
+            stepsArray.push({ id: id, steps: [step], wsObj:wsObj })
         }
         else {
             stepsArray.map((item, i) => {
@@ -200,8 +200,6 @@ const MultiStream = (props) => {
                         </DialogContent>
 
                     </Dialog>}
-
-                })}
             </div> : null
     )
 }

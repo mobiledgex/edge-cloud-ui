@@ -316,7 +316,6 @@ export default function MiniDrawer(props) {
                 <div className={classes.toolbar}>
                     <Image wrapped size='small' src='/assets/brand/logo_mex.svg'/>
                     <IconButton style={{color: '#B1B2B4'}} onClick={handleDrawerClose}>
-                        {/*{theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}*/}
                         {!open ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
                     </IconButton>
                 </div>
