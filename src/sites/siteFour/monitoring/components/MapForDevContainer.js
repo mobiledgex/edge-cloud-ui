@@ -360,7 +360,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                      this.map = ref;
                                  }}
                             >
-                                {this.props.isLoading && renderPlaceHolderLottiePinJump3()}
                                 <TileLayer
                                     url={this.props.currentTyleLayer}
                                     minZoom={2}
