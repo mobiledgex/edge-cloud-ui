@@ -55,7 +55,7 @@ import {
     isEmpty,
     makeBubbleChartDataForCluster,
     PageMonitoringStyles,
-    renderPlaceHolderCircular,
+    renderPlaceHolderCircular, renderWifiLoader,
     showToast
 } from "../PageMonitoringCommonService";
 import {
@@ -72,7 +72,7 @@ import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraph from "../components/MiniModalGraphContainer";
 import {reactLocalStorage} from "reactjs-localstorage";
-import LeafletMapWrapperForDev from "../components/MapForDevContainer";
+import MapForDevContainer from "../components/MapForDevContainer";
 import {Responsive, WidthProvider} from "react-grid-layout";
 import _ from "lodash";
 import PieChartContainer from "../components/PieChartContainer";
@@ -282,11 +282,14 @@ type State = {
     isShowAppInstPopup: boolean,
     isShowPopOverMenu: boolean,
     isOpenEditView2: boolean,
+    showAppInstClient: boolean,
+    filteredClusterList: any,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeight: true})(
     class PageDevMonitoring extends Component<Props, State> {
         intervalForAppInst = null;
+        intervalForCluster = null;
         webSocketInst: WebSocket = null;
 
         //desc:todo:desc:todo:desc//desc:todo:desc:todo:desc//desc:todo:desc:todo:desc//desc:todo:desc:todo:desc//desc:todo:desc:todo:desc//desc:todo:desc:todo:desc//desc:todo:desc:todo:desc//desc:todo:desc:todo:desc
@@ -444,6 +447,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 isShowAppInstPopup: false,
                 isShowPopOverMenu: false,
                 isOpenEditView2: false,
+                showAppInstClient: false,
+                filteredClusterList: [],
             };
         }
 
@@ -469,6 +474,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         componentWillUnmount(): void {
             this.props.toggleHeader(true)
             clearInterval(this.intervalForAppInst)
+            clearInterval(this.intervalForCluster)
             if (!isEmpty(this.webSocketInst)) {
                 this.webSocketInst.close();
             }
@@ -533,6 +539,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     clusterDropdownList: clusterDropdownList,
                     dropDownCloudletList: cloudletList,
                     clusterList: clusterList,
+                    filteredClusterList: clusterList,
                     isAppInstaceDataReady: true,
                     appInstanceList: appInstList,
                     filteredAppInstanceList: appInstList,
@@ -751,79 +758,109 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             }, 1000 * 7.0)
         }
 
+
+        setClusterInterval() {
+            this.intervalForCluster = setInterval(async () => {
+                this.setState({
+                    intervalLoading: true,
+                })
+
+                console.log("filteredClusterList===>", this.state.filteredClusterList);
+                let filteredClusterUsageList = await getClusterLevelUsageList(this.state.filteredClusterList, "*", RECENT_DATA_LIMIT_COUNT);
+                console.log("filteredClusterList===>", filteredClusterUsageList);
+
+                this.setState({
+                    intervalLoading: false,
+                    filteredClusterUsageList: filteredClusterUsageList,
+                })
+            }, 1000 * 6.0)
+        }
+
         async handleClusterDropdown(selectedClusterOne) {
-
-            clearInterval(this.intervalForAppInst)
-            await this.setState({
-                selectedClientLocationListOnAppInst: [],
-            })
-
-            let selectData = selectedClusterOne.split("|")
-            let selectedCluster = selectData[0].trim();
-            let selectedCloudlet = selectData[1].trim();
-
-            await this.setState({
-                currentCluster: selectedClusterOne,
-                currentClassification: CLASSIFICATION.CLUSTER,
-                dropdownRequestLoading: true,
-            })
-
-
-            let allClusterUsageList = this.state.allClusterUsageList;
-            let allUsageList = allClusterUsageList;
+            /*clearInterval(this.intervalForAppInst)
+            clearInterval(this.intervalForCluster)*/
             let filteredClusterUsageList = []
-            allUsageList.map(item => {
-                if (item.cluster === selectedCluster && item.cloudlet === selectedCloudlet) {
-                    filteredClusterUsageList.push(item)
-                }
-            })
+            if (selectedClusterOne === '') {
+                this.setState({
+                    filteredClusterList: this.state.clusterList,
+                })
+                this.handleResetClicked();
+            } else {
+                await this.setState({
+                    selectedClientLocationListOnAppInst: [],
+                    dropdownRequestLoading: true,
+                })
 
-            let allClusterEventLogList = this.state.allClusterEventLogList
-            let filteredClusterEventLogList = []
-            allClusterEventLogList.map(item => {
-                if (item[1] === selectedCluster && item[3] === selectedCloudlet) {
-                    filteredClusterEventLogList.push(item)
-                }
-            })
 
-            let appInstanceList = this.state.appInstanceList;
-            let filteredAppInstList = []
-            appInstanceList.map((item: TypeAppInstance, index) => {
-                if (item.ClusterInst === selectedCluster && item.Cloudlet === selectedCloudlet) {
-                    filteredAppInstList.push(item)
-                }
-            })
+                let selectData = selectedClusterOne.split("|")
+                let selectedCluster = selectData[0].trim();
+                let selectedCloudlet = selectData[1].trim();
 
-            let appInstDropdown = makeDropdownListWithValuePipeForAppInst(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
 
-            await this.setState({
-                dropdownRequestLoading: false,
-                filteredClusterUsageList: filteredClusterUsageList,
-                filteredClusterEventLogList: filteredClusterEventLogList,
-                appInstDropdown: appInstDropdown,
-                allAppInstDropdown: appInstDropdown,
-                currentAppInst: '',
-                appInstSelectBoxPlaceholder: 'Select App Inst',
-                filteredAppInstanceList: filteredAppInstList,
-                appInstanceListGroupByCloudlet: reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET),
-            }, () => {
-                console.log("appInstDropdown===>", this.state.allAppInstDropdown);
-            })
+                let allClusterUsageList = this.state.allClusterUsageList;
+                let allUsageList = allClusterUsageList;
 
-            //todo: reset bubble chart data
-            let bubbleChartData = await makeBubbleChartDataForCluster(this.state.filteredClusterUsageList, this.state.currentHardwareType);
-            await this.setState({
-                bubbleChartData: bubbleChartData,
-            })
+                allUsageList.map(item => {
+                    if (item.cluster === selectedCluster && item.cloudlet === selectedCloudlet) {
+                        filteredClusterUsageList.push(item)
+                    }
+                })
+
+                let allClusterEventLogList = this.state.allClusterEventLogList
+                let filteredClusterEventLogList = []
+                allClusterEventLogList.map(item => {
+                    if (item[1] === selectedCluster && item[3] === selectedCloudlet) {
+                        filteredClusterEventLogList.push(item)
+                    }
+                })
+
+                let appInstanceList = this.state.appInstanceList;
+                let filteredAppInstList = []
+                appInstanceList.map((item: TypeAppInstance, index) => {
+                    if (item.ClusterInst === selectedCluster && item.Cloudlet === selectedCloudlet) {
+                        filteredAppInstList.push(item)
+                    }
+                })
+
+                let appInstDropdown = makeDropdownListWithValuePipeForAppInst(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
+                let bubbleChartData = await makeBubbleChartDataForCluster(this.state.filteredClusterUsageList, this.state.currentHardwareType);
+                await this.setState({
+                    currentCluster: selectedClusterOne,
+                    currentClassification: CLASSIFICATION.CLUSTER,
+                    dropdownRequestLoading: false,
+                    filteredClusterUsageList: filteredClusterUsageList,
+                    filteredClusterEventLogList: filteredClusterEventLogList,
+                    appInstDropdown: appInstDropdown,
+                    allAppInstDropdown: appInstDropdown,
+                    currentAppInst: '',
+                    appInstSelectBoxPlaceholder: 'Select App Inst',
+                    filteredAppInstanceList: filteredAppInstList,
+                    appInstanceListGroupByCloudlet: reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET),
+                    bubbleChartData: bubbleChartData,
+                });
+
+            }
+
+            //todo: ############################
+            //todo: setStream
+            //todo: ############################
+            if (this.state.isStream) {
+                this.setClusterInterval()
+            } else {
+                clearInterval(this.intervalForAppInst)
+                clearInterval(this.intervalForCluster)
+            }
+
         }
 
 
         handleAppInstDropdown = async (pCurrentAppInst, isStreamBtnClick = false) => {
             clearInterval(this.intervalForAppInst)
+            clearInterval(this.intervalForCluster)
             //@desc: ################################
             //@desc: requestShowAppInstClientWS
             //@desc: ################################
-            if (!isStreamBtnClick) {
+            if (this.state.showAppInstClient) {
                 await this.setState({
                     selectedClientLocationListOnAppInst: [],
                 })
@@ -842,12 +879,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             let filteredAppList = filterByClassification(this.state.appInstanceList, Cloudlet, 'Cloudlet');
             filteredAppList = filterByClassification(filteredAppList, ClusterInst, 'ClusterInst');
             filteredAppList = filterByClassification(filteredAppList, AppName, 'AppName');
-
-            console.log("filteredAppList===>", filteredAppList);
-
+            //todo:########################################
             //todo:Terminal
-            //todo:Terminal
-            //todo:Terminal
+            //todo:########################################
             this.setState({
                 terminalData: null
             })
@@ -872,11 +906,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 this.setState({dropdownRequestLoading: false})
             }
 
-            //let currentCluster = pCurrentAppInst.split("|")[2].trim() + " | " + pCurrentAppInst.split('|')[1].trim()
             pCurrentAppInst = pCurrentAppInst.trim();
             pCurrentAppInst = pCurrentAppInst.split("|")[0].trim() + " | " + pCurrentAppInst.split('|')[1].trim() + " | " + pCurrentAppInst.split('|')[2].trim()
-
-            console.log("pCurrentAppInst===>", pCurrentAppInst);
 
             await this.setState({
                 currentClassification: CLASSIFICATION.APPINST,
@@ -884,15 +915,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 filteredAppInstUsageList: allAppInstUsageList,
                 loading: false,
                 currentAppInst: pCurrentAppInst,
-                //currentCluster: currentCluster,
                 currentCluster: isEmpty(this.state.currentCluster) ? '' : this.state.currentCluster,
                 clusterSelectBoxPlaceholder: 'Select Cluster',
-                //appInstSelectBoxPlaceholder: pCurrentAppInst,
-            }, () => {
-                //alert(this.state.currentClassification)
-
-                console.log('filteredAppInstUsageList===>', this.state.filteredAppInstUsageList)
-            })
+            });
 
             //todo: ############################
             //todo: filtered AppInstEventLogList
@@ -1047,7 +1072,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 )
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.MAP) {
                 return (
-                    <LeafletMapWrapperForDev
+                    <MapForDevContainer
                         currentWidgetWidth={this.state.currentWidgetWidth}
                         isMapUpdate={this.state.isMapUpdate}
                         selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
@@ -1321,25 +1346,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             })
         }
 
-        renderBreadCrumb() {
 
-            console.log("currentCluster===>", this.state.currentCluster);
-            if (this.state.currentCluster !== '' && this.state.currentAppInst === '') {
-                return this.state.currentCluster.replace('|', '>');
-            } else if (this.state.currentCluster === '' && this.state.currentAppInst !== '') {
-                let appInst = this.state.currentAppInst.toString().split("|")[0]
-                let cluster = this.state.currentAppInst.toString().split("|")[1]
-                let cloudlet = this.state.currentAppInst.toString().split("|")[2]
-                return cluster + " > " + cloudlet + " > " + appInst;
-            } else if (this.state.currentAppInst !== '') {
-                return this.state.currentCluster.replace('|', '>') + " > " + this.state.currentAppInst.toString().split("|")[0];
-            } else {
-                return null;
-            }
-        }
-
-
-        makeMenuListItems = () => {
+        makeActionMenuListItems = () => {
             return (
                 <AMenu>
                     {/*desc:#########################################*/}
@@ -1522,37 +1530,30 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         </AMenu.Item>
                     </ASubMenu>
                     {/*desc: ######################*/}
-                    {/*desc: Stream             */}
+                    {/*desc: ShowAppInstClient             */}
                     {/*desc: ######################*/}
-                    {this.state.currentClassification === CLASSIFICATION.APPINST &&
                     <AMenu.Item style={{display: 'flex'}}
                                 key="1"
-                                onClick={async () => {
-                                    await this.setState({
-                                        isStream: !this.state.isStream,
-                                    });
+                                onClick={() => {
 
-                                    if (!this.state.isStream) {
-                                        clearInterval(this.intervalForAppInst)
-                                    } else {
-                                        await this.handleAppInstDropdown(this.state.currentAppInst, true)
-                                    }
+                                    this.setState({
+                                        showAppInstClient: !this.state.showAppInstClient,
+                                    })
+
                                 }}
                     >
-                        <MaterialIcon icon={'schedule'} color={'white'}/>
+                        <MaterialIcon icon={'stay_current_portrait'} color={'white'}/>
                         <div style={PageMonitoringStyles.listItemTitle}>
-                            Stream
+                            Show Client Attached to App Instance
                         </div>
                         <div style={PageMonitoringStyles.listItemTitle}>
                             <CustomSwitch
                                 size="small"
-                                checked={this.state.isStream}
+                                checked={this.state.showAppInstClient}
                                 color="primary"
-
                             />
                         </div>
                     </AMenu.Item>
-                    }
                 </AMenu>
             )
         }
@@ -1565,6 +1566,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         <div className='page_monitoring_select_area'
                              style={{
                                  width: 'fit-content',
+                                 flex: .7,
                                  //backgroundColor: 'red',
                              }}>
                             <div>
@@ -1573,52 +1575,22 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             <div>
                                 {this.makeAppInstDropdown()}
                             </div>
-
-                        </div>
-                        {/*
-                            desc :####################################
-                            desc :BreadCrumb Area
-                            desc :####################################
-                            */}
-                        <div
-                            style={{
-                                display: 'flex',
-                                flex: 1,
-                                justifyContent: 'flex-start',
-                                alignItems: 'center',
-                                color: 'rgba(255, 255, 255, .8)',
-                                height: 28,
-                                padding: '0 10px',
-                                alignSelf: 'center',
-                                border: this.state.currentCluster !== '' || this.state.currentAppInst !== '' ? '1px dotted #4c4c4c' : null,
-                                //backgroundColor: 'blue',
-                            }}
-                        >
+                            {this.state.intervalLoading &&
                             <div>
-                                {this.renderBreadCrumb()}
+                                <div style={{marginLeft: 10, marginRight: 1,}}>
+                                    {renderWifiLoader()}
+                                </div>
                             </div>
-                        </div>
+                            }
 
+                        </div>
                         {/*
                             desc :####################################
                             desc :loading Area
                             desc :####################################
                             */}
                         <div>
-                            {this.state.intervalLoading &&
-                            <div>
-                                <div style={{marginLeft: 15}}>
-                                    <CircularProgress
-                                        style={{
-                                            color: this.state.currentClassification === CLASSIFICATION.APPINST ? 'grey' : 'green',
-                                            zIndex: 9999999,
-                                            fontSize: 10
-                                        }}
-                                        size={20}
-                                    />
-                                </div>
-                            </div>
-                            }
+
                             {this.state.webSocketLoading &&
                             <div>
                                 <div style={{marginLeft: 15}}>
@@ -1647,15 +1619,102 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             </div>
                             }
                         </div>
+
+
                         {/*
                             desc :####################################
                             desc : options list (right conner)
                             desc :####################################
                             */}
                         <div style={{
-                            display: 'flex', justifyContent: 'flex-end',
+                            display: 'flex',
+                            flex: .3,
+                            justifyContent: 'flex-end',
                             //backgroundColor: 'yellow'
                         }}>
+                            {/*
+                            todo :####################################
+                            todo : Clusterstream toggle button
+                            todo :####################################
+                            */}
+                            {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
+                            <div style={{
+                                alignItems: 'center',
+                                display: 'flex',
+                                cursor: 'pointer',
+                                //backgroundColor: 'red',
+                                height: 30,
+                                width: 150,
+                                marginRight: 20,
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                            }}>
+                                <div style={PageMonitoringStyles.listItemTitle}>
+                                    Cluster Stream
+                                </div>
+                                <div style={PageMonitoringStyles.listItemTitle}>
+                                    <CustomSwitch
+                                        size="small"
+                                        checked={this.state.isStream}
+                                        color="primary"
+                                        onChange={async () => {
+                                            await this.setState({
+                                                isStream: !this.state.isStream,
+                                            });
+                                            if (!this.state.isStream) {
+                                                clearInterval(this.intervalForAppInst)
+                                                clearInterval(this.intervalForCluster)
+                                            } else {
+                                                await this.handleClusterDropdown(this.state.currentCluster)
+                                            }
+                                        }}
+
+                                    />
+                                </div>
+                            </div>
+                            }
+
+                            {/*
+                            desc :####################################
+                            desc : stream toggle button
+                            desc :####################################
+                            */}
+                            {this.state.currentClassification === CLASSIFICATION.APPINST &&
+                            <div style={{
+                                alignItems: 'center',
+                                display: 'flex',
+                                cursor: 'pointer',
+                                //backgroundColor: 'red',
+                                height: 30,
+                                width: 170,
+                                marginRight: 20,
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                            }}>
+                                <div style={PageMonitoringStyles.listItemTitle}>
+                                    App Inst Stream
+                                </div>
+                                <div style={PageMonitoringStyles.listItemTitle}>
+                                    <CustomSwitch
+                                        size="small"
+                                        checked={this.state.isStream}
+                                        color="primary"
+                                        onChange={async () => {
+                                            await this.setState({
+                                                isStream: !this.state.isStream,
+                                            });
+
+                                            if (!this.state.isStream) {
+                                                clearInterval(this.intervalForAppInst)
+                                            } else {
+                                                await this.handleAppInstDropdown(this.state.currentAppInst, true)
+                                            }
+                                        }}
+
+                                    />
+                                </div>
+                            </div>
+                            }
                             <div style={{
                                 alignItems: 'center',
                                 display: 'flex',
@@ -1665,8 +1724,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 alignSelf: 'center',
                                 justifyContent: 'center',
                             }}>
+
                                 <ADropdown
-                                    overlay={this.makeMenuListItems}
+                                    overlay={this.makeActionMenuListItems}
                                     trigger={['click']}
                                 >
                                     <div
@@ -1698,6 +1758,28 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             )
         }
 
+        async filterClusterList(value) {
+            console.log("selectedClusterList..DropdownclusterList==1=>", value.trim());
+
+            let selectedCluster = value.split('|')[0].trim()
+            let selectedCloudlet = value.split('|')[1].trim()
+
+            console.log("selectedClusterList..DropdownclusterList==2=>", this.state.clusterList);
+            let allClusterList = this.state.clusterList
+
+            let selectedClusterList = []
+            allClusterList.filter(item => {
+                if (item.ClusterName === selectedCluster && item.Cloudlet === selectedCloudlet) {
+                    selectedClusterList.push(item);
+                }
+            })
+
+            console.log("selectedClusterList===>", selectedClusterList);
+            await this.setState({
+                filteredClusterList: selectedClusterList,
+            })
+        }
+
 
         makeClusterDropdown() {
             return (
@@ -1721,6 +1803,17 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         options={this.state.clusterDropdownList}
                         style={PageMonitoringStyles.dropDownForClusterCloudlet}
                         onChange={async (e, {value}) => {
+                            clearInterval(this.intervalForCluster)
+                            clearInterval(this.intervalForAppInst)
+
+                            //@desc: If you are choosing the whole cluster ...
+                            if (value === '') {
+                                await this.setState({
+                                    filteredClusterList: this.state.clusterList,
+                                })
+                            } else {
+                                await this.filterClusterList(value)
+                            }
                             await this.handleClusterDropdown(value.trim())
                         }}
                     />

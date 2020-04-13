@@ -369,10 +369,14 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     <Icon
                                         icon={'history'} color={'black'}
                                         onClick={async () => {
-                                            await this.setState({
-                                                zoom: 3,
-                                            })
-                                            await this.props.parent.handleResetClicked();
+                                           try{
+                                               await this.setState({
+                                                   zoom: 3,
+                                               })
+                                               await this.props.parent.handleResetClicked();
+                                           }catch (e) {
+
+                                           }
                                         }}
                                         name='redo'
                                         style={{
