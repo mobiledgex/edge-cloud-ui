@@ -27,12 +27,27 @@ export const getDarkTheme = () => {
             },
             MuiSvgIcon: {
                 root: {
-                    color: '#c06520',
+                    color: '#15a00a',
                 }
-            }
+            },
+            MuiSwitch: {
+                thumb: {
+                    color: '#a4aa0e',
+                },
+            },
+            MuiToolbar: {
+                regular: {
+                    backgroundColor: "#aeb1cd",
+                    color: "#fff",
+                    height: "32px",
+                    minHeight: "32px",
+                    '@media (min-width: 600px)': {
+                        minHeight: "48px"
+                    }
+                },
+            },
         }
     })
-
 }
 
 export const getLightTheme = () => {
@@ -69,7 +84,7 @@ export const getLightTheme = () => {
                 root: {
                     backgroundColor: "#fff",
                     background: "#fff !important",
-                    color:'#1c1b19 !important'
+                    color: '#1c1b19 !important'
                 },
             },
             MuiSvgIcon: {
