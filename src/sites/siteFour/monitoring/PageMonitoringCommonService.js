@@ -15,6 +15,16 @@ import {barChartOption, columnChartOption} from "./PageMonitoringUtils";
 import {Card} from "@material-ui/core";
 
 export const PageMonitoringStyles = {
+    topRightMenu: {
+        alignItems: 'center',
+        display: 'flex',
+        cursor: 'pointer',
+        //backgroundColor: 'red',
+        height: 30, width: 30,
+        alignSelf: 'center',
+        justifyContent: 'center',
+    },
+
     listItemTitle: {
         marginLeft: 10,
     },
@@ -479,26 +489,25 @@ export const renderPlaceHolderCircular3 = (type: string = '') => {
     )
 }
 
-export const renderPlaceHolderCircular2 = (type: string = '') => {
+export const renderWifiLoader = (type: string = '') => {
     return (
-        <div className='page_monitoring_blank_box'
-             style={{height: '100%'}}>
-            {/*<Lottie
+        <div
+            style={{marginBottom: 3,}}>
+
+            <Lottie
                 options={{
                     loop: true,
                     autoplay: true,
-                    animationData: require('../../../lotties/14112-heartrate_777'),
+                    animationData: require('../../../lotties/wifi-signal'),
                     rendererSettings: {
                         preserveAspectRatio: 'xMidYMid slice'
                     }
                 }}
                 speed={2.5}
-                height={150}
-                width={150}
+                height={25}
+                width={25}
                 isStopped={false}
                 isPaused={false}
-            />*/}
-            <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}
             />
         </div>
     )

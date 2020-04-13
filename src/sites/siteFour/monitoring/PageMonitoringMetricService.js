@@ -545,6 +545,15 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 }
 
 
+/**
+ *
+ * @param clusterList
+ * @param pHardwareType
+ * @param recentDataLimitCount
+ * @param pStartTime
+ * @param pEndTime
+ * @returns {Promise<[]|Array>}
+ */
 export const getClusterLevelUsageList = async (clusterList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
     try {
         let instanceBodyList = []

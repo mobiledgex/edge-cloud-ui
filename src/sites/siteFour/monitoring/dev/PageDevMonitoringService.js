@@ -10,7 +10,13 @@ import {
 } from "../../../../shared/Constants";
 import BubbleChart from "../../../../components/BubbleChart";
 import PageDevMonitoring from "./PageDevMonitoring";
-import {convertByteToMegaByte, numberWithCommas, PageMonitoringStyles, renderUsageByType, showToast} from "../PageMonitoringCommonService";
+import {
+    convertByteToMegaByte,
+    numberWithCommas,
+    PageMonitoringStyles,
+    renderUsageByType,
+    showToast
+} from "../PageMonitoringCommonService";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
 import {CircularProgress, createMuiTheme} from "@material-ui/core";
@@ -1291,21 +1297,20 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     fontColor: 'white',
                     //maxRotation: 0.05,
                     autoSkip: true,
-                    maxRotation: 0,//xAxis text rotation
-                    minRotation: 0,//xAxis text rotation
-                    /*
+                    /*maxRotation: 0,//xAxis text rotation
+                    minRotation: 0,//xAxis text rotation*/
                     maxRotation: 45,//xAxis text rotation
                     minRotation: 45,//xAxis text rotation
-                    */
                     padding: 10,
                     labelOffset: 0,
                     callback(value, index, label) {
-                        if (isBig) {
-                            return value
-                        } else {
-                            if (index % 2 === 0) return '';
-                            return value;
-                        }
+                        /*  if (isBig) {
+                              return value
+                          } else {
+                              if (index % 2 === 0) return '';
+                              return value;
+                          }*/
+                        return value;
                     },
                 },
                 beginAtZero: false,
@@ -1871,6 +1876,11 @@ export const renderLineChartCoreForDev_AppInst = (_this: PageDevMonitoring, line
 
 export const makeSelectBoxListWithKeyValuePipe = (arrList, keyName, valueName) => {
     let newArrList = [];
+    newArrList.push({
+        key: '',
+        value: '',
+        text: 'all',
+    })
     for (let i in arrList) {
         newArrList.push({
             key: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim(),
