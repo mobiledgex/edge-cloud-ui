@@ -20,32 +20,32 @@ export const getDarkTheme = () => {
 
         },
         overrides: {
-            MuiIconButton: {
-                root: {
-                    color: 'white !important'
-                },
-            },
             MuiSvgIcon: {
                 root: {
-                    color: '#15a00a',
+                    color: '#fff',
                 }
             },
-            MuiSwitch: {
-                thumb: {
-                    color: '#a4aa0e',
-                },
-            },
-            MuiToolbar: {
-                regular: {
-                    backgroundColor: "#aeb1cd",
-                    color: "#fff",
-                    height: "32px",
-                    minHeight: "32px",
-                    '@media (min-width: 600px)': {
-                        minHeight: "48px"
-                    }
-                },
-            },
+            /* MuiIconButton: {
+                 root: {
+                     color: 'white !important'
+                 },
+             },
+             MuiSwitch: {
+                 thumb: {
+                     color: '#a4aa0e',
+                 },
+             },
+             MuiToolbar: {
+                 regular: {
+                     backgroundColor: "#aeb1cd",
+                     color: "#fff",
+                     height: "32px",
+                     minHeight: "32px",
+                     '@media (min-width: 600px)': {
+                         minHeight: "48px"
+                     }
+                 },
+             },*/
         }
     })
 }
@@ -71,10 +71,10 @@ export const getLightTheme = () => {
             },
             MuiToolbar: {
                 regular: {
-                    backgroundColor: "#1f30c0",
+                    backgroundColor: "#e0b518",
                     color: "#fff",
-                    height: "32px",
-                    minHeight: "32px",
+                    height: "22px",
+                    minHeight: "22px",
                     '@media (min-width: 600px)': {
                         minHeight: "48px"
                     }
@@ -89,7 +89,14 @@ export const getLightTheme = () => {
             },
             MuiSvgIcon: {
                 root: {
-                    color: '#c00709',
+                    color: '#fccb2f',
+                }
+            },
+            MuiCard: {
+                root: {
+                    marginTop: '-18px',
+                    background: '#d4b205 !important',
+                    backgroundColor: '#d4b205 !important'
                 }
             }
 
