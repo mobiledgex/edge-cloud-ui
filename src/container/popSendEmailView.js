@@ -1,5 +1,7 @@
 import React from 'react'
 import { Field, reduxForm } from 'redux-form'
+import {Form, Grid} from "semantic-ui-react";
+import uuid from "uuid";
 
 const required = value => (value || typeof value === 'number' ? undefined : 'Required')
 const maxLength = max => value =>
@@ -40,15 +42,36 @@ const renderField = ({
                          type,
                          meta: { touched, error, warning }
                      }) => (
-    <div>
-        <label>{label}</label>
-        <div>
-            <input {...input} placeholder={label} type={type} />
+
+    <Grid.Row>
+        <Grid.Column width={4} className='detail_item'>
+            <div>{label}</div>
+        </Grid.Column>
+        <Grid.Column width={12} className="ui form input">
+            <input {...input} style={{color:'black'}} placeholder={label} type={type} />
             {touched &&
             ((error && <span>{error}</span>) ||
                 (warning && <span>{warning}</span>))}
-        </div>
-    </div>
+        </Grid.Column>
+    </Grid.Row>
+)
+const renderTextareaField = ({
+                         input,
+                         label,
+                         meta: { touched, error, warning }
+                     }) => (
+
+    <Grid.Row>
+        <Grid.Column width={4} className='detail_item'>
+            <div>{"Contents"}</div>
+        </Grid.Column>
+        <Grid.Column width={12} className="ui form textarea">
+            <textarea {...input} style={{color:'black'}} placeholder={"Contents"} value={label} autoFocus></textarea>
+            {touched &&
+            ((error && <span>{error}</span>) ||
+                (warning && <span>{warning}</span>))}
+    </Grid.Column>
+    </Grid.Row>
 )
 const renderLabel = ({
                          input,
@@ -80,50 +103,51 @@ class PopSendEmailView extends React.Component {
     }
 
     render() {
-        let { handleSubmit, pristine, reset, submitting } = this.props;
+        let { handleSubmit, pristine, reset, submitting, rawViewData } = this.props;
+
         return (
             <form id={'eSendForm'} onSubmit={handleSubmit(submit)}>
-                <Field
-                    name="email"
-                    type="email"
-                    component={renderField}
-                    label="Email"
-                    validate={email}
-                    warn={aol}
-                />
-                <Field
-                    name="username"
-                    type="text"
-                    value={'support@mobiledgex.com'}
-                    component={renderLabel}
-                    label="Username"
-                    validate={[required, maxLength15, minLength2]}
-                    warn={alphaNumeric}
-                />
+                <Grid columns={2}>
+                    <Field
+                        name="to"
+                        type="email"
+                        component={renderField}
+                        label="To"
+                        validate={email}
+                        warn={aol}
+                    />
+                    <Field
+                        name="subject"
+                        type="text"
+                        label="Subject"
+                        validate={required}
+                        component={renderField}
 
-                <Field
-                    name="age"
-                    type="number"
-                    component={renderField}
-                    label="Age"
-                    validate={[required, number, minValue13]}
-                    warn={tooYoung}
-                />
-                <Field
-                    name="phone"
-                    type="number"
-                    component={renderField}
-                    label="Phone number"
-                    validate={[required, phoneNumber]}
-                />
-                <div style={{display:'none'}}>
-                    <button id={'popSendEmailSubmit'} type="submit" disabled={submitting}>
-                        Submit
-                    </button>
-                    <button type="button" disabled={pristine || submitting} onClick={reset}>
-                        Clear Values
-                    </button>
-                </div>
+                    />
+                    <Field
+                        name="from"
+                        type="email"
+                        component={renderField}
+                        label="From"
+                        validate={email}
+                        warn={aol}
+                    />
+                    <Field
+                        name="html"
+                        component={renderTextareaField}
+                        label={"Dear MobiledgeX Support team,\nPlease investigate Trace ID : " + rawViewData.traceid}
+                    />
+                    {/*<label>Content</label>*/}
+                    {/*<textarea style={{color:'black'}} name="content" placeholder="Content" rows="10" cols="40" value={"Dear MobiledgeX Support team,\nPlease investigate Trace ID : " + rawViewData.traceid}></textarea>*/}
+                    <div style={{display:'none'}}>
+                        <button id={'popSendEmailSubmit'} type="submit" disabled={submitting}>
+                            Submit
+                        </button>
+                        <button type="button" disabled={pristine || submitting} onClick={reset}>
+                            Clear Values
+                        </button>
+                    </div>
+                </Grid>
             </form>
         )
     }
