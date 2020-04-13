@@ -24,7 +24,7 @@ import './css/pages/cloudletPool.css';
 import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
 import {ThemeProvider} from "@material-ui/styles";
-import {getDarkTheme, getLightTheme, THEME_TYPE} from "./themeStyle";
+import {getDarkTheme, getLightTheme, getSanMarinoTheme, THEME_TYPE} from "./themeStyle";
 // API
 
 let self = null;
@@ -336,7 +336,6 @@ class App extends Component {
 
     render() {
         return (
-
             <Router history={history} ref={router => this.router = router}>
                 <div style={{width: '100%', height: '100%'}}>
                     <ThemeProvider theme={this.props.themeType === THEME_TYPE.DARK ? getDarkTheme() : getLightTheme()}>
