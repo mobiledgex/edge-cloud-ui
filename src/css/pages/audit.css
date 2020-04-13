@@ -461,3 +461,7 @@
     display: flex;
     color: #db2828;
 }
+
+.react-calendar-timeline .rct-vertical-lines .rct-vl.rct-day-6, .react-calendar-timeline .rct-vertical-lines .rct-vl.rct-day-0 {
+    background: transparent;
+}

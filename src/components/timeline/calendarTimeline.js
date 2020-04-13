@@ -201,6 +201,7 @@ export default class CalendarTimeline extends Component {
         customStyles.overflow = "hidden";
         customStyles.height = newHeight + "px";
         customStyles.minWidth = "230px";
+        customStyles.marginTop = "-10px";
         properties.style = customStyles;
 
         return (
