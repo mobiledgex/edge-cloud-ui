@@ -6,7 +6,7 @@ import {Dropdown, Modal} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
-import {CircularProgress, LinearProgress, Toolbar, withStyles} from '@material-ui/core'
+import {CircularProgress, LinearProgress, ThemeProvider, Toolbar, withStyles} from '@material-ui/core'
 import {Dropdown as ADropdown, Menu as AMenu,} from 'antd';
 import {
     defaultHwMapperListForCluster,
@@ -89,6 +89,9 @@ import type {Layout, LayoutItem} from "react-grid-layout/lib/utils";
 import GradientBarChartContainer from "../components/GradientBarChartContainer";
 import AddItemPopupContainer2 from '../components/AddItemPopupContainer2'
 import Switch from "@material-ui/core/Switch";
+import Button from "@material-ui/core/Button";
+import {getTheme} from "../../../../constant";
+import {THEME_TYPE} from "../../../../themeStyle";
 
 const ASubMenu = AMenu.SubMenu;
 const CustomSwitch = withStyles({
@@ -119,6 +122,7 @@ const mapStateToProps = (state) => {
     return {
         isLoading: state.LoadingReducer.isLoading,
         isShowHeader: state.HeaderReducer.isShowHeader,
+        themeType: state.ThemeReducer.themeType,
     }
 };
 const mapDispatchToProps = (dispatch) => {
@@ -128,6 +132,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         toggleHeader: (data) => {
             dispatch(actions.toggleHeader(data))
+        },
+        toggleTheme: (data) => {
+            dispatch(actions.toggleTheme(data))
         }
     };
 };
@@ -1145,7 +1152,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 <div
                     key={uniqueIndex}
                     data-grid={item}
-                    style={{margin: 0, backgroundColor: '#292c33'}}
+                    style={{
+                        margin: 0,
+                        //backgroundColor: '#292c33',
+                        backgroundColor: this.props.themeType === 'light' ? 'white' : '#292c33'
+                    }}
                     onDoubleClick={async () => {
                         await this.setState({
                             isFixGrid: true,
@@ -1225,7 +1236,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     draggableHandle=".draggable"
                     verticalCompact={false}
                     isDraggable={true}
-                    className={'layout page_monitoring_layout_dev'}
+                    style={{backgroundColor: this.props.themeType === THEME_TYPE.LIGHT ? 'white' : null}}
+                    className='layout page_monitoring_layout_dev'
                     cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
                     layout={this.state.layoutForCluster}
                     rowHeight={this.gridItemHeight}
@@ -1561,7 +1573,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         renderHeader = () => {
             return (
                 <>
-                    <Toolbar className='monitoring_title' style={{backgroundColor: 'transparent', marginTop: 0}}>
+                    <Toolbar className='monitoring_title' style={{marginTop: 0}}>
                         <label className='content_title_label' style={{marginBottom: 3}}>Monitoring</label>
                         <div className='page_monitoring_select_area'
                              style={{
@@ -1649,6 +1661,19 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 alignSelf: 'center',
                                 justifyContent: 'center',
                             }}>
+                                <Button variant="contained" color="primary"
+
+                                        onClick={() => {
+                                            if (this.props.themeType === 'dark') {
+                                                this.props.toggleTheme('light')
+                                            } else {
+                                                this.props.toggleTheme('dark')
+                                            }
+                                        }}
+
+                                        size="small">
+                                    toggle theme {this.props.themeType}
+                                </Button>
                                 <div style={PageMonitoringStyles.listItemTitle}>
                                     Cluster Stream
                                 </div>
@@ -1744,7 +1769,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                     >
                                         <MaterialIcon
                                             size={25}
-                                            color='rgb(118, 255, 3)'
+                                            color={this.props.themeType === 'dark' ? 'rgb(118, 255, 3)' : 'blue'}
                                             //color={'#559901'}
                                             icon="list"
                                         />
@@ -1963,8 +1988,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             }
 
             return (
-
-                <div style={{width: '100%', height: '100%',}}>
+                <div style={{
+                    width: '100%',
+                    height: '100%',
+                }}>
 
                     <AddItemPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}/>
                     <AddItemPopupContainer2 parent={this} isOpenEditView2={this.state.isOpenEditView2}/>
@@ -1987,8 +2014,14 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         loading={this.state.loading}
                     />
 
-                    <div style={{width: '100%', height: '100%',}}>
-                        <div style={{width: '100%', height: '100%',}}>
+                    <div style={{
+                        width: '100%',
+                        height: '100%',
+                    }}>
+                        <div style={{
+                            width: '100%',
+                            height: '100%',
+                        }}>
                             {/*desc:---------------------------------*/}
                             {/*desc:Content Header                   */}
                             {/*desc:---------------------------------*/}
@@ -1998,7 +2031,12 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             {/*desc:Legend                           */}
                             {/*desc:---------------------------------*/}
                             {this.makeLegend()}
-                            <div className="page_monitoring" style={{overflowY: 'auto', height: 'calc(100% - 70px)'}}>
+                            <div className="page_monitoring"
+                                 style={{
+                                     overflowY: 'auto',
+                                     height: 'calc(100% - 70px)',
+                                     backgroundColor: this.props.themeType === 'light' ? 'white' : null
+                                 }}>
                                 <div className='' style={{marginBottom: 50}}>
                                     {this.state.currentClassification === CLASSIFICATION.CLUSTER
                                         ? this.renderGridLayoutForCluster()
@@ -2024,6 +2062,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         }}/>
                     </Modal>
                 </div>
+
             )//return End
         }
     }

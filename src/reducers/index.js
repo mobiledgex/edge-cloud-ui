@@ -45,6 +45,7 @@ import submitObj from './submitObj';
 import LoadingReducer from "./LoadingReducer";
 import MapTyleLayerReducer from "./MapTyleLayerReducer";
 import HeaderReducer from "./HeaderReducer";
+import ThemeReducer from "./ThemeReducer";
 
 const reducers = combineReducers({
     videoControl,
@@ -92,6 +93,7 @@ const reducers = combineReducers({
     LoadingReducer,
     MapTyleLayerReducer ,
     HeaderReducer,
+    ThemeReducer,
     form: formReducer
 });
 
