@@ -290,8 +290,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
         }
 
-        handleClickAppInst(fullAppInstOne) {
-            this.props.handleAppInstDropdown(fullAppInstOne)
+        async handleClickAppInst(fullAppInstOne) {
+            await this.props.handleAppInstDropdown(fullAppInstOne)
         }
 
         render() {
