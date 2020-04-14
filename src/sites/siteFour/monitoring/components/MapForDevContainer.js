@@ -290,8 +290,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
         }
 
-        handleClickAppInst(fullAppInstOne) {
-            this.props.handleAppInstDropdown(fullAppInstOne)
+        async handleClickAppInst(fullAppInstOne) {
+            await this.props.handleAppInstDropdown(fullAppInstOne)
         }
 
         render() {
@@ -360,20 +360,24 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                      this.map = ref;
                                  }}
                             >
-                                {this.props.isLoading && renderPlaceHolderLottiePinJump3()}
                                 <TileLayer
                                     url={this.props.currentTyleLayer}
                                     minZoom={2}
                                     style={{zIndex: 1}}
                                 />
-                                <Control position="topleft" style={{marginTop:3}}>
+                                <Control position="topleft" style={{marginTop: 3}}>
                                     <Icon
                                         icon={'history'} color={'black'}
                                         onClick={async () => {
-                                            await this.setState({
-                                                zoom: 3,
-                                            })
-                                            await this.props.parent.handleResetClicked();
+                                            try {
+                                                await this.setState({
+                                                    zoom: 3,
+                                                })
+
+                                                await this.props.parent.handleClusterDropdownAndReset('');
+                                            } catch (e) {
+
+                                            }
                                         }}
                                         name='redo'
                                         style={{
