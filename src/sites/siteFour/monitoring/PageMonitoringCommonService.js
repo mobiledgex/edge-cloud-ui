@@ -489,7 +489,7 @@ export const renderPlaceHolderCircular3 = (type: string = '') => {
     )
 }
 
-export const renderWifiLoader = (width=25 , height=25) => {
+export const renderWifiLoader = (width = 25, height = 25) => {
     return (
         <div
             style={{marginBottom: 3,}}>
@@ -1120,6 +1120,7 @@ export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType,) =>
         let cluster_cloudlet_fullLabel = item.cluster.toString() + ' [' + item.cloudlet.toString().trim() + "]";
 
         bubbleChartData.push({
+            type: pHardwareType,
             index: index,
             label: cluster_cloudlet_fullLabel.toString().substring(0, 17) + "...",
             value: usageValue,
