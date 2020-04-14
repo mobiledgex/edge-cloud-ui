@@ -58,45 +58,25 @@ export default class LineChartContainer extends React.Component<Props, State> {
 
         if (title.includes('ACTIVECONNECTION')) {
             return 'ACTIVE CONN'
-        }
-
-        else if (title.includes('ACTIVECONNECTION')) {
+        } else if (title.includes('ACTIVECONNECTION')) {
             return 'ACTIVE CONN'
-        }
-
-        else if (title.includes('HANDLEDCONNECTION')) {
+        } else if (title.includes('HANDLEDCONNECTION')) {
             return 'HANDLED CONN'
-        }
-
-        else if (title.includes('ACCEPTSCONNECTION')) {
+        } else if (title.includes('ACCEPTSCONNECTION')) {
             return 'ACCEPTS CONN'
-        }
-
-        else if (title.includes('TCPRETRANS')) {
+        } else if (title.includes('TCPRETRANS')) {
             return 'TCP RETRANS'
-        }
-
-        else if (title.includes('TCPCONNS')) {
+        } else if (title.includes('TCPCONNS')) {
             return 'TCP CONNS'
-        }
-
-        else if (title.includes('UDPRECV')) {
+        } else if (title.includes('UDPRECV')) {
             return 'UDP RECV'
-        }
-
-        else if (title.includes('UDPSENT')) {
+        } else if (title.includes('UDPSENT')) {
             return 'UDP SENT'
-        }
-        else if (title.includes('RECVBYTES')) {
+        } else if (title.includes('RECVBYTES')) {
             return 'RECV BYTES'
-        }
-
-        else if (title.includes('SENDBYTES')) {
+        } else if (title.includes('SENDBYTES')) {
             return 'SEND BYTES'
-        }
-
-
-        else {
+        } else {
             return title
         }
 
