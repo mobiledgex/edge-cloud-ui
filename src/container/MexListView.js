@@ -1,8 +1,5 @@
 import React from 'react';
-import { Table } from 'semantic-ui-react';
-import { IconButton, Grow, Popper, Paper, ClickAwayListener, MenuList, Card } from '@material-ui/core';
-import MenuItem from '@material-ui/core/MenuItem';
-import ListIcon from '@material-ui/icons/List';
+import { Card } from '@material-ui/core';
 
 import './styles.css';
 import _ from "lodash";
@@ -14,7 +11,9 @@ import * as actions from '../actions';
 
 import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP } from './MexToolbar';
 import MexDetailViewer from '../hoc/dataViewer/DetailViewer';
+import MexListViewer from '../hoc/listView/ListViewer';
 import MexMessageStream, { CODE_FINISH } from '../hoc/stepper/mexMessageStream';
+import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiStream'
 import { getUserRole } from '../services/model/format';
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import Map from '../libs/simpleMaps/with-react-motion/index_clusters';
@@ -26,10 +25,12 @@ class MexListView extends React.Component {
         super(props);
         this.state = {
             dataList: [],
+            filterList: [],
             anchorEl: null,
             currentView: null,
             isDetail: false,
             stepsArray: [],
+            multiStepsArray:[],
             showMap: true,
             dialogMessageInfo: {},
             uuid: 0,
@@ -37,36 +38,11 @@ class MexListView extends React.Component {
         };
         this.requestCount = 0;
         this.keys = props.requestInfo.keys;
-        this.selectedRowIndex = {};
+        this.selectedRow = {};
         this.sorting = false;
         this.selectedRegion = REGION_ALL
-
-
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
         this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
-    }
-
-
-
-    handleSort = clickedColumn => (a) => {
-
-        this.sorting = true;
-        const { column, dataList, direction } = this.state
-        if ((column !== clickedColumn) && dataList) {
-            let sorted = _.sortBy(dataList, [clm => typeof clm[clickedColumn] === 'string' ? String(clm[clickedColumn]).toLowerCase() : clm[clickedColumn]])
-            this.setState({
-                column: clickedColumn,
-                dataList: sorted,
-                direction: 'ascending',
-            })
-            return
-        } else {
-            let reverse = dataList.reverse()
-            this.setState({
-                dataList: reverse,
-                direction: direction === 'ascending' ? 'descending' : 'ascending',
-            })
-        }
     }
 
     checkRole = (form) => {
@@ -86,19 +62,6 @@ class MexListView extends React.Component {
         }
     }
 
-    makeHeader() {
-        const { column, direction } = this.state
-        return this.keys.map((header, i) => {
-            this.checkRole(header)
-            if (header.visible) {
-                return (
-                    <Table.HeaderCell key={i} className={header.sortable ? '' : 'unsortable'} textAlign='center' sorted={column === header.field ? direction : null} onClick={header.sortable ? this.handleSort(header.field) : null}>
-                        {header.label}
-                    </Table.HeaderCell>)
-            }
-        })
-    }
-
     detailView = (data) => {
         let additionalDetail = this.props.requestInfo.additionalDetail
         return (
@@ -109,9 +72,9 @@ class MexListView extends React.Component {
         )
     }
 
-    getCellClick = (key, rowIndex) => {
-        this.selectedRowIndex = rowIndex
-        let data = this.state.dataList[this.selectedRowIndex]
+    getCellClick = (key, row) => {
+        this.selectedRow = row
+        let data = row
 
         if (key.field === fields.state) {
             this.onProgress(data)
@@ -136,26 +99,29 @@ class MexListView extends React.Component {
             let data = mcRequest.response.data
             let code = data.code
             let message = data.data.message
-            code === 200 && message === 'Deleting' ? this.dataFromServer(this.selectedRegion) : this.props.handleAlertInfo('error', message)
+            mcRequest.wsObj.close()
+            code === 200 && message.includes('Deleting') ? this.dataFromServer(this.selectedRegion) : this.props.handleAlertInfo('error', message)
         }
         this.props.handleLoadingSpinner(false)
     }
 
     onDelete = async (action) => {
+        let filterList = this.state.filterList
         let dataList = this.state.dataList
-        let data = dataList[this.selectedRowIndex]
+        let data = this.selectedRow
         if (data) {
             if (action.ws) {
                 this.props.handleLoadingSpinner(true);
-                serverData.sendWSRequest(this, action.onClick(data), this.onDeleteWSResponse)
+                serverData.sendWSRequest(this, action.onClick(data), this.onDeleteWSResponse, data)
             }
             else {
                 let valid = false
                 let mcRequest = await serverData.sendRequest(this, action.onClick(data))
                 if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
                     this.props.handleAlertInfo('success', `${mcRequest.request.success} deleted successfully`)
-                    dataList.splice(this.selectedRowIndex, 1)
-                    this.setState({ dataList: dataList })
+                    filterList.splice(filterList.indexOf(data), 1)
+                    dataList.splice(dataList.indexOf(data), 1)
+                    this.setState({ dataList:dataList, filterList: filterList})
                     valid = true;
                 }
                 if(action.onFinish)
@@ -166,118 +132,92 @@ class MexListView extends React.Component {
         }
     }
 
+    onUpdateResponse = (mcRequest) =>
+    {
+        let data =mcRequest.request.orgData
+        this.props.handleLoadingSpinner(false)
+        if (mcRequest) {
+            let responseData = undefined;
+            if (mcRequest.response && mcRequest.response.data) {
+                responseData = mcRequest.response.data;
+            }
+            this.setState({ multiStepsArray: updateStepper(this.state.multiStepsArray, data[fields.uuid], responseData, data[this.props.requestInfo.nameField], mcRequest.wsObj) })
+        }
+    }
+    
+    onUpdate = async (action, data) =>
+    { 
+        if(data[fields.updateAvailable])
+        {
+            this.props.handleLoadingSpinner(true)
+            serverData.sendWSRequest(this, action.onClick(data), this.onUpdateResponse, data)
+        }
+    }
+
     onDialogClose = (valid) => {
         let action = this.state.dialogMessageInfo.action;
         this.setState({ dialogMessageInfo: {} })
         if (valid) {
-            this.onDelete(action)
+            switch (action.label) {
+                case 'Delete':
+                    this.onDelete(action)
+                    break;
+                case 'Upgrade':
+                    let data = this.selectedRow
+                    this.onUpdate(action, data)
+                    break;
+
+            }
         }
     }
 
-    onDeleteWarning = async (action, data) => {
-        this.setState({ dialogMessageInfo: { message: `Are you sure you want to delete ${data[this.props.requestInfo.nameField]}?`, action: action } });
+    onWarning = async (action, data, actionLabel) => {
+        this.setState({ dialogMessageInfo: { message: `Are you sure you want to ${actionLabel} ${data[this.props.requestInfo.nameField]}?`, action: action } });
     }
 
     /***Action Block */
     onActionClose = (action) => {
-        this.setState({
-            anchorEl: null
-        })
-        let data = this.state.dataList[this.selectedRowIndex];
+        let data = this.selectedRow;
         switch (action.label) {
             case 'Delete':
-                this.onDeleteWarning(action, data)
+                this.onWarning(action, data, 'delete')
+                break
+            case 'Upgrade':
+                this.onWarning(action, data, 'upgrade')
                 break;
             default:
                 action.onClick(action, data)
         }
     }
 
-
-
-
+    groupActionClose = (action, dataList) => {
+        let data = this.selectedRow;
+        switch (action.label) {
+            case 'Upgrade':
+                dataList.map(data=>{
+                    this.onUpdate(action, data)
+                })
+                break;
+        }
+    }
     /*Action Block*/
-
-    getAction = (item) => {
-        return (
-            <IconButton aria-label="Action" onClick={e => this.setState({ anchorEl: e.currentTarget })}>
-                <ListIcon style={{ color: '#76ff03' }} />
-            </IconButton>
-        )
-    }
-
-    makeBody(i, item) {
-        return this.keys.map((header, j) => {
-            this.checkRole(header)
-            if (header.visible) {
-                let field = header.field;
-                return <Table.Cell key={j} className="table_actions" textAlign='center' onClick={() => this.getCellClick(header, i)} style={(this.state.selectedItem == i) ? { background: '#444', cursor: 'pointer',height:50 } : { cursor: 'pointer', height: 50}}>
-                    {
-                        field === fields.actions ? this.getAction(item)
-                            :
-                            <div style={{ wordBreak: 'break-all' }}>
-                                {header.customizedData ? header.customizedData(item) : item[field]}
-                            </div>
-                    }</Table.Cell>
-            }
-        })
-    }
-
-    getHeight = () => {
-        return window.innerHeight - 204
-    }
-
     listView = () => {
         let isMap = this.props.requestInfo.isMap && this.state.showMap
         return (
             <div className="mexListView">
                 {isMap ?
                     <div className='panel_worldmap' style={{ height: 300 }}>
-                        <Map dataList={this.state.dataList} id={this.props.requestInfo.id} />
+                        <Map dataList={this.state.filterList} id={this.props.requestInfo.id} />
                     </div> : null}
-                <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing style={{ height: isMap ?  'calc(100% - 312px)' : '100%' }}>
-                    <Table.Header>
-                        <Table.Row>
-                            {this.makeHeader()}
-                        </Table.Row>
-                    </Table.Header>
-                    <Table.Body style={{ overflow: "auto", height: '100%' }}>
-                        {
-                            this.state.dataList.map((item, i) => (
-                                <Table.Row key={i}>
-                                    {this.makeBody(i, item)}
-                                </Table.Row>
-                            ))
-                        }
-                    </Table.Body>
-                </Table> </div>)
+                <MexListViewer keys={this.keys} dataList={this.state.filterList} 
+                    actionMenu={this.props.actionMenu} 
+                    cellClick={this.getCellClick} 
+                    actionClose={this.onActionClose} 
+                    isMap={isMap} requestInfo={this.props.requestInfo} 
+                    groupActionMenu={this.props.groupActionMenu}
+                    groupActionClose={this.groupActionClose} />
+            </div>)
     }
-
-    getActionMenu = () => {
-        return (
-            this.props.actionMenu ?
-                <Popper open={Boolean(this.state.anchorEl)} anchorEl={this.state.anchorEl} role={undefined} transition disablePortal>
-                    {({ TransitionProps, placement }) => (
-                        <Grow
-                            {...TransitionProps}
-                            style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center right' }}
-                        >
-                            <Paper style={{ backgroundColor: '#212121', color: 'white' }}>
-                                <ClickAwayListener onClickAway={() => this.setState({ anchorEl: null })}>
-                                    <MenuList autoFocusItem={Boolean(this.state.anchorEl)} id="menu-list-grow" >
-                                        {this.props.actionMenu.map((action, i) => {
-                                            let visible = action.visible ? action.visible(this.state.dataList[this.selectedRowIndex]) : true
-                                            return visible ? <MenuItem key={i} onClick={(e) => { this.onActionClose(action) }}>{action.label}</MenuItem> : null
-                                        })}
-                                    </MenuList>
-                                </ClickAwayListener>
-                            </Paper>
-                        </Grow>
-                    )}
-                </Popper> : null
-        )
-    }
-
     /*
     Stepper Block
     Todo: Move to separate file
@@ -378,6 +318,16 @@ class MexListView extends React.Component {
         })
     }
 
+    multiStepperClose = () => {
+        this.state.multiStepsArray.map(item=>{
+            item.wsObj.close()
+        })
+        this.setState({
+            multiStepsArray: []
+        })
+        this.dataFromServer(this.selectedRegion)
+    }
+
     onProgress(data) {
         this.setState({
             uuid: data.uuid
@@ -394,7 +344,22 @@ class MexListView extends React.Component {
       Todo: Move to separate file
       */
 
-
+     onFilterValue = (e) => {
+        let dataList = this.state.dataList
+        let filterCount = 0
+        let filterList = dataList.filter(data=>{
+            let valid = this.keys.map(key=>{
+                if(key.filter)
+                {   
+                    filterCount =+ 1
+                    let tempData = data[key.field] ? data[key.field] : ''
+                    return tempData.toLowerCase().includes(e.target.value.toLowerCase()) 
+                }
+            })
+            return filterCount === 0 || valid.includes(true)
+        })
+        this.setState({filterList:filterList})
+    }
 
     static getDerivedStateFromProps(props, state) {
         if (props.refreshToggle !== state.refresh) {
@@ -408,9 +373,9 @@ class MexListView extends React.Component {
             <Card style={{ width: '100%', height: '100%', backgroundColor: '#292c33', padding: 10, color: 'white' }}>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} stepsArray={this.state.stepsArray} />
-                <MexToolbar requestInfo={this.props.requestInfo} onAction={this.onToolbarAction} isDetail={this.state.isDetail} />
+                <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} header='App' />
+                <MexToolbar requestInfo={this.props.requestInfo} onAction={this.onToolbarAction} isDetail={this.state.isDetail} onFilterValue={this.onFilterValue}/>
                 {this.state.currentView ? this.state.currentView : this.listView()}
-                {this.getActionMenu()}
             </Card>
         );
 
@@ -463,8 +428,6 @@ class MexListView extends React.Component {
         return filterList;
     }
 
-
-
     onServerResponse = (mcRequestList) => {
         this.requestCount -= 1
         let requestInfo = this.props.requestInfo
@@ -505,12 +468,13 @@ class MexListView extends React.Component {
             this.props.handleAlertInfo('error', 'Requested data is empty')
         }
         this.setState({
-            dataList: dataList
+            dataList: dataList,
+            filterList:dataList
         })
     }
 
     dataFromServer = (region) => {
-        this.setState({ dataList: [] })
+        this.setState({ dataList: [], filterList:[] })
         let requestInfo = this.props.requestInfo
         if (requestInfo) {
             let filterList = this.getFilterInfo(requestInfo, region)

@@ -22,10 +22,11 @@ export const sendRequest = async (self, requestData) => {
     }
 }
 
-export const sendWSRequest = async (self, requestData, callback) => {
+export const sendWSRequest = async (self, requestData, callback, orgData) => {
     let token = getToken(self)
     if (token) {
         requestData.token = token;
+        requestData.orgData = orgData
         serviceMC.sendWSRequest(requestData, callback)
     }
 }

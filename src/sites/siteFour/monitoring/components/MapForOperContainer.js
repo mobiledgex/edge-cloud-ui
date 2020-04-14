@@ -71,7 +71,7 @@ export default hot(
                         <div style={{height: 5}}/>
                         <button onClick={() => {
                             alert('Rahul')
-                        }}>Rahul
+                        }}>
                         </button>
                         <div style={{height: 5}}/>
                         <button onClick={() => {
