@@ -99,8 +99,14 @@ class AppInstList extends React.Component {
     actionMenu = () => {
         return [
             { label: 'Delete', onClick: deleteAppInst, ws: true },
-            { label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
-            { label: 'Upgrade', visible: this.onUpdateVisible, onClick: refreshAppInst }
+            { label: 'Upgrade', visible: this.onUpdateVisible, onClick: refreshAppInst },
+            { label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal }
+        ]
+    }
+
+    groupActionMenu = () => {
+        return [
+            { label: 'Upgrade', onClick: refreshAppInst, icon:'arrow alternate circle up outline'}
         ]
     }
 
@@ -113,6 +119,7 @@ class AppInstList extends React.Component {
             streamType: streamAppInst,
             isRegion: true,
             isMap: true,
+            selection:true,
             sortBy: [fields.region, fields.appName],
             keys: this.keys,
             onAdd: this.onAdd
@@ -157,7 +164,7 @@ class AppInstList extends React.Component {
         return (
             this.state.currentView ? this.state.currentView :
                 <div style={{ width: '100%', height: '100%' }}>
-                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} />
+                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu}/>
                     <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen open={this.state.openTerminal} onClose={() => { this.setState({ openTerminal: false }) }}>
                         <TerminalViewer data={this.state.terminalData} onClose={() => {
                             this.setState({ openTerminal: false })

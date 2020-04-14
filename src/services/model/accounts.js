@@ -5,7 +5,7 @@ import {SHOW_ACCOUNTS, DELETE_ACCOUNT} from './endPointTypes'
 let fields = formatter.fields
 
 export const keys = [
-    { field: fields.username, serverField: 'Name', label: 'Username', visible: true },
+    { field: fields.username, serverField: 'Name', label: 'Username', visible: true, filter:true },
     { field: fields.email, serverField: 'Email', label: 'Email', visible: true },
     { field: fields.emailVerified, serverField: 'EmailVerified', label: 'Email Verified', visible: true, clickable: true },
     { field: fields.passHash, serverField: 'Passhash', label: 'Passhash' },

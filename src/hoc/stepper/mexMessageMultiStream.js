@@ -72,7 +72,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export const updateStepper = (stepsArray, id, data, wsObj) => {
+export const updateStepper = (stepsArray, id, data, header, wsObj) => {
     let currentSteps = null;
     if (stepsArray && stepsArray.length > 0) {
         stepsArray.map((item, i) => {
@@ -90,7 +90,7 @@ export const updateStepper = (stepsArray, id, data, wsObj) => {
     if (data) {
         let step = { code: data.code, message: data.data.message }
         if (currentSteps === null) {
-            stepsArray.push({ id: id, steps: [step], wsObj:wsObj })
+            stepsArray.push({ header:header, id: id, steps: [step], wsObj:wsObj })
         }
         else {
             stepsArray.map((item, i) => {
@@ -185,7 +185,7 @@ const MultiStream = (props) => {
                                     <div key={i}>
                                         <Grid container spacing={2} style={{ padding: 10 }}>
                                             <Grid item xs={3}>
-                                                <h4 style={{ padding: '13px 0', color: '#DDDD' }}>{item.id}</h4>
+                                                <h4 style={{ padding: '13px 0', color: '#DDDD' }}>{item.header}</h4>
                                             </Grid>
                                             <Grid item xs={9}>
                                                 <ExpansionPanel>

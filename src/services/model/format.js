@@ -109,7 +109,10 @@ export const fields = {
     value:'value',
     publicImages:'publicImages',
     updateAvailable:'updateAvailable',
-    update:'update'
+    update:'update',
+    appInstances:'appInstances',
+    upgrade:'upgrade',
+    refreshAppInst:'refreshAppInst'
 }
 
 export const getUserRole = () => {
