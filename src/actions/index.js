@@ -5,6 +5,7 @@ import {SET_CLOUDLET_ICON_COLOR} from "./ActionTypes";
 import {TOGGLE_HEADER} from "./ActionTypes";
 import {TOGGLE_LOADING} from "./ActionTypes";
 import {TOGGLE_THEME} from "./ActionTypes";
+import {SET_CHART_DATAS} from "./ActionTypes";
 
 export function changeSite(state) {
     return {
@@ -202,7 +203,6 @@ export const toggleLoading = (isLoading) => ({
 })
 
 
-
 export const toggleHeader = (value) => ({
     type: TOGGLE_HEADER, //type
     isShowHeader: value //action
@@ -211,6 +211,11 @@ export const toggleHeader = (value) => ({
 export const toggleTheme = (themeType) => ({
     type: TOGGLE_THEME,
     themeType
+})
+
+export const setChartDataSets = (value) => ({
+    type: SET_CHART_DATAS,//type
+    chartDataSets: value,//action
 })
 
 

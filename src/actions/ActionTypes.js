@@ -54,3 +54,4 @@ export const TOGGLE_HEADER = 'TOGGLE_HEADER';
 export const TOGGLE_LOADING= 'TOGGLE_LOADING';
 
 export const TOGGLE_THEME = 'TOGGLE_THEME';
+export const SET_CHART_DATAS = 'SET_CHART_DATAS';

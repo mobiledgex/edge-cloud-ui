@@ -6,7 +6,7 @@ import {Dropdown, Modal} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
-import {CircularProgress, LinearProgress, ThemeProvider, Toolbar, withStyles} from '@material-ui/core'
+import {CircularProgress, LinearProgress, Toolbar, withStyles} from '@material-ui/core'
 import {Dropdown as ADropdown, Menu as AMenu,} from 'antd';
 import {
     defaultHwMapperListForCluster,
@@ -21,7 +21,7 @@ import {
     makeDropdownListWithValuePipeForAppInst,
     makeGradientColorList2,
     makeid,
-    makeLineChartDataForAppInst,
+    makeLineChartDataForAppInst, makeLineChartDataForAppInst002,
     makeLineChartDataForBigModal,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipe,
@@ -55,7 +55,8 @@ import {
     isEmpty,
     makeBubbleChartDataForCluster,
     PageMonitoringStyles,
-    renderPlaceHolderCircular, renderWifiLoader,
+    renderPlaceHolderCircular,
+    renderWifiLoader,
     showToast
 } from "../PageMonitoringCommonService";
 import {
@@ -89,9 +90,8 @@ import type {Layout, LayoutItem} from "react-grid-layout/lib/utils";
 import GradientBarChartContainer from "../components/GradientBarChartContainer";
 import AddItemPopupContainer2 from '../components/AddItemPopupContainer2'
 import Switch from "@material-ui/core/Switch";
-import Button from "@material-ui/core/Button";
-import {getTheme} from "../../../../constant";
 import {THEME_TYPE} from "../../../../themeStyle";
+import BarChartContainer from "../components/BarChartContainer";
 
 const ASubMenu = AMenu.SubMenu;
 const CustomSwitch = withStyles({
@@ -123,6 +123,7 @@ const mapStateToProps = (state) => {
         isLoading: state.LoadingReducer.isLoading,
         isShowHeader: state.HeaderReducer.isShowHeader,
         themeType: state.ThemeReducer.themeType,
+        chartDataSets: state.ChartDataReducer.chartDataSets,
     }
 };
 const mapDispatchToProps = (dispatch) => {
@@ -135,6 +136,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         toggleTheme: (data) => {
             dispatch(actions.toggleTheme(data))
+        },
+        setChartDataSets: (data) => {
+            dispatch(actions.setChartDataSets(data))
         }
     };
 };
@@ -148,6 +152,8 @@ type Props = {
     isLoading: boolean,
     userRole: any,
     toggleHeader: Function,
+    setChartDataSets: Function,
+    chartDataSets: any,
 }
 
 
@@ -291,6 +297,7 @@ type State = {
     isOpenEditView2: boolean,
     showAppInstClient: boolean,
     filteredClusterList: any,
+    chartDataForBigModal: any,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeight: true})(
@@ -426,7 +433,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 isUpdateEnableForMap: false,
                 isShowBigGraph: false,
                 popupGraphHWType: '',
-                chartDataForRendering: [],
+                chartDataForBigModal: [],
                 popupGraphType: '',
                 isPopupMap: false,
                 //reactLocalStorage.setObject(getUserId() + "_mon_theme")
@@ -623,28 +630,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         }
 
         makeLineChartData(hwType) {
-            let lineChartDataSet: TypeLineChartData = [];
-            if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
-            } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
-                if (hwType === HARDWARE_TYPE.ALL) {
-                    lineChartDataSet = makeAllLineChartData(this);
-                } else {
-                    lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
-                    console.log("lineChartDataSet===>", lineChartDataSet);
-                }
-            }
 
-            return (
-                <LineChartContainer
-                    isResizeComplete={this.state.isResizeComplete}
-                    loading={this.state.loading}
-                    currentClassification={this.state.currentClassification}
-                    parent={this}
-                    pHardwareType={hwType}
-                    chartDataSet={lineChartDataSet}
-                />
-            )
 
         }
 
@@ -708,9 +694,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 barChartDataSet = []
             }
 
-            /*return ( <BarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this} loading={this.state.loading} chartDataSet={barChartDataSet}  pHardwareType={hwType} graphType={graphType}/>)*/
+            return ( <BarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this} loading={this.state.loading} chartDataSet={barChartDataSet}  pHardwareType={hwType} graphType={graphType}/>)
 
-            if (!isEmpty(barChartDataSet)) {
+           /* if (!isEmpty(barChartDataSet)) {
                 let chartDatas = this.makeGradientBarCharData(barChartDataSet)
                 console.log("makeGradientBarCharData===>", barChartDataSet.chartDataList.length);
                 return (
@@ -724,7 +710,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         dataLength={barChartDataSet.chartDataList.length}
                     />
                 )
-            }
+            }*/
 
 
         }
@@ -751,21 +737,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         }
 
 
-        setAppInstInterval(filteredAppList) {
-            this.intervalForAppInst = setInterval(async () => {
-                this.setState({
-                    intervalLoading: true,
-                })
-
-                let allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT);
-                this.setState({
-                    intervalLoading: false,
-                    filteredAppInstUsageList: allAppInstUsageList,
-                })
-            }, 1000 * 7.0)
-        }
-
-
         setClusterInterval() {
             this.intervalForCluster = setInterval(async () => {
                 this.setState({
@@ -776,6 +747,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 let filteredClusterUsageList = await getClusterLevelUsageList(this.state.filteredClusterList, "*", RECENT_DATA_LIMIT_COUNT);
                 console.log("filteredClusterList===>", filteredClusterUsageList);
 
+                ///////////////////////////////////////////////////////////////
+                //@desc: setData for bigModalChart Start
+                ///////////////////////////////////////////////////////////////
+                this.setChartDataForBigModal(filteredClusterUsageList)
+
                 this.setState({
                     intervalLoading: false,
                     filteredClusterUsageList: filteredClusterUsageList,
@@ -783,9 +759,43 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             }, 1000 * 6.0)
         }
 
-        async handleClusterDropdown(selectedClusterOne) {
-            /*clearInterval(this.intervalForAppInst)
-            clearInterval(this.intervalForCluster)*/
+        setAppInstInterval(filteredAppList) {
+            this.intervalForAppInst = setInterval(async () => {
+                this.setState({
+                    intervalLoading: true,
+                })
+
+                let allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT);
+
+                this.setChartDataForBigModal(allAppInstUsageList)
+
+                this.setState({
+                    intervalLoading: false,
+                    filteredAppInstUsageList: allAppInstUsageList,
+                })
+            }, 1000 * 7.0)
+        }
+
+
+        setChartDataForBigModal(usageList) {
+            let lineChartDataSet = []
+            if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                lineChartDataSet = makeLineChartDataForCluster(usageList, this.state.currentHardwareType, this)
+            } else {
+                lineChartDataSet = makeLineChartDataForAppInst(usageList, this.state.currentHardwareType, this)
+            }
+
+            let chartDataForBigModal = makeLineChartDataForBigModal(lineChartDataSet, this)
+
+            this.setState({
+                chartDataForBigModal: chartDataForBigModal,
+            })
+        }
+
+
+
+
+        async __handleClusterDropdown(selectedClusterOne) {
             let filteredClusterUsageList = []
             if (selectedClusterOne === '') {
                 this.setState({
@@ -804,15 +814,17 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 let selectedCloudlet = selectData[1].trim();
 
 
+                //desc : filter  ClusterUsageList
                 let allClusterUsageList = this.state.allClusterUsageList;
                 let allUsageList = allClusterUsageList;
-
                 allUsageList.map(item => {
                     if (item.cluster === selectedCluster && item.cloudlet === selectedCloudlet) {
                         filteredClusterUsageList.push(item)
                     }
                 })
 
+
+                //desc: filter clusterEventlog
                 let allClusterEventLogList = this.state.allClusterEventLogList
                 let filteredClusterEventLogList = []
                 allClusterEventLogList.map(item => {
@@ -1055,11 +1067,27 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
         }
 
-        makeGridItemBodyByType(hwType, graphType) {
+        ____makeGridItemOne(hwType, graphType) {
             if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
+
+                let chartDataSets: TypeLineChartData = [];
+                if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                    chartDataSets = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
+                } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
+                    chartDataSets = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
+                }
+
                 return (
-                    this.makeLineChartData(hwType,)
+                    <LineChartContainer
+                        isResizeComplete={this.state.isResizeComplete}
+                        loading={this.state.loading}
+                        currentClassification={this.state.currentClassification}
+                        parent={this}
+                        pHardwareType={hwType}
+                        chartDataSet={chartDataSets}
+                    />
                 )
+
             } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BAR) {
                 return (
                     this.makeBarChartData(hwType, graphType)
@@ -1119,26 +1147,27 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
         showBigModal = (hwType, graphType) => {
 
-            let chartDataForRendering = []
+            let chartDataSets = []
             if (graphType.toUpperCase() == GRID_ITEM_TYPE.LINE) {
 
-                if (this.state.currentClassification === CLASSIFICATION.APPINST) {
-                    let lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
-                    chartDataForRendering = makeLineChartDataForBigModal(lineChartDataSet, this)
+                let lineChartDataSet = []
+                if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                    lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
                 } else {
-                    let lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
-                    chartDataForRendering = makeLineChartDataForBigModal(lineChartDataSet, this)
+                    lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
                 }
+
+                chartDataSets = makeLineChartDataForBigModal(lineChartDataSet, this)
 
             } else if (graphType.toUpperCase() == GRID_ITEM_TYPE.BAR || graphType.toUpperCase() == GRID_ITEM_TYPE.COLUMN) {
 
                 let barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
-                chartDataForRendering = barChartDataSet.chartDataList;
+                chartDataSets = barChartDataSet.chartDataList;
             }
 
             this.setState({
                 isShowBigGraph: !this.state.isShowBigGraph,
-                chartDataForRendering: chartDataForRendering,
+                chartDataForBigModal: chartDataSets,
                 popupGraphHWType: hwType,
                 popupGraphType: graphType,
                 isPopupMap: !this.state.isPopupMap,
@@ -1222,7 +1251,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     {/*@desc:__makeGridItem BodyByType  */}
                     {/*desc:############################*/}
                     <div className='page_monitoring_column_resizable'>
-                        {this.makeGridItemBodyByType(hwType, graphType.toUpperCase())}
+                        {this.____makeGridItemOne(hwType, graphType.toUpperCase())}
                     </div>
                 </div>
             )
@@ -1661,7 +1690,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 alignSelf: 'center',
                                 justifyContent: 'center',
                             }}>
-                                <Button variant="contained" color="primary"
+                                {/*  <Button variant="contained" color="primary"
 
                                         onClick={() => {
                                             if (this.props.themeType === 'dark') {
@@ -1673,9 +1702,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
                                         size="small">
                                     toggle theme {this.props.themeType}
-                                </Button>
+                                </Button>*/}
                                 <div style={PageMonitoringStyles.listItemTitle}>
-                                    Cluster Stream
+                                    {/*Cluster*/} Stream
                                 </div>
                                 <div style={PageMonitoringStyles.listItemTitle}>
                                     <CustomSwitch
@@ -1690,7 +1719,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                                 clearInterval(this.intervalForAppInst)
                                                 clearInterval(this.intervalForCluster)
                                             } else {
-                                                await this.handleClusterDropdown(this.state.currentCluster)
+                                                await this.__handleClusterDropdown(this.state.currentCluster)
                                             }
                                         }}
 
@@ -1717,7 +1746,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 justifyContent: 'center',
                             }}>
                                 <div style={PageMonitoringStyles.listItemTitle}>
-                                    App Inst Stream
+                                    {/*App Inst*/} Stream
                                 </div>
                                 <div style={PageMonitoringStyles.listItemTitle}>
                                     <CustomSwitch
@@ -1740,46 +1769,52 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 </div>
                             </div>
                             }
-                            <div style={{
-                                alignItems: 'center',
-                                display: 'flex',
-                                cursor: 'pointer',
-                                //backgroundColor: 'red',
-                                height: 30, width: 30,
-                                alignSelf: 'center',
-                                justifyContent: 'center',
-                            }}>
-
-                                <ADropdown
-                                    overlay={this.makeActionMenuListItems}
-                                    trigger={['click']}
-                                >
-                                    <div
-                                        className="ant-dropdown-link"
-                                        style={{
-                                            alignItems: 'center',
-                                            display: 'flex',
-                                            cursor: 'pointer',
-                                            alignSelf: 'center',
-                                            justifyContent: 'center',
-                                            width: 150,
-                                            //backgroundColor: 'red'
-                                        }}
-                                        onClick={e => e.preventDefault()}
-                                    >
-                                        <MaterialIcon
-                                            size={25}
-                                            color={this.props.themeType === 'dark' ? 'rgb(118, 255, 3)' : 'blue'}
-                                            //color={'#559901'}
-                                            icon="list"
-                                        />
-                                    </div>
-                                </ADropdown>
-                            </div>
+                            {this.makeTopRightMenuActionButton()}
                         </div>
                     </Toolbar>
                 </>
 
+            )
+        }
+
+        makeTopRightMenuActionButton() {
+            return (
+                <div style={{
+                    alignItems: 'center',
+                    display: 'flex',
+                    cursor: 'pointer',
+                    //backgroundColor: 'red',
+                    height: 30, width: 30,
+                    alignSelf: 'center',
+                    justifyContent: 'center',
+                }}>
+
+                    <ADropdown
+                        overlay={this.makeActionMenuListItems}
+                        trigger={['click']}
+                    >
+                        <div
+                            className="ant-dropdown-link"
+                            style={{
+                                alignItems: 'center',
+                                display: 'flex',
+                                cursor: 'pointer',
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                width: 150,
+                                //backgroundColor: 'red'
+                            }}
+                            onClick={e => e.preventDefault()}
+                        >
+                            <MaterialIcon
+                                size={25}
+                                color={this.props.themeType === 'dark' ? 'rgb(118, 255, 3)' : 'blue'}
+                                //color={'#559901'}
+                                icon="list"
+                            />
+                        </div>
+                    </ADropdown>
+                </div>
             )
         }
 
@@ -1839,7 +1874,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             } else {
                                 await this.filterClusterList(value)
                             }
-                            await this.handleClusterDropdown(value.trim())
+                            await this.__handleClusterDropdown(value.trim())
                         }}
                     />
                 </div>
@@ -2003,7 +2038,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 cluster={''} contents={''}/>
 
                     <BigModalGraphContainer
-                        chartDataForRendering={this.state.chartDataForRendering}
+                        intervalLoading={this.state.intervalLoading}
+                        chartDataForBigModal={this.state.chartDataForBigModal}
                         isShowBigGraph={this.state.isShowBigGraph}
                         parent={this}
                         popupGraphHWType={this.state.popupGraphHWType}

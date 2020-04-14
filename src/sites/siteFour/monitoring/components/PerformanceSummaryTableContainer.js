@@ -5,7 +5,11 @@ import {Table} from "semantic-ui-react";
 import {Progress} from "antd";
 import type {TypeClusterUsageList} from "../../../../shared/Types";
 import {numberWithCommas, PageMonitoringStyles} from "../PageMonitoringCommonService";
-import {handleLegendAndBubbleClickedEvent, makeLineChartDataForCluster, sortUsageListByTypeForCluster} from "../dev/PageDevMonitoringService";
+import {
+    handleLegendAndBubbleClickedEvent,
+    makeLineChartDataForCluster,
+    sortUsageListByTypeForCluster
+} from "../dev/PageDevMonitoringService";
 
 type Props = {
     clusterUsageList: any,
@@ -149,9 +153,10 @@ export default class PerformanceSummaryTableContainer extends React.Component<Pr
                                                 {item.sumCpuUsage.toFixed(2) + '%'}
                                             </div>
                                             <div>
-                                                <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10}
+                                                <Progress style={{width: '100%'}} strokeLinecap={'square'}
+                                                          strokeWidth={10}
                                                           showInfo={false}
-                                                          percent={(item.sumCpuUsage / this.props.parent.state.maxCpu * 100)}
+                                                          percent={item.sumCpuUsage.toFixed(0)}
                                                           strokeColor={'#29a1ff'} status={'normal'}/>
                                             </div>
                                         </div>
@@ -162,16 +167,26 @@ export default class PerformanceSummaryTableContainer extends React.Component<Pr
                                                 {numberWithCommas(item.sumMemUsage.toFixed(2)) + ' %'}
                                             </div>
                                             <div>
-                                                <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10}
+                                                <Progress style={{width: '100%'}} strokeLinecap={'square'}
+                                                          strokeWidth={10}
                                                           showInfo={false}
-                                                          percent={(item.sumMemUsage / this.props.parent.state.maxMem * 100)}
+                                                          percent={item.sumMemUsage.toFixed(0)}
                                                           strokeColor={'#29a1ff'} status={'normal'}/>
                                             </div>
                                         </div>
                                     </Table.Cell>
                                     <Table.Cell>
-                                        <div style={PageMonitoringStyles.gridTableCell2}>
-                                            {numberWithCommas(item.sumDiskUsage.toFixed(2)) + ' %'}
+                                        <div>
+                                            <div style={PageMonitoringStyles.cellFirstRow}>
+                                                {numberWithCommas(item.sumDiskUsage.toFixed(2)) + ' %'}
+                                            </div>
+                                            <div>
+                                                <Progress style={{width: '100%'}} strokeLinecap={'square'}
+                                                          strokeWidth={10}
+                                                          showInfo={false}
+                                                          percent={item.sumDiskUsage.toFixed(0)}
+                                                          strokeColor={'#29a1ff'} status={'normal'}/>
+                                            </div>
                                         </div>
                                     </Table.Cell>
                                     <Table.Cell>
