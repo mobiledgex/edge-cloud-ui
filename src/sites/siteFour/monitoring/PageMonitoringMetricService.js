@@ -33,7 +33,6 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
         let prefixUrl = (process.env.REACT_APP_API_ENDPOINT).replace('http', 'ws');
         const webSocket = new WebSocket(`${prefixUrl}/ws/api/v1/auth/ctrl/ShowAppInstClient`)
-
         let showAppInstClientRequestForm = {
             "Region": Region,
             "AppInstClientKey": {
@@ -409,7 +408,6 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
         })
 
         console.log("usageListForAllInstance===>", usageListForAllInstance);
-
 
 
         let allUsageList = []
@@ -1097,12 +1095,12 @@ export const getAppInstEventLogByRegion = async (region = 'EU') => {
             }
 
         }).catch(e => {
-            //throw new Error(e)
-            showToast(e.toString())
+            throw new Error(e)
+            //showToast(e.toString())
         })
         return result;
     } catch (e) {
-        showToast(e.toString())
+        // showToast(e.toString())
     }
 
 }
@@ -1138,7 +1136,7 @@ export const getAllAppInstEventLogs = async () => {
         console.log("getAllAppInstEventLogs===>", completedEventLogList);
         return completedEventLogList;
     } catch (e) {
-       // showToast(e.toString())
+        // showToast(e.toString())
     }
 }
 
