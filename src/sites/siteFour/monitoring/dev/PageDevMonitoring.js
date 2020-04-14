@@ -1609,8 +1609,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         renderHeader = () => {
             return (
                 <>
-                    <Toolbar className='monitoring_title' style={{marginTop: 0}}>
-                        <label className='content_title_label' style={{marginBottom: 3}}>Monitoring</label>
+                    <Toolbar className='monitoring_title' style={{marginTop: 2}}>
+                        <label className='content_title_label' style={{marginBottom: 1}}>Monitoring</label>
                         <div className='page_monitoring_select_area'
                              style={{
                                  width: 'fit-content',
