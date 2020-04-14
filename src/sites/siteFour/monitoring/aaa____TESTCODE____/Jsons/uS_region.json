@@ -1,0 +1,176 @@
+[
+    {
+        "Region": "US",
+        "OrganizationName": "MobiledgeX",
+        "AppName": "MEXPrometheusAppName",
+        "Version": "1.0",
+        "Operator": "TDG",
+        "Cloudlet": "automationBerlinCloudletStage",
+        "ClusterInst": "rah-cluster1",
+        "CloudletLocation": {
+            "latitude": 1,
+            "longitude": 1,
+            "timestamp": {}
+        },
+        "URI": "rah-cluster1.automationberlincloudletstage.tdg.mobiledgex.net",
+        "Liveness": 1,
+        "Mapped_port": [
+            {
+                "proto": 1,
+                "internal_port": 9090,
+                "public_port": 9090
+            }
+        ],
+        "Flavor": "x1.medium",
+        "State": 5,
+        "Error": "-",
+        "Runtime": {},
+        "Created": "seconds : 1576258309",
+        "Progress": "",
+        "Edit": [
+            "Region",
+            "DeveloperName",
+            "AppName",
+            "Version",
+            "Operator",
+            "Cloudlet",
+            "ClusterInst",
+            "CloudletLocation",
+            "State",
+            "Editable"
+        ],
+        "Status": {},
+        "Revision": 2
+    },
+    {
+        "Region": "US",
+        "OrganizationName": "MobiledgeX",
+        "AppName": "MEXPrometheusAppName",
+        "Version": "1.0",
+        "Operator": "TDG",
+        "Cloudlet": "automationBerlinCloudletStage",
+        "ClusterInst": "rah-cluster2",
+        "CloudletLocation": {
+            "latitude": 1,
+            "longitude": 1,
+            "timestamp": {}
+        },
+        "URI": "rah-cluster2.automationberlincloudletstage.tdg.mobiledgex.net",
+        "Liveness": 1,
+        "Mapped_port": [
+            {
+                "proto": 1,
+                "internal_port": 9090,
+                "public_port": 9090
+            }
+        ],
+        "Flavor": "x1.medium",
+        "State": 5,
+        "Error": "-",
+        "Runtime": {},
+        "Created": "seconds : 1576258609",
+        "Progress": "",
+        "Edit": [
+            "Region",
+            "DeveloperName",
+            "AppName",
+            "Version",
+            "Operator",
+            "Cloudlet",
+            "ClusterInst",
+            "CloudletLocation",
+            "State",
+            "Editable"
+        ],
+        "Status": {},
+        "Revision": 2
+    },
+    {
+        "Region": "US",
+        "OrganizationName": "MobiledgeX",
+        "AppName": "RTSPVideoStreaming",
+        "Version": "1.0",
+        "Operator": "tmus",
+        "Cloudlet": "tmocloud-1",
+        "ClusterInst": "autoclusterrtspvideostreaming",
+        "CloudletLocation": {
+            "latitude": 1,
+            "longitude": 1
+        },
+        "URI": "autoclusterrtspvideostreaming.tmocloud-1.tmus.mobiledgex.net",
+        "Liveness": 1,
+        "Mapped_port": [
+            {
+                "proto": 1,
+                "internal_port": 5001,
+                "public_port": 5001
+            }
+        ],
+        "Flavor": "x1.large",
+        "State": 5,
+        "Error": "-",
+        "Runtime": {},
+        "Created": "seconds : 1576269882",
+        "Progress": "",
+        "Edit": [
+            "Region",
+            "DeveloperName",
+            "AppName",
+            "Version",
+            "Operator",
+            "Cloudlet",
+            "ClusterInst",
+            "CloudletLocation",
+            "State",
+            "Editable"
+        ],
+        "Status": {},
+        "Revision": "-"
+    },
+    {
+        "Region": "US",
+        "OrganizationName": "Sierraware",
+        "AppName": "SierraVM",
+        "Version": "50.0.8",
+        "Operator": "TDG",
+        "Cloudlet": "mexplat-stage-hamburg-cloudlet",
+        "ClusterInst": "appcluster",
+        "CloudletLocation": {
+            "latitude": 55,
+            "longitude": 44,
+            "timestamp": {}
+        },
+        "URI": "-",
+        "Liveness": 1,
+        "Mapped_port": [
+            {
+                "proto": 1,
+                "internal_port": 4433
+            },
+            {
+                "proto": 1,
+                "internal_port": 443
+            }
+        ],
+        "Flavor": "x1.medium",
+        "State": 5,
+        "Error": "-",
+        "Runtime": {},
+        "Created": "seconds : 1558078516",
+        "Progress": "",
+        "Edit": [
+            "Region",
+            "DeveloperName",
+            "AppName",
+            "Version",
+            "Operator",
+            "Cloudlet",
+            "ClusterInst",
+            "CloudletLocation",
+            "State",
+            "Editable"
+        ],
+        "Status": {},
+        "Revision": "-"
+    }
+]
