@@ -12,7 +12,7 @@ import * as actions from "../actions";
 import FlexBox from "flexbox-react";
 import CalendarTimeline from "../components/timeline/calendarTimeline";
 import { hot } from "react-hot-loader/root";
-import { IconButton } from '@material-ui/core';
+import {Card, IconButton, Toolbar} from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 const sgmail = require('@sendgrid/mail')
@@ -609,110 +609,117 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         render() {
             return (
                 <div style={{display:'flex', height:'100%', flexDirection: 'column'}}>
-                    <div className="page_audit_history">
-                        <div className="page_audit_history_option">
-                            <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
-                            <div className="page_audit_history_option_period">
-                                <button className="page_audit_error_box" onClick={this.onClickUnCheckedError}>
-                                    <div className="page_audit_error_label">Unchecked Error</div>
-                                    <div className="page_audit_error_number">{this.state.unCheckedErrorCount}</div>
-                                </button>
-                            </div>
-                            <div className="page_audit_history_option_period">
-                                <div className="page_audit_history_label">
-                                Name
+                    <Toolbar>
+                        <label className='content_title_label'>Audit Logs</label>
+                        <div className="page_audit_history">
+                            <div className="page_audit_history_option">
+                                <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
+                                <div className="page_audit_history_option_period">
+                                    <button className="page_audit_error_box" onClick={this.onClickUnCheckedError}>
+                                        <div className="page_audit_error_label">Unchecked Error</div>
+                                        <div className="page_audit_error_number">{this.state.unCheckedErrorCount}</div>
+                                    </button>
                                 </div>
-                                <Dropdown
-                                    placeholder='All'
-                                    fluid
-                                    search
-                                    selection
-                                    options={this.state.nameList}
-                                    onChange={this.dropDownOnNameChange}
-                                    style={{ width: 200 }}
-                                />
-                            </div>
-                            <div className="page_audit_history_option_period">
-                                <div className="page_audit_history_label">
-                                Type
+                                <div className="page_audit_history_option_period">
+                                    <div className="page_audit_history_label">
+                                        Name
+                                    </div>
+                                    <Dropdown
+                                        placeholder='All'
+                                        fluid
+                                        search
+                                        selection
+                                        options={this.state.nameList}
+                                        onChange={this.dropDownOnNameChange}
+                                        style={{ width: 200 }}
+                                    />
                                 </div>
-                                <Dropdown
-                                    placeholder='All'
-                                    fluid
-                                    search
-                                    selection
-                                    options={this.state.typeList}
-                                    onChange={this.dropDownOnTypeChange}
-                                    style={{ width: 200 }}
-                                />
-                            </div>
-                            <div className="page_audit_history_option_period">
-                                <div className="page_audit_history_label">
-                                Date Range
+                                <div className="page_audit_history_option_period">
+                                    <div className="page_audit_history_label">
+                                        Type
+                                    </div>
+                                    <Dropdown
+                                        placeholder='All'
+                                        fluid
+                                        search
+                                        selection
+                                        options={this.state.typeList}
+                                        onChange={this.dropDownOnTypeChange}
+                                        style={{ width: 200 }}
+                                    />
                                 </div>
-                                <Dropdown
-                                    placeholder='Custom Time Range'
-                                    fluid
-                                    search
-                                    selection
-                                    options={countryOptions}
-                                    onChange={this.dropDownOnDateChange}
-                                    style={{ width: 200, height:30 }}
-                                />
-                                <IconButton aria-label="refresh">
-                                    <RefreshIcon style={{ color: '#76ff03', marginTop:-6 }} onClick={(e)=>{this.refreshData()}}/>
-                                </IconButton>
-                            </div>
-                        </div>
-                    </div>
-                    <div  style={{width:this.getWidth(), height:(this.state.closeMap)? '100%' : '50%', overflow:'hidden'}}>
-                        {(this.state.timesList.length > 0) ?
-                            <CalendarTimeline timelineList={this.state.timelineList[0]} onItemSelectCallback={this.onItemSelect} onPopupEmail={this.onPopupEmail} statusCount={this.state.statusCount} timelineSelectedIndex={this.state.timelineSelectedIndex}/>
-                            :null
-                        }
-                    </div>
-                    <div style={{margin:'5px 0', cursor:'pointer', display:'flex', alignItems:'column', justifyContent:'center'}} onClick={this.onCloseMap}>
-                        <span style={{color:'#c8c9cb'}}>{(this.state.closeMap)?'Show':'Hide'}</span>
-                        <Icon name={(this.state.closeMap)?'angle up':'angle down'}/>
-                    </div>
-                    <div className="page_audit_code" style={{display:(this.state.closeMap)?'none':'flex', height:'50%'}}>
-                        <div className="page_audit_code_left">
-                            <div className="page_audit_code_rawviewer">
-                                <div className="page_audit_code_rawviewer_title">
-                                    Raw Viewer
-                                </div>
-                                {this.state.isLoading2 &&
-                                <FlexBox style={{ position: 'absolute', bottom: '54%', left: '5%', zIndex: 9999999 }}>
-                                    <CircularProgress style={{ color: '#1cecff', zIndex: 9999999, fontSize: 10 }}
-                                                      size={20} />
-                                </FlexBox>
-                                }
-                                <div className="page_audit_code_rawviewer_codebox">
-                                    {(this.state.rawViewData) ? jsonView(this.state.rawViewData, this) : null}
-                                </div>
+                                {/*<div className="page_audit_history_option_period">*/}
+                                {/*    <div className="page_audit_history_label">*/}
+                                {/*        Date Range*/}
+                                {/*    </div>*/}
+                                {/*    <Dropdown*/}
+                                {/*        placeholder='Custom Time Range'*/}
+                                {/*        fluid*/}
+                                {/*        search*/}
+                                {/*        selection*/}
+                                {/*        options={countryOptions}*/}
+                                {/*        onChange={this.dropDownOnDateChange}*/}
+                                {/*        style={{ width: 200, height:30 }}*/}
+                                {/*    />*/}
+                                {/*    <IconButton aria-label="refresh">*/}
+                                {/*        <RefreshIcon style={{ color: '#76ff03', marginTop:-6 }} onClick={(e)=>{this.refreshData()}}/>*/}
+                                {/*    </IconButton>*/}
+                                {/*</div>*/}
                             </div>
                         </div>
-                        <div className="page_audit_code_right">
-                            <div className="page_audit_code_request">
-                                <div className="page_audit_code_request_title">
-                                    Request
-                                </div>
-                                <div className="page_audit_code_request_codebox">
-                                    {(this.state.requestData) ? jsonView(this.state.requestData, this) : null}
+                    </Toolbar>
+                    <div className="mexListView">
+
+                        <div  style={{width:this.getWidth(), height:(this.state.closeMap)? 'calc(100% - 20px)' : 'calc(50% - 27px)', overflow:'hidden'}}>
+                            {(this.state.timesList.length > 0) ?
+                                <CalendarTimeline timelineList={this.state.timelineList[0]} onItemSelectCallback={this.onItemSelect} onPopupEmail={this.onPopupEmail} statusCount={this.state.statusCount} timelineSelectedIndex={this.state.timelineSelectedIndex}/>
+                                :null
+                            }
+                        </div>
+                        <div style={{margin:'5px 0', cursor:'pointer', display:'flex', alignItems:'column', justifyContent:'center'}} onClick={this.onCloseMap}>
+                            <span style={{color:'#c8c9cb'}}>{(this.state.closeMap)?'Show':'Hide'}</span>
+                            <Icon name={(this.state.closeMap)?'angle up':'angle down'}/>
+                        </div>
+                        <div className="page_audit_code" style={{display:(this.state.closeMap)?'none':'flex', height: '50%'}}>
+                            <div className="page_audit_code_left">
+                                <div className="page_audit_code_rawviewer">
+                                    <div className="page_audit_code_rawviewer_title">
+                                        Raw Viewer
+                                    </div>
+                                    {this.state.isLoading2 &&
+                                    <FlexBox style={{ position: 'absolute', bottom: '54%', left: '5%', zIndex: 9999999 }}>
+                                        <CircularProgress style={{ color: '#1cecff', zIndex: 9999999, fontSize: 10 }}
+                                                          size={20} />
+                                    </FlexBox>
+                                    }
+                                    <div className="page_audit_code_rawviewer_codebox">
+                                        {(this.state.rawViewData) ? jsonView(this.state.rawViewData, this) : null}
+                                    </div>
                                 </div>
                             </div>
-                            <div className="page_audit_code_response">
-                                <div className="page_audit_code_response_title">
-                                    Response
+                            <div className="page_audit_code_right">
+                                <div className="page_audit_code_request">
+                                    <div className="page_audit_code_request_title">
+                                        Request
+                                    </div>
+                                    <div className="page_audit_code_request_codebox">
+                                        {(this.state.requestData) ? jsonView(this.state.requestData, this) : null}
+                                    </div>
                                 </div>
-                                <div className="page_audit_code_response_codebox">
-                                    {(this.state.responseData) ? jsonView(this.state.responseData, this) : null}
+                                <div className="page_audit_code_response">
+                                    <div className="page_audit_code_response_title">
+                                        Response
+                                    </div>
+                                    <div className="page_audit_code_response_codebox">
+                                        {(this.state.responseData) ? jsonView(this.state.responseData, this) : null}
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <SendEmailView dimmer={true} open={this.state.openSendEmail} close={this.close}
+                                       callback={this.submitSendEmail} rawViewData={this.state.rawViewData}/>
+
                     </div>
-                    <SendEmailView dimmer={true} open={this.state.openSendEmail} close={this.close}
-                                   callback={this.submitSendEmail} rawViewData={this.state.rawViewData}/>
                 </div>
             )
         }

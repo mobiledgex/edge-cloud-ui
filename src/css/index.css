@@ -1212,6 +1212,7 @@ body, button, input, textarea, optgroup, select, textarea,
     display:flex;
     align-items: center;
     font-size:25px;
+    white-space: nowrap;
 }
 
 .content_title_wrap>div, .content_title_wrap>button, .content_title_wrap>button.ui.button {
