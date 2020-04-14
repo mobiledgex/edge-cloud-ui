@@ -1138,7 +1138,7 @@ export const getAllAppInstEventLogs = async () => {
         console.log("getAllAppInstEventLogs===>", completedEventLogList);
         return completedEventLogList;
     } catch (e) {
-        showToast(e.toString())
+       // showToast(e.toString())
     }
 }
 
