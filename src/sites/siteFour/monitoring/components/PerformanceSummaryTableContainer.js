@@ -140,7 +140,7 @@ export default class PerformanceSummaryTableContainer extends React.Component<Pr
                             return (
                                 <Table.Row
                                     style={PageMonitoringStyles.tableRow}
-                                    onClick={() => this.handleRowClicked(item)}
+                                    //onClick={() => this.handleRowClicked(item)}
                                 >
                                     <Table.Cell>
                                         <div style={PageMonitoringStyles.gridTableCellAlignLeft}>
