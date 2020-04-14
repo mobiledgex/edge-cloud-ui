@@ -4,8 +4,8 @@ import { SHOW_CLOUDLET_POOL, SHOW_CLOUDLET_MEMBER, CREATE_CLOUDLET_POOL, DELETE_
 const fields = formatter.fields;
 
 export const keys = [
-    { field: fields.region, label: 'Region', sortable: true, visible: true },
-    { field: fields.poolName, serverField: 'key#OS#name', label: 'Pool Name', sortable: true, visible: true },
+    { field: fields.region, label: 'Region', sortable: true, visible: true, filter:true },
+    { field: fields.poolName, serverField: 'key#OS#name', label: 'Pool Name', sortable: true, visible: true, filter:true },
     { field: fields.cloudletCount, label: 'Number of  Clouldlets', sortable: true, visible: true },
     { field: fields.organizationCount, label: 'Number of Organizations', sortable: true, visible: true },
     {

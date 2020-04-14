@@ -312,7 +312,7 @@ class ClusterInstReg extends React.Component {
             if (mcRequest.response && mcRequest.response.data) {
                 data = mcRequest.response.data;
             }
-            this.setState({ stepsArray: updateStepper(this.state.stepsArray, cloudletName, data) })
+            this.setState({ stepsArray: updateStepper(this.state.stepsArray, cloudletName, data, cloudletName) })
         }
     }
 

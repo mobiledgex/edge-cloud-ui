@@ -107,7 +107,12 @@ export const fields = {
     annotations:'annotations',
     key:'key',
     value:'value',
-    publicImages:'publicImages'
+    publicImages:'publicImages',
+    updateAvailable:'updateAvailable',
+    update:'update',
+    appInstances:'appInstances',
+    upgrade:'upgrade',
+    refreshAppInst:'refreshAppInst'
 }
 
 export const getUserRole = () => {
