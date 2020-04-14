@@ -6,6 +6,7 @@ export const THEME_TYPE = {
     DARK: 'dark'
 }
 
+
 export const getDarkTheme = () => {
     return createMuiTheme({
         palette: {
@@ -55,10 +56,8 @@ export const getLightTheme = () => {
         palette: {
             type: 'light',
             primary: {
-                //main: '#77BD25',
                 main: '#2f46ff',
             },
-
             background: {
                 default: '#fff',
             },
@@ -71,10 +70,10 @@ export const getLightTheme = () => {
             },
             MuiToolbar: {
                 regular: {
-                    backgroundColor: "#e0b518",
+                    backgroundColor: "#2f46ff",
                     color: "#fff",
-                    height: "22px",
-                    minHeight: "22px",
+                    /*height: "22px",
+                    minHeight: "22px",*/
                     '@media (min-width: 600px)': {
                         minHeight: "48px"
                     }
@@ -89,14 +88,14 @@ export const getLightTheme = () => {
             },
             MuiSvgIcon: {
                 root: {
-                    color: '#fccb2f',
+                    color: '#1026bb',
                 }
             },
             MuiCard: {
                 root: {
-                    marginTop: '-18px',
-                    background: '#d4b205 !important',
-                    backgroundColor: '#d4b205 !important'
+                    //marginTop: '-18px',
+                    background: '#2f46ff !important',
+                    backgroundColor: '#2f46ff !important'
                 }
             }
 

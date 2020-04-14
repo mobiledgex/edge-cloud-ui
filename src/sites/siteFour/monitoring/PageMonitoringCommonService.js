@@ -489,7 +489,7 @@ export const renderPlaceHolderCircular3 = (type: string = '') => {
     )
 }
 
-export const renderWifiLoader = (type: string = '') => {
+export const renderWifiLoader = (width=25 , height=25) => {
     return (
         <div
             style={{marginBottom: 3,}}>
@@ -504,8 +504,8 @@ export const renderWifiLoader = (type: string = '') => {
                     }
                 }}
                 speed={2.5}
-                height={25}
-                width={25}
+                width={width}
+                height={height}
                 isStopped={false}
                 isPaused={false}
             />

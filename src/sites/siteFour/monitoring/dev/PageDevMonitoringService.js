@@ -794,6 +794,107 @@ export const makeLineChartDataForAppInstAll = (hardwareUsageList: Array, hardwar
 */
 
 
+
+export const makeLineChartDataForAppInst002 = (hardwareUsageList: Array, hardwareType: string = 'all', _this: PageDevMonitoring) => {
+    console.log("hardwareType===>", hardwareType);
+
+    if (hardwareUsageList.length === 0) {
+        return (
+            <div style={PageMonitoringStyles.noData}>
+                NO DATA
+            </div>
+        )
+    } else {
+
+
+        let instanceAppName = '';
+        let instanceNameList = [];
+        let usageSetList = [];
+        let dateTimeList = [];
+
+        if (hardwareType === 'all') {
+
+        } else {
+            hardwareUsageList.map((item: TypeAppInstanceUsage2, index) => {
+
+                let seriesValues = [];
+                if (hardwareType === HARDWARE_TYPE.CPU) {
+                    seriesValues = item.cpuSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.MEM) {
+                    seriesValues = item.memSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.DISK) {
+                    seriesValues = item.diskSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
+                    seriesValues = item.networkSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+                    seriesValues = item.connectionsSeriesValue
+                }
+
+                console.log(`seriesValues===${hardwareType}>`, seriesValues);
+
+                instanceAppName = item.instance.AppName;
+                let usageList = [];
+
+                for (let j in seriesValues) {
+                    let usageOne = 0;
+                    if (hardwareType === HARDWARE_TYPE.CPU) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.CPU];
+                    } else if (hardwareType === HARDWARE_TYPE.MEM) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.MEM]; //mem usage
+                    } else if (hardwareType === HARDWARE_TYPE.DISK) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.DISK];
+                    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.SENDBYTES];
+                    } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.RECVBYTES];
+                    } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE.toString()];
+                    } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.HANDLED.toString()];
+                    } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACCEPTS.toString()];
+                    }
+
+                    usageList.push(usageOne);
+                    let dateOne = seriesValues[j]["0"];
+                    dateOne = dateOne.toString().split("T");
+
+                    dateTimeList.push(dateOne[1]);
+                }
+
+                instanceNameList.push(instanceAppName);
+                usageSetList.push(usageList);
+
+            })
+        }
+
+
+        //@todo: CUT LIST INTO RECENT_DATA_LIMIT_COUNT
+        let newDateTimeList = [];
+        for (let i in dateTimeList) {
+            if (i < RECENT_DATA_LIMIT_COUNT) {
+                let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
+                let timeOne = splitDateTimeArrayList[0].replace("T", "T");
+                newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
+            }
+
+        }
+
+        let _result={
+            levelTypeNameList: instanceNameList,
+            usageSetList,
+            newDateTimeList,
+            hardwareType
+        }
+
+        _this.props.setChartDataSets(_result);
+
+        console.log("chartDataSets===>", _this.props.chartDataSets);
+    }
+
+};
+
+
 export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareType: string = 'all', _this: PageDevMonitoring) => {
     console.log("hardwareType===>", hardwareType);
 
@@ -878,12 +979,15 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
             }
 
         }
-        return {
+
+        let _result={
             levelTypeNameList: instanceNameList,
             usageSetList,
             newDateTimeList,
             hardwareType
         }
+
+        return _result;
     }
 
 };
