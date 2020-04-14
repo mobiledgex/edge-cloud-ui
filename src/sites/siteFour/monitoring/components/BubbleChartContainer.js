@@ -33,6 +33,8 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
     componentDidMount(): void {
         this.setState({
             bubbleChartData: this.props.bubbleChartData,
+        },()=>{
+            console.log("bubbleChartData===>", this.state.bubbleChartData);
         })
     }
 
@@ -146,6 +148,8 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                                             this.props.parent.setState({
                                                                 bubbleChartData: bubbleChartData,
                                                                 currentHardwareType: value,
+                                                            },()=>{
+                                                                console.log("bubbleChartData2===>", bubbleChartData);
                                                             })
 
                                                         } catch (e) {
@@ -193,10 +197,10 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                             fontStyle: 'italic',
                                         }}
                                         labelFont={{
-                                            //family: 'Righteous',
-                                            size: 14,
+                                            family: 'Abel',
+                                            size: 11,
                                             color: 'black',
-                                            //weight: 'bold',
+                                            weight: 'bold',
                                         }}
                                         bubbleClickFun={async (cluster_cloudlet, index) => {
 
