@@ -365,18 +365,19 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     minZoom={2}
                                     style={{zIndex: 1}}
                                 />
-                                <Control position="topleft" style={{marginTop:3}}>
+                                <Control position="topleft" style={{marginTop: 3}}>
                                     <Icon
                                         icon={'history'} color={'black'}
                                         onClick={async () => {
-                                           try{
-                                               await this.setState({
-                                                   zoom: 3,
-                                               })
-                                               await this.props.parent.handleResetClicked();
-                                           }catch (e) {
+                                            try {
+                                                await this.setState({
+                                                    zoom: 3,
+                                                })
 
-                                           }
+                                                await this.props.parent.handleClusterDropdownAndReset('');
+                                            } catch (e) {
+
+                                            }
                                         }}
                                         name='redo'
                                         style={{

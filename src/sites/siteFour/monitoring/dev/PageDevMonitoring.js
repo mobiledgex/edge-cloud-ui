@@ -573,8 +573,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
         }
 
-        async handleResetClicked() {
+        async resetLocalData() {
+            clearInterval(this.intervalForCluster)
             clearInterval(this.intervalForAppInst)
+
+
             await this.setState({
                 currentGridIndex: -1,
                 currentTabIndex: 0,
@@ -600,9 +603,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 isShowAppInstPopup: !this.state.isShowAppInstPopup,
                 //currentTabIndex: 1,
             })
+
         }
 
-        async refreshAllData() {
+        async reloadDataFromRemote() {
             clearInterval(this.intervalForAppInst)
             await this.setState({
                 currentClassification: CLASSIFICATION.CLUSTER,
@@ -694,23 +698,25 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 barChartDataSet = []
             }
 
-            return ( <BarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this} loading={this.state.loading} chartDataSet={barChartDataSet}  pHardwareType={hwType} graphType={graphType}/>)
+            return (<BarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this}
+                                       loading={this.state.loading} chartDataSet={barChartDataSet}
+                                       pHardwareType={hwType} graphType={graphType}/>)
 
-           /* if (!isEmpty(barChartDataSet)) {
-                let chartDatas = this.makeGradientBarCharData(barChartDataSet)
-                console.log("makeGradientBarCharData===>", barChartDataSet.chartDataList.length);
-                return (
-                    <GradientBarChartContainer
-                        isResizeComplete={this.state.isResizeComplete}
-                        parent={this}
-                        loading={this.state.loading}
-                        chartDataSet={chartDatas}
-                        pHardwareType={hwType}
-                        graphType={graphType}
-                        dataLength={barChartDataSet.chartDataList.length}
-                    />
-                )
-            }*/
+            /* if (!isEmpty(barChartDataSet)) {
+                 let chartDatas = this.makeGradientBarCharData(barChartDataSet)
+                 console.log("makeGradientBarCharData===>", barChartDataSet.chartDataList.length);
+                 return (
+                     <GradientBarChartContainer
+                         isResizeComplete={this.state.isResizeComplete}
+                         parent={this}
+                         loading={this.state.loading}
+                         chartDataSet={chartDatas}
+                         pHardwareType={hwType}
+                         graphType={graphType}
+                         dataLength={barChartDataSet.chartDataList.length}
+                     />
+                 )
+             }*/
 
 
         }
@@ -793,15 +799,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         }
 
 
-
-
-        async __handleClusterDropdown(selectedClusterOne) {
+        async handleClusterDropdownAndReset(selectedClusterOne) {
             let filteredClusterUsageList = []
             if (selectedClusterOne === '') {
                 this.setState({
                     filteredClusterList: this.state.clusterList,
                 })
-                this.handleResetClicked();
+                this.resetLocalData();
             } else {
                 await this.setState({
                     selectedClientLocationListOnAppInst: [],
@@ -915,10 +919,12 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
             let arrDateTime = getOneYearStartEndDatetime();
 
-            let allAppInstUsageList = [];
+            console.log("filteredAppList===>", filteredAppList);
+
+            let appInstUsageList = [];
             await this.setState({dropdownRequestLoading: true})
             try {
-                allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime[0], arrDateTime[1]);
+                appInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime[0], arrDateTime[1]);
             } catch (e) {
                 showToast(e.toString())
             } finally {
@@ -930,8 +936,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
             await this.setState({
                 currentClassification: CLASSIFICATION.APPINST,
-                allAppInstUsageList: allAppInstUsageList,
-                filteredAppInstUsageList: allAppInstUsageList,
+                allAppInstUsageList: appInstUsageList,
+                filteredAppInstUsageList: appInstUsageList,
                 loading: false,
                 currentAppInst: pCurrentAppInst,
                 currentCluster: isEmpty(this.state.currentCluster) ? '' : this.state.currentCluster,
@@ -1067,7 +1073,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
         }
 
-        ____makeGridItemOne(hwType, graphType) {
+        makeGridItemOneBody(hwType, graphType) {
             if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
 
                 let chartDataSets: TypeLineChartData = [];
@@ -1251,7 +1257,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     {/*@desc:__makeGridItem BodyByType  */}
                     {/*desc:############################*/}
                     <div className='page_monitoring_column_resizable'>
-                        {this.____makeGridItemOne(hwType, graphType.toUpperCase())}
+                        {this.makeGridItemOneBody(hwType, graphType.toUpperCase())}
                     </div>
                 </div>
             )
@@ -1398,7 +1404,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         style={{display: 'flex'}}
                         key="1"
                         onClick={async () => {
-                            await this.handleResetClicked();
+                            await this.handleClusterDropdownAndReset('')
                         }}
                     >
                         <MaterialIcon icon={'history'} color={'white'}/>
@@ -1439,7 +1445,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 key="1"
                                 onClick={async () => {
                                     if (!this.state.loading) {
-                                        this.refreshAllData();
+                                        this.reloadDataFromRemote();
                                     } else {
                                         showToast('Currently loading, you can\'t request again.')
                                     }
@@ -1690,19 +1696,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 alignSelf: 'center',
                                 justifyContent: 'center',
                             }}>
-                                {/*  <Button variant="contained" color="primary"
-
-                                        onClick={() => {
-                                            if (this.props.themeType === 'dark') {
-                                                this.props.toggleTheme('light')
-                                            } else {
-                                                this.props.toggleTheme('dark')
-                                            }
-                                        }}
-
-                                        size="small">
-                                    toggle theme {this.props.themeType}
-                                </Button>*/}
                                 <div style={PageMonitoringStyles.listItemTitle}>
                                     {/*Cluster*/} Stream
                                 </div>
@@ -1719,7 +1712,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                                 clearInterval(this.intervalForAppInst)
                                                 clearInterval(this.intervalForCluster)
                                             } else {
-                                                await this.__handleClusterDropdown(this.state.currentCluster)
+                                                await this.handleClusterDropdownAndReset(this.state.currentCluster)
                                             }
                                         }}
 
@@ -1730,7 +1723,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
                             {/*
                             desc :####################################
-                            desc : stream toggle button
+                            desc : appInst stream toggle button
                             desc :####################################
                             */}
                             {this.state.currentClassification === CLASSIFICATION.APPINST &&
@@ -1865,7 +1858,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         onChange={async (e, {value}) => {
                             clearInterval(this.intervalForCluster)
                             clearInterval(this.intervalForAppInst)
-
                             //@desc: If you are choosing the whole cluster ...
                             if (value === '') {
                                 await this.setState({
@@ -1874,7 +1866,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             } else {
                                 await this.filterClusterList(value)
                             }
-                            await this.__handleClusterDropdown(value.trim())
+                            await this.handleClusterDropdownAndReset(value.trim())
                         }}
                     />
                 </div>
