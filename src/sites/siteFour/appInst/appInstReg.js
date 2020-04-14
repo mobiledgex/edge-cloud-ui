@@ -99,12 +99,24 @@ class ClusterInstReg extends React.Component {
                 form.rules.disabled = currentForm.value ? true : false
                 form.error = currentForm.value ? undefined : form.error
             }
-            else if (form.field === fields.privacyPolicyName || form.field === fields.ipAccess) {
+            else if (form.field === fields.ipAccess) {
                 form.visible = currentForm.value
                 form.value = currentForm.value ? form.value : undefined
             }
         }
         if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
+        }
+    }
+
+    ipAccessValueChange = (currentForm, forms, isInit) => {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (form.field === fields.privacyPolicyName) {
+                form.visible = currentForm.value === constant.IP_ACCESS_DEDICATED ? true : false
+            }
+        }
+         if (isInit === undefined || isInit === false) {
             this.setState({ forms: forms })
         }
     }
@@ -293,6 +305,9 @@ class ClusterInstReg extends React.Component {
         }
         else if (form.field === fields.version) {
             this.versionValueChange(form, forms, isInit)
+        }
+        else if (form.field === fields.ipAccess) {
+            this.ipAccessValueChange(form, forms, isInit)
         }
     }
 
