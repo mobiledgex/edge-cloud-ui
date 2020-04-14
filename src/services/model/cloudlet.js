@@ -2,7 +2,7 @@ import * as formatter from './format'
 import uuid from 'uuid'
 import * as serverData from './serverData'
 import * as constant from '../../constant'
-import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, CREATE_CLOUDLET, UPDATE_CLOUDLET,  STREAM_CLOUDLET, DELETE_CLOUDLET, SHOW_CLOUDLET_INFO } from './endPointTypes'
+import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, CREATE_CLOUDLET, UPDATE_CLOUDLET, STREAM_CLOUDLET, DELETE_CLOUDLET, SHOW_CLOUDLET_INFO } from './endPointTypes'
 
 const fields = formatter.fields;
 
@@ -122,13 +122,13 @@ export const streamCloudlet = (data) => {
 
 
 
-export const keys = () =>([
-    { field: fields.region, label: 'Region', sortable: true, visible: true },
-    { field: fields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet Name', sortable: true, visible: true },
-    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true },
+export const keys = () => ([
+    { field: fields.region, label: 'Region', sortable: true, visible: true, filter:true },
+    { field: fields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet Name', sortable: true, visible: true, filter: true },
+    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, filter: true },
     { field: fields.cloudletLocation, serverField: 'location', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
-    { field: fields.latitude, serverField: 'location#OS#latitude', label: 'Longitude', detailView:false },
-    { field: fields.longitude, serverField: 'location#OS#longitude', label: 'Latitude', detailView:false },
+    { field: fields.latitude, serverField: 'location#OS#latitude', label: 'Longitude', detailView: false },
+    { field: fields.longitude, serverField: 'location#OS#longitude', label: 'Latitude', detailView: false },
     { field: fields.ipSupport, serverField: 'ip_support', label: 'IP Support' },
     { field: fields.numDynamicIPs, serverField: 'num_dynamic_ips', label: 'Number of Dynamic IPs' },
     { field: fields.physicalName, serverField: 'physical_name', label: '	Physical Name' },
@@ -139,7 +139,7 @@ export const keys = () =>([
     { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
     { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
     { field: fields.containerVersion, serverField: 'container_version', label: 'Container Version' },
-    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles:['AdminManager', 'OperatorManager', 'OperatorContributor'] }
+    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] }
 ])
 
 const customData = (value) => {

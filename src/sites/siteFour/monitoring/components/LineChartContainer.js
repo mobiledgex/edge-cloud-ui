@@ -77,6 +77,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
         } else {
             return title
         }
+
     }
 
 

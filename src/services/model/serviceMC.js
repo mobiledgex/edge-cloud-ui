@@ -87,14 +87,14 @@ export function sendWSRequest(request, callback) {
         let data = JSON.parse(evt.data);
         let response = {};
         response.data = data;
-        callback({request: request, response: response});
+        callback({request: request, response: response, wsObj:ws});
     }
 
     ws.onclose = evt => {
         sockets.map((item, i) => {
             if (item.uuid === request.uuid) {
                 if (item.isClosed === false && evt.code === 1000) {
-                    callback({request: request})
+                    callback({request: request, wsObj:ws})
                 }
                 sockets.splice(i, 1)
             }

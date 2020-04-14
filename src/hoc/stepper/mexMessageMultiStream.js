@@ -72,7 +72,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export const updateStepper = (stepsArray, id, data) => {
+export const updateStepper = (stepsArray, id, data, header, wsObj) => {
     let currentSteps = null;
     if (stepsArray && stepsArray.length > 0) {
         stepsArray.map((item, i) => {
@@ -90,7 +90,7 @@ export const updateStepper = (stepsArray, id, data) => {
     if (data) {
         let step = { code: data.code, message: data.data.message }
         if (currentSteps === null) {
-            stepsArray.push({ id: id, steps: [step] })
+            stepsArray.push({ header:header, id: id, steps: [step], wsObj:wsObj })
         }
         else {
             stepsArray.map((item, i) => {
@@ -173,7 +173,7 @@ const MultiStream = (props) => {
                         <DialogContent style={{ background: '#24252b', maxHeight: 600 }}>
                             <Grid container spacing={2} style={{ paddingLeft: 10,paddingRight: 10 }}>
                                 <Grid item xs={3}>
-                                    <h4 style={{ padding: '13px 0', color: '#88dd00' }}><strong>Cloudlet</strong></h4>
+                                    <h4 style={{ padding: '13px 0', color: '#88dd00' }}><strong>{props.header ? props.header : 'Cloudlet'}</strong></h4>
                                 </Grid>
                                 <Grid item xs={9}>
                                     <h4 style={{ padding: '13px 0', color: '#88dd00' }} align="center"><strong>Progress</strong></h4>
@@ -185,7 +185,7 @@ const MultiStream = (props) => {
                                     <div key={i}>
                                         <Grid container spacing={2} style={{ padding: 10 }}>
                                             <Grid item xs={3}>
-                                                <h4 style={{ padding: '13px 0', color: '#DDDD' }}>{item.id}</h4>
+                                                <h4 style={{ padding: '13px 0', color: '#DDDD' }}>{item.header}</h4>
                                             </Grid>
                                             <Grid item xs={9}>
                                                 <ExpansionPanel>
@@ -200,8 +200,6 @@ const MultiStream = (props) => {
                         </DialogContent>
 
                     </Dialog>}
-
-                })}
             </div> : null
     )
 }
