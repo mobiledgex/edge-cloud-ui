@@ -218,7 +218,7 @@ export default class CalendarTimeline extends Component {
                     {(storageTimeIndex !== (-1))? 'V' :null} <br />
                     <span style={{fontWeight:600}}>TRACE ID</span> {itemContext.title} <br />
 
-                    <button onClick={this.props.onPopupEmail}>Send E-mail Trace ID</button>
+                    <button style={{cursor: "pointer"}} onClick={this.props.onPopupEmail}>Send E-mail Trace ID</button>
                     {(storageTraceIndex !== (-1))? 'V' :null}
                 </div>
 

@@ -622,20 +622,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 </div>
                                 <div className="page_audit_history_option_period">
                                     <div className="page_audit_history_label">
-                                        Name
-                                    </div>
-                                    <Dropdown
-                                        placeholder='All'
-                                        fluid
-                                        search
-                                        selection
-                                        options={this.state.nameList}
-                                        onChange={this.dropDownOnNameChange}
-                                        style={{ width: 200 }}
-                                    />
-                                </div>
-                                <div className="page_audit_history_option_period">
-                                    <div className="page_audit_history_label">
                                         Type
                                     </div>
                                     <Dropdown
@@ -645,6 +631,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                         selection
                                         options={this.state.typeList}
                                         onChange={this.dropDownOnTypeChange}
+                                        style={{ width: 200 }}
+                                    />
+                                </div>
+                                <div className="page_audit_history_option_period">
+                                    <div className="page_audit_history_label">
+                                        Name
+                                    </div>
+                                    <Dropdown
+                                        placeholder='All'
+                                        fluid
+                                        search
+                                        selection
+                                        options={this.state.nameList}
+                                        onChange={this.dropDownOnNameChange}
                                         style={{ width: 200 }}
                                     />
                                 </div>
