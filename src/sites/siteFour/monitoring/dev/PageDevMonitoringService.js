@@ -1396,6 +1396,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     color: "#505050",
                 },
                 ticks: {
+                    maxTicksLimit: 7,//@desc: lskdflskd
                     fontSize: 11,
                     fontColor: 'white',
                     //maxRotation: 0.05,
