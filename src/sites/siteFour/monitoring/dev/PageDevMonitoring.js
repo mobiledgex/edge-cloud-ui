@@ -1073,83 +1073,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
         }
 
-        makeGridItemOneBody(hwType, graphType) {
-            if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
 
-                let chartDataSets: TypeLineChartData = [];
-                if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                    chartDataSets = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
-                } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
-                    chartDataSets = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
-                }
-
-                return (
-                    <LineChartContainer
-                        isResizeComplete={this.state.isResizeComplete}
-                        loading={this.state.loading}
-                        currentClassification={this.state.currentClassification}
-                        parent={this}
-                        pHardwareType={hwType}
-                        chartDataSet={chartDataSets}
-                    />
-                )
-
-            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BAR) {
-                return (
-                    this.makeBarChartData(hwType, graphType)
-                )
-            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.COLUMN) {
-                return (
-                    this.makeBarChartData(hwType, graphType)
-                )
-            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BUBBLE) {
-                return (
-                    <BubbleChartContainer
-                        loading={this.state.loading}
-                        parent={this}
-                        currentHardwareType={this.state.currentHardwareType}
-                        bubbleChartData={this.state.bubbleChartData}
-                        themeTitle={this.state.themeTitle}/>
-                )
-            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.MAP) {
-                return (
-                    <MapForDevContainer
-                        currentWidgetWidth={this.state.currentWidgetWidth}
-                        isMapUpdate={this.state.isMapUpdate}
-                        selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
-                        mapPopUploading={this.state.mapPopUploading}
-                        parent={this}
-                        isDraggable={this.state.isDraggable}
-                        handleAppInstDropdown={this.handleAppInstDropdown}
-                        markerList={this.state.appInstanceListGroupByCloudlet}
-                        isFullScreenMap={false}
-                        isShowAppInstPopup={this.state.isShowAppInstPopup}
-                    />
-                )
-            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
-                return (
-                    this.state.loading ? renderPlaceHolderCircular() :
-                        <PerformanceSummaryTableContainer parent={this}
-                                                          clusterUsageList={this.state.filteredClusterUsageList}/>
-                )
-            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PIE) {
-                return (
-                    <PieChartContainer/>
-                )
-            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST) {
-                return (
-                    <ClusterEventLogListHook eventLogList={this.state.filteredClusterEventLogList} parent={this}/>
-                )
-            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
-                return this.state.loading ? renderPlaceHolderCircular() :
-                    <AppInstEventLogListHook
-                        currentAppInst={this.state.currentAppInst}
-                        parent={this}
-                        handleAppInstDropdown={this.handleAppInstDropdown}
-                        eventLogList={this.state.filteredAppInstEventLogs}
-                    />
-            }
-        }
 
         showBigModal = (hwType, graphType) => {
 
@@ -1261,6 +1185,83 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     </div>
                 </div>
             )
+        }
+
+        makeGridItemOneBody(hwType, graphType) {
+            if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
+                let chartDataSets: TypeLineChartData = [];
+                if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                    chartDataSets = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
+                } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
+                    chartDataSets = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
+                }
+
+                return (
+                    <LineChartContainer
+                        isResizeComplete={this.state.isResizeComplete}
+                        loading={this.state.loading}
+                        currentClassification={this.state.currentClassification}
+                        parent={this}
+                        pHardwareType={hwType}
+                        chartDataSet={chartDataSets}
+                    />
+                )
+
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BAR) {
+                return (
+                    this.makeBarChartData(hwType, graphType)
+                )
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.COLUMN) {
+                return (
+                    this.makeBarChartData(hwType, graphType)
+                )
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BUBBLE) {
+                return (
+                    <BubbleChartContainer
+                        loading={this.state.loading}
+                        parent={this}
+                        currentHardwareType={this.state.currentHardwareType}
+                        bubbleChartData={this.state.bubbleChartData}
+                        themeTitle={this.state.themeTitle}/>
+                )
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.MAP) {
+                return (
+                    <MapForDevContainer
+                        currentWidgetWidth={this.state.currentWidgetWidth}
+                        isMapUpdate={this.state.isMapUpdate}
+                        selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
+                        mapPopUploading={this.state.mapPopUploading}
+                        parent={this}
+                        isDraggable={this.state.isDraggable}
+                        handleAppInstDropdown={this.handleAppInstDropdown}
+                        markerList={this.state.appInstanceListGroupByCloudlet}
+                        isFullScreenMap={false}
+                        isShowAppInstPopup={this.state.isShowAppInstPopup}
+                    />
+                )
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
+                return (
+                    this.state.loading ? renderPlaceHolderCircular() :
+                        <PerformanceSummaryTableContainer parent={this}
+                                                          clusterUsageList={this.state.filteredClusterUsageList}/>
+                )
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PIE) {
+                return (
+                    <PieChartContainer/>
+                )
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST) {
+                return (
+                    <ClusterEventLogListHook eventLogList={this.state.filteredClusterEventLogList} parent={this}/>
+                )
+            } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
+                return this.state.loading ? renderPlaceHolderCircular() :
+                    <AppInstEventLogListHook
+                        currentAppInst={this.state.currentAppInst}
+                        parent={this}
+                        handleAppInstDropdown={this.handleAppInstDropdown}
+                        eventLogList={this.state.filteredAppInstEventLogs}
+                    />
+            }
         }
 
 

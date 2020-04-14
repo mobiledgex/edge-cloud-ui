@@ -794,7 +794,6 @@ export const makeLineChartDataForAppInstAll = (hardwareUsageList: Array, hardwar
 */
 
 
-
 export const makeLineChartDataForAppInst002 = (hardwareUsageList: Array, hardwareType: string = 'all', _this: PageDevMonitoring) => {
     console.log("hardwareType===>", hardwareType);
 
@@ -880,7 +879,7 @@ export const makeLineChartDataForAppInst002 = (hardwareUsageList: Array, hardwar
 
         }
 
-        let _result={
+        let _result = {
             levelTypeNameList: instanceNameList,
             usageSetList,
             newDateTimeList,
@@ -980,7 +979,7 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
 
         }
 
-        let _result={
+        let _result = {
             levelTypeNameList: instanceNameList,
             usageSetList,
             newDateTimeList,
@@ -1401,19 +1400,19 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     fontColor: 'white',
                     //maxRotation: 0.05,
                     autoSkip: true,
-                    /*maxRotation: 0,//xAxis text rotation
-                    minRotation: 0,//xAxis text rotation*/
-                    maxRotation: 45,//xAxis text rotation
-                    minRotation: 45,//xAxis text rotation
+                    maxRotation: 0,//xAxis text rotation
+                    minRotation: 0,//xAxis text rotation
+                    /*maxRotation: 45,//xAxis text rotation
+                    minRotation: 45,//xAxis text rotation*/
                     padding: 10,
                     labelOffset: 0,
                     callback(value, index, label) {
-                        /*  if (isBig) {
-                              return value
-                          } else {
-                              if (index % 2 === 0) return '';
-                              return value;
-                          }*/
+                        if (isBig) {
+                            return value
+                        } else {
+                            if (index % 2 === 0) return '';
+                            return value;
+                        }
                         return value;
                     },
                 },
