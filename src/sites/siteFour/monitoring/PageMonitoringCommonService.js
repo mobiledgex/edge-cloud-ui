@@ -1,7 +1,7 @@
 import React from 'react';
 import './PageMonitoring.css';
-import {SemanticToastContainer, toast} from "react-semantic-toasts";
-import {CLASSIFICATION, GRID_ITEM_TYPE, HARDWARE_TYPE, USAGE_TYPE,} from "../../../shared/Constants";
+import {toast} from "react-semantic-toasts";
+import {GRID_ITEM_TYPE, HARDWARE_TYPE, USAGE_TYPE,} from "../../../shared/Constants";
 import Lottie from "react-lottie";
 import {makeGradientColor} from "./dev/PageDevMonitoringService";
 import {Chart} from "react-google-charts";
@@ -10,9 +10,7 @@ import {makeCompleteDateTime} from "./admin/PageAdminMonitoringService";
 import moment from "moment";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {GridLoader, PulseLoader} from "react-spinners";
-import {Grid} from "semantic-ui-react";
 import {barChartOption, columnChartOption} from "./PageMonitoringUtils";
-import {Card} from "@material-ui/core";
 
 export const PageMonitoringStyles = {
     topRightMenu: {
