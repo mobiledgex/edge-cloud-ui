@@ -137,12 +137,7 @@ const useToolbarStyles = makeStyles((theme) => ({
         paddingRight: theme.spacing(1),
     },
     highlight:
-    theme.palette.type === 'light'
-      ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
-      : {
+        {
           color: theme.palette.text.primary,
           backgroundColor: '#6E6E6D',
         },
@@ -209,7 +204,7 @@ const useStyles = makeStyles((theme) => ({
 export default function EnhancedTable(props) {
     const classes = useStyles();
     const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('region');
+    const [orderBy, setOrderBy] = React.useState(props.requestInfo.sortBy && props.requestInfo.sortBy.length>0 ? props.requestInfo.sortBy[0] : 'region');
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(25);

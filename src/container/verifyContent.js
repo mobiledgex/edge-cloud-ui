@@ -29,7 +29,7 @@ class VerifyContent extends Component {
     }
    
 
-    goToNext(site) {
+    gotoUrl(site) {
         let mainPath = site;
         let subPath = 'pg=0';
         _self.props.history.push({
@@ -50,7 +50,7 @@ class VerifyContent extends Component {
                     effect: 'slide',
                     timeout: 5000
                 });
-                setTimeout(() => _self.goToNext('/site1'), 3000)
+                setTimeout(() => _self.gotoUrl('/site1'), 1000)
             }
         }
     }
@@ -61,8 +61,6 @@ class VerifyContent extends Component {
 
     render() {
         return (
-
-
             <div className="loadingBox">
                 <GridLoader
                     sizeUnit={"px"}
@@ -72,9 +70,6 @@ class VerifyContent extends Component {
                 />
                 <div>Verifying...</div>
             </div>
-
-
-
         );
     }
 }
@@ -83,7 +78,8 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectData: (data) => { dispatch(actions.setUser(data)) },
-        handleChangeTab: (data) => { dispatch(actions.changeTab(data)) }
+        handleChangeTab: (data) => { dispatch(actions.changeTab(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
     };
 };
 
