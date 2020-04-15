@@ -64,7 +64,7 @@ export const multiDataRequest = (keys, mcRequestList) => {
             let cloudlet = cloudletList[i]
             for (let j = 0; j < cloudletInfoList.length; j++) {
                 let cloudletInfo = cloudletInfoList[j]
-                if (cloudlet[fields.cloudletName] === cloudletInfo[fields.cloudletName]) {
+                if (cloudlet[fields.cloudletName] === cloudletInfo[fields.cloudletName] && cloudlet[fields.operatorName] === cloudletInfo[fields.operatorName]) {
                     cloudlet[fields.cloudletStatus] = cloudletInfo[fields.state]
                     break;
                 }
