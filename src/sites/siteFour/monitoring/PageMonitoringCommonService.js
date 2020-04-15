@@ -590,9 +590,9 @@ export const renderPlaceHolderLottiePinJump3 = (type: string = '') => {
                         preserveAspectRatio: 'xMidYMid slice'
                     }
                 }}
-                speed={2.9}
-                height={75}
-                width={75}
+                speed={2.0}
+                height={105}
+                width={105}
                 isStopped={false}
                 isPaused={false}
             />

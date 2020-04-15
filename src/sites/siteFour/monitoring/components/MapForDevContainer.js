@@ -9,7 +9,12 @@ import {Map, Marker, Polyline, Popup, Rectangle, TileLayer, Tooltip,} from "reac
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {groupByKey_, removeDuplicates, renderPlaceHolderLottiePinJump3} from "../PageMonitoringCommonService";
+import {
+    groupByKey_,
+    removeDuplicates,
+    renderPlaceHolderCircular,
+    renderPlaceHolderLottiePinJump3
+} from "../PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
 import {Radio} from 'antd'
@@ -360,6 +365,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                      this.map = ref;
                                  }}
                             >
+                                {this.props.parent.state.loading && renderPlaceHolderLottiePinJump3()}
                                 <TileLayer
                                     url={this.props.currentTyleLayer}
                                     minZoom={2}
