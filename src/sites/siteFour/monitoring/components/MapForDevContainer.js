@@ -183,48 +183,51 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
 
         async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
+            try {
+                if (this.props.markerList !== nextProps.markerList) {
+                    let appInstanceListGroupByCloudlet = nextProps.markerList;
+                    this.setCloudletLocation(appInstanceListGroupByCloudlet)
+                }
 
-            if (this.props.markerList !== nextProps.markerList) {
-                let appInstanceListGroupByCloudlet = nextProps.markerList;
-                this.setCloudletLocation(appInstanceListGroupByCloudlet)
-            }
+                //@desc : #############################
+                //@desc:   hide appInstInfoPopup
+                //@desc : #############################
+                if (this.props.isShowAppInstPopup !== nextProps.isShowAppInstPopup) {
+                    this.appInstPopup.current.leafletElement.options.leaflet.map.closePopup();
+                }
 
-            //@desc : #############################
-            //@desc:   hide appInstInfoPopup
-            //@desc : #############################
-            if (this.props.isShowAppInstPopup !== nextProps.isShowAppInstPopup) {
-                this.appInstPopup.current.leafletElement.options.leaflet.map.closePopup();
-            }
+                //@desc : #############################
+                //@desc : clientList
+                //@desc : #############################
+                if (this.props.selectedClientLocationListOnAppInst !== nextProps.selectedClientLocationListOnAppInst) {
 
-            //@desc : #############################
-            //@desc : clientList
-            //@desc : #############################
-            if (this.props.selectedClientLocationListOnAppInst !== nextProps.selectedClientLocationListOnAppInst) {
+                    await this.setState({
+                        clientObjKeys: [],
+                    })
+                    let clientList = nextProps.selectedClientLocationListOnAppInst;
+                    //desc: duplication remove by client cellphone uuid
+                    clientList = removeDuplicates(clientList, "uuid")
 
-                await this.setState({
-                    clientObjKeys: [],
-                })
-                let clientList = nextProps.selectedClientLocationListOnAppInst;
-                //desc: duplication remove by client cellphone uuid
-                clientList = removeDuplicates(clientList, "uuid")
+                    let newClientList = []
+                    clientList.map((item: TypeClient, index) => {
+                        let clientLocation = parseFloat(item.latitude).toFixed(3).toString() + parseFloat(item.longitude).toFixed(2).toString();
+                        console.log("clientLocation====>", clientLocation);
+                        item.clientLocation = clientLocation;
+                        newClientList.push(item);
+                    })
 
-                let newClientList = []
-                clientList.map((item: TypeClient, index) => {
-                    let clientLocation = parseFloat(item.latitude).toFixed(3).toString() + parseFloat(item.longitude).toFixed(2).toString();
-                    console.log("clientLocation====>", clientLocation);
-                    item.clientLocation = clientLocation;
-                    newClientList.push(item);
-                })
+                    let groupedClientList = groupByKey_(newClientList, 'clientLocation')
+                    let clientObjKeys = Object.keys(groupedClientList)
+                    await this.setState({
+                        clientList: groupedClientList,
+                        clientObjKeys: clientObjKeys,
+                    }, () => {
+                        //console.log("selectedClientLocationListOnAppInst====>", this.state.clientList);
 
-                let groupedClientList = groupByKey_(newClientList, 'clientLocation')
-                let clientObjKeys = Object.keys(groupedClientList)
-                await this.setState({
-                    clientList: groupedClientList,
-                    clientObjKeys: clientObjKeys,
-                }, () => {
-                    //console.log("selectedClientLocationListOnAppInst====>", this.state.clientList);
+                    })
+                }
+            } catch (e) {
 
-                })
             }
 
         }
