@@ -1995,6 +1995,23 @@ export const makeSelectBoxListWithKeyValuePipe = (arrList, keyName, valueName) =
     return newArrList;
 };
 
+export const makeSelectBoxListWithKeyValuePipeForCluster = (arrList, keyName, valueName) => {
+    let newArrList = [];
+    newArrList.push({
+        key: '',
+        value: '',
+        text: 'Reset Filter',
+    })
+    for (let i in arrList) {
+        newArrList.push({
+            key: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim(),
+            value: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim(),
+            text: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim(),
+        })
+    }
+    return newArrList;
+};
+
 
 export const makeSelectBoxListWithKey = (arrList, keyName) => {
     let newArrList = [];

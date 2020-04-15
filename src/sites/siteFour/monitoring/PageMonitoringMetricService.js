@@ -1069,12 +1069,9 @@ export const getAppInstEventLogByRegion = async (region = 'EU') => {
 
         }
 
-        console.log("getAppInstEventLogs====>", form)
-
-
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
-        let result = await axios({
+        return await axios({
             url: '/api/v1/auth/events/app',
             method: 'post',
             data: form,
@@ -1095,10 +1092,9 @@ export const getAppInstEventLogByRegion = async (region = 'EU') => {
             }
 
         }).catch(e => {
-            throw new Error(e)
+            //throw new Error(e)
             //showToast(e.toString())
         })
-        return result;
     } catch (e) {
         // showToast(e.toString())
     }

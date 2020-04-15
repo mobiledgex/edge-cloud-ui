@@ -25,6 +25,8 @@ import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
 import {ThemeProvider} from "@material-ui/styles";
 import {getDarkTheme, getLightTheme, THEME_TYPE} from "./themeStyle";
+import Test001 from "./sites/siteFour/monitoring/aaa____TESTCODE____/Pages/Test001";
+import MaterialDropDown from "./sites/siteFour/monitoring/aaa____TESTCODE____/Pages/MaterialDropDown";
 // API
 
 let self = null;
@@ -341,24 +343,19 @@ class App extends Component {
                     <div style={{width: '100%', height: '100%'}}>
                         <Route exact path='/logout' component={DashboardContainer.bind(this, {mainPath: '/logout'})}/>
                         <Route exact path='/' component={DashboardContainer.bind(this, {mainPath: '/site1'})}/>
-                        <Route exact path='/site1/:page'
-                               component={DashboardContainer.bind(this, {mainPath: '/site1'})}/>
+                        <Route exact path='/site1/:page' component={DashboardContainer.bind(this, {mainPath: '/site1'})}/>
                         <Route exact path='/site1' component={DashboardContainer.bind(this, {mainPath: '/site1'})}/>
-                        <Route exact path='/site2/:page'
-                               component={DashboardContainer.bind(this, {mainPath: '/site2'})}/>
+                        <Route exact path='/site2/:page' component={DashboardContainer.bind(this, {mainPath: '/site2'})}/>
                         <Route exact path='/site2' component={DashboardContainer.bind(this, {mainPath: '/site2'})}/>
-                        <Route exact path='/site3/:page'
-                               component={DashboardContainer.bind(this, {mainPath: '/site3'})}/>
+                        <Route exact path='/site3/:page' component={DashboardContainer.bind(this, {mainPath: '/site3'})}/>
                         <Route exact path='/site3' component={DashboardContainer.bind(this, {mainPath: '/site3'})}/>
                         <Route exact path='/site4' component={DashboardContainer.bind(this, {mainPath: '/site4'})}/>
-                        <Route exact path='/site4/:page'
-                               component={DashboardContainer.bind(this, {mainPath: '/site4', ...history.location.search})}/>
+                        <Route exact path='/site4/:page' component={DashboardContainer.bind(this, {mainPath: '/site4', ...history.location.search})}/>
                         <Route exact path='/site5' component={DashboardContainer.bind(this, {mainPath: '/site5'})}/>
-                        <Route exact path='/createAccount'
-                               component={DashboardContainer.bind(this, {mainPath: '/createAccount'})}/>
-                        <Route exact path='/passwordreset'
-                               component={DashboardContainer.bind(this, {mainPath: '/passwordreset'})}/>
+                        <Route exact path='/createAccount' component={DashboardContainer.bind(this, {mainPath: '/createAccount'})}/>
+                        <Route exact path='/passwordreset' component={DashboardContainer.bind(this, {mainPath: '/passwordreset'})}/>
                         <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath: '/verify'})}/>
+                        <Route exact path='/MaterialDropDown' component={MaterialDropDown}/>
                     </div>
                 </Router>
             </ThemeProvider>

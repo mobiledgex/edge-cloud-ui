@@ -144,7 +144,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
             this.appInstPopup = React.createRef();
 
             this.state = {
-                zoom: 3,//mapZoom
+                zoom: 2,//mapZoom
                 appInstanceListGroupByCloudlet: '',
                 cloudletKeys: [],
                 newCloudLetLocationList: [],
@@ -283,7 +283,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 if (newCloudLetLocationList[0] !== undefined) {
                     this.setState({
                         mapCenter: [newCloudLetLocationList[0].CloudletLocation.latitude, newCloudLetLocationList[0].CloudletLocation.longitude],
-                        zoom: 4,
+                        zoom: 2,
                     })
                 }
             })
