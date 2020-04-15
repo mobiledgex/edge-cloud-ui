@@ -10,7 +10,6 @@ import * as actions from '../../../actions';
 import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 //model
-import { additionalDetail } from '../../../services/model/shared'
 import { keys, createOrganization } from '../../../services/model/organization';
 import { addUser } from '../../../services/model/users';
 import { } from '../../../services/model/cloudlet';
