@@ -115,7 +115,7 @@ type State = {
 };
 
 export default connect(mapStateToProps, mapDispatchProps)(
-    class LeafletMapContainerDev extends React.Component<Props, State> {
+    class MapForDevContainer extends React.Component<Props, State> {
         mapTileList = [
             {
                 url: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
