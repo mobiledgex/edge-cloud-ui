@@ -1,13 +1,12 @@
 import * as formatter from './format'
-import * as constant from '../../constant'
 import {SHOW_ACCOUNTS, DELETE_ACCOUNT} from './endPointTypes'
 
 let fields = formatter.fields
 
 export const keys = [
-    { field: fields.username, serverField: 'Name', label: 'Username', visible: true, filter:true },
-    { field: fields.email, serverField: 'Email', label: 'Email', visible: true },
-    { field: fields.emailVerified, serverField: 'EmailVerified', label: 'Email Verified', visible: true, clickable: true },
+    { field: fields.username, serverField: 'Name', sortable: true, label: 'Username', visible: true, filter:true },
+    { field: fields.email, serverField: 'Email', sortable: true, label: 'Email', visible: true },
+    { field: fields.emailVerified, serverField: 'EmailVerified', sortable: true, label: 'Email Verified', visible: true, clickable: true },
     { field: fields.passHash, serverField: 'Passhash', label: 'Passhash' },
     { field: fields.iter, serverField: 'Iter', label: 'Iter' },
     { field: fields.familyName, serverField: 'FamilyName', label: 'Family Name' },
@@ -16,7 +15,7 @@ export const keys = [
     { field: fields.nickName, serverField: 'Nickname', label: 'Nickname' },
     { field: fields.createdAt, serverField: 'CreatedAt', label: 'Created At' },
     { field: fields.updatedAt, serverField: 'UpdatedAt', label: 'Updated At' },
-    { field: fields.locked, serverField: 'Locked', label: 'Locked', visible: true, clickable: true },
+    { field: fields.locked, serverField: 'Locked', label: 'Locked', sortable: true, visible: true, clickable: true },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
 
