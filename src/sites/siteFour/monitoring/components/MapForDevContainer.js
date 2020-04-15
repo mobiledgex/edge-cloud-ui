@@ -5,16 +5,11 @@ import 'react-leaflet-fullscreen-control'
 import type {TypeAppInstance, TypeClient} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 import {CheckCircleOutlined} from '@material-ui/icons';
-import {Map, Marker, Polyline, Popup, Rectangle, TileLayer, Tooltip,} from "react-leaflet";
+import {Map, Marker, Polyline, Popup, TileLayer, Tooltip,} from "react-leaflet";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {
-    groupByKey_,
-    removeDuplicates,
-    renderPlaceHolderCircular,
-    renderPlaceHolderLottiePinJump3
-} from "../PageMonitoringCommonService";
+import {groupByKey_, removeDuplicates} from "../PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
 import {Radio} from 'antd'
@@ -27,7 +22,6 @@ import {
     WHITE_LINE_COLOR
 } from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
-import MaterialIcon from "material-icons-react";
 
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
@@ -365,7 +359,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                      this.map = ref;
                                  }}
                             >
-                                {this.props.parent.state.loading && renderPlaceHolderLottiePinJump3()}
+                                {/*{this.props.parent.state.loading && renderPlaceHolderLottiePinJump3()}*/}
                                 <TileLayer
                                     url={this.props.currentTyleLayer}
                                     minZoom={2}

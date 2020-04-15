@@ -22,7 +22,8 @@ import {
     makeid,
     makeLineChartDataForAppInst,
     makeLineChartDataForBigModal,
-    makeLineChartDataForCluster, makeSelectBoxListWithKeyValuePipeForCluster,
+    makeLineChartDataForCluster,
+    makeSelectBoxListWithKeyValuePipeForCluster,
     makeSelectBoxListWithValuePipe,
     revertToDefaultLayout,
 } from "./PageDevMonitoringService";
@@ -458,7 +459,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 isShowAppInstPopup: false,
                 isShowPopOverMenu: false,
                 isOpenEditView2: false,
-                showAppInstClient: false,
+                showAppInstClient: true,
                 filteredClusterList: [],
             };
         }
