@@ -15,16 +15,14 @@ import {
     defaultLayoutMapperForAppInst,
     filterByClassification,
     getUserId,
-    makeAllLineChartData,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
     makeDropdownListWithValuePipeForAppInst,
     makeGradientColorList2,
     makeid,
-    makeLineChartDataForAppInst, makeLineChartDataForAppInst002,
+    makeLineChartDataForAppInst,
     makeLineChartDataForBigModal,
-    makeLineChartDataForCluster,
-    makeSelectBoxListWithKeyValuePipe,
+    makeLineChartDataForCluster, makeSelectBoxListWithKeyValuePipeForCluster,
     makeSelectBoxListWithValuePipe,
     revertToDefaultLayout,
 } from "./PageDevMonitoringService";
@@ -87,7 +85,6 @@ import MaterialIcon from "material-icons-react";
 import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout, LayoutItem} from "react-grid-layout/lib/utils";
-import GradientBarChartContainer from "../components/GradientBarChartContainer";
 import AddItemPopupContainer2 from '../components/AddItemPopupContainer2'
 import Switch from "@material-ui/core/Switch";
 import {THEME_TYPE} from "../../../../themeStyle";
@@ -519,7 +516,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 let cloudletList = cloudletList_clusterList_appInstList[0]
                 let clusterList = cloudletList_clusterList_appInstList[1];
                 let appInstList = cloudletList_clusterList_appInstList[2];
-                let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
+                let clusterDropdownList = makeSelectBoxListWithKeyValuePipeForCluster(clusterList, 'ClusterName', 'Cloudlet')
 
                 //@todo:#########################################################################
                 //@todo: getAllClusterEventLogList, getAllAppInstEventLogs ,allClusterUsageList
@@ -527,10 +524,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 promiseList2.push(getAllClusterEventLogList(clusterList))
                 promiseList2.push(getAllAppInstEventLogs());
                 promiseList2.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
-                let allClusterEventLogs_allAppInstEventLogs_allClusterUsageList = await Promise.all(promiseList2);
-                let allClusterEventLogList = allClusterEventLogs_allAppInstEventLogs_allClusterUsageList[0];
-                let allAppInstEventLogs = allClusterEventLogs_allAppInstEventLogs_allClusterUsageList[1];
-                let allClusterUsageList = allClusterEventLogs_allAppInstEventLogs_allClusterUsageList[2];
+                let allClusterEventLogList_allAppInstEventLogList_allClusterUsageList = await Promise.all(promiseList2);
+                let allClusterEventLogList = allClusterEventLogList_allAppInstEventLogList_allClusterUsageList[0];
+                let allAppInstEventLogList = allClusterEventLogList_allAppInstEventLogList_allClusterUsageList[1];
+                let allClusterUsageList = allClusterEventLogList_allAppInstEventLogList_allClusterUsageList[2];
 
                 let appInstanceListGroupByCloudlet = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
                 let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
@@ -547,8 +544,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                     bubbleChartData: bubbleChartData,
                     allClusterEventLogList: allClusterEventLogList,
                     filteredClusterEventLogList: allClusterEventLogList,
-                    allAppInstEventLogs: allAppInstEventLogs,
-                    filteredAppInstEventLogs: allAppInstEventLogs,
+                    allAppInstEventLogs: allAppInstEventLogList,
+                    filteredAppInstEventLogs: allAppInstEventLogList,
                     isReady: true,
                     clusterDropdownList: clusterDropdownList,
                     dropDownCloudletList: cloudletList,
@@ -630,11 +627,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 currentCluster: '',
                 currentAppInst: '',
             })
-
-        }
-
-        makeLineChartData(hwType) {
-
 
         }
 
@@ -1074,7 +1066,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         }
 
 
-
         showBigModal = (hwType, graphType) => {
 
             let chartDataSets = []
@@ -1426,7 +1417,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             Add Item
                         </div>
                     </AMenu.Item>
-                    {/*  <AMenu.Item style={{display: 'flex'}}
+                    <AMenu.Item style={{display: 'flex'}}
                                 key="1"
                                 onClick={() => {
                                     this.setState({
@@ -1438,7 +1429,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         <div style={PageMonitoringStyles.listItemTitle}>
                             Add Item for test
                         </div>
-                    </AMenu.Item>*/}
+                    </AMenu.Item>
                     {/*desc:#########################################*/}
                     {/*desc:Reload                                  */}
                     {/*desc:#########################################*/}
