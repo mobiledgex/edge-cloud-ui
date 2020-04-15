@@ -24,7 +24,7 @@ export const keys = () => ([
   { field: fields.mappedPorts, serverField: 'mapped_ports', label: 'Mapped Port', dataType: constant.TYPE_JSON },
   { field: fields.flavorName, serverField: 'flavor#OS#name', label: 'Flavor' },
   { field: fields.ipAccess, serverField: 'auto_cluster_ip_access'},
-  { field: fields.revision, serverField: 'revision', label: 'Revision', visible: true  },
+  { field: fields.revision, serverField: 'revision', label: 'Revision', visible: false  },
   { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
   { field: fields.runtimeInfo, serverField: 'runtime_info', label: 'Runtime', dataType: constant.TYPE_JSON },
   { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_JSON },

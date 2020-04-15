@@ -73,14 +73,17 @@ const getRow = (id, item, data) => {
 const MexDetailViewer = (props) => {
     let detailData = props.detailData;
     return (
-        <Card style={{width:'100%', backgroundColor:'transparent', color:'white', height:constant.getHeight(155)}}>
+        <Card style={{width:'100%', backgroundColor:'transparent', color:'white'}}>
             <Table celled style={{ width: '100%', backgroundColor: '#2A2C33', border: 'none'}}>
-                <Table.Header>
-                    <Table.Row>
-                        <Table.HeaderCell>Key</Table.HeaderCell>
-                        <Table.HeaderCell>Value</Table.HeaderCell>
-                    </Table.Row>
-                </Table.Header>
+                {
+                    (props.showHeader === undefined || props.showHeader) ?
+                        <Table.Header>
+                            <Table.Row>
+                                <Table.HeaderCell>Key</Table.HeaderCell>
+                                <Table.HeaderCell>Value</Table.HeaderCell>
+                            </Table.Row>
+                        </Table.Header> : null
+                }
                 <Table.Body>
                     {props.keys.map((item, i) => {
                         let data = detailData[item.field]

@@ -3,14 +3,14 @@ import { withRouter } from 'react-router-dom';
 import { Item, Step, Grid, Card, List, Form, Header, Button } from 'semantic-ui-react';
 //Mex
 import MexForms, { SELECT, INPUT, CHECKBOX } from '../../../hoc/forms/MexForms';
+import MexDetailViewer from '../../../hoc/dataViewer/DetailViewer'
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 //model
-import { additionalDetail } from '../../../services/model/shared'
-import { createOrganization } from '../../../services/model/organization';
+import { keys, createOrganization } from '../../../services/model/organization';
 import { addUser } from '../../../services/model/users';
 import { } from '../../../services/model/cloudlet';
 
@@ -70,7 +70,7 @@ class OrganizationReg extends React.Component {
             forms: [],
         }
         this.type = null
-        this.organizationName = null
+        this.organizationInfo = null
         //To avoid refecthing data from server
     }
 
@@ -164,7 +164,7 @@ class OrganizationReg extends React.Component {
 
     onCreateOrganization = async (data) => {
         if (data) {
-            this.organizationName = data[fields.organizationName]
+            this.organizationInfo = data
             this.type = data[fields.type]
             data[fields.type] = data[fields.type].toLowerCase()
             let mcRequest = await createOrganization(this, data)
@@ -186,19 +186,17 @@ class OrganizationReg extends React.Component {
     }
 
     getStep3 = () => {
-        let organizationName = this.organizationName
-        let type = this.type
+        let organizationName = this.organizationInfo[fields.organizationName]
+        this.organizationInfo[fields.publicImages] = this.organizationInfo[fields.publicImages] ? constant.YES : constant.NO
         return (
             <Fragment>
                 <Grid>
                     <Grid.Column width={11}>
                         <Form>
                             <Header className="newOrg3-1">{`Organization "` + organizationName + `" has been created.`}</Header>
-                            {
-                                additionalDetail({ type: type, organizationName: organizationName })
-                            }
+                            <MexDetailViewer detailData={this.organizationInfo} keys={keys()} showHeader={false}/>
                             <Form.Group className='orgButton' style={{ width: '100%' }}>
-                                <Button className="newOrg3-4" onClick={(e) => { this.props.onClose() }} type='submit' positive style={{ width: '100%' }}>Check your Organization</Button>
+                                <Button className="newOrg3-4" onClick={(e) => { this.props.onClose() }} type='submit' positive style={{ width: '100%' }}>Return to Organization</Button>
                             </Form.Group>
                         </Form>
                     </Grid.Column>
@@ -327,7 +325,7 @@ class OrganizationReg extends React.Component {
     getFormData = (data) => {
         if (data) {
             this.type = data[fields.type] === 'developer' ? 'Developer' : 'Operator'
-            this.organizationName = data[fields.organizationName]
+            this.organizationInfo = data
             this.addUserForm(data)
             this.setState({ step: 1 })
         }
