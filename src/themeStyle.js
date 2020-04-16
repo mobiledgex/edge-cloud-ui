@@ -23,7 +23,8 @@ export const getDarkTheme = () => {
             },
             MuiPaper: {
                 root: {
-                    backgroundColor: '#0c0a0a'
+                    backgroundColor: '#0c0a0a',
+                    /*marginBottom: -8,*/
                 }
             },
         }

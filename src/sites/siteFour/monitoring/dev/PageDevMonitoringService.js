@@ -1399,12 +1399,12 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     padding: 10,
                     labelOffset: 0,
                     callback(value, index, label) {
-                        if (isBig) {
+                      /*  if (isBig) {
                             return value
                         } else {
                             if (index % 2 === 0) return '';
                             return value;
-                        }
+                        }*/
                         return value;
                     },
                 },
