@@ -17,7 +17,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import ListIcon from '@material-ui/icons/List';
 import { fields } from '../../services/model/format';
-import {Popper, Grow, Paper, ClickAwayListener, MenuList, MenuItem, lighten} from '@material-ui/core';
+import {Popper, Grow, Paper, ClickAwayListener, MenuList, MenuItem} from '@material-ui/core';
 import { getUserRole } from '../../services/model/format';
 import { Icon } from 'semantic-ui-react';
 
