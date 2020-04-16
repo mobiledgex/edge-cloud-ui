@@ -33,7 +33,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
     componentDidMount(): void {
         this.setState({
             bubbleChartData: this.props.bubbleChartData,
-        },()=>{
+        }, () => {
             console.log("bubbleChartData===>", this.state.bubbleChartData);
         })
     }
@@ -148,7 +148,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                                             this.props.parent.setState({
                                                                 bubbleChartData: bubbleChartData,
                                                                 currentHardwareType: value,
-                                                            },()=>{
+                                                            }, () => {
                                                                 console.log("bubbleChartData2===>", bubbleChartData);
                                                             })
 
@@ -203,25 +203,23 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                             weight: 'bold',
                                         }}
                                         bubbleClickFun={async (cluster_cloudlet, index) => {
-
-                                         /*   try {
+                                           /* try {
                                                 let lineChartDataSet = makeLineChartDataForCluster(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
                                                 cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
                                                 handleLegendAndBubbleClickedEvent(this.props.parent, cluster_cloudlet, lineChartDataSet)
                                             } catch (e) {
 
                                             }*/
-
 
                                         }}
                                         legendClickFun={async (cluster_cloudlet, index) => {
-                                         /*   try {
-                                                let lineChartDataSet = makeLineChartDataForCluster(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
-                                                cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
-                                                handleLegendAndBubbleClickedEvent(this.props.parent, cluster_cloudlet, lineChartDataSet)
-                                            } catch (e) {
+                                            /*   try {
+                                                   let lineChartDataSet = makeLineChartDataForCluster(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
+                                                   cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
+                                                   handleLegendAndBubbleClickedEvent(this.props.parent, cluster_cloudlet, lineChartDataSet)
+                                               } catch (e) {
 
-                                            }*/
+                                               }*/
                                         }}
                                         data={pBubbleChartData}
                                     />

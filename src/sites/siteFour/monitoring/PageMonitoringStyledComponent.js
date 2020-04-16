@@ -63,7 +63,7 @@ export const Legend = styled.div`
   //marginLeft:50px;
 `;
 
-export const LegendInner = styled.div`
+export const Legend2 = styled.div`
   display : flex;
   justify-content: flex-start;
   text-align: center;

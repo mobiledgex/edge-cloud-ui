@@ -5,6 +5,7 @@ import {Line} from 'react-chartjs-2';
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import type {TypeLineChartData2} from "../../../../shared/Types";
 import {lineGraphOptions} from "../../../../shared/Constants";
+import {Legend} from "../PageMonitoringStyledComponent";
 
 type Props = {
     modalIsOpen: boolean,
@@ -96,7 +97,7 @@ export default class ModalGraph extends React.Component<Props, State> {
             <div style={{flex: 1, display: 'flex', width: '100%'}}>
                 <AModal
                     mask={false}
-                    style={{top: 220, left: -470,}} //@fixme :modal popup container location( absoulte)
+                    style={{top: 220, left: 140,}} //@fixme :modal popup container location( absoulte)
                     //title={this.props.currentGraphAppInst + " [" + this.props.cluster + "]" + "  " + this.state.hardwareType}
                     visible={this.props.modalIsOpen}
                     onOk={() => {
@@ -112,15 +113,16 @@ export default class ModalGraph extends React.Component<Props, State> {
                         })
 
                     }}
-                    maskStyle={{color:'white'}}
+                    maskStyle={{color: 'white'}}
                     bodyStyle={{
-                      //  height: window.innerHeight - 20,
+                        //  height: window.innerHeight - 20,
                         backgroundColor: 'rgb(41, 44, 51)',
                     }}
                     width={'30%'}
                     height={'85%'}
                     footer={null}
                 >
+
                     <div style={{display: 'flex', backgroundColor: 'transparent', width: '100%', height: 59}}>
                         <div style={{
                             flex: .85,
@@ -135,13 +137,14 @@ export default class ModalGraph extends React.Component<Props, State> {
                         </div>
                         <div
                             style={{
-                                flex: .15,
+                                flex: .13,
                                 color: 'white',
-                                fontFamily: 'Roboto Condensed',
+                                fontFamily: 'ubuntu',
                                 fontSize: 18,
                                 fontWeight: 'bold',
                                 textAlign: 'right',
                                 display: 'flex',
+                                marginRight: 20,
                             }}>
                             {this.state.hardwareType}
                         </div>
