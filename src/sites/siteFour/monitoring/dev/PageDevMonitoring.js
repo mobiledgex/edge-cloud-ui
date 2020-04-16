@@ -30,13 +30,14 @@ import {
 import {
     ADD_ITEM_LIST,
     CHART_COLOR_APPLE,
+    CHART_COLOR_BERRIES_GALORE,
     CHART_COLOR_EXOTIC_ORCHIDS,
     CHART_COLOR_LIST,
     CHART_COLOR_LIST2,
     CHART_COLOR_LIST3,
     CHART_COLOR_LIST4,
     CHART_COLOR_MONOKAI,
-    CHART_COLOR_ORANGE_SUNSET,
+    CHART_COLOR_URBAN_SKYLINE,
     CLASSIFICATION,
     GRID_ITEM_TYPE,
     HARDWARE_OPTIONS_FOR_APPINST,
@@ -306,8 +307,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             let themeTitle = getUserId() + "_mon_theme_title";
             //@TODO: DELETE THEME COLOR
             /*reactLocalStorage.remove(themeTitle)
-            reactLocalStorage.remove(themeKey)
-            */
+            reactLocalStorage.remove(themeKey)*/
             this.state = {
                 layoutForCluster: isEmpty(reactLocalStorage.get(clusterLayoutKey)) ? defaultLayoutForCluster : reactLocalStorage.getObject(clusterLayoutKey),
                 layoutMapperForCluster: isEmpty(reactLocalStorage.get(ClusterHwMapperKey)) ? defaultHwMapperListForCluster : reactLocalStorage.getObject(ClusterHwMapperKey),
@@ -1375,11 +1375,18 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 })
             }
 
-            if (themeTitle === THEME_OPTIONS.ORANGE_SUNSET) {
+            if (themeTitle === THEME_OPTIONS.URBAN_SKYLINE) {
                 await this.setState({
-                    chartColorList: CHART_COLOR_ORANGE_SUNSET
+                    chartColorList: CHART_COLOR_URBAN_SKYLINE
                 })
             }
+
+            if (themeTitle === THEME_OPTIONS.BERRIES_GALORE) {
+                await this.setState({
+                    chartColorList: CHART_COLOR_BERRIES_GALORE
+                })
+            }
+
 
             let selectedChartColorList = this.state.chartColorList;
             reactLocalStorage.setObject(getUserId() + "_mon_theme", selectedChartColorList)

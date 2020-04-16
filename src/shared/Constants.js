@@ -14,7 +14,11 @@ export const CHART_COLOR_APPLE = ['#0A84FF', '#30D158', '#FF453A', '#FF9F0A', '#
 
 
 export const CHART_COLOR_EXOTIC_ORCHIDS = ['#72a2c0', '#00743f', '#f2a104', '#192e5b', '#1d65a6', '#66D9EF', '#272822', '#75715E',]
-export const CHART_COLOR_ORANGE_SUNSET = ['#F46A4E', '#F4B05A', '#F4874B', '#A3586D', '#5C4A72', '#66D9EF', '#272822', '#75715E']
+
+
+export const CHART_COLOR_URBAN_SKYLINE = ['#522E75', '#7e7d7b', '#52591F', '#A3765D', '#714E3D', '#66D9EF', '#272822', '#75715E']
+
+export const CHART_COLOR_BERRIES_GALORE = ['#777CA8', '#BB1924', '#EE6C81', '#F092A5', '#AFBADC', '#66D9EF', '#272822', '#75715E']
 
 export const CHART_COLOR_LIST5 = ['#609732', '#6EDC12', '#69BA27', '#527536', '#405330']
 export const CHART_COLOR_LIST6 = ['#AA5939', '#F75514', '#D15A2B', '#83513C', '#5D4136']
@@ -42,7 +46,8 @@ export const THEME_OPTIONS = {
     MONOKAI: 'MONOKAI',
     APPLE: 'APPLE',
     EXOTIC_ORCHIDS: 'EXOTIC_ORCHIDS',
-    ORANGE_SUNSET: 'ORANGE_SUNSET',
+    URBAN_SKYLINE: 'URBAN_SKYLINE',
+    BERRIES_GALORE: 'BERRIES_GALORE'
 }
 
 export const THEME_OPTIONS_LIST = [
@@ -53,7 +58,9 @@ export const THEME_OPTIONS_LIST = [
     {value: 'MONOKAI', text: 'MONOKAI'},
     {value: 'APPLE', text: 'APPLE'},
     {value: 'EXOTIC_ORCHIDS', text: 'EXOTIC ORCHIDS'},
-    {value: 'ORANGE_SUNSET', text: 'ORANGE SUNSET'},
+    {value: 'URBAN_SKYLINE', text: 'URBAN SKYLINE'},
+    {value: 'BERRIES_GALORE', text: 'BERRIES GALORE'},
+
 ]
 
 export const ITEM_TYPE = [
