@@ -439,7 +439,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 currentWidgetWidth: 1,
                 isOpenEditView: false,
                 isFullScreenMap: false,
-                isStackedLineChart: true,
+                isStackedLineChart: false,
                 isShowFilter: false,
                 currentNavigation: '',
                 allAppInstDropdown: [],
@@ -1980,96 +1980,94 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 fullClusterList = cloudlet + " > " + cluster;
             }
             return (
-                <Legend>
-                    <div style={{width: '100%', display: 'flex'}}>
-                        {this.state.loading &&
-                        <div style={{
-                            display: 'flex',
-                            alignSelf: 'center',
-                            position: 'absolute',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            width: '100%',
-                            //backgroundColor: 'red'
-                        }}>
-                            {/*  <CircularProgress
+                <Legend style={{height: this.state.currentClassification === CLASSIFICATION.CLUSTER ? 50 : 25,}}>
+                    {this.state.loading &&
+                    <div style={{
+                        display: 'flex',
+                        alignSelf: 'center',
+                        position: 'absolute',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        width: '100%',
+                        //backgroundColor: 'red'
+                    }}>
+                        {/*  <CircularProgress
                                 style={{fontWeight: 'bold', color: '#1cecff'}}
                                 color='#1cecff'
                                 size={15}
                             />*/}
-                            <ColorLinearProgress
-                                variant={'query'}
-                                style={{
-                                    marginLeft: -10,
-                                    width: '7%',
-                                    alignContent: 'center',
-                                    justifyContent: 'center',
-                                }}
-                            />
-                        </div>}
-                        {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                            <div style={{
-                                display: 'flex',
-                                flex: 1,
+                        <ColorLinearProgress
+                            variant={'query'}
+                            style={{
+                                marginLeft: -10,
+                                width: '7%',
+                                alignContent: 'center',
                                 justifyContent: 'center',
-                                marginLeft: 0,
-                                backgroundColor: 'transparent'
-                            }}>
-                                {this.state.filteredClusterUsageList.map((item, index) => {
-                                    return (
-                                        <Center2>
+                            }}
+                        />
+                    </div>}
+                    {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER ?
+                        <div style={{
+                            display: 'flex',
+                            flex: 1,
+                            justifyContent: 'center',
+                            marginLeft: 0,
+                            backgroundColor: 'transparent',
+                            flexWrap: 'wrap'
+                        }}>
+                            {this.state.filteredClusterUsageList.map((item, index) => {
+                                return (
+                                    <Center2>
 
-                                            {/*desc: ##############*/}
-                                            {/*desc: circle area   */}
-                                            {/*desc: ##############*/}
-                                            <div style={{
-                                                backgroundColor: this.state.chartColorList[index],
-                                                width: 15,
-                                                height: 15,
-                                                borderRadius: 50,
-                                                marginTop: 2,
-                                            }}>
-                                            </div>
-                                            <ClusterCluoudletLable
-                                                style={{
-                                                    marginLeft: 4,
-                                                    marginRight: 15,
-                                                    marginBottom: 0
-                                                }}>{item.cluster}
-                                                {` [`}{item.cloudlet}]
+                                        {/*desc: ##############*/}
+                                        {/*desc: circle area   */}
+                                        {/*desc: ##############*/}
+                                        <div style={{
+                                            backgroundColor: this.state.chartColorList[index],
+                                            width: 15,
+                                            height: 15,
+                                            borderRadius: 50,
+                                            marginTop: 2,
+                                        }}>
+                                        </div>
+                                        <ClusterCluoudletLable
+                                            style={{
+                                                marginLeft: 4,
+                                                marginRight: 15,
+                                                marginBottom: 0
+                                            }}>{item.cluster}
+                                            {` [`}{item.cloudlet}]
 
-                                            </ClusterCluoudletLable>
-                                        </Center2>
-                                    )
-                                })}
-                            </div>
-                            : !this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST &&
-                            <div style={{
-                                display: 'flex',
-                                flex: 1,
-                                justifyContent: 'center',
-                                marginLeft: 0,
-                                backgroundColor: 'transparent',
-                                marginTop: 3,
-                            }}>
-                                <div style={{backgroundColor: 'transparent'}}>
-                                    <div style={{
-                                        backgroundColor: this.state.chartColorList[0],
-                                        width: 15,
-                                        height: 15,
-                                        borderRadius: 50,
-                                        marginTop: 0
-                                    }}>
-                                    </div>
+                                        </ClusterCluoudletLable>
+                                    </Center2>
+                                )
+                            })}
+                        </div>
+                        : !this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST &&
+                        <div style={{
+                            display: 'flex',
+                            flex: 1,
+                            justifyContent: 'center',
+                            marginLeft: 0,
+                            backgroundColor: 'transparent',
+                            marginTop: 3,
+                        }}>
+                            <div style={{backgroundColor: 'transparent'}}>
+                                <div style={{
+                                    backgroundColor: this.state.chartColorList[0],
+                                    width: 15,
+                                    height: 15,
+                                    borderRadius: 50,
+                                    marginTop: 0
+                                }}>
                                 </div>
-                                <ClusterCluoudletLable
-                                    style={{marginLeft: 5, marginRight: 15, marginBottom: 0}}>
-                                    {this.state.currentAppInst.split("|")[0]}
-                                </ClusterCluoudletLable>
                             </div>
-                        }
-
-                    </div>
+                            <ClusterCluoudletLable
+                                style={{marginLeft: 5, marginRight: 15, marginBottom: 0}}>
+                                {this.state.currentAppInst.split("|")[0]}
+                            </ClusterCluoudletLable>
+                        </div>
+                    }
                 </Legend>
             )
         }

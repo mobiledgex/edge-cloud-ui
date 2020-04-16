@@ -43,6 +43,10 @@ function getWindowDimensions() {
 export default function PerformanceSummaryForClusterHook(props) {
     //const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
     useEffect(() => {
+
+
+        console.log("filteredUsageList===>", props.filteredUsageList);
+
     }, [props.filteredUsageList]);
 
     return (

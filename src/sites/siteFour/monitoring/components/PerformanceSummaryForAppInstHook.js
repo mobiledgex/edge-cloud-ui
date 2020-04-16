@@ -126,7 +126,7 @@ export default function PerformanceSummaryForAppInstHook(props) {
                                     <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
                                         <div style={{heiight: 15, padding: 0,}}>
                                             <div>
-                                                {item.sumCpuUsage.toFixed(2) + '%'}
+                                                {item.sumCpuUsage.toFixed(8) + '%'}
                                             </div>
                                             <div>
                                                 <Progress style={{width: '100%'}} strokeLinecap={'square'}

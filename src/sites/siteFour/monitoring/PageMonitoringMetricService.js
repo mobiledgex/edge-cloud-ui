@@ -565,8 +565,6 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
         let clusterLevelUsageList = await Promise.all(promiseList);
 
 
-        console.log("clusterLevelUsageList===>", clusterLevelUsageList);
-
         let newClusterLevelUsageList = []
         clusterLevelUsageList.map((item, index) => {
 
@@ -677,10 +675,6 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
             }
 
         })
-
-        console.log("newClusterLevelUsageList===>", newClusterLevelUsageList);
-
-
         return newClusterLevelUsageList;
     } catch (e) {
         return [];
@@ -845,22 +839,26 @@ export const getAppLevelMetrics = async (serviceBodyForAppInstanceOneInfo: any) 
 
 
 export const getClusterLevelMatric = async (serviceBody: any, pToken: string) => {
-    console.log('token2===>', pToken);
-    let result = await axios({
-        url: '/api/v1/auth/metrics/cluster',
-        method: 'post',
-        data: serviceBody['params'],
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + pToken
-        },
-        timeout: 15 * 1000
-    }).then(async response => {
-        return response.data;
-    }).catch(e => {
-        //showToast(e.toString())
-    })
-    return result;
+    try {
+        console.log('token2===>', pToken);
+        let result = await axios({
+            url: '/api/v1/auth/metrics/cluster',
+            method: 'post',
+            data: serviceBody['params'],
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + pToken
+            },
+            timeout: 15 * 1000
+        }).then(async response => {
+            return response.data;
+        }).catch(e => {
+            //showToast(e.toString())
+        })
+        return result;
+    } catch (e) {
+        throw new Error(e)
+    }
 }
 
 
@@ -1012,7 +1010,8 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster) => 
         })
         return result;
     } catch (e) {
-        showToast(e)
+
+        //showToast(e)
     }
 }
 

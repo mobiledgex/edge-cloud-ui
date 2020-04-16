@@ -1055,7 +1055,8 @@ export const renderSmallProgress = () => {
 
 
 export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: string, _this) => {
-    pUsageList = sortUsageListByTypeForCluster(pUsageList, hardwareType);
+    //@desc : sort by type
+    //pUsageList = sortUsageListByTypeForCluster(pUsageList, hardwareType);
 
     if (pUsageList.length === 0) {
         return "";
@@ -1404,7 +1405,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                             if (index % 2 === 0) return '';
                             return value;
                         }
-                        //return value;
+                        return value;
                     },
                 },
                 beginAtZero: false,
@@ -1719,41 +1720,42 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
  */
 export const makeTop5GradientLineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring, isGradientColor = false, hwType) => {
 
-
     const lineChartData = (canvas) => {
 
         let gradientList = makeGradientColorList(canvas, 250, _this.state.chartColorList);
         let finalSeriesDataSets = [];
         for (let index in usageSetList) {
             //@todo: extract top5
-            if (index < 5) {
-                let datasetsOne = {
-                    label: levelTypeNameList[index],
-                    radius: 0,
-                    borderWidth: 3,//todo:라인 두께
-                    fill: isGradientColor,// @desc:fill@desc:fill@desc:fill@desc:fill
-                    backgroundColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
-                    borderColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
-                    lineTension: 0.5,
-                    data: usageSetList[index],
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    borderDashOffset: 0.0,
-                    borderJoinStyle: 'miter',
-                    pointBorderColor: _this.state.chartColorList[index],
-                    pointBackgroundColor: _this.state.chartColorList[index],
-                    pointBorderWidth: 1,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: _this.state.chartColorList[index],
-                    pointHoverBorderColor: _this.state.chartColorList[index],
-                    pointHoverBorderWidth: 2,
-                    pointRadius: 1,
-                    pointHitRadius: 10,
+            /*if (index < 5) {
+            }*/
 
-                };
+            let datasetsOne = {
+                label: levelTypeNameList[index],
+                radius: 0,
+                borderWidth: 3,//todo:라인 두께
+                fill: isGradientColor,// @desc:fill@desc:fill@desc:fill@desc:fill
+                backgroundColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
+                borderColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
+                lineTension: 0.5,
+                data: usageSetList[index],
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: _this.state.chartColorList[index],
+                pointBackgroundColor: _this.state.chartColorList[index],
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: _this.state.chartColorList[index],
+                pointHoverBorderColor: _this.state.chartColorList[index],
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                order: index,
 
-                finalSeriesDataSets.push(datasetsOne)
-            }
+            };
+
+            finalSeriesDataSets.push(datasetsOne)
 
 
         }
