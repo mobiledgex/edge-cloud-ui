@@ -10,10 +10,16 @@
 /*DESC:MUI*/
 /*DESC:MUI*/
 /*DESC:MUI*/
-.MuiPaper-root {
+/*.MuiPaper-root {
     color: #fff;
     transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
     background-color: black;
+}*/
+
+.MuiPaper-root {
+    color: #fff;
+    transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    background-color: #0c0a0a;
 }
 
 .content_title_wrap {
@@ -515,3 +521,10 @@ tbody:hover {
 }
 
 
+tr {
+    height: 10px !important;;
+}
+
+tr td {
+    height: auto !important;
+}

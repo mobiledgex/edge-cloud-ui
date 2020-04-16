@@ -3,12 +3,7 @@ import type {TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../share
 import {SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET} from "../../../services/endPointTypes";
 import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT, REGION, USER_TYPE} from "../../../shared/Constants";
 import {sendSyncRequest} from "../../../services/serviceMC";
-import {
-    isEmpty,
-    makeFormForCloudletLevelMatric,
-    makeFormForClusterLevelMatric,
-    showToast
-} from "./PageMonitoringCommonService";
+import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
 import {formatData} from "../../../services/formatter/formatComputeInstance";
 import {makeFormForAppLevelUsageList} from "./admin/PageAdminMonitoringService";
 import PageDevMonitoring from "./dev/PageDevMonitoring";
@@ -682,6 +677,10 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
             }
 
         })
+
+        console.log("newClusterLevelUsageList===>", newClusterLevelUsageList);
+
+
         return newClusterLevelUsageList;
     } catch (e) {
         return [];

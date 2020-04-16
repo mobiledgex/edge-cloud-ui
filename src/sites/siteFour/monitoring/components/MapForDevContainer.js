@@ -15,12 +15,7 @@ import {Icon} from "semantic-ui-react";
 import {Radio} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
-import {
-    DARK_CLOUTLET_ICON_COLOR,
-    DARK_LINE_COLOR,
-    WHITE_CLOUTLET_ICON_COLOR,
-    WHITE_LINE_COLOR
-} from "../../../../shared/Constants";
+import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 
 const DEFAULT_VIEWPORT = {
@@ -173,11 +168,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
         }
 
         componentDidMount = async () => {
-            console.log('componentDidMount===>', this.props.markerList);
             let appInstanceListGroupByCloudlet = this.props.markerList
-            await this.setCloudletLocation(appInstanceListGroupByCloudlet)
-
-
+            await this.setCloudletLocation(appInstanceListGroupByCloudlet, true)
         };
 
 
@@ -228,7 +220,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
         }
 
-        setCloudletLocation(pAppInstanceListGroupByCloudlet) {
+        setCloudletLocation(pAppInstanceListGroupByCloudlet, isMapCenter = false) {
             let cloudletKeys = Object.keys(pAppInstanceListGroupByCloudlet)
 
             let newCloudLetLocationList = []
@@ -281,7 +273,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 //@desc: Move the center of the map to the center of the item.
                 if (newCloudLetLocationList[0] !== undefined) {
                     this.setState({
-                        mapCenter: [newCloudLetLocationList[0].CloudletLocation.latitude, newCloudLetLocationList[0].CloudletLocation.longitude],
+                        mapCenter: isMapCenter ? this.state.mapCenter : [newCloudLetLocationList[0].CloudletLocation.latitude, newCloudLetLocationList[0].CloudletLocation.longitude],
                         zoom: 2,
                     })
                 }
@@ -371,10 +363,10 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                         onClick={async () => {
                                             try {
                                                 await this.setState({
-                                                    zoom: 3,
+                                                    zoom: 1,
                                                 })
 
-                                                await this.props.parent.handleClusterDropdownAndReset('');
+                                                await this.props.parent.handleClusterDropdown__Reset('');
                                             } catch (e) {
 
                                             }

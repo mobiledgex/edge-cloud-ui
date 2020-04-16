@@ -1,8 +1,8 @@
 // @flow
 import * as React from 'react';
-import {renderPlaceHolderCircular} from "../PageMonitoringCommonService";
-import {convertToClassification, renderLineChartCoreForDev} from "../dev/PageDevMonitoringService";
+import {convertToClassification, makeLineChartOptions, makeTop5GradientLineChartData} from "../dev/PageDevMonitoringService";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
+import {Line} from 'react-chartjs-2';
 
 type Props = {
     parent: PageDevMonitoring,
@@ -32,22 +32,34 @@ export default class LineChartContainer extends React.Component<Props, State> {
     }
 
     componentDidMount(): void {
-        /*  this.setState({
-              bubbleChartData: this.props.bubbleChartData,
-          })*/
+        let lineChartDataSet = this.props.chartDataSet
+        let hwType = this.props.pHardwareType;
+        let graphType = this.props.graphType;
+        this.setChartData(lineChartDataSet, hwType, graphType)
+    }
+
+    async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
+        if (this.props.chartDataSet !== nextProps.chartDataSet) {
+            let lineChartDataSet = nextProps.chartDataSet
+            let hwType = nextProps.pHardwareType;
+            let graphType = nextProps.graphType;
+            this.setChartData(lineChartDataSet, hwType, graphType);
+        }
     }
 
 
-    async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
+    setChartData(lineChartDataSet, hwType, graphType) {
+        let levelTypeNameList = lineChartDataSet.levelTypeNameList;
+        let usageSetList = lineChartDataSet.usageSetList;
+        let newDateTimeList = lineChartDataSet.newDateTimeList;
+        let hardwareType = lineChartDataSet.hardwareType;
 
-        if (this.props.chartDataSet !== nextProps.chartDataSet) {
-            this.setState({
-                chartDataSet: nextProps.chartDataSet,
-                pHardwareType: nextProps.pHardwareType,
-                graphType: nextProps.graphType,
-            })
-        }
-
+        const lineChartDataForRendering = makeTop5GradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, this.props.parent.state.isStackedLineChart, hardwareType)
+        this.setState({
+            chartDataSet: lineChartDataForRendering,
+            pHardwareType: hwType,
+            graphType: graphType,
+        })
 
     }
 
@@ -91,7 +103,17 @@ export default class LineChartContainer extends React.Component<Props, State> {
                         </div>
                     </div>
                     <div className='page_monitoring_container'>
-                        {this.props.loading ? renderPlaceHolderCircular() : renderLineChartCoreForDev(this.props.parent, this.state.chartDataSet, this.state.isResizeComplete)}
+                        <div style={{
+                            position: 'relative',
+                            width: '99%',
+                            height: '99%'
+                        }}>
+                            <Line
+                                data={this.state.chartDataSet}
+                                options={makeLineChartOptions(this.state.pHardwareType, this.state.chartDataSet, this.props.parent)}
+                                //options={simpleGraphOptions}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

@@ -134,7 +134,20 @@ export const PageMonitoringStyles = {
         display: 'flex',
         justifyContent: 'center',
         alignItem: 'center',
-        marginTop: 3
+        marginTop: 3,
+        //backgroundColor: 'red',
+        /*minWidth: 80,
+        width: 80,*/
+    },
+    gridHeaderBig: {
+        height: 15,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItem: 'center',
+        marginTop: 3,
+        backgroundColor: 'red',
+        width: 250,
     },
     gridHeaderSmall2: {
         height: 15,
@@ -632,6 +645,18 @@ export const renderPlaceHolder3 = (type: string = '') => {
 export const convertByteToMegaByte = (value, hardwareType) => {
     if (value > 1000000) {
         return numberWithCommas(value / 1000000) + ' MByte'
+    } else {
+        return numberWithCommas(value)
+    }
+}
+
+export const convertByteToMegaGigaByte = (value, hardwareType) => {
+    if (value > 1000000) {
+        if (value > 1000000 * 1000) {
+            return numberWithCommas((value / 1000000) / 1000) + ' GByte'
+        } else {
+            return numberWithCommas(value / 1000000) + ' MByte'
+        }
     } else {
         return numberWithCommas(value)
     }

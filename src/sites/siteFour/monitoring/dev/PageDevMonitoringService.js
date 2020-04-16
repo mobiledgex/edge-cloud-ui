@@ -1,22 +1,9 @@
 import React from 'react';
 import '../PageMonitoring.css';
-import {
-    APP_INST_MATRIX_HW_USAGE_INDEX,
-    CHART_COLOR_LIST,
-    CLASSIFICATION,
-    HARDWARE_TYPE,
-    RECENT_DATA_LIMIT_COUNT,
-    USAGE_INDEX_FOR_CLUSTER
-} from "../../../../shared/Constants";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, CLASSIFICATION, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX_FOR_CLUSTER} from "../../../../shared/Constants";
 import BubbleChart from "../../../../components/BubbleChart";
 import PageDevMonitoring from "./PageDevMonitoring";
-import {
-    convertByteToMegaByte,
-    numberWithCommas,
-    PageMonitoringStyles,
-    renderUsageByType,
-    showToast
-} from "../PageMonitoringCommonService";
+import {convertByteToMegaByte, convertByteToMegaGigaByte, numberWithCommas, PageMonitoringStyles, renderUsageByType, showToast} from "../PageMonitoringCommonService";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
 import {CircularProgress, createMuiTheme} from "@material-ui/core";
@@ -1137,7 +1124,7 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
             usageSetList.push(usageList);
         }
 
-        console.log('usageSetList====>', usageSetList);
+        console.log(`usageSetList====${hardwareType}>`, usageSetList);
 
 
         //@todo: CUS LIST INTO RECENT_DATA_LIMIT_COUNT
@@ -1232,29 +1219,16 @@ export const makeGradientColorList = (canvas, height, colorList, isBig = false) 
     console.log("colorList===>", colorList);
     const ctx = canvas.getContext("2d");
     let gradientList = [];
-    if (isBig) {
-        colorList.map(item => {
-            const gradient = ctx.createLinearGradient(0, 0, 0, height);
-            gradient.addColorStop(0.1, hexToRGB(item, 0.1));
-            gradient.addColorStop(0.2, hexToRGB(item, 0.2));
-            gradient.addColorStop(0.3, hexToRGB(item, 0.3));
-            gradient.addColorStop(0.4, hexToRGB(item, 0.4));
-            gradient.addColorStop(0.5, hexToRGB(item, 0.5));
-            gradient.addColorStop(0.6, hexToRGB(item, 0.6));
-            gradient.addColorStop(0.7, hexToRGB(item, 0.7));
-            gradient.addColorStop(0.8, hexToRGB(item, 0.8));
-            gradient.addColorStop(0.9, hexToRGB(item, 0.9));
-            gradientList.push(gradient);
-        })
-    } else {
-        colorList.map(item => {
-            const gradient = ctx.createLinearGradient(0, 0, 0, height);
-            gradient.addColorStop(0, hexToRGB(item, 0.2));
-            gradient.addColorStop(0.5, hexToRGB(item, 0.5));
-            gradient.addColorStop(1, hexToRGB(item, 0.85));
-            gradientList.push(gradient);
-        })
-    }
+
+    colorList.map(item => {
+        /*const gradient = ctx.createLinearGradient(0,  0,  50,  0);*/
+        //const gradient = ctx.createLinearGradient(0, 0, 350, height);
+        const gradient = ctx.createLinearGradient(20, 0, 220, 0);
+        gradient.addColorStop(0, hexToRGB(item, 0.1));
+        gradient.addColorStop(0.5, hexToRGB(item, 0.5));
+        gradient.addColorStop(1, hexToRGB(item, 0.7));
+        gradientList.push(gradient);
+    })
 
     return gradientList;
 };
@@ -1324,7 +1298,7 @@ export const addUnitNameForUsage = (value, hardwareType, _this) => {
         if (hardwareType === HARDWARE_TYPE.CPU) {
             return value.toString().substring(0, 9) + " %";
         } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM || hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
-            return convertByteToMegaByte(value, hardwareType)
+            return convertByteToMegaGigaByte(value, hardwareType)
         } else {
             return value;
         }
@@ -1341,8 +1315,8 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
         },
         maintainAspectRatio: false,//@todo
         responsive: true,//@todo
-        datasetStrokeWidth: 3,
-        pointDotStrokeWidth: 4,
+        datasetStrokeWidth: 1,
+        pointDotStrokeWidth: 2,
         layout: {
             padding: {
                 left: 9,
@@ -1369,23 +1343,39 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
             },
         },
         scales: {
+            ticks: {
+                beginAtZero: true,
+                min: 0,
+                max: 100,//todo max value
+                fontColor: 'white',
+                callback(value, index, label) {
+                    return addUnitNameForUsage(value, hardwareType, _this,)
+                },
+            },
+            gridLines: {
+                color: "#fff",
+            },
+            //desc: options for 멀티라인차트
             yAxes: [{
+                id: 'A',
+                type: 'linear',
+                position: 'left',
                 ticks: {
-                    beginAtZero: true,
-                    min: 0,
-                    //max: 100,//todo max value
-                    fontColor: 'white',
+                    fontColor: "#CCC", // this here
                     callback(value, index, label) {
-                        /*console.log("yAxes===>", hardwareType);
-                        console.log("yAxes===>", _this.state.currentClassification);*/
                         return addUnitNameForUsage(value, hardwareType, _this,)
 
                     },
                 },
-                gridLines: {
-                    color: "#505050",
-                },
-                stacked: true,
+            }, {
+                id: 'B',
+                type: 'linear',
+                display: false,
+                scaleShowLabels: false,
+                ticks: {
+                    max: 1,
+                    min: 0
+                }
 
             }],
             xAxes: [{
@@ -1396,7 +1386,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     color: "#505050",
                 },
                 ticks: {
-                    maxTicksLimit: 7,//@desc: lskdflskd
+                    maxTicksLimit: 7,//@desc: maxTicksLimit
                     fontSize: 11,
                     fontColor: 'white',
                     //maxRotation: 0.05,
@@ -1414,7 +1404,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                             if (index % 2 === 0) return '';
                             return value;
                         }
-                        return value;
+                        //return value;
                     },
                 },
                 beginAtZero: false,
@@ -1561,12 +1551,15 @@ export const simpleGraphOptions = {
             //alert(`Item with text ${item.text} and index ${item.index} hovered`)
         },
     },
+
+
     scales: {
-        yAxes: [{
+        /*yAxes: [{
             ticks: {
-                beginAtZero: true,
-                min: 0,
+                //beginAtZero: true,
+                //min: 0,
                 //max: 100,//todo max value
+                stepSize: 1,
                 fontColor: 'white',
             },
             gridLines: {
@@ -1574,6 +1567,20 @@ export const simpleGraphOptions = {
             },
             stacked: true,
 
+        }],*/
+        //@desc: Option for multi-line on y-axis.
+        yAxes: [{
+            id: 'A',
+            type: 'linear',
+            position: 'left',
+        }, {
+            id: 'B',
+            type: 'linear',
+            position: 'right',
+            ticks: {
+                max: 1,
+                min: 0
+            }
         }],
         xAxes: [{
             /*ticks: {
@@ -1710,22 +1717,20 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
  * @param isGradientColor
  * @returns {function(*=): {datasets: [], labels: *}}
  */
-export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring, isGradientColor = false) => {
+export const makeTop5GradientLineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring, isGradientColor = false, hwType) => {
 
 
     const lineChartData = (canvas) => {
 
-        let gradientList = makeGradientColorList(canvas, 305, _this.state.chartColorList);
+        let gradientList = makeGradientColorList(canvas, 250, _this.state.chartColorList);
         let finalSeriesDataSets = [];
         for (let index in usageSetList) {
-            //@todo: top5 만을 추린다
-
+            //@todo: extract top5
             if (index < 5) {
-
                 let datasetsOne = {
                     label: levelTypeNameList[index],
                     radius: 0,
-                    borderWidth: 3.5,//todo:라인 두께
+                    borderWidth: 3,//todo:라인 두께
                     fill: isGradientColor,// @desc:fill@desc:fill@desc:fill@desc:fill
                     backgroundColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
                     borderColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
@@ -1735,12 +1740,12 @@ export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTi
                     borderDash: [],
                     borderDashOffset: 0.0,
                     borderJoinStyle: 'miter',
-                    pointBorderColor: 'rgba(75,192,192,1)',
-                    pointBackgroundColor: '#fff',
+                    pointBorderColor: _this.state.chartColorList[index],
+                    pointBackgroundColor: _this.state.chartColorList[index],
                     pointBorderWidth: 1,
                     pointHoverRadius: 5,
-                    pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-                    pointHoverBorderColor: 'rgba(220,220,220,1)',
+                    pointHoverBackgroundColor: _this.state.chartColorList[index],
+                    pointHoverBorderColor: _this.state.chartColorList[index],
                     pointHoverBorderWidth: 2,
                     pointRadius: 1,
                     pointHitRadius: 10,
@@ -1752,10 +1757,15 @@ export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTi
 
 
         }
-        return {
+
+        let _result = {
             labels: newDateTimeList,
             datasets: finalSeriesDataSets,
         }
+
+        console.log(`_result===${hwType}>`, _result);
+
+        return _result;
     };
 
     return lineChartData;
@@ -1778,7 +1788,11 @@ export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDat
         let hardwareType = lineChartDataSet.hardwareType;
 
 
-        const lineChartDataForRendering = makeTop5LineChartData(levelTypeNameList, usageSetList, newDateTimeList, _this, _this.state.isStackedLineChart);
+        const lineChartDataForRendering = makeTop5GradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, _this, _this.state.isStackedLineChart);
+
+
+        console.log("lineChartDataForRendering===>", lineChartDataForRendering);
+
         return (
             <div style={{
                 position: 'relative',
@@ -1787,7 +1801,8 @@ export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDat
             }}>
                 <ReactChartJsLine
                     data={lineChartDataForRendering}
-                    options={makeLineChartOptions(hardwareType, lineChartDataSet, _this)}
+                    //options={makeLineChartOptions(hardwareType, lineChartDataSet, _this)}
+                    options={simpleGraphOptions}
                 />
             </div>
         );
