@@ -30,11 +30,13 @@ import {
 import {
     ADD_ITEM_LIST,
     CHART_COLOR_APPLE,
+    CHART_COLOR_EXOTIC_ORCHIDS,
     CHART_COLOR_LIST,
     CHART_COLOR_LIST2,
     CHART_COLOR_LIST3,
     CHART_COLOR_LIST4,
     CHART_COLOR_MONOKAI,
+    CHART_COLOR_ORANGE_SUNSET,
     CLASSIFICATION,
     GRID_ITEM_TYPE,
     HARDWARE_OPTIONS_FOR_APPINST,
@@ -1367,6 +1369,18 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 })
             }
 
+            if (themeTitle === THEME_OPTIONS.EXOTIC_ORCHIDS) {
+                await this.setState({
+                    chartColorList: CHART_COLOR_EXOTIC_ORCHIDS
+                })
+            }
+
+            if (themeTitle === THEME_OPTIONS.ORANGE_SUNSET) {
+                await this.setState({
+                    chartColorList: CHART_COLOR_ORANGE_SUNSET
+                })
+            }
+
             let selectedChartColorList = this.state.chartColorList;
             reactLocalStorage.setObject(getUserId() + "_mon_theme", selectedChartColorList)
             reactLocalStorage.set(getUserId() + "_mon_theme_title", themeTitle)
@@ -1491,18 +1505,23 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             </div>
                         }
                     >
-                        <AMenu.Item
-                            key="1"
-                            onClick={async () => {
-                                await this.setState({
-                                    themeTitle: THEME_OPTIONS.DEFAULT
-                                })
-                                await this.handleThemeChanges(this.state.themeTitle)
-                            }}
-                        >
-                            DEFAULT
-                        </AMenu.Item>
-                        <AMenu.Item
+                        {THEME_OPTIONS_LIST.map(item => {
+                            return (
+                                <AMenu.Item
+                                    key="1"
+                                    onClick={async () => {
+                                        await this.setState({
+                                            themeTitle: item.value
+                                        })
+                                        await this.handleThemeChanges(item.value)
+                                    }}
+                                >
+                                    {item.text}
+                                </AMenu.Item>
+                            )
+                        })}
+
+                        {/* <AMenu.Item
                             key="2"
                             onClick={async () => {
                                 await this.setState({
@@ -1557,6 +1576,17 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         >
                             APPLE
                         </AMenu.Item>
+                        <AMenu.Item
+                            key="5"
+                            onClick={async (value) => {
+                                await this.setState({
+                                    themeTitle: THEME_OPTIONS.EXOTIC_ORCHIDS
+                                })
+                                await this.handleThemeChanges(this.state.themeTitle)
+                            }}
+                        >
+                            EXOTIC_ORCHIDS
+                        </AMenu.Item>*/}
                     </ASubMenu>
                     {/*desc: ######################*/}
                     {/*desc: ShowAppInstClient             */}

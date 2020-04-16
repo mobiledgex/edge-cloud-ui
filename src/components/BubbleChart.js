@@ -108,12 +108,21 @@ export default class BubbleChart extends Component {
         }
 
         if (this.props.themeTitle === THEME_OPTIONS.APPLE) {
-            let appleColors = '0A84FF30D158FF453AFF9F0AFF375F00FFFF0080800000FF000080FF00FF800080800000808080808000'
-            colorCodes = appleColors;
+            let _color = '0A84FF30D158FF453AFF9F0AFF375F00FFFF0080800000FF000080FF00FF800080800000808080808000'
+            colorCodes = _color;
         }
 
+        if (this.props.themeTitle === THEME_OPTIONS.EXOTIC_ORCHIDS) {
+            let _color = '72a2c000743ff2a104192e5b1d65a666D9EF27282275715E'
+            colorCodes = _color;
+        }
 
-//const color = d3.scaleOrdinal(colors("6097326EDC1269BA27527536405330"));//green
+        if (this.props.themeTitle === THEME_OPTIONS.ORANGE_SUNSET) {
+            let _color = 'F46A4EF4B05AF4874BA3586D5C4A7266D9EF27282275715E'
+            colorCodes = _color;
+        }
+
+        //const color = d3.scaleOrdinal(colors("6097326EDC1269BA27527536405330"));//green
         const color = d3.scaleOrdinal(colors(colorCodes));//green
 
 
