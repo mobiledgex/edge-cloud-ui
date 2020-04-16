@@ -42,10 +42,8 @@ function getWindowDimensions() {
 
 export default function PerformanceSummaryHook(props) {
     //const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
-
     useEffect(() => {
     }, [props.filteredUsageList]);
-
 
     return (
         <React.Fragment>
