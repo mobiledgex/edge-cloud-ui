@@ -67,15 +67,16 @@ export default function PerformanceSummaryForClusterHook(props) {
                     {props.parent.state.currentClassification} Performance Summary
                 </div>
             </div>
-            <TableContainer component={Paper}
-                            style={{
-                                height: 250,
-                                fontFamily: 'Ubuntu',
-                                backgroundColor: 'blue !important',
-                                width: 'auto',
-                                overflowX: 'scroll'
-                            }}>
-                <Table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll'}}
+            <TableContainer
+                style={{
+                    height: 'auto',
+                    fontFamily: 'Ubuntu',
+                    backgroundColor: 'blue !important',
+                    width: 'auto',
+                    overflowX: 'scroll'
+                }}
+            >
+                <Table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll',}}
                        stickyHeader={true}>
 
                     <TableHead style={{backgroundColor: 'red', fontFamily: 'Ubuntu', fontSize: 20}} fixedHeader={true}>
