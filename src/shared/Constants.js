@@ -1,5 +1,3 @@
-import {convertByteToMegaByte} from "../sites/siteFour/monitoring/PageMonitoringCommonService";
-
 export const RECENT_DATA_LIMIT_COUNT = 50
 
 export const API_ENDPOINT_PREFIX = '/api/v1/';
@@ -13,6 +11,10 @@ export const CHART_COLOR_LIST4 = ['#FF0000', '#FFBDAA', '#D4826A', '#802D15', '#
 
 export const CHART_COLOR_MONOKAI = ['#F92672', '#FD971F', '#A6E22E', '#E6DB74', '#A6E22E', '#66D9EF', '#272822', '#75715E',]
 export const CHART_COLOR_APPLE = ['#0A84FF', '#30D158', '#FF453A', '#FF9F0A', '#FF375F', '#66D9EF', '#272822', '#75715E',]
+
+
+export const CHART_COLOR_EXOTIC_ORCHIDS = ['#72a2c0', '#00743f', '#f2a104', '#192e5b', '#1d65a6', '#66D9EF', '#272822', '#75715E',]
+export const CHART_COLOR_ORANGE_SUNSET = ['#F46A4E', '#F4B05A', '#F4874B', '#A3586D', '#5C4A72', '#66D9EF', '#272822', '#75715E']
 
 export const CHART_COLOR_LIST5 = ['#609732', '#6EDC12', '#69BA27', '#527536', '#405330']
 export const CHART_COLOR_LIST6 = ['#AA5939', '#F75514', '#D15A2B', '#83513C', '#5D4136']
@@ -39,6 +41,8 @@ export const THEME_OPTIONS = {
     RED: 'RED',
     MONOKAI: 'MONOKAI',
     APPLE: 'APPLE',
+    EXOTIC_ORCHIDS: 'EXOTIC_ORCHIDS',
+    ORANGE_SUNSET: 'ORANGE_SUNSET',
 }
 
 export const THEME_OPTIONS_LIST = [
@@ -48,7 +52,8 @@ export const THEME_OPTIONS_LIST = [
     {value: 'RED', text: 'RED'},
     {value: 'MONOKAI', text: 'MONOKAI'},
     {value: 'APPLE', text: 'APPLE'},
-    //CHART_COLOR_APPLE
+    {value: 'EXOTIC_ORCHIDS', text: 'EXOTIC ORCHIDS'},
+    {value: 'ORANGE_SUNSET', text: 'ORANGE SUNSET'},
 ]
 
 export const ITEM_TYPE = [
@@ -57,8 +62,6 @@ export const ITEM_TYPE = [
     {text: 'COLUMN_CHART', value: 'COLUMN_CHART'},
     {text: 'EVENT_LOG', value: 'EVENT_LOG'},
     {text: 'MAP', value: 'MAP'},
-
-    //CHART_COLOR_APPLE
 ]
 
 
