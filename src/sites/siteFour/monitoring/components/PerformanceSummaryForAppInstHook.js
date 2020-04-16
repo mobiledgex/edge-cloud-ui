@@ -142,31 +142,16 @@ export default function PerformanceSummaryForAppInstHook(props) {
                                     <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
                                         <div style={{heiight: 15, padding: 0,}}>
                                             <div>
-                                                {numberWithCommas(item.sumMemUsage.toFixed(2)) + ' %'}
-                                            </div>
-                                            <div>
-                                                <Progress style={{width: '100%'}} strokeLinecap={'square'}
-                                                          strokeWidth={10}
-                                                          showInfo={false}
-                                                          percent={item.sumMemUsage.toFixed(0)}
-                                                          strokeColor={props.parent.state.chartColorList[index]}
-                                                          status={'normal'}/>
+                                                {numberWithCommas(item.sumMemUsage.toFixed(2)) + ' Byte'}
                                             </div>
                                         </div>
                                     </TableCell>
                                     <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
                                         <div style={{heiight: 15, padding: 0,}}>
                                             <div>
-                                                {numberWithCommas(item.sumDiskUsage.toFixed(2)) + ' %'}
+                                                {numberWithCommas(item.sumDiskUsage.toFixed(2)) + ' Byte'}
                                             </div>
-                                            <div>
-                                                <Progress style={{width: '100%'}} strokeLinecap={'square'}
-                                                          strokeWidth={10}
-                                                          showInfo={false}
-                                                          percent={item.sumDiskUsage.toFixed(0)}
-                                                          strokeColor={props.parent.state.chartColorList[index]}
-                                                          status={'normal'}/>
-                                            </div>
+
                                         </div>
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
