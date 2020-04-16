@@ -13,73 +13,39 @@ import {PageMonitoringStyles} from "../../PageMonitoringCommonService";
 type Props = {};
 type State = {};
 
-const datas = {
+const datas001 = {
     "labels": [
-        "02:09:05",
-        "02:08:54",
-        "02:08:43",
-        "02:08:32",
-        "02:08:21",
-        "02:08:10",
-        "02:07:59",
-        "02:07:48",
-        "02:07:37",
-        "02:07:25"
+        "02:39:19",
+        "02:38:39",
+        "02:38:31",
+        "02:38:24",
+        "02:38:16",
+        "02:38:08",
+        "02:38:00",
+        "02:37:52",
+        "02:37:44",
+        "02:37:36"
     ],
     "datasets": [
-        {
-            "label": "kyungjoncluster\n[mexplat-stage-frankfurt-cloudlet]",
-            "radius": 0,
-            "borderWidth": 3,
-            "fill": true,
-            "backgroundColor": {},
-            "borderColor": 'blue',
-            "lineTension": 0.5,
-            "data": [
-                11.864406773975695,
-                0,
-                1.6666666666666667,
-                13.793103449314048,
-                1.6666666595523971,
-                18.33333334238786,
-                1.6393442629208028,
-                0,
-                0,
-                1.66666666796017
-            ],
-            "borderCapStyle": "round",
-            "borderDash": [],
-            "borderDashOffset": 0,
-            "borderJoinStyle": "miter",
-            "pointBorderColor": "transparent",
-            "pointBackgroundColor": "white",
-            "pointBorderWidth": 3,
-            "pointHoverRadius": 1,
-            "pointHoverBackgroundColor": "transparent",
-            "pointHoverBorderColor": "transparent",
-            "pointHoverBorderWidth": 1,
-            "pointRadius": 1,
-            "pointHitRadius": 1
-        },
         {
             "label": "autoclustermobiledgexsdkdemo\n[berlin-test]",
             "radius": 0,
             "borderWidth": 3,
-            //"fill": true,
-            //"backgroundColor": 'red',
-            "borderColor": 'red',
+            "fill": true,
+            "backgroundColor": {},
+            "borderColor": {},
             "lineTension": 0.5,
             "data": [
-                4.41,
-                4.34,
-                4.30,
-                4.05,
-                4.09,
-                4.29,
-                4.26,
-                4.31,
-                4.06,
-                4.33,
+                39.49012598562198,
+                39.48582562893952,
+                39.487061363618395,
+                39.4823655718387,
+                39.47826293270486,
+                39.47930094983511,
+                39.47747206251038,
+                39.47638461599298,
+                39.477669780059,
+                39.45962805374754
             ],
             "borderCapStyle": "round",
             "borderDash": [],
@@ -99,19 +65,55 @@ const datas = {
             "label": "autoclustermobiledgexsdkdemo\n[mexplat-stage-hamburg-cloudlet]",
             "radius": 0,
             "borderWidth": 3,
-            "borderColor": 'green',
+            "fill": true,
+            "backgroundColor": {},
+            "borderColor": {},
             "lineTension": 0.5,
             "data": [
-                4.008507440653472,
-                3.9099741319619934,
-                3.964383495539593,
-                3.8000007130947018,
-                3.9775501725992015,
-                4.010905227961133,
-                4.176379323860045,
-                4.079435168046737,
-                3.9666762914461433,
-                4.045433176264381
+                37.65876719154085,
+                37.65387368221254,
+                37.66346298332055,
+                37.65604857524735,
+                37.64986990185301,
+                37.648485879012675,
+                37.642554352554114,
+                37.71580870431736,
+                37.76143202866113,
+                37.714523540251335
+            ],
+            "borderCapStyle": "round",
+            "borderDash": [],
+            "borderDashOffset": 0,
+            "borderJoinStyle": "miter",
+            "pointBorderColor": "transparent",
+            "pointBackgroundColor": "white",
+            "pointBorderWidth": 3,
+            "pointHoverRadius": 1,
+            "pointHoverBackgroundColor": "transparent",
+            "pointHoverBorderColor": "transparent",
+            "pointHoverBorderWidth": 1,
+            "pointRadius": 1,
+            "pointHitRadius": 1
+        },
+        {
+            "label": "kyungjoncluster\n[mexplat-stage-frankfurt-cloudlet]",
+            "radius": 0,
+            "borderWidth": 3,
+            "fill": true,
+            "backgroundColor": {},
+            "borderColor": {},
+            "lineTension": 0.5,
+            "data": [
+                20.484427765870787,
+                20.557583258859722,
+                20.530001660827406,
+                20.547499663880167,
+                20.53613090483459,
+                20.54057954967851,
+                20.554419778081822,
+                20.541963572518842,
+                20.57666300230143,
+                20.549674556914972
             ],
             "borderCapStyle": "round",
             "borderDash": [],
@@ -146,26 +148,8 @@ export default class Test001 extends React.Component<Props, State> {
                     width={window.innerWidth * 0.9}
                     ref="chart"
                     height={window.innerHeight * 0.35}
-                    data={datas}
-                    options={{
-                        scales: {
-                            yAxes: [{
-                                id: 'A',
-                                type: 'linear',
-                                position: 'left',
-                            }, {
-                                id: 'B',
-                                type: 'linear',
-                                display: false,
-                                scaleShowLabels: false,
-                                ticks: {
-                                    max: 1,
-                                    min: 0
-                                }
-
-                            }]
-                        }
-                    }}
+                    data={datas001}
+                    options={simpleGraphOptions}
                 />
             )
         }
