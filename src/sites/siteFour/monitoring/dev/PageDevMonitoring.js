@@ -75,7 +75,7 @@ import AddItemPopupContainer2 from '../components/AddItemPopupContainer2'
 import Switch from "@material-ui/core/Switch";
 import {THEME_TYPE} from "../../../../themeStyle";
 import BarChartContainer from "../components/BarChartContainer";
-import PerformanceSummaryHook from "../components/PerformanceSummaryHook";
+import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryForClusterHook";
 import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryForAppInstHook";
 
 const ASubMenu = AMenu.SubMenu;
@@ -1269,7 +1269,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 return (
                     this.state.loading ? renderPlaceHolderCircular() :
                         this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                            <PerformanceSummaryHook
+                            <PerformanceSummaryForClusterHook
                                 parent={this}
                                 filteredUsageList={this.state.filteredClusterUsageList}
                                 chartColorList={this.state.chartColorList}
