@@ -262,7 +262,10 @@ export default class CalendarTimeline extends Component {
         properties.style = customStyles;
 
         return (
-            <div {...properties}>
+            <div
+                {...properties}
+                className={"rct-item selected_" + itemContext.selected}
+            >
                 {itemContext.useResizeHandle ? (
                     <div {...leftResizeProps} />
                 ) : null}
