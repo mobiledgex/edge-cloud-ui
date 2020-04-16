@@ -337,19 +337,6 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(
                      style={{backgroundColor: this.props.themeType === 'light' ? 'white' : null}}>
                     <div className="page_audit_history">
                         <div className="page_audit_history_option">
-                            <MButton variant="contained" color="primary"
-
-                                     onClick={() => {
-                                         if (this.props.themeType === 'dark') {
-                                             this.props.toggleTheme('light')
-                                         } else {
-                                             this.props.toggleTheme('dark')
-                                         }
-                                     }}
-
-                                     size="small">
-                                toggle theme {this.props.themeType}
-                            </MButton>
                             <div style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>{this.state.orgName}</div>
                             <div className="page_audit_history_option_period">
                                 <Dropdown
