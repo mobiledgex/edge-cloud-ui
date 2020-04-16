@@ -113,10 +113,8 @@ export default class BubbleChart extends Component {
         }
 
 
-
 //const color = d3.scaleOrdinal(colors("6097326EDC1269BA27527536405330"));//green
         const color = d3.scaleOrdinal(colors(colorCodes));//green
-
 
 
         const pack = d3.pack()
@@ -134,6 +132,7 @@ export default class BubbleChart extends Component {
             .each((d) => {
                 if (d.data.label) {
                     d.label = '' + d.data.label; //todo:라벨 셋팅 부분..
+                    d.type = '' + d.data.type; //todo:type
                     d.id = d.data.label.toLowerCase().replace(/ |\//g, "-");
                     d.favor = d.data.favor;
                     d.fullLabel = d.data.fullLabel;
@@ -178,7 +177,7 @@ export default class BubbleChart extends Component {
             .attr("transform", function (d) {
                 //todo: Bubble chart location setting...
                 //todo: Bubble chart location setting...
-                return "translate(" + ((width * 3 / 16)-0) + "," + (width * graph.offsetY-30) + ")"; //버블차트 위치
+                return "translate(" + ((width * 3 / 16) - 0) + "," + (width * graph.offsetY - 30) + ")"; //버블차트 위치
             });
         ;
 
@@ -245,11 +244,14 @@ export default class BubbleChart extends Component {
                 return valueFont.lineWeight ? valueFont.lineWeight : 0;
             })
             .text((d) => {
-                //@todo:value를 랜더링 하는 부분..
-                //@todo:value를 랜더링 하는 부분..
 
+                //@todo:number value를 랜더링 하는 부분..(value (%))
                 if (d.value > 0) {
-                    return d.favor; //@todo:value를 랜더링 하는 부분..
+                    if (d.type === 'CPU' || d.type === 'DISK' || d.type === 'MEM') {
+                        return d.favor + "%";
+                    } else {
+                        return d.favor;
+                    }
                 }
 
             });
@@ -266,6 +268,7 @@ export default class BubbleChart extends Component {
                 return labelFont.weight ? labelFont.weight : 300;
             })
             .style("font-family", labelFont.family)
+            //.style("font-family", 'Roboto Condensed')
             .style("fill", () => {
                 return labelFont.color ? labelFont.color : '#000';
             })
@@ -276,7 +279,7 @@ export default class BubbleChart extends Component {
                 return labelFont.lineWeight ? labelFont.lineWeight : 0;
             })
             .text(function (d) {
-                return d.label;//Label그리는 부분..
+                return d.label
             });
 
         // Center the texts inside the circles.
@@ -289,13 +292,14 @@ export default class BubbleChart extends Component {
                 const self = d3.select(this);
                 const width = self.node().getBBox().width;
                 d.hideLabel = width * 1.05 > (d.r * 2);
-                return d.hideLabel ? 0 : 1;
+                return d.hideLabel ? 0 : 0.5;
             })
             .attr("y", function (d) {
                 return labelFont.size / 2
             })
 
-        // Center the texts inside the circles.
+        //todo: Center the texts inside the circles.
+        //todo: Center the texts inside the circles.
         d3.selectAll(".value-text").attr("x", function (d) {
             const self = d3.select(this);
             const width = self.node().getBBox().width;
@@ -313,7 +317,7 @@ export default class BubbleChart extends Component {
 
         node.append("title")
             .text(function (d) {
-                return d.label;
+                return d.label; //@todo: cluster name
             });
     }
 
@@ -387,7 +391,7 @@ export default class BubbleChart extends Component {
             });
 
         texts.append("text")
-            //.style("font-size", `${legendFont.size}px`)
+        //.style("font-size", `${legendFont.size}px`)
             .style("font-size", `12px`)
             /*.style("font-weight", (d) => {
                 return legendFont.weight ? legendFont.weight : 50;

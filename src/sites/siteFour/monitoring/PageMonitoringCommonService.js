@@ -1,7 +1,7 @@
 import React from 'react';
 import './PageMonitoring.css';
-import {SemanticToastContainer, toast} from "react-semantic-toasts";
-import {CLASSIFICATION, GRID_ITEM_TYPE, HARDWARE_TYPE, USAGE_TYPE,} from "../../../shared/Constants";
+import {toast} from "react-semantic-toasts";
+import {GRID_ITEM_TYPE, HARDWARE_TYPE, USAGE_TYPE,} from "../../../shared/Constants";
 import Lottie from "react-lottie";
 import {makeGradientColor} from "./dev/PageDevMonitoringService";
 import {Chart} from "react-google-charts";
@@ -10,9 +10,7 @@ import {makeCompleteDateTime} from "./admin/PageAdminMonitoringService";
 import moment from "moment";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {GridLoader, PulseLoader} from "react-spinners";
-import {Grid} from "semantic-ui-react";
 import {barChartOption, columnChartOption} from "./PageMonitoringUtils";
-import {Card} from "@material-ui/core";
 
 export const PageMonitoringStyles = {
     topRightMenu: {
@@ -136,7 +134,20 @@ export const PageMonitoringStyles = {
         display: 'flex',
         justifyContent: 'center',
         alignItem: 'center',
-        marginTop: 3
+        marginTop: 3,
+        //backgroundColor: 'red',
+        /*minWidth: 80,
+        width: 80,*/
+    },
+    gridHeaderBig: {
+        height: 15,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItem: 'center',
+        marginTop: 3,
+        backgroundColor: 'red',
+        width: 250,
     },
     gridHeaderSmall2: {
         height: 15,
@@ -489,7 +500,7 @@ export const renderPlaceHolderCircular3 = (type: string = '') => {
     )
 }
 
-export const renderWifiLoader = (width=25 , height=25) => {
+export const renderWifiLoader = (width = 25, height = 25) => {
     return (
         <div
             style={{marginBottom: 3,}}>
@@ -590,9 +601,9 @@ export const renderPlaceHolderLottiePinJump3 = (type: string = '') => {
                         preserveAspectRatio: 'xMidYMid slice'
                     }
                 }}
-                speed={2.9}
-                height={75}
-                width={75}
+                speed={2.0}
+                height={105}
+                width={105}
                 isStopped={false}
                 isPaused={false}
             />
@@ -634,6 +645,18 @@ export const renderPlaceHolder3 = (type: string = '') => {
 export const convertByteToMegaByte = (value, hardwareType) => {
     if (value > 1000000) {
         return numberWithCommas(value / 1000000) + ' MByte'
+    } else {
+        return numberWithCommas(value)
+    }
+}
+
+export const convertByteToMegaGigaByte = (value, hardwareType) => {
+    if (value > 1000000) {
+        if (value > 1000000 * 1000) {
+            return numberWithCommas((value / 1000000) / 1000) + ' GByte'
+        } else {
+            return numberWithCommas(value / 1000000) + ' MByte'
+        }
     } else {
         return numberWithCommas(value)
     }
@@ -1120,6 +1143,7 @@ export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType,) =>
         let cluster_cloudlet_fullLabel = item.cluster.toString() + ' [' + item.cloudlet.toString().trim() + "]";
 
         bubbleChartData.push({
+            type: pHardwareType,
             index: index,
             label: cluster_cloudlet_fullLabel.toString().substring(0, 17) + "...",
             value: usageValue,

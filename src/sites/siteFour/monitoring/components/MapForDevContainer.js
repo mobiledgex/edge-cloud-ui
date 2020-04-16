@@ -5,24 +5,18 @@ import 'react-leaflet-fullscreen-control'
 import type {TypeAppInstance, TypeClient} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 import {CheckCircleOutlined} from '@material-ui/icons';
-import {Map, Marker, Polyline, Popup, Rectangle, TileLayer, Tooltip,} from "react-leaflet";
+import {Map, Marker, Polyline, Popup, TileLayer, Tooltip,} from "react-leaflet";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {groupByKey_, removeDuplicates, renderPlaceHolderLottiePinJump3} from "../PageMonitoringCommonService";
+import {groupByKey_, removeDuplicates} from "../PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
 import {Radio} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
-import {
-    DARK_CLOUTLET_ICON_COLOR,
-    DARK_LINE_COLOR,
-    WHITE_CLOUTLET_ICON_COLOR,
-    WHITE_LINE_COLOR
-} from "../../../../shared/Constants";
+import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
-import MaterialIcon from "material-icons-react";
 
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
@@ -115,7 +109,7 @@ type State = {
 };
 
 export default connect(mapStateToProps, mapDispatchProps)(
-    class LeafletMapContainerDev extends React.Component<Props, State> {
+    class MapForDevContainer extends React.Component<Props, State> {
         mapTileList = [
             {
                 url: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
@@ -144,7 +138,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
             this.appInstPopup = React.createRef();
 
             this.state = {
-                zoom: 3,//mapZoom
+                zoom: 2,//mapZoom
                 appInstanceListGroupByCloudlet: '',
                 cloudletKeys: [],
                 newCloudLetLocationList: [],
@@ -174,11 +168,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
         }
 
         componentDidMount = async () => {
-            console.log('componentDidMount===>', this.props.markerList);
             let appInstanceListGroupByCloudlet = this.props.markerList
-            await this.setCloudletLocation(appInstanceListGroupByCloudlet)
-
-
+            await this.setCloudletLocation(appInstanceListGroupByCloudlet, true)
         };
 
 
@@ -229,7 +220,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
         }
 
-        setCloudletLocation(pAppInstanceListGroupByCloudlet) {
+        setCloudletLocation(pAppInstanceListGroupByCloudlet, isMapCenter = false) {
             let cloudletKeys = Object.keys(pAppInstanceListGroupByCloudlet)
 
             let newCloudLetLocationList = []
@@ -282,8 +273,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 //@desc: Move the center of the map to the center of the item.
                 if (newCloudLetLocationList[0] !== undefined) {
                     this.setState({
-                        mapCenter: [newCloudLetLocationList[0].CloudletLocation.latitude, newCloudLetLocationList[0].CloudletLocation.longitude],
-                        zoom: 4,
+                        mapCenter: isMapCenter ? this.state.mapCenter : [newCloudLetLocationList[0].CloudletLocation.latitude, newCloudLetLocationList[0].CloudletLocation.longitude],
+                        zoom: 2,
                     })
                 }
             })
@@ -360,6 +351,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                      this.map = ref;
                                  }}
                             >
+                                {/*{this.props.parent.state.loading && renderPlaceHolderLottiePinJump3()}*/}
                                 <TileLayer
                                     url={this.props.currentTyleLayer}
                                     minZoom={2}
@@ -371,10 +363,10 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                         onClick={async () => {
                                             try {
                                                 await this.setState({
-                                                    zoom: 3,
+                                                    zoom: 1,
                                                 })
 
-                                                await this.props.parent.handleClusterDropdownAndReset('');
+                                                await this.props.parent.handleClusterDropdown__Reset('');
                                             } catch (e) {
 
                                             }

@@ -3,12 +3,7 @@ import type {TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../share
 import {SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET} from "../../../services/endPointTypes";
 import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT, REGION, USER_TYPE} from "../../../shared/Constants";
 import {sendSyncRequest} from "../../../services/serviceMC";
-import {
-    isEmpty,
-    makeFormForCloudletLevelMatric,
-    makeFormForClusterLevelMatric,
-    showToast
-} from "./PageMonitoringCommonService";
+import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
 import {formatData} from "../../../services/formatter/formatComputeInstance";
 import {makeFormForAppLevelUsageList} from "./admin/PageAdminMonitoringService";
 import PageDevMonitoring from "./dev/PageDevMonitoring";
@@ -33,7 +28,6 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
         let prefixUrl = (process.env.REACT_APP_API_ENDPOINT).replace('http', 'ws');
         const webSocket = new WebSocket(`${prefixUrl}/ws/api/v1/auth/ctrl/ShowAppInstClient`)
-
         let showAppInstClientRequestForm = {
             "Region": Region,
             "AppInstClientKey": {
@@ -411,7 +405,6 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
         console.log("usageListForAllInstance===>", usageListForAllInstance);
 
 
-
         let allUsageList = []
         usageListForAllInstance.map((item, index) => {
             let appName = item.instanceData.AppName
@@ -684,6 +677,10 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
             }
 
         })
+
+        console.log("newClusterLevelUsageList===>", newClusterLevelUsageList);
+
+
         return newClusterLevelUsageList;
     } catch (e) {
         return [];
@@ -1071,12 +1068,9 @@ export const getAppInstEventLogByRegion = async (region = 'EU') => {
 
         }
 
-        console.log("getAppInstEventLogs====>", form)
-
-
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
-        let result = await axios({
+        return await axios({
             url: '/api/v1/auth/events/app',
             method: 'post',
             data: form,
@@ -1098,11 +1092,10 @@ export const getAppInstEventLogByRegion = async (region = 'EU') => {
 
         }).catch(e => {
             //throw new Error(e)
-            showToast(e.toString())
+            //showToast(e.toString())
         })
-        return result;
     } catch (e) {
-        showToast(e.toString())
+        // showToast(e.toString())
     }
 
 }
@@ -1138,7 +1131,7 @@ export const getAllAppInstEventLogs = async () => {
         console.log("getAllAppInstEventLogs===>", completedEventLogList);
         return completedEventLogList;
     } catch (e) {
-        showToast(e.toString())
+        // showToast(e.toString())
     }
 }
 
