@@ -1,7 +1,6 @@
 // @flow
 import * as React from 'react';
 import {useEffect} from 'react';
-import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
@@ -11,6 +10,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import {numberWithCommas} from "../PageMonitoringCommonService";
 import {Progress} from "antd";
 import '../PageMonitoring.css'
+import Tooltip from "@material-ui/core/Tooltip";
 
 type Props = {
     filteredUsageList: any,
@@ -88,91 +88,90 @@ export default function PerformanceSummaryForAppInstHook(props) {
                     <TableBody padding={'none'} style={{width: 'auto', overflowX: 'scroll'}}>
                         {props.filteredUsageList !== undefined && props.filteredUsageList.map((item, index) => {
                             return (
-                                <TableRow
-                                    style={{
-                                        backgroundColor: index % 2 === 0 ? '#1e2025' : '#23252c',
-                                        color: 'grey',
-                                        height: 30,
-                                    }}
-                                >
-                                    <TableCell padding={'default'} align="center" style={{width: 320, color: '#C0C6C8',}}>
-                                        <div style={{
-                                            display: "flex",
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
+                                    <TableRow
+                                        style={{
+                                            backgroundColor: index % 2 === 0 ? '#1e2025' : '#23252c',
+                                            color: 'grey',
                                             height: 30,
-                                            padding: 0,
-                                        }}>
+                                        }}
+                                    >
+                                        <TableCell padding={'default'} align="center" style={{width: 320, color: '#C0C6C8',}}>
                                             <div style={{
-                                                marginBottom: 0,
-                                                marginTop: 0,
-                                                display: 'flex',
-                                                alignItems: 'flex-start',
-                                                justifyContent: 'center'
+                                                display: "flex",
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                height: 30,
+                                                padding: 0,
                                             }}>
                                                 <div style={{
-                                                    backgroundColor: props.parent.state.chartColorList[index],
-                                                    width: 15,
-                                                    height: 15,
-                                                    borderRadius: 50,
+                                                    marginBottom: 0,
+                                                    marginTop: 0,
+                                                    display: 'flex',
+                                                    alignItems: 'flex-start',
+                                                    justifyContent: 'center'
                                                 }}>
+                                                    <div style={{
+                                                        backgroundColor: props.parent.state.chartColorList[index],
+                                                        width: 15,
+                                                        height: 15,
+                                                        borderRadius: 50,
+                                                    }}>
+                                                    </div>
+                                                </div>
+                                                <div style={{
+                                                    marginBottom: 0, marginTop: 0, marginLeft: 20, display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                                }}>
+                                                    {item.appName.toString()}
                                                 </div>
                                             </div>
-                                            <div style={{
-                                                marginBottom: 0, marginTop: 0, marginLeft: 20, display: 'flex', alignItems: 'center', justifyContent: 'center'
-                                            }}>
-                                                {item.appName.toString()}
-                                            </div>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
-                                        <div style={{heiight: 15, padding: 0,}}>
-                                            <div>
-                                                {item.sumCpuUsage.toFixed(8) + '%'}
-                                            </div>
-                                            <div>
-                                                <Progress style={{width: '100%'}} strokeLinecap={'square'}
-                                                          strokeWidth={10}
-                                                          showInfo={false}
-                                                          percent={item.sumCpuUsage.toFixed(0)}
-                                                          strokeColor={props.parent.state.chartColorList[index]}
+                                        </TableCell>
+                                        <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
+                                            <div style={{heiight: 15, padding: 0,}}>
+                                                <div>
+                                                    {item.sumCpuUsage.toFixed(8) + '%'}
+                                                </div>
+                                                <div>
+                                                    <Progress style={{width: '100%'}} strokeLinecap={'square'}
+                                                              strokeWidth={10}
+                                                              showInfo={false}
+                                                              percent={item.sumCpuUsage.toFixed(0)}
+                                                              strokeColor={props.parent.state.chartColorList[index]}
 
-                                                          status={'normal'}/>
+                                                              status={'normal'}/>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
-                                        <div style={{heiight: 15, padding: 0,}}>
-                                            <div>
-                                                {numberWithCommas(item.sumMemUsage.toFixed(2)) + ' Byte'}
+                                        </TableCell>
+                                        <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
+                                            <div style={{heiight: 15, padding: 0,}}>
+                                                <div>
+                                                    {numberWithCommas(item.sumMemUsage.toFixed(2)) + ' Byte'}
+                                                </div>
                                             </div>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
-                                        <div style={{heiight: 15, padding: 0,}}>
-                                            <div>
-                                                {numberWithCommas(item.sumDiskUsage.toFixed(2)) + ' Byte'}
-                                            </div>
+                                        </TableCell>
+                                        <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
+                                            <div style={{heiight: 15, padding: 0,}}>
+                                                <div>
+                                                    {numberWithCommas(item.sumDiskUsage.toFixed(2)) + ' Byte'}
+                                                </div>
 
-                                        </div>
-                                    </TableCell>
-                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
-                                        {numberWithCommas(item.sumRecvBytes.toFixed(2)) + ' '}
-                                    </TableCell>
-                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
-                                        {numberWithCommas(item.sumSendBytes.toFixed(2)) + ' '}
-                                    </TableCell>
-                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
-                                        {numberWithCommas(item.sumActiveConnection.toFixed(2)) + ' '}
-                                    </TableCell>
-                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
-                                        {numberWithCommas(item.sumHandledConnection.toFixed(2)) + ' '}
-                                    </TableCell>
-                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
-                                        {numberWithCommas(item.sumAcceptsConnection.toFixed(2)) + ' '}
-                                    </TableCell>
-
-                                </TableRow>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
+                                            {numberWithCommas(item.sumRecvBytes.toFixed(2)) + ' '}
+                                        </TableCell>
+                                        <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
+                                            {numberWithCommas(item.sumSendBytes.toFixed(2)) + ' '}
+                                        </TableCell>
+                                        <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
+                                            {numberWithCommas(item.sumActiveConnection.toFixed(2)) + ' '}
+                                        </TableCell>
+                                        <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
+                                            {numberWithCommas(item.sumHandledConnection.toFixed(2)) + ' '}
+                                        </TableCell>
+                                        <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
+                                            {numberWithCommas(item.sumAcceptsConnection.toFixed(2)) + ' '}
+                                        </TableCell>
+                                    </TableRow>
                             )
                         })}
 

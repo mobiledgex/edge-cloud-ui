@@ -1399,12 +1399,12 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     padding: 10,
                     labelOffset: 0,
                     callback(value, index, label) {
-                      /*  if (isBig) {
-                            return value
-                        } else {
-                            if (index % 2 === 0) return '';
-                            return value;
-                        }*/
+                        /*  if (isBig) {
+                              return value
+                          } else {
+                              if (index % 2 === 0) return '';
+                              return value;
+                          }*/
                         return value;
                     },
                 },
@@ -1419,7 +1419,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
         },//scales
         onClick: function (c, i) {
             if (i.length > 0) {
-                console.log('onClick===>', i);
+                // alert('sldkflsdkf' + JSON.stringify(i))
             }
 
         }

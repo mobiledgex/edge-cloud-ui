@@ -1,4 +1,5 @@
 // @flow
+import Ripples from "react-ripples";
 import * as React from 'react';
 import {useEffect} from 'react';
 import Paper from "@material-ui/core/Paper";
@@ -12,6 +13,9 @@ import {numberWithCommas} from "../PageMonitoringCommonService";
 import {Progress} from "antd";
 import {withStyles} from "@material-ui/core";
 import '../PageMonitoring.css'
+import {handleLegendAndBubbleClickedEvent, makeLineChartDataForCluster} from "../dev/PageDevMonitoringService";
+import {HARDWARE_TYPE} from "../../../../shared/Constants";
+import {Tooltip} from 'antd'
 
 type Props = {
     filteredUsageList: any,
@@ -44,10 +48,23 @@ export default function PerformanceSummaryForClusterHook(props) {
     //const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
     useEffect(() => {
 
-
         console.log("filteredUsageList===>", props.filteredUsageList);
 
     }, [props.filteredUsageList]);
+
+
+    function handleRowClicked(item, hwType) {
+        try {
+            let clusterAndCloudlet = item.cluster.toString() + ' | ' + item.cloudlet.toString()
+            let lineChartDataSet = makeLineChartDataForCluster(props.parent.state.filteredClusterUsageList, hwType, props.parent)
+            clusterAndCloudlet = clusterAndCloudlet.toString().split(" | ")[0] + "|" + clusterAndCloudlet.toString().split(" | ")[1]
+            handleLegendAndBubbleClickedEvent(props.parent, clusterAndCloudlet, lineChartDataSet)
+
+        } catch (e) {
+            console.log("error===>", e);
+        }
+    }
+
 
     return (
         <React.Fragment>
@@ -56,16 +73,21 @@ export default function PerformanceSummaryForClusterHook(props) {
                 width: '100%',
                 height: 45
             }}>
-                <div className='page_monitoring_title draggable'
-                     style={{
-                         flex: 1,
-                         marginTop: 5,
-                         fontFamily: 'Ubuntu',
-                         //backgroundColor:'red'
-                     }}
-                >
-                    {props.parent.state.currentClassification} Performance Summary
-                </div>
+                <Tooltip placement="top" title={'To view a chart of each hardware usage,\n' +
+                'Click the cell.'}>
+                    <div className='page_monitoring_title draggable'
+                         style={{
+                             flex: .2,
+                             marginTop: 5,
+                             fontFamily: 'Ubuntu',
+                             //backgroundColor: 'red'
+                         }}
+                    >
+                        {props.parent.state.currentClassification} Performance Summary
+                    </div>
+                    <div style={{flex: .7}}>
+                    </div>
+                </Tooltip>
             </div>
             <TableContainer
                 style={{
@@ -123,6 +145,7 @@ export default function PerformanceSummaryForClusterHook(props) {
                                         height: 30,
                                     }}
                                 >
+
                                     <TableCell padding={'default'} align="center" style={{width: 320, color: '#C0C6C8',}}>
                                         <div style={{
                                             display: "flex",
@@ -154,7 +177,11 @@ export default function PerformanceSummaryForClusterHook(props) {
                                             </div>
                                         </div>
                                     </TableCell>
-                                    <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
+
+                                    {/*@desc:cpu*/}
+                                    <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}
+                                               onClick={() => handleRowClicked(item, HARDWARE_TYPE.CPU)}
+                                    >
                                         <div style={{heiight: 15, padding: 0,}}>
                                             <div>
                                                 {item.sumCpuUsage.toFixed(2) + '%'}
@@ -170,7 +197,10 @@ export default function PerformanceSummaryForClusterHook(props) {
                                             </div>
                                         </div>
                                     </TableCell>
-                                    <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
+
+                                    <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}
+                                               onClick={() => handleRowClicked(item, HARDWARE_TYPE.MEM)}
+                                    >
                                         <div style={{heiight: 15, padding: 0,}}>
                                             <div>
                                                 {numberWithCommas(item.sumMemUsage.toFixed(2)) + ' %'}
@@ -185,7 +215,10 @@ export default function PerformanceSummaryForClusterHook(props) {
                                             </div>
                                         </div>
                                     </TableCell>
-                                    <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
+                                    <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}
+                                               onClick={() => handleRowClicked(item, HARDWARE_TYPE.DISK)}
+
+                                    >
                                         <div style={{heiight: 15, padding: 0,}}>
                                             <div>
                                                 {numberWithCommas(item.sumDiskUsage.toFixed(2)) + ' %'}
@@ -200,23 +233,35 @@ export default function PerformanceSummaryForClusterHook(props) {
                                             </div>
                                         </div>
                                     </TableCell>
-                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
+                                    <TableCell
+                                        onClick={() => handleRowClicked(item, HARDWARE_TYPE.RECVBYTES)}
+                                        padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
                                         {numberWithCommas(item.sumRecvBytes.toFixed(2)) + ' '}
                                     </TableCell>
-                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
+                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
+                                               onClick={() => handleRowClicked(item, HARDWARE_TYPE.SENDBYTES)}
+                                    >
                                         {numberWithCommas(item.sumSendBytes.toFixed(2)) + ' '}
                                     </TableCell>
 
-                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
+                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
+                                               onClick={() => handleRowClicked(item, HARDWARE_TYPE.TCPCONNS)}
+                                    >
                                         {numberWithCommas(item.sumTcpConns.toFixed(2)) + ' '}
                                     </TableCell>
-                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
+                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
+                                               onClick={() => handleRowClicked(item, HARDWARE_TYPE.TCPRETRANS)}
+                                    >
                                         {numberWithCommas(item.sumTcpRetrans.toFixed(2)) + ' '}
                                     </TableCell>
-                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
+                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
+                                               onClick={() => handleRowClicked(item, HARDWARE_TYPE.UDPRECV)}
+                                    >
                                         {numberWithCommas(item.sumUdpRecv.toFixed(2)) + ' '}
                                     </TableCell>
-                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
+                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
+                                               onClick={() => handleRowClicked(item, HARDWARE_TYPE.UDPSENT)}
+                                    >
                                         {numberWithCommas(item.sumUdpSent.toFixed(2)) + ' '}
                                     </TableCell>
                                 </TableRow>
