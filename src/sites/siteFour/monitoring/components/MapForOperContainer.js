@@ -24,7 +24,7 @@ let greenIcon = new L.Icon({
 
 
 export default hot(
-    class LeafletMap extends React.Component {
+    class MapForOperContainer extends React.Component {
         state = {
             viewport: DEFAULT_VIEWPORT,
             markers: [

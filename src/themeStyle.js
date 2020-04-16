@@ -12,13 +12,8 @@ export const getDarkTheme = () => {
         palette: {
             type: 'dark',
             primary: {
-                //main: '#77BD25',
                 main: '#77BD25',
             },
-            /*background: {
-                default: '#000',
-            },*/
-
         },
         overrides: {
             MuiSvgIcon: {
@@ -26,27 +21,11 @@ export const getDarkTheme = () => {
                     color: '#fff',
                 }
             },
-            /* MuiIconButton: {
-                 root: {
-                     color: 'white !important'
-                 },
-             },
-             MuiSwitch: {
-                 thumb: {
-                     color: '#a4aa0e',
-                 },
-             },
-             MuiToolbar: {
-                 regular: {
-                     backgroundColor: "#aeb1cd",
-                     color: "#fff",
-                     height: "32px",
-                     minHeight: "32px",
-                     '@media (min-width: 600px)': {
-                         minHeight: "48px"
-                     }
-                 },
-             },*/
+            MuiPaper: {
+                root: {
+                    backgroundColor: '#0c0a0a'
+                }
+            },
         }
     })
 }

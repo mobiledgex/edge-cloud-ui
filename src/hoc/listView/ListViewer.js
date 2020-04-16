@@ -17,7 +17,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import ListIcon from '@material-ui/icons/List';
 import { fields } from '../../services/model/format';
-import { Popper, Grow, Paper, ClickAwayListener, MenuList, MenuItem } from '@material-ui/core';
+import {Popper, Grow, Paper, ClickAwayListener, MenuList, MenuItem} from '@material-ui/core';
 import { getUserRole } from '../../services/model/format';
 import { Icon } from 'semantic-ui-react';
 
@@ -348,7 +348,7 @@ export default function EnhancedTable(props) {
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
                                         >
-                                            {props.requestInfo.selection ? 
+                                            {props.requestInfo.selection ?
                                                 <TableCell style={{ borderBottom: "none" }} padding="checkbox"
                                                     onClick={(event) => handleClick(event, row)}>
                                                     <Checkbox
