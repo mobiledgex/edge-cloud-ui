@@ -1,20 +1,18 @@
-
-import * as Organization from './organization';
-import * as Users from './users';
-import * as Accounts from './accounts';
-import * as App from './app';
-import * as Cloudlet from './cloudlet';
-import * as CloudletInfo from './cloudletInfo';
-import * as ClusterInstance from './clusterInstance';
-import * as Flavor from './flavor';
-import * as AppInstance from './appInstance';
-import * as OrgCloudlet from './orgCloudlet';
-import * as AutoProvPolicy from './autoProvisioningPolicy';
-import * as PrivacyPolicy from './privacyPolicy';
-import * as CloudletPool from './cloudletPool';
-import * as CloudletPoolMember from './cloudletPoolMember';
-import * as CloudletLinkOrg from './cloudletLinkOrg';
-
+import * as Organization from "./organization";
+import * as Users from "./users";
+import * as Accounts from "./accounts";
+import * as App from "./app";
+import * as Cloudlet from "./cloudlet";
+import * as CloudletInfo from "./cloudletInfo";
+import * as ClusterInstance from "./clusterInstance";
+import * as Flavor from "./flavor";
+import * as AppInstance from "./appInstance";
+import * as OrgCloudlet from "./orgCloudlet";
+import * as AutoProvPolicy from "./autoProvisioningPolicy";
+import * as PrivacyPolicy from "./privacyPolicy";
+import * as CloudletPool from "./cloudletPool";
+import * as CloudletPoolMember from "./cloudletPoolMember";
+import * as CloudletLinkOrg from "./cloudletLinkOrg";
 
 export const SHOW_ORG = "showOrg";
 export const CREATE_ORG = "createOrg";
@@ -25,7 +23,7 @@ export const DELETE_USER = "DeleteUser";
 export const SHOW_ACCOUNTS = "ShowAccounts";
 export const DELETE_ACCOUNT = "DeleteAccount";
 export const SHOW_ROLE = "ShowRole";
-export const SHOW_CONTROLLER = "showController"
+export const SHOW_CONTROLLER = "showController";
 export const SHOW_CLOUDLET = "ShowCloudlet";
 export const SHOW_CLOUDLET_INFO = "ShowCloudletInfo";
 export const DELETE_CLOUDLET = "DeleteCloudlet";
@@ -37,7 +35,7 @@ export const UPDATE_CLUSTER_INST = "UpdateClusterInst";
 export const DELETE_CLUSTER_INST = "DeleteClusterInst";
 export const SHOW_FLAVOR = "ShowFlavor";
 export const CREATE_FLAVOR = "CreateFlavor";
-export const DELETE_FLAVOR = "DeleteFlavor"
+export const DELETE_FLAVOR = "DeleteFlavor";
 export const SHOW_APP = "ShowApp";
 export const CREATE_APP = "CreateApp";
 export const UPDATE_APP = "UpdateApp";
@@ -85,37 +83,38 @@ export const SHOW_PRIVACY_POLICY = "ShowPrivacyPolicy";
 export const UPDATE_PRIVACY_POLICY = "UpdatePrivacyPolicy";
 export const CREATE_PRIVACY_POLICY = "CreatePrivacyPolicy";
 export const DELETE_PRIVACY_POLICY = "DeletePrivacyPolicy";
+export const EVENT_CLOUDLET = "CloudletLevelEvents";
 
 export function getPath(request) {
     switch (request.method) {
         case SHOW_ORG:
-            return '/api/v1/auth/org/show';
+            return "/api/v1/auth/org/show";
         case DELETE_ORG:
-            return '/api/v1/auth/org/delete';
+            return "/api/v1/auth/org/delete";
         case SHOW_AUDIT_ORG:
-            return '/api/v1/auth/audit/showorg';
+            return "/api/v1/auth/audit/showorg";
         case SHOW_USERS:
-            return '/api/v1/auth/role/showuser';
+            return "/api/v1/auth/role/showuser";
         case DELETE_USER:
-            return '/api/v1/auth/role/removeuser';
+            return "/api/v1/auth/role/removeuser";
         case SHOW_ACCOUNTS:
-            return '/api/v1/auth/user/show';
+            return "/api/v1/auth/user/show";
         case DELETE_ACCOUNT:
-            return '/api/v1/auth/user/delete';
+            return "/api/v1/auth/user/delete";
         case SHOW_ROLE:
-            return '/api/v1/auth/role/assignment/show';
+            return "/api/v1/auth/role/assignment/show";
         case SHOW_CONTROLLER:
-            return '/api/v1/auth/controller/show';
+            return "/api/v1/auth/controller/show";
         case SETTING_LOCK:
-            return '/api/v1/auth/restricted/user/update';
+            return "/api/v1/auth/restricted/user/update";
         case CURRENT_USER:
-            return '/api/v1/auth/user/current';
+            return "/api/v1/auth/user/current";
         case SHOW_SELF:
-            return '/api/v1/auth/audit/showself';
+            return "/api/v1/auth/audit/showself";
         case ADD_USER_ROLE:
-            return '/api/v1/auth/role/adduser';
+            return "/api/v1/auth/role/adduser";
         case CREATE_ORG:
-            return '/api/v1/auth/org/create';
+            return "/api/v1/auth/org/create";
         case SHOW_CLOUDLET:
         case SHOW_CLOUDLET_INFO:
         case CREATE_CLOUDLET:
@@ -168,7 +167,7 @@ export function getPath(request) {
         case CLOUDLET_METRICS_APP:
         case CLUSTER_INST_METRICS_APP:
         case APP_INST_METRICS_APP:
-            return '/api/v1/auth/metrics/app';
+            return "/api/v1/auth/metrics/app";
         case SHOW_CLOUDLET_LINKORG:
             return `/api/v1/auth/orgcloudletpool/show`;
         case CREATE_LINK_POOL_ORG:
@@ -177,6 +176,8 @@ export function getPath(request) {
             return `/api/v1/auth/orgcloudletpool/delete`;
         case SHOW_ORG_CLOUDLET:
             return `/api/v1/auth/orgcloudlet/show`;
+        case EVENT_CLOUDLET:
+            return `/api/v1/auth/events/cloudlet`;
         default:
             return null;
     }
@@ -186,49 +187,49 @@ export function formatData(request, response) {
     let data = undefined;
     switch (request.method) {
         case SHOW_ORG:
-            data = Organization.getData(response, request.data)
+            data = Organization.getData(response, request.data);
             break;
         case SHOW_USERS:
-            data = Users.getData(response, request.data)
+            data = Users.getData(response, request.data);
             break;
         case SHOW_ACCOUNTS:
-            data = Accounts.getData(response, request.data)
+            data = Accounts.getData(response, request.data);
             break;
         case SHOW_CLOUDLET:
-            data = Cloudlet.getData(response, request.data)
+            data = Cloudlet.getData(response, request.data);
             break;
         case SHOW_CLOUDLET_INFO:
-            data = CloudletInfo.getData(response, request.data)
+            data = CloudletInfo.getData(response, request.data);
             break;
         case SHOW_CLUSTER_INST:
-            data = ClusterInstance.getData(response, request.data)
+            data = ClusterInstance.getData(response, request.data);
             break;
         case SHOW_FLAVOR:
-            data = Flavor.getData(response, request.data)
+            data = Flavor.getData(response, request.data);
             break;
         case SHOW_APP:
-            data = App.getData(response, request.data)
+            data = App.getData(response, request.data);
             break;
         case SHOW_APP_INST:
-            data = AppInstance.getData(response, request.data)
+            data = AppInstance.getData(response, request.data);
             break;
         case SHOW_ORG_CLOUDLET:
-            data = OrgCloudlet.getData(response, request.data)
+            data = OrgCloudlet.getData(response, request.data);
             break;
         case SHOW_AUTO_PROV_POLICY:
-            data = AutoProvPolicy.getData(response, request.data)
+            data = AutoProvPolicy.getData(response, request.data);
             break;
         case SHOW_PRIVACY_POLICY:
-            data = PrivacyPolicy.getData(response, request.data)
+            data = PrivacyPolicy.getData(response, request.data);
             break;
         case SHOW_CLOUDLET_POOL:
-            data = CloudletPool.getData(response, request.data)
+            data = CloudletPool.getData(response, request.data);
             break;
         case SHOW_CLOUDLET_MEMBER:
-            data = CloudletPoolMember.getData(response, request.data)
+            data = CloudletPoolMember.getData(response, request.data);
             break;
         case SHOW_CLOUDLET_LINKORG:
-            data = CloudletLinkOrg.getData(response, request.data)
+            data = CloudletLinkOrg.getData(response, request.data);
             break;
         default:
             data = undefined;
@@ -236,5 +237,5 @@ export function formatData(request, response) {
     if (data) {
         response.data = data;
     }
-    return { request: request, response: response }
+    return { request: request, response: response };
 }

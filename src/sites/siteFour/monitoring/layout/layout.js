@@ -69,8 +69,8 @@ export default class MonitoringLayout extends React.Component {
                         display: "grid",
                         gridTemplateRows: "30px auto",
                         borderWidth: 1,
-                        borderColor: "green",
-                        backgroundColor: "#2f4f4f",
+                        borderColor: "#333333",
+                        backgroundColor: "#222",
                         padding: "3px"
                     }}
                 >

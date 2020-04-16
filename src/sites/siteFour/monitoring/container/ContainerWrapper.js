@@ -1,6 +1,6 @@
 import React from "react";
-import axios from "axios";
 import { SizeMe } from "react-sizeme";
+import MetricsCloudlet from "../services/serviceMetricCloudlet";
 
 const ContainerWrapper = () => WrapperComponent => {
     return class extends React.Component {
@@ -8,19 +8,22 @@ const ContainerWrapper = () => WrapperComponent => {
             data: null,
             chartType: ""
         };
-        async initialize() {
+
+        async initialize(type: string) {
             try {
-                const response = await axios.get(this.props.url);
-                this.setState({
-                    data: response.data
-                });
+                // const response = await axios.get(this.props.url);
+                // this.setState({
+                //     data: response.data
+                // });
+                const response = await MetricsCloudlet(type);
+                console.log("20200414 init service ==>>>> ", response);
             } catch (e) {
                 console.log(e);
             }
         }
         componentDidMount() {
             this.setState({ chartType: this.props.chartType });
-            this.initialize();
+            this.initialize(this.props.chartType);
         }
         render() {
             const { data, chartType } = this.state;

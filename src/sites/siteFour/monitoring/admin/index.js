@@ -112,7 +112,7 @@ const generateComponent = sizeInfo => {
         }),
         generatWidget({
             url: "https://test6",
-            chartType: "gauge",
+            chartType: "table",
             type: "",
             sizeInfo: sizeInfo
         })
