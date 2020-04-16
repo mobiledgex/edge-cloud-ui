@@ -194,7 +194,7 @@ class OrganizationReg extends React.Component {
                     <Grid.Column width={11}>
                         <Form>
                             <Header className="newOrg3-1">{`Organization "` + organizationName + `" has been created.`}</Header>
-                            <MexDetailViewer detailData={this.organizationInfo} keys={keys()} showHeader={false}/>
+                            <MexDetailViewer detailData={this.organizationInfo} keys={keys()}/>
                             <Form.Group className='orgButton' style={{ width: '100%' }}>
                                 <Button className="newOrg3-4" onClick={(e) => { this.props.onClose() }} type='submit' positive style={{ width: '100%' }}>Return to Organization</Button>
                             </Form.Group>
