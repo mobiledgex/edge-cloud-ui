@@ -204,24 +204,24 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                         }}
                                         bubbleClickFun={async (cluster_cloudlet, index) => {
 
-                                            try {
+                                         /*   try {
                                                 let lineChartDataSet = makeLineChartDataForCluster(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
                                                 cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
                                                 handleLegendAndBubbleClickedEvent(this.props.parent, cluster_cloudlet, lineChartDataSet)
                                             } catch (e) {
 
-                                            }
+                                            }*/
 
 
                                         }}
                                         legendClickFun={async (cluster_cloudlet, index) => {
-                                            try {
+                                         /*   try {
                                                 let lineChartDataSet = makeLineChartDataForCluster(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
                                                 cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
                                                 handleLegendAndBubbleClickedEvent(this.props.parent, cluster_cloudlet, lineChartDataSet)
                                             } catch (e) {
 
-                                            }
+                                            }*/
                                         }}
                                         data={pBubbleChartData}
                                     />

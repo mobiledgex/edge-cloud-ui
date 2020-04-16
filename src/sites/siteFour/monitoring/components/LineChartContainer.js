@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import {convertToClassification, makeLineChartOptions, makeTop5GradientLineChartData} from "../dev/PageDevMonitoringService";
+import {convertToClassification, makeLineChartOptions, makeTop5GradientLineChartData, simpleGraphOptions} from "../dev/PageDevMonitoringService";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import {Line} from 'react-chartjs-2';
 
