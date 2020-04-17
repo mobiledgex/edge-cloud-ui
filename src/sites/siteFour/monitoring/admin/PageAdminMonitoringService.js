@@ -9,7 +9,7 @@ import {
     REGION
 } from "../../../../shared/Constants";
 import Lottie from "react-lottie";
-import BubbleChart from "../../../../components/BubbleChart";
+import BubbleChart from "../components/BubbleChart";
 import {TypeAppInstance} from "../../../../shared/Types";
 import PageAdminMonitoring from "./PageAdminMonitoring";
 import {
