@@ -366,7 +366,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                     zoom: 1,
                                                 })
 
-                                                await this.props.parent.handleClusterDropdown__Reset('');
+                                                await this.props.parent.handleClusterDropdown_Reset('');
                                             } catch (e) {
 
                                             }

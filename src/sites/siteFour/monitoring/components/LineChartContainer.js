@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import {convertToClassification, makeLineChartOptions, makeTop5GradientLineChartData} from "../dev/PageDevMonitoringService";
+import {convertToClassification, makeLineChartOptions, makeTop5GradientLineChartData, simpleGraphOptions} from "../dev/PageDevMonitoringService";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import {Line} from 'react-chartjs-2';
 
@@ -92,6 +92,14 @@ export default class LineChartContainer extends React.Component<Props, State> {
 
     }
 
+    handleChartClick(element) {
+        const {datasets} = element[0]._chart.tooltip._data
+        const datasetIndex = element[0]._datasetIndex
+        const dataIndex = element[0]._index
+
+        alert(`${datasets[datasetIndex].label}: ${datasets[datasetIndex].data[dataIndex]}`)
+    }
+
 
     render() {
         return (
@@ -109,6 +117,9 @@ export default class LineChartContainer extends React.Component<Props, State> {
                             height: '99%'
                         }}>
                             <Line
+                               /* onElementsClick={elems => {
+
+                                }}*/
                                 data={this.state.chartDataSet}
                                 options={makeLineChartOptions(this.state.pHardwareType, this.state.chartDataSet, this.props.parent)}
                                 //options={simpleGraphOptions}
