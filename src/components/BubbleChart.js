@@ -55,7 +55,6 @@ export default class BubbleChart extends Component {
         const bubblesWidth = showLegend ? width * (1 - (legendPercentage / 100)) : width;
         const legendWidth = width - bubblesWidth;
 
-
         var categorical = [
             {"name": "schemeAccent", "n": 8},
             {"name": "schemeDark2", "n": 8},
@@ -77,18 +76,12 @@ export default class BubbleChart extends Component {
             });
         };
 
-        //const color = d3.scaleOrdinal(d3.schemeCategory20c);
-        //'#609732', '#6EDC12', '#69BA27', '#527536', '#405330'
-
-        //const color = d3.scaleOrdinal(colors("1f77b4ff7f0e2ca02cd627289467bd8c564be377c27f7f7fbcbd2217becf"));
-
-        //6097326EDC1269BA27527536405330
         let colorCodes = 'DE0000FF9600FFF6005BCB000096FF'
-        if (this.props.themeTitle === THEME_OPTIONS.DEFAULT) {
+        /*if (this.props.themeTitle === THEME_OPTIONS.DEFAULT) {
             let eundewColorCodes = 'DE0000FF9600FFF6005BCB000096FF00FFFF0080800000FF000080FF00FF800080800000808080808000'
             colorCodes = eundewColorCodes;
         }
-        if (this.props.themeTitle === THEME_OPTIONS.BLUE) {//#00FFFF#008080#0000FF#000080#FF00FF#800080#800000#808080#808000
+        if (this.props.themeTitle === THEME_OPTIONS.BLUE) {
             let blueColorCodes = '65DEF1A8DCD1DCE2C8F96900F17F2900FFFF0080800000FF000080FF00FF800080800000808080808000'
             colorCodes = blueColorCodes;
         }
@@ -125,13 +118,10 @@ export default class BubbleChart extends Component {
         if (this.props.themeTitle === THEME_OPTIONS.BERRIES_GALORE) {
             let _color = '777CA8BB1924EE6C81F092A5AFBADC66D9EF27282275715E'
             colorCodes = _color;
-        }
-
+        }*/
 
 
         const color = d3.scaleOrdinal(colors(colorCodes));//green
-        console.log("scaleOrdinal===>", color);
-
 
         const pack = d3.pack()
             .size([bubblesWidth * graph.zoom, bubblesWidth * graph.zoom])
@@ -160,15 +150,6 @@ export default class BubbleChart extends Component {
 
         // Pass the data to the pack layout to calculate the distribution.
         const nodes = pack(root).leaves();
-
-        /*  let newNodes=[]
-          nodes.map(item=>{
-              if ( item.data.value >0){
-                  newNodes.push(item)
-              }
-          })*/
-
-        // console.log('nodes===>', nodes)
 
         this.renderBubbles(bubblesWidth, nodes, color);
         // Call to the function that draw the legend.
