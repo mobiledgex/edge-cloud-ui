@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import BubbleChart from "../../../../components/BubbleChart";
+import BubbleChart from "./BubbleChart";
 import {handleHardwareTabChanges, handleLegendAndBubbleClickedEvent, makeLineChartDataForCluster} from "../dev/PageDevMonitoringService";
 import {makeBubbleChartDataForCluster, PageMonitoringStyles, renderPlaceHolderCircular, showToast} from "../PageMonitoringCommonService";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
