@@ -160,9 +160,9 @@ const EnhancedTableToolbar = (props) => {
             ) : null}
             {numSelected > 0 ? (
                 props.groupActionMenu ?
-                    props.groupActionMenu().map(actionMenu => {
+                    props.groupActionMenu().map((actionMenu, i) => {
                         return (
-                            <Tooltip title={actionMenu.label}>
+                            <Tooltip key={i} title={actionMenu.label}>
                                 <IconButton aria-label={actionMenu.label} onClick={() => { props.groupActionClose(actionMenu) }}>
                                     <Icon color={actionMenu.color} name={actionMenu.icon} />
                                 </IconButton>
@@ -205,7 +205,6 @@ export default function EnhancedTable(props) {
     const classes = useStyles();
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState(props.requestInfo.sortBy && props.requestInfo.sortBy.length>0 ? props.requestInfo.sortBy[0] : 'region');
-    const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(25);
     const [actionEl, setActionEl] = React.useState(null)
@@ -220,30 +219,30 @@ export default function EnhancedTable(props) {
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
             const newSelecteds = props.dataList.map((n) => n);
-            setSelected(newSelecteds);
+            props.setSelected(newSelecteds);
             return;
         }
-        setSelected([]);
+        props.setSelected([]);
     };
 
     const handleClick = (event, row) => {
-        const selectedIndex = selected.indexOf(row);
+        const selectedIndex = props.selected.indexOf(row);
         let newSelected = [];
 
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, row);
+            newSelected = newSelected.concat(props.selected, row);
         } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
+            newSelected = newSelected.concat(props.selected.slice(1));
+        } else if (selectedIndex === props.selected.length - 1) {
+            newSelected = newSelected.concat(props.selected.slice(0, -1));
         } else if (selectedIndex > 0) {
             newSelected = newSelected.concat(
-                selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1),
+                props.selected.slice(0, selectedIndex),
+                props.selected.slice(selectedIndex + 1),
             );
         }
 
-        setSelected(newSelected);
+        props.setSelected(newSelected);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -255,7 +254,7 @@ export default function EnhancedTable(props) {
         setPage(0);
     };
 
-    const isSelected = (name) => selected.indexOf(name) !== -1;
+    const isSelected = (name) => props.selected.indexOf(name) !== -1;
 
     const cellClick = (header, row)=>
     {
@@ -305,8 +304,8 @@ export default function EnhancedTable(props) {
 
     const groupActionClose = (action)=>
     {
-        props.groupActionClose(action, selected)
-        setSelected([])
+        props.groupActionClose(action, props.selected)
+        props.setSelected([])
     }
 
     /*Action Block*/
@@ -314,7 +313,7 @@ export default function EnhancedTable(props) {
     return (
         <div className={classes.root}>
             <Paper style={{ backgroundColor: '#2A2C33' }}>
-                <EnhancedTableToolbar numSelected={selected.length} groupActionMenu={props.groupActionMenu} groupActionClose={groupActionClose}/>
+                <EnhancedTableToolbar numSelected={props.selected.length} groupActionMenu={props.groupActionMenu} groupActionClose={groupActionClose}/>
                 <TableContainer style={{ height: window.innerHeight - (props.isMap ? 500 : 200) }}>
                     <Table
                         stickyHeader
@@ -324,7 +323,7 @@ export default function EnhancedTable(props) {
                     >
                         <EnhancedTableHead
                             classes={classes}
-                            numSelected={selected.length}
+                            numSelected={props.selected.length}
                             order={order}
                             orderBy={orderBy}
                             onSelectAllClick={handleSelectAllClick}
@@ -334,7 +333,8 @@ export default function EnhancedTable(props) {
                             requestInfo={props.requestInfo}
                         />
                         <TableBody>
-                            {stableSort(props.dataList, getComparator(order, orderBy))
+                            {
+                                stableSort(props.dataList, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
                                     const isItemSelected = isSelected(row);

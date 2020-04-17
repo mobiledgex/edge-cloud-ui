@@ -31,6 +31,7 @@ class MexListView extends React.Component {
             isDetail: false,
             stepsArray: [],
             multiStepsArray:[],
+            selected:[],
             showMap: true,
             dialogMessageInfo: {},
             uuid: 0,
@@ -43,6 +44,11 @@ class MexListView extends React.Component {
         this.selectedRegion = REGION_ALL
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
         this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
+    }
+
+    setSelected = (dataList)=>
+    {
+        this.setState({selected:dataList})
     }
 
     checkRole = (form) => {
@@ -191,7 +197,6 @@ class MexListView extends React.Component {
     }
 
     groupActionClose = (action, dataList) => {
-        let data = this.selectedRow;
         switch (action.label) {
             case 'Upgrade':
                 dataList.map(data=>{
@@ -210,6 +215,8 @@ class MexListView extends React.Component {
                         <Map dataList={this.state.filterList} id={this.props.requestInfo.id} />
                     </div> : null}
                 <MexListViewer keys={this.keys} dataList={this.state.filterList} 
+                    selected = {this.state.selected}
+                    setSelected = {this.setSelected}
                     actionMenu={this.props.actionMenu} 
                     cellClick={this.getCellClick} 
                     actionClose={this.onActionClose} 
@@ -474,7 +481,7 @@ class MexListView extends React.Component {
     }
 
     dataFromServer = (region) => {
-        this.setState({ dataList: [], filterList:[] })
+        this.setState({ dataList: [], filterList:[], selected:[] })
         let requestInfo = this.props.requestInfo
         if (requestInfo) {
             let filterList = this.getFilterInfo(requestInfo, region)
