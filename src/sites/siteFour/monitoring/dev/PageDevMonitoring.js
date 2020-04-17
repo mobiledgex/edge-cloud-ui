@@ -774,81 +774,80 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
 
         async handleClusterDropdown__Reset(selectedClusterOne) {
-            let filteredClusterUsageList = []
+            try {
+                let filteredClusterUsageList = []
+                //todo: 모든 클러스터 선택인 경우..
+                if (selectedClusterOne === '') {
+                    await this.setState({
+                        filteredClusterList: this.state.clusterList,
+                    })
+                    this.resetLocalData();
+                } else {
+                    await this.setState({
+                        selectedClientLocationListOnAppInst: [],
+                        dropdownRequestLoading: true,
+                    })
+
+                    let selectData = selectedClusterOne.split("|")
+                    let selectedCluster = selectData[0].trim();
+                    let selectedCloudlet = selectData[1].trim();
+                    //desc : filter  ClusterUsageList
+                    let allClusterUsageList = this.state.allClusterUsageList;
+                    let allUsageList = allClusterUsageList;
+                    allUsageList.map(item => {
+                        if (item.cluster === selectedCluster && item.cloudlet === selectedCloudlet) {
+                            filteredClusterUsageList.push(item)
+                        }
+                    })
 
 
-            //todo: 모든 클러스터 선택인 경우..
-            if (selectedClusterOne === '') {
-                await this.setState({
-                    filteredClusterList: this.state.clusterList,
-                })
-                this.resetLocalData();
-            } else {
-                await this.setState({
-                    selectedClientLocationListOnAppInst: [],
-                    dropdownRequestLoading: true,
-                })
+                    //desc: filter clusterEventlog
+                    let allClusterEventLogList = this.state.allClusterEventLogList
+                    let filteredClusterEventLogList = []
+                    allClusterEventLogList.map(item => {
+                        if (item[1] === selectedCluster && item[3] === selectedCloudlet) {
+                            filteredClusterEventLogList.push(item)
+                        }
+                    })
 
+                    let appInstanceList = this.state.appInstanceList;
+                    let filteredAppInstList = []
+                    appInstanceList.map((item: TypeAppInstance, index) => {
+                        if (item.ClusterInst === selectedCluster && item.Cloudlet === selectedCloudlet) {
+                            filteredAppInstList.push(item)
+                        }
+                    })
 
-                let selectData = selectedClusterOne.split("|")
-                let selectedCluster = selectData[0].trim();
-                let selectedCloudlet = selectData[1].trim();
+                    let appInstDropdown = makeDropdownListWithValuePipeForAppInst(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
+                    let bubbleChartData = await makeBubbleChartDataForCluster(this.state.filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
+                    await this.setState({
+                        currentCluster: selectedClusterOne,
+                        currentClassification: CLASSIFICATION.CLUSTER,
+                        dropdownRequestLoading: false,
+                        filteredClusterUsageList: filteredClusterUsageList,
+                        filteredClusterEventLogList: filteredClusterEventLogList,
+                        appInstDropdown: appInstDropdown,
+                        allAppInstDropdown: appInstDropdown,
+                        currentAppInst: '',
+                        appInstSelectBoxPlaceholder: 'Select App Inst',
+                        filteredAppInstanceList: filteredAppInstList,
+                        appInstanceListGroupByCloudlet: reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET),
+                        bubbleChartData: bubbleChartData,
+                    });
 
+                }
 
-                //desc : filter  ClusterUsageList
-                let allClusterUsageList = this.state.allClusterUsageList;
-                let allUsageList = allClusterUsageList;
-                allUsageList.map(item => {
-                    if (item.cluster === selectedCluster && item.cloudlet === selectedCloudlet) {
-                        filteredClusterUsageList.push(item)
-                    }
-                })
+                //todo: ############################
+                //todo: setStream
+                //todo: ############################
+                if (this.state.isStream) {
+                    this.setClusterInterval()
+                } else {
+                    clearInterval(this.intervalForAppInst)
+                    clearInterval(this.intervalForCluster)
+                }
+            } catch (e) {
 
-
-                //desc: filter clusterEventlog
-                let allClusterEventLogList = this.state.allClusterEventLogList
-                let filteredClusterEventLogList = []
-                allClusterEventLogList.map(item => {
-                    if (item[1] === selectedCluster && item[3] === selectedCloudlet) {
-                        filteredClusterEventLogList.push(item)
-                    }
-                })
-
-                let appInstanceList = this.state.appInstanceList;
-                let filteredAppInstList = []
-                appInstanceList.map((item: TypeAppInstance, index) => {
-                    if (item.ClusterInst === selectedCluster && item.Cloudlet === selectedCloudlet) {
-                        filteredAppInstList.push(item)
-                    }
-                })
-
-                let appInstDropdown = makeDropdownListWithValuePipeForAppInst(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
-                let bubbleChartData = await makeBubbleChartDataForCluster(this.state.filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
-                await this.setState({
-                    currentCluster: selectedClusterOne,
-                    currentClassification: CLASSIFICATION.CLUSTER,
-                    dropdownRequestLoading: false,
-                    filteredClusterUsageList: filteredClusterUsageList,
-                    filteredClusterEventLogList: filteredClusterEventLogList,
-                    appInstDropdown: appInstDropdown,
-                    allAppInstDropdown: appInstDropdown,
-                    currentAppInst: '',
-                    appInstSelectBoxPlaceholder: 'Select App Inst',
-                    filteredAppInstanceList: filteredAppInstList,
-                    appInstanceListGroupByCloudlet: reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET),
-                    bubbleChartData: bubbleChartData,
-                });
-
-            }
-
-            //todo: ############################
-            //todo: setStream
-            //todo: ############################
-            if (this.state.isStream) {
-                this.setClusterInterval()
-            } else {
-                clearInterval(this.intervalForAppInst)
-                clearInterval(this.intervalForCluster)
             }
 
         }
