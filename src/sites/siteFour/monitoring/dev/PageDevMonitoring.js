@@ -48,7 +48,6 @@ import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryFo
 import {getWindowDimensions} from "../PageMonitoringUtils";
 import type {PageDevMonitoringProps, PageDevMonitoringState} from "./PageMonitoringPropsState";
 import {PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageMonitoringPropsState";
-
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const CustomSwitch = withStyles({
