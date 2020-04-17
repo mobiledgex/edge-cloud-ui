@@ -37,7 +37,6 @@ export const cutArrayList = (length: number = 5, paramArrayList: any) => {
 }
 
 export const makeSelectBoxListByClassification = (arrList, keyName) => {
-    console.log('makeSelectBoxListByClassification====>', arrList);
 
     let newArrList = [];
     for (let i in arrList) {
@@ -50,8 +49,6 @@ export const makeSelectBoxListByClassification = (arrList, keyName) => {
 }
 
 export const makeSelectBoxListByClassification_byKey = (arrList, keyName) => {
-    console.log('makeSelectBoxListByClassification====>', arrList);
-
     let newArrList = [];
     for (let i in arrList) {
         newArrList.push({
@@ -96,7 +93,6 @@ export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, fetchi
                 "endtime": pEndTime,
             }
         }
-        console.log("makeFormForAppInstance111====>", form);
         return form;
 
 
@@ -125,8 +121,6 @@ export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, fetchi
                 "last": fetchingDataNo,
             }
         }
-
-        console.log("makeFormForAppInstance222====>", form)
 
         return form;
     }
@@ -374,9 +368,6 @@ export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, _this) 
 export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
 
 
-    console.log("usageList===>", usageList);
-
-
     if (hardwareType === HARDWARE_TYPE.CPU) {
         usageList.sort((a, b) => b.sumCpuUsage - a.sumCpuUsage);
     } else if (hardwareType === HARDWARE_TYPE.MEM) {
@@ -394,10 +385,6 @@ export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
     } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
         usageList.sort((a, b) => b.sumHandledConnection - a.sumHandledConnection);
     }
-
-
-    console.log('hardwareType====>', hardwareType);
-
 
     if (usageList.length === 0) {
         return (
@@ -718,9 +705,6 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
             )
         } else {
 
-            console.log('hardwareUsageList===>', hardwareUsageList);
-            console.log('hardwareUsageList===hardwareType>', hardwareType);
-
 
             let instanceAppName = ''
             let instanceNameList = [];
@@ -739,9 +723,6 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
                     seriesValues = item.diskSeriesValue
                 } else if (hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
                     seriesValues = item.networkSeriesValue
-
-                    console.log("NETWORK__seriesValues===>", seriesValues);
-
                 } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
                     seriesValues = item.connectionsSeriesValue
                 }
@@ -828,8 +809,6 @@ export const handleBubbleChartDropDown = async (_this, value) => {
         await _this.setState({
             currentHardwareType: value,
         });
-
-        console.log("allAppInstUsageList===>", _this.state.allAppInstUsageList);
 
         let appInstanceList = _this.state.appInstanceList;
         let allUsageList = _this.state.allAppInstUsageList;

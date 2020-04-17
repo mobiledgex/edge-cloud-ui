@@ -108,9 +108,6 @@ export default class BubbleChart extends Component {
             labelFont,
         } = this.props;
 
-
-        console.log('renderBubbles===>', data);
-
         const bubbleChart = d3.select(this.svg).append("g")
             .attr("class", "bubble-chart")
             .attr("transform", function (d) {

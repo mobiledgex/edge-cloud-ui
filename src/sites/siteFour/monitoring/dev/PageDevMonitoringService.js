@@ -450,7 +450,6 @@ export const sortByKey = (arrList, key) => {
 
 export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageDevMonitoring) => {
 
-    console.log(`renderBarGraphForCluster===>${hardwareType}`, usageList);
     usageList = sortUsageListByTypeForCluster(usageList, hardwareType);
 
     if (usageList.length === 0) {
@@ -487,9 +486,7 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageD
  * @returns {string|{chartDataList: [], hardwareType: *}}
  */
 export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: PageDevMonitoring) => {
-
     try {
-        console.log('allHWUsageList===>', allHWUsageList);
         let typedUsageList = [];
         if (hardwareType === HARDWARE_TYPE.CPU) {
             typedUsageList = allHWUsageList[0]
@@ -506,8 +503,6 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
         } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
             typedUsageList = allHWUsageList[4]
         }
-        console.log('typedUsageList===>', typedUsageList);
-
         if (typedUsageList.length === 0) {
             return "";
         } else {
@@ -575,7 +570,6 @@ export const handleHardwareTabChanges = async (_this: PageDevMonitoring, selecte
  */
 export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, hardwareType: string, pBubbleChartData: any, themeTitle: string,) => {
 
-    console.log('pBubbleChartData===>', pBubbleChartData);
 
     if (pBubbleChartData.length === 0 && _this.loading === false) {
         return (
@@ -783,7 +777,6 @@ export const makeLineChartDataForAppInstAll = (hardwareUsageList: Array, hardwar
 
 
 export const makeLineChartDataForAppInst002 = (hardwareUsageList: Array, hardwareType: string = 'all', _this: PageDevMonitoring) => {
-    console.log("hardwareType===>", hardwareType);
 
     if (hardwareUsageList.length === 0) {
         return (
@@ -817,7 +810,6 @@ export const makeLineChartDataForAppInst002 = (hardwareUsageList: Array, hardwar
                     seriesValues = item.connectionsSeriesValue
                 }
 
-                console.log(`seriesValues===${hardwareType}>`, seriesValues);
 
                 instanceAppName = item.instance.AppName;
                 let usageList = [];
@@ -876,14 +868,12 @@ export const makeLineChartDataForAppInst002 = (hardwareUsageList: Array, hardwar
 
         _this.props.setChartDataSets(_result);
 
-        console.log("chartDataSets===>", _this.props.chartDataSets);
     }
 
 };
 
 
 export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareType: string = 'all', _this: PageDevMonitoring) => {
-    console.log("hardwareType===>", hardwareType);
 
     if (hardwareUsageList.length === 0) {
         return (
@@ -917,7 +907,6 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
                     seriesValues = item.connectionsSeriesValue
                 }
 
-                console.log(`seriesValues===${hardwareType}>`, seriesValues);
 
                 instanceAppName = item.instance.AppName;
                 let usageList = [];
@@ -1089,7 +1078,6 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
                 series = pUsageList[i].networkSeriesList
             }
 
-            console.log('series333333333===>', series);
 
             classificationName = pUsageList[i].cluster + "\n[" + pUsageList[i].cloudlet + "]";
             let usageList = [];
@@ -1126,8 +1114,6 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
             usageSetList.push(usageList);
         }
 
-        console.log(`usageSetList====${hardwareType}>`, usageSetList);
-
 
         //@todo: CUS LIST INTO RECENT_DATA_LIMIT_COUNT
         let newDateTimeList = [];
@@ -1147,7 +1133,6 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
             hardwareType,
         };
 
-        console.log("lineChartDataSet===>", lineChartDataSet);
 
         return lineChartDataSet
     }
@@ -1218,7 +1203,6 @@ export const makeGradientColorOne = (canvas, height) => {
 
 export const makeGradientColorList = (canvas, height, colorList, isBig = false) => {
     //let colorList= ['red', 'blue', 'green', 'yellow', 'grey']
-    console.log("colorList===>", colorList);
     const ctx = canvas.getContext("2d");
     let gradientList = [];
 
@@ -1238,7 +1222,6 @@ export const makeGradientColorList = (canvas, height, colorList, isBig = false) 
 
 export const makeGradientColorList2 = (canvas, height, colorList, isBig = false) => {
     //let colorList= ['red', 'blue', 'green', 'yellow', 'grey']
-    console.log("colorList===>", colorList);
     const ctx = canvas.getContext("2d");
     let gradientList = [];
 
@@ -1622,7 +1605,6 @@ export const simpleGraphOptions = {
     },//scales
     onClick: function (c, i) {
         if (i.length > 0) {
-            console.log('onClick===>', i);
         }
 
     }
@@ -1632,14 +1614,11 @@ export const makeTreeClusterCloudletList = (clusterOriginList) => {
 
     let ClusterList = []
     clusterOriginList.map(item => {
-        console.log("Cloudlet===>", item.Cloudlet);
-        console.log("ClusterName===>", item.ClusterName);
         ClusterList.push(item.ClusterName)
     })
     let uniqClusterList = [...new Set(ClusterList)];
     let treeList = []
     uniqClusterList.map(clusterOne => {
-        console.log("clusterOne===>", clusterOne);
         let childrenCloudlets = []
         clusterOriginList.map(item => {
             if (item.ClusterName === clusterOne) {
@@ -1796,8 +1775,6 @@ export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDat
         const lineChartDataForRendering = makeTop5GradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, _this, _this.state.isStackedLineChart);
 
 
-        console.log("lineChartDataForRendering===>", lineChartDataForRendering);
-
         return (
             <div style={{
                 position: 'relative',
@@ -1820,7 +1797,6 @@ export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDat
 
 export const renderLineChartCoreForDev_AppInst = (_this: PageDevMonitoring, lineChartDataSet) => {
 
-    console.log("renderLineChartCoreForDev_AppInst===>", lineChartDataSet);
 
     try {
         let levelTypeNameList = lineChartDataSet.levelTypeNameList;
@@ -1828,7 +1804,6 @@ export const renderLineChartCoreForDev_AppInst = (_this: PageDevMonitoring, line
         let newDateTimeList = lineChartDataSet.newDateTimeList;
         let hardwareType = lineChartDataSet.hardwareType;
 
-        console.log('lineChartDataSet==77777=>', lineChartDataSet);
         const lineChartData = (canvas) => {
 
             let gradientList = makeGradientColor(canvas, height);
@@ -1963,7 +1938,6 @@ export const renderLineChartCoreForDev_AppInst = (_this: PageDevMonitoring, line
                 console.log(x_value);
                 console.log(y_value);*/
                 if (i.length > 0) {
-                    console.log('onClick===>', i);
                 }
 
             }

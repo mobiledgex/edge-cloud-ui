@@ -84,7 +84,6 @@ export default class ModalGraph extends React.Component<Props, State> {
                 options: lineGraphOptions,
                 hardwareType: hardwareType,
             }, () => {
-                console.log('lineChartData333333===>', this.state.lineChartData)
             })
         }
     }

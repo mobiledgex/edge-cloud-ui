@@ -27,7 +27,6 @@ export default class PerformanceSummaryTableContainer extends React.Component<Pr
         this.setState({
             filteredUsageList: this.props.filteredUsageList,
         }, () => {
-            console.log("clusterUsageList===>", this.state.filteredUsageList);
         })
     }
 

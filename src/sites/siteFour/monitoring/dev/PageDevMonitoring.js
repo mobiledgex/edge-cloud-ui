@@ -387,7 +387,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let canvasDatas = (canvas) => {
                     let CHARTCOLORLIST = this.state.chartColorList;
                     let gradientList = makeGradientColorList2(canvas, 305, CHARTCOLORLIST, true);
-                    console.log("chartDataList===>", chartData.chartDataList);
                     let chartDatas = chartData.chartDataList
                     let labelList = [];
                     let graphDatasets = [];
@@ -653,8 +652,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                 let arrDateTime = getOneYearStartEndDatetime();
 
-                console.log("filteredAppList===>", filteredAppList);
-
                 let appInstUsageList = [];
                 await this.setState({dropdownRequestLoading: true})
                 try {
@@ -749,7 +746,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         layoutMapperForCluster: mapperList.concat(itemOne),
                     })
 
-                    console.log("layoutMapperForCluster===>", this.state.layoutMapperForCluster)
                     reactLocalStorage.setObject(getUserId() + "_layout", this.state.layoutForCluster)
                     reactLocalStorage.setObject(getUserId() + "_layout_mapper", this.state.layoutMapperForCluster)
 

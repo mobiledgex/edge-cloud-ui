@@ -8,7 +8,6 @@ import {Progress} from "antd";
 import {numberWithCommas} from "../PageMonitoringUtils";
 
 export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
-    console.log('renderBarGraph2===>', usageList);
     usageList = sortUsageListByType(usageList, hardwareType)
 
     if (usageList.length === 0) {
@@ -67,7 +66,6 @@ export const handleBubbleChartDropDownForCloudlet = async (hwType, _this: PageOp
         })
     })
 
-    console.log('allUsageList===>', allUsageList);
 
     _this.setState({
         bubbleChartData: bubbleChartData,
@@ -238,8 +236,6 @@ export const makeLineChartForCloudlet = (_this: PageOperMonitoring, pUsageList: 
             }
 
         }
-
-        console.log('instanceNameList===>', instanceNameList);
         return renderLineChartCore(instanceNameList, usageSetList, newDateTimeList, hardwareType)
     }
 }

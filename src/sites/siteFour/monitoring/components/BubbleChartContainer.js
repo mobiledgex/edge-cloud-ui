@@ -34,7 +34,6 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
         this.setState({
             bubbleChartData: this.props.bubbleChartData,
         }, () => {
-            console.log("bubbleChartData===>", this.state.bubbleChartData);
         })
     }
 
@@ -81,7 +80,6 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
 
 
             function renderOffsetY(listLength) {
-                console.log("renderOffsetY===>", listLength);
                 if (listLength === 0) {
                     return 0.05;
                 } else if (listLength === 1) {
@@ -150,7 +148,6 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                                                 bubbleChartData: bubbleChartData,
                                                                 currentHardwareType: value,
                                                             }, () => {
-                                                                console.log("bubbleChartData2===>", bubbleChartData);
                                                             })
 
                                                         } catch (e) {
