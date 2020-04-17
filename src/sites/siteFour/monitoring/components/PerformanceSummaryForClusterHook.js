@@ -47,9 +47,6 @@ function getWindowDimensions() {
 export default function PerformanceSummaryForClusterHook(props) {
     //const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
     useEffect(() => {
-
-        console.log("filteredUsageList===>", props.filteredUsageList);
-
     }, [props.filteredUsageList]);
 
 
@@ -59,9 +56,7 @@ export default function PerformanceSummaryForClusterHook(props) {
             let lineChartDataSet = makeLineChartDataForCluster(props.parent.state.filteredClusterUsageList, hwType, props.parent)
             clusterAndCloudlet = clusterAndCloudlet.toString().split(" | ")[0] + "|" + clusterAndCloudlet.toString().split(" | ")[1]
             handleLegendAndBubbleClickedEvent(props.parent, clusterAndCloudlet, lineChartDataSet)
-
         } catch (e) {
-            console.log("error===>", e);
         }
     }
 
