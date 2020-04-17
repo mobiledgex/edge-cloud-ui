@@ -675,6 +675,10 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
             }
 
         })
+
+        console.log("newClusterLevelUsageList===>", newClusterLevelUsageList);
+
+
         return newClusterLevelUsageList;
     } catch (e) {
         return [];
