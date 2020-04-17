@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
-import {THEME_OPTIONS} from "../shared/Constants";
 
 export default class BubbleChart extends Component {
     constructor(props) {
@@ -55,21 +54,6 @@ export default class BubbleChart extends Component {
         const bubblesWidth = showLegend ? width * (1 - (legendPercentage / 100)) : width;
         const legendWidth = width - bubblesWidth;
 
-        var categorical = [
-            {"name": "schemeAccent", "n": 8},
-            {"name": "schemeDark2", "n": 8},
-            {"name": "schemePastel2", "n": 8},
-            {"name": "schemeSet2", "n": 8},
-            {"name": "schemeSet1", "n": 9},
-            {"name": "schemePastel1", "n": 9},
-            {"name": "schemeCategory10", "n": 10},
-            {"name": "schemeSet3", "n": 12},
-            {"name": "schemePaired", "n": 12},
-            {"name": "schemeCategory20", "n": 20},
-            {"name": "schemeCategory20b", "n": 20},
-            {"name": "schemeCategory20c", "n": 20}
-        ]
-
         let colors = function (s) {
             return s.match(/.{6}/g).map(function (x) {
                 return "#" + x;
@@ -98,7 +82,10 @@ export default class BubbleChart extends Component {
                     d.fullLabel = d.data.fullLabel;
                     d.cluster_cloudlet = d.data.cluster_cloudlet;
                     d.index = d.data.index;
-                    d.color = d.data.color;//@todo ; colorOne
+                    //@todo####################################
+                    //@todo  colorOne
+                    //@todo####################################
+                    d.color = d.data.color;
                 }
             });
 
@@ -154,6 +141,8 @@ export default class BubbleChart extends Component {
                 return d.r - (d.r * .04);
             })
             .style("fill", function (d) {
+                //todo : set colorOne in color_list
+                //todo : set colorOne in color_list
                 //todo : set colorOne in color_list
                 return d.data.color
             })
