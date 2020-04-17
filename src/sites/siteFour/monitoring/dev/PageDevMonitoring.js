@@ -14,7 +14,7 @@ import {
     makeSelectBoxListWithKeyValuePipeForCluster, makeSelectBoxListWithValuePipe, revertToDefaultLayout,
 } from "./PageDevMonitoringService";
 import {
-    ADD_ITEM_LIST, CHART_COLOR_APPLE, CHART_COLOR_BERRIES_GALORE, CHART_COLOR_EXOTIC_ORCHIDS, CHART_COLOR_LIST, CHART_COLOR_LIST2,
+    ADD_ITEM_LIST, CHART_COLOR_APPLE, CHART_COLOR_BERRIES_GALORE, CHART_COLOR_BRIGHT_AND_ENERGETIC, CHART_COLOR_EARTHY_AND_NATURAL, CHART_COLOR_EXOTIC_ORCHIDS, CHART_COLOR_JAZZ_NIGHT, CHART_COLOR_LIST, CHART_COLOR_LIST2,
     CHART_COLOR_LIST3, CHART_COLOR_LIST4, CHART_COLOR_MONOKAI, CHART_COLOR_URBAN_SKYLINE, CLASSIFICATION, GRID_ITEM_TYPE,
     HARDWARE_OPTIONS_FOR_APPINST, HARDWARE_OPTIONS_FOR_CLUSTER, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, THEME_OPTIONS,
     THEME_OPTIONS_LIST
@@ -53,6 +53,7 @@ import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryFo
 import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryForAppInstHook";
 import type {PageDevMonitoringProps, PageDevMonitoringState} from "./PageDevMonitoringPropsState";
 import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageDevMonitoringPropsState";
+
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -1137,6 +1138,23 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 if (themeTitle === THEME_OPTIONS.BERRIES_GALORE) {
                     await this.setState({
                         chartColorList: CHART_COLOR_BERRIES_GALORE
+                    })
+                }
+                if (themeTitle === THEME_OPTIONS.BRIGHT_AND_ENERGETIC) {
+                    await this.setState({
+                        chartColorList: CHART_COLOR_BRIGHT_AND_ENERGETIC
+                    })
+                }
+
+                if (themeTitle === THEME_OPTIONS.EARTHY_AND_NATURAL) {
+                    await this.setState({
+                        chartColorList: CHART_COLOR_EARTHY_AND_NATURAL
+                    })
+                }
+
+                if (themeTitle === THEME_OPTIONS.JAZZ_NIGHT) {
+                    await this.setState({
+                        chartColorList: CHART_COLOR_JAZZ_NIGHT
                     })
                 }
 
