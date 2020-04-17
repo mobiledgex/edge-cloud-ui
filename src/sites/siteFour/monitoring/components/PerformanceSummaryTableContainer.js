@@ -61,12 +61,14 @@ export default class PerformanceSummaryTableContainer extends React.Component<Pr
     render() {
         return (
             <>
-                <div style={{
-                    display: 'flex',
-                    width: '100%',
-                    height: 45
-                }}>
-                    <div className='page_monitoring_title draggable'
+                <div
+                    className='draggable'
+                    style={{
+                        display: 'flex',
+                        width: '100%',
+                        height: 45
+                    }}>
+                    <div className='page_monitoring_title'
                          style={{
                              flex: 1,
                              marginTop: 5,

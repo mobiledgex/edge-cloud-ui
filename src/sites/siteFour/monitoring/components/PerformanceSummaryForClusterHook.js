@@ -69,11 +69,12 @@ export default function PerformanceSummaryForClusterHook(props) {
     return (
         <React.Fragment>
             <div
-                className='.draggable'
+                className='draggable'
                 style={{
                     display: 'flex',
                     width: '100%',
-                    height: 45
+                    height: 45,
+                    //backgroundColor: 'red'
                 }}
             >
                 <Tooltip placement="top" title={'To view a chart of each hardware usage,\n' +
@@ -88,7 +89,7 @@ export default function PerformanceSummaryForClusterHook(props) {
                     >
                         {props.parent.state.currentClassification} Performance Summary
                     </div>
-                    <div style={{flex: .7}}>
+                    <div style={{flex: .7}} className='draggable'>
                     </div>
                 </Tooltip>
             </div>
