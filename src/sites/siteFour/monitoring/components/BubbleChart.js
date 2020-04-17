@@ -111,8 +111,9 @@ export default class BubbleChart extends Component {
         const bubbleChart = d3.select(this.svg).append("g")
             .attr("class", "bubble-chart")
             .attr("transform", function (d) {
+                //@todo####################################
                 //todo: Bubble chart location setting...
-                //todo: Bubble chart location setting...
+                //@todo####################################
                 return "translate(" + ((width * 3 / 16) - 0) + "," + (width * graph.offsetY - 30) + ")"; //버블차트 위치
             });
         ;
@@ -138,9 +139,9 @@ export default class BubbleChart extends Component {
                 return d.r - (d.r * .04);
             })
             .style("fill", function (d) {
+                //@todo####################################
                 //todo : set colorOne in color_list
-                //todo : set colorOne in color_list
-                //todo : set colorOne in color_list
+                //@todo####################################
                 return d.data.color
             })
             .style("z-index", 1)
@@ -183,7 +184,9 @@ export default class BubbleChart extends Component {
                 return valueFont.lineWeight ? valueFont.lineWeight : 0;
             })
             .text((d) => {
-                //@todo:number value를 랜더링 하는 부분..(value (%))
+                //@todo####################################
+                //@todo:render number value (%)
+                //@todo####################################
                 if (d.value > 0) {
                     if (d.type === 'CPU' || d.type === 'DISK' || d.type === 'MEM') {
                         return d.favor + "%";
@@ -235,8 +238,9 @@ export default class BubbleChart extends Component {
             .attr("y", function (d) {
                 return labelFont.size / 2
             })
-
+        //@todo####################################
         //todo: Center the texts inside the circles.
+        //@todo####################################
         d3.selectAll(".value-text").attr("x", function (d) {
             const self = d3.select(this);
             const width = self.node().getBBox().width;
@@ -291,8 +295,9 @@ export default class BubbleChart extends Component {
             .attr("transform", (d, i) => {
                 const offset = textOffset;
                 textOffset += legendFont.size + 10;
+                //@todo####################################
                 //todo: first param is x-axis .renderLegend
-                //todo: first param is x-axis .renderLegend
+                //@todo####################################
                 return `translate(-430,${offset})`;
             })
             .on('mouseover', function (d) {
