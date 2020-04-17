@@ -7,10 +7,9 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
-import {numberWithCommas} from "../PageMonitoringCommonService";
 import {Progress} from "antd";
 import '../PageMonitoring.css'
-import Tooltip from "@material-ui/core/Tooltip";
+import {numberWithCommas} from "../PageMonitoringUtils";
 
 type Props = {
     filteredUsageList: any,
