@@ -216,8 +216,6 @@ export const makeLineChartForCloudlet = (_this: PageOperMonitoring, pUsageList: 
                 }
 
                 usageList.push(usageOne);
-
-
                 let dateOne = series[j]["0"];
                 dateOne = dateOne.toString().split("T")
                 dateTimeList.push(dateOne[1]);
