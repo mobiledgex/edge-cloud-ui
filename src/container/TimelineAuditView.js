@@ -229,8 +229,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                         } else {
                             let makeDate = this.makeUTC(auditList[i].starttime)
                             let makeTime = this.makeNotUTC(auditList[i].starttime)
-                            let newDate =  new Date(makeDate + " " + makeTime)
-                            let storageTimeIndex = (storageTimeList) ? storageTimeList.findIndex(s => new Date(s).getTime() === newDate.getTime()) : (-1)
+                            let newDate =  this.getParseDate(makeDate + " " + makeTime)
+                            let storageTimeIndex = (storageTimeList) ? storageTimeList.findIndex(s => this.getParseDate(s).valueOf() === newDate.valueOf()) : (-1)
                             if(storageTimeIndex === (-1)){
                                 unCheckedErrorCount++
                             }
@@ -395,11 +395,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 let storageTimeList = JSON.parse(localStorage.getItem("selectedTime"))
                 let makeDate = this.makeUTC(data)
                 let makeTime = this.makeNotUTC(data)
-                let newDate =  new Date(makeDate + " " + makeTime)
+                let newDate =  this.getParseDate(makeDate + " " + makeTime)
 
                 if (storageTimeList) {
                     timeList = storageTimeList
-                    let storageTimeIndex = storageTimeList.findIndex(s => new Date(s).getTime() === newDate.getTime())
+                    let storageTimeIndex = storageTimeList.findIndex(s => Date.parse(s) === newDate.valueOf())
                     if(storageTimeIndex === (-1)){
                         timeList.push(newDate)
                         localStorage.setItem("selectedTime", JSON.stringify(timeList))
@@ -541,6 +541,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 let date = this.makeUTC(allValue.starttime)
                 let time = this.makeNotUTC(allValue.starttime)
                 let datetime = date + " " + time
+                let newDate = this.getParseDate(datetime)
                 let status = allValue.status
                 let traceid = allValue.traceid;
 
@@ -553,15 +554,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     timesList.push(datetime)
                     statusList.push({"status":status, "traceid":traceid});
                 } else if(v.value > 0){
-                    let newDate = (new Date().getTime() - (v.value * 1000 * 3600))
-                    if(newDate < new Date(datetime)){
+                    let newDate = (moment().valueOf() - (v.value * 1000 * 3600))
+                    if(newDate < datetime.valueOf()){
                         tasksList.push(task)
                         timesList.push(datetime)
                         statusList.push({"status":status, "traceid":traceid});
                     }
                 } else if(v.value === 'uncheck'){
                     if(status !== 200){
-                        let storageTimeIndex = (storageTimeList) ? storageTimeList.findIndex(s => new Date(s).getTime() === new Date(datetime).getTime()) : (-1)
+                        let storageTimeIndex = (storageTimeList) ? storageTimeList.findIndex(s => Date.parse(s) === newDate.valueOf()) : (-1)
                         if(storageTimeIndex === (-1)){
                             tasksList.push(taskValue)
                             timesList.push(datetime)
@@ -572,7 +573,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             })
 
             timelineList.push({'timesList' : timesList ,'tasksList':tasksList, 'statusList': statusList})
-            console.log('20200416_0 ',timelineList)
             this.setState({timelineList: timelineList})
         }
 

@@ -125,10 +125,9 @@ export default class CalendarTimeline extends Component {
         return renderValue;
     }
 
-    getStartDate = item => {
+    getParseDate = item => {
         let parseDate = item;
         parseDate = moment(item, "YYYY-MM-DD HH:mm:ss");
-        console.log("20200416 - parseDate -- ", parseDate);
         return parseDate;
     };
     generateItemsData = groups => {
@@ -141,7 +140,7 @@ export default class CalendarTimeline extends Component {
                     if (groups[i].title === renderValue) {
                         this.props.timelineList.timesList.map((item, index) => {
                             const startDate = Date.parse(
-                                this.getStartDate(item)
+                                this.getParseDate(item)
                             );
                             const startValue =
                                 Math.floor(
@@ -223,7 +222,7 @@ export default class CalendarTimeline extends Component {
         let storageTimeIndex = -1;
         if (storageTimeList) {
             storageTimeIndex = storageTimeList.findIndex(
-                s => new Date(s).getTime() === new Date(item.itemTime).getTime()
+                s => Date.parse(s) === this.getParseDate(item.itemTime).valueOf()
             );
         }
 
