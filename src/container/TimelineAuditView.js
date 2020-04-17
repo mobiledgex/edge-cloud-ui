@@ -435,16 +435,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         }
         }
 
+        getParseDate = item => {
+            let parseDate = item;
+            parseDate = moment(item, "YYYY-MM-DD HH:mm:ss");
+            return parseDate;
+        };
+
         onItemSelect = (item, i) => {
             let value = '';
             let times = this.state.timelineList[0].timesList
             let status = this.state.timelineList[0].statusList
 
             times.map((time, index) => {
-                if(new Date(time).getTime() === item){
+                if(Date.parse(this.getParseDate(time)) === item){
                     this.setState({"timelineSelectedIndex" : i})
                     this.onHandleIndexClick({"value" : i})
-                    console.log("20200324 " + status[index].status)
                     if(status[index].status !== 200){
                         this.setState({"unCheckedErrorCount" : this.state.unCheckedErrorCount - 1})
                     }
@@ -540,7 +545,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 let traceid = allValue.traceid;
 
                 if(v.value === 'all' || v.value === 'All'){
-                    tasksList.push(task)
+                    tasksList.push(taskValue)
                     timesList.push(datetime)
                     statusList.push({"status":status, "traceid":traceid});
                 } else if(task === v.value){
@@ -567,6 +572,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             })
 
             timelineList.push({'timesList' : timesList ,'tasksList':tasksList, 'statusList': statusList})
+            console.log('20200416_0 ',timelineList)
             this.setState({timelineList: timelineList})
         }
 
@@ -579,9 +585,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             this.dropDownOnChange('type', v)
         }
 
-        dropDownOnDateChange = (e, v) => {
-            this.dropDownOnChange('date', v)
-        }
+        // dropDownOnDateChange = (e, v) => {
+        //     this.dropDownOnChange('date', v)
+        // }
 
         onClickUnCheckedError = (e, v) => {
             let unCheckedToggle = this.state.unCheckedErrorToggle
