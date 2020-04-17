@@ -65,7 +65,7 @@ class MexListView extends React.Component {
     detailView = (data) => {
         let additionalDetail = this.props.requestInfo.additionalDetail
         return (
-            <Card style={{ height: '100%', backgroundColor: '#2A2C33', overflowY: 'auto' }}>
+            <Card style={{ height: '95%', backgroundColor: '#2A2C33', overflowY: 'auto' }}>
                 <MexDetailViewer detailData={data} keys={this.keys} />
                 {additionalDetail ? additionalDetail(data) : null}
             </Card>
