@@ -1,5 +1,7 @@
 import type {TypeAppInstance, TypeGridInstanceList, TypeUtilization} from "../../../../shared/Types";
 import * as actions from "../../../../actions";
+import {LinearProgress, withStyles} from "@material-ui/core";
+import Switch from "@material-ui/core/Switch";
 
 export type PageDevMonitoringProps = {
     handleLoadingSpinner: Function,
@@ -191,3 +193,26 @@ export const PageDevMonitoringMapDispatchToProps = (dispatch) => {
         }
     };
 };
+
+
+export const CustomSwitch = withStyles({
+    switchBase: {
+        color: '#D32F2F',
+        '&$checked': {
+            color: '#388E3C',
+        },
+        '&$checked + $track': {
+            backgroundColor: '#388E3C',
+        },
+    },
+    checked: {},
+    track: {},
+})(Switch);
+export const ColorLinearProgress = withStyles({
+    colorPrimary: {
+        backgroundColor: 'rgb(50,44,51)',
+    },
+    barColorPrimary: {
+        backgroundColor: '#24add0',
+    },
+})(LinearProgress);

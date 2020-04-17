@@ -76,31 +76,9 @@ import BarChartContainer from "../components/BarChartContainer";
 import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryForClusterHook";
 import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryForAppInstHook";
 import type {PageDevMonitoringProps, PageDevMonitoringState} from "./PageMonitoringPropsState";
-import {PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageMonitoringPropsState";
-
+import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageMonitoringPropsState";
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
-const CustomSwitch = withStyles({
-    switchBase: {
-        color: '#D32F2F',
-        '&$checked': {
-            color: '#388E3C',
-        },
-        '&$checked + $track': {
-            backgroundColor: '#388E3C',
-        },
-    },
-    checked: {},
-    track: {},
-})(Switch);
-const ColorLinearProgress = withStyles({
-    colorPrimary: {
-        backgroundColor: 'rgb(50,44,51)',
-    },
-    barColorPrimary: {
-        backgroundColor: '#24add0',
-    },
-})(LinearProgress);
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
         class PageDevMonitoring extends Component<PageDevMonitoringProps, PageDevMonitoringState> {
@@ -264,7 +242,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 };
             }
 
-            async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
+            async componentWillReceiveProps(nextProps: PageDevMonitoringProps, nextContext: any): void {
                 if (this.props.size.width !== nextProps.size.width) {
                     window.dispatchEvent(new Event('resize'))
                 }
