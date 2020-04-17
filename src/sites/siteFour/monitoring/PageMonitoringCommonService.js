@@ -10,7 +10,7 @@ import {makeCompleteDateTime} from "./admin/PageAdminMonitoringService";
 import moment from "moment";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {GridLoader, PulseLoader} from "react-spinners";
-import {barChartOption, columnChartOption} from "./PageMonitoringUtils";
+import {barChartOption, columnChartOption, numberWithCommas,} from "./PageMonitoringUtils";
 
 export const PageMonitoringStyles = {
     topRightMenu: {
@@ -650,16 +650,21 @@ export const convertByteToMegaByte = (value, hardwareType) => {
     }
 }
 
-export const convertByteToMegaGigaByte = (value, hardwareType) => {
-    if (value > 1000000) {
-        if (value > 1000000 * 1000) {
-            return numberWithCommas((value / 1000000) / 1000) + ' GByte'
-        } else {
-            return numberWithCommas(value / 1000000) + ' MByte'
-        }
-    } else {
-        return numberWithCommas(value)
-    }
+export const convertByteToMegaGigaByte = (bytes) => {
+    let marker = 1024; // Change to 1000 if required
+    let decimal = 3; // Change as required
+    let kiloBytes = marker; // One Kilobyte is 1024 bytes
+    let megaBytes = marker * marker; // One MB is 1024 KB
+    let gigaBytes = marker * marker * marker; // One GB is 1024 MB
+    let teraBytes = marker * marker * marker * marker; // One TB is 1024 GB
+    // return bytes if less than a KB
+    if (bytes < kiloBytes) return bytes + " Bytes";
+    // return KB if less than a MB
+    else if (bytes < megaBytes) return (bytes / kiloBytes).toFixed(decimal) + " KB";
+    // return MB if less than a GB
+    else if (bytes < gigaBytes) return (bytes / megaBytes).toFixed(decimal) + " MB";
+    // return GB if less than a TB
+    else return (bytes / gigaBytes).toFixed(decimal) + " GB";
 }
 
 
@@ -957,18 +962,6 @@ export const renderBarChartCore = (chartDataList, hardwareType, _this, graphType
             />
         </div>
     );
-}
-
-
-export const numberWithCommas = (x) => {
-    let value = ''
-    try {
-        value = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    } catch (e) {
-        console.log('error===>', e);
-    } finally {
-        return value;
-    }
 }
 
 

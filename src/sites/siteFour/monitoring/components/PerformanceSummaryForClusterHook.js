@@ -9,13 +9,13 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
-import {numberWithCommas} from "../PageMonitoringCommonService";
 import {Progress} from "antd";
 import {withStyles} from "@material-ui/core";
 import '../PageMonitoring.css'
 import {handleLegendAndBubbleClickedEvent, makeLineChartDataForCluster} from "../dev/PageDevMonitoringService";
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import {Tooltip} from 'antd'
+import {numberWithCommas} from "../PageMonitoringUtils";
 
 type Props = {
     filteredUsageList: any,
