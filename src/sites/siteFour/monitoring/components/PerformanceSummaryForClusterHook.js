@@ -94,6 +94,7 @@ export default function PerformanceSummaryForClusterHook(props) {
                 </Tooltip>
             </div>
             <TableContainer
+                component={Paper}
                 style={{
                     height: 'auto',
                     fontFamily: 'Ubuntu',

@@ -10,7 +10,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import {Progress} from "antd";
 import '../PageMonitoring.css'
 import {numberWithCommas} from "../PageMonitoringUtils";
-import {convertByteToMegaGigaByte} from "../PageMonitoringCommonService";
+import {Paper} from "@material-ui/core";
 
 type Props = {
     filteredUsageList: any,
@@ -45,7 +45,7 @@ export default function PerformanceSummaryForAppInstHook(props) {
                 </div>
             </div>
             <TableContainer
-                //component={Paper}
+                component={Paper}
                 style={{
                     height: 'auto',
                     fontFamily: 'Ubuntu',
