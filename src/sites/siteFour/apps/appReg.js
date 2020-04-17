@@ -484,7 +484,7 @@ class ClusterInstReg extends React.Component {
                             portForm.value = portMinNo
                         }
                     }
-                    forms.splice(19, 0, this.getPortForm(portForms))
+                    forms.splice(20 + multiFormCount, 0, this.getPortForm(portForms))
                     multiFormCount += 1
                 }
             }
@@ -506,7 +506,7 @@ class ClusterInstReg extends React.Component {
                             annotationForm.value = value
                         }
                     }
-                    forms.splice(20 + multiFormCount, 0, this.getAnnotationForm(annotationForms))
+                    forms.splice(21 + multiFormCount, 0, this.getAnnotationForm(annotationForms))
                     multiFormCount += 1
                 }
             }
@@ -525,7 +525,7 @@ class ClusterInstReg extends React.Component {
                             configForm.value = config[fields.config]
                         }
                     }
-                    forms.splice(21 + multiFormCount, 0, this.getConfigForm(configForms))
+                    forms.splice(22 + multiFormCount, 0, this.getConfigForm(configForms))
                     multiFormCount += 1
                 }
             }
