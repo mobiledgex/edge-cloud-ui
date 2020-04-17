@@ -1,28 +1,14 @@
 import React from 'react';
 import '../PageMonitoring.css';
-import {
-    APP_INST_MATRIX_HW_USAGE_INDEX,
-    CHART_COLOR_LIST,
-    HARDWARE_TYPE,
-    NETWORK_TYPE,
-    RECENT_DATA_LIMIT_COUNT,
-    REGION
-} from "../../../../shared/Constants";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
-import BubbleChart from "../components/BubbleChart";
+import BubbleChartCore from "../components/BubbleChartCore";
+import type {TypeAppInstanceUsage2, TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import PageAdminMonitoring from "./PageAdminMonitoring";
-import {
-    convertByteToMegaByte,
-    renderBarChartCore,
-    renderLineChartCore,
-    renderUsageByType2,
-    PageMonitoringStyles,
-    showToast
-} from "../PageMonitoringCommonService";
+import {PageMonitoringStyles, renderBarChartCore, renderLineChartCore, renderUsageByType2, showToast} from "../PageMonitoringCommonService";
 import {TabPanel, Tabs} from "react-tabs";
 import {Table} from "semantic-ui-react";
-import type {TypeAppInstanceUsage2, TypeGridInstanceList} from "../../../../shared/Types";
 import {Progress} from "antd";
 import {numberWithCommas} from "../PageMonitoringUtils";
 
@@ -558,7 +544,7 @@ export const renderBubbleChart = (_this: PageAdminMonitoring, hardwareType: stri
                     backgroundColor: '#1e2124',
                     // marginLeft: 0, marginRight: 0, marginBottom: 10,
                 }}>
-                    <BubbleChart
+                    <BubbleChartCore
                         className='bubbleChart'
                         graph={{
                             zoom: renderZoomLevel(appInstanceList.length),
@@ -644,7 +630,7 @@ export const renderBubbleChartForCloudlet = (_this: PageAdminMonitoring, hardwar
                     backgroundColor: '#1e2124',
                     // marginLeft: 0, marginRight: 0, marginBottom: 10,
                 }}>
-                    <BubbleChart
+                    <BubbleChartCore
                         className='bubbleChart'
                         graph={{
                             zoom: renderZoomLevel(appInstanceList.length),

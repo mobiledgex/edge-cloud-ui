@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 
-export default class BubbleChart extends Component {
+export default class BubbleChartCore extends Component {
     constructor(props) {
         super(props);
 
@@ -349,7 +349,7 @@ export default class BubbleChart extends Component {
     }
 }
 
-BubbleChart.propTypes = {
+BubbleChartCore.propTypes = {
     graph: PropTypes.shape({
         zoom: PropTypes.number,
         offsetX: PropTypes.number,
@@ -380,7 +380,7 @@ BubbleChart.propTypes = {
     }),
     themeTitle: PropTypes.string,
 }
-BubbleChart.defaultProps = {
+BubbleChartCore.defaultProps = {
     graph: {
         zoom: 1.1,
         offsetX: -0.05,

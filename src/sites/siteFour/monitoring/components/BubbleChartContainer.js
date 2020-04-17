@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import BubbleChart from "./BubbleChart";
+import BubbleChartCore from "./BubbleChartCore";
 import {handleHardwareTabChanges, handleLegendAndBubbleClickedEvent, makeLineChartDataForCluster} from "../dev/PageDevMonitoringService";
 import {makeBubbleChartDataForCluster, PageMonitoringStyles, renderPlaceHolderCircular, showToast} from "../PageMonitoringCommonService";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
@@ -166,7 +166,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                     </div>
                                 </div>
                                 <div className='page_monitoring_container'>
-                                    <BubbleChart
+                                    <BubbleChartCore
                                         className='bubbleChart'
                                         style={{height: this.props.isBig ? window.innerHeight : 350, marginLeft: -350}}
                                         graph={{
