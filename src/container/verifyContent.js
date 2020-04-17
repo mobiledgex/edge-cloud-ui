@@ -48,7 +48,7 @@ class VerifyContent extends Component {
                 Alert.success(response.data.message, {
                     position: 'top-right',
                     effect: 'slide',
-                    timeout: 5000
+                    timeout: 10000
                 });
                 setTimeout(() => _self.gotoUrl('/site1'), 1000)
             }
