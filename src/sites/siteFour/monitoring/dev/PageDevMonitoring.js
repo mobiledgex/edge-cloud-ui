@@ -8,14 +8,44 @@ import {connect} from 'react-redux';
 import {CircularProgress, LinearProgress, Toolbar, withStyles} from '@material-ui/core'
 import {Dropdown as ADropdown, Menu as AMenu,} from 'antd';
 import {
-    defaultHwMapperListForCluster, defaultLayoutForAppInst, defaultLayoutForCluster, defaultLayoutMapperForAppInst, filterByClassification, getUserId, makeBarChartDataForAppInst, makeBarChartDataForCluster,
-    makeDropdownListWithValuePipeForAppInst, makeGradientColorList2, makeid, makeLineChartDataForAppInst, makeLineChartDataForBigModal, makeLineChartDataForCluster, makeSelectBoxListWithKeyValuePipeForCluster,
-    makeSelectBoxListWithValuePipe, revertToDefaultLayout,
+    defaultHwMapperListForCluster,
+    defaultLayoutForAppInst,
+    defaultLayoutForCluster,
+    defaultLayoutMapperForAppInst,
+    filterByClassification,
+    getUserId,
+    makeBarChartDataForAppInst,
+    makeBarChartDataForCluster,
+    makeDropdownListWithValuePipeForAppInst,
+    makeGradientColorList2,
+    makeid,
+    makeLineChartDataForAppInst,
+    makeLineChartDataForBigModal,
+    makeLineChartDataForCluster,
+    makeSelectBoxListWithKeyValuePipeForCluster,
+    makeSelectBoxListWithValuePipe,
+    revertToDefaultLayout,
 } from "./PageDevMonitoringService";
 import {
-    ADD_ITEM_LIST, CHART_COLOR_APPLE, CHART_COLOR_BERRIES_GALORE, CHART_COLOR_EXOTIC_ORCHIDS, CHART_COLOR_LIST,
-    CHART_COLOR_LIST2, CHART_COLOR_LIST3, CHART_COLOR_LIST4, CHART_COLOR_MONOKAI, CHART_COLOR_URBAN_SKYLINE, CLASSIFICATION, GRID_ITEM_TYPE,
-    HARDWARE_OPTIONS_FOR_APPINST, HARDWARE_OPTIONS_FOR_CLUSTER, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, THEME_OPTIONS, THEME_OPTIONS_LIST
+    ADD_ITEM_LIST,
+    CHART_COLOR_APPLE,
+    CHART_COLOR_BERRIES_GALORE,
+    CHART_COLOR_EXOTIC_ORCHIDS,
+    CHART_COLOR_LIST,
+    CHART_COLOR_LIST2,
+    CHART_COLOR_LIST3,
+    CHART_COLOR_LIST4,
+    CHART_COLOR_MONOKAI,
+    CHART_COLOR_URBAN_SKYLINE,
+    CLASSIFICATION,
+    GRID_ITEM_TYPE,
+    HARDWARE_OPTIONS_FOR_APPINST,
+    HARDWARE_OPTIONS_FOR_CLUSTER,
+    HARDWARE_TYPE,
+    NETWORK_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    THEME_OPTIONS,
+    THEME_OPTIONS_LIST
 } from "../../../../shared/Constants";
 import type {TypeBarChartData, TypeLineChartData} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
@@ -45,7 +75,6 @@ import {THEME_TYPE} from "../../../../themeStyle";
 import BarChartContainer from "../components/BarChartContainer";
 import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryForClusterHook";
 import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryForAppInstHook";
-import {getWindowDimensions} from "../PageMonitoringUtils";
 import type {PageDevMonitoringProps, PageDevMonitoringState} from "./PageMonitoringPropsState";
 import {PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageMonitoringPropsState";
 const ASubMenu = AMenu.SubMenu;
@@ -1164,14 +1193,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     })
                 }
 
-
                 let selectedChartColorList = this.state.chartColorList;
                 reactLocalStorage.setObject(getUserId() + "_mon_theme", selectedChartColorList)
                 reactLocalStorage.set(getUserId() + "_mon_theme_title", themeTitle)
                 this.setState({
                     chartColorList: selectedChartColorList,
                 }, async () => {
-
                     this.setState({
                         bubbleChartData: await makeBubbleChartDataForCluster(this.state.filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList),
                     })
