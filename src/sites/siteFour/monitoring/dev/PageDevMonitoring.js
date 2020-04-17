@@ -5,7 +5,7 @@ import React, {Component} from 'react';
 import {Dropdown, Modal} from 'semantic-ui-react'
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
-import {CircularProgress, LinearProgress, Toolbar, withStyles} from '@material-ui/core'
+import {CircularProgress, Toolbar} from '@material-ui/core'
 import {Dropdown as ADropdown, Menu as AMenu,} from 'antd';
 import {
     defaultHwMapperListForCluster,
@@ -70,13 +70,13 @@ import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout, LayoutItem} from "react-grid-layout/lib/utils";
 import AddItemPopupContainer2 from '../components/AddItemPopupContainer2'
-import Switch from "@material-ui/core/Switch";
 import {THEME_TYPE} from "../../../../themeStyle";
 import BarChartContainer from "../components/BarChartContainer";
 import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryForClusterHook";
 import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryForAppInstHook";
 import type {PageDevMonitoringProps, PageDevMonitoringState} from "./PageMonitoringPropsState";
 import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageMonitoringPropsState";
+
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
