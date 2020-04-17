@@ -64,6 +64,7 @@ export const THEME_OPTIONS_LIST = [
     {value: 'EXOTIC_ORCHIDS', text: 'EXOTIC ORCHIDS'},
     {value: 'URBAN_SKYLINE', text: 'URBAN SKYLINE'},
     {value: 'BERRIES_GALORE', text: 'BERRIES GALORE'},
+    {value: 'BRIGHT_AND_ENERGETIC', text: 'BRIGHT AND ENERGETIC'},
     {value: 'EARTHY_AND_NATURAL', text: 'EARTHY AND NATURAL'},
     {value: 'JAZZ_NIGHT', text: 'JAZZ NIGHT'},
 
