@@ -659,7 +659,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
         }
 
-
         makeBarChartData(hwType, graphType) {
 
             let barChartDataSet: TypeBarChartData = [];
