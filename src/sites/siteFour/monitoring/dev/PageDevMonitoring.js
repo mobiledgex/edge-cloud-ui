@@ -773,7 +773,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         }
 
 
-        async handleClusterDropdown__Reset(selectedClusterOne) {
+        async handleClusterDropdown_Reset(selectedClusterOne) {
             try {
                 let filteredClusterUsageList = []
                 //todo: 모든 클러스터 선택인 경우..
@@ -1413,7 +1413,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         style={{display: 'flex'}}
                         key="1"
                         onClick={async () => {
-                            await this.handleClusterDropdown__Reset('')
+                            await this.handleClusterDropdown_Reset('')
                         }}
                     >
                         <MaterialIcon icon={'history'} color={'white'}/>
@@ -1737,7 +1737,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                                 clearInterval(this.intervalForAppInst)
                                                 clearInterval(this.intervalForCluster)
                                             } else {
-                                                await this.handleClusterDropdown__Reset(this.state.currentCluster)
+                                                await this.handleClusterDropdown_Reset(this.state.currentCluster)
                                             }
                                         }}
 
@@ -1891,7 +1891,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             } else {
                                 await this.filterClusterList(value)
                             }
-                            await this.handleClusterDropdown__Reset(value.trim())
+                            await this.handleClusterDropdown_Reset(value.trim())
                         }}
                     />
                 </div>
