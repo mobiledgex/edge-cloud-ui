@@ -1421,7 +1421,8 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
         },//scales
         onClick: function (c, i) {
             if (i.length > 0) {
-                // alert('sldkflsdkf' + JSON.stringify(i))
+
+
             }
 
         }
