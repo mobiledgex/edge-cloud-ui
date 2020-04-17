@@ -77,6 +77,7 @@ import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryFo
 import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryForAppInstHook";
 import type {PageDevMonitoringProps, PageDevMonitoringState} from "./PageMonitoringPropsState";
 import {PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageMonitoringPropsState";
+
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const CustomSwitch = withStyles({
@@ -263,10 +264,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 };
             }
 
-          /*  async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
+            async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
                 if (this.props.size.width !== nextProps.size.width) {
+                    window.dispatchEvent(new Event('resize'))
                 }
-            }*/
+            }
 
             componentDidMount = async () => {
                 this.setState({
@@ -290,12 +292,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 if (!isEmpty(this.webSocketInst)) {
                     this.webSocketInst.close();
                 }
-            }
-
-            onSize = size => {
-
-                alert('sldfksdlkfl')
-                console.log('MyComponent has a width of', size.width)
             }
 
 
@@ -1192,6 +1188,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         chartColorList: CHART_COLOR_BERRIES_GALORE
                     })
                 }
+
 
                 let selectedChartColorList = this.state.chartColorList;
                 reactLocalStorage.setObject(getUserId() + "_mon_theme", selectedChartColorList)
