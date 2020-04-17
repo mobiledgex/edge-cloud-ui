@@ -8,7 +8,7 @@ const MexSelect = (props) => {
     const refSelect = useRef(null);
     const [selected, setSelected] = useState(props.form.value ? props.form.value : null)
 
-    //Filter data based on dependData definition for given form
+    //Filter data is based on dependent data array defined in form
     const getFilteredData = (form) => {
         let filteredList = []
         let forms = props.forms

@@ -100,7 +100,7 @@ class MexListView extends React.Component {
             let code = data.code
             let message = data.data.message
             mcRequest.wsObj.close()
-            code === 200 && message.includes('Deleting') ? this.dataFromServer(this.selectedRegion) : this.props.handleAlertInfo('error', message)
+            code === 200 ? this.dataFromServer(this.selectedRegion) : this.props.handleAlertInfo('error', message)
         }
         this.props.handleLoadingSpinner(false)
     }

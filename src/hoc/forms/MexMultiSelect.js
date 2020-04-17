@@ -9,7 +9,7 @@ const MexMultiSelect = (props) => {
         props.onChange(form, value, props.parentForm)
     }
 
-    //Filter data based on dependData definition for given form
+    //Filter data is based on dependent data array defined in form
     const getFilteredData = (form) => {
         let filteredList = []
         let forms = props.forms
