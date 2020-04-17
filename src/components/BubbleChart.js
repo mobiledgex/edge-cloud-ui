@@ -338,16 +338,7 @@ export default class BubbleChart extends Component {
             });
 
         texts.append("text")
-        //.style("font-size", `${legendFont.size}px`)
             .style("font-size", `12px`)
-            /*.style("font-weight", (d) => {
-                return legendFont.weight ? legendFont.weight : 50;
-            })*/
-            //.style("font-family", legendFont.family)
-            //.style("font-family", 'Righteous')
-            /*.style("fill", () => {
-                return legendFont.color ? legendFont.color : '#000';
-            })*/
             .style("fill", () => {
                 return 'white';
             })
