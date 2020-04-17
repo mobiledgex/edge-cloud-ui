@@ -14,7 +14,7 @@ type State = {
     filteredUsageList: any,
 };
 
-export default class PerformanceSummaryTableContainer extends React.Component<Props, State> {
+export default class PerformanceSummaryTableContainer____willBeDeleted extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
