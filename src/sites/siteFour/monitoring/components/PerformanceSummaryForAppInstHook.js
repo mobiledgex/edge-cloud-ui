@@ -40,7 +40,7 @@ export default function PerformanceSummaryForAppInstHook(props) {
                          //backgroundColor:'red'
                      }}
                 >
-                    App Inst. Performance Summary
+                    App Inst Performance Summary
                 </div>
             </div>
             <TableContainer
