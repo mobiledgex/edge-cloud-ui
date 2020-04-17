@@ -1124,7 +1124,7 @@ export const hardwareTypeToUsageKey = (hwType: string) => {
  * @param themeTitle
  * @returns {[]}
  */
-export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType,) => {
+export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType, chartColorList) => {
 
     console.log('makeBubbleChartDataForCluster===>', usageList)
 
@@ -1143,6 +1143,7 @@ export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType,) =>
             favor: usageValue,
             fullLabel: item.cluster.toString() + ' [' + item.cloudlet.toString().trim().substring(0, 15) + "]",
             cluster_cloudlet: item.cluster.toString() + ' | ' + item.cloudlet.toString(),
+            color: chartColorList[index],
         })
     })
 

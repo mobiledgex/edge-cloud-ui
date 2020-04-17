@@ -132,6 +132,8 @@ export default class BubbleChart extends Component {
 //const color = d3.scaleOrdinal(colors("6097326EDC1269BA27527536405330"));//green
         const color = d3.scaleOrdinal(colors(colorCodes));//green
 
+        console.log("scaleOrdinal===>", color);
+
 
         const pack = d3.pack()
             .size([bubblesWidth * graph.zoom, bubblesWidth * graph.zoom])
@@ -154,6 +156,7 @@ export default class BubbleChart extends Component {
                     d.fullLabel = d.data.fullLabel;
                     d.cluster_cloudlet = d.data.cluster_cloudlet;
                     d.index = d.data.index;
+                    d.color = d.data.color;
                 }
             });
 
@@ -218,7 +221,7 @@ export default class BubbleChart extends Component {
                 return d.r - (d.r * .04);
             })
             .style("fill", function (d) {
-                return d.data.color ? d.data.color : color(nodes.indexOf(d));
+                return d.data.color //? d.data.color : color(nodes.indexOf(d));
             })
             .style("z-index", 1)
             .on('mouseover', function (d) {
@@ -331,9 +334,10 @@ export default class BubbleChart extends Component {
             });
 
 
+        //@desc: tooltip
         node.append("title")
             .text(function (d) {
-                return d.label; //@todo: cluster name
+                return d.fullLabel; //@todo: cluster name
             });
     }
 
