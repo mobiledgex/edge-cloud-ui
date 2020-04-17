@@ -19,7 +19,7 @@ type Props = {
 export default function PerformanceSummaryForAppInstHook(props) {
 
     useEffect(() => {
-        console.log("filteredUsageList22===>", props.filteredUsageList);
+        //console.log("filteredUsageList22===>", props.filteredUsageList);
     }, [props.filteredUsageList]);
 
 
