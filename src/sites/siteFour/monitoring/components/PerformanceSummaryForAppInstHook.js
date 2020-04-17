@@ -130,7 +130,7 @@ export default function PerformanceSummaryForAppInstHook(props) {
                                     <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
                                         <div style={{heiight: 15, padding: 0,}}>
                                             <div>
-                                                {item.sumCpuUsage.toFixed(8) + '%'}
+                                                {item.sumCpuUsage.toFixed(2) + '%'}
                                             </div>
                                             <div>
                                                 <Progress style={{width: '100%'}} strokeLinecap={'square'}
@@ -146,32 +146,32 @@ export default function PerformanceSummaryForAppInstHook(props) {
                                     <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
                                         <div style={{heiight: 15, padding: 0,}}>
                                             <div>
-                                                {numberWithCommas(item.sumMemUsage.toFixed(2)) + ' Byte'}
+                                                {numberWithCommas(parseInt(item.sumMemUsage.toFixed(2))) + ' Byte'}
                                             </div>
                                         </div>
                                     </TableCell>
                                     <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
                                         <div style={{heiight: 15, padding: 0,}}>
                                             <div>
-                                                {numberWithCommas(item.sumDiskUsage.toFixed(2)) + ' Byte'}
+                                                {numberWithCommas(item.sumDiskUsage.toFixed(0)) + ' Byte'}
                                             </div>
 
                                         </div>
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
-                                        {numberWithCommas(item.sumRecvBytes.toFixed(2)) + ' '}
+                                        {numberWithCommas(item.sumRecvBytes.toFixed(0)) + ' '}
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
-                                        {numberWithCommas(item.sumSendBytes.toFixed(2)) + ' '}
+                                        {numberWithCommas(item.sumSendBytes.toFixed(0)) + ' '}
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
-                                        {numberWithCommas(item.sumActiveConnection.toFixed(2)) + ' '}
+                                        {numberWithCommas(parseInt(item.sumActiveConnection.toFixed(2))) + ' '}
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
-                                        {numberWithCommas(item.sumHandledConnection.toFixed(2)) + ' '}
+                                        {numberWithCommas(parseInt(item.sumHandledConnection.toFixed(2))) + ' '}
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
-                                        {numberWithCommas(item.sumAcceptsConnection.toFixed(2)) + ' '}
+                                        {numberWithCommas(parseInt(item.sumAcceptsConnection.toFixed(2))) + ' '}
                                     </TableCell>
                                 </TableRow>
                             )
