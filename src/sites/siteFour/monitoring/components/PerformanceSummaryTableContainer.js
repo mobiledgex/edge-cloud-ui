@@ -1,17 +1,11 @@
 // @flow
 import * as React from 'react';
-import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import {Table} from "semantic-ui-react";
 import {Progress} from "antd";
 import type {TypeClusterUsageList} from "../../../../shared/Types";
-import {numberWithCommas, PageMonitoringStyles} from "../PageMonitoringCommonService";
-import {
-    handleLegendAndBubbleClickedEvent,
-    makeLineChartDataForCluster,
-    sortUsageListByTypeForCluster
-} from "../dev/PageDevMonitoringService";
+import {PageMonitoringStyles} from "../PageMonitoringCommonService";
+import {handleLegendAndBubbleClickedEvent, makeLineChartDataForCluster} from "../dev/PageDevMonitoringService";
 import Tooltip from "antd/es/tooltip";
-import {Center2} from "../PageMonitoringStyledComponent";
 
 type Props = {
     filteredUsageList: any,
