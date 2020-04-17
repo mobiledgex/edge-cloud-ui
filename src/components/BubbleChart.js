@@ -75,54 +75,8 @@ export default class BubbleChart extends Component {
                 return "#" + x;
             });
         };
-
         let colorCodes = 'DE0000FF9600FFF6005BCB000096FF'
-        /*if (this.props.themeTitle === THEME_OPTIONS.DEFAULT) {
-            let eundewColorCodes = 'DE0000FF9600FFF6005BCB000096FF00FFFF0080800000FF000080FF00FF800080800000808080808000'
-            colorCodes = eundewColorCodes;
-        }
-        if (this.props.themeTitle === THEME_OPTIONS.BLUE) {
-            let blueColorCodes = '65DEF1A8DCD1DCE2C8F96900F17F2900FFFF0080800000FF000080FF00FF800080800000808080808000'
-            colorCodes = blueColorCodes;
-        }
-        if (this.props.themeTitle === THEME_OPTIONS.GREEN) {
-            let greenColorCodes = "008000d7fff1556B2F32CD328cd79000FFFF0080800000FF000080FF00FF800080800000808080808000"
-            colorCodes = greenColorCodes;
-        }
-
-        if (this.props.themeTitle === THEME_OPTIONS.RED) {
-            let redColorCodes = 'FF0000FFBDAAD4826A802D1555130000FFFF0080800000FF000080FF00FF800080800000808080808000'
-            colorCodes = redColorCodes;
-        }
-
-        if (this.props.themeTitle === THEME_OPTIONS.MONOKAI) {
-            let monokaiColor = 'F92672FD971FA6E22EE6DB74A6E22E00FFFF0080800000FF000080FF00FF800080800000808080808000'
-            colorCodes = monokaiColor;
-        }
-
-        if (this.props.themeTitle === THEME_OPTIONS.APPLE) {
-            let _color = '0A84FF30D158FF453AFF9F0AFF375F00FFFF0080800000FF000080FF00FF800080800000808080808000'
-            colorCodes = _color;
-        }
-
-        if (this.props.themeTitle === THEME_OPTIONS.EXOTIC_ORCHIDS) {
-            let _color = '72a2c000743ff2a104192e5b1d65a666D9EF27282275715E'
-            colorCodes = _color;
-        }
-
-        if (this.props.themeTitle === THEME_OPTIONS.URBAN_SKYLINE) {
-            let _color = '522E757e7d7b52591FA3765D714E3D66D9EF27282275715E'
-            colorCodes = _color;
-        }
-
-        if (this.props.themeTitle === THEME_OPTIONS.BERRIES_GALORE) {
-            let _color = '777CA8BB1924EE6C81F092A5AFBADC66D9EF27282275715E'
-            colorCodes = _color;
-        }*/
-
-
         const color = d3.scaleOrdinal(colors(colorCodes));//green
-
         const pack = d3.pack()
             .size([bubblesWidth * graph.zoom, bubblesWidth * graph.zoom])
             .padding(padding);
@@ -242,7 +196,6 @@ export default class BubbleChart extends Component {
                 return valueFont.lineWeight ? valueFont.lineWeight : 0;
             })
             .text((d) => {
-
                 //@todo:number value를 랜더링 하는 부분..(value (%))
                 if (d.value > 0) {
                     if (d.type === 'CPU' || d.type === 'DISK' || d.type === 'MEM') {
@@ -297,7 +250,6 @@ export default class BubbleChart extends Component {
             })
 
         //todo: Center the texts inside the circles.
-        //todo: Center the texts inside the circles.
         d3.selectAll(".value-text").attr("x", function (d) {
             const self = d3.select(this);
             const width = self.node().getBBox().width;
@@ -320,9 +272,7 @@ export default class BubbleChart extends Component {
             });
     }
 
-
     /**
-     * @todo: renderLegend
      * @todo: renderLegend
      * @param width
      * @param height
@@ -338,9 +288,6 @@ export default class BubbleChart extends Component {
         } = this.props;
         const bubble = d3.select('.bubble-chart');
         const bubbleHeight = bubble.node().getBBox().height;
-
-        console.log(' bubbleHeight===>', bubbleHeight * 0.30);
-
         const legend = d3.select(this.svg).append("g")
             .attr("transform", function () {
                 // return `translate(${offset},${(bubbleHeight) * 0.18})`;
