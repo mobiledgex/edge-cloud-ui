@@ -98,7 +98,7 @@ export default class BubbleChart extends Component {
                     d.fullLabel = d.data.fullLabel;
                     d.cluster_cloudlet = d.data.cluster_cloudlet;
                     d.index = d.data.index;
-                    d.color = d.data.color;
+                    d.color = d.data.color;//@todo ; colorOne
                 }
             });
 
@@ -154,7 +154,8 @@ export default class BubbleChart extends Component {
                 return d.r - (d.r * .04);
             })
             .style("fill", function (d) {
-                return d.data.color //? d.data.color : color(nodes.indexOf(d));
+                //todo : set colorOne in color_list
+                return d.data.color
             })
             .style("z-index", 1)
             .on('mouseover', function (d) {
