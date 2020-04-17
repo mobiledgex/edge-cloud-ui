@@ -12,22 +12,22 @@ export const CHART_COLOR_LIST4 = ['#FF0000', '#FFBDAA', '#D4826A', '#802D15', '#
 
 export const CHART_COLOR_MONOKAI = ['#F92672', '#FD971F', '#A6E22E', '#E6DB74', '#A6E22E', '#66D9EF', '#272822', '#75715E',]
 export const CHART_COLOR_APPLE = ['#0A84FF', '#30D158', '#FF453A', '#FF9F0A', '#FF375F', '#66D9EF', '#272822', '#75715E',]
-
-
 export const CHART_COLOR_EXOTIC_ORCHIDS = ['#72a2c0', '#00743f', '#f2a104', '#192e5b', '#1d65a6', '#66D9EF', '#272822', '#75715E',]
-
-
 export const CHART_COLOR_URBAN_SKYLINE = ['#522E75', '#7e7d7b', '#52591F', '#A3765D', '#714E3D', '#66D9EF', '#272822', '#75715E']
-
 export const CHART_COLOR_BERRIES_GALORE = ['#777CA8', '#BB1924', '#EE6C81', '#F092A5', '#AFBADC', '#66D9EF', '#272822', '#75715E']
+
+export const CHART_COLOR_BRIGHT_AND_ENERGETIC = ['#F14D49', '#002485', '#118C8B', '#BCA18D', '#F2746B', '#66D9EF', '#272822', '#75715E']
+export const CHART_COLOR_EARTHY_AND_NATURAL = ['#E4EBF2', '#52733B', '#84A45A', '#818A6F', '#715E4E', '#66D9EF', '#272822', '#75715E']
+
+export const CHART_COLOR_JAZZ_NIGHT = ['#C59CDB', '#DFD0F1', '#A67B04', '#F3EED6', '#701B05', '#66D9EF', '#272822', '#75715E']
+
+
 
 export const CHART_COLOR_LIST5 = ['#609732', '#6EDC12', '#69BA27', '#527536', '#405330']
 export const CHART_COLOR_LIST6 = ['#AA5939', '#F75514', '#D15A2B', '#83513C', '#5D4136']
 export const CHART_COLOR_LIST7 = ['#6F256F', '#A10DA1', '#881C88', '#552755', '#3C233C']
-
 export const DARK_LINE_COLOR = 'yellow'
 export const DARK_CLOUTLET_ICON_COLOR = 'green'
-
 export const WHITE_LINE_COLOR = 'black'
 export const WHITE_CLOUTLET_ICON_COLOR = 'blue'
 
@@ -48,7 +48,10 @@ export const THEME_OPTIONS = {
     APPLE: 'APPLE',
     EXOTIC_ORCHIDS: 'EXOTIC_ORCHIDS',
     URBAN_SKYLINE: 'URBAN_SKYLINE',
-    BERRIES_GALORE: 'BERRIES_GALORE'
+    BERRIES_GALORE: 'BERRIES_GALORE',
+    BRIGHT_AND_ENERGETIC: 'BRIGHT_AND_ENERGETIC',
+    EARTHY_AND_NATURAL: 'EARTHY_AND_NATURAL',
+    JAZZ_NIGHT:'JAZZ_NIGHT',
 }
 
 export const THEME_OPTIONS_LIST = [
@@ -61,6 +64,8 @@ export const THEME_OPTIONS_LIST = [
     {value: 'EXOTIC_ORCHIDS', text: 'EXOTIC ORCHIDS'},
     {value: 'URBAN_SKYLINE', text: 'URBAN SKYLINE'},
     {value: 'BERRIES_GALORE', text: 'BERRIES GALORE'},
+    {value: 'EARTHY_AND_NATURAL', text: 'EARTHY AND NATURAL'},
+    {value: 'JAZZ_NIGHT', text: 'JAZZ NIGHT'},
 
 ]
 
