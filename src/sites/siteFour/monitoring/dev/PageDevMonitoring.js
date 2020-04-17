@@ -462,64 +462,12 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 selectOrg: localStorage.selectOrg === undefined ? '' : localStorage.selectOrg.toString(),
 
             })
-
             await this.loadInitDataForCluster();
             this.setState({
                 loading: false,
                 bubbleChartLoader: false,
             })
         }
-
-
-        async loadInitDataForCluster__FOR__DEV(isInterval: boolean = false) {
-            try {
-                clearInterval(this.intervalForAppInst)
-                this.setState({dropdownRequestLoading: true})
-                let clusterList = require('../aaa____TESTCODE____/Jsons/clusterList')
-                let cloudletList = require('../aaa____TESTCODE____/Jsons/cloudletList')
-                let appInstanceList = require('../aaa____TESTCODE____/Jsons/appInstanceList')
-                let clusterDropdownList = makeSelectBoxListWithKeyValuePipeForCluster(clusterList, 'ClusterName', 'Cloudlet')
-                let __allAppInstEvLogListValues = require('../aaa____TESTCODE____/Jsons/allAppInstEventLogList')
-                let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
-                let allClusterUsageList = require('../aaa____TESTCODE____/Jsons/allClusterUsageList')
-                let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
-
-                let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
-                    return o.sumCpuUsage;
-                }));
-                let maxMem = Math.max.apply(Math, allClusterUsageList.map(function (o) {
-                    return o.sumMemUsage;
-                }));
-
-                await this.setState({
-                    appInstanceListGroupByCloudlet: !isInterval && appInstanceListGroupByCloudlet,
-                    allClusterEventLogList: [],
-                    filteredClusterEventLogList: [],
-                    allAppInstEventLogs: __allAppInstEvLogListValues,
-                    filteredAppInstEventLogs: __allAppInstEvLogListValues,
-                    isReady: true,
-                    clusterDropdownList: clusterDropdownList,
-                    dropDownCloudletList: cloudletList,
-                    clusterList: clusterList,
-                    isAppInstaceDataReady: true,
-                    appInstanceList: appInstanceList,
-                    filteredAppInstanceList: appInstanceList,
-                    dropdownRequestLoading: false,
-                    bubbleChartData: bubbleChartData,
-                    clusterListLoading: false,
-                    allCloudletUsageList: allClusterUsageList,
-                    allClusterUsageList: allClusterUsageList,
-                    filteredClusterUsageList: allClusterUsageList,
-                    maxCpu: maxCpu,
-                    maxMem: maxMem,
-                    isRequesting: false,
-                    currentCluster: '',
-                })
-            } catch (e) {
-
-            }
-        }
-
 
         componentWillUnmount(): void {
             this.props.toggleHeader(true)
