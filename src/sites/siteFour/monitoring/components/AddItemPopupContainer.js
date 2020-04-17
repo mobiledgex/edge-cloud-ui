@@ -34,13 +34,6 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
         }
     }
 
-    componentDidMount(): void {
-    }
-
-
-    async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
-
-    }
 
     closePopupWindow() {
         this.props.parent.setState({
