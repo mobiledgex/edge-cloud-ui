@@ -9,6 +9,7 @@ import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
 import {CircularProgress, createMuiTheme} from "@material-ui/core";
 import {reactLocalStorage} from "reactjs-localstorage";
 import {numberWithCommas} from "../PageMonitoringUtils";
+
 export const materialUiDarkTheme = createMuiTheme({
     palette: {
         type: "dark",
@@ -1327,17 +1328,18 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
             }
         },
         legend: {
-            display: false,//@todo:리전드display
+            display: isBig ? true : false,//@todo:리전드display
             position: 'top',
             labels: {
                 boxWidth: 10,
-                fontColor: 'white'
+                fontColor: 'white',
+                fontSize: 12,
+                fontFamily: 'ubuntu',
+                fontWeight: 'bold',
             },//@todo: lineChart 리전드 클릭 이벤트.
             onClick: (e, clickedItem) => {
-
-                let selectedClusterOne = clickedItem.text.toString().replace('\n', "|");
-                handleLegendAndBubbleClickedEvent(_this, selectedClusterOne, lineChartDataSet)
-
+                /*let selectedClusterOne = clickedItem.text.toString().replace('\n', "|");
+                handleLegendAndBubbleClickedEvent(_this, selectedClusterOne, lineChartDataSet)*/
             },
             onHover: (e, item) => {
                 //alert(`Item with text ${item.text} and index ${item.index} hovered`)
