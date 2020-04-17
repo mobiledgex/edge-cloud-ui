@@ -354,6 +354,7 @@
 .react-calendar-timeline .rct-scroll {
     border-left: 2px solid #292c33;
     border-right: 2px solid #292c33;
+    overflow-x: hidden;
 }
 
 .rct-item {
