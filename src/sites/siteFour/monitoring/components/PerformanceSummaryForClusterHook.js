@@ -219,33 +219,33 @@ export default function PerformanceSummaryForClusterHook(props) {
                                     <TableCell
                                         onClick={() => handleRowClicked(item, HARDWARE_TYPE.RECVBYTES)}
                                         padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
-                                        {numberWithCommas(item.sumRecvBytes.toFixed(2)) + ' '}
+                                        {numberWithCommas(item.sumRecvBytes.toFixed(0)) + ' '}
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
                                                onClick={() => handleRowClicked(item, HARDWARE_TYPE.SENDBYTES)}
                                     >
-                                        {numberWithCommas(item.sumSendBytes.toFixed(2)) + ' '}
+                                        {numberWithCommas(item.sumSendBytes.toFixed(0)) + ' '}
                                     </TableCell>
 
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
                                                onClick={() => handleRowClicked(item, HARDWARE_TYPE.TCPCONNS)}
                                     >
-                                        {numberWithCommas(item.sumTcpConns.toFixed(2)) + ' '}
+                                        {numberWithCommas(item.sumTcpConns.toFixed(0)) + ' '}
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
                                                onClick={() => handleRowClicked(item, HARDWARE_TYPE.TCPRETRANS)}
                                     >
-                                        {numberWithCommas(item.sumTcpRetrans.toFixed(2)) + ' '}
+                                        {numberWithCommas(item.sumTcpRetrans.toFixed(0)) + ' '}
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
                                                onClick={() => handleRowClicked(item, HARDWARE_TYPE.UDPRECV)}
                                     >
-                                        {numberWithCommas(item.sumUdpRecv.toFixed(2)) + ' '}
+                                        {numberWithCommas(item.sumUdpRecv.toFixed(0)) + ' '}
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
                                                onClick={() => handleRowClicked(item, HARDWARE_TYPE.UDPSENT)}
                                     >
-                                        {numberWithCommas(item.sumUdpSent.toFixed(2)) + ' '}
+                                        {numberWithCommas(item.sumUdpSent.toFixed(0)) + ' '}
                                     </TableCell>
                                 </TableRow>
                             )
