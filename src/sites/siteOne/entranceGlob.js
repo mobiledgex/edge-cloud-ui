@@ -98,7 +98,7 @@ class EntranceGlobe extends Component {
                     position: 'top-right',
                     effect: 'slide',
                     beep: true,
-                    timeout: 5000,
+                    timeout: 10000,
                     offset: 100
                 });
             } else if(nextProps.alertInfo.mode === 'error') {
@@ -106,7 +106,7 @@ class EntranceGlobe extends Component {
                     position: 'top-right',
                     effect: 'slide',
                     beep: true,
-                    timeout: 5000,
+                    timeout: 20000,
                     offset: 100
                 });
             }
