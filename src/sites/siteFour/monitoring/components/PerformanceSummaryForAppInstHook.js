@@ -1,16 +1,16 @@
 // @flow
 import * as React from 'react';
 import {useEffect} from 'react';
-import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
-import {numberWithCommas} from "../PageMonitoringCommonService";
 import {Progress} from "antd";
 import '../PageMonitoring.css'
+import {numberWithCommas} from "../PageMonitoringUtils";
+import {Paper} from "@material-ui/core";
 
 type Props = {
     filteredUsageList: any,
@@ -19,17 +19,19 @@ type Props = {
 export default function PerformanceSummaryForAppInstHook(props) {
 
     useEffect(() => {
-        console.log("filteredUsageList22===>", props.filteredUsageList);
     }, [props.filteredUsageList]);
 
 
     return (
         <React.Fragment>
-            <div style={{
-                display: 'flex',
-                width: '100%',
-                height: 45
-            }}>
+            <div
+                className='.draggable'
+                style={{
+                    display: 'flex',
+                    width: '100%',
+                    height: 45
+                }}
+            >
                 <div className='page_monitoring_title draggable'
                      style={{
                          flex: 1,
@@ -38,17 +40,19 @@ export default function PerformanceSummaryForAppInstHook(props) {
                          //backgroundColor:'red'
                      }}
                 >
-                    {props.parent.state.currentClassification} Performance Summary
+                    App Inst. Performance Summary
                 </div>
             </div>
-            <TableContainer component={Paper}
-                            style={{
-                                height: 250,
-                                fontFamily: 'Ubuntu',
-                                backgroundColor: 'blue !important',
-                                width: 'auto',
-                                overflowX: 'scroll'
-                            }}>
+            <TableContainer
+                component={Paper}
+                style={{
+                    height: 'auto',
+                    fontFamily: 'Ubuntu',
+                    backgroundColor: 'blue !important',
+                    width: 'auto',
+                    overflowX: 'scroll'
+                }}
+            >
                 <Table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll'}}
                        stickyHeader={true}>
 
@@ -126,7 +130,7 @@ export default function PerformanceSummaryForAppInstHook(props) {
                                     <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
                                         <div style={{heiight: 15, padding: 0,}}>
                                             <div>
-                                                {item.sumCpuUsage.toFixed(2) + '%'}
+                                                {item.sumCpuUsage.toFixed(8) + '%'}
                                             </div>
                                             <div>
                                                 <Progress style={{width: '100%'}} strokeLinecap={'square'}
@@ -142,31 +146,16 @@ export default function PerformanceSummaryForAppInstHook(props) {
                                     <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
                                         <div style={{heiight: 15, padding: 0,}}>
                                             <div>
-                                                {numberWithCommas(item.sumMemUsage.toFixed(2)) + ' %'}
-                                            </div>
-                                            <div>
-                                                <Progress style={{width: '100%'}} strokeLinecap={'square'}
-                                                          strokeWidth={10}
-                                                          showInfo={false}
-                                                          percent={item.sumMemUsage.toFixed(0)}
-                                                          strokeColor={props.parent.state.chartColorList[index]}
-                                                          status={'normal'}/>
+                                                {numberWithCommas(item.sumMemUsage.toFixed(2)) + ' Byte'}
                                             </div>
                                         </div>
                                     </TableCell>
                                     <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
                                         <div style={{heiight: 15, padding: 0,}}>
                                             <div>
-                                                {numberWithCommas(item.sumDiskUsage.toFixed(2)) + ' %'}
+                                                {numberWithCommas(item.sumDiskUsage.toFixed(2)) + ' Byte'}
                                             </div>
-                                            <div>
-                                                <Progress style={{width: '100%'}} strokeLinecap={'square'}
-                                                          strokeWidth={10}
-                                                          showInfo={false}
-                                                          percent={item.sumDiskUsage.toFixed(0)}
-                                                          strokeColor={props.parent.state.chartColorList[index]}
-                                                          status={'normal'}/>
-                                            </div>
+
                                         </div>
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
@@ -184,7 +173,6 @@ export default function PerformanceSummaryForAppInstHook(props) {
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
                                         {numberWithCommas(item.sumAcceptsConnection.toFixed(2)) + ' '}
                                     </TableCell>
-
                                 </TableRow>
                             )
                         })}

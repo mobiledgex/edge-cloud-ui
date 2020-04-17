@@ -30,11 +30,14 @@ import {
 import {
     ADD_ITEM_LIST,
     CHART_COLOR_APPLE,
+    CHART_COLOR_BERRIES_GALORE,
+    CHART_COLOR_EXOTIC_ORCHIDS,
     CHART_COLOR_LIST,
     CHART_COLOR_LIST2,
     CHART_COLOR_LIST3,
     CHART_COLOR_LIST4,
     CHART_COLOR_MONOKAI,
+    CHART_COLOR_URBAN_SKYLINE,
     CLASSIFICATION,
     GRID_ITEM_TYPE,
     HARDWARE_OPTIONS_FOR_APPINST,
@@ -72,7 +75,7 @@ import AddItemPopupContainer2 from '../components/AddItemPopupContainer2'
 import Switch from "@material-ui/core/Switch";
 import {THEME_TYPE} from "../../../../themeStyle";
 import BarChartContainer from "../components/BarChartContainer";
-import PerformanceSummaryHook from "../components/PerformanceSummaryHook";
+import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryForClusterHook";
 import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryForAppInstHook";
 
 const ASubMenu = AMenu.SubMenu;
@@ -304,8 +307,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             let themeTitle = getUserId() + "_mon_theme_title";
             //@TODO: DELETE THEME COLOR
             /*reactLocalStorage.remove(themeTitle)
-            reactLocalStorage.remove(themeKey)
-            */
+            reactLocalStorage.remove(themeKey)*/
             this.state = {
                 layoutForCluster: isEmpty(reactLocalStorage.get(clusterLayoutKey)) ? defaultLayoutForCluster : reactLocalStorage.getObject(clusterLayoutKey),
                 layoutMapperForCluster: isEmpty(reactLocalStorage.get(ClusterHwMapperKey)) ? defaultHwMapperListForCluster : reactLocalStorage.getObject(ClusterHwMapperKey),
@@ -437,7 +439,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 currentWidgetWidth: 1,
                 isOpenEditView: false,
                 isFullScreenMap: false,
-                isStackedLineChart: true,
+                isStackedLineChart: false,
                 isShowFilter: false,
                 currentNavigation: '',
                 allAppInstDropdown: [],
@@ -460,7 +462,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 selectOrg: localStorage.selectOrg === undefined ? '' : localStorage.selectOrg.toString(),
 
             })
-
             await this.loadInitDataForCluster();
             this.setState({
                 loading: false,
@@ -516,7 +517,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 let allClusterUsageList = allClusterEventLogList_allAppInstEventLogList_allClusterUsageList[2];
 
                 let appInstanceListGroupByCloudlet = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
-                let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
+                let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
                 let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
                     return o.sumCpuUsage;
                 }));
@@ -556,6 +557,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
         }
 
+
         async resetLocalData() {
             clearInterval(this.intervalForCluster)
             clearInterval(this.intervalForAppInst)
@@ -572,7 +574,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
             })
             //todo: reset bubble chart data
-            let bubbleChartData = await makeBubbleChartDataForCluster(this.state.allClusterUsageList, HARDWARE_TYPE.CPU);
+            let bubbleChartData = await makeBubbleChartDataForCluster(this.state.allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
             await this.setState({
                 bubbleChartData: bubbleChartData,
                 dropdownRequestLoading: false,
@@ -656,7 +658,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             return canvasDatas;
 
         }
-
 
         makeBarChartData(hwType, graphType) {
 
@@ -771,82 +772,81 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         }
 
 
-        async handleClusterDropdown__Reset(selectedClusterOne) {
-            let filteredClusterUsageList = []
+        async handleClusterDropdown_Reset(selectedClusterOne) {
+            try {
+                let filteredClusterUsageList = []
+                //todo: 모든 클러스터 선택인 경우..
+                if (selectedClusterOne === '') {
+                    await this.setState({
+                        filteredClusterList: this.state.clusterList,
+                    })
+                    this.resetLocalData();
+                } else {
+                    await this.setState({
+                        selectedClientLocationListOnAppInst: [],
+                        dropdownRequestLoading: true,
+                    })
+
+                    let selectData = selectedClusterOne.split("|")
+                    let selectedCluster = selectData[0].trim();
+                    let selectedCloudlet = selectData[1].trim();
+                    //desc : filter  ClusterUsageList
+                    let allClusterUsageList = this.state.allClusterUsageList;
+                    let allUsageList = allClusterUsageList;
+                    allUsageList.map(item => {
+                        if (item.cluster === selectedCluster && item.cloudlet === selectedCloudlet) {
+                            filteredClusterUsageList.push(item)
+                        }
+                    })
 
 
-            //todo: 모든 클러스터 선택인 경우..
-            if (selectedClusterOne === '') {
-                await this.setState({
-                    filteredClusterList: this.state.clusterList,
-                })
-                this.resetLocalData();
-            } else {
-                await this.setState({
-                    selectedClientLocationListOnAppInst: [],
-                    dropdownRequestLoading: true,
-                })
+                    //desc: filter clusterEventlog
+                    let allClusterEventLogList = this.state.allClusterEventLogList
+                    let filteredClusterEventLogList = []
+                    allClusterEventLogList.map(item => {
+                        if (item[1] === selectedCluster && item[3] === selectedCloudlet) {
+                            filteredClusterEventLogList.push(item)
+                        }
+                    })
 
+                    let appInstanceList = this.state.appInstanceList;
+                    let filteredAppInstList = []
+                    appInstanceList.map((item: TypeAppInstance, index) => {
+                        if (item.ClusterInst === selectedCluster && item.Cloudlet === selectedCloudlet) {
+                            filteredAppInstList.push(item)
+                        }
+                    })
 
-                let selectData = selectedClusterOne.split("|")
-                let selectedCluster = selectData[0].trim();
-                let selectedCloudlet = selectData[1].trim();
+                    let appInstDropdown = makeDropdownListWithValuePipeForAppInst(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
+                    let bubbleChartData = await makeBubbleChartDataForCluster(this.state.filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
+                    await this.setState({
+                        currentCluster: selectedClusterOne,
+                        currentClassification: CLASSIFICATION.CLUSTER,
+                        dropdownRequestLoading: false,
+                        filteredClusterUsageList: filteredClusterUsageList,
+                        filteredClusterEventLogList: filteredClusterEventLogList,
+                        appInstDropdown: appInstDropdown,
+                        allAppInstDropdown: appInstDropdown,
+                        currentAppInst: '',
+                        appInstSelectBoxPlaceholder: 'Select App Inst',
+                        filteredAppInstanceList: filteredAppInstList,
+                        appInstanceListGroupByCloudlet: reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET),
+                        bubbleChartData: bubbleChartData,
+                    });
 
+                }
 
-                //desc : filter  ClusterUsageList
-                let allClusterUsageList = this.state.allClusterUsageList;
-                let allUsageList = allClusterUsageList;
-                allUsageList.map(item => {
-                    if (item.cluster === selectedCluster && item.cloudlet === selectedCloudlet) {
-                        filteredClusterUsageList.push(item)
-                    }
-                })
+                //todo: ############################
+                //todo: setStream
+                //todo: ############################
+                if (this.state.isStream) {
+                    this.setClusterInterval()
+                } else {
+                    clearInterval(this.intervalForAppInst)
+                    clearInterval(this.intervalForCluster)
+                }
+            } catch (e) {
 
-
-                //desc: filter clusterEventlog
-                let allClusterEventLogList = this.state.allClusterEventLogList
-                let filteredClusterEventLogList = []
-                allClusterEventLogList.map(item => {
-                    if (item[1] === selectedCluster && item[3] === selectedCloudlet) {
-                        filteredClusterEventLogList.push(item)
-                    }
-                })
-
-                let appInstanceList = this.state.appInstanceList;
-                let filteredAppInstList = []
-                appInstanceList.map((item: TypeAppInstance, index) => {
-                    if (item.ClusterInst === selectedCluster && item.Cloudlet === selectedCloudlet) {
-                        filteredAppInstList.push(item)
-                    }
-                })
-
-                let appInstDropdown = makeDropdownListWithValuePipeForAppInst(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
-                let bubbleChartData = await makeBubbleChartDataForCluster(this.state.filteredClusterUsageList, this.state.currentHardwareType);
-                await this.setState({
-                    currentCluster: selectedClusterOne,
-                    currentClassification: CLASSIFICATION.CLUSTER,
-                    dropdownRequestLoading: false,
-                    filteredClusterUsageList: filteredClusterUsageList,
-                    filteredClusterEventLogList: filteredClusterEventLogList,
-                    appInstDropdown: appInstDropdown,
-                    allAppInstDropdown: appInstDropdown,
-                    currentAppInst: '',
-                    appInstSelectBoxPlaceholder: 'Select App Inst',
-                    filteredAppInstanceList: filteredAppInstList,
-                    appInstanceListGroupByCloudlet: reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET),
-                    bubbleChartData: bubbleChartData,
-                });
-
-            }
-
-            //todo: ############################
-            //todo: setStream
-            //todo: ############################
-            if (this.state.isStream) {
-                this.setClusterInterval()
-            } else {
-                clearInterval(this.intervalForAppInst)
-                clearInterval(this.intervalForCluster)
             }
 
         }
@@ -1215,7 +1215,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 return (
                     this.state.loading ? renderPlaceHolderCircular() :
                         this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                            <PerformanceSummaryHook
+                            <PerformanceSummaryForClusterHook
                                 parent={this}
                                 filteredUsageList={this.state.filteredClusterUsageList}
                                 chartColorList={this.state.chartColorList}
@@ -1367,12 +1367,38 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 })
             }
 
+            if (themeTitle === THEME_OPTIONS.EXOTIC_ORCHIDS) {
+                await this.setState({
+                    chartColorList: CHART_COLOR_EXOTIC_ORCHIDS
+                })
+            }
+
+            if (themeTitle === THEME_OPTIONS.URBAN_SKYLINE) {
+                await this.setState({
+                    chartColorList: CHART_COLOR_URBAN_SKYLINE
+                })
+            }
+
+            if (themeTitle === THEME_OPTIONS.BERRIES_GALORE) {
+                await this.setState({
+                    chartColorList: CHART_COLOR_BERRIES_GALORE
+                })
+            }
+
+
             let selectedChartColorList = this.state.chartColorList;
             reactLocalStorage.setObject(getUserId() + "_mon_theme", selectedChartColorList)
             reactLocalStorage.set(getUserId() + "_mon_theme_title", themeTitle)
-            await this.setState({
+            this.setState({
                 chartColorList: selectedChartColorList,
+            }, async () => {
+
+                this.setState({
+                    bubbleChartData: await makeBubbleChartDataForCluster(this.state.filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList),
+                })
             })
+
+
         }
 
 
@@ -1386,7 +1412,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         style={{display: 'flex'}}
                         key="1"
                         onClick={async () => {
-                            await this.handleClusterDropdown__Reset('')
+                            await this.handleClusterDropdown_Reset('')
                         }}
                     >
                         <MaterialIcon icon={'history'} color={'white'}/>
@@ -1491,18 +1517,23 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             </div>
                         }
                     >
-                        <AMenu.Item
-                            key="1"
-                            onClick={async () => {
-                                await this.setState({
-                                    themeTitle: THEME_OPTIONS.DEFAULT
-                                })
-                                await this.handleThemeChanges(this.state.themeTitle)
-                            }}
-                        >
-                            DEFAULT
-                        </AMenu.Item>
-                        <AMenu.Item
+                        {THEME_OPTIONS_LIST.map(item => {
+                            return (
+                                <AMenu.Item
+                                    key="1"
+                                    onClick={async () => {
+                                        await this.setState({
+                                            themeTitle: item.value
+                                        })
+                                        await this.handleThemeChanges(item.value)
+                                    }}
+                                >
+                                    {item.text}
+                                </AMenu.Item>
+                            )
+                        })}
+
+                        {/* <AMenu.Item
                             key="2"
                             onClick={async () => {
                                 await this.setState({
@@ -1557,6 +1588,17 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         >
                             APPLE
                         </AMenu.Item>
+                        <AMenu.Item
+                            key="5"
+                            onClick={async (value) => {
+                                await this.setState({
+                                    themeTitle: THEME_OPTIONS.EXOTIC_ORCHIDS
+                                })
+                                await this.handleThemeChanges(this.state.themeTitle)
+                            }}
+                        >
+                            EXOTIC_ORCHIDS
+                        </AMenu.Item>*/}
                     </ASubMenu>
                     {/*desc: ######################*/}
                     {/*desc: ShowAppInstClient             */}
@@ -1590,7 +1632,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         renderHeader = () => {
             return (
                 <>
-                    <Toolbar className='monitoring_title' style={{marginTop: 2}}>
+                    <Toolbar className='monitoring_title' style={{marginTop: 0}}>
                         <label className='content_title_label' style={{marginBottom: 1}}>Monitoring</label>
                         <div className='page_monitoring_select_area'
                              style={{
@@ -1694,7 +1736,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                                 clearInterval(this.intervalForAppInst)
                                                 clearInterval(this.intervalForCluster)
                                             } else {
-                                                await this.handleClusterDropdown__Reset(this.state.currentCluster)
+                                                await this.handleClusterDropdown_Reset(this.state.currentCluster)
                                             }
                                         }}
 
@@ -1848,7 +1890,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                             } else {
                                 await this.filterClusterList(value)
                             }
-                            await this.handleClusterDropdown__Reset(value.trim())
+                            await this.handleClusterDropdown_Reset(value.trim())
                         }}
                     />
                 </div>
@@ -1891,96 +1933,94 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 fullClusterList = cloudlet + " > " + cluster;
             }
             return (
-                <Legend>
-                    <div style={{width: '100%', display: 'flex'}}>
-                        {this.state.loading &&
-                        <div style={{
-                            display: 'flex',
-                            alignSelf: 'center',
-                            position: 'absolute',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            width: '100%',
-                            //backgroundColor: 'red'
-                        }}>
-                            {/*  <CircularProgress
+                <Legend style={{height: this.state.currentClassification === CLASSIFICATION.CLUSTER ? 50 : 25,}}>
+                    {this.state.loading &&
+                    <div style={{
+                        display: 'flex',
+                        alignSelf: 'center',
+                        position: 'absolute',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        width: '100%',
+                        //backgroundColor: 'red'
+                    }}>
+                        {/*  <CircularProgress
                                 style={{fontWeight: 'bold', color: '#1cecff'}}
                                 color='#1cecff'
                                 size={15}
                             />*/}
-                            <ColorLinearProgress
-                                variant={'query'}
-                                style={{
-                                    marginLeft: -10,
-                                    width: '7%',
-                                    alignContent: 'center',
-                                    justifyContent: 'center',
-                                }}
-                            />
-                        </div>}
-                        {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                            <div style={{
-                                display: 'flex',
-                                flex: 1,
+                        <ColorLinearProgress
+                            variant={'query'}
+                            style={{
+                                marginLeft: -10,
+                                width: '7%',
+                                alignContent: 'center',
                                 justifyContent: 'center',
-                                marginLeft: 0,
-                                backgroundColor: 'transparent'
-                            }}>
-                                {this.state.filteredClusterUsageList.map((item, index) => {
-                                    return (
-                                        <Center2>
+                            }}
+                        />
+                    </div>}
+                    {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER ?
+                        <div style={{
+                            display: 'flex',
+                            flex: 1,
+                            justifyContent: 'center',
+                            marginLeft: 0,
+                            backgroundColor: 'transparent',
+                            flexWrap: 'wrap'
+                        }}>
+                            {this.state.filteredClusterUsageList.map((item, index) => {
+                                return (
+                                    <Center2>
 
-                                            {/*desc: ##############*/}
-                                            {/*desc: circle area   */}
-                                            {/*desc: ##############*/}
-                                            <div style={{
-                                                backgroundColor: this.state.chartColorList[index],
-                                                width: 15,
-                                                height: 15,
-                                                borderRadius: 50,
-                                                marginTop: 2,
-                                            }}>
-                                            </div>
-                                            <ClusterCluoudletLable
-                                                style={{
-                                                    marginLeft: 4,
-                                                    marginRight: 15,
-                                                    marginBottom: 0
-                                                }}>{item.cluster}
-                                                {` [`}{item.cloudlet}]
+                                        {/*desc: ##############*/}
+                                        {/*desc: circle area   */}
+                                        {/*desc: ##############*/}
+                                        <div style={{
+                                            backgroundColor: this.state.chartColorList[index],
+                                            width: 15,
+                                            height: 15,
+                                            borderRadius: 50,
+                                            marginTop: 2,
+                                        }}>
+                                        </div>
+                                        <ClusterCluoudletLable
+                                            style={{
+                                                marginLeft: 4,
+                                                marginRight: 15,
+                                                marginBottom: 0
+                                            }}>{item.cluster}
+                                            {` [`}{item.cloudlet}]
 
-                                            </ClusterCluoudletLable>
-                                        </Center2>
-                                    )
-                                })}
-                            </div>
-                            : !this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST &&
-                            <div style={{
-                                display: 'flex',
-                                flex: 1,
-                                justifyContent: 'center',
-                                marginLeft: 0,
-                                backgroundColor: 'transparent',
-                                marginTop: 3,
-                            }}>
-                                <div style={{backgroundColor: 'transparent'}}>
-                                    <div style={{
-                                        backgroundColor: this.state.chartColorList[0],
-                                        width: 15,
-                                        height: 15,
-                                        borderRadius: 50,
-                                        marginTop: 0
-                                    }}>
-                                    </div>
+                                        </ClusterCluoudletLable>
+                                    </Center2>
+                                )
+                            })}
+                        </div>
+                        : !this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST &&
+                        <div style={{
+                            display: 'flex',
+                            flex: 1,
+                            justifyContent: 'center',
+                            marginLeft: 0,
+                            backgroundColor: 'transparent',
+                            marginTop: 3,
+                        }}>
+                            <div style={{backgroundColor: 'transparent'}}>
+                                <div style={{
+                                    backgroundColor: this.state.chartColorList[0],
+                                    width: 15,
+                                    height: 15,
+                                    borderRadius: 50,
+                                    marginTop: 0
+                                }}>
                                 </div>
-                                <ClusterCluoudletLable
-                                    style={{marginLeft: 5, marginRight: 15, marginBottom: 0}}>
-                                    {this.state.currentAppInst.split("|")[0]}
-                                </ClusterCluoudletLable>
                             </div>
-                        }
-
-                    </div>
+                            <ClusterCluoudletLable
+                                style={{marginLeft: 5, marginRight: 15, marginBottom: 0}}>
+                                {this.state.currentAppInst.split("|")[0]}
+                            </ClusterCluoudletLable>
+                        </div>
+                    }
                 </Legend>
             )
         }

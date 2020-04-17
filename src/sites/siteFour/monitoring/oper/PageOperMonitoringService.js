@@ -1,10 +1,11 @@
 import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX} from "../../../../shared/Constants";
 import React from "react";
 import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
-import {numberWithCommas, renderBarChartCore, renderLineChartCore, renderPlaceHolderCircular, renderUsageByType2, sortUsageListByType, PageMonitoringStyles} from "../PageMonitoringCommonService";
+import {renderBarChartCore, renderLineChartCore, renderPlaceHolderCircular, renderUsageByType2, sortUsageListByType, PageMonitoringStyles} from "../PageMonitoringCommonService";
 import PageOperMonitoring from "./PageOperMonitoring";
 import {Table} from "semantic-ui-react";
 import {Progress} from "antd";
+import {numberWithCommas} from "../PageMonitoringUtils";
 
 export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
     console.log('renderBarGraph2===>', usageList);
@@ -155,7 +156,6 @@ export const renderBottomGridAreaForCloudlet = (_this: PageOperMonitoring) => {
                                                   percent={(item.sumMemUsage / _this.state.maxMem * 100)}
                                                   strokeColor={'#29a1ff'} status={'normal'}/>
                                     </div>
-
                                 </div>
                             </Table.Cell>
                             <Table.Cell>

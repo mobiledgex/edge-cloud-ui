@@ -3,11 +3,12 @@ import '../PageMonitoring.css';
 import {APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, CLASSIFICATION, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX_FOR_CLUSTER} from "../../../../shared/Constants";
 import BubbleChart from "../../../../components/BubbleChart";
 import PageDevMonitoring from "./PageDevMonitoring";
-import {convertByteToMegaByte, convertByteToMegaGigaByte, numberWithCommas, PageMonitoringStyles, renderUsageByType, showToast} from "../PageMonitoringCommonService";
+import {convertByteToMegaByte, convertByteToMegaGigaByte, PageMonitoringStyles, renderUsageByType, showToast} from "../PageMonitoringCommonService";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
 import {CircularProgress, createMuiTheme} from "@material-ui/core";
 import {reactLocalStorage} from "reactjs-localstorage";
+import {numberWithCommas} from "../PageMonitoringUtils";
 
 export const materialUiDarkTheme = createMuiTheme({
     palette: {
@@ -1055,7 +1056,8 @@ export const renderSmallProgress = () => {
 
 
 export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: string, _this) => {
-    pUsageList = sortUsageListByTypeForCluster(pUsageList, hardwareType);
+    //@desc : sort by type
+    //pUsageList = sortUsageListByTypeForCluster(pUsageList, hardwareType);
 
     if (pUsageList.length === 0) {
         return "";
@@ -1326,17 +1328,18 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
             }
         },
         legend: {
-            display: false,//@todo:리전드display
+            display: isBig ? true : false,//@todo:리전드display
             position: 'top',
             labels: {
                 boxWidth: 10,
-                fontColor: 'white'
+                fontColor: 'white',
+                fontSize: 12,
+                fontFamily: 'ubuntu',
+                fontWeight: 'bold',
             },//@todo: lineChart 리전드 클릭 이벤트.
             onClick: (e, clickedItem) => {
-
-                let selectedClusterOne = clickedItem.text.toString().replace('\n', "|");
-                handleLegendAndBubbleClickedEvent(_this, selectedClusterOne, lineChartDataSet)
-
+                /*let selectedClusterOne = clickedItem.text.toString().replace('\n', "|");
+                handleLegendAndBubbleClickedEvent(_this, selectedClusterOne, lineChartDataSet)*/
             },
             onHover: (e, item) => {
                 //alert(`Item with text ${item.text} and index ${item.index} hovered`)
@@ -1398,13 +1401,13 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     padding: 10,
                     labelOffset: 0,
                     callback(value, index, label) {
-                        if (isBig) {
-                            return value
-                        } else {
-                            if (index % 2 === 0) return '';
-                            return value;
-                        }
-                        //return value;
+                        /*  if (isBig) {
+                              return value
+                          } else {
+                              if (index % 2 === 0) return '';
+                              return value;
+                          }*/
+                        return value;
                     },
                 },
                 beginAtZero: false,
@@ -1418,7 +1421,8 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
         },//scales
         onClick: function (c, i) {
             if (i.length > 0) {
-                console.log('onClick===>', i);
+
+
             }
 
         }
@@ -1719,41 +1723,42 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
  */
 export const makeTop5GradientLineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring, isGradientColor = false, hwType) => {
 
-
     const lineChartData = (canvas) => {
 
         let gradientList = makeGradientColorList(canvas, 250, _this.state.chartColorList);
         let finalSeriesDataSets = [];
         for (let index in usageSetList) {
             //@todo: extract top5
-            if (index < 5) {
-                let datasetsOne = {
-                    label: levelTypeNameList[index],
-                    radius: 0,
-                    borderWidth: 3,//todo:라인 두께
-                    fill: isGradientColor,// @desc:fill@desc:fill@desc:fill@desc:fill
-                    backgroundColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
-                    borderColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
-                    lineTension: 0.5,
-                    data: usageSetList[index],
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    borderDashOffset: 0.0,
-                    borderJoinStyle: 'miter',
-                    pointBorderColor: _this.state.chartColorList[index],
-                    pointBackgroundColor: _this.state.chartColorList[index],
-                    pointBorderWidth: 1,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: _this.state.chartColorList[index],
-                    pointHoverBorderColor: _this.state.chartColorList[index],
-                    pointHoverBorderWidth: 2,
-                    pointRadius: 1,
-                    pointHitRadius: 10,
+            /*if (index < 5) {
+            }*/
 
-                };
+            let datasetsOne = {
+                label: levelTypeNameList[index],
+                radius: 0,
+                borderWidth: 3,//todo:라인 두께
+                fill: isGradientColor,// @desc:fill@desc:fill@desc:fill@desc:fill
+                backgroundColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
+                borderColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
+                lineTension: 0.5,
+                data: usageSetList[index],
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: _this.state.chartColorList[index],
+                pointBackgroundColor: _this.state.chartColorList[index],
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: _this.state.chartColorList[index],
+                pointHoverBorderColor: _this.state.chartColorList[index],
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                order: index,
 
-                finalSeriesDataSets.push(datasetsOne)
-            }
+            };
+
+            finalSeriesDataSets.push(datasetsOne)
 
 
         }

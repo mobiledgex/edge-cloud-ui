@@ -305,8 +305,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
 
                                     await this.props.parent.addGridItem(this.state.currentHwType, this.state.currentItemType);
                                     this.closePopupWindow();
-                                    showToast('added Item!! [' + this.state.currentHwType + "]")
-
+                                    //showToast('added Item!! [' + this.state.currentHwType + "]")
 
                                 }}
                             >Add

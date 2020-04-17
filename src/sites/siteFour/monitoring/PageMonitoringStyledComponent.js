@@ -59,7 +59,26 @@ export const Legend = styled.div`
   //margin-top: 10px;
   margin-left: 10px;
   margin-right: 10px;
-  height: 25px;
+  height: 50px;
+  //marginLeft:50px;
+`;
+
+export const Legend2 = styled.div`
+  display : flex;
+  justify-content: flex-start;
+  text-align: center;
+  flex-direction: row;
+  align-self: center;
+  font-size: 13px;
+  border-width: 0.1px;
+  border-style: dotted;
+  border-color: dimgrey;
+  padding:5px;
+  //margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  height: 50px;
+  flex-wrap: wrap;
   //marginLeft:50px;
 `;
 

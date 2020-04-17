@@ -108,13 +108,29 @@ export default class BubbleChart extends Component {
         }
 
         if (this.props.themeTitle === THEME_OPTIONS.APPLE) {
-            let appleColors = '0A84FF30D158FF453AFF9F0AFF375F00FFFF0080800000FF000080FF00FF800080800000808080808000'
-            colorCodes = appleColors;
+            let _color = '0A84FF30D158FF453AFF9F0AFF375F00FFFF0080800000FF000080FF00FF800080800000808080808000'
+            colorCodes = _color;
+        }
+
+        if (this.props.themeTitle === THEME_OPTIONS.EXOTIC_ORCHIDS) {
+            let _color = '72a2c000743ff2a104192e5b1d65a666D9EF27282275715E'
+            colorCodes = _color;
+        }
+
+        if (this.props.themeTitle === THEME_OPTIONS.URBAN_SKYLINE) {
+            let _color = '522E757e7d7b52591FA3765D714E3D66D9EF27282275715E'
+            colorCodes = _color;
+        }
+
+        if (this.props.themeTitle === THEME_OPTIONS.BERRIES_GALORE) {
+            let _color = '777CA8BB1924EE6C81F092A5AFBADC66D9EF27282275715E'
+            colorCodes = _color;
         }
 
 
-//const color = d3.scaleOrdinal(colors("6097326EDC1269BA27527536405330"));//green
+
         const color = d3.scaleOrdinal(colors(colorCodes));//green
+        console.log("scaleOrdinal===>", color);
 
 
         const pack = d3.pack()
@@ -138,6 +154,7 @@ export default class BubbleChart extends Component {
                     d.fullLabel = d.data.fullLabel;
                     d.cluster_cloudlet = d.data.cluster_cloudlet;
                     d.index = d.data.index;
+                    d.color = d.data.color;
                 }
             });
 
@@ -202,7 +219,7 @@ export default class BubbleChart extends Component {
                 return d.r - (d.r * .04);
             })
             .style("fill", function (d) {
-                return d.data.color ? d.data.color : color(nodes.indexOf(d));
+                return d.data.color //? d.data.color : color(nodes.indexOf(d));
             })
             .style("z-index", 1)
             .on('mouseover', function (d) {
@@ -315,9 +332,10 @@ export default class BubbleChart extends Component {
             });
 
 
+        //@desc: tooltip
         node.append("title")
             .text(function (d) {
-                return d.label; //@todo: cluster name
+                return d.fullLabel; //@todo: cluster name
             });
     }
 

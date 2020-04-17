@@ -14,7 +14,6 @@ import {TypeAppInstance} from "../../../../shared/Types";
 import PageAdminMonitoring from "./PageAdminMonitoring";
 import {
     convertByteToMegaByte,
-    numberWithCommas,
     renderBarChartCore,
     renderLineChartCore,
     renderUsageByType2,
@@ -25,6 +24,7 @@ import {TabPanel, Tabs} from "react-tabs";
 import {Table} from "semantic-ui-react";
 import type {TypeAppInstanceUsage2, TypeGridInstanceList} from "../../../../shared/Types";
 import {Progress} from "antd";
+import {numberWithCommas} from "../PageMonitoringUtils";
 
 export const cutArrayList = (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];

@@ -1,6 +1,5 @@
-import {convertByteToMegaByte} from "../sites/siteFour/monitoring/PageMonitoringCommonService";
-
-export const RECENT_DATA_LIMIT_COUNT = 50
+//export const RECENT_DATA_LIMIT_COUNT = 50
+export const RECENT_DATA_LIMIT_COUNT = 10
 
 export const API_ENDPOINT_PREFIX = '/api/v1/';
 export const BORDER_CHART_COLOR_LIST = ["#70001C", "#FF5E1D", "#E3DC39", "#128702", "#1C22FF", '#66D9EF', '#272822', '#75715E',]
@@ -13,6 +12,14 @@ export const CHART_COLOR_LIST4 = ['#FF0000', '#FFBDAA', '#D4826A', '#802D15', '#
 
 export const CHART_COLOR_MONOKAI = ['#F92672', '#FD971F', '#A6E22E', '#E6DB74', '#A6E22E', '#66D9EF', '#272822', '#75715E',]
 export const CHART_COLOR_APPLE = ['#0A84FF', '#30D158', '#FF453A', '#FF9F0A', '#FF375F', '#66D9EF', '#272822', '#75715E',]
+
+
+export const CHART_COLOR_EXOTIC_ORCHIDS = ['#72a2c0', '#00743f', '#f2a104', '#192e5b', '#1d65a6', '#66D9EF', '#272822', '#75715E',]
+
+
+export const CHART_COLOR_URBAN_SKYLINE = ['#522E75', '#7e7d7b', '#52591F', '#A3765D', '#714E3D', '#66D9EF', '#272822', '#75715E']
+
+export const CHART_COLOR_BERRIES_GALORE = ['#777CA8', '#BB1924', '#EE6C81', '#F092A5', '#AFBADC', '#66D9EF', '#272822', '#75715E']
 
 export const CHART_COLOR_LIST5 = ['#609732', '#6EDC12', '#69BA27', '#527536', '#405330']
 export const CHART_COLOR_LIST6 = ['#AA5939', '#F75514', '#D15A2B', '#83513C', '#5D4136']
@@ -39,6 +46,9 @@ export const THEME_OPTIONS = {
     RED: 'RED',
     MONOKAI: 'MONOKAI',
     APPLE: 'APPLE',
+    EXOTIC_ORCHIDS: 'EXOTIC_ORCHIDS',
+    URBAN_SKYLINE: 'URBAN_SKYLINE',
+    BERRIES_GALORE: 'BERRIES_GALORE'
 }
 
 export const THEME_OPTIONS_LIST = [
@@ -48,7 +58,10 @@ export const THEME_OPTIONS_LIST = [
     {value: 'RED', text: 'RED'},
     {value: 'MONOKAI', text: 'MONOKAI'},
     {value: 'APPLE', text: 'APPLE'},
-    //CHART_COLOR_APPLE
+    {value: 'EXOTIC_ORCHIDS', text: 'EXOTIC ORCHIDS'},
+    {value: 'URBAN_SKYLINE', text: 'URBAN SKYLINE'},
+    {value: 'BERRIES_GALORE', text: 'BERRIES GALORE'},
+
 ]
 
 export const ITEM_TYPE = [
@@ -57,8 +70,6 @@ export const ITEM_TYPE = [
     {text: 'COLUMN_CHART', value: 'COLUMN_CHART'},
     {text: 'EVENT_LOG', value: 'EVENT_LOG'},
     {text: 'MAP', value: 'MAP'},
-
-    //CHART_COLOR_APPLE
 ]
 
 
