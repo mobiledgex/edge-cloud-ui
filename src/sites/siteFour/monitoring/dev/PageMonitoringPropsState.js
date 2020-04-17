@@ -193,8 +193,6 @@ export const PageDevMonitoringMapDispatchToProps = (dispatch) => {
         }
     };
 };
-
-
 export const CustomSwitch = withStyles({
     switchBase: {
         color: '#D32F2F',
@@ -208,6 +206,7 @@ export const CustomSwitch = withStyles({
     checked: {},
     track: {},
 })(Switch);
+
 export const ColorLinearProgress = withStyles({
     colorPrimary: {
         backgroundColor: 'rgb(50,44,51)',
