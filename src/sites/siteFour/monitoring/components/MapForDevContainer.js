@@ -202,7 +202,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 let newClientList = []
                 clientList.map((item: TypeClient, index) => {
                     let clientLocation = parseFloat(item.latitude).toFixed(3).toString() + parseFloat(item.longitude).toFixed(2).toString();
-                    console.log("clientLocation====>", clientLocation);
                     item.clientLocation = clientLocation;
                     newClientList.push(item);
                 })
@@ -268,8 +267,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 arrIsShowCloudlet: arrIsShowCloudlet,
                 appInstanceListGroupByCloudlet: pAppInstanceListGroupByCloudlet,
             }, () => {
-                console.log('newCloudLetLocationList===>', this.state.newCloudLetLocationList);
-
                 //@desc: Move the center of the map to the center of the item.
                 if (newCloudLetLocationList[0] !== undefined) {
                     this.setState({
@@ -423,8 +420,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     return (
                                         <MarkerClusterGroup>
                                             {groupedClientList[objkeyOne].map((item, index) => {
-                                                console.log("groupedClientList====>", item)
-
                                                 return (
                                                     <React.Fragment>
                                                         <Marker
