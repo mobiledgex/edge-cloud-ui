@@ -86,7 +86,7 @@ export const multiDataRequest = (keys, mcRequestList) => {
         if (appInst[fields.appName] === app[fields.appName] && appInst[fields.version] === app[fields.version] && appInst[fields.organizationName] === app[fields.organizationName]) {
           appInst[fields.deployment] = app[fields.deployment];
           appInst[fields.accessType] = app[fields.accessType];
-          appInst[fields.updateAvailable] = appInst[fields.revision] < app[fields.revision];
+          appInst[fields.updateAvailable] = String(appInst[fields.revision]) !== String(app[fields.revision]);
           break;
         }
       }
@@ -155,7 +155,7 @@ export const streamAppInst = (data) => {
 const customData = (value) => {
   value[fields.liveness] = constant.liveness(value[fields.liveness])
   value[fields.ipAccess] = value[fields.ipAccess] ? constant.IPAccessLabel(value[fields.ipAccess]) : undefined
-  value[fields.revision] = value[fields.revision] ? value[fields.revision] : 0
+  value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
 }
 
 export const getData = (response, body) => {

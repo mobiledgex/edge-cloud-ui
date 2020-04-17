@@ -163,7 +163,7 @@ export const deleteApp = (data) => {
 const customData = (value) => {
     value[fields.accessType] = constant.accessType(value[fields.accessType])
     value[fields.imageType] = constant.imageType(value[fields.imageType])
-    value[fields.revision] = value[fields.revision] ? value[fields.revision] : 0
+    value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
     if(value[fields.configs])
     {
         let configs = value[fields.configs]
