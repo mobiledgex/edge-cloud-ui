@@ -1152,6 +1152,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     })
                 }
 
+                if (themeTitle === THEME_OPTIONS.BRIGHT_AND_ENERGETIC) {
+                    await this.setState({
+                        chartColorList: CHART_COLOR_BRIGHT_AND_ENERGETIC
+                    })
+                }
+
                 if (themeTitle === THEME_OPTIONS.JAZZ_NIGHT) {
                     await this.setState({
                         chartColorList: CHART_COLOR_JAZZ_NIGHT
