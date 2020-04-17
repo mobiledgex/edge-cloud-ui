@@ -5,7 +5,6 @@ import {Line} from 'react-chartjs-2';
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import type {TypeLineChartData2} from "../../../../shared/Types";
 import {lineGraphOptions} from "../../../../shared/Constants";
-import {Legend} from "../PageMonitoringStyledComponent";
 
 type Props = {
     modalIsOpen: boolean,

@@ -1,5 +1,4 @@
 // @flow
-import Ripples from "react-ripples";
 import * as React from 'react';
 import {useEffect} from 'react';
 import Paper from "@material-ui/core/Paper";
@@ -9,31 +8,15 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
-import {Progress} from "antd";
-import {withStyles} from "@material-ui/core";
+import {Progress, Tooltip} from "antd";
 import '../PageMonitoring.css'
 import {handleLegendAndBubbleClickedEvent, makeLineChartDataForCluster} from "../dev/PageDevMonitoringService";
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
-import {Tooltip} from 'antd'
 import {numberWithCommas} from "../PageMonitoringUtils";
 
 type Props = {
     filteredUsageList: any,
 };
-const CustomTableRow = withStyles({
-    root: {
-        margin: 0,
-        padding: 0,
-    },
-    body: {
-        margin: 0,
-        padding: 0,
-    },
-    sizeSmall: {
-        margin: 0,
-        padding: 0,
-    }
-})(TableRow);
 
 function getWindowDimensions() {
     const {innerWidth: width, innerHeight: height} = window;

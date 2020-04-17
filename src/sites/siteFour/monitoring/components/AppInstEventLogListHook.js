@@ -9,15 +9,11 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import Table from "@material-ui/core/Table";
 import '../PageMonitoring.css'
-
-const {Row, Cell, Body, Header, HeaderCell} = Table
 type Props = {
     eventLogList: any,
     columnList: any,
     parent: PageDevMonitoring,
 };
-
-
 
 function getWindowDimensions() {
     const {innerWidth: width, innerHeight: height} = window;
