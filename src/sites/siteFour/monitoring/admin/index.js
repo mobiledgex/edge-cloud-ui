@@ -34,7 +34,7 @@ class MonitoringAdmin extends React.Component {
                 <MonitoringLayout
                     initialLayout={generateLayout(this.props.size)}
                     sizeInfo={this.props.size}
-                    items={generateComponent(this.props.size)}
+                    items={generateComponentAdmin(this.props.size)}
                 ></MonitoringLayout>
             </div>
         );
@@ -78,7 +78,47 @@ const generatWidget = info => (
         size={info.sizeInfo}
     />
 );
-const generateComponent = sizeInfo => {
+const generateComponentAdmin = sizeInfo => {
+    return [
+        generatWidget({
+            url: "https://test1",
+            chartType: "counter",
+            type: "",
+            sizeInfo: sizeInfo
+        }),
+        generatWidget({
+            url: "https://test2",
+            chartType: "timeseries",
+            type: "scatter",
+            sizeInfo: sizeInfo
+        }),
+        generatWidget({
+            url: "https://test3",
+            chartType: "map",
+            type: "scatter",
+            sizeInfo: sizeInfo
+        }),
+        generatWidget({
+            url: "https://test4",
+            chartType: "timeseries",
+            type: "scatter",
+            sizeInfo: sizeInfo
+        }),
+        generatWidget({
+            url: "https://test5",
+            chartType: "timeseries",
+            type: "bar",
+            sizeInfo: sizeInfo
+        }),
+        generatWidget({
+            url: "https://test6",
+            chartType: "table",
+            type: "",
+            sizeInfo: sizeInfo
+        })
+    ];
+};
+const generateComponentOperator = sizeInfo => {
     return [
         generatWidget({
             url: "https://test1",
