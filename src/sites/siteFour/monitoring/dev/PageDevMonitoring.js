@@ -718,19 +718,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
         setClusterInterval() {
             this.intervalForCluster = setInterval(async () => {
-                this.setState({
-                    intervalLoading: true,
-                })
+                this.setState({intervalLoading: true})
 
-                console.log("filteredClusterList===>", this.state.filteredClusterList);
                 let filteredClusterUsageList = await getClusterLevelUsageList(this.state.filteredClusterList, "*", RECENT_DATA_LIMIT_COUNT);
-                console.log("filteredClusterList===>", filteredClusterUsageList);
-
-                ///////////////////////////////////////////////////////////////
-                //@desc: setData for bigModalChart Start
-                ///////////////////////////////////////////////////////////////
                 this.setChartDataForBigModal(filteredClusterUsageList)
-
                 this.setState({
                     intervalLoading: false,
                     filteredClusterUsageList: filteredClusterUsageList,
@@ -740,10 +731,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
 
         setAppInstInterval(filteredAppList) {
             this.intervalForAppInst = setInterval(async () => {
-                this.setState({
-                    intervalLoading: true,
-                })
-
+                this.setState({intervalLoading: true,})
                 let allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT);
 
                 this.setChartDataForBigModal(allAppInstUsageList)
@@ -1532,73 +1520,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                                 </AMenu.Item>
                             )
                         })}
-
-                        {/* <AMenu.Item
-                            key="2"
-                            onClick={async () => {
-                                await this.setState({
-                                    themeTitle: THEME_OPTIONS.GREEN
-                                })
-                                await this.handleThemeChanges(this.state.themeTitle)
-                            }}
-                        >
-                            GREEN
-                        </AMenu.Item>
-                        <AMenu.Item
-                            key="3"
-                            onClick={async () => {
-                                await this.setState({
-                                    themeTitle: THEME_OPTIONS.BLUE
-                                })
-                                await this.handleThemeChanges(this.state.themeTitle)
-                            }}
-                        >
-                            BLUE
-                        </AMenu.Item>
-                        <AMenu.Item
-                            key="4"
-                            onClick={async () => {
-                                await this.setState({
-                                    themeTitle: THEME_OPTIONS.RED
-                                })
-                                await this.handleThemeChanges(this.state.themeTitle)
-                            }}
-                        >
-                            RED
-                        </AMenu.Item>
-                        <AMenu.Item
-                            key="5"
-                            onClick={async () => {
-                                await this.setState({
-                                    themeTitle: THEME_OPTIONS.MONOKAI
-                                })
-                                await this.handleThemeChanges(this.state.themeTitle)
-                            }}
-                        >
-                            MONOKAI
-                        </AMenu.Item>
-                        <AMenu.Item
-                            key="5"
-                            onClick={async (value) => {
-                                await this.setState({
-                                    themeTitle: THEME_OPTIONS.APPLE
-                                })
-                                await this.handleThemeChanges(this.state.themeTitle)
-                            }}
-                        >
-                            APPLE
-                        </AMenu.Item>
-                        <AMenu.Item
-                            key="5"
-                            onClick={async (value) => {
-                                await this.setState({
-                                    themeTitle: THEME_OPTIONS.EXOTIC_ORCHIDS
-                                })
-                                await this.handleThemeChanges(this.state.themeTitle)
-                            }}
-                        >
-                            EXOTIC_ORCHIDS
-                        </AMenu.Item>*/}
                     </ASubMenu>
                     {/*desc: ######################*/}
                     {/*desc: ShowAppInstClient             */}
@@ -1836,14 +1757,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
         }
 
         async filterClusterList(value) {
-            console.log("selectedClusterList..DropdownclusterList==1=>", value.trim());
 
             let selectedCluster = value.split('|')[0].trim()
             let selectedCloudlet = value.split('|')[1].trim()
-
-            console.log("selectedClusterList..DropdownclusterList==2=>", this.state.clusterList);
             let allClusterList = this.state.clusterList
-
             let selectedClusterList = []
             allClusterList.filter(item => {
                 if (item.ClusterName === selectedCluster && item.Cloudlet === selectedCloudlet) {
@@ -1851,7 +1768,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 }
             })
 
-            console.log("selectedClusterList===>", selectedClusterList);
             await this.setState({
                 filteredClusterList: selectedClusterList,
             })
@@ -1944,11 +1860,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                         width: '100%',
                         //backgroundColor: 'red'
                     }}>
-                        {/*  <CircularProgress
-                                style={{fontWeight: 'bold', color: '#1cecff'}}
-                                color='#1cecff'
-                                size={15}
-                            />*/}
                         <ColorLinearProgress
                             variant={'query'}
                             style={{
