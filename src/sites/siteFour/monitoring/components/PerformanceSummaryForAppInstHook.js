@@ -40,7 +40,7 @@ export default function PerformanceSummaryForAppInstHook(props) {
                          //backgroundColor:'red'
                      }}
                 >
-                    {props.parent.state.currentClassification} Performance Summary
+                    App Inst. Performance Summary
                 </div>
             </div>
             <TableContainer
