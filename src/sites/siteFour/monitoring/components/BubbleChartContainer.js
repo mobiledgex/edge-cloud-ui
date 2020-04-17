@@ -146,8 +146,6 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                                         try {
                                                             let bubbleChartData = makeBubbleChartDataForCluster(this.props.parent.state.filteredClusterUsageList, value, this.props.parent.state.chartColorList);
 
-
-
                                                             this.props.parent.setState({
                                                                 bubbleChartData: bubbleChartData,
                                                                 currentHardwareType: value,

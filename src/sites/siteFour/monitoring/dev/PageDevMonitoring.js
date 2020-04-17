@@ -626,7 +626,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
                 appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
             })
             //todo: reset bubble chart data
-            let bubbleChartData = await makeBubbleChartDataForCluster(this.state.allClusterUsageList, HARDWARE_TYPE.CPU,  this.state.chartColorList);
+            let bubbleChartData = await makeBubbleChartDataForCluster(this.state.allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
             await this.setState({
                 bubbleChartData: bubbleChartData,
                 dropdownRequestLoading: false,
@@ -1443,9 +1443,16 @@ export default connect(mapStateToProps, mapDispatchToProps)(sizeMe({monitorHeigh
             let selectedChartColorList = this.state.chartColorList;
             reactLocalStorage.setObject(getUserId() + "_mon_theme", selectedChartColorList)
             reactLocalStorage.set(getUserId() + "_mon_theme_title", themeTitle)
-            await this.setState({
+            this.setState({
                 chartColorList: selectedChartColorList,
+            }, async () => {
+
+                this.setState({
+                    bubbleChartData: await makeBubbleChartDataForCluster(this.state.filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList),
+                })
             })
+
+
         }
 
 
