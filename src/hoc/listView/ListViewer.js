@@ -19,7 +19,8 @@ import ListIcon from '@material-ui/icons/List';
 import { fields } from '../../services/model/format';
 import {Popper, Grow, Paper, ClickAwayListener, MenuList, MenuItem} from '@material-ui/core';
 import { getUserRole } from '../../services/model/format';
-import { Icon } from 'semantic-ui-react';
+import MaterialIcon from 'material-icons-react';
+import Icon from '@material-ui/core/Icon';
 
 
 const StyledTableRow = withStyles((theme) => ({
@@ -164,7 +165,7 @@ const EnhancedTableToolbar = (props) => {
                         return (
                             <Tooltip key={i} title={actionMenu.label}>
                                 <IconButton aria-label={actionMenu.label} onClick={() => { props.groupActionClose(actionMenu) }}>
-                                    <Icon color={actionMenu.color} name={actionMenu.icon} />
+                                    <i class={actionMenu.icon} aria-hidden="true"></i>
                                 </IconButton>
                             </Tooltip>)
                     }) : null
