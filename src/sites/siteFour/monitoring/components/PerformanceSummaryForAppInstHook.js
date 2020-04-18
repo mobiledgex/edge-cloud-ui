@@ -92,6 +92,7 @@ export default function PerformanceSummaryForAppInstHook(props) {
                         {props.filteredUsageList !== undefined && props.filteredUsageList.map((item, index) => {
                             return (
                                 <TableRow
+                                    key={index}
                                     style={{
                                         backgroundColor: index % 2 === 0 ? '#1e2025' : '#23252c',
                                         color: 'grey',

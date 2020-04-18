@@ -8,27 +8,53 @@ import {connect} from 'react-redux';
 import {CircularProgress, Toolbar} from '@material-ui/core'
 import {Dropdown as ADropdown, Menu as AMenu,} from 'antd';
 import {
-    defaultHwMapperListForCluster, defaultLayoutForAppInst, defaultLayoutForCluster, defaultLayoutMapperForAppInst, filterByClassification,
-    getUserId, makeBarChartDataForAppInst, makeBarChartDataForCluster, makeDropdownListWithValuePipeForAppInst, makeGradientColorList2,
-    makeid, makeLineChartDataForAppInst, makeLineChartDataForBigModal, makeLineChartDataForCluster,
-    makeSelectBoxListWithKeyValuePipeForCluster, makeSelectBoxListWithValuePipe, revertToDefaultLayout,
+    defaultHwMapperListForCluster,
+    defaultLayoutForAppInst,
+    defaultLayoutForCluster,
+    defaultLayoutMapperForAppInst,
+    filterByClassification,
+    getUserId,
+    makeBarChartDataForAppInst,
+    makeBarChartDataForCluster,
+    makeDropdownListWithValuePipeForAppInst,
+    makeGradientColorList2,
+    makeid,
+    makeLineChartDataForAppInst,
+    makeLineChartDataForBigModal,
+    makeLineChartDataForCluster,
+    makeSelectBoxListWithKeyValuePipeForCluster,
+    makeSelectBoxListWithValuePipe,
+    revertToDefaultLayout,
 } from "./PageDevMonitoringService";
 import {
-    ADD_ITEM_LIST, CHART_COLOR_APPLE, CHART_COLOR_BERRIES_GALORE, CHART_COLOR_BRIGHT_AND_ENERGETIC, CHART_COLOR_EARTHY_AND_NATURAL, CHART_COLOR_EXOTIC_ORCHIDS, CHART_COLOR_JAZZ_NIGHT, CHART_COLOR_LIST, CHART_COLOR_LIST2,
-    CHART_COLOR_LIST3, CHART_COLOR_LIST4, CHART_COLOR_MONOKAI, CHART_COLOR_URBAN_SKYLINE, CLASSIFICATION, GRID_ITEM_TYPE,
-    HARDWARE_OPTIONS_FOR_APPINST, HARDWARE_OPTIONS_FOR_CLUSTER, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, THEME_OPTIONS,
+    ADD_ITEM_LIST,
+    CHART_COLOR_APPLE,
+    CHART_COLOR_BERRIES_GALORE,
+    CHART_COLOR_BRIGHT_AND_ENERGETIC,
+    CHART_COLOR_EARTHY_AND_NATURAL,
+    CHART_COLOR_EXOTIC_ORCHIDS,
+    CHART_COLOR_JAZZ_NIGHT,
+    CHART_COLOR_LIST,
+    CHART_COLOR_LIST2,
+    CHART_COLOR_LIST3,
+    CHART_COLOR_LIST4,
+    CHART_COLOR_MONOKAI,
+    CHART_COLOR_URBAN_SKYLINE,
+    CLASSIFICATION,
+    GRID_ITEM_TYPE,
+    HARDWARE_OPTIONS_FOR_APPINST,
+    HARDWARE_OPTIONS_FOR_CLUSTER,
+    HARDWARE_TYPE,
+    NETWORK_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    THEME_OPTIONS,
     THEME_OPTIONS_LIST
 } from "../../../../shared/Constants";
 import type {TypeBarChartData, TypeLineChartData} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
-import {
-    getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, PageMonitoringStyles, renderPlaceHolderCircular, renderWifiLoader, showToast
-} from "../PageMonitoringCommonService";
-import {
-    getAllAppInstEventLogs, getAllClusterEventLogList, getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList,
-    requestShowAppInstClientWS
-} from "../PageMonitoringMetricService";
+import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, PageMonitoringStyles, renderPlaceHolderCircular, renderWifiLoader, showToast} from "../PageMonitoringCommonService";
+import {getAllAppInstEventLogs, getAllClusterEventLogList, getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList, requestShowAppInstClientWS} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import ModalGraph from "../components/MiniModalGraphContainer";
@@ -441,6 +467,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     barChartDataSet = []
                 }
 
+                console.log(`barChartDataSet___${graphType}===>`, barChartDataSet);
+
                 return (<BarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this}
                                            loading={this.state.loading} chartDataSet={barChartDataSet}
                                            pHardwareType={hwType} graphType={graphType}/>)
@@ -718,7 +746,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             async addGridItem(hwType, graphType = 'line') {
-
+                //@TODO: ##########################
+                //@TODO: CLUSTER
+                //@TODO: ##########################
                 if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
 
                     let currentItems = this.state.layoutForCluster;
@@ -750,8 +780,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     reactLocalStorage.setObject(getUserId() + "_layout_mapper", this.state.layoutMapperForCluster)
 
 
-                } else {//@TODO: APPINST LEVEL
-
+                } else {
+                    //@TODO: ##########################
+                    //@TODO: APPINST
+                    //@TODO: ##########################
                     let currentItems = this.state.layoutForAppInst;
                     let maxY = -1;
                     if (!isEmpty(currentItems)) {
@@ -1207,7 +1239,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Add Item
                             </div>
                         </AMenu.Item>
-                        <AMenu.Item style={{display: 'flex'}}
+                        {/*<AMenu.Item style={{display: 'flex'}}
                                     key="1"
                                     onClick={() => {
                                         this.setState({
@@ -1219,7 +1251,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <div style={PageMonitoringStyles.listItemTitle}>
                                 Add Item for test
                             </div>
-                        </AMenu.Item>
+                        </AMenu.Item>*/}
                         {/*desc:#########################################*/}
                         {/*desc:Reload                                  */}
                         {/*desc:#########################################*/}
