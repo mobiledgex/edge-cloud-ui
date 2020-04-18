@@ -58,7 +58,7 @@ const subView = (keys, dataList) => {
 
 const getRow = (id, item, data) => {
     return (
-        <TableRow key={id} verticalAlign='top'>
+        <TableRow key={id}>
             <TableCell style={{ borderBottom: "none" }}>{item.label}</TableCell>
             <TableCell style={{ borderBottom: "none" }}>
                 {item.dataType === constant.TYPE_JSON || item.dataType === constant.TYPE_JSON_NEW_LINE ?
@@ -72,7 +72,7 @@ const getRow = (id, item, data) => {
 const MexDetailViewer = (props) => {
     let detailData = props.detailData;
     return (
-        <Table celled style={{ width: '100%', backgroundColor: '#2A2C33', border: 'none'}}>
+        <Table style={{ width: '100%', backgroundColor: '#2A2C33', border: 'none'}}>
                 <TableBody>
                     {props.keys.map((item, i) => {
                         let data = detailData[item.field]

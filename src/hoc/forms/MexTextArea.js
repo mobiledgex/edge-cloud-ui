@@ -1,6 +1,6 @@
 import React from 'react'
 import { Icon, Popup, TextArea } from 'semantic-ui-react';
-const MexInput = (props) => {
+const MexTextArea = (props) => {
 
     let form = props.form
     let rules = form.rules
@@ -37,4 +37,4 @@ const MexInput = (props) => {
             : null
     )
 }
-export default MexInput
+export default MexTextArea
