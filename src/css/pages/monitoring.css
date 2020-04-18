@@ -884,6 +884,7 @@ page_monitoring_dashboard_dev {
 .page_monitoring_form_radio_label {
     display: flex;
     justify-content: center;
+    align-items: center;
     margin-top: 7px;
 }
 
