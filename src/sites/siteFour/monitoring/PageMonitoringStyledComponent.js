@@ -66,10 +66,19 @@ export const Legend = styled.div`
   //marginLeft:50px;
 `;
 
+/*const _Ripples = ({className, children}) => (
+    <Ripples
+        color='#00BCD4' during={500}
+    >
+        <ChartIconOuterDiv>
+            {children}
+        </ChartIconOuterDiv>
+    </Ripples>
+);
 
-export const ChartIconOuter = styled.div`
+export const ChartIconOuter = styled(_Ripples)`
   display : flex;
-  justify-content: flex-start;
+  justify-content: center;
   text-align: center;
   flex-direction: column;
   align-self: center;
@@ -80,6 +89,23 @@ export const ChartIconOuter = styled.div`
   border-color: dimgrey;
   padding: 10px 5px;
   height: 110px;
+  width: 140px;
+`;*/
+
+export const ChartIconOuterDiv = styled.div`
+  display : flex;
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
+  align-self: center;
+  font-size: 13px;
+  font-family: Ubuntu;
+  border-width: 0.5px;
+  border-style: solid;
+  border-color: dimgrey;
+  padding: 10px 5px;
+  height: 110px;
+  width: 150px;
 `;
 
 export const AppInstLegend = styled.div`
