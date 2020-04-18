@@ -114,6 +114,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                 value={this.state.currentItemType}
                             >
                                 <div className='page_monitoring_form_column_right'>
+                                    {/*todo:Line Chart Icon*/}
                                     <div>
                                         <div
                                             onClick={() => {
@@ -130,7 +131,8 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                             <Radio value={GRID_ITEM_TYPE.LINE}>Line Chart</Radio>
                                         </div>
                                     </div>
-                                    {/*todo:itemOne*/}
+                                    {/*todo:Bar Chart Icon*/}
+                                    {this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER &&
                                     <div>
                                         <div
                                             onClick={() => {
@@ -147,7 +149,9 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                             <Radio value={GRID_ITEM_TYPE.BAR}>Bar Chart</Radio>
                                         </div>
                                     </div>
-                                    {/*todo:itemOne*/}
+                                    }
+                                    {/*todo:Column Chart Icon*/}
+                                    {this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER &&
                                     <div>
                                         <div
                                             onClick={() => {
@@ -164,6 +168,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                             <Radio value={GRID_ITEM_TYPE.COLUMN}>Column Chart</Radio>
                                         </div>
                                     </div>
+                                    }
                                     {/*todo:######################################*/}
                                     {/*todo:APP_INST_EVENT_LOG*/}
                                     {/*todo:######################################*/}
