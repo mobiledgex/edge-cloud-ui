@@ -1817,8 +1817,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                      style={{
                                          //
                                          overflowY: 'auto',
-                                         height: 'calc(100% - 70px)',
-                                         marginBottom: 50,
+                                         height: 'calc(100% - 120px)',
+                                         //marginBottom: 100,
                                          backgroundColor: this.props.themeType === 'light' ? 'white' : null
                                      }}>
                                     {this.state.currentClassification === CLASSIFICATION.CLUSTER
