@@ -84,6 +84,14 @@ export const PageMonitoringStyles = {
         zIndex: 1,
         //height: '50px',
     },
+    dropDownForClusterCloudlet3: {
+        minWidth: '130px',
+        fontSize: '11px',
+        minHeight: '30px',
+        marginLeft:'-2px',
+        zIndex: 1,
+        //height: '50px',
+    },
     dropDownForClusterCloudlet2: {
         minWidth: '320px',
         fontSize: '11px',
@@ -117,7 +125,16 @@ export const PageMonitoringStyles = {
     },
     chartIcon: {
         width: 65,
-        height: 55
+        height: 65,
+    },
+    chartIconOuter: {
+        width: 130,
+        height: 85,
+        //backgroundColor: 'red',
+        display: 'flex',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        alignItems: 'center',
     },
     cell000: {
         marginLeft: 0,
