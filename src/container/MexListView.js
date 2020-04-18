@@ -139,7 +139,7 @@ class MexListView extends React.Component {
 
     onMultiResponse = (mcRequest)=>
     {
-        let data =mcRequest.request.orgData
+        let data = mcRequest.request.orgData
         this.props.handleLoadingSpinner(false)
         if (mcRequest) {
             let responseData = undefined;
