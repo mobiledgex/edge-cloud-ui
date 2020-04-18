@@ -6,7 +6,7 @@ import {PageMonitoringStyles} from "../PageMonitoringCommonService";
 import {CLASSIFICATION, EVENT_LOG_ITEM_LIST, GRID_ITEM_TYPE, HARDWARE_TYPE} from "../../../../shared/Constants";
 import {ReactSVG} from 'react-svg'
 import {CircularProgress} from "@material-ui/core";
-import {Center, ChartIconOuter} from "../PageMonitoringStyledComponent";
+import {Center, ChartIconOuterDiv} from "../PageMonitoringStyledComponent";
 import Button from "@material-ui/core/Button";
 
 const FA = require('react-fontawesome')
@@ -119,7 +119,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                     {/*todo:##################################*/}
                                     {/*todo:Line Chart Icon                   */}
                                     {/*todo:##################################*/}
-                                    <ChartIconOuter style={{backgroundColor: 'transparent'}}>
+                                    <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
                                         <div
                                             onClick={() => {
                                                 this.setState({
@@ -128,7 +128,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                                     isShowEventLog: false,
                                                 })
                                             }}
-                                            style={PageMonitoringStyles.chartIconOuter}
+                                            style={PageMonitoringStyles.ChartIconOuterDiv}
                                         >
                                             <Center>
                                                 <ReactSVG src={require('../images/chart/Line.svg')}
@@ -139,12 +139,12 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         <div className='page_monitoring_form_radio_label'>
                                             <Radio value={GRID_ITEM_TYPE.LINE}>Line Chart</Radio>
                                         </div>
-                                    </ChartIconOuter>
+                                    </ChartIconOuterDiv>
                                     {/*todo:##################################*/}
                                     {/*todo:Bar Chart Icon                    */}
                                     {/*todo:##################################*/}
                                     {this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER &&
-                                    <ChartIconOuter style={{backgroundColor: 'transparent'}}>
+                                    <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
                                         <div
                                             onClick={() => {
                                                 this.setState({
@@ -153,7 +153,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                                     isShowEventLog: false,
                                                 })
                                             }}
-                                            style={PageMonitoringStyles.chartIconOuter}
+                                            style={PageMonitoringStyles.ChartIconOuterDiv}
                                         >
                                             <Center>
                                                 <ReactSVG src={require('../images/chart/Bar.svg')}
@@ -164,13 +164,13 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         <div className='page_monitoring_form_radio_label'>
                                             <Radio value={GRID_ITEM_TYPE.BAR}>Bar Chart</Radio>
                                         </div>
-                                    </ChartIconOuter>
+                                    </ChartIconOuterDiv>
                                     }
                                     {/*todo:##################################*/}
                                     {/*todo:Column Chart Icon*/}
                                     {/*todo:##################################*/}
                                     {this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER &&
-                                    <ChartIconOuter style={{backgroundColor: 'transparent'}}>
+                                    <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
                                         <div
                                             onClick={() => {
                                                 this.setState({
@@ -179,7 +179,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                                     isShowEventLog: false,
                                                 })
                                             }}
-                                            style={PageMonitoringStyles.chartIconOuter}
+                                            style={PageMonitoringStyles.ChartIconOuterDiv}
                                         >
                                             <Center>
                                                 <ReactSVG src={require('../images/chart/Column.svg')}
@@ -190,12 +190,12 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         <div className='page_monitoring_form_radio_label'>
                                             <Radio value={GRID_ITEM_TYPE.COLUMN}>Column Chart</Radio>
                                         </div>
-                                    </ChartIconOuter>
+                                    </ChartIconOuterDiv>
                                     }
                                     {/*todo:######################################*/}
                                     {/*todo:APP_INST_EVENT_LOG*/}
                                     {/*todo:######################################*/}
-                                    <ChartIconOuter style={{backgroundColor: 'transparent'}}>
+                                    <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
                                         <div
                                             onClick={() => {
                                                 this.setState({
@@ -204,7 +204,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                                     isShowEventLog: true,
                                                 })
                                             }}
-                                            style={PageMonitoringStyles.chartIconOuter}
+                                            style={PageMonitoringStyles.ChartIconOuterDiv}
                                         >
                                             <Center>
                                                 <ReactSVG src={require('../images/chart/Grid.svg')}
@@ -215,11 +215,11 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         <div className='page_monitoring_form_radio_label'>
                                             <Radio value={GRID_ITEM_TYPE.APP_INST_EVENT_LOG}>Event Log</Radio>
                                         </div>
-                                    </ChartIconOuter>
+                                    </ChartIconOuterDiv>
                                     {/*desc:###############################*/}
                                     {/*desc:map         */}
                                     {/*desc:###############################*/}
-                                    <ChartIconOuter style={{backgroundColor: 'transparent'}}>
+                                    <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
                                         <div
                                             onClick={() => {
                                                 this.setState({
@@ -228,7 +228,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                                     isShowEventLog: false,
                                                 })
                                             }}
-                                            style={PageMonitoringStyles.chartIconOuter}
+                                            style={PageMonitoringStyles.ChartIconOuterDiv}
                                         >
                                             <Center>
                                                 <ReactSVG src={require('../images/chart/Map.svg')}
@@ -239,12 +239,12 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         <div className='page_monitoring_form_radio_label'>
                                             <Radio value={GRID_ITEM_TYPE.MAP}>Map</Radio>
                                         </div>
-                                    </ChartIconOuter>
+                                    </ChartIconOuterDiv>
 
                                     {/*desc:###############################*/}
                                     {/*desc: bubble                        */}
                                     {/*desc:###############################*/}
-                                    <ChartIconOuter style={{backgroundColor: 'transparent'}}>
+                                    <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
                                         <div
                                             onClick={() => {
                                                 this.setState({
@@ -253,7 +253,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                                     isShowEventLog: false,
                                                 })
                                             }}
-                                            style={PageMonitoringStyles.chartIconOuter}
+                                            style={PageMonitoringStyles.ChartIconOuterDiv}
                                         >
                                             <Center>
                                                 <ReactSVG src={require('../images/chart/Bubble.svg')}
@@ -264,7 +264,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         <div className='page_monitoring_form_radio_label'>
                                             <Radio value={GRID_ITEM_TYPE.BUBBLE}>Bubble Chart</Radio>
                                         </div>
-                                    </ChartIconOuter>
+                                    </ChartIconOuterDiv>
 
                                 </div>
                             </Radio.Group>
