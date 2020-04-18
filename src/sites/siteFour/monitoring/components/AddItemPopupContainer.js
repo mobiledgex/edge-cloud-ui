@@ -79,7 +79,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                     }}
                     closable={false}
                     bodyStyle={{
-                        height: window.innerHeight * 0.42,
+                        height: window.innerHeight * 0.41,
                         marginTop: 0,
                         marginLeft: 0,
                         backgroundColor: 'rgb(41, 44, 51)'
@@ -275,7 +275,9 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         {this.state.isShowHWDropDown && <div>
                             <div className='page_monitoring_form_row'>
                                 <div className='page_monitoring_form_column_left' style={{fontFamily: 'ubuntu'}}>
-                                    HW Type
+                                    <Center>
+                                        HW Type
+                                    </Center>
                                 </div>
                                 <div className='page_monitoring_form_column_right'>
                                     <Dropdown
@@ -298,7 +300,9 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         {this.state.isShowEventLog &&
                         <div className='page_monitoring_form_row'>
                             <div className='page_monitoring_form_column_left' style={{fontFamily: 'ubuntu'}}>
-                                Event Log Type
+                                <Center>
+                                    Event Log Type
+                                </Center>
                             </div>
 
                             <div className='page_monitoring_form_column_right'>
@@ -317,10 +321,20 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                             </div>
                         </div>
                         }
+                        {/*blank*/}
+                        {/*blank*/}
+                        {/*blank*/}
+                        {this.state.isShowEventLog === false && this.state.isShowHWDropDown === false &&
+                        <div className='page_monitoring_form_row'>
+                            <div className='page_monitoring_form_column_left' style={{fontFamily: 'ubuntu', height: 30}}>
+                                &nbsp;
+                            </div>
+                        </div>
+                        }
                         {/*todo:############################*/}
                         {/*todo:Bottom Buttons              */}
                         {/*todo:############################*/}
-                        <div className='page_monitoring_form_row' style={{marginTop: 30}}>
+                        <div className='page_monitoring_form_row' style={{marginTop: 15}}>
                             <Button
                                 size={'small'}
                                 style={{width: 100, backgroundColor: '#559901', color: 'white'}}
@@ -332,7 +346,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                             >
                                 <label>Add</label>
                             </Button>
-                            <div style={{width: 25}}/>
+                            <div style={{width: 29}}/>
                             <Button
                                 size={'small'}
                                 style={{width: 100, backgroundColor: 'grey', color: 'white'}}
