@@ -9,6 +9,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import Table from "@material-ui/core/Table";
 import '../PageMonitoring.css'
+
 type Props = {
     eventLogList: any,
     columnList: any,
@@ -61,7 +62,7 @@ export default function AppInstEventLogListHook(props) {
             </div>
             <TableContainer component={Paper}
                             style={{
-                                height: 250,
+                                height: 220,
                                 fontFamily: 'Ubuntu',
                                 backgroundColor: 'blue !important',
                                 width: 'auto',
