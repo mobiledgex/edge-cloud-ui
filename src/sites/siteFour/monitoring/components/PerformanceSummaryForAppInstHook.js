@@ -11,6 +11,7 @@ import {Progress} from "antd";
 import '../PageMonitoring.css'
 import {numberWithCommas} from "../PageMonitoringUtils";
 import {Paper} from "@material-ui/core";
+import {convertByteToMegaGigaByte} from "../PageMonitoringCommonService";
 
 type Props = {
     filteredUsageList: any,
@@ -146,16 +147,15 @@ export default function PerformanceSummaryForAppInstHook(props) {
                                     <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
                                         <div style={{heiight: 15, padding: 0,}}>
                                             <div>
-                                                {numberWithCommas(parseInt(item.sumMemUsage.toFixed(2))) + ' Byte'}
+                                                {convertByteToMegaGigaByte(item.sumMemUsage)}
                                             </div>
                                         </div>
                                     </TableCell>
                                     <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
                                         <div style={{heiight: 15, padding: 0,}}>
                                             <div>
-                                                {numberWithCommas(item.sumDiskUsage.toFixed(0)) + ' Byte'}
+                                                {convertByteToMegaGigaByte(item.sumDiskUsage)}
                                             </div>
-
                                         </div>
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
@@ -165,13 +165,13 @@ export default function PerformanceSummaryForAppInstHook(props) {
                                         {numberWithCommas(item.sumSendBytes.toFixed(0)) + ' '}
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
-                                        {numberWithCommas(parseInt(item.sumActiveConnection.toFixed(2))) + ' '}
+                                        {numberWithCommas(parseInt(item.sumActiveConnection.toFixed(0))) + ' '}
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
-                                        {numberWithCommas(parseInt(item.sumHandledConnection.toFixed(2))) + ' '}
+                                        {numberWithCommas(parseInt(item.sumHandledConnection.toFixed(0))) + ' '}
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
-                                        {numberWithCommas(parseInt(item.sumAcceptsConnection.toFixed(2))) + ' '}
+                                        {numberWithCommas(parseInt(item.sumAcceptsConnection.toFixed(0))) + ' '}
                                     </TableCell>
                                 </TableRow>
                             )

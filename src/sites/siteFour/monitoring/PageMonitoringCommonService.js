@@ -652,7 +652,7 @@ export const convertByteToMegaByte = (value, hardwareType) => {
 
 export const convertByteToMegaGigaByte = (bytes) => {
     let marker = 1024; // Change to 1000 if required
-    let decimal = 3; // Change as required
+    let decimal = 0; // Change as required
     let kiloBytes = marker; // One Kilobyte is 1024 bytes
     let megaBytes = marker * marker; // One MB is 1024 KB
     let gigaBytes = marker * marker * marker; // One GB is 1024 MB

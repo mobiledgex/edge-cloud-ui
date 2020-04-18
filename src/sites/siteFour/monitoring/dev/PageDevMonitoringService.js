@@ -389,27 +389,28 @@ export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, userTyp
     }
 
     if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
-        return numberWithCommas((usageOne.sumTcpConns).toFixed(2)) + " "
+
+        return Math.ceil(usageOne.sumTcpConns);
     }
 
     if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
-        return numberWithCommas((usageOne.sumTcpConns).toFixed(2)) + " "
+        return Math.ceil(usageOne.sumTcpRetrans);
     }
 
     if (hardwareType === HARDWARE_TYPE.UDPSENT) {
-        return numberWithCommas((usageOne.sumUdpSent).toFixed(2)) + " datagrams"
+        return convertByteToMegaGigaByte(parseInt(usageOne.sumUdpSent))
     }
 
     if (hardwareType === HARDWARE_TYPE.UDPRECV) {
-        return numberWithCommas((usageOne.sumUdpRecv).toFixed(2)) + " datagrams"
+        return convertByteToMegaGigaByte(usageOne.sumUdpRecv)
     }
 
     if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-        return numberWithCommas((usageOne.sumSendBytes / 1000000).toFixed(0)) + " MByte"
+        return convertByteToMegaGigaByte(usageOne.sumSendBytes)
     }
 
     if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-        return numberWithCommas((usageOne.sumRecvBytes / 1000000).toFixed(0)) + " MByte"
+        return convertByteToMegaGigaByte(usageOne.sumRecvBytes)
     }
 };
 
@@ -1274,7 +1275,7 @@ export const addUnitNameForUsage = (value, hardwareType, _this) => {
         } else if (hardwareType === HARDWARE_TYPE.SENDBYTES || hardwareType === HARDWARE_TYPE.RECVBYTES) {
             return convertByteToMegaByte(value, hardwareType)
         } else if (hardwareType === HARDWARE_TYPE.UDPRECV || hardwareType === HARDWARE_TYPE.UDPSENT) {
-            return value + " datagrams";
+            return value + " DG";
         } else {
             return value;
         }
