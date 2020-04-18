@@ -867,7 +867,7 @@ page_monitoring_dashboard_dev {
 
 .page_monitoring_form_column_left {
     display: flex;
-    width: 10%;
+    width: 7%;
 
 }
 
@@ -884,7 +884,7 @@ page_monitoring_dashboard_dev {
 .page_monitoring_form_radio_label {
     display: flex;
     justify-content: center;
-    margin-top: 10px;
+    margin-top: 7px;
 }
 
 /* title area */
