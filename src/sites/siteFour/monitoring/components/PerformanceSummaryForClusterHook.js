@@ -1,5 +1,4 @@
 // @flow
-import Ripples from "react-ripples";
 import * as React from 'react';
 import {useEffect} from 'react';
 import Paper from "@material-ui/core/Paper";
@@ -9,31 +8,15 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
-import {Progress} from "antd";
-import {withStyles} from "@material-ui/core";
+import {Progress, Tooltip} from "antd";
 import '../PageMonitoring.css'
 import {handleLegendAndBubbleClickedEvent, makeLineChartDataForCluster} from "../dev/PageDevMonitoringService";
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
-import {Tooltip} from 'antd'
 import {numberWithCommas} from "../PageMonitoringUtils";
 
 type Props = {
     filteredUsageList: any,
 };
-const CustomTableRow = withStyles({
-    root: {
-        margin: 0,
-        padding: 0,
-    },
-    body: {
-        margin: 0,
-        padding: 0,
-    },
-    sizeSmall: {
-        margin: 0,
-        padding: 0,
-    }
-})(TableRow);
 
 function getWindowDimensions() {
     const {innerWidth: width, innerHeight: height} = window;
@@ -43,13 +26,9 @@ function getWindowDimensions() {
     };
 }
 
-
-export default function PerformanceSummaryForClusterHook(props) {
+export default function PerformanceSummaryForClusterHook(props: Props) {
     //const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
     useEffect(() => {
-
-        console.log("filteredUsageList===>", props.filteredUsageList);
-
     }, [props.filteredUsageList]);
 
 
@@ -59,9 +38,7 @@ export default function PerformanceSummaryForClusterHook(props) {
             let lineChartDataSet = makeLineChartDataForCluster(props.parent.state.filteredClusterUsageList, hwType, props.parent)
             clusterAndCloudlet = clusterAndCloudlet.toString().split(" | ")[0] + "|" + clusterAndCloudlet.toString().split(" | ")[1]
             handleLegendAndBubbleClickedEvent(props.parent, clusterAndCloudlet, lineChartDataSet)
-
         } catch (e) {
-            console.log("error===>", e);
         }
     }
 
@@ -144,6 +121,7 @@ export default function PerformanceSummaryForClusterHook(props) {
                         {props.filteredUsageList !== undefined && props.filteredUsageList.map((item, index) => {
                             return (
                                 <TableRow
+                                    key={index}
                                     style={{
                                         backgroundColor: index % 2 === 0 ? '#1e2025' : '#23252c',
                                         color: 'grey',
@@ -241,33 +219,33 @@ export default function PerformanceSummaryForClusterHook(props) {
                                     <TableCell
                                         onClick={() => handleRowClicked(item, HARDWARE_TYPE.RECVBYTES)}
                                         padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
-                                        {numberWithCommas(item.sumRecvBytes.toFixed(2)) + ' '}
+                                        {numberWithCommas(item.sumRecvBytes.toFixed(0)) + ' '}
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
                                                onClick={() => handleRowClicked(item, HARDWARE_TYPE.SENDBYTES)}
                                     >
-                                        {numberWithCommas(item.sumSendBytes.toFixed(2)) + ' '}
+                                        {numberWithCommas(item.sumSendBytes.toFixed(0)) + ' '}
                                     </TableCell>
 
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
                                                onClick={() => handleRowClicked(item, HARDWARE_TYPE.TCPCONNS)}
                                     >
-                                        {numberWithCommas(item.sumTcpConns.toFixed(2)) + ' '}
+                                        {numberWithCommas(item.sumTcpConns.toFixed(0)) + ' '}
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
                                                onClick={() => handleRowClicked(item, HARDWARE_TYPE.TCPRETRANS)}
                                     >
-                                        {numberWithCommas(item.sumTcpRetrans.toFixed(2)) + ' '}
+                                        {numberWithCommas(item.sumTcpRetrans.toFixed(0)) + ' '}
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
                                                onClick={() => handleRowClicked(item, HARDWARE_TYPE.UDPRECV)}
                                     >
-                                        {numberWithCommas(item.sumUdpRecv.toFixed(2)) + ' '}
+                                        {numberWithCommas(item.sumUdpRecv.toFixed(0)) + ' '}
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
                                                onClick={() => handleRowClicked(item, HARDWARE_TYPE.UDPSENT)}
                                     >
-                                        {numberWithCommas(item.sumUdpSent.toFixed(2)) + ' '}
+                                        {numberWithCommas(item.sumUdpSent.toFixed(0)) + ' '}
                                     </TableCell>
                                 </TableRow>
                             )

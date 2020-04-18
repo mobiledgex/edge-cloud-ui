@@ -2,23 +2,8 @@
 import * as React from 'react';
 import {Modal as AModal, Radio} from "antd";
 import {Button, Dropdown} from "semantic-ui-react";
-import {PageMonitoringStyles, showToast} from "../PageMonitoringCommonService";
-import {
-    CHART_COLOR_APPLE,
-    CHART_COLOR_LIST,
-    CHART_COLOR_LIST2,
-    CHART_COLOR_LIST3,
-    CHART_COLOR_LIST4,
-    CHART_COLOR_MONOKAI,
-    CLASSIFICATION,
-    EVENT_LOG_ITEM_LIST,
-    GRID_ITEM_TYPE,
-    HARDWARE_TYPE,
-    THEME_OPTIONS
-} from "../../../../shared/Constants";
-import {reactLocalStorage} from "reactjs-localstorage";
-import {getUserId} from "../dev/PageDevMonitoringService";
-
+import {PageMonitoringStyles} from "../PageMonitoringCommonService";
+import {CLASSIFICATION, EVENT_LOG_ITEM_LIST, GRID_ITEM_TYPE, HARDWARE_TYPE} from "../../../../shared/Constants";
 
 const FA = require('react-fontawesome')
 type Props = {
@@ -49,13 +34,6 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
         }
     }
 
-    componentDidMount(): void {
-    }
-
-
-    async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
-
-    }
 
     closePopupWindow() {
         this.props.parent.setState({
@@ -116,9 +94,9 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                             </div>
                         </div>
                         <div className='page_monitoring_popup_title_divide'/>
-                        {/*todo:Radio.Group*/}
-                        {/*todo:Radio.Group*/}
-                        {/*todo:Radio.Group*/}
+                        {/*@todo:###############################*/}
+                        {/*@todo:Radio.Group start               */}
+                        {/*@todo:###############################*/}
                         <div className='page_monitoring_form_row'>
                             <div className='page_monitoring_form_column_left'>
                                 Item Type
@@ -136,6 +114,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                 value={this.state.currentItemType}
                             >
                                 <div className='page_monitoring_form_column_right'>
+                                    {/*todo:Line Chart Icon*/}
                                     <div>
                                         <div
                                             onClick={() => {
@@ -152,7 +131,8 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                             <Radio value={GRID_ITEM_TYPE.LINE}>Line Chart</Radio>
                                         </div>
                                     </div>
-                                    {/*todo:itemOne*/}
+                                    {/*todo:Bar Chart Icon*/}
+                                    {this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER &&
                                     <div>
                                         <div
                                             onClick={() => {
@@ -169,7 +149,9 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                             <Radio value={GRID_ITEM_TYPE.BAR}>Bar Chart</Radio>
                                         </div>
                                     </div>
-                                    {/*todo:itemOne*/}
+                                    }
+                                    {/*todo:Column Chart Icon*/}
+                                    {this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER &&
                                     <div>
                                         <div
                                             onClick={() => {
@@ -186,6 +168,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                             <Radio value={GRID_ITEM_TYPE.COLUMN}>Column Chart</Radio>
                                         </div>
                                     </div>
+                                    }
                                     {/*todo:######################################*/}
                                     {/*todo:APP_INST_EVENT_LOG*/}
                                     {/*todo:######################################*/}
@@ -245,9 +228,10 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                 </div>
                             </Radio.Group>
                         </div>
-                        {/*todo:Radio.Group End*/}
-                        {/*todo:Radio.Group End*/}
-                        {/*todo:Radio.Group End*/}
+                        {/*@todo:###############################*/}
+                        {/*@todo:Radio.Group End               */}
+                        {/*@todo:###############################*/}
+
 
                         {this.state.isShowHWDropDown && <div>
                             <div className='page_monitoring_form_row'>

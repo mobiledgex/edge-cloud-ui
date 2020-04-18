@@ -1,9 +1,7 @@
 // @flow
-
-
-import React, {Fragment} from 'react';
+import React from 'react';
 import {Modal as AModal} from "antd";
-import {CLASSIFICATION, GRID_ITEM_TYPE, lineGraphOptions} from "../../../../shared/Constants";
+import {CLASSIFICATION, GRID_ITEM_TYPE} from "../../../../shared/Constants";
 import {Line} from "react-chartjs-2";
 import {Chart as Bar_Column_Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -16,7 +14,6 @@ import sizeMe from "react-sizeme";
 import * as actions from "../../../../actions";
 import {renderCircleLoaderForMap, renderWifiLoader} from "../PageMonitoringCommonService";
 import {makeLineChartOptions} from "../dev/PageDevMonitoringService";
-import LineChartContainer from "./LineChartContainer";
 
 const FA = require('react-fontawesome')
 const mapStateToProps = (state) => {

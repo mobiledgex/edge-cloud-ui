@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import BubbleChart from "../../../../components/BubbleChart";
+import BubbleChartCore from "./BubbleChartCore";
 import {handleHardwareTabChanges, handleLegendAndBubbleClickedEvent, makeLineChartDataForCluster} from "../dev/PageDevMonitoringService";
 import {makeBubbleChartDataForCluster, PageMonitoringStyles, renderPlaceHolderCircular, showToast} from "../PageMonitoringCommonService";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
@@ -34,7 +34,6 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
         this.setState({
             bubbleChartData: this.props.bubbleChartData,
         }, () => {
-            console.log("bubbleChartData===>", this.state.bubbleChartData);
         })
     }
 
@@ -81,7 +80,6 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
 
 
             function renderOffsetY(listLength) {
-                console.log("renderOffsetY===>", listLength);
                 if (listLength === 0) {
                     return 0.05;
                 } else if (listLength === 1) {
@@ -150,7 +148,6 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                                                 bubbleChartData: bubbleChartData,
                                                                 currentHardwareType: value,
                                                             }, () => {
-                                                                console.log("bubbleChartData2===>", bubbleChartData);
                                                             })
 
                                                         } catch (e) {
@@ -169,7 +166,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                     </div>
                                 </div>
                                 <div className='page_monitoring_container'>
-                                    <BubbleChart
+                                    <BubbleChartCore
                                         className='bubbleChart'
                                         style={{height: this.props.isBig ? window.innerHeight : 350, marginLeft: -350}}
                                         graph={{
