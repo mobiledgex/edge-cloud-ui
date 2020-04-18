@@ -115,6 +115,10 @@ export const PageMonitoringStyles = {
         zIndex: 1,
         //height: '50px',
     },
+    chartIcon: {
+        width: 65,
+        height: 55
+    },
     cell000: {
         marginLeft: 0,
         backgroundColor: '#a3a3a3',
