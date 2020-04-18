@@ -208,3 +208,11 @@ curl -X POST "https://mexdemo.ctrl.mobiledgex.net:36001/show/operator" -H "accep
     \$ curl -G 'https://console-stage.mobiledgex.net:443/query?db=dme-api' --data-urlencode 'q=SELECT \* FROM "dme-api"'
 
 {"results":[{"statement_id":0,"series":[{"name":"mymeas","columns":["time","myfield","mytag1","mytag2"],"values":[["2017-03-01T00:16:18Z",33.1,null,null],["2017-03-01T00:17:18Z",12.4,"12","14"]]}]}]}
+
+### Counter up (숫자가 증가하는 에니메이션)
+
+-   https://react-countup.now.sh/
+
+### material-auto-rotating-carousel (자동 슬라이드)
+
+-   https://github.com/TeamWertarbyte/material-auto-rotating-carousel

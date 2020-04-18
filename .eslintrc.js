@@ -1,15 +1,12 @@
 module.exports = {
     env: {
         browser: true,
-        es6: true,
-        node: true
+        es6: true
     },
     extends: [
         "eslint:recommended",
         "plugin:react/recommended",
-        "plugin:@typescript-eslint/eslint-recommended",
-        "airbnb-base",
-        "prettier"
+        "plugin:@typescript-eslint/eslint-recommended"
     ],
     globals: {
         Atomics: "readonly",
@@ -25,9 +22,6 @@ module.exports = {
     },
     plugins: ["react", "@typescript-eslint"],
     rules: {
-        strict: 0,
-        "object-curly-spacing": [2, "always"],
-        "react/prop-types": [0],
-        "max-len": [2, { code: 3500 }]
+        "max-len": ["error", { code: 1500, tabWidth: 4 }]
     }
 };

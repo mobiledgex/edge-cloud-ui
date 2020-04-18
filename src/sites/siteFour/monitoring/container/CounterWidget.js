@@ -1,14 +1,8 @@
-import React from "react";
+import React, { useState, forwardRef, useImperativeHandle } from "react";
+import CountUp from "react-countup";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import Divider from "@material-ui/core/Divider";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import Avatar from "@material-ui/core/Avatar";
-import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -22,17 +16,36 @@ const useStyles = makeStyles((theme: Theme) =>
         }
     })
 );
-export default function CounterWidget() {
-    const classes = useStyles();
+const CounterWidget = forwardRef((props, ref) => {
+    console.log("20200418 props== ", props);
+    const [clusterCnt, setClusterCnt] = useState(props);
 
+    const classes = useStyles();
+    const setDataToWidget = value => {
+        console.log("20200418 setDataToWidget== ", value);
+        setClusterCnt(value);
+    };
+    useImperativeHandle(ref, () => {
+        return {
+            setDataToWidget: setDataToWidget
+        };
+    });
     return (
         <div className={classes.root}>
             <Grid container spacing={2}>
                 <Grid item xs>
-                    <Paper className={classes.paper}>xs</Paper>
+                    <Paper className={classes.paper} style={{ padding: 5 }}>
+                        {makeContainer({
+                            data: clusterCnt[0] ? clusterCnt[0] : 0
+                        })}
+                    </Paper>
                 </Grid>
                 <Grid item xs>
-                    <Paper className={classes.paper}>xs</Paper>
+                    <Paper className={classes.paper} style={{ padding: 5 }}>
+                        {makeContainer({
+                            data: clusterCnt[1] ? clusterCnt[1] : 0
+                        })}
+                    </Paper>
                 </Grid>
                 <Grid item xs>
                     <Paper className={classes.paper}>xs</Paper>
@@ -51,32 +64,30 @@ export default function CounterWidget() {
             </Grid>
         </div>
     );
-}
+});
 
-const makeContainer = () => {
-    const classes = useStyles();
+export default CounterWidget;
+
+const makeContainer = info => {
     return (
-        <List className={classes.root}>
-            <ListItem alignItems="flex-start">
-                <ListItemText
-                    primary="Brunch this weekend?"
-                    secondary={
-                        <React.Fragment>
-                            <Typography
-                                component="span"
-                                variant="body2"
-                                className={classes.inline}
-                                color="textPrimary"
-                            >
-                                Ali Connors
-                            </Typography>
-                            {
-                                " — I'll be in your neighborhood doing errands this…"
-                            }
-                        </React.Fragment>
-                    }
-                />
-            </ListItem>
-        </List>
+        <div>
+            <CountUp start={0} end={info.data} delay={5} separator={0.1}>
+                {({ countUpRef }) => (
+                    <div
+                        style={{
+                            minWidth: 50,
+                            minHeight: 30,
+                            padding: 2,
+                            display: "flex",
+                            flexDirection: "column"
+                        }}
+                    >
+                        <span>EU</span>
+                        <span ref={countUpRef} style={{ fontSize: 16 }} />
+                        <span>CloudletName</span>
+                    </div>
+                )}
+            </CountUp>
+        </div>
     );
 };

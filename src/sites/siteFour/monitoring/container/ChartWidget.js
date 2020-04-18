@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import ContainerWrapper from "./ContainerWrapper";
 import TimeSeries from "../../../../charts/plotly/timeseries";
 import ContainerHealth from "./ContainerHealth";
@@ -7,8 +7,18 @@ import CounterWidget from "./CounterWidget";
 
 class ChartWidget extends React.Component {
     state = {
-        mapData: []
+        mapData: [],
+        clusterCnt: [0]
     };
+
+    getData = () => [100, 3, 0, 6, 4, 5, 8, 6, 0, 1];
+    componentDidMount() {
+        this.divRef = React.createRef();
+        setTimeout(() => {
+            if (this.divRef.current)
+                this.divRef.current.setDataToWidget(this.getData());
+        }, 6000);
+    }
     render() {
         const { data, chartType, type, size } = this.props;
         return (
@@ -29,7 +39,10 @@ class ChartWidget extends React.Component {
                         zoomControl={{ center: [0, 0], zoom: 1.5 }}
                     ></Map>
                 ) : chartType === "counter" ? (
-                    <CounterWidget></CounterWidget>
+                    <CounterWidget
+                        ref={this.divRef}
+                        clusterCnt={this.state.clusterCnt}
+                    ></CounterWidget>
                 ) : (
                     <DataGrid size={size} data={data} />
                 )}
