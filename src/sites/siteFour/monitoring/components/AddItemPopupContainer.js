@@ -4,6 +4,9 @@ import {Modal as AModal, Radio} from "antd";
 import {Button, Dropdown} from "semantic-ui-react";
 import {PageMonitoringStyles} from "../PageMonitoringCommonService";
 import {CLASSIFICATION, EVENT_LOG_ITEM_LIST, GRID_ITEM_TYPE, HARDWARE_TYPE} from "../../../../shared/Constants";
+import {ReactSVG} from 'react-svg'
+import {CircularProgress} from "@material-ui/core";
+import {Center} from "../PageMonitoringStyledComponent";
 
 const FA = require('react-fontawesome')
 type Props = {
@@ -115,6 +118,8 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                             >
                                 <div className='page_monitoring_form_column_right'>
                                     {/*todo:Line Chart Icon*/}
+                                    {/*todo:Line Chart Icon*/}
+                                    {/*todo:Line Chart Icon*/}
                                     <div>
                                         <div
                                             onClick={() => {
@@ -125,12 +130,16 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                                 })
                                             }}
                                         >
-                                            <img src={require('../images/graph001.png')}/>
+                                            <ReactSVG src={require('../images/chart/Line.svg')}
+                                                      style={PageMonitoringStyles.chartIcon}
+                                                      loading={() => (<Center><CircularProgress/></Center>)}/>
                                         </div>
                                         <div className='page_monitoring_form_radio_label'>
                                             <Radio value={GRID_ITEM_TYPE.LINE}>Line Chart</Radio>
                                         </div>
                                     </div>
+                                    {/*todo:Bar Chart Icon*/}
+                                    {/*todo:Bar Chart Icon*/}
                                     {/*todo:Bar Chart Icon*/}
                                     {this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER &&
                                     <div>
@@ -143,13 +152,17 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                                 })
                                             }}
                                         >
-                                            <img src={require('../images/bar001.png')}/>
+                                            <ReactSVG src={require('../images/chart/Bar.svg')}
+                                                      style={PageMonitoringStyles.chartIcon}
+                                                      loading={() => (<Center><CircularProgress/></Center>)}/>
                                         </div>
                                         <div className='page_monitoring_form_radio_label'>
                                             <Radio value={GRID_ITEM_TYPE.BAR}>Bar Chart</Radio>
                                         </div>
                                     </div>
                                     }
+                                    {/*todo:Column Chart Icon*/}
+                                    {/*todo:Column Chart Icon*/}
                                     {/*todo:Column Chart Icon*/}
                                     {this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER &&
                                     <div>
@@ -162,7 +175,9 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                                 })
                                             }}
                                         >
-                                            <img src={require('../images/bar001.png')}/>
+                                            <ReactSVG src={require('../images/chart/Column.svg')}
+                                                      style={PageMonitoringStyles.chartIcon}
+                                                      loading={() => (<Center><CircularProgress/></Center>)}/>
                                         </div>
                                         <div className='page_monitoring_form_radio_label'>
                                             <Radio value={GRID_ITEM_TYPE.COLUMN}>Column Chart</Radio>
@@ -183,7 +198,9 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                                 })
                                             }}
                                         >
-                                            <img src={require('../images/log001.png')}/>
+                                            <ReactSVG src={require('../images/chart/Grid.svg')}
+                                                      style={PageMonitoringStyles.chartIcon}
+                                                      loading={() => (<Center><CircularProgress/></Center>)}/>
                                         </div>
                                         <div className='page_monitoring_form_radio_label'>
                                             <Radio value={GRID_ITEM_TYPE.APP_INST_EVENT_LOG}>Event Log</Radio>
@@ -202,12 +219,17 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                                 })
                                             }}
                                         >
-                                            <img src={require('../images/map001.png')}/>
+                                            <ReactSVG src={require('../images/chart/Map.svg')}
+                                                      style={PageMonitoringStyles.chartIcon}
+                                                      loading={() => (<Center><CircularProgress/></Center>)}/>
                                         </div>
                                         <div className='center002'>
                                             <Radio value={GRID_ITEM_TYPE.MAP}>Map</Radio>
                                         </div>
                                     </div>
+                                    {/*Bubble
+                                    Bubble
+                                    Bubble*/}
                                     <div>
                                         <div
                                             onClick={() => {
@@ -218,7 +240,9 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                                 })
                                             }}
                                         >
-                                            <img src={require('../images/map001.png')}/>
+                                            <ReactSVG src={require('../images/chart/Bubble.svg')}
+                                                      style={PageMonitoringStyles.chartIcon}
+                                                      loading={() => (<Center><CircularProgress/></Center>)}/>
                                         </div>
                                         <div className='page_monitoring_form_radio_label'>
                                             <Radio value={GRID_ITEM_TYPE.BUBBLE}>Bubble</Radio>
