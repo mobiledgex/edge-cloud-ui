@@ -12,6 +12,14 @@ export const numberWithCommas = (x) => {
     }
 }
 
+export function getWindowDimensions() {
+    const {innerWidth: width, innerHeight: height} = window;
+    return {
+        width,
+        height
+    };
+}
+
 export const barChartOption = (hwType) => {
 
     return (
