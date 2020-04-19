@@ -2,7 +2,7 @@
 import * as React from 'react';
 import {Modal as AModal, Radio} from "antd";
 import {Dropdown} from "semantic-ui-react";
-import {PageMonitoringStyles} from "../PageMonitoringCommonService";
+import {PageMonitoringStyles, showToast3} from "../PageMonitoringCommonService";
 import {CLASSIFICATION, EVENT_LOG_ITEM_LIST, GRID_ITEM_TYPE, HARDWARE_TYPE} from "../../../../shared/Constants";
 import {ReactSVG} from 'react-svg'
 import {CircularProgress} from "@material-ui/core";
@@ -60,6 +60,12 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
 
             </div>
         )
+    }
+
+    handleAddClicked = async () => {
+        showToast3(`[${this.state.currentHwType}] item added`, 2, 'white')
+        await this.props.parent.addGridItem(this.state.currentHwType, this.state.currentItemType);
+        this.closePopupWindow();
     }
 
     render() {
@@ -338,11 +344,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                             <Button
                                 size={'small'}
                                 style={{width: 100, backgroundColor: '#559901', color: 'white'}}
-                                onClick={async () => {
-                                    await this.props.parent.addGridItem(this.state.currentHwType, this.state.currentItemType);
-                                    this.closePopupWindow();
-
-                                }}
+                                onClick={this.handleAddClicked}
                             >
                                 <label>Add</label>
                             </Button>

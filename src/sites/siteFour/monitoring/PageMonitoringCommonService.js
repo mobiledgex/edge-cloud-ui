@@ -85,10 +85,10 @@ export const PageMonitoringStyles = {
         //height: '50px',
     },
     dropDownForClusterCloudlet3: {
-        minWidth: '130px',
+        minWidth: '180px',
         fontSize: '11px',
         minHeight: '30px',
-        marginLeft:'-2px',
+        marginLeft: '-2px',
         zIndex: 1,
         //height: '50px',
     },
@@ -1068,21 +1068,27 @@ export const showToast = (title: string, time = 2) => {
 export const showToast2 = (title: string, time = 2) => {
     toast({
         type: 'success',
-        icon: 'star',
         title: title,
         //animation: 'swing left',
         time: time * 1000,
         color: 'black',
     });
 }
-export const showToast3 = (title: string, time = 2) => {
+
+/**
+ *
+ * @param title
+ * @param time
+ * @param color
+ */
+export const showToast3 = (title: string, time = 2, color='yellow') => {
     toast({
-        type: 'warning',
-        icon: 'star',
+        type: 'success',
         title: title,
-        animation: 'swing left',
+        animation: 'bounce',
         time: time * 1000,
-        color: 'black',
+        color: color,
+        size: 'tiny',
     });
 }
 
