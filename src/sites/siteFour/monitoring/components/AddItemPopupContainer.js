@@ -79,7 +79,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                     }}
                     closable={false}
                     bodyStyle={{
-                        height: window.innerHeight * 0.41,
+                        height: window.innerHeight * 0.45,
                         marginTop: 0,
                         marginLeft: 0,
                         backgroundColor: 'rgb(41, 44, 51)'

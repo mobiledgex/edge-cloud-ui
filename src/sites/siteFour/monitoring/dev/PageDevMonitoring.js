@@ -56,7 +56,7 @@ import BarChartContainer from "../components/BarChartContainer";
 import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryForClusterHook";
 import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryForAppInstHook";
 import type {PageDevMonitoringProps, PageDevMonitoringState} from "./PageDevMonitoringPropsState";
-import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageDevMonitoringPropsState";
+import {ColorLinearProgress, CustomSwitch, defaultLayoutXYPosForAppInst, defaultLayoutXYPosForCluster, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageDevMonitoringPropsState";
 
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -220,6 +220,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     showAppInstClient: false,
                     filteredClusterList: [],
                     currentWidth: '100%',
+                    emptyPosXYInGrid: {},
+                    emptyPosXYInGrid2: {},
                 };
             }
 
@@ -743,11 +745,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         graphType: graphType,
                     }
 
+
+                    //##########################
+                    // calculate empty space
+                    //##########################
                     await this.setState({
                         layoutForCluster: this.state.layoutForCluster.concat({
                             i: uniqueId,
-                            x: 0,
-                            y: maxY + 1,
+                            x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
+                            y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
                             w: this.makeGridSizeByType(graphType),
                             h: this.makeGridSizeHeightByType(graphType),
                         }),
@@ -779,8 +785,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     await this.setState({
                         layoutForAppInst: this.state.layoutForAppInst.concat({
                             i: uniqueId,
-                            x: 0,
-                            y: maxY + 1,
+                            x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
+                            y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
                             w: 1,
                             h: 1,
                         }),
@@ -1012,6 +1018,26 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
+            calculateEmptyPosInGrid(layout, pDefaultLayoutXYPos) {
+                let emptyPosXYInGrid = {};
+                pDefaultLayoutXYPos.map((item) => {
+                    let isExist = false;
+                    for (let j = 0; j < layout.length; j++) {
+                        if (layout[j].x === item.x && layout[j].y === item.y) {
+                            isExist = true;
+                            break;
+                        }
+                    }
+
+                    if (isExist === false) {
+                        emptyPosXYInGrid = item;
+                    }
+                })
+                this.setState({
+                    emptyPosXYInGrid: emptyPosXYInGrid,
+                })
+            }
+
             renderGridLayoutForCluster() {
                 return (
                     <ResponsiveReactGridLayout
@@ -1034,11 +1060,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 currentWidgetWidth: width,
                             })
                         }}
-                        onLayoutChange={(layout) => {
+                        onLayoutChange={async (layout) => {
                             this.setState({
                                 layoutForCluster: layout,
+                            }, async () => {
+                                await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForCluster);
+                                reactLocalStorage.setObject(getUserId() + "_layout", layout)
                             });
-                            reactLocalStorage.setObject(getUserId() + "_layout", layout)
+
                         }}
                         {...this.props}
                     >
@@ -1078,9 +1107,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         onLayoutChange={async (layout) => {
                             await this.setState({
                                 layoutForAppInst: layout
+                            }, async () => {
+                                await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForAppInst);
+                                let layoutUniqueId = getUserId() + "_layout2"
+                                reactLocalStorage.setObject(layoutUniqueId, this.state.layoutForAppInst)
                             });
-                            let layoutUniqueId = getUserId() + "_layout2"
-                            reactLocalStorage.setObject(layoutUniqueId, this.state.layoutForAppInst)
+
                         }}
                     >
                         {this.state.layoutForAppInst.map((item, loopIndex) => {
@@ -1099,7 +1131,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     </ResponsiveReactGridLayout>
                 )
             }
-
 
 
             makeActionMenuListItems = () => {
@@ -1134,17 +1165,17 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             </div>
                         </AMenu.Item>
                         {/*<AMenu.Item style={{display: 'flex'}}
-                                    key="1"
-                                    onClick={() => {
-                                        this.setState({
-                                            isOpenEditView2: true,
-                                        })
-                                    }}
+                        key="1"
+                        onClick={() => {
+                        this.setState({
+                        isOpenEditView2: true,
+                        })
+                        }}
                         >
-                            <MaterialIcon icon={'add'} color={'white'}/>
-                            <div style={PageMonitoringStyles.listItemTitle}>
-                                Add Item for test
-                            </div>
+                        <MaterialIcon icon={'add'} color={'white'}/>
+                        <div style={PageMonitoringStyles.listItemTitle}>
+                        Add Item for test
+                        </div>
                         </AMenu.Item>*/}
                         {/*desc:#########################################*/}
                         {/*desc:Reload                                  */}
@@ -1288,10 +1319,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }
                             </div>
                             {/*
-                            desc :####################################
-                            desc :loading Area
-                            desc :####################################
-                            */}
+                        desc :####################################
+                        desc :loading Area
+                        desc :####################################
+                        */}
                             <div>
 
                                 {this.state.webSocketLoading &&
@@ -1325,10 +1356,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
                             {/*
-                            desc :####################################
-                            desc : options list (right conner)
-                            desc :####################################
-                            */}
+                        desc :####################################
+                        desc : options list (right conner)
+                        desc :####################################
+                        */}
                             <div style={{
                                 display: 'flex',
                                 flex: .3,
@@ -1336,10 +1367,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 //backgroundColor: 'yellow'
                             }}>
                                 {/*
-                            todo :####################################
-                            todo : Clusterstream toggle button
-                            todo :####################################
-                            */}
+                        todo :####################################
+                        todo : Clusterstream toggle button
+                        todo :####################################
+                        */}
                                 {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
                                 <div style={{
                                     alignItems: 'center',
@@ -1378,10 +1409,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }
 
                                 {/*
-                            desc :####################################
-                            desc : appInst stream toggle button
-                            desc :####################################
-                            */}
+                        desc :####################################
+                        desc : appInst stream toggle button
+                        desc :####################################
+                        */}
                                 {this.state.currentClassification === CLASSIFICATION.APPINST &&
                                 <div style={{
                                     alignItems: 'center',
