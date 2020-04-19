@@ -158,7 +158,6 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                                     isShowEventLog: false,
                                                 })
                                             }}
-                                            style={PageMonitoringStyles.ChartIconOuterDiv}
                                         >
                                             <Center>
                                                 <ReactSVG src={require('../images/chart/Line.svg')}
@@ -183,7 +182,6 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                                     isShowEventLog: false,
                                                 })
                                             }}
-                                            style={PageMonitoringStyles.ChartIconOuterDiv}
                                         >
                                             <Center>
                                                 <ReactSVG src={require('../images/chart/Bar.svg')}
@@ -209,7 +207,6 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                                     isShowEventLog: false,
                                                 })
                                             }}
-                                            style={PageMonitoringStyles.ChartIconOuterDiv}
                                         >
                                             <Center>
                                                 <ReactSVG src={require('../images/chart/Column.svg')}
@@ -234,7 +231,6 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                                     isShowEventLog: true,
                                                 })
                                             }}
-                                            style={PageMonitoringStyles.ChartIconOuterDiv}
                                         >
                                             <Center>
                                                 <ReactSVG src={require('../images/chart/Grid.svg')}
@@ -258,7 +254,6 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                                     isShowEventLog: false,
                                                 })
                                             }}
-                                            style={PageMonitoringStyles.ChartIconOuterDiv}
                                         >
                                             <Center>
                                                 <ReactSVG src={require('../images/chart/Map.svg')}
@@ -283,7 +278,6 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                                     isShowEventLog: false,
                                                 })
                                             }}
-                                            style={PageMonitoringStyles.ChartIconOuterDiv}
                                         >
                                             <Center>
                                                 <ReactSVG src={require('../images/chart/Bubble.svg')}

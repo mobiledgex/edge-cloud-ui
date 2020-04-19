@@ -92,6 +92,7 @@ export const ChartIconOuter = styled(_Ripples)`
   width: 140px;
 `;*/
 
+
 export const ChartIconOuterDiv = styled.div`
   display : flex;
   justify-content: center;
