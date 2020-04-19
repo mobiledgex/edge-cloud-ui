@@ -1854,7 +1854,6 @@ export const makeTop5GradientLineChartData = (levelTypeNameList, usageSetList, n
 
             finalSeriesDataSets.push(datasetsOne)
 
-
         }
 
         let _result = {

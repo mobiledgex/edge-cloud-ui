@@ -5,7 +5,7 @@ import {Line} from 'react-chartjs-2';
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import type {TypeLineChartData2} from "../../../../shared/Types";
 import {lineGraphOptions} from "../../../../shared/Constants";
-import {simpleGraphOptions} from "../dev/PageDevMonitoringService";
+import {makeGradientColorList} from "../dev/PageDevMonitoringService";
 
 type Props = {
     modalIsOpen: boolean,
@@ -54,31 +54,43 @@ export default class MiniModalGraphContainer extends React.Component<Props, Stat
 
             let index = nextProps.selectedClusterUsageOneIndex
 
-            let arrayDatasetsList = []
-            let datasetsOne = {
-                label: currentClusterName,
-                backgroundColor: this.props.parent.state.chartColorList[index],
-                borderColor: this.props.parent.state.chartColorList[index],
-                borderCapStyle: 'butt',
-                fill: false,//todo: 라인차트 area fill True/false
-                //backgroundColor: '',
-                borderWidth: 3.5, //lineBorder
-                lineTension: 0.5,
-                pointColor: "#fff",
-                pointStrokeColor: 'white',
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: 'white',
-                data: usageSetList,
-                radius: 0,
-                pointRadius: 1,
+
+            const lineChartData = (canvas) => {
+                let arrayDatasetsList = []
+                let gradientList = makeGradientColorList(canvas, 250, this.props.parent.state.chartColorList);
+
+                let isGradientColor = this.props.parent.state.isStackedLineChart;
+
+                let datasetsOne = {
+                    label: currentClusterName,
+                    fill: isGradientColor,// @desc:fill@desc:fill@desc:fill@desc:fill
+                    backgroundColor: isGradientColor ? gradientList[index] : this.props.parent.state.chartColorList[index],
+                    borderColor: isGradientColor ? gradientList[index] : this.props.parent.state.chartColorList[index],
+                    borderCapStyle: 'butt',
+                    //backgroundColor: '',
+                    borderWidth: 3.5, //lineBorder
+                    lineTension: 0.5,
+                    pointColor: "#fff",
+                    pointStrokeColor: 'white',
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: 'white',
+                    data: usageSetList,
+                    radius: 0,
+                    pointRadius: 1,
+                }
+
+                arrayDatasetsList.push(datasetsOne)
+
+                let lineChartData = {
+                    labels: newDateTimeList,
+                    datasets: arrayDatasetsList,
+                }
+
+                return lineChartData;
+
+
             }
 
-            arrayDatasetsList.push(datasetsOne)
-
-            let lineChartData = {
-                labels: newDateTimeList,
-                datasets: arrayDatasetsList,
-            }
 
             this.setState({
                 lineChartData: lineChartData,
@@ -153,11 +165,8 @@ export default class MiniModalGraphContainer extends React.Component<Props, Stat
                         ref="chart"
                         height={window.innerHeight / 3.5}
                         data={this.state.lineChartData}
-                        //options={this.state.options}
-                        options={simpleGraphOptions}
-                        //data={data222}
+                        options={this.state.options}
                     />
-
                 </AModal>
 
             </div>
