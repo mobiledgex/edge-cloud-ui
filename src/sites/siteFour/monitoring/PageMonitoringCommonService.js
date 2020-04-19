@@ -1081,14 +1081,14 @@ export const showToast2 = (title: string, time = 2) => {
  * @param time
  * @param color
  */
-export const showToast3 = (title: string, time = 2, color='yellow') => {
+export const showToast3 = (title: string, time = 2, color='green') => {
     toast({
         type: 'success',
         title: title,
-        animation: 'bounce',
+        animation: 'swing right',
         time: time * 1000,
         color: color,
-        size: 'tiny',
+        //size: 'tiny',
     });
 }
 

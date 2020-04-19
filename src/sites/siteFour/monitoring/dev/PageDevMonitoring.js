@@ -57,6 +57,7 @@ import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryFo
 import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryForAppInstHook";
 import type {PageDevMonitoringProps, PageDevMonitoringState} from "./PageDevMonitoringPropsState";
 import {ColorLinearProgress, CustomSwitch, defaultLayoutXYPosForAppInst, defaultLayoutXYPosForCluster, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageDevMonitoringPropsState";
+import Snackbar from "@material-ui/core/Snackbar";
 
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -222,6 +223,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentWidth: '100%',
                     emptyPosXYInGrid: {},
                     emptyPosXYInGrid2: {},
+                    toastMessage: '',
+                    isToastOpen: false,
                 };
             }
 
@@ -1730,7 +1733,22 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 {/*desc:---------------------------------*/}
                                 {/*desc:Content Header                   */}
                                 {/*desc:---------------------------------*/}
-                                <SemanticToastContainer position={"top-center"} color={'white'} />
+                                <SemanticToastContainer position={"bottom-center"} color={'red'}/>
+                                <Snackbar
+                                    autoHideDuration={3000}
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'center',
+                                    }}
+                                    onClose={() => {
+                                        this.setState({
+                                            isToastOpen: false,
+                                        })
+                                    }}
+                                    open={this.state.isToastOpen}
+                                    message={this.state.toastMessage}
+                                >
+                                </Snackbar>
                                 {this.renderHeader()}
                                 {/*desc:---------------------------------*/}
                                 {/*desc:Legend                           */}
