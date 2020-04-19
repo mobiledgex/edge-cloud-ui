@@ -71,12 +71,21 @@ export default class MiniModalGraphContainer extends React.Component<Props, Stat
                     borderWidth: 3.5, //lineBorder
                     lineTension: 0.5,
                     pointColor: "#fff",
-                    pointStrokeColor: 'white',
+                    pointStrokeColor: gradientList[index],
                     pointHighlightFill: "#fff",
-                    pointHighlightStroke: 'white',
+                    pointHighlightStroke: gradientList[index],
                     data: usageSetList,
                     radius: 0,
+                    pointBorderColor: gradientList[index],
+                    pointBackgroundColor: gradientList[index],
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: gradientList[index],
+                    pointHoverBorderColor: gradientList[index],
+                    pointHoverBorderWidth: 2,
                     pointRadius: 1,
+                    pointHitRadius: 10,
+                    order: index,
                 }
 
                 arrayDatasetsList.push(datasetsOne)
