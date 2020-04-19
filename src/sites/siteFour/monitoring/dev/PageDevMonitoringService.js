@@ -1,9 +1,28 @@
 import React from 'react';
 import '../PageMonitoring.css';
-import {APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, CLASSIFICATION, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX_FOR_CLUSTER} from "../../../../shared/Constants";
+import {
+    APP_INST_MATRIX_HW_USAGE_INDEX,
+    CHART_COLOR_APPLE,
+    CHART_COLOR_BERRIES_GALORE,
+    CHART_COLOR_BRIGHT_AND_ENERGETIC,
+    CHART_COLOR_EARTHY_AND_NATURAL,
+    CHART_COLOR_EXOTIC_ORCHIDS,
+    CHART_COLOR_JAZZ_NIGHT,
+    CHART_COLOR_LIST,
+    CHART_COLOR_LIST2,
+    CHART_COLOR_LIST3,
+    CHART_COLOR_LIST4,
+    CHART_COLOR_MONOKAI,
+    CHART_COLOR_URBAN_SKYLINE,
+    CLASSIFICATION,
+    HARDWARE_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    THEME_OPTIONS,
+    USAGE_INDEX_FOR_CLUSTER
+} from "../../../../shared/Constants";
 import BubbleChartCore from "../components/BubbleChartCore";
 import PageDevMonitoring from "./PageDevMonitoring";
-import {convertByteToMegaByte, convertByteToMegaGigaByte, PageMonitoringStyles, renderUsageByType, showToast} from "../PageMonitoringCommonService";
+import {convertByteToMegaByte, convertByteToMegaGigaByte, makeBubbleChartDataForCluster, PageMonitoringStyles, renderUsageByType, showToast} from "../PageMonitoringCommonService";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
 import {CircularProgress, createMuiTheme} from "@material-ui/core";
@@ -1236,6 +1255,101 @@ export const makeGradientColorList2 = (canvas, height, colorList, isBig = false)
 
     return gradientList;
 };
+
+/**
+ *
+ * @param themeTitle
+ * @param _this
+ * @returns {Promise<void>}
+ */
+export const handleThemeChanges = async (themeTitle, _this) => {
+    if (themeTitle === THEME_OPTIONS.DEFAULT) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_LIST
+        })
+    }
+    if (themeTitle === THEME_OPTIONS.BLUE) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_LIST2
+        })
+    }
+    if (themeTitle === THEME_OPTIONS.GREEN) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_LIST3
+        })
+    }
+    if (themeTitle === THEME_OPTIONS.RED) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_LIST4
+        })
+    }
+
+    if (themeTitle === THEME_OPTIONS.MONOKAI) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_MONOKAI
+        })
+    }
+
+    if (themeTitle === THEME_OPTIONS.APPLE) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_APPLE
+        })
+    }
+
+    if (themeTitle === THEME_OPTIONS.EXOTIC_ORCHIDS) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_EXOTIC_ORCHIDS
+        })
+    }
+
+    if (themeTitle === THEME_OPTIONS.URBAN_SKYLINE) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_URBAN_SKYLINE
+        })
+    }
+
+    if (themeTitle === THEME_OPTIONS.BERRIES_GALORE) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_BERRIES_GALORE
+        })
+    }
+    if (themeTitle === THEME_OPTIONS.BRIGHT_AND_ENERGETIC) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_BRIGHT_AND_ENERGETIC
+        })
+    }
+
+    if (themeTitle === THEME_OPTIONS.EARTHY_AND_NATURAL) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_EARTHY_AND_NATURAL
+        })
+    }
+
+    if (themeTitle === THEME_OPTIONS.BRIGHT_AND_ENERGETIC) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_BRIGHT_AND_ENERGETIC
+        })
+    }
+
+    if (themeTitle === THEME_OPTIONS.JAZZ_NIGHT) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_JAZZ_NIGHT
+        })
+    }
+
+
+    let selectedChartColorList = _this.state.chartColorList;
+    reactLocalStorage.setObject(getUserId() + "_mon_theme", selectedChartColorList)
+    reactLocalStorage.set(getUserId() + "_mon_theme_title", themeTitle)
+    _this.setState({
+        chartColorList: selectedChartColorList,
+    }, async () => {
+        _this.setState({
+            bubbleChartData: await makeBubbleChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this.state.chartColorList),
+        })
+    })
+
+}
 
 
 /**

@@ -14,6 +14,7 @@ import {
     defaultLayoutMapperForAppInst,
     filterByClassification,
     getUserId,
+    handleThemeChanges,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
     makeDropdownListWithValuePipeForAppInst,
@@ -26,30 +27,7 @@ import {
     makeSelectBoxListWithValuePipe,
     revertToDefaultLayout,
 } from "./PageDevMonitoringService";
-import {
-    ADD_ITEM_LIST,
-    CHART_COLOR_APPLE,
-    CHART_COLOR_BERRIES_GALORE,
-    CHART_COLOR_BRIGHT_AND_ENERGETIC,
-    CHART_COLOR_EARTHY_AND_NATURAL,
-    CHART_COLOR_EXOTIC_ORCHIDS,
-    CHART_COLOR_JAZZ_NIGHT,
-    CHART_COLOR_LIST,
-    CHART_COLOR_LIST2,
-    CHART_COLOR_LIST3,
-    CHART_COLOR_LIST4,
-    CHART_COLOR_MONOKAI,
-    CHART_COLOR_URBAN_SKYLINE,
-    CLASSIFICATION,
-    GRID_ITEM_TYPE,
-    HARDWARE_OPTIONS_FOR_APPINST,
-    HARDWARE_OPTIONS_FOR_CLUSTER,
-    HARDWARE_TYPE,
-    NETWORK_TYPE,
-    RECENT_DATA_LIMIT_COUNT,
-    THEME_OPTIONS,
-    THEME_OPTIONS_LIST
-} from "../../../../shared/Constants";
+import {ADD_ITEM_LIST, CHART_COLOR_LIST, CLASSIFICATION, GRID_ITEM_TYPE, HARDWARE_OPTIONS_FOR_APPINST, HARDWARE_OPTIONS_FOR_CLUSTER, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, THEME_OPTIONS_LIST} from "../../../../shared/Constants";
 import type {TypeBarChartData, TypeLineChartData} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
@@ -1122,95 +1100,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            handleThemeChanges = async (themeTitle) => {
-                if (themeTitle === THEME_OPTIONS.DEFAULT) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_LIST
-                    })
-                }
-                if (themeTitle === THEME_OPTIONS.BLUE) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_LIST2
-                    })
-                }
-                if (themeTitle === THEME_OPTIONS.GREEN) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_LIST3
-                    })
-                }
-                if (themeTitle === THEME_OPTIONS.RED) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_LIST4
-                    })
-                }
-
-                if (themeTitle === THEME_OPTIONS.MONOKAI) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_MONOKAI
-                    })
-                }
-
-                if (themeTitle === THEME_OPTIONS.APPLE) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_APPLE
-                    })
-                }
-
-                if (themeTitle === THEME_OPTIONS.EXOTIC_ORCHIDS) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_EXOTIC_ORCHIDS
-                    })
-                }
-
-                if (themeTitle === THEME_OPTIONS.URBAN_SKYLINE) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_URBAN_SKYLINE
-                    })
-                }
-
-                if (themeTitle === THEME_OPTIONS.BERRIES_GALORE) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_BERRIES_GALORE
-                    })
-                }
-                if (themeTitle === THEME_OPTIONS.BRIGHT_AND_ENERGETIC) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_BRIGHT_AND_ENERGETIC
-                    })
-                }
-
-                if (themeTitle === THEME_OPTIONS.EARTHY_AND_NATURAL) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_EARTHY_AND_NATURAL
-                    })
-                }
-
-                if (themeTitle === THEME_OPTIONS.BRIGHT_AND_ENERGETIC) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_BRIGHT_AND_ENERGETIC
-                    })
-                }
-
-                if (themeTitle === THEME_OPTIONS.JAZZ_NIGHT) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_JAZZ_NIGHT
-                    })
-                }
-
-
-                let selectedChartColorList = this.state.chartColorList;
-                reactLocalStorage.setObject(getUserId() + "_mon_theme", selectedChartColorList)
-                reactLocalStorage.set(getUserId() + "_mon_theme_title", themeTitle)
-                this.setState({
-                    chartColorList: selectedChartColorList,
-                }, async () => {
-                    this.setState({
-                        bubbleChartData: await makeBubbleChartDataForCluster(this.state.filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList),
-                    })
-                })
-
-
-            }
 
 
             makeActionMenuListItems = () => {
@@ -1336,7 +1225,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             await this.setState({
                                                 themeTitle: item.value
                                             })
-                                            await this.handleThemeChanges(item.value)
+                                            await handleThemeChanges(item.value, this)
                                         }}
                                     >
                                         {item.text}
