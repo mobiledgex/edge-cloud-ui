@@ -1815,10 +1815,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 {this.makeLegend()}
                                 <div className="page_monitoring"
                                      style={{
-                                         //
                                          overflowY: 'auto',
-                                         height: 'calc(100% - 95px)',
-                                         //marginBottom: 100,
+                                         height: 'calc(100% - 99px)',
                                          backgroundColor: this.props.themeType === 'light' ? 'white' : null
                                      }}>
                                     {this.state.currentClassification === CLASSIFICATION.CLUSTER
