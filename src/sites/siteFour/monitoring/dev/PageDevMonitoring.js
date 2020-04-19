@@ -299,7 +299,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     await this.setState({
                         isNoData: appInstList.length === 0,
-
                         bubbleChartData: bubbleChartData,
                         allClusterEventLogList: allClusterEventLogList,
                         filteredClusterEventLogList: allClusterEventLogList,
