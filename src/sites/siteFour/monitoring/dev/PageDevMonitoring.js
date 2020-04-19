@@ -279,10 +279,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     promiseList.push(getCloudletList())
                     promiseList.push(getClusterList())
                     promiseList.push(getAppInstList())
-                    let cloudletList_clusterList_appInstList = await Promise.all(promiseList);
-                    let cloudletList = cloudletList_clusterList_appInstList[0]
-                    let clusterList = cloudletList_clusterList_appInstList[1];
-                    let appInstList = cloudletList_clusterList_appInstList[2];
+                    let newPromiseList = await Promise.all(promiseList);
+                    let cloudletList = newPromiseList[0]
+                    let clusterList = newPromiseList[1];
+                    let appInstList = newPromiseList[2];
                     let clusterDropdownList = makeSelectBoxListWithKeyValuePipeForCluster(clusterList, 'ClusterName', 'Cloudlet')
 
                     //@todo:#########################################################################
@@ -291,10 +291,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     promiseList2.push(getAllClusterEventLogList(clusterList))
                     promiseList2.push(getAllAppInstEventLogs());
                     promiseList2.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
-                    let allClusterEventLogList_allAppInstEventLogList_allClusterUsageList = await Promise.all(promiseList2);
-                    let allClusterEventLogList = allClusterEventLogList_allAppInstEventLogList_allClusterUsageList[0];
-                    let allAppInstEventLogList = allClusterEventLogList_allAppInstEventLogList_allClusterUsageList[1];
-                    let allClusterUsageList = allClusterEventLogList_allAppInstEventLogList_allClusterUsageList[2];
+                    let newPromiseList2 = await Promise.all(promiseList2);
+                    let allClusterEventLogList = newPromiseList2[0];
+                    let allAppInstEventLogList = newPromiseList2[1];
+                    let allClusterUsageList = newPromiseList2[2];
 
                     let appInstanceListGroupByCloudlet = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
                     let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
