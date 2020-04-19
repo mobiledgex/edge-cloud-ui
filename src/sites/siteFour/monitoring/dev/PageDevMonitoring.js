@@ -1039,7 +1039,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     <ResponsiveReactGridLayout
                         isResizable={true}
                         draggableHandle=".draggable"
-                        verticalCompact={false}
+                        verticalCompact={true}
+                        compactType={'vertical'}
+                        preventCollision={true}
                         isDraggable={true}
                         autoSize={true}
                         style={{backgroundColor: this.props.themeType === THEME_TYPE.LIGHT ? 'white' : null}}
@@ -1084,6 +1086,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             renderGridLayoutForAppInst = () => {
                 return (
                     <ResponsiveReactGridLayout
+                        verticalCompact={true}
+                        compactType={'vertical'}
+                        preventCollision={true}
                         isResizable={true}
                         draggableHandle=".draggable"
                         isDraggable={true}
