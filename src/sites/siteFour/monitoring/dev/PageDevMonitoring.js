@@ -35,7 +35,7 @@ import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, Page
 import {getAllAppInstEventLogs, getAllClusterEventLogList, getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList, requestShowAppInstClientWS} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
-import ModalGraph from "../components/MiniModalGraphContainer";
+import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
 import {reactLocalStorage} from "reactjs-localstorage";
 import MapForDevContainer from "../components/MapForDevContainer";
 import {Responsive, WidthProvider} from "react-grid-layout";
@@ -1702,12 +1702,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         <AddItemPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}/>
                         <AddItemPopupContainer2 parent={this} isOpenEditView2={this.state.isOpenEditView2}/>
-
-                        <ModalGraph selectedClusterUsageOne={this.state.selectedClusterUsageOne}
-                                    selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
-                                    parent={this}
-                                    modalIsOpen={this.state.modalIsOpen}
-                                    cluster={''} contents={''}/>
+                        <MiniModalGraphContainer selectedClusterUsageOne={this.state.selectedClusterUsageOne}
+                                                 selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
+                                                 parent={this}
+                                                 modalIsOpen={this.state.modalIsOpen}
+                                                 cluster={''} contents={''}/>
 
                         <BigModalGraphContainer
                             intervalLoading={this.state.intervalLoading}
