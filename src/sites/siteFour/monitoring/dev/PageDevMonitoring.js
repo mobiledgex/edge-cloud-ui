@@ -1017,7 +1017,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-
             calculateEmptyPosInGrid(layout, pDefaultLayoutXYPos) {
                 let emptyPosXYInGrid = {};
                 pDefaultLayoutXYPos.map((item) => {
@@ -1028,7 +1027,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             break;
                         }
                     }
-
                     if (isExist === false) {
                         emptyPosXYInGrid = item;
                     }
@@ -1732,7 +1730,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 {/*desc:---------------------------------*/}
                                 {/*desc:Content Header                   */}
                                 {/*desc:---------------------------------*/}
-                                <SemanticToastContainer position={"top-right"} color={'white'}/>
+                                <SemanticToastContainer position={"top-center"} color={'white'} />
                                 {this.renderHeader()}
                                 {/*desc:---------------------------------*/}
                                 {/*desc:Legend                           */}
