@@ -22,6 +22,6 @@ module.exports = {
     },
     plugins: ["react", "@typescript-eslint"],
     rules: {
-        "max-len": ["error", { code: 1500, tabWidth: 4 }]
+        "max-len": ["error", { code: 5500, tabWidth: 4 }]
     }
 };

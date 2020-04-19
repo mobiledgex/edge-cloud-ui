@@ -68,7 +68,9 @@ const generateLayout = size => {
     });
 };
 
-export default sizeMe({ monitorHeight: true })(MonitoringAdmin);
+export default sizeMe({ monitorHeight: true, refreshMode: "debounce" })(
+    MonitoringAdmin
+);
 
 const generatWidget = info => (
     <ChartWidget
@@ -100,7 +102,7 @@ const generateComponentAdmin = sizeInfo => {
         }),
         generatWidget({
             url: "https://test4",
-            chartType: "timeseries",
+            chartType: "carousel",
             type: "scatter",
             sizeInfo: sizeInfo
         }),
