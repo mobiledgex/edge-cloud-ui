@@ -138,30 +138,28 @@ export const CHART_TYPE = {
 
 export const defaultLayoutForCluster = [
 
-    {i: '1', x: 1, y: 0, w: 2, h: 2, "add": false},//MAP
 
-    {i: '2', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
+    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
+    {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": true},//MAP
     {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
-
     {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//bubble
     {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//appinst event log
     {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
-
-
 ];
 
 
 export const defaultHwMapperListForCluster = [
     {
         id: '1',
-        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
-        graphType: HARDWARE_TYPE_FOR_GRID.MAP,
-    },
-    {
-        id: '2',
         hwType: HARDWARE_TYPE_FOR_GRID.CPU,
         graphType: CHART_TYPE.LINE,
     },
+    {
+        id: '2',
+        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
+        graphType: HARDWARE_TYPE_FOR_GRID.MAP,
+    },
+
     {
         id: '3',
         hwType: HARDWARE_TYPE_FOR_GRID.MEM,
@@ -208,8 +206,9 @@ desc:defaultLayoutForAppInst
 desc:#######################################
  */
 export const defaultLayoutForAppInst = [
-    {i: '1', x: 1, y: 0, w: 2, h: 2, "add": false},//MAP
-    {i: '2', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
+
+    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
+    {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": true},//MAP
     {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
     {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//DISK
     {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},
@@ -220,14 +219,15 @@ export const defaultLayoutForAppInst = [
 export const defaultLayoutMapperForAppInst = [
     {
         id: '1',
-        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
-        graphType: HARDWARE_TYPE_FOR_GRID.MAP,
-    },
-    {
-        id: '2',
         hwType: HARDWARE_TYPE_FOR_GRID.CPU,
         graphType: CHART_TYPE.LINE,
     },
+    {
+        id: '2',
+        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
+        graphType: HARDWARE_TYPE_FOR_GRID.MAP,
+    },
+
     {
         id: '3',
         hwType: HARDWARE_TYPE_FOR_GRID.MEM,
