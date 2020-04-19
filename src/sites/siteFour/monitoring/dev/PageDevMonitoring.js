@@ -225,6 +225,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     emptyPosXYInGrid2: {},
                     toastMessage: '',
                     isToastOpen: false,
+                    mapLoading: false,
                 };
             }
 
@@ -239,6 +240,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     loading: true,
                     bubbleChartLoader: true,
                     selectOrg: localStorage.selectOrg === undefined ? '' : localStorage.selectOrg.toString(),
+                    mapLoading: true,
 
                 })
                 await this.loadInitDataForCluster();
@@ -247,24 +249,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     bubbleChartLoader: false,
                 })
 
-            }
-
-            componentWillUnmount(): void {
-                this.props.toggleHeader(true)
-                clearInterval(this.intervalForAppInst)
-                clearInterval(this.intervalForCluster)
-                if (!isEmpty(this.webSocketInst)) {
-                    this.webSocketInst.close();
-                }
-            }
-
-
-            showModalClusterLineChart(lineChartDataOne, index) {
-                this.setState({
-                    selectedClusterUsageOne: lineChartDataOne,
-                    modalIsOpen: true,
-                    selectedClusterUsageOneIndex: index,
-                })
             }
 
             async loadInitDataForCluster(isInterval: boolean = false) {
@@ -286,6 +270,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let clusterDropdownList = makeSelectBoxListWithKeyValuePipeForCluster(clusterList, 'ClusterName', 'Cloudlet')
 
                     //@todo:#########################################################################
+                    //@todo: map Marker
+                    //@todo:#########################################################################
+                    let appInstanceListGroupByCloudlet = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
+                    await this.setState({
+                        appInstanceListGroupByCloudlet: !isInterval && appInstanceListGroupByCloudlet,
+                        mapLoading: false,
+                    })
+
+                    //@todo:#########################################################################
                     //@todo: getAllClusterEventLogList, getAllAppInstEventLogs ,allClusterUsageList
                     //@todo:#########################################################################
                     promiseList2.push(getAllClusterEventLogList(clusterList))
@@ -296,7 +289,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let allAppInstEventLogList = newPromiseList2[1];
                     let allClusterUsageList = newPromiseList2[2];
 
-                    let appInstanceListGroupByCloudlet = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
                     let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
                     let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
                         return o.sumCpuUsage;
@@ -307,7 +299,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     await this.setState({
                         isNoData: appInstList.length === 0,
-                        appInstanceListGroupByCloudlet: !isInterval && appInstanceListGroupByCloudlet,
+
                         bubbleChartData: bubbleChartData,
                         allClusterEventLogList: allClusterEventLogList,
                         filteredClusterEventLogList: allClusterEventLogList,
@@ -335,6 +327,24 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //showToast(e.toString())
                 }
 
+            }
+
+            componentWillUnmount(): void {
+                this.props.toggleHeader(true)
+                clearInterval(this.intervalForAppInst)
+                clearInterval(this.intervalForCluster)
+                if (!isEmpty(this.webSocketInst)) {
+                    this.webSocketInst.close();
+                }
+            }
+
+
+            showModalClusterLineChart(lineChartDataOne, index) {
+                this.setState({
+                    selectedClusterUsageOne: lineChartDataOne,
+                    modalIsOpen: true,
+                    selectedClusterUsageOneIndex: index,
+                })
             }
 
 
@@ -973,6 +983,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.MAP) {
                     return (
                         <MapForDevContainer
+                            markerList={this.state.appInstanceListGroupByCloudlet}
                             currentWidgetWidth={this.state.currentWidgetWidth}
                             isMapUpdate={this.state.isMapUpdate}
                             selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
@@ -980,7 +991,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             parent={this}
                             isDraggable={this.state.isDraggable}
                             handleAppInstDropdown={this.handleAppInstDropdown}
-                            markerList={this.state.appInstanceListGroupByCloudlet}
                             isFullScreenMap={false}
                             isShowAppInstPopup={this.state.isShowAppInstPopup}
                         />
