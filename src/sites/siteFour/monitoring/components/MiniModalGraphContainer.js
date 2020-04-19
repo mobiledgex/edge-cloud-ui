@@ -5,7 +5,7 @@ import {Line} from 'react-chartjs-2';
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import type {TypeLineChartData2} from "../../../../shared/Types";
 import {lineGraphOptions} from "../../../../shared/Constants";
-import {Legend} from "../PageMonitoringStyledComponent";
+import {simpleGraphOptions} from "../dev/PageDevMonitoringService";
 
 type Props = {
     modalIsOpen: boolean,
@@ -22,7 +22,7 @@ type State = {
 
 };
 
-export default class ModalGraph extends React.Component<Props, State> {
+export default class MiniModalGraphContainer extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
@@ -153,7 +153,8 @@ export default class ModalGraph extends React.Component<Props, State> {
                         ref="chart"
                         height={window.innerHeight / 3.5}
                         data={this.state.lineChartData}
-                        options={this.state.options}
+                        //options={this.state.options}
+                        options={simpleGraphOptions}
                         //data={data222}
                     />
 
