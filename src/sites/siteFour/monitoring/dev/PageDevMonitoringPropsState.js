@@ -168,6 +168,8 @@ export type PageDevMonitoringState = {
     currentWidth: number,
     emptyPosXYInGrid: any,
     emptyPosXYInGrid2: any,
+    toastMessage: string,
+    isToastOpen: boolean,
 }
 
 

@@ -1,8 +1,8 @@
 // @flow
 import * as React from 'react';
-import {Modal as AModal, Radio} from "antd";
+import {Modal as AModal, notification, Radio} from "antd";
 import {Dropdown} from "semantic-ui-react";
-import {PageMonitoringStyles, showToast3} from "../PageMonitoringCommonService";
+import {PageMonitoringStyles} from "../PageMonitoringCommonService";
 import {CLASSIFICATION, EVENT_LOG_ITEM_LIST, GRID_ITEM_TYPE, HARDWARE_TYPE} from "../../../../shared/Constants";
 import {ReactSVG} from 'react-svg'
 import {CircularProgress} from "@material-ui/core";
@@ -63,7 +63,31 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
     }
 
     handleAddClicked = async () => {
-        showToast3(`[${this.state.currentHwType}] item added`, 2, 'white')
+
+        let message = '';
+        if (this.state.currentItemType === GRID_ITEM_TYPE.BUBBLE
+            || this.state.currentItemType === GRID_ITEM_TYPE.APP_INST_EVENT_LOG
+            || this.state.currentItemType === GRID_ITEM_TYPE.MAP
+            || this.state.currentItemType === GRID_ITEM_TYPE.PERFORMANCE_SUM
+        ) {
+            message = `${this.props.parent.state.currentClassification} ${this.state.currentItemType} Item Added`
+        } else {
+            message = `${this.props.parent.state.currentClassification} ${this.state.currentItemType} [${this.state.currentHwType}] Chart Item Added`
+        }
+
+
+        notification.success({
+            placement: 'bottomLeft',
+            duration: 3,
+            message: message,
+        });
+
+        //showToast3(`${this.state.currentItemType} [${this.state.currentHwType}] item added`, 3, 'green')
+        /*this.props.parent.setState({
+            toastMessage: `[${this.state.currentHwType}] item added`,
+            isToastOpen: true,
+        })*/
+
         await this.props.parent.addGridItem(this.state.currentHwType, this.state.currentItemType);
         this.closePopupWindow();
     }
