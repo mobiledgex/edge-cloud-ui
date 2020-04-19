@@ -170,6 +170,7 @@ export type PageDevMonitoringState = {
     emptyPosXYInGrid2: any,
     toastMessage: string,
     isToastOpen: boolean,
+    mapLoading: boolean,
 }
 
 
