@@ -1817,7 +1817,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                      style={{
                                          //
                                          overflowY: 'auto',
-                                         height: 'calc(100% - 120px)',
+                                         height: 'calc(100% - 100px)',
                                          //marginBottom: 100,
                                          backgroundColor: this.props.themeType === 'light' ? 'white' : null
                                      }}>
