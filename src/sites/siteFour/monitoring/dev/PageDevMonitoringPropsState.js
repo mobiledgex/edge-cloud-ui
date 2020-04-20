@@ -166,6 +166,14 @@ export type PageDevMonitoringState = {
     //usageListForPerformanceSum: any,
     windowDimensions: number,
     currentWidth: number,
+    emptyPosXYInGrid: any,
+    emptyPosXYInGrid2: any,
+    toastMessage: string,
+    isToastOpen: boolean,
+    mapLoading: boolean,
+    legendHeight: number,
+    isLegendExpanded: boolean,
+    chunkedSize: number,
 }
 
 
@@ -215,3 +223,21 @@ export const ColorLinearProgress = withStyles({
         backgroundColor: '#24add0',
     },
 })(LinearProgress);
+
+export const defaultLayoutXYPosForCluster = [
+    {x: 0, y: 0},
+    {x: 1, y: 0},
+    {x: 3, y: 0},
+    {x: 0, y: 1},
+    {x: 3, y: 1},
+    {x: 0, y: 2},
+]
+
+export const defaultLayoutXYPosForAppInst = [
+    {x: 0, y: 0},
+    {x: 1, y: 0},
+    {x: 3, y: 0},
+    {x: 0, y: 1},
+    {x: 3, y: 1},
+    {x: 0, y: 2},
+]
