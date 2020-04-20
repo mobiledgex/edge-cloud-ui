@@ -30,13 +30,8 @@ export default class CalendarTimeline extends React.PureComponent {
 
         const groups = this.generateGroupsData(props);
         const items = this.generateItemsData(groups);
-        const defaultTimeStart = moment()
-            .startOf("day")
-            .toDate();
-        const defaultTimeEnd = moment()
-            .startOf("day")
-            .add(1, "day")
-            .toDate();
+        const defaultTimeStart = moment().startOf("hour").add(1, 'hour').toDate()
+        const defaultTimeEnd = moment().startOf("hour").add(4, 'hour').toDate()
         const visibleTimeStart = moment()
             .startOf("day")
             .valueOf();
@@ -59,9 +54,16 @@ export default class CalendarTimeline extends React.PureComponent {
         let items = this.state.items;
         items.map(item => {
             if (item.id === itemId) {
-                this.props.onItemSelectCallback(item.start, item.id);
+                this.props.onItemSelectCallback(item.startDate, item.id);
             }
         });
+    };
+
+    handleClickCloseMap = (itemId, _, time) => {
+        this.props.onItemClickCloseMap();
+    };
+    handleCanvasCloseMap = (itemId, _, time) => {
+        this.props.onCanvasClickCloseMap();
     };
 
     generateGroupsData = props => {
@@ -142,6 +144,9 @@ export default class CalendarTimeline extends React.PureComponent {
                             const startDate = Date.parse(
                                 this.getParseDate(item)
                             );
+                            const startHour = Date.parse(
+                                moment(item,"YYYY-MM-DD HH")
+                            );
                             const startValue =
                                 Math.floor(
                                     moment(startDate).valueOf() / 10000000
@@ -154,8 +159,9 @@ export default class CalendarTimeline extends React.PureComponent {
                                     id: index + "",
                                     group: groups[i].id + "",
                                     title: status[index].traceid,
-                                    start: startDate,
+                                    start: startHour,
                                     end: endValue,
+                                    startDate: startDate,
                                     canMove: startValue > new Date().getTime(),
                                     canResize:
                                         startValue > new Date().getTime()
@@ -348,13 +354,15 @@ export default class CalendarTimeline extends React.PureComponent {
 
     getSnapshotBeforeUpdate(prevProps, prevState) {
         if (prevProps.timelineList !== this.props.timelineList) {
-            // let groups  = this.generateGroupsData(prevProps);
-            // let items = this.generateItemsData(groups);
-
             const { timelineList } = this.props;
 
             return { timelineList };
         }
+    }
+
+    componentDidMount() {
+        let _self = this;
+        setTimeout(() => _self.timeline.changeZoom(0.1), 500);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -363,28 +371,14 @@ export default class CalendarTimeline extends React.PureComponent {
             let groups = this.generateGroupsData(snapshot);
             let items = this.generateItemsData(groups);
             // this.setState({ groups: groups, items: items });
-            const defaultTimeStart = moment()
-                .startOf("day")
-                .toDate();
-            const defaultTimeEnd = moment()
-                .startOf("day")
-                .add(1, "day")
-                .toDate();
-            const visibleTimeStart = moment()
-                .startOf("day")
-                .valueOf();
-            const visibleTimeEnd = moment()
-                .startOf("day")
-                .add(1, "day")
-                .valueOf();
+            const defaultTimeStart = moment().add(1, 'hour')
+            const defaultTimeEnd = moment().add(4, 'hour')
 
             this.setState ({
                 groups,
                 items,
                 defaultTimeStart,
-                defaultTimeEnd,
-                visibleTimeStart,
-                visibleTimeEnd
+                defaultTimeEnd
             })
         }
     }
@@ -448,6 +442,7 @@ export default class CalendarTimeline extends React.PureComponent {
                     </div>
                 </div>
                 <Timeline
+                    ref={r => {this.timeline = r}}
                     groups={groups}
                     items={items}
                     keys={keys}
@@ -472,6 +467,8 @@ export default class CalendarTimeline extends React.PureComponent {
                     groupRenderer={this.groupRenderer}
                     selected={[this.props.timelineSelectedIndex.toString()]}
                     onItemSelect={this.handleItemSelect}
+                    onItemClick={this.handleClickCloseMap}
+                    onCanvasClick={this.handleCanvasCloseMap}
                     style={{ height: "calc(100% - 32px)" }}
                 >
                     <TimelineHeaders className="sticky">
@@ -511,7 +508,7 @@ export default class CalendarTimeline extends React.PureComponent {
                         </SidebarHeader>
                         {/*<DateHeader unit="primaryHeader" />*/}
                         {/*<DateHeader style={{ color: "black"}} />*/}
-                        <CustomHeader height={50} width={200} headerData={{someData: 'data'}} unit="hour">
+                        <CustomHeader className="custom-header" height={50} width="200px !important" headerData={{someData: 'data'}} unit="hour">
                             {({
                                   headerContext: { intervals },
                                   getRootProps,

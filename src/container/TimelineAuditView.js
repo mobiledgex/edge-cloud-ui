@@ -23,6 +23,9 @@ const countryOptions = [
     { key: '6', value: 6, flag: '6', text: 'Last 6 hours' },
     { key: '1', value: 1, flag: '1', text: 'Last hour' },
 ]
+
+const typeOptions = [{ key: 'all', value: 'all', flag: 'all', text: 'All' }]
+const nameOptions = [{ key: 'all', value: 'all', flag: 'all', text: 'All' }]
 let _self = null;
 const jsonView = (jsonObj, self) => {
     return <ReactJson src={jsonObj} {...self.jsonViewProps} style={{ width: '100%' }} />
@@ -191,8 +194,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     let tasksList = []
 
                     //todo: Extract only the TaskName to display at the top of the timeline.
-                    let typeOptions = [{ key: 'all', value: 'all', flag: 'all', text: 'All' }]
-                    let nameOptions = [{ key: 'all', value: 'all', flag: 'all', text: 'All' }]
                     for (let i in auditList) {
                         let operName = auditList[i].operationname;
                         let makeOperName = this.makeOper(operName)
@@ -291,12 +292,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
                 this.setState({}, () => sgmail.send(msg)
                                                             .then(() => {
-                                                                console.log('success')
+                                                                alert('success')
                                                                 this.setStorageData(traceid, "trace")
                                                                 this.setState({ openSendEmail: false })
                                                             })
                                                             .catch((err) => {
-                                                                console.log('error = ' + err)
+                                                                alert('error -> ' + err)
                                                             })
                 )
             }
@@ -363,6 +364,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             } else if(nameArray[2] === 'auth'){
                 if(nameArray[3] === 'ctrl'){
                     item = nameArray[4]
+                } else if(nameArray[3] === 'restricted'){
+                    item = nameArray[3] + nameArray[4].charAt(0).toUpperCase() + nameArray[4].slice(1) + nameArray[5].charAt(0).toUpperCase() + nameArray[5].slice(1)
                 } else {
                     item = nameArray[3] + nameArray[4].charAt(0).toUpperCase() + nameArray[4].slice(1)
                 }
@@ -376,8 +379,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 rawViewData: {},
                 isLoading2: true,
             })
-            let selectedIndex = value.value;
-            let timelineDataOne = this.state.rawAllData[selectedIndex]
+            let timelineDataOne = null
+            this.state.rawAllData.map((data, index) => {
+
+                if(value.traceid === data.traceid){
+                    timelineDataOne = data
+                }
+            })
             this.setStorageData(timelineDataOne.starttime, "time")
             setTimeout(() => {
                 this.setRequestView(timelineDataOne)
@@ -445,11 +453,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             let value = '';
             let times = this.state.timelineList[0].timesList
             let status = this.state.timelineList[0].statusList
+            this.setState({closeMap:false})
 
             times.map((time, index) => {
                 if(Date.parse(this.getParseDate(time)) === item){
-                    this.setState({"timelineSelectedIndex" : i})
-                    this.onHandleIndexClick({"value" : i})
+                    // this.setState({"timelineSelectedIndex" : i})
+                    this.onHandleIndexClick({"value" : i, "traceid": status[index].traceid})
                     if(status[index].status !== 200){
                         this.setState({"unCheckedErrorCount" : this.state.unCheckedErrorCount - 1})
                     }
@@ -466,6 +475,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         onCloseMap =()=> {
             let close = !this.state.closeMap;
             this.setState({closeMap:close})
+        }
+
+        onClickCavasCloseMap =()=> {
+            this.setState({closeMap:true})
         }
 
         setRequestView(dummyConts, sId) {
@@ -577,11 +590,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         }
 
         dropDownOnNameChange = (e, v) => {
+            this.setState({typeList: typeOptions})
             this.dropDownOnChange('name', v)
 
         }
 
         dropDownOnTypeChange = (e, v) => {
+            this.setState({nameList: nameOptions})
             this.dropDownOnChange('type', v)
         }
 
@@ -678,7 +693,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
                         <div  style={{width:this.getWidth(), height:(this.state.closeMap)? 'calc(100% - 20px)' : 'calc(50% - 27px)', overflow:'hidden'}}>
                             {(this.state.timesList.length > 0) ?
-                                <CalendarTimeline timelineList={this.state.timelineList[0]} onItemSelectCallback={this.onItemSelect} onPopupEmail={this.onPopupEmail} statusCount={this.state.statusCount} timelineSelectedIndex={this.state.timelineSelectedIndex}/>
+                                <CalendarTimeline timelineList={this.state.timelineList[0]} onItemSelectCallback={this.onItemSelect} onItemClickCloseMap={this.onCloseMap} onCanvasClickCloseMap={this.onClickCavasCloseMap} onPopupEmail={this.onPopupEmail} statusCount={this.state.statusCount} timelineSelectedIndex={this.state.timelineSelectedIndex}/>
                                 :null
                             }
                         </div>
