@@ -1,0 +1,29 @@
+{
+  "token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzY4OTQwMTcsImlhdCI6MTU3NjgwNzYxNywidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.JQeTgwoX6kjzjRJrF1ai_gWIWKQwHI9e7GnrkfxJRJKtevcN216XadtSgOnnj4B0_O4CVkUa6w_6ZbJAn2uhJQ",
+  "params": {
+    "region": "US",
+    "appinst": {
+      "app_key": {
+        "developer_key": {
+          "name": "MobiledgeX"
+        },
+        "name": "mexprometheusappname",
+        "version": "1.0"
+      },
+      "cluster_inst_key": {
+        "cluster_key": {
+          "name": "rah-cluster1"
+        },
+        "cloudlet_key": {
+          "name": "automationBerlinCloudletStage",
+          "operator_key": {
+            "name": "TDG"
+          }
+        }
+      }
+    },
+    "selector": "cpu",
+    "last": 1200
+  }
+}
+

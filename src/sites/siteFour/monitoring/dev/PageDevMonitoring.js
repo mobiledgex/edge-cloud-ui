@@ -1669,6 +1669,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 {itemList.map((item, index) => {
                                                     return (
 
+                                                        /*cluster one*/
                                                         <Center2 style={{width: chunkedSize === 12 ? 120 : 360}}>
                                                             {/*desc: ##############*/}
                                                             {/*desc: circle area   */}
@@ -1727,6 +1728,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     marginLeft: 0,
                                     backgroundColor: 'transparent',
                                     marginTop: 3,
+                                    width: '98.2%',
                                 }}>
                                     <div style={{backgroundColor: 'transparent'}}>
                                         <div style={{
@@ -1749,7 +1751,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             {/*todo: ################################*/}
                             {/*todo:unfold_more_less_icon            */}
                             {/*todo: ################################*/}
-                            {!this.state.loading &&
+                            {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER &&
                             <div
                                 style={{
                                     display: 'flex',
@@ -1776,7 +1778,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }}
                             >
                                 {this.state.isLegendExpanded ?
-                                    <UnfoldLess style={{fontSize: 30,}}/> :
+                                    <div style={{display: 'flex', alignSelf: 'flex-start'}}>
+                                        <UnfoldLess style={{fontSize: 18,}}/>
+                                    </div>
+                                    :
                                     <UnfoldMore style={{fontSize: 18, color: chunkArrayClusterUsageList.length > 1 ? 'rgb(118, 255, 3)' : 'white'}}/>
                                 }
                             </div>
