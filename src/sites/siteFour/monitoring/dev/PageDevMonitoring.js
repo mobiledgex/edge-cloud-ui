@@ -2,7 +2,7 @@ import {Center2, ClusterCluoudletLable, Legend} from '../PageMonitoringStyledCom
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Dropdown, Modal} from 'semantic-ui-react'
+import {Dropdown, Icon, Modal} from 'semantic-ui-react'
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
 import {CircularProgress, Toolbar} from '@material-ui/core'
@@ -92,7 +92,8 @@ import {
     PageDevMonitoringMapDispatchToProps,
     PageDevMonitoringMapStateToProps
 } from "./PageDevMonitoringPropsState";
-import Snackbar from "@material-ui/core/Snackbar";
+import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
+
 
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -261,6 +262,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     toastMessage: '',
                     isToastOpen: false,
                     mapLoading: false,
+                    legendHeight: 50,
+                    isLegendExpanded: false,
                 };
             }
 
@@ -284,6 +287,93 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     bubbleChartLoader: false,
                 })
 
+            }
+
+            async loadInitDataForCluster__FOR__DEV(isInterval: boolean = false) {
+                try {
+                    clearInterval(this.intervalForAppInst)
+                    this.setState({dropdownRequestLoading: true})
+                    await this.setState({
+                        allClusterEventLogList: [],
+                        filteredClusterEventLogList: []
+                    })
+                    let clusterList = require('../aaa____TESTCODE____/Jsons/clusterList')
+                    let cloudletList = require('../aaa____TESTCODE____/Jsons/cloudletList')
+                    let appInstanceList = require('../aaa____TESTCODE____/Jsons/appInstanceList')
+                    let clusterDropdownList = this.makeTreeClusterCloudletList(clusterList);
+                    console.log("clusterDropdownList===>", clusterDropdownList);
+
+
+
+                    //FIXME : ############################
+                    //@fixme: fakeData __allAppInstEvLogListValues
+                    //FIXME : ############################
+                    let __allAppInstEvLogListValues = require('../aaa____TESTCODE____/Jsons/allAppInstEventLogList')
+                    await this.setState({
+                        allAppInstEventLogs: __allAppInstEvLogListValues,
+                        filteredAppInstEventLogs: __allAppInstEvLogListValues,
+                    })
+
+
+                    let appInstanceListGroupByCloudlet = []
+                    try {
+                        appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
+                    } catch (e) {
+                        showToast(e.toString())
+                    }
+                    console.log('appInstanceListGroupByCloudlet===>', appInstanceListGroupByCloudlet);
+
+                    await this.setState({
+                        isReady: true,
+                        clusterDropdownList: clusterDropdownList,
+                        dropDownCloudletList: cloudletList,
+                        clusterList: clusterList,
+                        isAppInstaceDataReady: true,
+                        appInstanceList: appInstanceList,
+                        filteredAppInstanceList: appInstanceList,
+                        dropdownRequestLoading: false,
+
+                    });
+
+                    if (!isInterval) {
+                        this.setState({
+                            appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
+                        })
+                    }
+                    //fixme: fakeData22222222222
+                    //fixme: fakeData22222222222
+                    let allClusterUsageList = []
+                    allClusterUsageList = require('../aaa____TESTCODE____/Jsons/allClusterUsageList')
+                    console.log('filteredAppInstanceList===>', appInstanceList)
+
+                    let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU);
+                    await this.setState({
+                        bubbleChartData: bubbleChartData,
+                    })
+
+                    let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
+                        return o.sumCpuUsage;
+                    }));
+
+                    let maxMem = Math.max.apply(Math, allClusterUsageList.map(function (o) {
+                        return o.sumMemUsage;
+                    }));
+
+                    console.log('allClusterUsageList333====>', allClusterUsageList);
+
+                    await this.setState({
+                        clusterListLoading: false,
+                        allCloudletUsageList: allClusterUsageList,
+                        allClusterUsageList: allClusterUsageList,
+                        filteredClusterUsageList: allClusterUsageList,
+                        maxCpu: maxCpu,
+                        maxMem: maxMem,
+                        isRequesting: false,
+                        currentCluster: '',
+                    })
+                } catch (e) {
+
+                }
             }
 
             async loadInitDataForCluster(isInterval: boolean = false) {
@@ -1061,6 +1151,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             handleAppInstDropdown={this.handleAppInstDropdown}
                             eventLogList={this.state.filteredAppInstEventLogs}
                         />
+                    /*<AppInstEventLog_Virtual
+                        currentAppInst={this.state.currentAppInst}
+                        parent={this}
+                        handleAppInstDropdown={this.handleAppInstDropdown}
+                        eventLogList={this.state.filteredAppInstEventLogs}
+                    />*/
                 }
             }
 
@@ -1636,7 +1732,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     fullClusterList = cloudlet + " > " + cluster;
                 }
                 return (
-                    <Legend style={{height: this.state.currentClassification === CLASSIFICATION.CLUSTER ? 50 : 25,}}>
+                    <Legend style={{height: !this.state.isLegendExpanded ? 25 : 50,}}>
                         {this.state.loading &&
                         <div style={{
                             display: 'flex',
@@ -1660,7 +1756,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER ?
                             <div style={{
                                 display: 'flex',
-                                flex: 1,
+                                flex: .975,
                                 justifyContent: 'center',
                                 marginLeft: 0,
                                 backgroundColor: 'transparent',
@@ -1697,7 +1793,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             : !this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST &&
                             <div style={{
                                 display: 'flex',
-                                flex: 1,
+                                flex: .975,
                                 justifyContent: 'center',
                                 marginLeft: 0,
                                 backgroundColor: 'transparent',
@@ -1718,7 +1814,41 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     {this.state.currentAppInst.split("|")[0]}
                                 </ClusterCluoudletLable>
                             </div>
+
                         }
+
+                        <div>
+                            {this.state.isLegendExpanded.toString()}
+                        </div>
+                        {/*todo:unfold_more_less_icon*/}
+                        {/*todo:unfold_more_less_icon*/}
+                        {/*todo:unfold_more_less_icon*/}
+                        {!this.state.loading &&
+                        <div
+                            style={{
+                                display: 'flex',
+                                flex: .025,
+                                justifyContent: 'center',
+                                alignItems: 'f',
+                                marginLeft: 0,
+                                cursor: 'pointer',
+                                //backgroundColor: 'blue',
+                            }}
+                            onClick={() => {
+                                this.setState({
+                                    isLegendExpanded: !this.state.isLegendExpanded,
+                                })
+                            }}
+                        >
+                            {this.state.isLegendExpanded ?
+                                /*<MaterialIcon color={'rgb(118, 255, 3)'} icon={'unfold_more'}/>
+                                : <MaterialIcon color={'rgb(118, 255, 3)'} icon={'unfold_less'}/>*/
+                                <UnfoldLess/> :
+                                <UnfoldMore/>
+                            }
+                        </div>
+                        }
+
                     </Legend>
                 )
             }
