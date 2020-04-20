@@ -1146,7 +1146,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 hwType = this.state.layoutMapperForAppInst.find(x => x.id === uniqueIndex).hwType
                                 graphType = this.state.layoutMapperForAppInst.find(x => x.id === uniqueIndex).graphType
                             }
-                            return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
+                            return this.makGridItemOne(uniqueIndex, hwType, graphType, item)
 
                         })}
                     </ResponsiveReactGridLayout>
@@ -1630,7 +1630,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                 if (this.state.loading) {
                     return (
-                        <Legend style={{height: legendHeight, width: '98.0%', marginBottom: 0}}>
+                        <Legend style={{height: legendHeight}}>
                             <div style={{
                                 display: 'flex',
                                 alignSelf: 'center',
@@ -1655,7 +1655,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else {
                     return (
-                        <Legend style={{height: !this.state.isLegendExpanded ? legendHeight : chunkArrayClusterUsageList.length * legendHeight, width: '98.2%', marginBottom: 0}}>
+                        <Legend style={{height: !this.state.isLegendExpanded ? legendHeight : chunkArrayClusterUsageList.length * legendHeight,}}>
 
                             {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER ?
 
@@ -1859,6 +1859,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                          overflowY: 'auto',
                                          height: 'calc(100% - 99px)',
                                          marginTop: 0,
+                                         marginRight: 50,
                                          backgroundColor: this.props.themeType === 'light' ? 'white' : null
                                      }}>
                                     {this.state.currentClassification === CLASSIFICATION.CLUSTER
