@@ -85,7 +85,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             timelineList: [],
             currentTask: '',
             currentTaskTime: '',
-            closeMap:true,
+            closeMap:false,
             storageTimeList: [],
             statusList: [],
             statusCount: [],

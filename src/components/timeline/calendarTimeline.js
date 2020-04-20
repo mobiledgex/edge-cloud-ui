@@ -24,7 +24,7 @@ var keys = {
     groupLabelKey: "title"
 };
 
-export default class CalendarTimeline extends Component {
+export default class CalendarTimeline extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -257,6 +257,7 @@ export default class CalendarTimeline extends Component {
         customStyles.overflow = "hidden";
         customStyles.height = newHeight + "px";
         customStyles.minWidth = "230px";
+        customStyles.maxWidth = "371px";
         customStyles.marginTop = "-10px";
         properties.style = customStyles;
 
@@ -309,7 +310,30 @@ export default class CalendarTimeline extends Component {
     //         let groups  = this.generateGroupsData(nextProps);
     //         let items = this.generateItemsData(groups);
     //
-    //         this.setState({groups: groups, items: items})
+    //         // this.setState({groups: groups, items: items})
+    //         const defaultTimeStart = moment()
+    //             .startOf("day")
+    //             .toDate();
+    //         const defaultTimeEnd = moment()
+    //             .startOf("day")
+    //             .add(1, "day")
+    //             .toDate();
+    //         const visibleTimeStart = moment()
+    //             .startOf("day")
+    //             .valueOf();
+    //         const visibleTimeEnd = moment()
+    //             .startOf("day")
+    //             .add(1, "day")
+    //             .valueOf();
+    //
+    //         this.state = {
+    //             groups,
+    //             items,
+    //             defaultTimeStart,
+    //             defaultTimeEnd,
+    //             visibleTimeStart,
+    //             visibleTimeEnd
+    //         };
     //     }
     //
     //     console.log("20200324 " + JSON.stringify(this.state.groups))
@@ -331,7 +355,7 @@ export default class CalendarTimeline extends Component {
         if (snapshot) {
             let groups = this.generateGroupsData(snapshot);
             let items = this.generateItemsData(groups);
-            //this.setState({ groups: groups, items: items });
+            // this.setState({ groups: groups, items: items });
             const defaultTimeStart = moment()
                 .startOf("day")
                 .toDate();
@@ -347,14 +371,14 @@ export default class CalendarTimeline extends Component {
                 .add(1, "day")
                 .valueOf();
 
-            this.state = {
+            this.setState ({
                 groups,
                 items,
                 defaultTimeStart,
                 defaultTimeEnd,
                 visibleTimeStart,
                 visibleTimeEnd
-            };
+            })
         }
     }
 
@@ -425,14 +449,17 @@ export default class CalendarTimeline extends Component {
                     canSelect
                     itemsSorted
                     itemTouchSendsClick={false}
+                    minResizeWidth={200}
+                    minZoom={60*60*1000*5}
+                    maxZoom={60*60*1000*5}
                     stackItems
                     //itemHeightRatio={0.75}
                     showCursorLine
                     minResizeWidth={550}
                     defaultTimeStart={defaultTimeStart}
                     defaultTimeEnd={defaultTimeEnd}
-                    visibleTimeStart={visibleTimeStart}
-                    visibleTimeEnd={visibleTimeEnd}
+                    // visibleTimeStart={visibleTimeStart}
+                    // visibleTimeEnd={visibleTimeEnd}
                     itemRenderer={this.itemRenderer}
                     groupRenderer={this.groupRenderer}
                     selected={[this.props.timelineSelectedIndex.toString()]}
@@ -474,8 +501,48 @@ export default class CalendarTimeline extends Component {
                                 );
                             }}
                         </SidebarHeader>
-                        <DateHeader unit="primaryHeader" />
-                        <DateHeader style={{ color: "black" }} />
+                        {/*<DateHeader unit="primaryHeader" />*/}
+                        {/*<DateHeader style={{ color: "black"}} />*/}
+                        <CustomHeader height={50} width={200} headerData={{someData: 'data'}} unit="hour">
+                            {({
+                                  headerContext: { intervals },
+                                  getRootProps,
+                                  getIntervalProps,
+                                  showPeriod,
+                                  data,
+                              }) => {
+                                return (
+                                    <div {...getRootProps()}>
+                                        {intervals.map(interval => {
+                                            const intervalStyle = {
+                                                width: '170px !important',
+                                                lineHeight: '30px',
+                                                textAlign: 'center',
+                                                borderLeft: '1px solid white',
+                                                cursor: 'pointer',
+                                                backgroundColor: '#202329',
+                                                color: 'white',
+                                            }
+                                            return (
+                                                <div
+                                                    onClick={() => {
+                                                        showPeriod(interval.startTime, interval.endTime)
+                                                    }}
+                                                    {...getIntervalProps({
+                                                        interval,
+                                                        style: setTimeout(() => intervalStyle , 2000)
+                                                    })}
+                                                >
+                                                    <div className="sticky">
+                                                        {interval.startTime.format('YYYY-MM-DD HH:mm:SS')}
+                                                    </div>
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                )
+                            }}
+                        </CustomHeader>
                     </TimelineHeaders>
                 </Timeline>
             </div>
