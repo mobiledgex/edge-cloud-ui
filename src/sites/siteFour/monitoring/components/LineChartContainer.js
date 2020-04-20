@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import {convertToClassification, makeLineChartOptions, makeTop5GradientLineChartData, simpleGraphOptions} from "../dev/PageDevMonitoringService";
+import {convertToClassification, makeGradientLineChartData, makeLineChartOptions} from "../dev/PageDevMonitoringService";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import {Line} from 'react-chartjs-2';
 
@@ -54,7 +54,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
         let newDateTimeList = lineChartDataSet.newDateTimeList;
         let hardwareType = lineChartDataSet.hardwareType;
 
-        const lineChartDataForRendering = makeTop5GradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, this.props.parent.state.isStackedLineChart, hardwareType)
+        const lineChartDataForRendering = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, this.props.parent.state.isStackedLineChart, hardwareType)
         this.setState({
             chartDataSet: lineChartDataForRendering,
             pHardwareType: hwType,

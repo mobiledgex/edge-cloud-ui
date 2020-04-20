@@ -1,9 +1,28 @@
 import React from 'react';
 import '../PageMonitoring.css';
-import {APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, CLASSIFICATION, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX_FOR_CLUSTER} from "../../../../shared/Constants";
+import {
+    APP_INST_MATRIX_HW_USAGE_INDEX,
+    CHART_COLOR_APPLE,
+    CHART_COLOR_BERRIES_GALORE,
+    CHART_COLOR_BRIGHT_AND_ENERGETIC,
+    CHART_COLOR_EARTHY_AND_NATURAL,
+    CHART_COLOR_EXOTIC_ORCHIDS,
+    CHART_COLOR_JAZZ_NIGHT,
+    CHART_COLOR_LIST,
+    CHART_COLOR_LIST2,
+    CHART_COLOR_LIST3,
+    CHART_COLOR_LIST4,
+    CHART_COLOR_MONOKAI,
+    CHART_COLOR_URBAN_SKYLINE,
+    CLASSIFICATION,
+    HARDWARE_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    THEME_OPTIONS,
+    USAGE_INDEX_FOR_CLUSTER
+} from "../../../../shared/Constants";
 import BubbleChartCore from "../components/BubbleChartCore";
 import PageDevMonitoring from "./PageDevMonitoring";
-import {convertByteToMegaByte, convertByteToMegaGigaByte, PageMonitoringStyles, renderUsageByType, showToast} from "../PageMonitoringCommonService";
+import {convertByteToMegaByte, convertByteToMegaGigaByte, makeBubbleChartDataForCluster, PageMonitoringStyles, renderUsageByType, showToast} from "../PageMonitoringCommonService";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
 import {CircularProgress, createMuiTheme} from "@material-ui/core";
@@ -119,30 +138,28 @@ export const CHART_TYPE = {
 
 export const defaultLayoutForCluster = [
 
-    {i: '1', x: 1, y: 0, w: 2, h: 2, "add": false},//MAP
 
-    {i: '2', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
+    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
+    {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": true},//MAP
     {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
-
     {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//bubble
     {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//appinst event log
     {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
-
-
 ];
 
 
 export const defaultHwMapperListForCluster = [
     {
         id: '1',
-        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
-        graphType: HARDWARE_TYPE_FOR_GRID.MAP,
-    },
-    {
-        id: '2',
         hwType: HARDWARE_TYPE_FOR_GRID.CPU,
         graphType: CHART_TYPE.LINE,
     },
+    {
+        id: '2',
+        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
+        graphType: HARDWARE_TYPE_FOR_GRID.MAP,
+    },
+
     {
         id: '3',
         hwType: HARDWARE_TYPE_FOR_GRID.MEM,
@@ -189,8 +206,9 @@ desc:defaultLayoutForAppInst
 desc:#######################################
  */
 export const defaultLayoutForAppInst = [
-    {i: '1', x: 1, y: 0, w: 2, h: 2, "add": false},//MAP
-    {i: '2', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
+
+    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
+    {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": true},//MAP
     {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
     {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//DISK
     {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},
@@ -201,14 +219,15 @@ export const defaultLayoutForAppInst = [
 export const defaultLayoutMapperForAppInst = [
     {
         id: '1',
-        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
-        graphType: HARDWARE_TYPE_FOR_GRID.MAP,
-    },
-    {
-        id: '2',
         hwType: HARDWARE_TYPE_FOR_GRID.CPU,
         graphType: CHART_TYPE.LINE,
     },
+    {
+        id: '2',
+        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
+        graphType: HARDWARE_TYPE_FOR_GRID.MAP,
+    },
+
     {
         id: '3',
         hwType: HARDWARE_TYPE_FOR_GRID.MEM,
@@ -1237,6 +1256,101 @@ export const makeGradientColorList2 = (canvas, height, colorList, isBig = false)
     return gradientList;
 };
 
+/**
+ *
+ * @param themeTitle
+ * @param _this
+ * @returns {Promise<void>}
+ */
+export const handleThemeChanges = async (themeTitle, _this) => {
+    if (themeTitle === THEME_OPTIONS.DEFAULT) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_LIST
+        })
+    }
+    if (themeTitle === THEME_OPTIONS.BLUE) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_LIST2
+        })
+    }
+    if (themeTitle === THEME_OPTIONS.GREEN) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_LIST3
+        })
+    }
+    if (themeTitle === THEME_OPTIONS.RED) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_LIST4
+        })
+    }
+
+    if (themeTitle === THEME_OPTIONS.MONOKAI) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_MONOKAI
+        })
+    }
+
+    if (themeTitle === THEME_OPTIONS.APPLE) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_APPLE
+        })
+    }
+
+    if (themeTitle === THEME_OPTIONS.EXOTIC_ORCHIDS) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_EXOTIC_ORCHIDS
+        })
+    }
+
+    if (themeTitle === THEME_OPTIONS.URBAN_SKYLINE) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_URBAN_SKYLINE
+        })
+    }
+
+    if (themeTitle === THEME_OPTIONS.BERRIES_GALORE) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_BERRIES_GALORE
+        })
+    }
+    if (themeTitle === THEME_OPTIONS.BRIGHT_AND_ENERGETIC) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_BRIGHT_AND_ENERGETIC
+        })
+    }
+
+    if (themeTitle === THEME_OPTIONS.EARTHY_AND_NATURAL) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_EARTHY_AND_NATURAL
+        })
+    }
+
+    if (themeTitle === THEME_OPTIONS.BRIGHT_AND_ENERGETIC) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_BRIGHT_AND_ENERGETIC
+        })
+    }
+
+    if (themeTitle === THEME_OPTIONS.JAZZ_NIGHT) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_JAZZ_NIGHT
+        })
+    }
+
+
+    let selectedChartColorList = _this.state.chartColorList;
+    reactLocalStorage.setObject(getUserId() + "_mon_theme", selectedChartColorList)
+    reactLocalStorage.set(getUserId() + "_mon_theme_title", themeTitle)
+    _this.setState({
+        chartColorList: selectedChartColorList,
+    }, async () => {
+        _this.setState({
+            bubbleChartData: await makeBubbleChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this.state.chartColorList),
+        })
+    })
+
+}
+
 
 /**
  *
@@ -1701,7 +1815,7 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
  * @param isGradientColor
  * @returns {function(*=): {datasets: [], labels: *}}
  */
-export const makeTop5GradientLineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring, isGradientColor = false, hwType) => {
+export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring, isGradientColor = false, hwType) => {
 
     const lineChartData = (canvas) => {
 
@@ -1740,7 +1854,6 @@ export const makeTop5GradientLineChartData = (levelTypeNameList, usageSetList, n
 
             finalSeriesDataSets.push(datasetsOne)
 
-
         }
 
         let _result = {
@@ -1773,7 +1886,7 @@ export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDat
         let hardwareType = lineChartDataSet.hardwareType;
 
 
-        const lineChartDataForRendering = makeTop5GradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, _this, _this.state.isStackedLineChart);
+        const lineChartDataForRendering = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, _this, _this.state.isStackedLineChart);
 
 
         return (
@@ -1794,6 +1907,46 @@ export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDat
         showToast(e.toString())
     }
 };
+
+
+
+//let chunkedSize = 12;
+//let chunkArrayClusterUsageList = this.toChunkArray2(this.state.filteredClusterUsageList, this.state.chunkedSize);  //realdata
+//let chunkArrayClusterUsageList = this.toChunkArray2(tempClusterList, chunkedSize);
+//_.chunk(['a', 'b', 'c', 'd'], 2);
+export const tempClusterList = [
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet2',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet3',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet4',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet5',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet6',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet7',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet8',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet9',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet10',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet11',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet12',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet13',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet14',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudle115',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet16',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet17',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet18',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet19',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet20',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet21',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet22',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet23',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet24',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet25',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet26',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet27',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet28',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet29',
+    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet30',
+
+]
 
 
 export const renderLineChartCoreForDev_AppInst = (_this: PageDevMonitoring, lineChartDataSet) => {

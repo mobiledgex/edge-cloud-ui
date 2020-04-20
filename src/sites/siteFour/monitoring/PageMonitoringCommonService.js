@@ -84,6 +84,14 @@ export const PageMonitoringStyles = {
         zIndex: 1,
         //height: '50px',
     },
+    dropDownForClusterCloudlet3: {
+        minWidth: '180px',
+        fontSize: '11px',
+        minHeight: '30px',
+        marginLeft: '-2px',
+        zIndex: 1,
+        //height: '50px',
+    },
     dropDownForClusterCloudlet2: {
         minWidth: '320px',
         fontSize: '11px',
@@ -114,6 +122,19 @@ export const PageMonitoringStyles = {
         minHeight: '40px',
         zIndex: 1,
         //height: '50px',
+    },
+    chartIcon: {
+        width: 65,
+        height: 65,
+    },
+    chartIconOuter: {
+        width: 130,
+        height: 85,
+        //backgroundColor: 'red',
+        display: 'flex',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        alignItems: 'center',
     },
     cell000: {
         marginLeft: 0,
@@ -1047,21 +1068,27 @@ export const showToast = (title: string, time = 2) => {
 export const showToast2 = (title: string, time = 2) => {
     toast({
         type: 'success',
-        icon: 'star',
         title: title,
         //animation: 'swing left',
         time: time * 1000,
         color: 'black',
     });
 }
-export const showToast3 = (title: string, time = 2) => {
+
+/**
+ *
+ * @param title
+ * @param time
+ * @param color
+ */
+export const showToast3 = (title: string, time = 2, color='green') => {
     toast({
-        type: 'warning',
-        icon: 'star',
+        type: 'success',
         title: title,
-        animation: 'swing left',
+        animation: 'swing right',
         time: time * 1000,
-        color: 'black',
+        color: color,
+        //size: 'tiny',
     });
 }
 

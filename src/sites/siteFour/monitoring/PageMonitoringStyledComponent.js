@@ -7,6 +7,9 @@ export const Center = styled.div`
   justify-content: center;
   text-align: center;
   display : flex;
+  align-items: center;
+  align-self: center;
+  font-family: Ubuntu;
 `;
 
 
@@ -63,23 +66,47 @@ export const Legend = styled.div`
   //marginLeft:50px;
 `;
 
-export const Legend2 = styled.div`
+/*const _Ripples = ({className, children}) => (
+    <Ripples
+        color='#00BCD4' during={500}
+    >
+        <ChartIconOuterDiv>
+            {children}
+        </ChartIconOuterDiv>
+    </Ripples>
+);
+
+export const ChartIconOuter = styled(_Ripples)`
   display : flex;
-  justify-content: flex-start;
+  justify-content: center;
   text-align: center;
-  flex-direction: row;
+  flex-direction: column;
   align-self: center;
   font-size: 13px;
-  border-width: 0.1px;
-  border-style: dotted;
+  font-family: Ubuntu;
+  border-width: 0.5px;
+  border-style: solid;
   border-color: dimgrey;
-  padding:5px;
-  //margin-top: 10px;
-  margin-left: 10px;
-  margin-right: 10px;
-  height: 50px;
-  flex-wrap: wrap;
-  //marginLeft:50px;
+  padding: 10px 5px;
+  height: 110px;
+  width: 140px;
+`;*/
+
+
+export const ChartIconOuterDiv = styled.div`
+  display : flex;
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
+  align-self: center;
+  font-size: 13px;
+  font-family: Ubuntu;
+  border-width: 0.5px;
+  border-style: solid;
+  border-color: dimgrey;
+  padding: 10px 5px;
+  height: 110px;
+  width: 150px;
 `;
 
 export const AppInstLegend = styled.div`
@@ -109,13 +136,14 @@ export const Center3 = styled.div`
 `;
 
 export const Center2 = styled.div`
-  justify-content: center;
+  justify-content: flex-start;
   text-align: center;
   flex-direction: row;
   display : flex;
   align-self: center;
-  font-size: 13px;
-  marginLeft:50px;
+  marginLeft:0px;
+  align-items: flex-start;
+
 `
 
 

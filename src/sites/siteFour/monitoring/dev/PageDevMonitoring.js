@@ -2,11 +2,11 @@ import {Center2, ClusterCluoudletLable, Legend} from '../PageMonitoringStyledCom
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Dropdown, Modal} from 'semantic-ui-react'
+import {Dropdown, Icon, Modal} from 'semantic-ui-react'
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
 import {CircularProgress, Toolbar} from '@material-ui/core'
-import {Dropdown as ADropdown, Menu as AMenu,} from 'antd';
+import {Dropdown as ADropdown, Menu as AMenu, Tooltip,} from 'antd';
 import {
     defaultHwMapperListForCluster,
     defaultLayoutForAppInst,
@@ -14,6 +14,7 @@ import {
     defaultLayoutMapperForAppInst,
     filterByClassification,
     getUserId,
+    handleThemeChanges,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
     makeDropdownListWithValuePipeForAppInst,
@@ -28,18 +29,7 @@ import {
 } from "./PageDevMonitoringService";
 import {
     ADD_ITEM_LIST,
-    CHART_COLOR_APPLE,
-    CHART_COLOR_BERRIES_GALORE,
-    CHART_COLOR_BRIGHT_AND_ENERGETIC,
-    CHART_COLOR_EARTHY_AND_NATURAL,
-    CHART_COLOR_EXOTIC_ORCHIDS,
-    CHART_COLOR_JAZZ_NIGHT,
     CHART_COLOR_LIST,
-    CHART_COLOR_LIST2,
-    CHART_COLOR_LIST3,
-    CHART_COLOR_LIST4,
-    CHART_COLOR_MONOKAI,
-    CHART_COLOR_URBAN_SKYLINE,
     CLASSIFICATION,
     GRID_ITEM_TYPE,
     HARDWARE_OPTIONS_FOR_APPINST,
@@ -47,17 +37,33 @@ import {
     HARDWARE_TYPE,
     NETWORK_TYPE,
     RECENT_DATA_LIMIT_COUNT,
-    THEME_OPTIONS,
     THEME_OPTIONS_LIST
 } from "../../../../shared/Constants";
 import type {TypeBarChartData, TypeLineChartData} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
-import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, PageMonitoringStyles, renderPlaceHolderCircular, renderWifiLoader, showToast} from "../PageMonitoringCommonService";
-import {getAllAppInstEventLogs, getAllClusterEventLogList, getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList, requestShowAppInstClientWS} from "../PageMonitoringMetricService";
+import {
+    getOneYearStartEndDatetime,
+    isEmpty,
+    makeBubbleChartDataForCluster,
+    PageMonitoringStyles,
+    renderPlaceHolderCircular,
+    renderWifiLoader,
+    showToast
+} from "../PageMonitoringCommonService";
+import {
+    getAllAppInstEventLogs,
+    getAllClusterEventLogList,
+    getAppInstList,
+    getAppLevelUsageList,
+    getCloudletList,
+    getClusterLevelUsageList,
+    getClusterList,
+    requestShowAppInstClientWS
+} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
-import ModalGraph from "../components/MiniModalGraphContainer";
+import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
 import {reactLocalStorage} from "reactjs-localstorage";
 import MapForDevContainer from "../components/MapForDevContainer";
 import {Responsive, WidthProvider} from "react-grid-layout";
@@ -78,7 +84,16 @@ import BarChartContainer from "../components/BarChartContainer";
 import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryForClusterHook";
 import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryForAppInstHook";
 import type {PageDevMonitoringProps, PageDevMonitoringState} from "./PageDevMonitoringPropsState";
-import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageDevMonitoringPropsState";
+import {
+    ColorLinearProgress,
+    CustomSwitch,
+    defaultLayoutXYPosForAppInst,
+    defaultLayoutXYPosForCluster,
+    PageDevMonitoringMapDispatchToProps,
+    PageDevMonitoringMapStateToProps
+} from "./PageDevMonitoringPropsState";
+import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
+
 
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -88,7 +103,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             intervalForAppInst = null;
             intervalForCluster = null;
             webSocketInst: WebSocket = null;
-            gridItemHeight = 256;
+            gridItemHeight = 246;
 
             constructor(props) {
                 super(props);
@@ -242,6 +257,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     showAppInstClient: false,
                     filteredClusterList: [],
                     currentWidth: '100%',
+                    emptyPosXYInGrid: {},
+                    emptyPosXYInGrid2: {},
+                    toastMessage: '',
+                    isToastOpen: false,
+                    mapLoading: false,
+                    isLegendExpanded: false,
+                    chunkedSize: 12,
                 };
             }
 
@@ -256,6 +278,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     loading: true,
                     bubbleChartLoader: true,
                     selectOrg: localStorage.selectOrg === undefined ? '' : localStorage.selectOrg.toString(),
+                    mapLoading: true,
 
                 })
                 await this.loadInitDataForCluster();
@@ -266,23 +289,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             }
 
-            componentWillUnmount(): void {
-                this.props.toggleHeader(true)
-                clearInterval(this.intervalForAppInst)
-                clearInterval(this.intervalForCluster)
-                if (!isEmpty(this.webSocketInst)) {
-                    this.webSocketInst.close();
-                }
-            }
-
-
-            showModalClusterLineChart(lineChartDataOne, index) {
-                this.setState({
-                    selectedClusterUsageOne: lineChartDataOne,
-                    modalIsOpen: true,
-                    selectedClusterUsageOneIndex: index,
-                })
-            }
 
             async loadInitDataForCluster(isInterval: boolean = false) {
                 let promiseList = []
@@ -296,11 +302,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     promiseList.push(getCloudletList())
                     promiseList.push(getClusterList())
                     promiseList.push(getAppInstList())
-                    let cloudletList_clusterList_appInstList = await Promise.all(promiseList);
-                    let cloudletList = cloudletList_clusterList_appInstList[0]
-                    let clusterList = cloudletList_clusterList_appInstList[1];
-                    let appInstList = cloudletList_clusterList_appInstList[2];
+                    let newPromiseList = await Promise.all(promiseList);
+                    let cloudletList = newPromiseList[0]
+                    let clusterList = newPromiseList[1];
+                    let appInstList = newPromiseList[2];
                     let clusterDropdownList = makeSelectBoxListWithKeyValuePipeForCluster(clusterList, 'ClusterName', 'Cloudlet')
+
+                    //@todo:#########################################################################
+                    //@todo: map Marker
+                    //@todo:#########################################################################
+                    let appInstanceListGroupByCloudlet = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
+                    await this.setState({
+                        appInstanceListGroupByCloudlet: !isInterval && appInstanceListGroupByCloudlet,
+                        mapLoading: false,
+                    })
 
                     //@todo:#########################################################################
                     //@todo: getAllClusterEventLogList, getAllAppInstEventLogs ,allClusterUsageList
@@ -308,12 +323,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     promiseList2.push(getAllClusterEventLogList(clusterList))
                     promiseList2.push(getAllAppInstEventLogs());
                     promiseList2.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
-                    let allClusterEventLogList_allAppInstEventLogList_allClusterUsageList = await Promise.all(promiseList2);
-                    let allClusterEventLogList = allClusterEventLogList_allAppInstEventLogList_allClusterUsageList[0];
-                    let allAppInstEventLogList = allClusterEventLogList_allAppInstEventLogList_allClusterUsageList[1];
-                    let allClusterUsageList = allClusterEventLogList_allAppInstEventLogList_allClusterUsageList[2];
+                    let newPromiseList2 = await Promise.all(promiseList2);
+                    let allClusterEventLogList = newPromiseList2[0];
+                    let allAppInstEventLogList = newPromiseList2[1];
+                    let allClusterUsageList = newPromiseList2[2];
 
-                    let appInstanceListGroupByCloudlet = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
                     let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
                     let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
                         return o.sumCpuUsage;
@@ -324,7 +338,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     await this.setState({
                         isNoData: appInstList.length === 0,
-                        appInstanceListGroupByCloudlet: !isInterval && appInstanceListGroupByCloudlet,
                         bubbleChartData: bubbleChartData,
                         allClusterEventLogList: allClusterEventLogList,
                         filteredClusterEventLogList: allClusterEventLogList,
@@ -352,6 +365,24 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //showToast(e.toString())
                 }
 
+            }
+
+            componentWillUnmount(): void {
+                this.props.toggleHeader(true)
+                clearInterval(this.intervalForAppInst)
+                clearInterval(this.intervalForCluster)
+                if (!isEmpty(this.webSocketInst)) {
+                    this.webSocketInst.close();
+                }
+            }
+
+
+            showModalClusterLineChart(lineChartDataOne, index) {
+                this.setState({
+                    selectedClusterUsageOne: lineChartDataOne,
+                    modalIsOpen: true,
+                    selectedClusterUsageOneIndex: index,
+                })
             }
 
 
@@ -765,11 +796,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         graphType: graphType,
                     }
 
+
+                    //##########################
+                    // calculate empty space
+                    //##########################
                     await this.setState({
                         layoutForCluster: this.state.layoutForCluster.concat({
                             i: uniqueId,
-                            x: 0,
-                            y: maxY + 1,
+                            x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
+                            y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
                             w: this.makeGridSizeByType(graphType),
                             h: this.makeGridSizeHeightByType(graphType),
                         }),
@@ -801,8 +836,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     await this.setState({
                         layoutForAppInst: this.state.layoutForAppInst.concat({
                             i: uniqueId,
-                            x: 0,
-                            y: maxY + 1,
+                            x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
+                            y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
                             w: 1,
                             h: 1,
                         }),
@@ -986,6 +1021,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.MAP) {
                     return (
                         <MapForDevContainer
+                            markerList={this.state.appInstanceListGroupByCloudlet}
                             currentWidgetWidth={this.state.currentWidgetWidth}
                             isMapUpdate={this.state.isMapUpdate}
                             selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
@@ -993,7 +1029,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             parent={this}
                             isDraggable={this.state.isDraggable}
                             handleAppInstDropdown={this.handleAppInstDropdown}
-                            markerList={this.state.appInstanceListGroupByCloudlet}
                             isFullScreenMap={false}
                             isShowAppInstPopup={this.state.isShowAppInstPopup}
                         />
@@ -1030,16 +1065,42 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             handleAppInstDropdown={this.handleAppInstDropdown}
                             eventLogList={this.state.filteredAppInstEventLogs}
                         />
+                    /*<AppInstEventLog_Virtual
+                        currentAppInst={this.state.currentAppInst}
+                        parent={this}
+                        handleAppInstDropdown={this.handleAppInstDropdown}
+                        eventLogList={this.state.filteredAppInstEventLogs}
+                    />*/
                 }
             }
 
+            calculateEmptyPosInGrid(layout, pDefaultLayoutXYPos) {
+                let emptyPosXYInGrid = {};
+                pDefaultLayoutXYPos.map((item) => {
+                    let isExist = false;
+                    for (let j = 0; j < layout.length; j++) {
+                        if (layout[j].x === item.x && layout[j].y === item.y) {
+                            isExist = true;
+                            break;
+                        }
+                    }
+                    if (isExist === false) {
+                        emptyPosXYInGrid = item;
+                    }
+                })
+                this.setState({
+                    emptyPosXYInGrid: emptyPosXYInGrid,
+                })
+            }
 
             renderGridLayoutForCluster() {
                 return (
                     <ResponsiveReactGridLayout
                         isResizable={true}
                         draggableHandle=".draggable"
-                        verticalCompact={false}
+                        verticalCompact={true}
+                        compactType={'vertical'}
+                        preventCollision={true}
                         isDraggable={true}
                         autoSize={true}
                         style={{backgroundColor: this.props.themeType === THEME_TYPE.LIGHT ? 'white' : null}}
@@ -1054,11 +1115,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 currentWidgetWidth: width,
                             })
                         }}
-                        onLayoutChange={(layout) => {
+                        onLayoutChange={async (layout) => {
                             this.setState({
                                 layoutForCluster: layout,
+                            }, async () => {
+                                await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForCluster);
+                                reactLocalStorage.setObject(getUserId() + "_layout", layout)
                             });
-                            reactLocalStorage.setObject(getUserId() + "_layout", layout)
+
                         }}
                         {...this.props}
                     >
@@ -1084,6 +1148,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             renderGridLayoutForAppInst = () => {
                 return (
                     <ResponsiveReactGridLayout
+                        verticalCompact={true}
+                        compactType={'vertical'}
+                        preventCollision={true}
                         isResizable={true}
                         draggableHandle=".draggable"
                         isDraggable={true}
@@ -1095,9 +1162,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         onLayoutChange={async (layout) => {
                             await this.setState({
                                 layoutForAppInst: layout
+                            }, async () => {
+                                await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForAppInst);
+                                let layoutUniqueId = getUserId() + "_layout2"
+                                reactLocalStorage.setObject(layoutUniqueId, this.state.layoutForAppInst)
                             });
-                            let layoutUniqueId = getUserId() + "_layout2"
-                            reactLocalStorage.setObject(layoutUniqueId, this.state.layoutForAppInst)
+
                         }}
                     >
                         {this.state.layoutForAppInst.map((item, loopIndex) => {
@@ -1115,96 +1185,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         })}
                     </ResponsiveReactGridLayout>
                 )
-            }
-
-            handleThemeChanges = async (themeTitle) => {
-                if (themeTitle === THEME_OPTIONS.DEFAULT) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_LIST
-                    })
-                }
-                if (themeTitle === THEME_OPTIONS.BLUE) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_LIST2
-                    })
-                }
-                if (themeTitle === THEME_OPTIONS.GREEN) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_LIST3
-                    })
-                }
-                if (themeTitle === THEME_OPTIONS.RED) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_LIST4
-                    })
-                }
-
-                if (themeTitle === THEME_OPTIONS.MONOKAI) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_MONOKAI
-                    })
-                }
-
-                if (themeTitle === THEME_OPTIONS.APPLE) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_APPLE
-                    })
-                }
-
-                if (themeTitle === THEME_OPTIONS.EXOTIC_ORCHIDS) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_EXOTIC_ORCHIDS
-                    })
-                }
-
-                if (themeTitle === THEME_OPTIONS.URBAN_SKYLINE) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_URBAN_SKYLINE
-                    })
-                }
-
-                if (themeTitle === THEME_OPTIONS.BERRIES_GALORE) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_BERRIES_GALORE
-                    })
-                }
-                if (themeTitle === THEME_OPTIONS.BRIGHT_AND_ENERGETIC) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_BRIGHT_AND_ENERGETIC
-                    })
-                }
-
-                if (themeTitle === THEME_OPTIONS.EARTHY_AND_NATURAL) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_EARTHY_AND_NATURAL
-                    })
-                }
-
-                if (themeTitle === THEME_OPTIONS.BRIGHT_AND_ENERGETIC) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_BRIGHT_AND_ENERGETIC
-                    })
-                }
-
-                if (themeTitle === THEME_OPTIONS.JAZZ_NIGHT) {
-                    await this.setState({
-                        chartColorList: CHART_COLOR_JAZZ_NIGHT
-                    })
-                }
-
-
-                let selectedChartColorList = this.state.chartColorList;
-                reactLocalStorage.setObject(getUserId() + "_mon_theme", selectedChartColorList)
-                reactLocalStorage.set(getUserId() + "_mon_theme_title", themeTitle)
-                this.setState({
-                    chartColorList: selectedChartColorList,
-                }, async () => {
-                    this.setState({
-                        bubbleChartData: await makeBubbleChartDataForCluster(this.state.filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList),
-                    })
-                })
-
-
             }
 
 
@@ -1240,17 +1220,17 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             </div>
                         </AMenu.Item>
                         {/*<AMenu.Item style={{display: 'flex'}}
-                                    key="1"
-                                    onClick={() => {
-                                        this.setState({
-                                            isOpenEditView2: true,
-                                        })
-                                    }}
+                        key="1"
+                        onClick={() => {
+                        this.setState({
+                        isOpenEditView2: true,
+                        })
+                        }}
                         >
-                            <MaterialIcon icon={'add'} color={'white'}/>
-                            <div style={PageMonitoringStyles.listItemTitle}>
-                                Add Item for test
-                            </div>
+                        <MaterialIcon icon={'add'} color={'white'}/>
+                        <div style={PageMonitoringStyles.listItemTitle}>
+                        Add Item for test
+                        </div>
                         </AMenu.Item>*/}
                         {/*desc:#########################################*/}
                         {/*desc:Reload                                  */}
@@ -1331,7 +1311,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             await this.setState({
                                                 themeTitle: item.value
                                             })
-                                            await this.handleThemeChanges(item.value)
+                                            await handleThemeChanges(item.value, this)
                                         }}
                                     >
                                         {item.text}
@@ -1371,7 +1351,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             renderHeader = () => {
                 return (
                     <>
-                        <Toolbar className='monitoring_title' style={{marginTop: 0}}>
+                        <Toolbar className='monitoring_title' style={{marginTop: -5}}>
                             <label className='content_title_label' style={{marginBottom: 1}}>Monitoring</label>
                             <div className='page_monitoring_select_area'
                                  style={{
@@ -1394,10 +1374,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }
                             </div>
                             {/*
-                            desc :####################################
-                            desc :loading Area
-                            desc :####################################
-                            */}
+                        desc :####################################
+                        desc :loading Area
+                        desc :####################################
+                        */}
                             <div>
 
                                 {this.state.webSocketLoading &&
@@ -1428,13 +1408,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 </div>
                                 }
                             </div>
-
-
                             {/*
-                            desc :####################################
-                            desc : options list (right conner)
-                            desc :####################################
-                            */}
+                        desc :####################################
+                        desc : options list (right conner)
+                        desc :####################################
+                        */}
                             <div style={{
                                 display: 'flex',
                                 flex: .3,
@@ -1442,10 +1420,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 //backgroundColor: 'yellow'
                             }}>
                                 {/*
-                            todo :####################################
-                            todo : Clusterstream toggle button
-                            todo :####################################
-                            */}
+                        todo :####################################
+                        todo : Clusterstream toggle button
+                        todo :####################################
+                        */}
                                 {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
                                 <div style={{
                                     alignItems: 'center',
@@ -1484,10 +1462,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }
 
                                 {/*
-                            desc :####################################
-                            desc : appInst stream toggle button
-                            desc :####################################
-                            */}
+                        desc :####################################
+                        desc : appInst stream toggle button
+                        desc :####################################
+                        */}
                                 {this.state.currentClassification === CLASSIFICATION.APPINST &&
                                 <div style={{
                                     alignItems: 'center',
@@ -1656,7 +1634,33 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
+            renderLegendClusterName(item) {
+
+                if (this.state.chunkedSize === 12) {
+                    return this.reduceString(item.cluster, 5) + "[" + this.reduceString(item.cloudlet, 5) + "]"
+                } else {
+                    return this.reduceString(item.cluster, 35) + "[" + this.reduceString(item.cloudlet, 35) + "]"
+                }
+
+            }
+
+            reduceString(str: string, lengthLimit: number) {
+                if (str.length > lengthLimit) {
+                    return str.substring(0, lengthLimit) + "..";
+                } else {
+                    return str;
+                }
+            }
+
+
             makeLegend() {
+
+                const chunkedSize = this.state.chunkedSize;
+                //@todo: chunked array,
+                //@todo: chunked array,
+                //@todo: chunked array,
+                let chunkArrayClusterUsageList = _.chunk(this.state.filteredClusterUsageList, chunkedSize);
+
                 let fullClusterList = '';
                 let region = '';
                 if (this.state.currentCluster) {
@@ -1665,92 +1669,167 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     region = this.state.currentCluster.split(" | ")[2]
                     fullClusterList = cloudlet + " > " + cluster;
                 }
-                return (
-                    <Legend style={{height: this.state.currentClassification === CLASSIFICATION.CLUSTER ? 50 : 25,}}>
-                        {this.state.loading &&
-                        <div style={{
-                            display: 'flex',
-                            alignSelf: 'center',
-                            position: 'absolute',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            width: '100%',
-                            //backgroundColor: 'red'
-                        }}>
-                            <ColorLinearProgress
-                                variant={'query'}
-                                style={{
-                                    marginLeft: -10,
-                                    width: '7%',
-                                    alignContent: 'center',
-                                    justifyContent: 'center',
-                                }}
-                            />
-                        </div>}
-                        {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER ?
+
+                let legendHeight = 26
+
+                if (this.state.loading) {
+                    return (
+                        <Legend style={{height: legendHeight, width: '98.5%', marginBottom: 0}}>
                             <div style={{
                                 display: 'flex',
-                                flex: 1,
+                                alignSelf: 'center',
+                                position: 'absolute',
                                 justifyContent: 'center',
-                                marginLeft: 0,
-                                backgroundColor: 'transparent',
-                                flexWrap: 'wrap'
+                                alignItems: 'center',
+                                width: '100%',
+                                height: 30,
+                                //backgroundColor: 'red'
                             }}>
-                                {this.state.filteredClusterUsageList.map((item, index) => {
-                                    return (
-                                        <Center2>
+                                <ColorLinearProgress
+                                    variant={'query'}
+                                    style={{
+                                        marginLeft: -10,
+                                        width: '7%',
+                                        alignContent: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                                />
+                            </div>
+                        </Legend>
+                    )
+                } else {
+                    return (
+                        <Legend style={{height: !this.state.isLegendExpanded ? legendHeight : chunkArrayClusterUsageList.length * legendHeight, width: '98.8%', marginBottom: 0}}>
 
-                                            {/*desc: ##############*/}
-                                            {/*desc: circle area   */}
-                                            {/*desc: ##############*/}
-                                            <div style={{
-                                                backgroundColor: this.state.chartColorList[index],
-                                                width: 15,
-                                                height: 15,
-                                                borderRadius: 50,
-                                                marginTop: 2,
-                                            }}>
+                            {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER ?
+
+                                <div style={{flex: .97, marginTop: -3,}}>
+                                    {chunkArrayClusterUsageList.map((itemList, outerIndex) => {
+                                        return (
+                                            //todo: ################################
+                                            //todo: oneROW
+                                            //todo: ################################
+                                            <div style={{display: 'flex', marginTop: 0, marginLeft: 5, backgroundColor: 'transparent', height: 22}}>
+                                                {itemList.map((item, index) => {
+                                                    return (
+
+                                                        <Center2 style={{width: chunkedSize === 12 ? 120 : 360}}>
+                                                            {/*desc: ##############*/}
+                                                            {/*desc: circle area   */}
+                                                            {/*desc: ##############*/}
+                                                            <div style={{
+                                                                backgroundColor: this.state.chartColorList[index + (outerIndex * chunkedSize)],
+                                                                width: 15,
+                                                                height: 15,
+                                                                borderRadius: 50,
+                                                                marginTop: 2,
+                                                            }}>
+
+                                                            </div>
+
+                                                            {!this.state.isLegendExpanded ?
+                                                                <Tooltip placement="top" title={item.cluster + " [" + item.cloudlet + "]"}>
+                                                                    <ClusterCluoudletLable
+                                                                        style={{
+                                                                            marginLeft: 4,
+                                                                            marginRight: 10,
+                                                                            marginBottom: 0,
+                                                                            fontSize: 11,
+                                                                            cursor: 'pointer',
+                                                                        }}
+                                                                        //title={item.cluster + " [" + item.cloudlet + "]"}
+                                                                    >
+                                                                        {this.renderLegendClusterName(item)}
+                                                                    </ClusterCluoudletLable>
+                                                                </Tooltip>
+                                                                :
+                                                                <ClusterCluoudletLable
+                                                                    style={{
+                                                                        marginLeft: 4,
+                                                                        marginRight: 10,
+                                                                        marginBottom: 0,
+                                                                        fontSize: 11,
+                                                                        cursor: 'pointer',
+                                                                    }}
+                                                                >
+                                                                    {this.renderLegendClusterName(item)}
+                                                                </ClusterCluoudletLable>
+                                                            }
+                                                        </Center2>
+
+                                                    )
+                                                })}
                                             </div>
-                                            <ClusterCluoudletLable
-                                                style={{
-                                                    marginLeft: 4,
-                                                    marginRight: 15,
-                                                    marginBottom: 0
-                                                }}>{item.cluster}
-                                                {` [`}{item.cloudlet}]
-
-                                            </ClusterCluoudletLable>
-                                        </Center2>
-                                    )
-                                })}
-                            </div>
-                            : !this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST &&
-                            <div style={{
-                                display: 'flex',
-                                flex: 1,
-                                justifyContent: 'center',
-                                marginLeft: 0,
-                                backgroundColor: 'transparent',
-                                marginTop: 3,
-                            }}>
-                                <div style={{backgroundColor: 'transparent'}}>
-                                    <div style={{
-                                        backgroundColor: this.state.chartColorList[0],
-                                        width: 15,
-                                        height: 15,
-                                        borderRadius: 50,
-                                        marginTop: 0
-                                    }}>
+                                        )
+                                    })}
+                                </div> :
+                                !this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST &&
+                                <div style={{
+                                    display: 'flex',
+                                    flex: .975,
+                                    justifyContent: 'center',
+                                    marginLeft: 0,
+                                    backgroundColor: 'transparent',
+                                    marginTop: 3,
+                                }}>
+                                    <div style={{backgroundColor: 'transparent'}}>
+                                        <div style={{
+                                            backgroundColor: this.state.chartColorList[0],
+                                            width: 15,
+                                            height: 15,
+                                            borderRadius: 50,
+                                            marginTop: 0
+                                        }}>
+                                        </div>
                                     </div>
+                                    <ClusterCluoudletLable
+                                        style={{marginLeft: 5, marginRight: 15, marginBottom: 0}}>
+                                        {this.state.currentAppInst.split("|")[0]}
+                                    </ClusterCluoudletLable>
                                 </div>
-                                <ClusterCluoudletLable
-                                    style={{marginLeft: 5, marginRight: 15, marginBottom: 0}}>
-                                    {this.state.currentAppInst.split("|")[0]}
-                                </ClusterCluoudletLable>
+
+                            }
+
+
+                            {/*todo:unfold_more_less_icon*/}
+                            {/*todo:unfold_more_less_icon*/}
+                            {/*todo:unfold_more_less_icon*/}
+                            {!this.state.loading &&
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flex: .025,
+                                    justifyContent: 'flex-end',
+                                    alignItems: 'center',
+                                    marginLeft: 0,
+                                    marginRight: -15,
+                                    cursor: 'pointer',
+                                    //backgroundColor: 'blue',
+                                }}
+                                onClick={() => {
+                                    if (this.state.chunkedSize === 12) {
+                                        this.setState({
+                                            isLegendExpanded: true,
+                                            chunkedSize: 4,
+                                        })
+                                    } else {
+                                        this.setState({
+                                            isLegendExpanded: false,
+                                            chunkedSize: 12,
+                                        })
+                                    }
+                                }}
+                            >
+                                {this.state.isLegendExpanded ?
+                                    <UnfoldLess style={{fontSize: 30,}}/> :
+                                    <UnfoldMore style={{fontSize: 18, color: chunkArrayClusterUsageList.length > 1 ? 'rgb(118, 255, 3)' : 'white'}}/>
+                                }
                             </div>
-                        }
-                    </Legend>
-                )
+                            }
+
+                        </Legend>
+                    )
+                }
             }
 
 
@@ -1776,12 +1855,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         <AddItemPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}/>
                         <AddItemPopupContainer2 parent={this} isOpenEditView2={this.state.isOpenEditView2}/>
-
-                        <ModalGraph selectedClusterUsageOne={this.state.selectedClusterUsageOne}
-                                    selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
-                                    parent={this}
-                                    modalIsOpen={this.state.modalIsOpen}
-                                    cluster={''} contents={''}/>
+                        <MiniModalGraphContainer selectedClusterUsageOne={this.state.selectedClusterUsageOne}
+                                                 selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
+                                                 parent={this}
+                                                 modalIsOpen={this.state.modalIsOpen}
+                                                 cluster={''} contents={''}/>
 
                         <BigModalGraphContainer
                             intervalLoading={this.state.intervalLoading}
@@ -1807,7 +1885,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 {/*desc:---------------------------------*/}
                                 {/*desc:Content Header                   */}
                                 {/*desc:---------------------------------*/}
-                                <SemanticToastContainer position={"top-right"} color={'white'}/>
+                                <SemanticToastContainer position={"bottom-center"} color={'red'}/>
                                 {this.renderHeader()}
                                 {/*desc:---------------------------------*/}
                                 {/*desc:Legend                           */}
@@ -1815,10 +1893,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 {this.makeLegend()}
                                 <div className="page_monitoring"
                                      style={{
-                                         //
                                          overflowY: 'auto',
-                                         height: 'calc(100% - 70px)',
-                                         marginBottom: 50,
+                                         height: 'calc(100% - 99px)',
+                                         marginTop: 0,
                                          backgroundColor: this.props.themeType === 'light' ? 'white' : null
                                      }}>
                                     {this.state.currentClassification === CLASSIFICATION.CLUSTER
