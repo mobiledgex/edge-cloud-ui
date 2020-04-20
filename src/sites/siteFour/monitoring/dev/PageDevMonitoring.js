@@ -6,7 +6,7 @@ import {Dropdown, Icon, Modal} from 'semantic-ui-react'
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
 import {CircularProgress, Toolbar} from '@material-ui/core'
-import {Dropdown as ADropdown, Menu as AMenu,} from 'antd';
+import {Dropdown as ADropdown, Menu as AMenu, Tooltip,} from 'antd';
 import {
     defaultHwMapperListForCluster,
     defaultLayoutForAppInst,
@@ -1712,6 +1712,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             <div style={{display: 'flex', marginTop: 0, marginLeft: 5, backgroundColor: 'transparent', height: 22}}>
                                                 {itemList.map((item, index) => {
                                                     return (
+
                                                         <Center2 style={{width: chunkedSize === 12 ? 120 : 360}}>
                                                             {/*desc: ##############*/}
                                                             {/*desc: circle area   */}
@@ -1725,19 +1726,37 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                             }}>
 
                                                             </div>
-                                                            <ClusterCluoudletLable
-                                                                style={{
-                                                                    marginLeft: 4,
-                                                                    marginRight: 10,
-                                                                    marginBottom: 0,
-                                                                    fontSize: 11,
-                                                                    cursor: 'pointer',
-                                                                }}
-                                                                title={item.cluster + " [" + item.cloudlet + "]"}
-                                                            >
-                                                                {this.renderLegendClusterName(item)}
-                                                            </ClusterCluoudletLable>
+
+                                                            {!this.state.isLegendExpanded ?
+                                                                <Tooltip placement="top" title={item.cluster + " [" + item.cloudlet + "]"}>
+                                                                    <ClusterCluoudletLable
+                                                                        style={{
+                                                                            marginLeft: 4,
+                                                                            marginRight: 10,
+                                                                            marginBottom: 0,
+                                                                            fontSize: 11,
+                                                                            cursor: 'pointer',
+                                                                        }}
+                                                                        //title={item.cluster + " [" + item.cloudlet + "]"}
+                                                                    >
+                                                                        {this.renderLegendClusterName(item)}
+                                                                    </ClusterCluoudletLable>
+                                                                </Tooltip>
+                                                                :
+                                                                <ClusterCluoudletLable
+                                                                    style={{
+                                                                        marginLeft: 4,
+                                                                        marginRight: 10,
+                                                                        marginBottom: 0,
+                                                                        fontSize: 11,
+                                                                        cursor: 'pointer',
+                                                                    }}
+                                                                >
+                                                                    {this.renderLegendClusterName(item)}
+                                                                </ClusterCluoudletLable>
+                                                            }
                                                         </Center2>
+
                                                     )
                                                 })}
                                             </div>
