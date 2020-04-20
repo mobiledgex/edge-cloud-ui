@@ -223,7 +223,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
         }
 
         setCloudletLocation(pAppInstanceListGroupByCloudlet, isMapCenter = false) {
-            try{
+            try {
                 let cloudletKeys = Object.keys(pAppInstanceListGroupByCloudlet)
 
                 let newCloudLetLocationList = []
@@ -279,14 +279,19 @@ export default connect(mapStateToProps, mapDispatchProps)(
                         })
                     }
                 })
-            }catch (e) {
-                
+            } catch (e) {
+
             }
 
         }
 
         async handleClickAppInst(fullAppInstOne) {
-            await this.props.handleAppInstDropdown(fullAppInstOne)
+            try {
+                await this.props.handleAppInstDropdown(fullAppInstOne)
+            } catch (e) {
+
+            }
+
         }
 
         render() {
