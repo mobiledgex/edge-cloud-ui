@@ -2,7 +2,7 @@ import {Center2, ClusterCluoudletLable, Legend} from '../PageMonitoringStyledCom
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Dropdown, Icon, Modal} from 'semantic-ui-react'
+import {Dropdown, Modal} from 'semantic-ui-react'
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
 import {CircularProgress, Toolbar} from '@material-ui/core'
@@ -25,42 +25,15 @@ import {
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipeForCluster,
     makeSelectBoxListWithValuePipe,
+    reduceString,
     revertToDefaultLayout,
 } from "./PageDevMonitoringService";
-import {
-    ADD_ITEM_LIST,
-    CHART_COLOR_LIST,
-    CLASSIFICATION,
-    GRID_ITEM_TYPE,
-    HARDWARE_OPTIONS_FOR_APPINST,
-    HARDWARE_OPTIONS_FOR_CLUSTER,
-    HARDWARE_TYPE,
-    NETWORK_TYPE,
-    RECENT_DATA_LIMIT_COUNT,
-    THEME_OPTIONS_LIST
-} from "../../../../shared/Constants";
+import {ADD_ITEM_LIST, CHART_COLOR_LIST, CLASSIFICATION, GRID_ITEM_TYPE, HARDWARE_OPTIONS_FOR_APPINST, HARDWARE_OPTIONS_FOR_CLUSTER, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, THEME_OPTIONS_LIST} from "../../../../shared/Constants";
 import type {TypeBarChartData, TypeLineChartData} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
-import {
-    getOneYearStartEndDatetime,
-    isEmpty,
-    makeBubbleChartDataForCluster,
-    PageMonitoringStyles,
-    renderPlaceHolderCircular,
-    renderWifiLoader,
-    showToast
-} from "../PageMonitoringCommonService";
-import {
-    getAllAppInstEventLogs,
-    getAllClusterEventLogList,
-    getAppInstList,
-    getAppLevelUsageList,
-    getCloudletList,
-    getClusterLevelUsageList,
-    getClusterList,
-    requestShowAppInstClientWS
-} from "../PageMonitoringMetricService";
+import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, PageMonitoringStyles, renderPlaceHolderCircular, renderWifiLoader, showToast} from "../PageMonitoringCommonService";
+import {getAllAppInstEventLogs, getAllClusterEventLogList, getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList, requestShowAppInstClientWS} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
@@ -84,14 +57,7 @@ import BarChartContainer from "../components/BarChartContainer";
 import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryForClusterHook";
 import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryForAppInstHook";
 import type {PageDevMonitoringProps, PageDevMonitoringState} from "./PageDevMonitoringPropsState";
-import {
-    ColorLinearProgress,
-    CustomSwitch,
-    defaultLayoutXYPosForAppInst,
-    defaultLayoutXYPosForCluster,
-    PageDevMonitoringMapDispatchToProps,
-    PageDevMonitoringMapStateToProps
-} from "./PageDevMonitoringPropsState";
+import {ColorLinearProgress, CustomSwitch, defaultLayoutXYPosForAppInst, defaultLayoutXYPosForCluster, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageDevMonitoringPropsState";
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 
 
@@ -1633,32 +1599,22 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-
             renderLegendClusterName(item) {
-
                 if (this.state.chunkedSize === 12) {
-                    return this.reduceString(item.cluster, 5) + "[" + this.reduceString(item.cloudlet, 5) + "]"
+                    return reduceString(item.cluster, 5) + "[" + reduceString(item.cloudlet, 5) + "]"
                 } else {
-                    return this.reduceString(item.cluster, 35) + "[" + this.reduceString(item.cloudlet, 35) + "]"
+                    return reduceString(item.cluster, 35) + "[" + reduceString(item.cloudlet, 35) + "]"
                 }
 
-            }
-
-            reduceString(str: string, lengthLimit: number) {
-                if (str.length > lengthLimit) {
-                    return str.substring(0, lengthLimit) + "..";
-                } else {
-                    return str;
-                }
             }
 
 
             makeLegend() {
-
                 const chunkedSize = this.state.chunkedSize;
+
+                //@todo: ##############################
                 //@todo: chunked array,
-                //@todo: chunked array,
-                //@todo: chunked array,
+                //@todo: ##############################
                 let chunkArrayClusterUsageList = _.chunk(this.state.filteredClusterUsageList, chunkedSize);
 
                 let fullClusterList = '';
@@ -1790,10 +1746,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                             }
 
-
-                            {/*todo:unfold_more_less_icon*/}
-                            {/*todo:unfold_more_less_icon*/}
-                            {/*todo:unfold_more_less_icon*/}
+                            {/*todo: ################################*/}
+                            {/*todo:unfold_more_less_icon            */}
+                            {/*todo: ################################*/}
                             {!this.state.loading &&
                             <div
                                 style={{
