@@ -27,12 +27,40 @@ import {
     makeSelectBoxListWithValuePipe,
     revertToDefaultLayout,
 } from "./PageDevMonitoringService";
-import {ADD_ITEM_LIST, CHART_COLOR_LIST, CLASSIFICATION, GRID_ITEM_TYPE, HARDWARE_OPTIONS_FOR_APPINST, HARDWARE_OPTIONS_FOR_CLUSTER, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, THEME_OPTIONS_LIST} from "../../../../shared/Constants";
+import {
+    ADD_ITEM_LIST,
+    CHART_COLOR_LIST,
+    CLASSIFICATION,
+    GRID_ITEM_TYPE,
+    HARDWARE_OPTIONS_FOR_APPINST,
+    HARDWARE_OPTIONS_FOR_CLUSTER,
+    HARDWARE_TYPE,
+    NETWORK_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    THEME_OPTIONS_LIST
+} from "../../../../shared/Constants";
 import type {TypeBarChartData, TypeLineChartData} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
-import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, PageMonitoringStyles, renderPlaceHolderCircular, renderWifiLoader, showToast} from "../PageMonitoringCommonService";
-import {getAllAppInstEventLogs, getAllClusterEventLogList, getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList, requestShowAppInstClientWS} from "../PageMonitoringMetricService";
+import {
+    getOneYearStartEndDatetime,
+    isEmpty,
+    makeBubbleChartDataForCluster,
+    PageMonitoringStyles,
+    renderPlaceHolderCircular,
+    renderWifiLoader,
+    showToast
+} from "../PageMonitoringCommonService";
+import {
+    getAllAppInstEventLogs,
+    getAllClusterEventLogList,
+    getAppInstList,
+    getAppLevelUsageList,
+    getCloudletList,
+    getClusterLevelUsageList,
+    getClusterList,
+    requestShowAppInstClientWS
+} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
@@ -56,7 +84,14 @@ import BarChartContainer from "../components/BarChartContainer";
 import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryForClusterHook";
 import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryForAppInstHook";
 import type {PageDevMonitoringProps, PageDevMonitoringState} from "./PageDevMonitoringPropsState";
-import {ColorLinearProgress, CustomSwitch, defaultLayoutXYPosForAppInst, defaultLayoutXYPosForCluster, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageDevMonitoringPropsState";
+import {
+    ColorLinearProgress,
+    CustomSwitch,
+    defaultLayoutXYPosForAppInst,
+    defaultLayoutXYPosForCluster,
+    PageDevMonitoringMapDispatchToProps,
+    PageDevMonitoringMapStateToProps
+} from "./PageDevMonitoringPropsState";
 import Snackbar from "@material-ui/core/Snackbar";
 
 const ASubMenu = AMenu.SubMenu;
@@ -67,7 +102,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             intervalForAppInst = null;
             intervalForCluster = null;
             webSocketInst: WebSocket = null;
-            gridItemHeight = 256;
+            gridItemHeight = 246;
 
             constructor(props) {
                 super(props);
@@ -1306,7 +1341,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             renderHeader = () => {
                 return (
                     <>
-                        <Toolbar className='monitoring_title' style={{marginTop: 0}}>
+                        <Toolbar className='monitoring_title' style={{marginTop: -5}}>
                             <label className='content_title_label' style={{marginBottom: 1}}>Monitoring</label>
                             <div className='page_monitoring_select_area'
                                  style={{
@@ -1742,21 +1777,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 {/*desc:Content Header                   */}
                                 {/*desc:---------------------------------*/}
                                 <SemanticToastContainer position={"bottom-center"} color={'red'}/>
-                                <Snackbar
-                                    autoHideDuration={3000}
-                                    anchorOrigin={{
-                                        vertical: 'bottom',
-                                        horizontal: 'center',
-                                    }}
-                                    onClose={() => {
-                                        this.setState({
-                                            isToastOpen: false,
-                                        })
-                                    }}
-                                    open={this.state.isToastOpen}
-                                    message={this.state.toastMessage}
-                                >
-                                </Snackbar>
                                 {this.renderHeader()}
                                 {/*desc:---------------------------------*/}
                                 {/*desc:Legend                           */}
@@ -1766,6 +1786,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                      style={{
                                          overflowY: 'auto',
                                          height: 'calc(100% - 99px)',
+                                         marginTop: 0,
                                          backgroundColor: this.props.themeType === 'light' ? 'white' : null
                                      }}>
                                     {this.state.currentClassification === CLASSIFICATION.CLUSTER
