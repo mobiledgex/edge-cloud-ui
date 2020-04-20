@@ -21,7 +21,11 @@ export const sendRequest = async (self, requestData) => {
         return await serviceMC.sendSyncRequest(self, requestData)
     }
 }
-
+/**
+ * orgData : this parameter is useful when we are trying to process multiple 
+ *           data and need to access original data for which request was made
+ *           because websocket supports multi request response 
+ *  **/
 export const sendWSRequest = async (self, requestData, callback, orgData) => {
     let token = getToken(self)
     if (token) {

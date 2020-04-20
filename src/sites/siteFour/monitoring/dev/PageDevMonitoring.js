@@ -2,11 +2,11 @@ import {Center2, ClusterCluoudletLable, Legend} from '../PageMonitoringStyledCom
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Dropdown, Modal} from 'semantic-ui-react'
+import {Dropdown, Icon, Modal} from 'semantic-ui-react'
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
 import {CircularProgress, Toolbar} from '@material-ui/core'
-import {Dropdown as ADropdown, Menu as AMenu,} from 'antd';
+import {Dropdown as ADropdown, Menu as AMenu, Tooltip,} from 'antd';
 import {
     defaultHwMapperListForCluster,
     defaultLayoutForAppInst,
@@ -27,12 +27,40 @@ import {
     makeSelectBoxListWithValuePipe,
     revertToDefaultLayout,
 } from "./PageDevMonitoringService";
-import {ADD_ITEM_LIST, CHART_COLOR_LIST, CLASSIFICATION, GRID_ITEM_TYPE, HARDWARE_OPTIONS_FOR_APPINST, HARDWARE_OPTIONS_FOR_CLUSTER, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, THEME_OPTIONS_LIST} from "../../../../shared/Constants";
+import {
+    ADD_ITEM_LIST,
+    CHART_COLOR_LIST,
+    CLASSIFICATION,
+    GRID_ITEM_TYPE,
+    HARDWARE_OPTIONS_FOR_APPINST,
+    HARDWARE_OPTIONS_FOR_CLUSTER,
+    HARDWARE_TYPE,
+    NETWORK_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    THEME_OPTIONS_LIST
+} from "../../../../shared/Constants";
 import type {TypeBarChartData, TypeLineChartData} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
-import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, PageMonitoringStyles, renderPlaceHolderCircular, renderWifiLoader, showToast} from "../PageMonitoringCommonService";
-import {getAllAppInstEventLogs, getAllClusterEventLogList, getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList, requestShowAppInstClientWS} from "../PageMonitoringMetricService";
+import {
+    getOneYearStartEndDatetime,
+    isEmpty,
+    makeBubbleChartDataForCluster,
+    PageMonitoringStyles,
+    renderPlaceHolderCircular,
+    renderWifiLoader,
+    showToast
+} from "../PageMonitoringCommonService";
+import {
+    getAllAppInstEventLogs,
+    getAllClusterEventLogList,
+    getAppInstList,
+    getAppLevelUsageList,
+    getCloudletList,
+    getClusterLevelUsageList,
+    getClusterList,
+    requestShowAppInstClientWS
+} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
@@ -56,8 +84,16 @@ import BarChartContainer from "../components/BarChartContainer";
 import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryForClusterHook";
 import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryForAppInstHook";
 import type {PageDevMonitoringProps, PageDevMonitoringState} from "./PageDevMonitoringPropsState";
-import {ColorLinearProgress, CustomSwitch, defaultLayoutXYPosForAppInst, defaultLayoutXYPosForCluster, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageDevMonitoringPropsState";
-import Snackbar from "@material-ui/core/Snackbar";
+import {
+    ColorLinearProgress,
+    CustomSwitch,
+    defaultLayoutXYPosForAppInst,
+    defaultLayoutXYPosForCluster,
+    PageDevMonitoringMapDispatchToProps,
+    PageDevMonitoringMapStateToProps
+} from "./PageDevMonitoringPropsState";
+import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
+
 
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -67,7 +103,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             intervalForAppInst = null;
             intervalForCluster = null;
             webSocketInst: WebSocket = null;
-            gridItemHeight = 256;
+            gridItemHeight = 246;
 
             constructor(props) {
                 super(props);
@@ -226,6 +262,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     toastMessage: '',
                     isToastOpen: false,
                     mapLoading: false,
+                    isLegendExpanded: false,
+                    chunkedSize: 12,
                 };
             }
 
@@ -250,6 +288,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
 
             }
+
 
             async loadInitDataForCluster(isInterval: boolean = false) {
                 let promiseList = []
@@ -1026,6 +1065,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             handleAppInstDropdown={this.handleAppInstDropdown}
                             eventLogList={this.state.filteredAppInstEventLogs}
                         />
+                    /*<AppInstEventLog_Virtual
+                        currentAppInst={this.state.currentAppInst}
+                        parent={this}
+                        handleAppInstDropdown={this.handleAppInstDropdown}
+                        eventLogList={this.state.filteredAppInstEventLogs}
+                    />*/
                 }
             }
 
@@ -1306,7 +1351,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             renderHeader = () => {
                 return (
                     <>
-                        <Toolbar className='monitoring_title' style={{marginTop: 0}}>
+                        <Toolbar className='monitoring_title' style={{marginTop: -5}}>
                             <label className='content_title_label' style={{marginBottom: 1}}>Monitoring</label>
                             <div className='page_monitoring_select_area'
                                  style={{
@@ -1363,8 +1408,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 </div>
                                 }
                             </div>
-
-
                             {/*
                         desc :####################################
                         desc : options list (right conner)
@@ -1591,7 +1634,33 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
+            renderLegendClusterName(item) {
+
+                if (this.state.chunkedSize === 12) {
+                    return this.reduceString(item.cluster, 5) + "[" + this.reduceString(item.cloudlet, 5) + "]"
+                } else {
+                    return this.reduceString(item.cluster, 35) + "[" + this.reduceString(item.cloudlet, 35) + "]"
+                }
+
+            }
+
+            reduceString(str: string, lengthLimit: number) {
+                if (str.length > lengthLimit) {
+                    return str.substring(0, lengthLimit) + "..";
+                } else {
+                    return str;
+                }
+            }
+
+
             makeLegend() {
+
+                const chunkedSize = this.state.chunkedSize;
+                //@todo: chunked array,
+                //@todo: chunked array,
+                //@todo: chunked array,
+                let chunkArrayClusterUsageList = _.chunk(this.state.filteredClusterUsageList, chunkedSize);
+
                 let fullClusterList = '';
                 let region = '';
                 if (this.state.currentCluster) {
@@ -1600,92 +1669,167 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     region = this.state.currentCluster.split(" | ")[2]
                     fullClusterList = cloudlet + " > " + cluster;
                 }
-                return (
-                    <Legend style={{height: this.state.currentClassification === CLASSIFICATION.CLUSTER ? 50 : 25,}}>
-                        {this.state.loading &&
-                        <div style={{
-                            display: 'flex',
-                            alignSelf: 'center',
-                            position: 'absolute',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            width: '100%',
-                            //backgroundColor: 'red'
-                        }}>
-                            <ColorLinearProgress
-                                variant={'query'}
-                                style={{
-                                    marginLeft: -10,
-                                    width: '7%',
-                                    alignContent: 'center',
-                                    justifyContent: 'center',
-                                }}
-                            />
-                        </div>}
-                        {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER ?
+
+                let legendHeight = 26
+
+                if (this.state.loading) {
+                    return (
+                        <Legend style={{height: legendHeight, width: '98.5%', marginBottom: 0}}>
                             <div style={{
                                 display: 'flex',
-                                flex: 1,
+                                alignSelf: 'center',
+                                position: 'absolute',
                                 justifyContent: 'center',
-                                marginLeft: 0,
-                                backgroundColor: 'transparent',
-                                flexWrap: 'wrap'
+                                alignItems: 'center',
+                                width: '100%',
+                                height: 30,
+                                //backgroundColor: 'red'
                             }}>
-                                {this.state.filteredClusterUsageList.map((item, index) => {
-                                    return (
-                                        <Center2>
+                                <ColorLinearProgress
+                                    variant={'query'}
+                                    style={{
+                                        marginLeft: -10,
+                                        width: '7%',
+                                        alignContent: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                                />
+                            </div>
+                        </Legend>
+                    )
+                } else {
+                    return (
+                        <Legend style={{height: !this.state.isLegendExpanded ? legendHeight : chunkArrayClusterUsageList.length * legendHeight, width: '98.8%', marginBottom: 0}}>
 
-                                            {/*desc: ##############*/}
-                                            {/*desc: circle area   */}
-                                            {/*desc: ##############*/}
-                                            <div style={{
-                                                backgroundColor: this.state.chartColorList[index],
-                                                width: 15,
-                                                height: 15,
-                                                borderRadius: 50,
-                                                marginTop: 2,
-                                            }}>
+                            {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER ?
+
+                                <div style={{flex: .97, marginTop: -3,}}>
+                                    {chunkArrayClusterUsageList.map((itemList, outerIndex) => {
+                                        return (
+                                            //todo: ################################
+                                            //todo: oneROW
+                                            //todo: ################################
+                                            <div style={{display: 'flex', marginTop: 0, marginLeft: 5, backgroundColor: 'transparent', height: 22}}>
+                                                {itemList.map((item, index) => {
+                                                    return (
+
+                                                        <Center2 style={{width: chunkedSize === 12 ? 120 : 360}}>
+                                                            {/*desc: ##############*/}
+                                                            {/*desc: circle area   */}
+                                                            {/*desc: ##############*/}
+                                                            <div style={{
+                                                                backgroundColor: this.state.chartColorList[index + (outerIndex * chunkedSize)],
+                                                                width: 15,
+                                                                height: 15,
+                                                                borderRadius: 50,
+                                                                marginTop: 2,
+                                                            }}>
+
+                                                            </div>
+
+                                                            {!this.state.isLegendExpanded ?
+                                                                <Tooltip placement="top" title={item.cluster + " [" + item.cloudlet + "]"}>
+                                                                    <ClusterCluoudletLable
+                                                                        style={{
+                                                                            marginLeft: 4,
+                                                                            marginRight: 10,
+                                                                            marginBottom: 0,
+                                                                            fontSize: 11,
+                                                                            cursor: 'pointer',
+                                                                        }}
+                                                                        //title={item.cluster + " [" + item.cloudlet + "]"}
+                                                                    >
+                                                                        {this.renderLegendClusterName(item)}
+                                                                    </ClusterCluoudletLable>
+                                                                </Tooltip>
+                                                                :
+                                                                <ClusterCluoudletLable
+                                                                    style={{
+                                                                        marginLeft: 4,
+                                                                        marginRight: 10,
+                                                                        marginBottom: 0,
+                                                                        fontSize: 11,
+                                                                        cursor: 'pointer',
+                                                                    }}
+                                                                >
+                                                                    {this.renderLegendClusterName(item)}
+                                                                </ClusterCluoudletLable>
+                                                            }
+                                                        </Center2>
+
+                                                    )
+                                                })}
                                             </div>
-                                            <ClusterCluoudletLable
-                                                style={{
-                                                    marginLeft: 4,
-                                                    marginRight: 15,
-                                                    marginBottom: 0
-                                                }}>{item.cluster}
-                                                {` [`}{item.cloudlet}]
-
-                                            </ClusterCluoudletLable>
-                                        </Center2>
-                                    )
-                                })}
-                            </div>
-                            : !this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST &&
-                            <div style={{
-                                display: 'flex',
-                                flex: 1,
-                                justifyContent: 'center',
-                                marginLeft: 0,
-                                backgroundColor: 'transparent',
-                                marginTop: 3,
-                            }}>
-                                <div style={{backgroundColor: 'transparent'}}>
-                                    <div style={{
-                                        backgroundColor: this.state.chartColorList[0],
-                                        width: 15,
-                                        height: 15,
-                                        borderRadius: 50,
-                                        marginTop: 0
-                                    }}>
+                                        )
+                                    })}
+                                </div> :
+                                !this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST &&
+                                <div style={{
+                                    display: 'flex',
+                                    flex: .975,
+                                    justifyContent: 'center',
+                                    marginLeft: 0,
+                                    backgroundColor: 'transparent',
+                                    marginTop: 3,
+                                }}>
+                                    <div style={{backgroundColor: 'transparent'}}>
+                                        <div style={{
+                                            backgroundColor: this.state.chartColorList[0],
+                                            width: 15,
+                                            height: 15,
+                                            borderRadius: 50,
+                                            marginTop: 0
+                                        }}>
+                                        </div>
                                     </div>
+                                    <ClusterCluoudletLable
+                                        style={{marginLeft: 5, marginRight: 15, marginBottom: 0}}>
+                                        {this.state.currentAppInst.split("|")[0]}
+                                    </ClusterCluoudletLable>
                                 </div>
-                                <ClusterCluoudletLable
-                                    style={{marginLeft: 5, marginRight: 15, marginBottom: 0}}>
-                                    {this.state.currentAppInst.split("|")[0]}
-                                </ClusterCluoudletLable>
+
+                            }
+
+
+                            {/*todo:unfold_more_less_icon*/}
+                            {/*todo:unfold_more_less_icon*/}
+                            {/*todo:unfold_more_less_icon*/}
+                            {!this.state.loading &&
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flex: .025,
+                                    justifyContent: 'flex-end',
+                                    alignItems: 'center',
+                                    marginLeft: 0,
+                                    marginRight: -15,
+                                    cursor: 'pointer',
+                                    //backgroundColor: 'blue',
+                                }}
+                                onClick={() => {
+                                    if (this.state.chunkedSize === 12) {
+                                        this.setState({
+                                            isLegendExpanded: true,
+                                            chunkedSize: 4,
+                                        })
+                                    } else {
+                                        this.setState({
+                                            isLegendExpanded: false,
+                                            chunkedSize: 12,
+                                        })
+                                    }
+                                }}
+                            >
+                                {this.state.isLegendExpanded ?
+                                    <UnfoldLess style={{fontSize: 30,}}/> :
+                                    <UnfoldMore style={{fontSize: 18, color: chunkArrayClusterUsageList.length > 1 ? 'rgb(118, 255, 3)' : 'white'}}/>
+                                }
                             </div>
-                        }
-                    </Legend>
-                )
+                            }
+
+                        </Legend>
+                    )
+                }
             }
 
 
@@ -1742,21 +1886,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 {/*desc:Content Header                   */}
                                 {/*desc:---------------------------------*/}
                                 <SemanticToastContainer position={"bottom-center"} color={'red'}/>
-                                <Snackbar
-                                    autoHideDuration={3000}
-                                    anchorOrigin={{
-                                        vertical: 'bottom',
-                                        horizontal: 'center',
-                                    }}
-                                    onClose={() => {
-                                        this.setState({
-                                            isToastOpen: false,
-                                        })
-                                    }}
-                                    open={this.state.isToastOpen}
-                                    message={this.state.toastMessage}
-                                >
-                                </Snackbar>
                                 {this.renderHeader()}
                                 {/*desc:---------------------------------*/}
                                 {/*desc:Legend                           */}
@@ -1766,6 +1895,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                      style={{
                                          overflowY: 'auto',
                                          height: 'calc(100% - 99px)',
+                                         marginTop: 0,
                                          backgroundColor: this.props.themeType === 'light' ? 'white' : null
                                      }}>
                                     {this.state.currentClassification === CLASSIFICATION.CLUSTER

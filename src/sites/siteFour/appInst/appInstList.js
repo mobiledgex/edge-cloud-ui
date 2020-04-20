@@ -106,7 +106,8 @@ class AppInstList extends React.Component {
 
     groupActionMenu = () => {
         return [
-            { label: 'Upgrade', onClick: refreshAppInst, icon:'arrow alternate circle up outline'}
+            { label: 'Upgrade', onClick: refreshAppInst, icon:'fa fa-arrow-circle-up', warning:'upgrade all the selected App Instances'},
+            { label: 'Delete', onClick: deleteAppInst, icon:'fa fa-trash', warning:'delete all the selected App Instances'}
         ]
     }
 
