@@ -117,28 +117,39 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 url: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
                 name: 'dark1',
             },
-
-            {
-                //url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
-                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-midnight/{z}/{x}/{y}.png',
-                name: 'dark2',
-            },
             {
                 //url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
                 url: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.png',
                 name: 'dark3',
             },
             {
+                //url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
+                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-midnight/{z}/{x}/{y}.png',
+                name: 'darkBlue',
+            },
+            {
                 url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-flatblue/{z}/{x}/{y}.png',
-                name: 'dark4',
+                name: 'blue',
             },
             {
                 url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png',
-                name: 'white1',
+                name: 'light1',
             },
             {
                 url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
-                name: 'white2',
+                name: 'light2',
+            },
+            {
+                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-antique/{z}/{x}/{y}.png',
+                name: 'light3',
+            },
+            {
+                url: 'https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
+                name: 'light4',
+            },
+            {
+                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-eco/{z}/{x}/{y}.png',
+                name: 'light5',
             },
 
         ]
@@ -437,12 +448,11 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
                                             }}
                                     >
-                                        <Option style={{color: 'white'}} defaultChecked={true} value="0">Dark1</Option>
-                                        <Option style={{color: 'white'}} value="1">Dark2</Option>
-                                        <Option style={{color: 'white'}} value="2">Dark3</Option>
-                                        <Option style={{color: 'white'}} value="3">Blue</Option>
-                                        <Option style={{color: 'white'}} value="4">Light1</Option>
-                                        <Option style={{color: 'white'}} value="5">Light2</Option>
+                                        {this.mapTileList.map((item, index) => {
+                                            return (
+                                                <Option style={{color: 'white'}} defaultChecked={index === 0} value={item.value}>{item.title}</Option>
+                                            )
+                                        })}
                                     </Select>
                                 </div>
                                 }
