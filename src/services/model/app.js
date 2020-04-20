@@ -153,6 +153,14 @@ export const updateApp = async (self, data, originalData) => {
     {
         updateFields.push("16")
     }
+    if(!compareObjects(data[fields.autoPolicyName], originalData[fields.autoPolicyName]))
+    {
+        updateFields.push("28")
+    }
+    if(!compareObjects(data[fields.privacyPolicyName], originalData[fields.privacyPolicyName]))
+    {
+        updateFields.push("30")
+    }
     requestData.app.fields = updateFields
     let request = { method: UPDATE_APP, data: requestData }
     return await serverData.sendRequest(self, request)
