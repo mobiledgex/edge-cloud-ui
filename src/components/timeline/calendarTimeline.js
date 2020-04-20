@@ -166,18 +166,17 @@ export default class CalendarTimeline extends React.PureComponent {
                                             ? "right"
                                             : false,
                                     className:
-                                        moment(startDate).day() === 6 ||
-                                        moment(startDate).day() === 0
-                                            ? "item-weekend"
-                                            : "",
+                                        status[index].status === 200
+                                            ? "normal"
+                                            : "error",
                                     bgColor: "#202329",
                                     selectedBgColor: "#202329",
                                     itemTime: item,
                                     taskItem: tValue,
                                     borderColor:
                                         status[index].status === 200
-                                            ? "#21ba45"
-                                            : "#db2828",
+                                        ? "#21ba45"
+                                        : "#db2828",
                                     selectedBorderColor:
                                         status[index].status === 200
                                             ? "#21ba45"
@@ -256,8 +255,8 @@ export default class CalendarTimeline extends React.PureComponent {
         newHeight = 74; //height of item
         customStyles.overflow = "hidden";
         customStyles.height = newHeight + "px";
-        customStyles.minWidth = "230px";
-        customStyles.maxWidth = "371px";
+        customStyles.minWidth = "20%";
+        customStyles.maxWidth = "20%";
         customStyles.marginTop = "-10px";
         properties.style = customStyles;
 
@@ -270,18 +269,26 @@ export default class CalendarTimeline extends React.PureComponent {
                     <div {...leftResizeProps} />
                 ) : null}
 
-                <div style={{}}>
-                    {item.taskItem} ({item.itemTime})
-                    {storageTimeIndex !== -1 ? "V" : null} <br />
-                    <span style={{ fontWeight: 600 }}>TRACE ID</span>{" "}
-                    {itemContext.title} <br />
-                    <button
-                        style={{ cursor: "pointer" }}
-                        onClick={this.props.onPopupEmail}
-                    >
-                        Send E-mail Trace ID
-                    </button>
-                    {storageTraceIndex !== -1 ? "V" : null}
+                <div className="timeline_item_box">
+                    <div style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
+                        <div style={{display:'flex', flex:1}}>{item.taskItem} ({item.itemTime})</div>
+                        <div className="timeline_item_dot" style={{backgroundColor: borderColor}}>
+                        {storageTimeIndex !== -1 ?
+                        <span className="material-icons">done</span>
+                        : null}
+                        </div>
+                    </div>
+                    <div style={{width:'100%'}}>
+                        <span style={{ fontWeight: 600, marginRight:10 }}>TRACE ID</span>{itemContext.title}
+                    </div>
+                    <div className="timeline_item_button">
+                        <button
+                            style={{ cursor: "pointer" }}
+                            onClick={this.props.onPopupEmail}
+                        >
+                            Send E-mail Trace ID <span>{storageTraceIndex !== -1 ? <span style={{fontSize:12, width:14}} class="material-icons">done</span> : null}</span>
+                        </button>
+                    </div>
                 </div>
 
                 {itemContext.useResizeHandle ? (
@@ -294,13 +301,13 @@ export default class CalendarTimeline extends React.PureComponent {
     groupRenderer = ({ group }) => {
         return (
             <div
-                style={
-                    group.status
-                        ? { border: "1px solid #db2828" }
-                        : { border: "1px solid #21ba45" }
-                }
+                style={{ border: "1px solid #171A1F" }}
             >
-                <span className="title">{group.title}</span>
+                <div className="title">
+                    {group.title}
+                    <div style={{backgroundColor: group.status ? "#db2828" : "#21ba45" }} className="timeline_group_dot"> </div>
+                </div>
+
             </div>
         );
     };
@@ -456,6 +463,7 @@ export default class CalendarTimeline extends React.PureComponent {
                     //itemHeightRatio={0.75}
                     showCursorLine
                     minResizeWidth={550}
+                    sidebarWidth={200}
                     defaultTimeStart={defaultTimeStart}
                     defaultTimeEnd={defaultTimeEnd}
                     // visibleTimeStart={visibleTimeStart}
@@ -512,7 +520,7 @@ export default class CalendarTimeline extends React.PureComponent {
                                   data,
                               }) => {
                                 return (
-                                    <div {...getRootProps()}>
+                                    <div className="timeline_header_date" {...getRootProps()}>
                                         {intervals.map(interval => {
                                             const intervalStyle = {
                                                 width: '170px !important',
@@ -525,9 +533,6 @@ export default class CalendarTimeline extends React.PureComponent {
                                             }
                                             return (
                                                 <div
-                                                    onClick={() => {
-                                                        showPeriod(interval.startTime, interval.endTime)
-                                                    }}
                                                     {...getIntervalProps({
                                                         interval,
                                                         style: setTimeout(() => intervalStyle , 2000)
