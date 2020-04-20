@@ -940,13 +940,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         {/*@desc:__makeGridItem BodyByType  */}
                         {/*desc:############################*/}
                         <div className='page_monitoring_column_resizable'>
-                            {this.____makeGridItemOneBody(hwType, graphType.toUpperCase())}
+                            {this.__makeGridItemOneBody(hwType, graphType.toUpperCase())}
                         </div>
                     </div>
                 )
             }
 
-            ____makeGridItemOneBody(hwType, graphType) {
+            __makeGridItemOneBody(hwType, graphType) {
                 if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                     let chartDataSets: TypeLineChartData = [];
                     if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
@@ -1146,7 +1146,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 hwType = this.state.layoutMapperForAppInst.find(x => x.id === uniqueIndex).hwType
                                 graphType = this.state.layoutMapperForAppInst.find(x => x.id === uniqueIndex).graphType
                             }
-                            return this.makGridItemOne(uniqueIndex, hwType, graphType, item)
+                            return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
 
                         })}
                     </ResponsiveReactGridLayout>
