@@ -168,10 +168,10 @@ export default connect(mapStateToProps, mapDispatchProps)(
         }
 
         componentDidMount = async () => {
-            try{
+            try {
                 let appInstanceListGroupByCloudlet = this.props.markerList
                 await this.setCloudletLocation(appInstanceListGroupByCloudlet, true)
-            }catch (e) {
+            } catch (e) {
 
             }
 
@@ -378,10 +378,10 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                             try {
                                                 await this.setState({
                                                     zoom: 1,
-                                                },()=>{
+                                                }, () => {
                                                     notification.success({
                                                         placement: 'bottomLeft',
-                                                        duration: 3,
+                                                        duration: 1.5,
                                                         message: 'Fetch locally stored data.',
                                                     });
                                                 })
