@@ -38,7 +38,7 @@ const showError = (request, message) => {
             position: 'top-right',
             effect: 'slide',
             beep: true,
-            timeout: 3000,
+            timeout: 20000,
             offset: 100,
             html: true
         });
