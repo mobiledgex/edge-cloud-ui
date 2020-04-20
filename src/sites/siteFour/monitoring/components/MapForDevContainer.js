@@ -116,12 +116,18 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 name: 'dark1',
             },
             {
-                url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
+                //url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
+                url: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.png',
                 name: 'dark2',
+            },
+            {
+                //url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
+                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-midnight/{z}/{x}/{y}.png',
+                name: 'dark3',
             },
 
             {
-                url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+                url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png',
                 name: 'white1',
             },
             {
@@ -414,7 +420,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
                                                      let lineColor = DARK_LINE_COLOR;
                                                      let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
-                                                     if (Number(index) >= 2) {
+                                                     if (Number(index) >= 3) {
                                                          lineColor = WHITE_LINE_COLOR;
                                                          cloudletIconColor = WHITE_CLOUTLET_ICON_COLOR
                                                      }
@@ -425,10 +431,11 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
                                                  }}
                                     >
-                                        <Radio.Button defaultChecked={true} value="0">Dark1</Radio.Button>
-                                        <Radio.Button value="1">Dark2</Radio.Button>
-                                        <Radio.Button value="2">White1</Radio.Button>
-                                        <Radio.Button value="3">White2</Radio.Button>
+                                        <Radio.Button style={{color: 'yellow'}} defaultChecked={true} value="0">Dark1</Radio.Button>
+                                        <Radio.Button style={{color: 'yellow'}} value="1">Dark2</Radio.Button>
+                                        <Radio.Button style={{color: 'yellow'}} value="2">Dark3</Radio.Button>
+                                        <Radio.Button value="3" style={{color: 'yellow'}}>Light1</Radio.Button>
+                                        <Radio.Button value="4" style={{color: 'yellow'}}>Light2</Radio.Button>
                                     </Radio.Group>
                                 </div>
                                 }
