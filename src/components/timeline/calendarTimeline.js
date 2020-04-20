@@ -4,11 +4,9 @@ import moment from "moment";
 import Timeline, {
     TimelineHeaders,
     SidebarHeader,
-    DateHeader,
     CustomHeader
 } from "react-calendar-timeline";
 import "react-calendar-timeline/lib/Timeline.css";
-import randomColor from "randomcolor";
 import MaterialIcon from "material-icons-react";
 
 var keys = {
@@ -32,13 +30,8 @@ export default class CalendarTimeline extends React.PureComponent {
         const items = this.generateItemsData(groups);
         const defaultTimeStart = moment().startOf("hour").add(1, 'hour').toDate()
         const defaultTimeEnd = moment().startOf("hour").add(4, 'hour').toDate()
-        const visibleTimeStart = moment()
-            .startOf("day")
-            .valueOf();
-        const visibleTimeEnd = moment()
-            .startOf("day")
-            .add(1, "day")
-            .valueOf();
+        const visibleTimeStart= moment().startOf("hour").add(0, 'hour').toDate()
+        const visibleTimeEnd= moment().startOf("hour").add(5, 'hour').toDate()
 
         this.state = {
             groups,
@@ -46,7 +39,8 @@ export default class CalendarTimeline extends React.PureComponent {
             defaultTimeStart,
             defaultTimeEnd,
             visibleTimeStart,
-            visibleTimeEnd
+            visibleTimeEnd,
+            scrolling: true
         };
     }
 
@@ -177,7 +171,8 @@ export default class CalendarTimeline extends React.PureComponent {
                                             : "error",
                                     bgColor: "#202329",
                                     selectedBgColor: "#202329",
-                                    itemTime: item,
+                                    // itemTime: moment(item, "DD/MM/YY HH:mm:ss").format("DD/MM/YY HH:mm:ss"),
+                                    itemTime: this.getParseDate(item).format("DD-MM-YY HH:mm:ss"),
                                     taskItem: tValue,
                                     borderColor:
                                         status[index].status === 200
@@ -202,7 +197,6 @@ export default class CalendarTimeline extends React.PureComponent {
 
     itemRenderer = ({
         item,
-        timelineContext,
         itemContext,
         getItemProps,
         getResizeProps
@@ -318,40 +312,6 @@ export default class CalendarTimeline extends React.PureComponent {
         );
     };
 
-    // componentWillReceiveProps = (nextProps, nextContext) => {
-    //     if(nextProps.timelineList !== this.props.timelineList){
-    //         let groups  = this.generateGroupsData(nextProps);
-    //         let items = this.generateItemsData(groups);
-    //
-    //         // this.setState({groups: groups, items: items})
-    //         const defaultTimeStart = moment()
-    //             .startOf("day")
-    //             .toDate();
-    //         const defaultTimeEnd = moment()
-    //             .startOf("day")
-    //             .add(1, "day")
-    //             .toDate();
-    //         const visibleTimeStart = moment()
-    //             .startOf("day")
-    //             .valueOf();
-    //         const visibleTimeEnd = moment()
-    //             .startOf("day")
-    //             .add(1, "day")
-    //             .valueOf();
-    //
-    //         this.state = {
-    //             groups,
-    //             items,
-    //             defaultTimeStart,
-    //             defaultTimeEnd,
-    //             visibleTimeStart,
-    //             visibleTimeEnd
-    //         };
-    //     }
-    //
-    //     console.log("20200324 " + JSON.stringify(this.state.groups))
-    // }
-
     getSnapshotBeforeUpdate(prevProps, prevState) {
         if (prevProps.timelineList !== this.props.timelineList) {
             const { timelineList } = this.props;
@@ -370,15 +330,19 @@ export default class CalendarTimeline extends React.PureComponent {
         if (snapshot) {
             let groups = this.generateGroupsData(snapshot);
             let items = this.generateItemsData(groups);
-            // this.setState({ groups: groups, items: items });
-            const defaultTimeStart = moment().add(1, 'hour')
-            const defaultTimeEnd = moment().add(4, 'hour')
+            const defaultTimeStart = moment().startOf("hour").add(1, 'hour').toDate()
+            const defaultTimeEnd = moment().startOf("hour").add(4, 'hour').toDate()
+            const visibleTimeStart= moment().startOf("hour").add(0, 'hour').toDate()
+            const visibleTimeEnd= moment().startOf("hour").add(5, 'hour').toDate()
 
             this.setState ({
                 groups,
                 items,
                 defaultTimeStart,
-                defaultTimeEnd
+                defaultTimeEnd,
+                visibleTimeStart,
+                visibleTimeEnd,
+                scrolling: true
             })
         }
     }
@@ -387,7 +351,8 @@ export default class CalendarTimeline extends React.PureComponent {
         const zoom = this.state.visibleTimeEnd - this.state.visibleTimeStart;
         this.setState(state => ({
             visibleTimeStart: state.visibleTimeStart - zoom,
-            visibleTimeEnd: state.visibleTimeEnd - zoom
+            visibleTimeEnd: state.visibleTimeEnd - zoom,
+            scrolling: true
         }));
     };
 
@@ -395,15 +360,25 @@ export default class CalendarTimeline extends React.PureComponent {
         const zoom = this.state.visibleTimeEnd - this.state.visibleTimeStart;
         this.setState(state => ({
             visibleTimeStart: state.visibleTimeStart + zoom,
-            visibleTimeEnd: state.visibleTimeEnd + zoom
+            visibleTimeEnd: state.visibleTimeEnd + zoom,
+            scrolling: true
         }));
     };
 
     onCurrentClick = () => {
-        this.setState(state => ({
-            visibleTimeStart: state.defaultTimeStart,
-            visibleTimeEnd: state.defaultTimeEnd
-        }));
+        this.setState({
+            visibleTimeStart: moment().startOf("hour").add(0, 'hour').toDate(),
+            visibleTimeEnd: moment().startOf("hour").add(5, 'hour').toDate(),
+            scrolling: true
+        });
+    };
+
+    handleTimeChange = (visibleTimeStart, visibleTimeEnd) => {
+        this.setState({
+            visibleTimeStart,
+            visibleTimeEnd,
+            scrolling: true
+        });
     };
 
     render() {
@@ -455,14 +430,14 @@ export default class CalendarTimeline extends React.PureComponent {
                     minZoom={60*60*1000*5}
                     maxZoom={60*60*1000*5}
                     stackItems
-                    //itemHeightRatio={0.75}
                     showCursorLine
                     minResizeWidth={550}
                     sidebarWidth={200}
                     defaultTimeStart={defaultTimeStart}
                     defaultTimeEnd={defaultTimeEnd}
-                    // visibleTimeStart={visibleTimeStart}
-                    // visibleTimeEnd={visibleTimeEnd}
+                    visibleTimeStart={visibleTimeStart}
+                    visibleTimeEnd={visibleTimeEnd}
+                    onTimeChange={this.handleTimeChange}
                     itemRenderer={this.itemRenderer}
                     groupRenderer={this.groupRenderer}
                     selected={[this.props.timelineSelectedIndex.toString()]}
@@ -506,15 +481,11 @@ export default class CalendarTimeline extends React.PureComponent {
                                 );
                             }}
                         </SidebarHeader>
-                        {/*<DateHeader unit="primaryHeader" />*/}
-                        {/*<DateHeader style={{ color: "black"}} />*/}
                         <CustomHeader className="custom-header" height={50} width="200px !important" headerData={{someData: 'data'}} unit="hour">
                             {({
                                   headerContext: { intervals },
                                   getRootProps,
-                                  getIntervalProps,
-                                  showPeriod,
-                                  data,
+                                  getIntervalProps
                               }) => {
                                 return (
                                     <div className="timeline_header_date" {...getRootProps()}>

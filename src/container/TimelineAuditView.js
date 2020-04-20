@@ -453,6 +453,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             let value = '';
             let times = this.state.timelineList[0].timesList
             let status = this.state.timelineList[0].statusList
+            let storageTimeList = JSON.parse(localStorage.getItem("selectedTime"))
             this.setState({closeMap:false})
 
             times.map((time, index) => {
@@ -460,7 +461,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     this.setState({"timelineSelectedIndex" : i})
                     this.onHandleIndexClick({"value" : i, "traceid": status[index].traceid})
                     if(status[index].status !== 200){
-                        this.setState({"unCheckedErrorCount" : this.state.unCheckedErrorCount - 1})
+                        if(storageTimeList){
+                            let storageTimeIndex = (storageTimeList) ? storageTimeList.findIndex(s => Date.parse(s) === this.getParseDate(time).valueOf()) : (-1)
+                            if(storageTimeIndex === (-1)){
+                                this.setState({"unCheckedErrorCount" : this.state.unCheckedErrorCount - 1})
+                            }
+                        }
                     }
                 }
             })
@@ -590,13 +596,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         }
 
         dropDownOnNameChange = (e, v) => {
-            this.setState({typeList: typeOptions})
             this.dropDownOnChange('name', v)
 
         }
 
         dropDownOnTypeChange = (e, v) => {
-            this.setState({nameList: nameOptions})
             this.dropDownOnChange('type', v)
         }
 
@@ -646,6 +650,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                         Type
                                     </div>
                                     <Dropdown
+                                        className='dropDownType'
                                         placeholder='All'
                                         fluid
                                         search
@@ -660,6 +665,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                         Name
                                     </div>
                                     <Dropdown
+                                        className='dropDownName'
                                         placeholder='All'
                                         fluid
                                         search
@@ -749,7 +755,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
 class SendEmailView extends React.Component {
     onSubmit = () => {
-        console.log('20200401')
         this.setState({ submitState: true })
     }
     onClear = () => {
