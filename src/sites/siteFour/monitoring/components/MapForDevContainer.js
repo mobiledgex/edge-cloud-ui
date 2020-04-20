@@ -434,26 +434,30 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {/*@todo:#####################################..*/}
                                 {this.props.isFullScreenMap &&
                                 <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
-                                    <Select defaultValue="dark" style={{width: 120}}
-                                            onChange={async (value) => {
-                                                let index = value
+                                    <Select
+                                        defaultValue="dark1"
+                                        style={{width: 120}}
+                                        //showArrow={false}
+                                        listHeight={550}
+                                        onChange={async (value) => {
+                                            let index = value
 
-                                                let lineColor = DARK_LINE_COLOR;
-                                                let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
-                                                if (Number(index) >= 4) {
-                                                    lineColor = WHITE_LINE_COLOR;
-                                                    cloudletIconColor = WHITE_CLOUTLET_ICON_COLOR
-                                                }
+                                            let lineColor = DARK_LINE_COLOR;
+                                            let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
+                                            if (Number(index) >= 4) {
+                                                lineColor = WHITE_LINE_COLOR;
+                                                cloudletIconColor = WHITE_CLOUTLET_ICON_COLOR
+                                            }
 
-                                                this.props.setMapTyleLayer(this.mapTileList[index].url);
-                                                this.props.setLineColor(lineColor);
-                                                this.props.setCloudletIconColor(cloudletIconColor);
+                                            this.props.setMapTyleLayer(this.mapTileList[index].url);
+                                            this.props.setLineColor(lineColor);
+                                            this.props.setCloudletIconColor(cloudletIconColor);
 
-                                            }}
+                                        }}
                                     >
                                         {this.mapTileList.map((item, index) => {
                                             return (
-                                                <Option style={{color: 'white'}} defaultChecked={index === 0} value={item.value}>{item.name}</Option>
+                                                <Option  style={{color: 'white'}} defaultChecked={index === 0} value={item.value}>{item.name}</Option>
                                             )
                                         })}
                                     </Select>
