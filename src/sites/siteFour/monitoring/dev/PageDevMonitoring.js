@@ -262,8 +262,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     toastMessage: '',
                     isToastOpen: false,
                     mapLoading: false,
-                    legendHeight: 50,
                     isLegendExpanded: false,
+                    chunkedSize: 12,
                 };
             }
 
@@ -302,7 +302,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let appInstanceList = require('../aaa____TESTCODE____/Jsons/appInstanceList')
                     let clusterDropdownList = this.makeTreeClusterCloudletList(clusterList);
                     console.log("clusterDropdownList===>", clusterDropdownList);
-
 
 
                     //FIXME : ############################
@@ -1722,7 +1721,31 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
+            renderLegendClusterName(item) {
+
+                if (this.state.chunkedSize === 12) {
+                    return item.cluster.substring(0, 5) + ".. [" + item.cloudlet.substring(0, 6) + "..]"
+                } else {
+                    return item.cluster.substring(0, 20) + ".. [" + item.cloudlet.substring(0, 13) + "..]"
+                }
+
+                /*if (this.state.chunkedSize === 12) {
+                     return item.substring(0, 11)
+                 } else {
+                     return item.substring(0, 33)
+                 }*/
+
+            }
+
+
             makeLegend() {
+
+                const chunkedSize = this.state.chunkedSize;
+                //@todo: chunked array,
+                //@todo: chunked array,
+                //@todo: chunked array,
+                let chunkArrayClusterUsageList = _.chunk(this.state.filteredClusterUsageList, chunkedSize);
+
                 let fullClusterList = '';
                 let region = '';
                 if (this.state.currentCluster) {
@@ -1731,126 +1754,148 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     region = this.state.currentCluster.split(" | ")[2]
                     fullClusterList = cloudlet + " > " + cluster;
                 }
-                return (
-                    <Legend style={{height: !this.state.isLegendExpanded ? 25 : 50,}}>
-                        {this.state.loading &&
-                        <div style={{
-                            display: 'flex',
-                            alignSelf: 'center',
-                            position: 'absolute',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            width: '100%',
-                            //backgroundColor: 'red'
-                        }}>
-                            <ColorLinearProgress
-                                variant={'query'}
-                                style={{
-                                    marginLeft: -10,
-                                    width: '7%',
-                                    alignContent: 'center',
-                                    justifyContent: 'center',
-                                }}
-                            />
-                        </div>}
-                        {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER ?
+
+                let legendHeight = 26
+
+                if (this.state.loading) {
+                    return (
+                        <Legend style={{height: legendHeight, width: '98.9%', marginBottom: 0}}>
                             <div style={{
                                 display: 'flex',
-                                flex: .975,
+                                alignSelf: 'center',
+                                position: 'absolute',
                                 justifyContent: 'center',
-                                marginLeft: 0,
-                                backgroundColor: 'transparent',
-                                flexWrap: 'wrap'
+                                alignItems: 'center',
+                                width: '100%',
+                                height: 30,
+                                //backgroundColor: 'red'
                             }}>
-                                {this.state.filteredClusterUsageList.map((item, index) => {
-                                    return (
-                                        <Center2>
+                                <ColorLinearProgress
+                                    variant={'query'}
+                                    style={{
+                                        marginLeft: -10,
+                                        width: '7%',
+                                        alignContent: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                                />
+                            </div>
+                        </Legend>
+                    )
+                } else {
+                    return (
+                        <Legend style={{height: !this.state.isLegendExpanded ? legendHeight : chunkArrayClusterUsageList.length * legendHeight, width: '98.9%', marginBottom: 0}}>
 
-                                            {/*desc: ##############*/}
-                                            {/*desc: circle area   */}
-                                            {/*desc: ##############*/}
-                                            <div style={{
-                                                backgroundColor: this.state.chartColorList[index],
-                                                width: 15,
-                                                height: 15,
-                                                borderRadius: 50,
-                                                marginTop: 2,
-                                            }}>
+                            {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER ?
+
+                                <div style={{flex: .97, marginTop: -3,}}>
+                                    {chunkArrayClusterUsageList.map((itemList, outerIndex) => {
+                                        return (
+                                            //todo: ################################
+                                            //todo: oneROW
+                                            //todo: ################################
+                                            <div style={{display: 'flex', marginTop: 0, marginLeft: 5, backgroundColor: 'transparent', height: 22}}>
+                                                {itemList.map((item, index) => {
+                                                    return (
+                                                        <Center2 style={{width: chunkedSize === 12 ? 120 : 240}}>
+                                                            {/*desc: ##############*/}
+                                                            {/*desc: circle area   */}
+                                                            {/*desc: ##############*/}
+                                                            <div style={{
+                                                                backgroundColor: this.state.chartColorList[index + (outerIndex * chunkedSize)],
+                                                                width: 15,
+                                                                height: 15,
+                                                                borderRadius: 50,
+                                                                marginTop: 2,
+                                                            }}>
+
+                                                            </div>
+                                                            <ClusterCluoudletLable
+                                                                style={{
+                                                                    marginLeft: 4,
+                                                                    marginRight: 10,
+                                                                    marginBottom: 0,
+                                                                    fontSize: 11,
+                                                                    cursor: 'pointer',
+                                                                }}
+                                                                title={item.cluster + " [" + item.cloudlet + "]"}
+                                                            >
+                                                                {this.renderLegendClusterName(item)}
+                                                            </ClusterCluoudletLable>
+                                                        </Center2>
+                                                    )
+                                                })}
                                             </div>
-                                            <ClusterCluoudletLable
-                                                style={{
-                                                    marginLeft: 4,
-                                                    marginRight: 15,
-                                                    marginBottom: 0
-                                                }}>{item.cluster}
-                                                {` [`}{item.cloudlet}]
-
-                                            </ClusterCluoudletLable>
-                                        </Center2>
-                                    )
-                                })}
-                            </div>
-                            : !this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST &&
-                            <div style={{
-                                display: 'flex',
-                                flex: .975,
-                                justifyContent: 'center',
-                                marginLeft: 0,
-                                backgroundColor: 'transparent',
-                                marginTop: 3,
-                            }}>
-                                <div style={{backgroundColor: 'transparent'}}>
-                                    <div style={{
-                                        backgroundColor: this.state.chartColorList[0],
-                                        width: 15,
-                                        height: 15,
-                                        borderRadius: 50,
-                                        marginTop: 0
-                                    }}>
+                                        )
+                                    })}
+                                </div> :
+                                !this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST &&
+                                <div style={{
+                                    display: 'flex',
+                                    flex: .975,
+                                    justifyContent: 'center',
+                                    marginLeft: 0,
+                                    backgroundColor: 'transparent',
+                                    marginTop: 3,
+                                }}>
+                                    <div style={{backgroundColor: 'transparent'}}>
+                                        <div style={{
+                                            backgroundColor: this.state.chartColorList[0],
+                                            width: 15,
+                                            height: 15,
+                                            borderRadius: 50,
+                                            marginTop: 0
+                                        }}>
+                                        </div>
                                     </div>
+                                    <ClusterCluoudletLable
+                                        style={{marginLeft: 5, marginRight: 15, marginBottom: 0}}>
+                                        {this.state.currentAppInst.split("|")[0]}
+                                    </ClusterCluoudletLable>
                                 </div>
-                                <ClusterCluoudletLable
-                                    style={{marginLeft: 5, marginRight: 15, marginBottom: 0}}>
-                                    {this.state.currentAppInst.split("|")[0]}
-                                </ClusterCluoudletLable>
-                            </div>
 
-                        }
-
-                        <div>
-                            {this.state.isLegendExpanded.toString()}
-                        </div>
-                        {/*todo:unfold_more_less_icon*/}
-                        {/*todo:unfold_more_less_icon*/}
-                        {/*todo:unfold_more_less_icon*/}
-                        {!this.state.loading &&
-                        <div
-                            style={{
-                                display: 'flex',
-                                flex: .025,
-                                justifyContent: 'center',
-                                alignItems: 'f',
-                                marginLeft: 0,
-                                cursor: 'pointer',
-                                //backgroundColor: 'blue',
-                            }}
-                            onClick={() => {
-                                this.setState({
-                                    isLegendExpanded: !this.state.isLegendExpanded,
-                                })
-                            }}
-                        >
-                            {this.state.isLegendExpanded ?
-                                /*<MaterialIcon color={'rgb(118, 255, 3)'} icon={'unfold_more'}/>
-                                : <MaterialIcon color={'rgb(118, 255, 3)'} icon={'unfold_less'}/>*/
-                                <UnfoldLess/> :
-                                <UnfoldMore/>
                             }
-                        </div>
-                        }
 
-                    </Legend>
-                )
+
+                            {/*todo:unfold_more_less_icon*/}
+                            {/*todo:unfold_more_less_icon*/}
+                            {/*todo:unfold_more_less_icon*/}
+                            {!this.state.loading &&
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flex: .025,
+                                    justifyContent: 'flex-end',
+                                    alignItems: 'center',
+                                    marginLeft: 0,
+                                    marginRight: -15,
+                                    cursor: 'pointer',
+                                    //backgroundColor: 'blue',
+                                }}
+                                onClick={() => {
+                                    if (this.state.chunkedSize === 12) {
+                                        this.setState({
+                                            isLegendExpanded: true,
+                                            chunkedSize: 6,
+                                        })
+                                    } else {
+                                        this.setState({
+                                            isLegendExpanded: false,
+                                            chunkedSize: 12,
+                                        })
+                                    }
+                                }}
+                            >
+                                {this.state.isLegendExpanded ?
+                                    <UnfoldLess style={{fontSize: 30,}}/> :
+                                    <UnfoldMore style={{fontSize: 18, color: chunkArrayClusterUsageList.length > 1 ? 'rgb(118, 255, 3)' : 'white'}}/>
+                                }
+                            </div>
+                            }
+
+                        </Legend>
+                    )
+                }
             }
 
 

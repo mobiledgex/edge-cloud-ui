@@ -136,13 +136,14 @@ export const Center3 = styled.div`
 `;
 
 export const Center2 = styled.div`
-  justify-content: center;
+  justify-content: flex-start;
   text-align: center;
   flex-direction: row;
   display : flex;
   align-self: center;
-  font-size: 13px;
-  marginLeft:50px;
+  marginLeft:0px;
+  align-items: flex-start;
+
 `
 
 
