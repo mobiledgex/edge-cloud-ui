@@ -1805,6 +1805,14 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
     return lineChartData;
 }
 
+export const reduceString = (str: string, lengthLimit: number) => {
+    if (str.length > lengthLimit) {
+        return str.substring(0, lengthLimit) + "..";
+    } else {
+        return str;
+    }
+}
+
 
 /**
  *
@@ -1907,7 +1915,6 @@ export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDat
         showToast(e.toString())
     }
 };
-
 
 
 //let chunkedSize = 12;
