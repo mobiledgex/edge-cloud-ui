@@ -12,7 +12,7 @@ import Control from 'react-leaflet-control';
 import {groupByKey_, removeDuplicates} from "../PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
-import {Radio} from 'antd'
+import {notification, Radio} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
 import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
@@ -170,11 +170,11 @@ export default connect(mapStateToProps, mapDispatchProps)(
         componentDidMount = async () => {
             try{
                 let appInstanceListGroupByCloudlet = this.props.markerList
-                await this.setCloudletLocation(appInstanceListGroupByCloudlet, true)    
+                await this.setCloudletLocation(appInstanceListGroupByCloudlet, true)
             }catch (e) {
-                
+
             }
-            
+
         };
 
 
@@ -378,6 +378,12 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                             try {
                                                 await this.setState({
                                                     zoom: 1,
+                                                },()=>{
+                                                    notification.success({
+                                                        placement: 'bottomLeft',
+                                                        duration: 3,
+                                                        message: 'fetch locally stored data.',
+                                                    });
                                                 })
 
                                                 await this.props.parent.handleClusterDropdown_Reset('');
