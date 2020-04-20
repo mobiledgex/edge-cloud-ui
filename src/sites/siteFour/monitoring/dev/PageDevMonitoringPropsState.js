@@ -171,6 +171,8 @@ export type PageDevMonitoringState = {
     toastMessage: string,
     isToastOpen: boolean,
     mapLoading: boolean,
+    legendHeight: number,
+    isLegendExpanded: boolean,
 }
 
 
