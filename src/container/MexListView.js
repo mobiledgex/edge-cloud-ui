@@ -111,10 +111,9 @@ class MexListView extends React.Component {
         this.props.handleLoadingSpinner(false)
     }
 
-    onDelete = async (action) => {
+    onDelete = async (action, data) => {
         let filterList = this.state.filterList
         let dataList = this.state.dataList
-        let data = this.selectedRow
         if (data) {
             if (action.ws) {
                 this.props.handleLoadingSpinner(true);
@@ -138,9 +137,9 @@ class MexListView extends React.Component {
         }
     }
 
-    onUpdateResponse = (mcRequest) =>
+    onMultiResponse = (mcRequest)=>
     {
-        let data =mcRequest.request.orgData
+        let data = mcRequest.request.orgData
         this.props.handleLoadingSpinner(false)
         if (mcRequest) {
             let responseData = undefined;
@@ -148,7 +147,12 @@ class MexListView extends React.Component {
                 responseData = mcRequest.response.data;
             }
             this.setState({ multiStepsArray: updateStepper(this.state.multiStepsArray, data[fields.uuid], responseData, data[this.props.requestInfo.nameField], mcRequest.wsObj) })
-        }
+        } 
+    }
+
+    onDeleteMultiple = (action, data) => {
+        this.props.handleLoadingSpinner(true)
+        serverData.sendWSRequest(this, action.onClick(data), this.onMultiResponse, data)
     }
     
     onUpdate = async (action, data) =>
@@ -156,29 +160,47 @@ class MexListView extends React.Component {
         if(data[fields.updateAvailable])
         {
             this.props.handleLoadingSpinner(true)
-            serverData.sendWSRequest(this, action.onClick(data), this.onUpdateResponse, data)
+            serverData.sendWSRequest(this, action.onClick(data), this.onMultiResponse, data)
         }
     }
 
     onDialogClose = (valid) => {
         let action = this.state.dialogMessageInfo.action;
+        let isMultiple = this.state.dialogMessageInfo.isMultiple;
+        let data = this.state.dialogMessageInfo.data;
         this.setState({ dialogMessageInfo: {} })
         if (valid) {
-            switch (action.label) {
-                case 'Delete':
-                    this.onDelete(action)
-                    break;
-                case 'Upgrade':
-                    let data = this.selectedRow
-                    this.onUpdate(action, data)
-                    break;
+            if (isMultiple) {
+                data.map(item => {
+                    switch (action.label) {
+                        case 'Upgrade':
+                            if(item[fields.updateAvailable])
+                            {
+                                this.onUpdate(action, item)
+                            }
+                            break;
+                        case 'Delete':
+                            this.onDeleteMultiple(action, item)
+                            break;
 
+                    }
+                })
+            }
+            else {
+                switch (action.label) {
+                    case 'Delete':
+                        this.onDelete(action, data)
+                        break;
+                    case 'Upgrade':
+                        this.onUpdate(action, data)
+                        break;
+                }
             }
         }
     }
 
-    onWarning = async (action, data, actionLabel) => {
-        this.setState({ dialogMessageInfo: { message: `Are you sure you want to ${actionLabel} ${data[this.props.requestInfo.nameField]}?`, action: action } });
+    onWarning = async (action, actionLabel, isMultiple, data) => {
+        this.setState({ dialogMessageInfo: { message: `Are you sure you want to ${actionLabel} ${isMultiple ? '' : data[this.props.requestInfo.nameField]}?`, action: action, isMultiple:isMultiple, data:data } });
     }
 
     /***Action Block */
@@ -186,10 +208,10 @@ class MexListView extends React.Component {
         let data = this.selectedRow;
         switch (action.label) {
             case 'Delete':
-                this.onWarning(action, data, 'delete')
+                this.onWarning(action, 'delete', false, data)
                 break
             case 'Upgrade':
-                this.onWarning(action, data, 'upgrade')
+                this.onWarning(action, 'upgrade', false, data)
                 break;
             default:
                 action.onClick(action, data)
@@ -197,13 +219,7 @@ class MexListView extends React.Component {
     }
 
     groupActionClose = (action, dataList) => {
-        switch (action.label) {
-            case 'Upgrade':
-                dataList.map(data=>{
-                    this.onUpdate(action, data)
-                })
-                break;
-        }
+        this.onWarning(action, action.warning, true, dataList)
     }
     /*Action Block*/
     listView = () => {
@@ -475,8 +491,8 @@ class MexListView extends React.Component {
             this.props.handleAlertInfo('error', 'Requested data is empty')
         }
         this.setState({
-            dataList: dataList,
-            filterList:dataList
+            dataList: Object.assign([], dataList),
+            filterList: Object.assign([], dataList)
         })
     }
 
