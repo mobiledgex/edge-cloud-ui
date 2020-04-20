@@ -61,8 +61,8 @@ export const Legend = styled.div`
   padding:5px;
   //margin-top: 10px;
   margin-left: 10px;
-  margin-right: 10px;
   height: 50px;
+  width:98.8%;
   //marginLeft:50px;
 `;
 
