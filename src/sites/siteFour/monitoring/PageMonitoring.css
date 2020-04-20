@@ -11,6 +11,10 @@
     color: white !important;
 }
 
+.ant-select ant-select-enabled {
+    background-color: black;
+}
+
 .ant-select-dropdown-menu-item {
     background-color: black;
 }
