@@ -1,33 +1,31 @@
-import 'react-hot-loader'
 import React from 'react';
-import { Button, Dropdown, Modal } from 'semantic-ui-react';
+import {Button, Dropdown, Modal} from 'semantic-ui-react';
 import * as moment from 'moment';
 import ReactJson from 'react-json-view';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import 'semantic-ui-css/semantic.min.css'
 import PopSendEmailView from './popSendEmailView';
-import { withRouter } from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import * as actions from "../actions";
 import View from "react-flexbox";
 import FlexBox from "flexbox-react";
 import HorizontalTimelineKJ from "../components/horizontal_timeline_kj/Components/HorizontalTimeline";
-import { hot } from "react-hot-loader/root";
-import { IconButton } from '@material-ui/core';
+import {IconButton, Button as MButton} from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 const countryOptions = [
-    { key: '24', value: '24', flag: '24', text: 'Last 24hours' },
-    { key: '18', value: '18', flag: '18', text: 'Last 18hours' },
-    { key: '12', value: '12', flag: '12', text: 'Last 12hours' },
-    { key: '6', value: '6', flag: '6', text: 'Last 6hours' },
-    { key: '1', value: '1', flag: '1', text: 'Last an hour' },
+    {key: '24', value: '24', flag: '24', text: 'Last 24hours'},
+    {key: '18', value: '18', flag: '18', text: 'Last 18hours'},
+    {key: '12', value: '12', flag: '12', text: 'Last 12hours'},
+    {key: '6', value: '6', flag: '6', text: 'Last 6hours'},
+    {key: '1', value: '1', flag: '1', text: 'Last an hour'},
 
 ]
 let timesList = [];
 let _self = null;
 const jsonView = (jsonObj, self) => {
-    return <ReactJson src={jsonObj} {...self.jsonViewProps} style={{ width: '100%' }} />
+    return <ReactJson src={jsonObj} {...self.jsonViewProps} style={{width: '100%'}}/>
 }
 
 const mapStateToProps = (state) => {
@@ -45,6 +43,7 @@ const mapStateToProps = (state) => {
         sendingContent: submitContent,
         loading: state.loadingSpinner.loading,
         isLoading: state.LoadingReducer.isLoading,
+        themeType: state.ThemeReducer.themeType,
     }
 
 };
@@ -57,10 +56,13 @@ const mapDispatchProps = (dispatch) => {
         toggleLoading: (data) => {
             dispatch(actions.toggleLoading(data))
         },
+        toggleTheme: (data) => {
+            dispatch(actions.toggleTheme(data))
+        }
     };
 };
 
-export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(
     class TimelineAuditView extends React.Component {
         state = {
             value: 0,
@@ -204,7 +206,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         };
 
         componentWillUnmount() {
-            this.setState({ mounted: false })
+            this.setState({mounted: false})
 
         }
 
@@ -252,10 +254,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         setAllView(dummyConts, sId) {
             if (dummyConts && dummyConts['traceid']) {
                 _self.setState({
-                rawViewData: dummyConts,
-                currentTraceid: dummyConts['traceid']
-            })
-        }
+                    rawViewData: dummyConts,
+                    currentTraceid: dummyConts['traceid']
+                })
+            }
         }
 
         setRequestView(dummyConts, sId) {
@@ -264,29 +266,25 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 if (dummyConts['request'].indexOf('{') > -1) {
                     let dataLenght = dummyConts['request'].split('{"data":').length;
                     if (dataLenght > 1) {
-                        this.setState({ requestData: { "data": dummyConts['request'].split('{"data":') } })
+                        this.setState({requestData: {"data": dummyConts['request'].split('{"data":')}})
                     } else {
-                        this.setState({ requestData: JSON.parse(dummyConts['request']) })
+                        this.setState({requestData: JSON.parse(dummyConts['request'])})
                     }
                 } else {
-                    this.setState({ requestData: { 'request': dummyConts['request'] } })
+                    this.setState({requestData: {'request': dummyConts['request']}})
                 }
-            }
-            else {
-                this.setState({ requestData: {} })
+            } else {
+                this.setState({requestData: {}})
             }
 
         }
 
-        convertWSResponsetoJSON = (response)=>
-        {
+        convertWSResponsetoJSON = (response) => {
             let dataArray = response.split('\n');
             let data = '[';
-            for(let i=0;i<dataArray.length;i++)
-            {
-                if(i>0)
-                {
-                    data = data + ',' 
+            for (let i = 0; i < dataArray.length; i++) {
+                if (i > 0) {
+                    data = data + ','
                 }
                 data = data.concat(dataArray[i])
             }
@@ -301,13 +299,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             if (dummyConts && dummyConts['response'].indexOf('{') > -1) {
                 let dataLenght = dummyConts['response'].split('{"data":').length;
                 if (dataLenght > 1) {
-                    this.setState({ responseData: { "data": dummyConts['response'].split('{"data":') } })
+                    this.setState({responseData: {"data": dummyConts['response'].split('{"data":')}})
                 } else {
-                    this.setState({ responseData: JSON.parse((dummyConts['response'] !== "") ? dummyConts['response'] : {}) })
+                    this.setState({responseData: JSON.parse((dummyConts['response'] !== "") ? dummyConts['response'] : {})})
                 }
-            }
-            else {
-                this.setState({ responseData: {} })
+            } else {
+                this.setState({responseData: {}})
             }
 
         }
@@ -315,25 +312,32 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         submitSendEmail = () => {
             alert('submit')
         }
-        close = () => this.setState({ openSendEmail: false })
+        close = () => this.setState({openSendEmail: false})
 
 
         getHeight = () => {
             return window.innerHeight - 72
         }
 
-        refreshData = ()=>
-        {
-            this.setState({rawAllData:[], rawViewData :[], requestData: [], responseData: [], currentTraceid: 'traceId', isLoading2: false})
+        refreshData = () => {
+            this.setState({
+                rawAllData: [],
+                rawViewData: [],
+                requestData: [],
+                responseData: [],
+                currentTraceid: 'traceId',
+                isLoading2: false
+            })
             this.props.refreshData()
         }
 
         render() {
             return (
-                <div className="page_audit" style={{height:this.getHeight()}}>
+                <div className="page_audit" style={{height: this.getHeight()}}
+                     style={{backgroundColor: this.props.themeType === 'light' ? 'white' : null}}>
                     <div className="page_audit_history">
                         <div className="page_audit_history_option">
-                            <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
+                            <div style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>{this.state.orgName}</div>
                             <div className="page_audit_history_option_period">
                                 <Dropdown
                                     placeholder='Custom Time Range'
@@ -341,14 +345,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                     search
                                     selection
                                     options={countryOptions}
-                                    style={{ width: 200, height:30 }}
+                                    style={{width: 200, height: 30}}
                                 />
                                 <IconButton aria-label="refresh">
-                                    <RefreshIcon style={{ color: '#76ff03', marginTop:-6 }} onClick={(e)=>{this.refreshData()}}/>
+                                    <RefreshIcon style={{color: '#76ff03', marginTop: -6}} onClick={(e) => {
+                                        this.refreshData()
+                                    }}/>
                                 </IconButton>
                             </div>
                         </div>
-                        <div className="page_audit_history_timeline" >
+                        <div className="page_audit_history_timeline">
 
                             <div
                                 style={{
@@ -363,70 +369,70 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 }}>
 
                                 {this.props.isLoading &&
-                                    <FlexBox style={{ position: 'absolute', top: '5%', zIndex: 9999999 }}>
-                                        <CircularProgress style={{ color: '#77BD25', zIndex: 9999999, fontSize: 10 }}
-                                            size={20} />
-                                    </FlexBox>
+                                <FlexBox style={{position: 'absolute', top: '5%', zIndex: 9999999}}>
+                                    <CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 10}}
+                                                      size={20}/>
+                                </FlexBox>
                                 }
                                 {!this.state.isLoading && this.state.timesList.length !== 0 &&
-                                    <HorizontalTimelineKJ
-                                        labelWidth={250}
-                                        getLabel={(date, task, index) => {
-                                            return (
-                                                <View column={true}>
-                                                    <div
-                                                        style={{
-                                                            height: 15,
-                                                            fontSize: 13,
-                                                            borderWidth: 1,
-                                                            borderColor: 'grey'
-                                                        }}>
-                                                        {date}
-                                                    </div>
-                                                    <FlexBox style={{
-                                                        fontSize: 15,
-                                                        fontWeight: '800',
-                                                        color: 'orange',
-                                                        marginTop: 5,
-                                                        marginBottom: 0,
-                                                        height: 30,
-                                                        alignItems: 'flex-end',
-                                                        justifyContent: 'center',
+                                <HorizontalTimelineKJ
+                                    labelWidth={250}
+                                    getLabel={(date, task, index) => {
+                                        return (
+                                            <View column={true}>
+                                                <div
+                                                    style={{
+                                                        height: 15,
+                                                        fontSize: 13,
+                                                        borderWidth: 1,
+                                                        borderColor: 'grey'
                                                     }}>
-                                                        {task}
-                                                    </FlexBox>
-                                                </View>
-                                            )
-                                        }}
-                                        index={this.state.timeLineIndex}
-                                        indexClick={async (timeLineIndex) => {
-                                            await this.setState({
-                                                timeLineIndex: timeLineIndex,
-                                                currentTask: this.state.tasksList[timeLineIndex],
-                                                currentTaskTime: this.state.timesList[timeLineIndex],
-                                            });
+                                                    {date}
+                                                </div>
+                                                <FlexBox style={{
+                                                    fontSize: 15,
+                                                    fontWeight: '800',
+                                                    color: 'orange',
+                                                    marginTop: 5,
+                                                    marginBottom: 0,
+                                                    height: 30,
+                                                    alignItems: 'flex-end',
+                                                    justifyContent: 'center',
+                                                }}>
+                                                    {task}
+                                                </FlexBox>
+                                            </View>
+                                        )
+                                    }}
+                                    index={this.state.timeLineIndex}
+                                    indexClick={async (timeLineIndex) => {
+                                        await this.setState({
+                                            timeLineIndex: timeLineIndex,
+                                            currentTask: this.state.tasksList[timeLineIndex],
+                                            currentTaskTime: this.state.timesList[timeLineIndex],
+                                        });
 
-                                            this.onHandleIndexClick({ value: timeLineIndex, previous: this.state.value });
-                                        }}
-                                        values={this.state.timesList}
-                                        tasks={this.state.tasksList}
-                                        styles={{
-                                            outline: '#dfdfdf',
-                                            outline2: '#79BF14',
-                                            background: '#f8f8f8',
-                                            foreground: '#79BF14'
-                                        }}
-                                        linePadding={150}
-                                        /* slidingMotion={{
-                                             stiffness: 300,
-                                             damping: 30,
-                                         }}
-                                         fillingMotion={{
-                                             stiffness: 300,
-                                             damping: 30,
-                                         }}*/
-                                        isKeyboardEnabled={true}
-                                    />
+                                        this.onHandleIndexClick({value: timeLineIndex, previous: this.state.value});
+                                    }}
+                                    values={this.state.timesList}
+                                    tasks={this.state.tasksList}
+                                    styles={{
+                                        outline: '#dfdfdf',
+                                        outline2: '#79BF14',
+                                        background: '#f8f8f8',
+                                        foreground: '#79BF14'
+                                    }}
+                                    linePadding={150}
+                                    /* slidingMotion={{
+                                         stiffness: 300,
+                                         damping: 30,
+                                     }}
+                                     fillingMotion={{
+                                         stiffness: 300,
+                                         damping: 30,
+                                     }}*/
+                                    isKeyboardEnabled={true}
+                                />
                                 }
                             </div>
 
@@ -439,10 +445,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                     Raw Viewer
                                 </div>
                                 {this.state.isLoading2 &&
-                                    <FlexBox style={{ position: 'absolute', bottom: '54%', left: '5%', zIndex: 9999999 }}>
-                                        <CircularProgress style={{ color: '#1cecff', zIndex: 9999999, fontSize: 10 }}
-                                            size={20} />
-                                    </FlexBox>
+                                <FlexBox style={{position: 'absolute', bottom: '54%', left: '5%', zIndex: 9999999}}>
+                                    <CircularProgress style={{color: '#1cecff', zIndex: 9999999, fontSize: 10}}
+                                                      size={20}/>
+                                </FlexBox>
                                 }
                                 <div className="page_audit_code_rawviewer_codebox">
                                     {(this.state.rawViewData) ? jsonView(this.state.rawViewData, this) : null}
@@ -469,19 +475,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                         </div>
                     </div>
                     <SendEmailView dimmer={true} open={this.state.openSendEmail} close={this.close}
-                        callback={this.submitSendEmail}> </SendEmailView>
+                                   callback={this.submitSendEmail}> </SendEmailView>
                 </div>
             )
         }
     }
-)))
+))
 
 class SendEmailView extends React.Component {
     onSubmit = () => {
-        this.setState({ submitState: true })
+        this.setState({submitState: true})
     }
     onClear = () => {
-        this.setState({ clearState: true })
+        this.setState({clearState: true})
     }
     state = {
         submitState: false,
@@ -489,14 +495,14 @@ class SendEmailView extends React.Component {
     }
 
     render() {
-        let { dimmer, open, close, callback } = this.props;
+        let {dimmer, open, close, callback} = this.props;
         return (
             <Modal dimmer={dimmer} open={open} onClose={close} closeIcon>
                 <Modal.Header>New Email</Modal.Header>
                 <Modal.Content>
                     <Modal.Description>
                         <PopSendEmailView ref={form => this.formReference = form} submitState={this.state.submitState}
-                            clearState={this.state.clearState}></PopSendEmailView>
+                                          clearState={this.state.clearState}></PopSendEmailView>
                     </Modal.Description>
                 </Modal.Content>
                 <Modal.Actions>

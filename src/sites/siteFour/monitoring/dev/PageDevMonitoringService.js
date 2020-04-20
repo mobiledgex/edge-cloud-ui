@@ -1,20 +1,14 @@
 import React from 'react';
 import '../PageMonitoring.css';
-import {
-    APP_INST_MATRIX_HW_USAGE_INDEX,
-    CHART_COLOR_LIST,
-    CLASSIFICATION,
-    HARDWARE_TYPE,
-    RECENT_DATA_LIMIT_COUNT,
-    USAGE_INDEX_FOR_CLUSTER
-} from "../../../../shared/Constants";
-import BubbleChart from "../../../../components/BubbleChart";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, CLASSIFICATION, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX_FOR_CLUSTER} from "../../../../shared/Constants";
+import BubbleChartCore from "../components/BubbleChartCore";
 import PageDevMonitoring from "./PageDevMonitoring";
-import {convertByteToMegaByte, numberWithCommas, PageMonitoringStyles, renderUsageByType, showToast} from "../PageMonitoringCommonService";
+import {convertByteToMegaByte, convertByteToMegaGigaByte, PageMonitoringStyles, renderUsageByType, showToast} from "../PageMonitoringCommonService";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
 import {CircularProgress, createMuiTheme} from "@material-ui/core";
 import {reactLocalStorage} from "reactjs-localstorage";
+import {numberWithCommas} from "../PageMonitoringUtils";
 
 export const materialUiDarkTheme = createMuiTheme({
     palette: {
@@ -395,27 +389,28 @@ export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, userTyp
     }
 
     if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
-        return numberWithCommas((usageOne.sumTcpConns).toFixed(2)) + " "
+
+        return Math.ceil(usageOne.sumTcpConns);
     }
 
     if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
-        return numberWithCommas((usageOne.sumTcpConns).toFixed(2)) + " "
+        return Math.ceil(usageOne.sumTcpRetrans);
     }
 
     if (hardwareType === HARDWARE_TYPE.UDPSENT) {
-        return numberWithCommas((usageOne.sumUdpSent).toFixed(2)) + " datagrams"
+        return convertByteToMegaGigaByte(parseInt(usageOne.sumUdpSent))
     }
 
     if (hardwareType === HARDWARE_TYPE.UDPRECV) {
-        return numberWithCommas((usageOne.sumUdpRecv).toFixed(2)) + " datagrams"
+        return convertByteToMegaGigaByte(usageOne.sumUdpRecv)
     }
 
     if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-        return numberWithCommas((usageOne.sumSendBytes / 1000000).toFixed(0)) + " MByte"
+        return convertByteToMegaGigaByte(usageOne.sumSendBytes)
     }
 
     if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-        return numberWithCommas((usageOne.sumRecvBytes / 1000000).toFixed(0)) + " MByte"
+        return convertByteToMegaGigaByte(usageOne.sumRecvBytes)
     }
 };
 
@@ -456,7 +451,6 @@ export const sortByKey = (arrList, key) => {
 
 export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageDevMonitoring) => {
 
-    console.log(`renderBarGraphForCluster===>${hardwareType}`, usageList);
     usageList = sortUsageListByTypeForCluster(usageList, hardwareType);
 
     if (usageList.length === 0) {
@@ -493,9 +487,7 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageD
  * @returns {string|{chartDataList: [], hardwareType: *}}
  */
 export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: PageDevMonitoring) => {
-
     try {
-        console.log('allHWUsageList===>', allHWUsageList);
         let typedUsageList = [];
         if (hardwareType === HARDWARE_TYPE.CPU) {
             typedUsageList = allHWUsageList[0]
@@ -512,8 +504,6 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
         } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
             typedUsageList = allHWUsageList[4]
         }
-        console.log('typedUsageList===>', typedUsageList);
-
         if (typedUsageList.length === 0) {
             return "";
         } else {
@@ -581,7 +571,6 @@ export const handleHardwareTabChanges = async (_this: PageDevMonitoring, selecte
  */
 export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, hardwareType: string, pBubbleChartData: any, themeTitle: string,) => {
 
-    console.log('pBubbleChartData===>', pBubbleChartData);
 
     if (pBubbleChartData.length === 0 && _this.loading === false) {
         return (
@@ -625,7 +614,7 @@ export const renderBubbleChartCoreForDev_Cluster = (_this: PageDevMonitoring, ha
                     height: 450,
                     // marginLeft: 0, marginRight: 0, marginBottom: 10,
                 }}>
-                    <BubbleChart
+                    <BubbleChartCore
                         className='bubbleChart'
                         style={{height: 300,}}
                         graph={{
@@ -788,8 +777,7 @@ export const makeLineChartDataForAppInstAll = (hardwareUsageList: Array, hardwar
 */
 
 
-export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareType: string = 'all', _this: PageDevMonitoring) => {
-    console.log("hardwareType===>", hardwareType);
+export const makeLineChartDataForAppInst002 = (hardwareUsageList: Array, hardwareType: string = 'all', _this: PageDevMonitoring) => {
 
     if (hardwareUsageList.length === 0) {
         return (
@@ -823,7 +811,6 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
                     seriesValues = item.connectionsSeriesValue
                 }
 
-                console.log(`seriesValues===${hardwareType}>`, seriesValues);
 
                 instanceAppName = item.instance.AppName;
                 let usageList = [];
@@ -872,12 +859,112 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
             }
 
         }
-        return {
+
+        let _result = {
             levelTypeNameList: instanceNameList,
             usageSetList,
             newDateTimeList,
             hardwareType
         }
+
+        _this.props.setChartDataSets(_result);
+
+    }
+
+};
+
+
+export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareType: string = 'all', _this: PageDevMonitoring) => {
+
+    if (hardwareUsageList.length === 0) {
+        return (
+            <div style={PageMonitoringStyles.noData}>
+                NO DATA
+            </div>
+        )
+    } else {
+
+
+        let instanceAppName = '';
+        let instanceNameList = [];
+        let usageSetList = [];
+        let dateTimeList = [];
+
+        if (hardwareType === 'all') {
+
+        } else {
+            hardwareUsageList.map((item: TypeAppInstanceUsage2, index) => {
+
+                let seriesValues = [];
+                if (hardwareType === HARDWARE_TYPE.CPU) {
+                    seriesValues = item.cpuSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.MEM) {
+                    seriesValues = item.memSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.DISK) {
+                    seriesValues = item.diskSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
+                    seriesValues = item.networkSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+                    seriesValues = item.connectionsSeriesValue
+                }
+
+
+                instanceAppName = item.instance.AppName;
+                let usageList = [];
+
+                for (let j in seriesValues) {
+                    let usageOne = 0;
+                    if (hardwareType === HARDWARE_TYPE.CPU) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.CPU];
+                    } else if (hardwareType === HARDWARE_TYPE.MEM) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.MEM]; //mem usage
+                    } else if (hardwareType === HARDWARE_TYPE.DISK) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.DISK];
+                    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.SENDBYTES];
+                    } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.RECVBYTES];
+                    } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE.toString()];
+                    } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.HANDLED.toString()];
+                    } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+                        usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACCEPTS.toString()];
+                    }
+
+                    usageList.push(usageOne);
+                    let dateOne = seriesValues[j]["0"];
+                    dateOne = dateOne.toString().split("T");
+
+                    dateTimeList.push(dateOne[1]);
+                }
+
+                instanceNameList.push(instanceAppName);
+                usageSetList.push(usageList);
+
+            })
+        }
+
+
+        //@todo: CUT LIST INTO RECENT_DATA_LIMIT_COUNT
+        let newDateTimeList = [];
+        for (let i in dateTimeList) {
+            if (i < RECENT_DATA_LIMIT_COUNT) {
+                let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
+                let timeOne = splitDateTimeArrayList[0].replace("T", "T");
+                newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
+            }
+
+        }
+
+        let _result = {
+            levelTypeNameList: instanceNameList,
+            usageSetList,
+            newDateTimeList,
+            hardwareType
+        }
+
+        return _result;
     }
 
 };
@@ -959,7 +1046,8 @@ export const renderSmallProgress = () => {
 
 
 export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: string, _this) => {
-    pUsageList = sortUsageListByTypeForCluster(pUsageList, hardwareType);
+    //@desc : sort by type
+    //pUsageList = sortUsageListByTypeForCluster(pUsageList, hardwareType);
 
     if (pUsageList.length === 0) {
         return "";
@@ -991,7 +1079,6 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
                 series = pUsageList[i].networkSeriesList
             }
 
-            console.log('series333333333===>', series);
 
             classificationName = pUsageList[i].cluster + "\n[" + pUsageList[i].cloudlet + "]";
             let usageList = [];
@@ -1028,8 +1115,6 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
             usageSetList.push(usageList);
         }
 
-        console.log('usageSetList====>', usageSetList);
-
 
         //@todo: CUS LIST INTO RECENT_DATA_LIMIT_COUNT
         let newDateTimeList = [];
@@ -1049,7 +1134,6 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
             hardwareType,
         };
 
-        console.log("lineChartDataSet===>", lineChartDataSet);
 
         return lineChartDataSet
     }
@@ -1120,32 +1204,18 @@ export const makeGradientColorOne = (canvas, height) => {
 
 export const makeGradientColorList = (canvas, height, colorList, isBig = false) => {
     //let colorList= ['red', 'blue', 'green', 'yellow', 'grey']
-    console.log("colorList===>", colorList);
     const ctx = canvas.getContext("2d");
     let gradientList = [];
-    if (isBig) {
-        colorList.map(item => {
-            const gradient = ctx.createLinearGradient(0, 0, 0, height);
-            gradient.addColorStop(0.1, hexToRGB(item, 0.1));
-            gradient.addColorStop(0.2, hexToRGB(item, 0.2));
-            gradient.addColorStop(0.3, hexToRGB(item, 0.3));
-            gradient.addColorStop(0.4, hexToRGB(item, 0.4));
-            gradient.addColorStop(0.5, hexToRGB(item, 0.5));
-            gradient.addColorStop(0.6, hexToRGB(item, 0.6));
-            gradient.addColorStop(0.7, hexToRGB(item, 0.7));
-            gradient.addColorStop(0.8, hexToRGB(item, 0.8));
-            gradient.addColorStop(0.9, hexToRGB(item, 0.9));
-            gradientList.push(gradient);
-        })
-    } else {
-        colorList.map(item => {
-            const gradient = ctx.createLinearGradient(0, 0, 0, height);
-            gradient.addColorStop(0, hexToRGB(item, 0.2));
-            gradient.addColorStop(0.5, hexToRGB(item, 0.5));
-            gradient.addColorStop(1, hexToRGB(item, 0.85));
-            gradientList.push(gradient);
-        })
-    }
+
+    colorList.map(item => {
+        /*const gradient = ctx.createLinearGradient(0,  0,  50,  0);*/
+        //const gradient = ctx.createLinearGradient(0, 0, 350, height);
+        const gradient = ctx.createLinearGradient(20, 0, 220, 0);
+        gradient.addColorStop(0, hexToRGB(item, 0.1));
+        gradient.addColorStop(0.5, hexToRGB(item, 0.5));
+        gradient.addColorStop(1, hexToRGB(item, 0.7));
+        gradientList.push(gradient);
+    })
 
     return gradientList;
 };
@@ -1153,7 +1223,6 @@ export const makeGradientColorList = (canvas, height, colorList, isBig = false) 
 
 export const makeGradientColorList2 = (canvas, height, colorList, isBig = false) => {
     //let colorList= ['red', 'blue', 'green', 'yellow', 'grey']
-    console.log("colorList===>", colorList);
     const ctx = canvas.getContext("2d");
     let gradientList = [];
 
@@ -1206,7 +1275,7 @@ export const addUnitNameForUsage = (value, hardwareType, _this) => {
         } else if (hardwareType === HARDWARE_TYPE.SENDBYTES || hardwareType === HARDWARE_TYPE.RECVBYTES) {
             return convertByteToMegaByte(value, hardwareType)
         } else if (hardwareType === HARDWARE_TYPE.UDPRECV || hardwareType === HARDWARE_TYPE.UDPSENT) {
-            return value + " datagrams";
+            return value + " DG";
         } else {
             return value;
         }
@@ -1215,7 +1284,7 @@ export const addUnitNameForUsage = (value, hardwareType, _this) => {
         if (hardwareType === HARDWARE_TYPE.CPU) {
             return value.toString().substring(0, 9) + " %";
         } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM || hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
-            return convertByteToMegaByte(value, hardwareType)
+            return convertByteToMegaGigaByte(value, hardwareType)
         } else {
             return value;
         }
@@ -1232,8 +1301,8 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
         },
         maintainAspectRatio: false,//@todo
         responsive: true,//@todo
-        datasetStrokeWidth: 3,
-        pointDotStrokeWidth: 4,
+        datasetStrokeWidth: 1,
+        pointDotStrokeWidth: 2,
         layout: {
             padding: {
                 left: 9,
@@ -1243,40 +1312,57 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
             }
         },
         legend: {
-            display: false,//@todo:리전드display
+            display: isBig ? true : false,//@todo:리전드display
             position: 'top',
             labels: {
                 boxWidth: 10,
-                fontColor: 'white'
+                fontColor: 'white',
+                fontSize: 12,
+                fontFamily: 'ubuntu',
+                fontWeight: 'bold',
             },//@todo: lineChart 리전드 클릭 이벤트.
             onClick: (e, clickedItem) => {
-
-                let selectedClusterOne = clickedItem.text.toString().replace('\n', "|");
-                handleLegendAndBubbleClickedEvent(_this, selectedClusterOne, lineChartDataSet)
-
+                /*let selectedClusterOne = clickedItem.text.toString().replace('\n', "|");
+                handleLegendAndBubbleClickedEvent(_this, selectedClusterOne, lineChartDataSet)*/
             },
             onHover: (e, item) => {
                 //alert(`Item with text ${item.text} and index ${item.index} hovered`)
             },
         },
         scales: {
+            ticks: {
+                beginAtZero: true,
+                min: 0,
+                max: 100,//todo max value
+                fontColor: 'white',
+                callback(value, index, label) {
+                    return addUnitNameForUsage(value, hardwareType, _this,)
+                },
+            },
+            gridLines: {
+                color: "#fff",
+            },
+            //desc: options for 멀티라인차트
             yAxes: [{
+                id: 'A',
+                type: 'linear',
+                position: 'left',
                 ticks: {
-                    beginAtZero: true,
-                    min: 0,
-                    //max: 100,//todo max value
-                    fontColor: 'white',
+                    fontColor: "#CCC", // this here
                     callback(value, index, label) {
-                        /*console.log("yAxes===>", hardwareType);
-                        console.log("yAxes===>", _this.state.currentClassification);*/
                         return addUnitNameForUsage(value, hardwareType, _this,)
 
                     },
                 },
-                gridLines: {
-                    color: "#505050",
-                },
-                stacked: true,
+            }, {
+                id: 'B',
+                type: 'linear',
+                display: false,
+                scaleShowLabels: false,
+                ticks: {
+                    max: 1,
+                    min: 0
+                }
 
             }],
             xAxes: [{
@@ -1287,25 +1373,25 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     color: "#505050",
                 },
                 ticks: {
+                    maxTicksLimit: 7,//@desc: maxTicksLimit
                     fontSize: 11,
                     fontColor: 'white',
                     //maxRotation: 0.05,
                     autoSkip: true,
                     maxRotation: 0,//xAxis text rotation
                     minRotation: 0,//xAxis text rotation
-                    /*
-                    maxRotation: 45,//xAxis text rotation
-                    minRotation: 45,//xAxis text rotation
-                    */
+                    /*maxRotation: 45,//xAxis text rotation
+                    minRotation: 45,//xAxis text rotation*/
                     padding: 10,
                     labelOffset: 0,
                     callback(value, index, label) {
-                        if (isBig) {
-                            return value
-                        } else {
-                            if (index % 2 === 0) return '';
-                            return value;
-                        }
+                        /*  if (isBig) {
+                              return value
+                          } else {
+                              if (index % 2 === 0) return '';
+                              return value;
+                          }*/
+                        return value;
                     },
                 },
                 beginAtZero: false,
@@ -1319,7 +1405,8 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
         },//scales
         onClick: function (c, i) {
             if (i.length > 0) {
-                console.log('onClick===>', i);
+
+
             }
 
         }
@@ -1452,12 +1539,15 @@ export const simpleGraphOptions = {
             //alert(`Item with text ${item.text} and index ${item.index} hovered`)
         },
     },
+
+
     scales: {
-        yAxes: [{
+        /*yAxes: [{
             ticks: {
-                beginAtZero: true,
-                min: 0,
+                //beginAtZero: true,
+                //min: 0,
                 //max: 100,//todo max value
+                stepSize: 1,
                 fontColor: 'white',
             },
             gridLines: {
@@ -1465,6 +1555,20 @@ export const simpleGraphOptions = {
             },
             stacked: true,
 
+        }],*/
+        //@desc: Option for multi-line on y-axis.
+        yAxes: [{
+            id: 'A',
+            type: 'linear',
+            position: 'left',
+        }, {
+            id: 'B',
+            type: 'linear',
+            position: 'right',
+            ticks: {
+                max: 1,
+                min: 0
+            }
         }],
         xAxes: [{
             /*ticks: {
@@ -1502,7 +1606,6 @@ export const simpleGraphOptions = {
     },//scales
     onClick: function (c, i) {
         if (i.length > 0) {
-            console.log('onClick===>', i);
         }
 
     }
@@ -1512,14 +1615,11 @@ export const makeTreeClusterCloudletList = (clusterOriginList) => {
 
     let ClusterList = []
     clusterOriginList.map(item => {
-        console.log("Cloudlet===>", item.Cloudlet);
-        console.log("ClusterName===>", item.ClusterName);
         ClusterList.push(item.ClusterName)
     })
     let uniqClusterList = [...new Set(ClusterList)];
     let treeList = []
     uniqClusterList.map(clusterOne => {
-        console.log("clusterOne===>", clusterOne);
         let childrenCloudlets = []
         clusterOriginList.map(item => {
             if (item.ClusterName === clusterOne) {
@@ -1601,52 +1701,56 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
  * @param isGradientColor
  * @returns {function(*=): {datasets: [], labels: *}}
  */
-export const makeTop5LineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring, isGradientColor = false) => {
-
+export const makeTop5GradientLineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring, isGradientColor = false, hwType) => {
 
     const lineChartData = (canvas) => {
 
-        let gradientList = makeGradientColorList(canvas, 305, _this.state.chartColorList);
+        let gradientList = makeGradientColorList(canvas, 250, _this.state.chartColorList);
         let finalSeriesDataSets = [];
         for (let index in usageSetList) {
-            //@todo: top5 만을 추린다
+            //@todo: extract top5
+            /*if (index < 5) {
+            }*/
 
-            if (index < 5) {
+            let datasetsOne = {
+                label: levelTypeNameList[index],
+                radius: 0,
+                borderWidth: 3,//todo:라인 두께
+                fill: isGradientColor,// @desc:fill@desc:fill@desc:fill@desc:fill
+                backgroundColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
+                borderColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
+                lineTension: 0.5,
+                data: usageSetList[index],
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: _this.state.chartColorList[index],
+                pointBackgroundColor: _this.state.chartColorList[index],
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: _this.state.chartColorList[index],
+                pointHoverBorderColor: _this.state.chartColorList[index],
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                order: index,
 
-                let datasetsOne = {
-                    label: levelTypeNameList[index],
-                    radius: 0,
-                    borderWidth: 3.5,//todo:라인 두께
-                    fill: isGradientColor,// @desc:fill@desc:fill@desc:fill@desc:fill
-                    backgroundColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
-                    borderColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
-                    lineTension: 0.5,
-                    data: usageSetList[index],
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    borderDashOffset: 0.0,
-                    borderJoinStyle: 'miter',
-                    pointBorderColor: 'rgba(75,192,192,1)',
-                    pointBackgroundColor: '#fff',
-                    pointBorderWidth: 1,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-                    pointHoverBorderColor: 'rgba(220,220,220,1)',
-                    pointHoverBorderWidth: 2,
-                    pointRadius: 1,
-                    pointHitRadius: 10,
+            };
 
-                };
-
-                finalSeriesDataSets.push(datasetsOne)
-            }
+            finalSeriesDataSets.push(datasetsOne)
 
 
         }
-        return {
+
+        let _result = {
             labels: newDateTimeList,
             datasets: finalSeriesDataSets,
         }
+
+        console.log(`_result===${hwType}>`, _result);
+
+        return _result;
     };
 
     return lineChartData;
@@ -1669,7 +1773,9 @@ export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDat
         let hardwareType = lineChartDataSet.hardwareType;
 
 
-        const lineChartDataForRendering = makeTop5LineChartData(levelTypeNameList, usageSetList, newDateTimeList, _this, _this.state.isStackedLineChart);
+        const lineChartDataForRendering = makeTop5GradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, _this, _this.state.isStackedLineChart);
+
+
         return (
             <div style={{
                 position: 'relative',
@@ -1678,7 +1784,8 @@ export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDat
             }}>
                 <ReactChartJsLine
                     data={lineChartDataForRendering}
-                    options={makeLineChartOptions(hardwareType, lineChartDataSet, _this)}
+                    //options={makeLineChartOptions(hardwareType, lineChartDataSet, _this)}
+                    options={simpleGraphOptions}
                 />
             </div>
         );
@@ -1691,7 +1798,6 @@ export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDat
 
 export const renderLineChartCoreForDev_AppInst = (_this: PageDevMonitoring, lineChartDataSet) => {
 
-    console.log("renderLineChartCoreForDev_AppInst===>", lineChartDataSet);
 
     try {
         let levelTypeNameList = lineChartDataSet.levelTypeNameList;
@@ -1699,7 +1805,6 @@ export const renderLineChartCoreForDev_AppInst = (_this: PageDevMonitoring, line
         let newDateTimeList = lineChartDataSet.newDateTimeList;
         let hardwareType = lineChartDataSet.hardwareType;
 
-        console.log('lineChartDataSet==77777=>', lineChartDataSet);
         const lineChartData = (canvas) => {
 
             let gradientList = makeGradientColor(canvas, height);
@@ -1834,7 +1939,6 @@ export const renderLineChartCoreForDev_AppInst = (_this: PageDevMonitoring, line
                 console.log(x_value);
                 console.log(y_value);*/
                 if (i.length > 0) {
-                    console.log('onClick===>', i);
                 }
 
             }
@@ -1871,6 +1975,28 @@ export const renderLineChartCoreForDev_AppInst = (_this: PageDevMonitoring, line
 
 export const makeSelectBoxListWithKeyValuePipe = (arrList, keyName, valueName) => {
     let newArrList = [];
+    newArrList.push({
+        key: '',
+        value: '',
+        text: 'all',
+    })
+    for (let i in arrList) {
+        newArrList.push({
+            key: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim(),
+            value: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim(),
+            text: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim(),
+        })
+    }
+    return newArrList;
+};
+
+export const makeSelectBoxListWithKeyValuePipeForCluster = (arrList, keyName, valueName) => {
+    let newArrList = [];
+    newArrList.push({
+        key: '',
+        value: '',
+        text: 'Reset Filter',
+    })
     for (let i in arrList) {
         newArrList.push({
             key: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim(),

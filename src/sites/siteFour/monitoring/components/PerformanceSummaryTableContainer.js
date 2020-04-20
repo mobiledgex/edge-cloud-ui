@@ -5,13 +5,19 @@ import {Table} from "semantic-ui-react";
 import {Progress} from "antd";
 import type {TypeClusterUsageList} from "../../../../shared/Types";
 import {numberWithCommas, PageMonitoringStyles} from "../PageMonitoringCommonService";
-import {handleLegendAndBubbleClickedEvent, makeLineChartDataForCluster, sortUsageListByTypeForCluster} from "../dev/PageDevMonitoringService";
+import {
+    handleLegendAndBubbleClickedEvent,
+    makeLineChartDataForCluster,
+    sortUsageListByTypeForCluster
+} from "../dev/PageDevMonitoringService";
+import Tooltip from "antd/es/tooltip";
+import {Center2} from "../PageMonitoringStyledComponent";
 
 type Props = {
-    clusterUsageList: any,
+    filteredUsageList: any,
 };
 type State = {
-    clusterUsageList: any,
+    filteredUsageList: any,
 };
 
 export default class PerformanceSummaryTableContainer extends React.Component<Props, State> {
@@ -19,23 +25,23 @@ export default class PerformanceSummaryTableContainer extends React.Component<Pr
     constructor(props: Props) {
         super(props)
         this.state = {
-            clusterUsageList: [],
+            filteredUsageList: [],
         }
     }
 
     componentDidMount(): void {
         this.setState({
-            clusterUsageList: this.props.clusterUsageList,
+            filteredUsageList: this.props.filteredUsageList,
         }, () => {
-            //alert(JSON.stringify(this.state.eventLogList))
+            console.log("clusterUsageList===>", this.state.filteredUsageList);
         })
     }
 
 
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
-        if (this.props.clusterUsageList !== nextProps.clusterUsageList) {
+        if (this.props.filteredUsageList !== nextProps.filteredUsageList) {
             this.setState({
-                clusterUsageList: nextProps.clusterUsageList,
+                filteredUsageList: nextProps.filteredUsageList,
             });
         }
     }
@@ -53,15 +59,16 @@ export default class PerformanceSummaryTableContainer extends React.Component<Pr
     }
 
     render() {
-        let clusterUsageList = sortUsageListByTypeForCluster(this.state.clusterUsageList, HARDWARE_TYPE.CPU)
         return (
             <>
-                <div style={{
-                    display: 'flex',
-                    width: '100%',
-                    height: 45
-                }}>
-                    <div className='page_monitoring_title draggable'
+                <div
+                    className='draggable'
+                    style={{
+                        display: 'flex',
+                        width: '100%',
+                        height: 45
+                    }}>
+                    <div className='page_monitoring_title'
                          style={{
                              flex: 1,
                              marginTop: 5,
@@ -69,7 +76,7 @@ export default class PerformanceSummaryTableContainer extends React.Component<Pr
                              //backgroundColor:'red'
                          }}
                     >
-                        Performance Summary
+                        Cluster Performance Summary
                     </div>
                 </div>
                 <Table className="" basic='very' sortable striped celled fixed collapsing
@@ -132,27 +139,48 @@ export default class PerformanceSummaryTableContainer extends React.Component<Pr
                     </div>
                     <Table.Body className="tbBodyList"
                     >
-                        {clusterUsageList.map((item: TypeClusterUsageList, index) => {
+                        {this.state.filteredUsageList.map((item: TypeClusterUsageList, index) => {
                             return (
                                 <Table.Row
                                     style={PageMonitoringStyles.tableRow}
-                                    onClick={() => this.handleRowClicked(item)}
+                                    //onClick={() => this.handleRowClicked(item)}
                                 >
-                                    <Table.Cell>
-                                        <div style={PageMonitoringStyles.gridTableCellAlignLeft}>
-                                            {item.cluster.toString().substring(0, 15) + ".."}<br/>[{item.cloudlet.toString().substring(0, 15) + ".."}]
-                                        </div>
-                                    </Table.Cell>
+
+                                    <Tooltip placement="topLeft" title={item.cluster.toString() + "\n[" + item.cloudlet.toString() + "]"}>
+                                        <Table.Cell>
+                                            <div style={{display: "flex",}}>
+                                                {/*desc: ##############*/}
+                                                {/*desc: circle area   */}
+                                                {/*desc: ##############*/}
+                                                <div style={{backgroundColor: 'yellow', marginBottom: 5, marginTop: 5, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                                    <div style={{
+                                                        backgroundColor: this.props.parent.state.chartColorList[index],
+                                                        width: 15,
+                                                        height: 15,
+                                                        borderRadius: 50,
+                                                    }}>
+                                                    </div>
+                                                </div>
+                                                <div style={PageMonitoringStyles.gridTableCellAlignLeft}>
+                                                    {item.cluster.toString().substring(0, 15) + ".."}<br/>[{item.cloudlet.toString().substring(0, 15) + ".."}]
+                                                </div>
+                                            </div>
+                                        </Table.Cell>
+                                    </Tooltip>
+
                                     <Table.Cell>
                                         <div>
                                             <div style={PageMonitoringStyles.cellFirstRow}>
                                                 {item.sumCpuUsage.toFixed(2) + '%'}
                                             </div>
                                             <div>
-                                                <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10}
+                                                <Progress style={{width: '100%'}} strokeLinecap={'square'}
+                                                          strokeWidth={10}
                                                           showInfo={false}
-                                                          percent={(item.sumCpuUsage / this.props.parent.state.maxCpu * 100)}
-                                                          strokeColor={'#29a1ff'} status={'normal'}/>
+                                                          percent={item.sumCpuUsage.toFixed(0)}
+                                                          strokeColor={this.props.parent.state.chartColorList[index]}
+
+                                                          status={'normal'}/>
                                             </div>
                                         </div>
                                     </Table.Cell>
@@ -162,16 +190,28 @@ export default class PerformanceSummaryTableContainer extends React.Component<Pr
                                                 {numberWithCommas(item.sumMemUsage.toFixed(2)) + ' %'}
                                             </div>
                                             <div>
-                                                <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10}
+                                                <Progress style={{width: '100%'}} strokeLinecap={'square'}
+                                                          strokeWidth={10}
                                                           showInfo={false}
-                                                          percent={(item.sumMemUsage / this.props.parent.state.maxMem * 100)}
-                                                          strokeColor={'#29a1ff'} status={'normal'}/>
+                                                          percent={item.sumMemUsage.toFixed(0)}
+                                                          strokeColor={this.props.parent.state.chartColorList[index]}
+                                                          status={'normal'}/>
                                             </div>
                                         </div>
                                     </Table.Cell>
                                     <Table.Cell>
-                                        <div style={PageMonitoringStyles.gridTableCell2}>
-                                            {numberWithCommas(item.sumDiskUsage.toFixed(2)) + ' %'}
+                                        <div>
+                                            <div style={PageMonitoringStyles.cellFirstRow}>
+                                                {numberWithCommas(item.sumDiskUsage.toFixed(2)) + ' %'}
+                                            </div>
+                                            <div>
+                                                <Progress style={{width: '100%'}} strokeLinecap={'square'}
+                                                          strokeWidth={10}
+                                                          showInfo={false}
+                                                          percent={item.sumDiskUsage.toFixed(0)}
+                                                          strokeColor={this.props.parent.state.chartColorList[index]}
+                                                          status={'normal'}/>
+                                            </div>
                                         </div>
                                     </Table.Cell>
                                     <Table.Cell>

@@ -1,13 +1,13 @@
 import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX} from "../../../../shared/Constants";
 import React from "react";
 import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
-import {numberWithCommas, renderBarChartCore, renderLineChartCore, renderPlaceHolderCircular, renderUsageByType2, sortUsageListByType, PageMonitoringStyles} from "../PageMonitoringCommonService";
+import {renderBarChartCore, renderLineChartCore, renderPlaceHolderCircular, renderUsageByType2, sortUsageListByType, PageMonitoringStyles} from "../PageMonitoringCommonService";
 import PageOperMonitoring from "./PageOperMonitoring";
 import {Table} from "semantic-ui-react";
 import {Progress} from "antd";
+import {numberWithCommas} from "../PageMonitoringUtils";
 
 export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
-    console.log('renderBarGraph2===>', usageList);
     usageList = sortUsageListByType(usageList, hardwareType)
 
     if (usageList.length === 0) {
@@ -66,7 +66,6 @@ export const handleBubbleChartDropDownForCloudlet = async (hwType, _this: PageOp
         })
     })
 
-    console.log('allUsageList===>', allUsageList);
 
     _this.setState({
         bubbleChartData: bubbleChartData,
@@ -155,7 +154,6 @@ export const renderBottomGridAreaForCloudlet = (_this: PageOperMonitoring) => {
                                                   percent={(item.sumMemUsage / _this.state.maxMem * 100)}
                                                   strokeColor={'#29a1ff'} status={'normal'}/>
                                     </div>
-
                                 </div>
                             </Table.Cell>
                             <Table.Cell>
@@ -218,8 +216,6 @@ export const makeLineChartForCloudlet = (_this: PageOperMonitoring, pUsageList: 
                 }
 
                 usageList.push(usageOne);
-
-
                 let dateOne = series[j]["0"];
                 dateOne = dateOne.toString().split("T")
                 dateTimeList.push(dateOne[1]);
@@ -238,8 +234,6 @@ export const makeLineChartForCloudlet = (_this: PageOperMonitoring, pUsageList: 
             }
 
         }
-
-        console.log('instanceNameList===>', instanceNameList);
         return renderLineChartCore(instanceNameList, usageSetList, newDateTimeList, hardwareType)
     }
 }

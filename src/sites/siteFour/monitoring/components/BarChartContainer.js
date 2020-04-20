@@ -64,7 +64,7 @@ export default class BarChartContainer extends React.Component<Props, State> {
                 <div className='page_monitoring_dual_container' style={{flex: 1}}>
                     <div className='page_monitoring_title_area draggable'>
                         <div className='page_monitoring_title'>
-                            Top 5 {this.props.pHardwareType} usage
+                            {this.props.pHardwareType} Usage
                             of {this.props.parent.convertToClassification(this.props.parent.state.currentClassification)}
                         </div>
                     </div>

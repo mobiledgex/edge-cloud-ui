@@ -2,28 +2,29 @@ import * as formatter from './format'
 import uuid from 'uuid'
 import * as constant from '../../constant'
 import * as serverData from './serverData'
-import { SHOW_APP_INST, CREATE_APP_INST, UPDATE_APP_INST, DELETE_APP_INST, STREAM_APP_INST, SHOW_APP } from './endPointTypes'
+import { SHOW_APP_INST, CREATE_APP_INST, UPDATE_APP_INST, DELETE_APP_INST, STREAM_APP_INST, SHOW_APP, REFRESH_APP_INST } from './endPointTypes'
 
 let fields = formatter.fields;
 
 export const keys = () => ([
-  { field: fields.region, label: 'Region', sortable: true, visible: true },
-  { field: fields.organizationName, serverField: 'key#OS#app_key#OS#organization', sortable: true, label: 'Organization', visible: true },
-  { field: fields.appName, serverField: 'key#OS#app_key#OS#name', sortable: true, label: 'App', visible: true },
+  { field: fields.region, label: 'Region', sortable: true, visible: true, filter:true },
+  { field: fields.organizationName, serverField: 'key#OS#app_key#OS#organization', sortable: true, label: 'Organization', visible: true, filter:true },
+  { field: fields.appName, serverField: 'key#OS#app_key#OS#name', sortable: true, label: 'App', visible: true, filter:true },
   { field: fields.version, serverField: 'key#OS#app_key#OS#version', label: 'Version', visible: true },
-  { field: fields.operatorName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: true },
-  { field: fields.cloudletName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: true },
+  { field: fields.operatorName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: true, filter:true },
+  { field: fields.cloudletName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: true, filter:true },
   { field: fields.cloudletLocation, serverField: 'cloudlet_loc', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
   { field: fields.clusterdeveloper, serverField: 'key#OS#cluster_inst_key#OS#organization', sortable: true, label: 'Cluster Developer', visible: false },
-  { field: fields.clusterName, serverField: 'key#OS#cluster_inst_key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster Instance', visible: true },
+  { field: fields.clusterName, serverField: 'key#OS#cluster_inst_key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster Instance', visible: true, filter:true },
   { field: fields.privacyPolicyName, serverField: 'privacy_policy', label: 'Privacy Policy', visible: false },
-  { field: fields.deployment, label: 'Deployment', sortable: true, visible: true },
+  { field: fields.deployment, label: 'Deployment', sortable: true, visible: true, filter:true },
   { field: fields.accessType, label: 'Access Type'},
   { field: fields.uri, serverField: 'uri', label: 'URI' },
   { field: fields.liveness, serverField: 'liveness', label: 'Liveness' },
   { field: fields.mappedPorts, serverField: 'mapped_ports', label: 'Mapped Port', dataType: constant.TYPE_JSON },
   { field: fields.flavorName, serverField: 'flavor#OS#name', label: 'Flavor' },
   { field: fields.ipAccess, serverField: 'auto_cluster_ip_access'},
+  { field: fields.revision, serverField: 'revision', label: 'Revision', visible: false  },
   { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
   { field: fields.runtimeInfo, serverField: 'runtime_info', label: 'Runtime', dataType: constant.TYPE_JSON },
   { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_JSON },
@@ -82,9 +83,10 @@ export const multiDataRequest = (keys, mcRequestList) => {
       let appInst = appInstList[i]
       for (let j = 0; j < appList.length; j++) {
         let app = appList[j]
-        if (appInst[fields.appName] === app[fields.appName]) {
+        if (appInst[fields.appName] === app[fields.appName] && appInst[fields.version] === app[fields.version] && appInst[fields.organizationName] === app[fields.organizationName]) {
           appInst[fields.deployment] = app[fields.deployment];
           appInst[fields.accessType] = app[fields.accessType];
+          appInst[fields.updateAvailable] = String(appInst[fields.revision]) !== String(app[fields.revision]);
           break;
         }
       }
@@ -108,15 +110,41 @@ export const showAppInsts = (data) => {
   return { method: SHOW_APP_INST, data: data }
 }
 
+export const getAppInstList = async (self, data) => {
+  return await serverData.showDataFromServer(self, showAppInsts(data))
+}
+
 export const createAppInst = (self, data, callback) => {
   let requestData = getKey(data, true)
   let request = { uuid: data.uuid ? data.uuid : uuid(), method: CREATE_APP_INST, data: requestData }
-  return serverData.sendWSRequest(self, request, callback)
+  return serverData.sendWSRequest(self, request, callback, data)
 }
 
 export const deleteAppInst = (data) => {
   let requestData = getKey(data)
   return { uuid: data.uuid, method: DELETE_APP_INST, data: requestData, success: `App Instance ${data[fields.appName]}` }
+}
+
+export const refreshAppInst = (data) => {
+  let requestData = getKey(data)
+  return { uuid: data.uuid, method: REFRESH_APP_INST, data: requestData, success: `App Instance ${data[fields.appName]}` }
+}
+
+export const refreshAllAppInst = (data) => {
+  let requestData = {
+    region:data[fields.region],
+    appinst:{ 
+      key:{
+        app_key:{
+          organization:data[fields.organizationName],
+          name:data[fields.appName],
+          version:data[fields.version]
+        }
+      },
+      update_multiple:true
+    },
+  }
+  return { uuid: data.uuid, method: REFRESH_APP_INST, data: requestData}
 }
 
 export const streamAppInst = (data) => {
@@ -127,6 +155,7 @@ export const streamAppInst = (data) => {
 const customData = (value) => {
   value[fields.liveness] = constant.liveness(value[fields.liveness])
   value[fields.ipAccess] = value[fields.ipAccess] ? constant.IPAccessLabel(value[fields.ipAccess]) : undefined
+  value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
 }
 
 export const getData = (response, body) => {

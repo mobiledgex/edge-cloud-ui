@@ -1,7 +1,7 @@
 import React from 'react';
 import './PageMonitoring.css';
-import {SemanticToastContainer, toast} from "react-semantic-toasts";
-import {CLASSIFICATION, GRID_ITEM_TYPE, HARDWARE_TYPE, USAGE_TYPE,} from "../../../shared/Constants";
+import {toast} from "react-semantic-toasts";
+import {GRID_ITEM_TYPE, HARDWARE_TYPE, USAGE_TYPE,} from "../../../shared/Constants";
 import Lottie from "react-lottie";
 import {makeGradientColor} from "./dev/PageDevMonitoringService";
 import {Chart} from "react-google-charts";
@@ -10,11 +10,19 @@ import {makeCompleteDateTime} from "./admin/PageAdminMonitoringService";
 import moment from "moment";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {GridLoader, PulseLoader} from "react-spinners";
-import {Grid} from "semantic-ui-react";
-import {barChartOption, columnChartOption} from "./PageMonitoringUtils";
-import {Card} from "@material-ui/core";
+import {barChartOption, columnChartOption, numberWithCommas,} from "./PageMonitoringUtils";
 
 export const PageMonitoringStyles = {
+    topRightMenu: {
+        alignItems: 'center',
+        display: 'flex',
+        cursor: 'pointer',
+        //backgroundColor: 'red',
+        height: 30, width: 30,
+        alignSelf: 'center',
+        justifyContent: 'center',
+    },
+
     listItemTitle: {
         marginLeft: 10,
     },
@@ -126,7 +134,20 @@ export const PageMonitoringStyles = {
         display: 'flex',
         justifyContent: 'center',
         alignItem: 'center',
-        marginTop: 3
+        marginTop: 3,
+        //backgroundColor: 'red',
+        /*minWidth: 80,
+        width: 80,*/
+    },
+    gridHeaderBig: {
+        height: 15,
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItem: 'center',
+        marginTop: 3,
+        backgroundColor: 'red',
+        width: 250,
     },
     gridHeaderSmall2: {
         height: 15,
@@ -479,26 +500,25 @@ export const renderPlaceHolderCircular3 = (type: string = '') => {
     )
 }
 
-export const renderPlaceHolderCircular2 = (type: string = '') => {
+export const renderWifiLoader = (width = 25, height = 25) => {
     return (
-        <div className='page_monitoring_blank_box'
-             style={{height: '100%'}}>
-            {/*<Lottie
+        <div
+            style={{marginBottom: 3,}}>
+
+            <Lottie
                 options={{
                     loop: true,
                     autoplay: true,
-                    animationData: require('../../../lotties/14112-heartrate_777'),
+                    animationData: require('../../../lotties/wifi-signal'),
                     rendererSettings: {
                         preserveAspectRatio: 'xMidYMid slice'
                     }
                 }}
                 speed={2.5}
-                height={150}
-                width={150}
+                width={width}
+                height={height}
                 isStopped={false}
                 isPaused={false}
-            />*/}
-            <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}
             />
         </div>
     )
@@ -581,9 +601,9 @@ export const renderPlaceHolderLottiePinJump3 = (type: string = '') => {
                         preserveAspectRatio: 'xMidYMid slice'
                     }
                 }}
-                speed={2.9}
-                height={75}
-                width={75}
+                speed={2.0}
+                height={105}
+                width={105}
                 isStopped={false}
                 isPaused={false}
             />
@@ -628,6 +648,23 @@ export const convertByteToMegaByte = (value, hardwareType) => {
     } else {
         return numberWithCommas(value)
     }
+}
+
+export const convertByteToMegaGigaByte = (bytes) => {
+    let marker = 1024; // Change to 1000 if required
+    let decimal = 0; // Change as required
+    let kiloBytes = marker; // One Kilobyte is 1024 bytes
+    let megaBytes = marker * marker; // One MB is 1024 KB
+    let gigaBytes = marker * marker * marker; // One GB is 1024 MB
+    let teraBytes = marker * marker * marker * marker; // One TB is 1024 GB
+    // return bytes if less than a KB
+    if (bytes < kiloBytes) return bytes + " Bytes";
+    // return KB if less than a MB
+    else if (bytes < megaBytes) return (bytes / kiloBytes).toFixed(decimal) + " KB";
+    // return MB if less than a GB
+    else if (bytes < gigaBytes) return (bytes / megaBytes).toFixed(decimal) + " MB";
+    // return GB if less than a TB
+    else return (bytes / gigaBytes).toFixed(decimal) + " GB";
 }
 
 
@@ -928,18 +965,6 @@ export const renderBarChartCore = (chartDataList, hardwareType, _this, graphType
 }
 
 
-export const numberWithCommas = (x) => {
-    let value = ''
-    try {
-        value = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    } catch (e) {
-        console.log('error===>', e);
-    } finally {
-        return value;
-    }
-}
-
-
 export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
 
     let dataForm = {
@@ -1099,9 +1124,7 @@ export const hardwareTypeToUsageKey = (hwType: string) => {
  * @param themeTitle
  * @returns {[]}
  */
-export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType,) => {
-
-    console.log('makeBubbleChartDataForCluster===>', usageList)
+export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType, chartColorList) => {
 
     let bubbleChartData = []
     usageList.map((item, index) => {
@@ -1111,12 +1134,14 @@ export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType,) =>
         let cluster_cloudlet_fullLabel = item.cluster.toString() + ' [' + item.cloudlet.toString().trim() + "]";
 
         bubbleChartData.push({
+            type: pHardwareType,
             index: index,
             label: cluster_cloudlet_fullLabel.toString().substring(0, 17) + "...",
             value: usageValue,
             favor: usageValue,
             fullLabel: item.cluster.toString() + ' [' + item.cloudlet.toString().trim().substring(0, 15) + "]",
             cluster_cloudlet: item.cluster.toString() + ' | ' + item.cloudlet.toString(),
+            color: chartColorList[index],
         })
     })
 

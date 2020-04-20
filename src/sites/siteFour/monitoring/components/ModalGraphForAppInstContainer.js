@@ -156,7 +156,6 @@ export default class ModalGraphForAppInstContainer extends React.Component<Props
                 hardwareType: hardwareType,
             }, () => {
 
-                console.log('lineChartData===>', lineChartData);
             })
         }
     }

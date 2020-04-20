@@ -40,6 +40,7 @@ export const SHOW_APP = "ShowApp";
 export const CREATE_APP = "CreateApp";
 export const UPDATE_APP = "UpdateApp";
 export const DELETE_APP = "DeleteApp";
+export const REFRESH_APP_INST = 'RefreshAppInst';
 export const SHOW_APP_INST = "ShowAppInst";
 export const CREATE_APP_INST = "CreateAppInst";
 export const UPDATE_APP_INST = "UpdateAppInst";
@@ -137,6 +138,7 @@ export function getPath(request) {
         case UPDATE_APP_INST:
         case CREATE_APP_INST:
         case DELETE_APP_INST:
+        case REFRESH_APP_INST:
         case STREAM_APP_INST:
         case SHOW_CLOUDLET_POOL:
         case SHOW_CLOUDLET_MEMBER:

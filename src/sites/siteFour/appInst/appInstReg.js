@@ -99,12 +99,24 @@ class ClusterInstReg extends React.Component {
                 form.rules.disabled = currentForm.value ? true : false
                 form.error = currentForm.value ? undefined : form.error
             }
-            else if (form.field === fields.privacyPolicyName || form.field === fields.ipAccess) {
+            else if (form.field === fields.ipAccess) {
                 form.visible = currentForm.value
                 form.value = currentForm.value ? form.value : undefined
             }
         }
         if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
+        }
+    }
+
+    ipAccessValueChange = (currentForm, forms, isInit) => {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (form.field === fields.privacyPolicyName) {
+                form.visible = currentForm.value === constant.IP_ACCESS_DEDICATED ? true : false
+            }
+        }
+         if (isInit === undefined || isInit === false) {
             this.setState({ forms: forms })
         }
     }
@@ -260,7 +272,7 @@ class ClusterInstReg extends React.Component {
 
     formKeys = () => {
         return [
-            { label: 'App Instances', formType: 'Header', visible: true },
+            { label: 'Create App Instances', formType: 'Header', visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
             { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of' },
             { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: true }, fullData: true, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
@@ -294,6 +306,9 @@ class ClusterInstReg extends React.Component {
         else if (form.field === fields.version) {
             this.versionValueChange(form, forms, isInit)
         }
+        else if (form.field === fields.ipAccess) {
+            this.ipAccessValueChange(form, forms, isInit)
+        }
     }
 
     /**Required */
@@ -312,7 +327,7 @@ class ClusterInstReg extends React.Component {
             if (mcRequest.response && mcRequest.response.data) {
                 data = mcRequest.response.data;
             }
-            this.setState({ stepsArray: updateStepper(this.state.stepsArray, cloudletName, data) })
+            this.setState({ stepsArray: updateStepper(this.state.stepsArray, cloudletName, data, cloudletName) })
         }
     }
 

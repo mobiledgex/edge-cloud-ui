@@ -1,9 +1,7 @@
 // @flow
-
-
-import React, {Fragment} from 'react';
+import React from 'react';
 import {Modal as AModal} from "antd";
-import {CLASSIFICATION, GRID_ITEM_TYPE, lineGraphOptions} from "../../../../shared/Constants";
+import {CLASSIFICATION, GRID_ITEM_TYPE} from "../../../../shared/Constants";
 import {Line} from "react-chartjs-2";
 import {Chart as Bar_Column_Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -14,7 +12,7 @@ import {withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 import sizeMe from "react-sizeme";
 import * as actions from "../../../../actions";
-import {renderCircleLoaderForMap} from "../PageMonitoringCommonService";
+import {renderCircleLoaderForMap, renderWifiLoader} from "../PageMonitoringCommonService";
 import {makeLineChartOptions} from "../dev/PageDevMonitoringService";
 
 const FA = require('react-fontawesome')
@@ -31,13 +29,14 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 type Props = {
-    chartDataForRendering: any,
+    chartDataForBigModal: any,
     isShowBigGraph: boolean,
     popupGraphHWType: string,
     graphType: string,
     appInstanceListGroupByCloudlet: any,
     isLoading: boolean,
     toggleLoading: Function,
+    intervalLoading: boolean,
 
 };
 type State = {
@@ -56,7 +55,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         constructor(props: Props) {
             super(props)
             this.state = {
-                chartDataForRendering: [],
+                chartDataForBigModal: [],
                 bigModalLoading: false,
                 options: [],
                 graphType: '',
@@ -68,22 +67,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         componentDidMount(): void {
         }
 
-
         async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
-            if (this.props.chartDataForRendering !== nextProps.chartDataForRendering) {
+            if (this.props.chartDataForBigModal !== nextProps.chartDataForBigModal) {
 
-                console.log("chartDataForRendering===>", nextProps.chartDataForRendering);
+                console.log("chartDataForRendering===>", nextProps.chartDataForBigModal);
 
                 this.setState({
-                    chartDataForRendering: nextProps.chartDataForRendering,
+                    chartDataForRendering: nextProps.chartDataForBigModal,
                     graphType: nextProps.graphType.toUpperCase(),
                     popupGraphHWType: nextProps.popupGraphHWType,
                     appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
-                }, () => {
-                    console.log("chartDataForRendering===>", this.state.chartDataForRendering);
-
-                    //alert(this.state.graphType)
-                })
+                });
 
             }
 
@@ -167,17 +161,28 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER ?
                                     <div style={{display: 'flex'}}>
                                         {this.renderPrevBtn()}
-                                        <div className='page_monitoring_popup_title'>
+                                        <div className='page_monitoring_popup_title' style={{display: 'flex'}}>
                                             Cluster {this.props.popupGraphHWType} Usage
+                                            {this.props.intervalLoading &&
+                                            <div style={{backgroundColor: 'transparent', zIndex:999999999999, marginLeft:25}}>
+                                                {renderWifiLoader(35, 35)}
+                                            </div>
+                                            }
                                         </div>
                                     </div>
 
                                     : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ?
                                         <div style={{display: 'flex'}}>
                                             {this.renderPrevBtn()}
-                                            <div className='page_monitoring_popup_title'>
+                                            <div className='page_monitoring_popup_title' style={{display: 'flex'}}>
                                                 App Instance {this.props.popupGraphHWType} Usage
+                                                {this.props.intervalLoading &&
+                                                <div style={{backgroundColor: 'transparent', zIndex:999999999999, marginLeft:25}}>
+                                                    {renderWifiLoader(35, 35)}
+                                                </div>
+                                                }
                                             </div>
+
                                         </div>
                                         : this.state.graphType === GRID_ITEM_TYPE.BUBBLE ?
 
@@ -206,9 +211,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     ref="chart"
                                     height={window.innerHeight * 0.8}
                                     data={this.state.chartDataForRendering}
-                                    //options={lineGraphOptions}
                                     options={makeLineChartOptions(this.state.popupGraphHWType, this.state.chartDataForRendering, this.props.parent, true)}
-                                    //data={data222}
                                 />
                             </div>
                             : this.state.graphType === GRID_ITEM_TYPE.BAR || this.state.graphType === GRID_ITEM_TYPE.COLUMN ?
