@@ -1670,7 +1670,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                     return (
 
                                                         //todo: ################################
-                                                        /*cluster cell one*/
+                                                        //todo: cluster cell one
                                                         //todo: ################################
                                                         <Center2 style={{width: chunkedSize === 12 ? 135 : 360}}>
                                                             {/*desc: ##############*/}
