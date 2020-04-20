@@ -1630,7 +1630,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                 if (this.state.loading) {
                     return (
-                        <Legend style={{height: legendHeight, width: '98.5%', marginBottom: 0}}>
+                        <Legend style={{height: legendHeight, width: '98.0%', marginBottom: 0}}>
                             <div style={{
                                 display: 'flex',
                                 alignSelf: 'center',
@@ -1655,7 +1655,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else {
                     return (
-                        <Legend style={{height: !this.state.isLegendExpanded ? legendHeight : chunkArrayClusterUsageList.length * legendHeight, width: '98.8%', marginBottom: 0}}>
+                        <Legend style={{height: !this.state.isLegendExpanded ? legendHeight : chunkArrayClusterUsageList.length * legendHeight, width: '98.2%', marginBottom: 0}}>
 
                             {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER ?
 
@@ -1672,7 +1672,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                         //todo: ################################
                                                         /*cluster cell one*/
                                                         //todo: ################################
-                                                        <Center2 style={{width: chunkedSize === 12 ? 120 : 360}}>
+                                                        <Center2 style={{width: chunkedSize === 12 ? 135 : 360}}>
                                                             {/*desc: ##############*/}
                                                             {/*desc: circle area   */}
                                                             {/*desc: ##############*/}
@@ -1681,7 +1681,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                                 width: 15,
                                                                 height: 15,
                                                                 borderRadius: 50,
-                                                                marginTop: 2,
+                                                                marginTop: 3,
                                                             }}>
 
                                                             </div>
@@ -1693,7 +1693,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                                             marginLeft: 4,
                                                                             marginRight: 10,
                                                                             marginBottom: 0,
-                                                                            fontSize: 11,
                                                                             cursor: 'pointer',
                                                                             marginTop: 2,
                                                                         }}
@@ -1708,7 +1707,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                                         marginLeft: 4,
                                                                         marginRight: 10,
                                                                         marginBottom: 0,
-                                                                        fontSize: 11,
                                                                         cursor: 'pointer',
                                                                         marginTop: 2,
 
