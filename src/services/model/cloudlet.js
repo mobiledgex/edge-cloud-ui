@@ -92,14 +92,14 @@ export const showOrgCloudlets = (data) => {
 export const createCloudlet = (self, data, callback) => {
     let requestData = getKey(data, true)
     let request = { uuid: data.uuid ? data.uuid : uuid(), method: CREATE_CLOUDLET, data: requestData }
-    return serverData.sendWSRequest(self, request, callback)
+    return serverData.sendWSRequest(self, request, callback, data)
 }
 
 export const updateCloudlet = (self, data, callback) => {
     let requestData = getKey(data, true)
     requestData.cloudlet.fields = ['20']
     let request = { uuid: data.uuid ? data.uuid : uuid(), method: UPDATE_CLOUDLET, data: requestData }
-    return serverData.sendWSRequest(self, request, callback)
+    return serverData.sendWSRequest(self, request, callback, data)
 }
 
 export const getCloudletList = async (self, data) => {
