@@ -116,42 +116,45 @@ export default connect(mapStateToProps, mapDispatchProps)(
             {
                 url: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
                 name: 'dark1',
+                value: 0,
+            },
+            {
+                url: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.png',
+                name: 'dark2',
+                value: 1,
             },
             {
                 //url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
-                url: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.png',
-                name: 'dark3',
-            },
-            {
                 //url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
                 url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-midnight/{z}/{x}/{y}.png',
                 name: 'darkBlue',
+                value: 2,
             },
             {
                 url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-flatblue/{z}/{x}/{y}.png',
                 name: 'blue',
+                value: 3,
             },
             {
                 url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png',
                 name: 'light1',
+                value: 4,
             },
             {
                 url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
                 name: 'light2',
+                value: 5,
             },
             {
                 url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-antique/{z}/{x}/{y}.png',
                 name: 'light3',
+                value: 6,
             },
             {
                 url: 'https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
                 name: 'light4',
+                value: 7,
             },
-            {
-                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-eco/{z}/{x}/{y}.png',
-                name: 'light5',
-            },
-
         ]
 
 
@@ -426,12 +429,12 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                         }}
                                     />
                                 </Control>
-                                {/*@desc:#####################################..*/}
-                                {/*@desc: topRight Radio Btns changing MapTyle...*/}
-                                {/*@desc:#####################################..*/}
+                                {/*@todo:#####################################..*/}
+                                {/*@todo: topRight Dropdown changing MapTyles...*/}
+                                {/*@todo:#####################################..*/}
                                 {this.props.isFullScreenMap &&
                                 <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
-                                    <Select defaultValue="0" style={{width: 120}}
+                                    <Select defaultValue="dark" style={{width: 120}}
                                             onChange={async (value) => {
                                                 let index = value
 
@@ -450,7 +453,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     >
                                         {this.mapTileList.map((item, index) => {
                                             return (
-                                                <Option style={{color: 'white'}} defaultChecked={index === 0} value={item.value}>{item.title}</Option>
+                                                <Option style={{color: 'white'}} defaultChecked={index === 0} value={item.value}>{item.name}</Option>
                                             )
                                         })}
                                     </Select>
