@@ -1741,12 +1741,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             width: 15,
                                             height: 15,
                                             borderRadius: 50,
-                                            marginTop: 0
+                                            marginTop: -2,
                                         }}>
                                         </div>
                                     </div>
                                     <ClusterCluoudletLable
-                                        style={{marginLeft: 5, marginRight: 15, marginBottom: 0}}>
+                                        style={{marginLeft: 5, marginRight: 15, marginBottom: 2}}>
                                         {this.state.currentAppInst.split("|")[0]}
                                     </ClusterCluoudletLable>
                                 </div>
