@@ -457,7 +457,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
             times.map((time, index) => {
                 if(Date.parse(this.getParseDate(time)) === item){
-                    // this.setState({"timelineSelectedIndex" : i})
+                    this.setState({"timelineSelectedIndex" : i})
                     this.onHandleIndexClick({"value" : i, "traceid": status[index].traceid})
                     if(status[index].status !== 200){
                         this.setState({"unCheckedErrorCount" : this.state.unCheckedErrorCount - 1})
