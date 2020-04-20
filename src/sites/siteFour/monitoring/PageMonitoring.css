@@ -11,6 +11,10 @@
     color: white !important;
 }
 
+.ant-select-dropdown-menu-item {
+    background-color: black;
+}
+
 /*DESC:MUI*/
 /*DESC:MUI*/
 /*DESC:MUI*/
