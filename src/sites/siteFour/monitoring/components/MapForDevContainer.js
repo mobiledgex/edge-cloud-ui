@@ -382,7 +382,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                     notification.success({
                                                         placement: 'bottomLeft',
                                                         duration: 3,
-                                                        message: 'fetch locally stored data.',
+                                                        message: 'Fetch locally stored data.',
                                                     });
                                                 })
 
