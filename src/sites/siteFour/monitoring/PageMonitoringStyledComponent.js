@@ -145,6 +145,7 @@ export const Center2 = styled.div`
   marginLeft:0px;
   align-items: flex-start;
   margin-top: -2px;
+  
 `
 
 
