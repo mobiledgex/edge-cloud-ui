@@ -173,6 +173,7 @@ export type PageDevMonitoringState = {
     mapLoading: boolean,
     legendHeight: number,
     isLegendExpanded: boolean,
+    chunkedSize: number,
 }
 
 
