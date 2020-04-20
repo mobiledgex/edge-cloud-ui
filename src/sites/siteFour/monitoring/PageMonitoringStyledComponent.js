@@ -135,6 +135,7 @@ export const Center3 = styled.div`
   margin: 10px;
 `;
 
+
 export const Center2 = styled.div`
   justify-content: flex-start;
   text-align: center;
@@ -143,7 +144,7 @@ export const Center2 = styled.div`
   align-self: center;
   marginLeft:0px;
   align-items: flex-start;
-
+  margin-top: -2px;
 `
 
 

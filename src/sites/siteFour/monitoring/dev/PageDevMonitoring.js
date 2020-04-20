@@ -1669,7 +1669,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 {itemList.map((item, index) => {
                                                     return (
 
-                                                        /*cluster one*/
+                                                        //todo: ################################
+                                                        /*cluster cell one*/
+                                                        //todo: ################################
                                                         <Center2 style={{width: chunkedSize === 12 ? 120 : 360}}>
                                                             {/*desc: ##############*/}
                                                             {/*desc: circle area   */}
@@ -1693,6 +1695,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                                             marginBottom: 0,
                                                                             fontSize: 11,
                                                                             cursor: 'pointer',
+                                                                            marginTop: 2,
                                                                         }}
                                                                         //title={item.cluster + " [" + item.cloudlet + "]"}
                                                                     >
@@ -1707,6 +1710,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                                         marginBottom: 0,
                                                                         fontSize: 11,
                                                                         cursor: 'pointer',
+                                                                        marginTop: 2,
+
                                                                     }}
                                                                 >
                                                                     {this.renderLegendClusterName(item)}
