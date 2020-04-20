@@ -1,5 +1,25 @@
 import {HARDWARE_TYPE} from "../../../shared/Constants";
 
+
+export const numberWithCommas = (x) => {
+    let value = ''
+    try {
+        value = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    } catch (e) {
+        console.log('error===>', e);
+    } finally {
+        return value;
+    }
+}
+
+export function getWindowDimensions() {
+    const {innerWidth: width, innerHeight: height} = window;
+    return {
+        width,
+        height
+    };
+}
+
 export const barChartOption = (hwType) => {
 
     return (

@@ -1,30 +1,16 @@
 import React from 'react';
 import '../PageMonitoring.css';
-import {
-    APP_INST_MATRIX_HW_USAGE_INDEX,
-    CHART_COLOR_LIST,
-    HARDWARE_TYPE,
-    NETWORK_TYPE,
-    RECENT_DATA_LIMIT_COUNT,
-    REGION
-} from "../../../../shared/Constants";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
-import BubbleChart from "../../../../components/BubbleChart";
+import BubbleChartCore from "../components/BubbleChartCore";
+import type {TypeAppInstanceUsage2, TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import PageAdminMonitoring from "./PageAdminMonitoring";
-import {
-    convertByteToMegaByte,
-    numberWithCommas,
-    renderBarChartCore,
-    renderLineChartCore,
-    renderUsageByType2,
-    PageMonitoringStyles,
-    showToast
-} from "../PageMonitoringCommonService";
+import {PageMonitoringStyles, renderBarChartCore, renderLineChartCore, renderUsageByType2, showToast} from "../PageMonitoringCommonService";
 import {TabPanel, Tabs} from "react-tabs";
 import {Table} from "semantic-ui-react";
-import type {TypeAppInstanceUsage2, TypeGridInstanceList} from "../../../../shared/Types";
 import {Progress} from "antd";
+import {numberWithCommas} from "../PageMonitoringUtils";
 
 export const cutArrayList = (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];
@@ -37,7 +23,6 @@ export const cutArrayList = (length: number = 5, paramArrayList: any) => {
 }
 
 export const makeSelectBoxListByClassification = (arrList, keyName) => {
-    console.log('makeSelectBoxListByClassification====>', arrList);
 
     let newArrList = [];
     for (let i in arrList) {
@@ -50,8 +35,6 @@ export const makeSelectBoxListByClassification = (arrList, keyName) => {
 }
 
 export const makeSelectBoxListByClassification_byKey = (arrList, keyName) => {
-    console.log('makeSelectBoxListByClassification====>', arrList);
-
     let newArrList = [];
     for (let i in arrList) {
         newArrList.push({
@@ -96,7 +79,6 @@ export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, fetchi
                 "endtime": pEndTime,
             }
         }
-        console.log("makeFormForAppInstance111====>", form);
         return form;
 
 
@@ -125,8 +107,6 @@ export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, fetchi
                 "last": fetchingDataNo,
             }
         }
-
-        console.log("makeFormForAppInstance222====>", form)
 
         return form;
     }
@@ -374,9 +354,6 @@ export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, _this) 
 export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
 
 
-    console.log("usageList===>", usageList);
-
-
     if (hardwareType === HARDWARE_TYPE.CPU) {
         usageList.sort((a, b) => b.sumCpuUsage - a.sumCpuUsage);
     } else if (hardwareType === HARDWARE_TYPE.MEM) {
@@ -394,10 +371,6 @@ export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
     } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
         usageList.sort((a, b) => b.sumHandledConnection - a.sumHandledConnection);
     }
-
-
-    console.log('hardwareType====>', hardwareType);
-
 
     if (usageList.length === 0) {
         return (
@@ -571,7 +544,7 @@ export const renderBubbleChart = (_this: PageAdminMonitoring, hardwareType: stri
                     backgroundColor: '#1e2124',
                     // marginLeft: 0, marginRight: 0, marginBottom: 10,
                 }}>
-                    <BubbleChart
+                    <BubbleChartCore
                         className='bubbleChart'
                         graph={{
                             zoom: renderZoomLevel(appInstanceList.length),
@@ -657,7 +630,7 @@ export const renderBubbleChartForCloudlet = (_this: PageAdminMonitoring, hardwar
                     backgroundColor: '#1e2124',
                     // marginLeft: 0, marginRight: 0, marginBottom: 10,
                 }}>
-                    <BubbleChart
+                    <BubbleChartCore
                         className='bubbleChart'
                         graph={{
                             zoom: renderZoomLevel(appInstanceList.length),
@@ -718,9 +691,6 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
             )
         } else {
 
-            console.log('hardwareUsageList===>', hardwareUsageList);
-            console.log('hardwareUsageList===hardwareType>', hardwareType);
-
 
             let instanceAppName = ''
             let instanceNameList = [];
@@ -739,9 +709,6 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
                     seriesValues = item.diskSeriesValue
                 } else if (hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
                     seriesValues = item.networkSeriesValue
-
-                    console.log("NETWORK__seriesValues===>", seriesValues);
-
                 } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
                     seriesValues = item.connectionsSeriesValue
                 }
@@ -828,8 +795,6 @@ export const handleBubbleChartDropDown = async (_this, value) => {
         await _this.setState({
             currentHardwareType: value,
         });
-
-        console.log("allAppInstUsageList===>", _this.state.allAppInstUsageList);
 
         let appInstanceList = _this.state.appInstanceList;
         let allUsageList = _this.state.allAppInstUsageList;

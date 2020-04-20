@@ -54,8 +54,7 @@ class CloudletPoolReg extends React.Component {
     /**
      * Organization Block
      * * */
-    organizationAddResponse = (mcRequestList)=>
-    {
+    organizationAddResponse = (mcRequestList) => {
         let valid = true;
         if (mcRequestList && mcRequestList.length > 0) {
 
@@ -116,7 +115,8 @@ class CloudletPoolReg extends React.Component {
         if (this.organizationList.length > 0) {
             let label = this.action === constant.DELETE_ORGANIZATION ? 'Unlink' : 'Link'
             let step = [
-                { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible: true, options: [region ], value: region },
+                { label: 'Link Organization', formType: 'Header', visible: true },
+                { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible: true, options: [region], value: region },
                 { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { disabled: true }, visible: true, value: data[fields.poolName] },
                 { field: fields.organizations, label: 'Organizations', formType: 'DualList', rules: { required: true }, visible: true, options: this.getData(this.organizationList, fields.organizationName) },
                 { label: `${label} Organizations`, formType: 'Button', onClick: this.onAddOrganizations },
@@ -128,8 +128,7 @@ class CloudletPoolReg extends React.Component {
                 forms: step
             })
         }
-        else
-        {
+        else {
             this.props.handleAlertInfo('error', 'No organizations to unlink')
             this.props.onClose(false)
         }
@@ -139,17 +138,15 @@ class CloudletPoolReg extends React.Component {
      * Organization Block
      * * */
 
-     /**
-     * Cloudlet Block
-     * * */
+    /**
+    * Cloudlet Block
+    * * */
 
     onCloudletCancel = () => {
-        if(this.props.action)
-        {
+        if (this.props.action) {
             this.props.onClose(false)
         }
-        else
-        {
+        else {
             this.selectOrganization(true)
         }
     }
@@ -169,12 +166,10 @@ class CloudletPoolReg extends React.Component {
         if (valid) {
             let msg = this.action === constant.DELETE_CLOUDLET ? 'removed' : 'added'
             this.props.handleAlertInfo('success', `Cloudlets ${msg} successfully`)
-            if(this.props.action)
-            {
+            if (this.props.action) {
                 this.props.onClose(true)
             }
-            else
-            {
+            else {
                 let data = mcRequestList[0].request.data;
                 this.selectOrganization(data, true)
             }
@@ -197,7 +192,7 @@ class CloudletPoolReg extends React.Component {
         serverData.sendMultiRequest(this, requestDataList, this.addCloudletResponse)
     }
 
-   
+
 
     selectCloudlet = async (isNew) => {
         let data = this.poolData;
@@ -217,6 +212,7 @@ class CloudletPoolReg extends React.Component {
             let label = this.action === constant.DELETE_CLOUDLET ? 'Delete' : 'Add'
 
             let step2 = [
+                { label: 'Add Cloudlets', formType: 'Header', visible: true },
                 { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible: true, options: [region], value: region },
                 { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { disabled: true }, visible: true, value: data[fields.poolName] },
                 { field: fields.cloudlets, label: 'Clouldets', formType: 'DualList', rules: { required: true }, visible: true, options: this.getData(this.cloudletList, fields.cloudletName) },
@@ -228,22 +224,19 @@ class CloudletPoolReg extends React.Component {
                 step: 1,
                 forms: step2
             })
-        }else
-        {
+        } else {
             this.props.handleAlertInfo('error', 'No Cloudlets present')
-            if(this.props.action)
-            {
+            if (this.props.action) {
                 this.props.onClose(true)
-            }else
-            {
+            } else {
                 this.selectOrganization(data, true)
             }
         }
     }
 
-     /**
-     * Cloudlet Block
-     * * */
+    /**
+    * Cloudlet Block
+    * * */
 
 
 
@@ -282,21 +275,18 @@ class CloudletPoolReg extends React.Component {
                 <div className="grid_table" style={{ overflow: 'auto' }}>
                     <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
                         {this.props.action ? null :
-                            <div>
-                                <div className='content_title' style={{ padding: '0px 0px 10px 0' }}>Create Cloudlet Pool</div>
-
-                                <Step.Group stackable='tablet' style={{ width: '100%' }}>
-                                    {
-                                        stepData.map((item, i) => (
-                                            <Step active={this.state.step === i} key={i} >
-                                                <Step.Content>
-                                                    <Step.Title>{item.step}</Step.Title>
-                                                    <Step.Description>{item.description}</Step.Description>
-                                                </Step.Content>
-                                            </Step>
-                                        ))
-                                    }
-                                </Step.Group></div>}
+                            <Step.Group stackable='tablet' style={{ width: '100%' }}>
+                                {
+                                    stepData.map((item, i) => (
+                                        <Step active={this.state.step === i} key={i} >
+                                            <Step.Content>
+                                                <Step.Title>{item.step}</Step.Title>
+                                                <Step.Description>{item.description}</Step.Description>
+                                            </Step.Content>
+                                        </Step>
+                                    ))
+                                }
+                            </Step.Group>}
                         <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} />
                     </Item>
                 </div>
@@ -347,6 +337,7 @@ class CloudletPoolReg extends React.Component {
         }
         else {
             let step1 = [
+                { label: 'Create Cloudlet Pool', formType: 'Header', visible: true },
                 { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
                 { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { required: true }, visible: true },
                 { label: 'Create Cloudlet Pool', formType: 'Button', onClick: this.onCreateCloudletPool, validate: true },

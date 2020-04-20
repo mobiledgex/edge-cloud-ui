@@ -134,15 +134,16 @@
         "topojson-client": "^3.1.0",
         "ua-parser-js": "^0.7.20",
         "uuid": "^3.4.0",
-        "webpack": "^4.42.0",
         "@ant-design/icons": "^4.0.5",
         "feather-icons-react": "^0.4.1"
     },
     "module": "dist/index.js",
     "typings": "dist/index.d.ts",
     "devDependencies": {
+        "@material-ui/styles": "^4.9.10",
         "craco-plugin-react-hot-reload": "^0.1.0",
-        "react-scripts": "^3.4.1"
+        "react-scripts": "^3.4.1",
+        "webpack": "^4.42.0"
     },
     "scripts": {
         "start": "craco start",

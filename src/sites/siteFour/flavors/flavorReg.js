@@ -28,7 +28,7 @@ class ClusterInstReg extends React.Component {
 
     formKeys = () => {
         return [
-            { label: 'Flavors', formType: 'Header', visible: true },
+            { label: 'Create Flavor', formType: 'Header', visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
             { field: fields.flavorName, label: 'Flavor Name', formType: INPUT, placeholder: 'Enter Flavor Name', rules: { required: true }, visible: true },
             { field: fields.ram, label: 'RAM Size', formType: INPUT, placeholder: 'Enter RAM Size (MB)', unit: 'MB', rules: { required: true, type: 'number' }, visible: true },
