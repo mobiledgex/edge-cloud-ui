@@ -1724,17 +1724,19 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             renderLegendClusterName(item) {
 
                 if (this.state.chunkedSize === 12) {
-                    return item.cluster.substring(0, 5) + ".. [" + item.cloudlet.substring(0, 6) + "..]"
+                    return this.reduceString(item.cluster, 5) + "[" + this.reduceString(item.cloudlet, 5) + "]"
                 } else {
-                    return item.cluster.substring(0, 20) + ".. [" + item.cloudlet.substring(0, 13) + "..]"
+                    return this.reduceString(item.cluster, 35) + "[" + this.reduceString(item.cloudlet, 35) + "]"
                 }
 
-                /*if (this.state.chunkedSize === 12) {
-                     return item.substring(0, 11)
-                 } else {
-                     return item.substring(0, 33)
-                 }*/
+            }
 
+            reduceString(str: string, lengthLimit: number) {
+                if (str.length > lengthLimit) {
+                    return str.substring(0, lengthLimit) + "..";
+                } else {
+                    return str;
+                }
             }
 
 
@@ -1759,7 +1761,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                 if (this.state.loading) {
                     return (
-                        <Legend style={{height: legendHeight, width: '98.9%', marginBottom: 0}}>
+                        <Legend style={{height: legendHeight, width: '98.5%', marginBottom: 0}}>
                             <div style={{
                                 display: 'flex',
                                 alignSelf: 'center',
@@ -1784,7 +1786,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else {
                     return (
-                        <Legend style={{height: !this.state.isLegendExpanded ? legendHeight : chunkArrayClusterUsageList.length * legendHeight, width: '98.9%', marginBottom: 0}}>
+                        <Legend style={{height: !this.state.isLegendExpanded ? legendHeight : chunkArrayClusterUsageList.length * legendHeight, width: '98.8%', marginBottom: 0}}>
 
                             {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER ?
 
@@ -1797,7 +1799,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             <div style={{display: 'flex', marginTop: 0, marginLeft: 5, backgroundColor: 'transparent', height: 22}}>
                                                 {itemList.map((item, index) => {
                                                     return (
-                                                        <Center2 style={{width: chunkedSize === 12 ? 120 : 240}}>
+                                                        <Center2 style={{width: chunkedSize === 12 ? 120 : 360}}>
                                                             {/*desc: ##############*/}
                                                             {/*desc: circle area   */}
                                                             {/*desc: ##############*/}
@@ -1876,7 +1878,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     if (this.state.chunkedSize === 12) {
                                         this.setState({
                                             isLegendExpanded: true,
-                                            chunkedSize: 6,
+                                            chunkedSize: 4,
                                         })
                                     } else {
                                         this.setState({
