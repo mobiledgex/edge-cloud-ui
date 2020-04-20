@@ -145,6 +145,10 @@ export const updateApp = async (self, data, originalData) => {
     {
         updateFields.push("9.1")
     }
+    if(!compareObjects(data[fields.command], originalData[fields.command]))
+    {
+        updateFields.push("13")
+    }
     if(!compareObjects(data[fields.deploymentManifest], originalData[fields.deploymentManifest]))
     {
         updateFields.push("16")
