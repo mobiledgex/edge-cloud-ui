@@ -168,8 +168,13 @@ export default connect(mapStateToProps, mapDispatchProps)(
         }
 
         componentDidMount = async () => {
-            let appInstanceListGroupByCloudlet = this.props.markerList
-            await this.setCloudletLocation(appInstanceListGroupByCloudlet, true)
+            try{
+                let appInstanceListGroupByCloudlet = this.props.markerList
+                await this.setCloudletLocation(appInstanceListGroupByCloudlet, true)    
+            }catch (e) {
+                
+            }
+            
         };
 
 
