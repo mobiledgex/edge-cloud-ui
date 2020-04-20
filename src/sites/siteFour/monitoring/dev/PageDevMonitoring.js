@@ -1493,8 +1493,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 </div>
                                 }
                             </div>
-
-
                             {/*
                         desc :####################################
                         desc : options list (right conner)
