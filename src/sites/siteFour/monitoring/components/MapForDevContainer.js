@@ -12,11 +12,13 @@ import Control from 'react-leaflet-control';
 import {groupByKey_, removeDuplicates} from "../PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
-import {notification, Radio} from 'antd'
+import {notification, Select} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
 import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
+
+const {Option} = Select;
 
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
@@ -115,17 +117,21 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 url: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
                 name: 'dark1',
             },
+
             {
                 //url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
-                url: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.png',
+                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-midnight/{z}/{x}/{y}.png',
                 name: 'dark2',
             },
             {
                 //url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
-                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-midnight/{z}/{x}/{y}.png',
+                url: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.png',
                 name: 'dark3',
             },
-
+            {
+                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-flatblue/{z}/{x}/{y}.png',
+                name: 'dark4',
+            },
             {
                 url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png',
                 name: 'white1',
@@ -414,29 +420,30 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {/*@desc:#####################################..*/}
                                 {this.props.isFullScreenMap &&
                                 <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
-                                    <Radio.Group defaultValue="0" buttonStyle="solid"
-                                                 onChange={async (e) => {
-                                                     let index = e.target.value
+                                    <Select defaultValue="0" style={{width: 120}}
+                                            onChange={async (value) => {
+                                                let index = value
 
-                                                     let lineColor = DARK_LINE_COLOR;
-                                                     let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
-                                                     if (Number(index) >= 3) {
-                                                         lineColor = WHITE_LINE_COLOR;
-                                                         cloudletIconColor = WHITE_CLOUTLET_ICON_COLOR
-                                                     }
+                                                let lineColor = DARK_LINE_COLOR;
+                                                let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
+                                                if (Number(index) >= 4) {
+                                                    lineColor = WHITE_LINE_COLOR;
+                                                    cloudletIconColor = WHITE_CLOUTLET_ICON_COLOR
+                                                }
 
-                                                     this.props.setMapTyleLayer(this.mapTileList[index].url);
-                                                     this.props.setLineColor(lineColor);
-                                                     this.props.setCloudletIconColor(cloudletIconColor);
+                                                this.props.setMapTyleLayer(this.mapTileList[index].url);
+                                                this.props.setLineColor(lineColor);
+                                                this.props.setCloudletIconColor(cloudletIconColor);
 
-                                                 }}
+                                            }}
                                     >
-                                        <Radio.Button style={{color: 'yellow'}} defaultChecked={true} value="0">Dark1</Radio.Button>
-                                        <Radio.Button style={{color: 'yellow'}} value="1">Dark2</Radio.Button>
-                                        <Radio.Button style={{color: 'yellow'}} value="2">Dark3</Radio.Button>
-                                        <Radio.Button value="3" style={{color: 'yellow'}}>Light1</Radio.Button>
-                                        <Radio.Button value="4" style={{color: 'yellow'}}>Light2</Radio.Button>
-                                    </Radio.Group>
+                                        <Option style={{color: 'white'}} defaultChecked={true} value="0">Dark1</Option>
+                                        <Option style={{color: 'white'}} value="1">Dark2</Option>
+                                        <Option style={{color: 'white'}} value="2">Dark3</Option>
+                                        <Option style={{color: 'white'}} value="3">Blue</Option>
+                                        <Option style={{color: 'white'}} value="4">Light1</Option>
+                                        <Option style={{color: 'white'}} value="5">Light2</Option>
+                                    </Select>
                                 </div>
                                 }
 
