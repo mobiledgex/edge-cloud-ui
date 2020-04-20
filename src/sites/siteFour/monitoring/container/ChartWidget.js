@@ -83,9 +83,11 @@ class DataGrid extends React.Component {
 }
 
 /******************************************
+ * SLIDER (carousel)
  * http://react-responsive-carousel.js.org/storybook/index.html?path=/story/01-basic--with-custom-status-arrows-and-indicators
  * https://github.com/leandrowd/react-responsive-carousel
  * @param {*} props
+ * @Codeby Smith
  *******************************************/
 const ItemComp = props => {
     const divRef = React.createRef();
