@@ -174,107 +174,114 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
 
         async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
+            try {
+                if (this.props.markerList !== nextProps.markerList) {
+                    let appInstanceListGroupByCloudlet = nextProps.markerList;
+                    this.setCloudletLocation(appInstanceListGroupByCloudlet)
+                }
 
-            if (this.props.markerList !== nextProps.markerList) {
-                let appInstanceListGroupByCloudlet = nextProps.markerList;
-                this.setCloudletLocation(appInstanceListGroupByCloudlet)
-            }
+                //@desc : #############################
+                //@desc:   hide appInstInfoPopup
+                //@desc : #############################
+                if (this.props.isShowAppInstPopup !== nextProps.isShowAppInstPopup) {
+                    this.appInstPopup.current.leafletElement.options.leaflet.map.closePopup();
+                }
 
-            //@desc : #############################
-            //@desc:   hide appInstInfoPopup
-            //@desc : #############################
-            if (this.props.isShowAppInstPopup !== nextProps.isShowAppInstPopup) {
-                this.appInstPopup.current.leafletElement.options.leaflet.map.closePopup();
-            }
+                //@desc : #############################
+                //@desc : clientList
+                //@desc : #############################
+                if (this.props.selectedClientLocationListOnAppInst !== nextProps.selectedClientLocationListOnAppInst) {
 
-            //@desc : #############################
-            //@desc : clientList
-            //@desc : #############################
-            if (this.props.selectedClientLocationListOnAppInst !== nextProps.selectedClientLocationListOnAppInst) {
+                    await this.setState({
+                        clientObjKeys: [],
+                    })
+                    let clientList = nextProps.selectedClientLocationListOnAppInst;
+                    //desc: duplication remove by client cellphone uuid
+                    clientList = removeDuplicates(clientList, "uuid")
 
-                await this.setState({
-                    clientObjKeys: [],
-                })
-                let clientList = nextProps.selectedClientLocationListOnAppInst;
-                //desc: duplication remove by client cellphone uuid
-                clientList = removeDuplicates(clientList, "uuid")
+                    let newClientList = []
+                    clientList.map((item: TypeClient, index) => {
+                        let clientLocation = parseFloat(item.latitude).toFixed(3).toString() + parseFloat(item.longitude).toFixed(2).toString();
+                        item.clientLocation = clientLocation;
+                        newClientList.push(item);
+                    })
 
-                let newClientList = []
-                clientList.map((item: TypeClient, index) => {
-                    let clientLocation = parseFloat(item.latitude).toFixed(3).toString() + parseFloat(item.longitude).toFixed(2).toString();
-                    item.clientLocation = clientLocation;
-                    newClientList.push(item);
-                })
+                    let groupedClientList = groupByKey_(newClientList, 'clientLocation')
+                    let clientObjKeys = Object.keys(groupedClientList)
+                    await this.setState({
+                        clientList: groupedClientList,
+                        clientObjKeys: clientObjKeys,
+                    }, () => {
+                        //console.log("selectedClientLocationListOnAppInst====>", this.state.clientList);
 
-                let groupedClientList = groupByKey_(newClientList, 'clientLocation')
-                let clientObjKeys = Object.keys(groupedClientList)
-                await this.setState({
-                    clientList: groupedClientList,
-                    clientObjKeys: clientObjKeys,
-                }, () => {
-                    //console.log("selectedClientLocationListOnAppInst====>", this.state.clientList);
+                    })
+                }
+            } catch (e) {
 
-                })
             }
 
         }
 
         setCloudletLocation(pAppInstanceListGroupByCloudlet, isMapCenter = false) {
-            let cloudletKeys = Object.keys(pAppInstanceListGroupByCloudlet)
+            try{
+                let cloudletKeys = Object.keys(pAppInstanceListGroupByCloudlet)
 
-            let newCloudLetLocationList = []
-            cloudletKeys.map((key, index) => {
+                let newCloudLetLocationList = []
+                cloudletKeys.map((key, index) => {
 
-                let AppNames = ''
-                let CloudletLocation = '';
-                let Cloudlet = '';
-                let ClusterInst = '';
-                pAppInstanceListGroupByCloudlet[key].map((innerItem: TypeAppInstance, index) => {
-
-
-                    if (index === (pAppInstanceListGroupByCloudlet[key].length - 1)) {
-                        AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version + " | " + innerItem.Operator
-                    } else {
-                        AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version + " | " + innerItem.Operator + " , "
-                    }
-
-                    CloudletLocation = innerItem.CloudletLocation;
-                    Cloudlet = innerItem.Cloudlet;
-
-                })
+                    let AppNames = ''
+                    let CloudletLocation = '';
+                    let Cloudlet = '';
+                    let ClusterInst = '';
+                    pAppInstanceListGroupByCloudlet[key].map((innerItem: TypeAppInstance, index) => {
 
 
-                newCloudLetLocationList.push({
-                    AppNames: AppNames,
-                    CloudletLocation: CloudletLocation,
-                    Cloudlet: Cloudlet,
-                    isShow: false,
-                    isShowCircle: false,
-                    //ClusterInst: ClusterInst,
-                })
+                        if (index === (pAppInstanceListGroupByCloudlet[key].length - 1)) {
+                            AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version + " | " + innerItem.Operator
+                        } else {
+                            AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version + " | " + innerItem.Operator + " , "
+                        }
 
-            })
+                        CloudletLocation = innerItem.CloudletLocation;
+                        Cloudlet = innerItem.Cloudlet;
 
-            let arrIsShowCloudlet = []
-
-            //@todo: cloudletDIV block, hidden
-            newCloudLetLocationList.map(item => {
-                arrIsShowCloudlet.push(false);
-            })
-
-            this.setState({
-                newCloudLetLocationList: newCloudLetLocationList,
-                arrIsShowCloudlet: arrIsShowCloudlet,
-                appInstanceListGroupByCloudlet: pAppInstanceListGroupByCloudlet,
-            }, () => {
-                //@desc: Move the center of the map to the center of the item.
-                if (newCloudLetLocationList[0] !== undefined) {
-                    this.setState({
-                        mapCenter: isMapCenter ? this.state.mapCenter : [newCloudLetLocationList[0].CloudletLocation.latitude, newCloudLetLocationList[0].CloudletLocation.longitude],
-                        zoom: 2,
                     })
-                }
-            })
+
+
+                    newCloudLetLocationList.push({
+                        AppNames: AppNames,
+                        CloudletLocation: CloudletLocation,
+                        Cloudlet: Cloudlet,
+                        isShow: false,
+                        isShowCircle: false,
+                        //ClusterInst: ClusterInst,
+                    })
+
+                })
+
+                let arrIsShowCloudlet = []
+
+                //@todo: cloudletDIV block, hidden
+                newCloudLetLocationList.map(item => {
+                    arrIsShowCloudlet.push(false);
+                })
+
+                this.setState({
+                    newCloudLetLocationList: newCloudLetLocationList,
+                    arrIsShowCloudlet: arrIsShowCloudlet,
+                    appInstanceListGroupByCloudlet: pAppInstanceListGroupByCloudlet,
+                }, () => {
+                    //@desc: Move the center of the map to the center of the item.
+                    if (newCloudLetLocationList[0] !== undefined) {
+                        this.setState({
+                            mapCenter: isMapCenter ? this.state.mapCenter : [newCloudLetLocationList[0].CloudletLocation.latitude, newCloudLetLocationList[0].CloudletLocation.longitude],
+                            zoom: 2,
+                        })
+                    }
+                })
+            }catch (e) {
+                
+            }
 
         }
 
