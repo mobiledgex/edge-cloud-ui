@@ -558,12 +558,17 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             async handleClusterDropdown_Reset(selectedClusterOne) {
                 try {
                     let filteredClusterUsageList = []
-                    //todo: 모든 클러스터 선택인 경우..
+                    //todo: When selected all Cluster options
                     if (selectedClusterOne === '') {
                         await this.setState({
                             filteredClusterList: this.state.clusterList,
                         })
-                        this.resetLocalData();
+                        await this.resetLocalData();
+                      /*  notification.success({
+                            placement: 'bottomLeft',
+                            duration: 1,
+                            message: 'Fetch locally stored data.',
+                        });*/
                     } else {
                         await this.setState({
                             selectedClientLocationListOnAppInst: [],
