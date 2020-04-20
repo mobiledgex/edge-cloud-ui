@@ -82,11 +82,6 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
             message: message,
         });
 
-        //showToast3(`${this.state.currentItemType} [${this.state.currentHwType}] item added`, 3, 'green')
-        /*this.props.parent.setState({
-            toastMessage: `[${this.state.currentHwType}] item added`,
-            isToastOpen: true,
-        })*/
 
         await this.props.parent.addGridItem(this.state.currentHwType, this.state.currentItemType);
         this.closePopupWindow();
