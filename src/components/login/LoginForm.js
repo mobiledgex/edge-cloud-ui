@@ -66,7 +66,7 @@ class LoginForm extends Component {
                 Alert.error(err, {
                     position: 'top-right',
                     effect: 'slide',
-                    timeout: 5000
+                    timeout: 20000
                 });
             })
     }
