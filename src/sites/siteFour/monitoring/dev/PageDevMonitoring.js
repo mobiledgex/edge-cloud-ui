@@ -6,7 +6,7 @@ import {Dropdown, Modal} from 'semantic-ui-react'
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
 import {CircularProgress, Toolbar} from '@material-ui/core'
-import {Dropdown as ADropdown, Menu as AMenu, Tooltip,} from 'antd';
+import {Dropdown as ADropdown, Menu as AMenu,} from 'antd';
 import {
     defaultHwMapperListForCluster,
     defaultLayoutForAppInst,
@@ -230,7 +230,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     mapLoading: false,
                     isLegendExpanded: false,
                     chunkedSize: 12,
-                    selectedAppInstIndex:-1,
+                    selectedAppInstIndex: -1,
                 };
             }
 
@@ -1606,7 +1606,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 if (this.state.chunkedSize === 12) {
                     return reduceString(item.cluster, 5) + "[" + reduceString(item.cloudlet, 5) + "]"
                 } else {//when legend expanded
-                    return reduceString(item.cluster, 25) + "[" + reduceString(item.cloudlet, 25) + "]"
+                    return reduceString(item.cluster, 23) + "[" + reduceString(item.cloudlet, 23) + "]"
                 }
             }
 
@@ -1674,7 +1674,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                         //todo: ################################
                                                         //todo: cluster cell one
                                                         //todo: ################################
-                                                        <Center2 style={{width: chunkedSize === 12 ? 135 : 390}}>
+                                                        <Center2 style={{width: chunkedSize === 12 ? 135 : 390, backgroundColor: 'transparent'}}>
                                                             {/*desc: ##############*/}
                                                             {/*desc: circle area   */}
                                                             {/*desc: ##############*/}
@@ -1689,20 +1689,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                             </div>
 
                                                             {!this.state.isLegendExpanded ?
-                                                                <Tooltip placement="top" title={item.cluster + " [" + item.cloudlet + "]"}>
-                                                                    <ClusterCluoudletLable
-                                                                        style={{
-                                                                            marginLeft: 4,
-                                                                            marginRight: 10,
-                                                                            marginBottom: 0,
-                                                                            cursor: 'pointer',
-                                                                            marginTop: 2,
-                                                                        }}
-                                                                        //title={item.cluster + " [" + item.cloudlet + "]"}
-                                                                    >
-                                                                        {this.renderLegendClusterName(item)}
-                                                                    </ClusterCluoudletLable>
-                                                                </Tooltip>
+                                                                <ClusterCluoudletLable
+                                                                    style={{
+                                                                        marginLeft: 4,
+                                                                        marginRight: 10,
+                                                                        marginBottom: 0,
+                                                                        cursor: 'pointer',
+                                                                        marginTop: 2,
+                                                                    }}
+                                                                    title={item.cluster + " [" + item.cloudlet + "]"}
+                                                                >
+                                                                    {this.renderLegendClusterName(item)}
+                                                                </ClusterCluoudletLable>
                                                                 :
                                                                 <ClusterCluoudletLable
                                                                     style={{
@@ -1711,6 +1709,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                                         marginBottom: 0,
                                                                         cursor: 'pointer',
                                                                         marginTop: 2,
+
 
                                                                     }}
                                                                     title={item.cluster + " [" + item.cloudlet + "]"}
