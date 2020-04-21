@@ -101,7 +101,7 @@ const useStyles = makeStyles(theme => ({
 
 const options = [
     {label: 'Organizations', icon: <SupervisorAccountOutlinedIcon/>, pg: 0, page: <SiteFourPageOrganization/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']},
-    {label: 'Users & Roles', icon: <AssignmentIndOutlinedIcon/>, pg: 1, page: <SiteFourPageUser/>, roles: ['AdminManager']},
+    {label: 'Users & Roles', icon: <AssignmentIndOutlinedIcon/>, pg: 1, page: <SiteFourPageUser/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']},
     {label: 'Accounts', icon: <DvrOutlinedIcon/>, pg: 101, page: <SiteFourPageAccount/>, roles: ['AdminManager']},
     {divider: true},
     {label: 'Cloudlets', icon: <CloudQueueOutlinedIcon/>, pg: 2, page: <SiteFourPageCloudlet/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']},

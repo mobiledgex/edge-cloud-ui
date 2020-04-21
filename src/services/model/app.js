@@ -145,9 +145,21 @@ export const updateApp = async (self, data, originalData) => {
     {
         updateFields.push("9.1")
     }
+    if(!compareObjects(data[fields.command], originalData[fields.command]))
+    {
+        updateFields.push("13")
+    }
     if(!compareObjects(data[fields.deploymentManifest], originalData[fields.deploymentManifest]))
     {
         updateFields.push("16")
+    }
+    if(!compareObjects(data[fields.autoPolicyName], originalData[fields.autoPolicyName]))
+    {
+        updateFields.push("28")
+    }
+    if(!compareObjects(data[fields.privacyPolicyName], originalData[fields.privacyPolicyName]))
+    {
+        updateFields.push("30")
     }
     requestData.app.fields = updateFields
     let request = { method: UPDATE_APP, data: requestData }

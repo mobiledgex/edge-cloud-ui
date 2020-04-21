@@ -37,6 +37,7 @@ class MexListView extends React.Component {
             uuid: 0,
             refresh: true,
         };
+        this.filterText = ''
         this.requestCount = 0;
         this.keys = props.requestInfo.keys;
         this.selectedRow = {};
@@ -368,6 +369,7 @@ class MexListView extends React.Component {
       */
 
      onFilterValue = (e) => {
+        this.filterText = e ? e.target.value.toLowerCase() : this.filterText
         let dataList = this.state.dataList
         let filterCount = 0
         let filterList = dataList.filter(data=>{
@@ -376,7 +378,7 @@ class MexListView extends React.Component {
                 {   
                     filterCount =+ 1
                     let tempData = data[key.field] ? data[key.field] : ''
-                    return tempData.toLowerCase().includes(e.target.value.toLowerCase()) 
+                    return tempData.toLowerCase().includes(this.filterText) 
                 }
             })
             return filterCount === 0 || valid.includes(true)
@@ -491,9 +493,9 @@ class MexListView extends React.Component {
             this.props.handleAlertInfo('error', 'Requested data is empty')
         }
         this.setState({
-            dataList: Object.assign([], dataList),
-            filterList: Object.assign([], dataList)
+            dataList: Object.assign([], dataList)
         })
+        this.onFilterValue()
     }
 
     dataFromServer = (region) => {
