@@ -1657,7 +1657,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else {
                     return (
-                        <Legend style={{height: !this.state.isLegendExpanded ? legendHeight : chunkArrayClusterUsageList.length * legendHeight,}}>
+                        <Legend style={{height: this.state.isLegendExpanded && this.state.currentClassification === CLASSIFICATION.CLUSTER ? chunkArrayClusterUsageList.length * legendHeight : legendHeight}}>
 
                             {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER ?
 
