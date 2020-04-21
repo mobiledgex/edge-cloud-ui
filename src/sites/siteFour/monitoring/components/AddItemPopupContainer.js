@@ -20,6 +20,7 @@ type State = {
     isShowHWDropDown: boolean,
     isShowEventLog: boolean,
     currentHwTypeList: any,
+    selectDefaultValues: any,
 
 };
 
@@ -36,6 +37,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
             currentHwTypeList: HARDWARE_TYPE.CPU,
             isShowHWDropDown: true,
             isShowEventLog: false,
+            selectDefaultValues: [],
         }
     }
 
@@ -80,6 +82,12 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                 duration: 3,
                 message: `${this.state.currentItemType} [${currentHwTypeList}] item added`,
             });
+
+            //todo:init dropdown selected values
+            await this.setState({
+                currentHwTypeList: [],
+            })
+
             this.closePopupWindow();
         } else {
             notification.warning({
@@ -106,12 +114,6 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
         hardwareDropdownList.map(item => {
             hwDropdownChildren.push(<Option key={item.value}>{item.text}</Option>);
         })
-
-        /*const children = [];
-        for (let i = 10; i < 36; i++) {
-            children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
-        }*/
-
 
         return (
             <div style={{flex: 1, display: 'flex'}}>
@@ -325,10 +327,11 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                 </div>
                                 <div className='page_monitoring_form_column_right'>
                                     <Select
+                                        allowClear={true}
                                         mode="multiple"
                                         style={{width: '100%'}}
                                         placeholder="Please Select Hardware Type"
-                                        //defaultValue={['CPU']}
+                                        value={this.state.currentHwTypeList}
                                         onChange={(values) => {
                                             this.setState({
                                                 currentHwTypeList: values,
