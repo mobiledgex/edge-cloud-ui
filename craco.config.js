@@ -50,6 +50,8 @@ module.exports = {
                 'jsx-a11y/iframe-has-title': 'off',
                 'react-hooks/exhaustive-deps': 'off',
                 'no-undef': 'off',
+                'no-loop-func': 'off',
+
             }
         }
     },
