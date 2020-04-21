@@ -546,6 +546,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                     this.setState({
                                                         newCloudLetLocationList: toggleNewCloudletLocationList,
                                                         isUpdateEnable: true,
+                                                        selectedAppInstIndex: -1,
                                                     })
                                                     //this.props.handleSelectCloudletForMapkerClicked(item.CloudletName)
                                                 }}
