@@ -1031,12 +1031,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                     return this.state.loading ? renderPlaceHolderCircular() :
-                        /* <AppInstEventLogListHook
-                             currentAppInst={this.state.currentAppInst}
-                             parent={this}
-                             handleAppInstDropdown={this.handleAppInstDropdown}
-                             eventLogList={this.state.filteredAppInstEventLogs}
-                         />*/
                         <AppInstEventLogListHook_VirtualScroll
                             currentAppInst={this.state.currentAppInst}
                             parent={this}
