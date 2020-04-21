@@ -12,11 +12,13 @@ import Control from 'react-leaflet-control';
 import {groupByKey_, removeDuplicates} from "../PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
-import {Radio} from 'antd'
+import {notification, Select} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
 import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
+
+const {Option} = Select;
 
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
@@ -114,21 +116,46 @@ export default connect(mapStateToProps, mapDispatchProps)(
             {
                 url: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
                 name: 'dark1',
+                value: 0,
             },
             {
-                url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
+                //url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
+                //url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
+                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-midnight/{z}/{x}/{y}.png',
                 name: 'dark2',
+                value: 1,
+            },
+            {
+                url: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.png',
+                name: 'dark3',
+                value: 2,
             },
 
             {
-                url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-                name: 'white1',
+                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-flatblue/{z}/{x}/{y}.png',
+                name: 'blue',
+                value: 3,
+            },
+            {
+                url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png',
+                name: 'light1',
+                value: 4,
             },
             {
                 url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
-                name: 'white2',
+                name: 'light2',
+                value: 5,
             },
-
+            {
+                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-antique/{z}/{x}/{y}.png',
+                name: 'light3',
+                value: 6,
+            },
+            {
+                url: 'https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
+                name: 'light4',
+                value: 7,
+            },
         ]
 
 
@@ -168,13 +195,13 @@ export default connect(mapStateToProps, mapDispatchProps)(
         }
 
         componentDidMount = async () => {
-            try{
+            try {
                 let appInstanceListGroupByCloudlet = this.props.markerList
-                await this.setCloudletLocation(appInstanceListGroupByCloudlet, true)    
-            }catch (e) {
-                
+                await this.setCloudletLocation(appInstanceListGroupByCloudlet, true)
+            } catch (e) {
+
             }
-            
+
         };
 
 
@@ -378,6 +405,12 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                             try {
                                                 await this.setState({
                                                     zoom: 1,
+                                                }, () => {
+                                                    notification.success({
+                                                        placement: 'bottomLeft',
+                                                        duration: 1.5,
+                                                        message: 'Fetch locally stored data.',
+                                                    });
                                                 })
 
                                                 await this.props.parent.handleClusterDropdown_Reset('');
@@ -397,33 +430,38 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                         }}
                                     />
                                 </Control>
-                                {/*@desc:#####################################..*/}
-                                {/*@desc: topRight Radio Btns changing MapTyle...*/}
-                                {/*@desc:#####################################..*/}
+                                {/*@todo:#####################################..*/}
+                                {/*@todo: topRight Dropdown changing MapTyles...*/}
+                                {/*@todo:#####################################..*/}
                                 {this.props.isFullScreenMap &&
                                 <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
-                                    <Radio.Group defaultValue="0" buttonStyle="solid"
-                                                 onChange={async (e) => {
-                                                     let index = e.target.value
+                                    <Select
+                                        defaultValue="dark1"
+                                        style={{width: 120}}
+                                        //showArrow={false}
+                                        listHeight={550}
+                                        onChange={async (value) => {
+                                            let index = value
 
-                                                     let lineColor = DARK_LINE_COLOR;
-                                                     let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
-                                                     if (Number(index) >= 2) {
-                                                         lineColor = WHITE_LINE_COLOR;
-                                                         cloudletIconColor = WHITE_CLOUTLET_ICON_COLOR
-                                                     }
+                                            let lineColor = DARK_LINE_COLOR;
+                                            let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
+                                            if (Number(index) >= 4) {
+                                                lineColor = WHITE_LINE_COLOR;
+                                                cloudletIconColor = WHITE_CLOUTLET_ICON_COLOR
+                                            }
 
-                                                     this.props.setMapTyleLayer(this.mapTileList[index].url);
-                                                     this.props.setLineColor(lineColor);
-                                                     this.props.setCloudletIconColor(cloudletIconColor);
+                                            this.props.setMapTyleLayer(this.mapTileList[index].url);
+                                            this.props.setLineColor(lineColor);
+                                            this.props.setCloudletIconColor(cloudletIconColor);
 
-                                                 }}
+                                        }}
                                     >
-                                        <Radio.Button defaultChecked={true} value="0">Dark1</Radio.Button>
-                                        <Radio.Button value="1">Dark2</Radio.Button>
-                                        <Radio.Button value="2">White1</Radio.Button>
-                                        <Radio.Button value="3">White2</Radio.Button>
-                                    </Radio.Group>
+                                        {this.mapTileList.map((item, index) => {
+                                            return (
+                                                <Option style={{color: 'white'}} defaultChecked={index === 0} value={item.value}>{item.name}</Option>
+                                            )
+                                        })}
+                                    </Select>
                                 </div>
                                 }
 
@@ -437,31 +475,40 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     return (
                                         <MarkerClusterGroup>
                                             {groupedClientList[objkeyOne].map((item, index) => {
-                                                return (
-                                                    <React.Fragment>
-                                                        <Marker
-                                                            icon={cellphoneIcon2}
-                                                            position={
-                                                                [item.latitude, item.longitude]
-                                                            }
-                                                        >
-                                                            <Popup className='clientPopup'
-                                                                   style={{fontSize: 11}}>{item.uuid}</Popup>
-                                                        </Marker>
-                                                        {/*@desc:#####################################..*/}
-                                                        {/*@desc:Render lines....                       */}
-                                                        {/*@desc:#####################################..*/}
-                                                        <Polyline
-                                                            dashArray={['3,5,8']}
-                                                            id={index}
-                                                            positions={[
-                                                                [item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
-                                                            ]}
-                                                            color={this.props.lineColor}
-                                                        />
 
-                                                    </React.Fragment>
-                                                )
+                                                if (item.serverLocInfo !== undefined) {
+                                                    return (
+                                                        <React.Fragment>
+                                                            <Marker
+                                                                icon={cellphoneIcon2}
+                                                                position={
+                                                                    [item.latitude, item.longitude]
+                                                                }
+                                                            >
+                                                                <Popup className='clientPopup'
+                                                                       style={{fontSize: 11}}>{item.uuid}</Popup>
+                                                            </Marker>
+                                                            {/*@desc:#####################################..*/}
+                                                            {/*@desc:Render lines....                       */}
+                                                            {/*@desc:#####################################..*/}
+                                                            <Polyline
+                                                                dashArray={['3,5,8']}
+                                                                id={index}
+                                                                positions={[
+                                                                    [item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
+                                                                ]}
+                                                                color={this.props.lineColor}
+                                                            />
+
+                                                        </React.Fragment>
+                                                    )
+                                                } else {
+                                                    notification.warning({
+                                                        duration: 0.5,
+                                                        message: 'Currently, it is not possible to bring the server location. \nPlease ask the admin about this problem.',
+                                                    });
+                                                }
+
 
                                             })
 

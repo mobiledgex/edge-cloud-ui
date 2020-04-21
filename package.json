@@ -4,6 +4,7 @@
     "private": true,
     "dependencies": {
         "@ant-design/dark-theme": "^1.0.3",
+        "@ant-design/icons": "^4.0.5",
         "@craco/craco": "^5.6.3",
         "@crowdlinker/react-pager": "^0.2.6",
         "@hot-loader/react-dom": "^16.8.6",
@@ -136,8 +137,7 @@
         "three-orbitcontrols": "^2.99.1",
         "topojson-client": "^3.1.0",
         "ua-parser-js": "^0.7.20",
-        "uuid": "^3.4.0",
-        "@ant-design/icons": "^4.0.5"
+        "uuid": "^3.4.0"
     },
     "module": "dist/index.js",
     "typings": "dist/index.d.ts",
