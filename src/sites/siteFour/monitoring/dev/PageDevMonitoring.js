@@ -230,6 +230,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     mapLoading: false,
                     isLegendExpanded: false,
                     chunkedSize: 12,
+                    selectedAppInstIndex:-1,
                 };
             }
 
@@ -572,6 +573,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         await this.setState({
                             selectedClientLocationListOnAppInst: [],
                             dropdownRequestLoading: true,
+                            selectedAppInstIndex: -1,
                         })
 
                         let selectData = selectedClusterOne.split("|")
@@ -1003,6 +1005,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             handleAppInstDropdown={this.handleAppInstDropdown}
                             isFullScreenMap={false}
                             isShowAppInstPopup={this.state.isShowAppInstPopup}
+                            selectedAppInstIndex={this.state.selectedAppInstIndex}
                         />
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PERFORMANCE_SUM) {

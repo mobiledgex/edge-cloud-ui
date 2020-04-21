@@ -301,6 +301,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 })
 
                 this.setState({
+                    selectedAppInstIndex: -1,
                     newCloudLetLocationList: newCloudLetLocationList,
                     arrIsShowCloudlet: arrIsShowCloudlet,
                     appInstanceListGroupByCloudlet: pAppInstanceListGroupByCloudlet,
@@ -595,7 +596,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                                 flexDirection: 'column',
                                                                 marginTop: 5,
                                                                 marginBottom: 5,
-                                                                backgroundColor: innerIndex === this.state.selectedAppInstIndex ? 'rgba(97, 102, 97,.55)' : null,
+                                                                backgroundColor: innerIndex === this.state.selectedAppInstIndex ? 'rgba(97, 102, 97,.412)' : null,
                                                             }}
                                                             >
                                                                 <Ripples
