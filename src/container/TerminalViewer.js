@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import Terminal from '../hoc/terminal/mexTerminal'
 import * as serviceMC from '../services/serviceMC'
 import * as serverData from '../services/model/serverData'
-import stripAnsi from 'strip-ansi'
 import * as actions from "../actions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -39,6 +38,7 @@ class MexTerminal extends Component {
             vmURL : null,
             isVM : false
         })
+        this.ws = undefined
         this.request = RUN_COMMAND
         this.requestTypes = [RUN_COMMAND, SHOW_LOGS]
         this.success = false;
@@ -48,21 +48,30 @@ class MexTerminal extends Component {
     }
 
     sendWSRequest = (url, data) =>{
-        const ws = new WebSocket(url)
-        ws.onopen = () => {
+        this.ws = new WebSocket(url)
+        this.ws.onopen = () => {
             this.success = true;
             this.setState({
                 statusColor: 'green',
                 status: 'Connected'
             })
+        }
+        this.ws.onmessage = evt => {
             this.setState({
                 editable: data.Request === RUN_COMMAND ? true : false
             })
-        }
-        ws.onmessage = evt => {
+            this.setState(prevState => ({
+                history: [...prevState.history, evt.data]
+            }))
         }
     
-        ws.onclose = evt => {
+        this.ws.onclose = evt => {
+            this.ws = undefined
+            this.setState({
+                statusColor: 'red',
+                status: 'Not Connected',
+                editable: false
+            })
         }
     }
 
@@ -120,16 +129,25 @@ class MexTerminal extends Component {
         if (mcRequest) {
             if (mcRequest.response && mcRequest.response.data) {
                 let data = mcRequest.response.data;
-                if(this.state.isVM)
-                {
-                    this.setState({vmURL:data.access_url})
-                    if (this.vmPage && this.vmPage.current) {
-                        this.vmPage.current.focus()
+                let url = data.access_url
+                if (url) {
+                    if (this.state.isVM) {
+                        this.setState({ vmURL: url })
+                        if (this.vmPage && this.vmPage.current) {
+                            this.vmPage.current.focus()
+                        }
+                    }
+                    else {
+                        this.sendWSRequest(url, terminaData)
                     }
                 }
                 else
                 {
-                    this.sendWSRequest(data.access_url, terminaData)
+                    this.props.handleAlertInfo('error', 'Access denied')
+                    this.close()
+                    this.setState({
+                        optionView: true,
+                    }) 
                 }
             }
             else if (mcRequest.error) {
@@ -160,16 +178,10 @@ class MexTerminal extends Component {
 
     close = () => {
         this.success = false;
-        if (this.sendChannel) {
-            this.sendChannel.close();
-            this.sendChannel = null;
+        if(this.ws)
+        {
+            this.ws.close()
         }
-
-        if (this.localConnection) {
-            this.localConnection.close();
-            this.localConnection = null;
-        }
-
         this.setState({
             optionView: true,
             history: [],
@@ -181,18 +193,21 @@ class MexTerminal extends Component {
 
     onEnter = (cmd) => {
         if (cmd === CMD_CLEAR) {
+            let history = this.state.history
+            history = history[history.length-1].split('\r')
+            history = history[history.length-1]
             this.setState({
                 container: [],
-                history: []
+                history: [history]
             })
         }
-        else if (this.localConnection && this.sendChannel) {
+        else if (this.ws) {
             if (cmd === CMD_CLOSE) {
                 this.close()
             }
             else {
-                if (this.sendChannel && this.sendChannel.readyState === 'open') {
-                    this.sendChannel.send(cmd + '\n')
+                if (this.ws.readyState === WebSocket.OPEN) {
+                    this.ws.send(cmd + '\n')
                 }
                 else {
                     this.props.handleAlertInfo('error', 'Terminal not connected, please try again')
