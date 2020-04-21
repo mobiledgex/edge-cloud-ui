@@ -1,83 +1,61 @@
 import React from "react";
-import '../../../../../css/index.css'
-import "./styles.css";
-import {Table} from 'antd';
+import MuiVirtualizedTable from "./MuiVirtualizedTable";
 
-type Props = {};
-type State = {};
-
-const columns = [
-    {
-        title: 'Name',
-        dataIndex: 'name',
-    },
-    {
-        title: 'Age',
-        dataIndex: 'age',
-    },
-    {
-        title: 'Address',
-        dataIndex: 'address',
-    },
-];
-const data = [
-    {
-        key: '1',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-    },
-    {
-        key: '2',
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-    },
-    {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sidney No. 1 Lake Park',
-    },
-];
-/*
-const tableCSS = css({
-    margin: '40px 120px',
-    //backgroundColor: 'white',
-    '& table': {
-        borderCollapse: 'collapse'
-    },
-    '& thead > tr > th': {
-        backgroundColor: 'darkblue',
-        color: 'white',
-    },
-    '& thead > tr': {
-        backgroundColor: 'grey',
-        borderColor: 'grey',
-        //borderStyle: 'solid'
-    },
-    '& thead : hover': {
-        borderWidth: '-1px',
-        backgroundColor: 'grey',
-        borderColor: 'grey',
-        //borderStyle: 'solid'
+export default class Test006 extends React.Component {
+    constructor(props) {
+        super(props);
+        this.data = [];
+        for (let i = 0; i <= 2000; i += 1) {
+            this.data.push({
+                description: `Test ${i}!`,
+                counter: i,
+                lastActivity: "1/1/2018",
+                createdAt: "1/1/2016"
+            });
+        }
     }
-});
-*/
 
-export default class Test006 extends React.Component<Props, State> {
+    rowGetter = ({index}) => this.data[index];
+
     render() {
+        // the properties of each column are spread onto a react-virtualized Column component
         return (
-            <div>
-                <h4>Small size table</h4>
-                <Table
-                    //className={tableCSS}
-                    columns={columns}
-                    dataSource={data}
-                    size="small"
+            <div style={{flex: 1,}}>
+
+                <MuiVirtualizedTable
+                    rowHeight={800}
+                    rowCount={this.data.length}
+                    rowGetter={this.rowGetter}
+                    style={{height: window.innerHeight, width: 350, overflowY: 'auto',}}
+                    columns={[
+                        {
+                            width: 200,
+                            flexGrow: 1.0,
+                            label: "Description",
+                            dataKey: "description"
+                        },
+                        {
+                            width: 90,
+                            label: "Counter",
+                            dataKey: "counter",
+                            numeric: true
+                        },
+                        {
+                            width: 120,
+                            flexGrow: 0.5,
+                            label: "Last Activity",
+                            dataKey: "lastActivity"
+                        },
+                        {
+                            width: 120,
+                            flexGrow: 0.5,
+                            label: "Created",
+                            dataKey: "createdAt"
+                        }
+                    ]}
                 />
             </div>
-
         );
-    };
-};
+    }
+}
+

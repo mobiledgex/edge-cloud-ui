@@ -69,31 +69,45 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
 
     handleAddClicked = async () => {
 
-        if (this.state.currentHwTypeList.length > 0) {
-            let {currentHwTypeList} = this.state;
+        if (this.state.currentItemType === GRID_ITEM_TYPE.LINE || this.state.currentItemType === GRID_ITEM_TYPE.BAR || this.state.currentItemType === GRID_ITEM_TYPE.COLUMN) {
+            if (this.state.currentHwTypeList.length === 0) {
+                notification.warning({
+                    placement: 'topLeft',
+                    duration: 1,
+                    message: `Please, Select HW Type`,
+                });
+            } else {
+                let {currentHwTypeList} = this.state;
 
 
-            for (let i in currentHwTypeList) {
-                await this.props.parent.addGridItem(currentHwTypeList[i], this.state.currentItemType);
+                for (let i in currentHwTypeList) {
+                    await this.props.parent.addGridItem(currentHwTypeList[i], this.state.currentItemType);
+                }
+
+
+                //todo:init dropdown selected values
+                await this.setState({
+                    currentHwTypeList: [],
+                })
+
+                this.closePopupWindow();
+
+                notification.success({
+                    placement: 'bottomLeft',
+                    duration: 3,
+                    message: `${this.state.currentItemType} [${currentHwTypeList}] items added`,
+                });
             }
+
+        } else {
+
+            await this.props.parent.addGridItem(this.state.currentHwType, this.state.currentItemType);
+            this.closePopupWindow();
 
             notification.success({
                 placement: 'bottomLeft',
                 duration: 3,
-                message: `${this.state.currentItemType} [${currentHwTypeList}] item added`,
-            });
-
-            //todo:init dropdown selected values
-            await this.setState({
-                currentHwTypeList: [],
-            })
-
-            this.closePopupWindow();
-        } else {
-            notification.warning({
-                placement: 'topLeft',
-                duration: 1,
-                message: `Please, Select HW Type`,
+                message: `${this.state.currentItemType} [${this.state.currentHwType}] item added`,
             });
         }
 
@@ -362,6 +376,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                             currentItemType: value,
                                         })
                                     }}
+                                    value={this.state.currentItemType}
                                     options={EVENT_LOG_ITEM_LIST}
                                 />
                             </div>

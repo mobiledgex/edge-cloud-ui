@@ -537,10 +537,14 @@ tbody:hover {
 }
 
 
-tr {
+/*tr {
     height: 10px !important;;
 }
 
 tr td {
     height: auto !important;
+}*/
+
+.table0000001 {
+    height: 30px;
 }

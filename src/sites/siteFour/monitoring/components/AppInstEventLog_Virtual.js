@@ -11,6 +11,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import Table from "@material-ui/core/Table";
+import {PageMonitoringStyles} from "../PageMonitoringCommonService";
 
 type Props = {
     eventLogList: any,
@@ -26,12 +27,16 @@ function getWindowDimensions() {
     };
 }
 
+let css = function () {
+    let args = $.merge([true, {}], Array.prototype.splice.call(arguments, 0));
+    return $.extend.apply(null, args);
+}
 
 export default function AppInstEventLog_Virtual(props) {
     //const [eventLogList, setEventLogList] = useState([]);
     const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
     let gridHeight = 305
-    let gridWidth = window.innerWidth * 0.9;
+    let gridWidth = 415;
 
 
     useEffect(() => {
@@ -50,100 +55,68 @@ export default function AppInstEventLog_Virtual(props) {
 
 
     return (
-        <>
+        <div>
             <div style={{
                 display: 'flex',
                 width: '100%',
                 height: 45
             }}>
-                <div className='page_monitoring_title'
+                <div className='page_monitoring_title draggable'
                      style={{
-                         flex: .38,
-                         marginTop: 5,
+                         flex: 1,
+                         marginTop: 10,
                          fontFamily: 'Ubuntu',
-                         fontSize: 15,
                      }}
                 >
                     App Inst Event Log
                 </div>
-                <div style={{flex: .4, marginRight: 70}}>
-                </div>
+
 
             </div>
-            <table
-                style={{
-                    height: 220,
-                    fontFamily: 'Ubuntu',
-                    backgroundColor: 'blue !important',
-                    width: 'auto',
-                    overflowX: 'scroll'
-                }}>
-                <tr size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll'}}
-                    stickyHeader={true}>
+            <table size="small" aria-label="a dense table " style={{width: gridWidth, overflowX: 'scroll'}}
+                   stickyHeader={true}>
 
-                    <th style={{backgroundColor: 'red', fontFamily: 'Ubuntu',}} fixedHeader={true}>
-                        <tr>
-                            <td padding={'none'} align="center" style={{}}>
-                                TIME
-                            </td>
-                            <td padding={'none'} align="center" style={{}}>
-                                App
-                            </td>
-                            <td padding={'none'} align="center" style={{}}>
-                                Event[Status]
-                            </td>
-
-                        </tr>
-                    </th>
+                <thead style={{backgroundColor: 'red', fontFamily: 'Ubuntu', zIndex: 99999999999, width: gridWidth,}} fixedHeader={true}>
+                <tr style={{display: 'flex', backgroundColor: 'grey'}}>
+                    <td padding={'none'} align="center" style={{color: 'white', flex: .33}}>
+                        TIME
+                    </td>
+                    <td padding={'none'} align="center" style={{color: 'white', flex: .33}}>
+                        App
+                    </td>
+                    <td padding={'none'} align="center" style={{color: 'white', flex: .33}}>
+                        Event[Status]
+                    </td>
 
                 </tr>
+                </thead>
                 {/*todo:tableBody*/}
                 {/*todo:tableBody*/}
-                {/*todo:tableBody*/}
-                {/*todo:tableBody*/}
-                <tbody style={{width: 'auto', overflowX: 'scroll'}}>
+                <tbody style={{width: 'auto', overflowX: 'scroll', marginTop: 50}}>
                 {!props.parent.state.loading &&
                 <FixedSizeList
-                    height={250}
+                    height={185}
                     itemCount={props.eventLogList.length}
-                    itemSize={5}
-                    style={{backgroundColor: 'black', display: 'flex', alignSelf: 'center', marginTop: 0, marginRight: 0, height: 1500}}
+                    itemSize={30}
                     width={gridWidth}
                 >
                     {({index, style}) => {
                         return (
-                            <tr
-                                key={index}
+                            <tr key={index} className='table0000001'
                                 style={style}
-
                             >
-                                <td padding={'none'} align="center" style={{width: 120, color: '#C0C6C8', height: 50}}>
-                                    <div>
-                                        {props.eventLogList[index][0].toString().split('T')[0]}
-                                    </div>
-                                    <div>
-                                        {props.eventLogList[index][0].toString().split('T')[1].substring(0, 8)}
-                                    </div>
-                                </td>
-                                <td padding={'none'} align="center" style={{width: 120, color: '#C0C6C8'}}>
-                                    <React.Fragment>
-                                        <div>
-                                            {props.eventLogList[index][1].toString().substring(0, 20)}
+                                <React.Fragment style={{backgroundColor: 'red'}}>
+                                    <td padding={'none'} align="center" style={{width: 120, color: '#C0C6C8', backgroundColor: 'red', height: 30}}>
+                                        {index}
+                                    </td>
+                                    <td padding={'none'} align="center" style={{width: 120, color: '#C0C6C8', backgroundColor: 'red', height: 30}}>
+                                        sdfsdfsdfsdfsdf
+                                    </td>
+                                    <td padding={'none'} align="center" style={{width: 120, color: '#C0C6C8', backgroundColor: 'red', height: 30}}>
+                                        sdfsdfsdfsdfsdfsd
+                                    </td>
+                                </React.Fragment>
 
-                                        </div>
-                                        <div>
-                                            {props.eventLogList[index][1].toString().substring(20, props.eventLogList[index][1].toString().length)}
-                                        </div>
-                                    </React.Fragment>
-                                </td>
-                                <td padding={'none'} align="center" style={{width: 120, color: '#C0C6C8'}}>
-                                    <div>
-                                        {props.eventLogList[index][9]}
-                                    </div>
-                                    <div>
-                                        [{props.eventLogList[index][10]}]
-                                    </div>
-                                </td>
                             </tr>
                         )
                     }}
@@ -153,7 +126,8 @@ export default function AppInstEventLog_Virtual(props) {
                 </tbody>
             </table>
 
-        </>
+
+        </div>
     )
 
 };
