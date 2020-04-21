@@ -1606,7 +1606,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 if (this.state.chunkedSize === 12) {
                     return reduceString(item.cluster, 5) + "[" + reduceString(item.cloudlet, 5) + "]"
                 } else {//when legend expanded
-                    return reduceString(item.cluster, 25) + "[" + reduceString(item.cloudlet, 30) + "]"
+                    return reduceString(item.cluster, 25) + "[" + reduceString(item.cloudlet, 25) + "]"
                 }
             }
 
