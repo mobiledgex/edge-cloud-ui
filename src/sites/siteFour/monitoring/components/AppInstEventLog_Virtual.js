@@ -106,14 +106,32 @@ export default function AppInstEventLog_Virtual(props) {
                                 style={style}
                             >
                                 <React.Fragment style={{backgroundColor: 'red'}}>
-                                    <td padding={'none'} align="center" style={{width: 120, color: '#C0C6C8', backgroundColor: 'red', height: 30}}>
-                                        {index}
+                                    <td padding={'none'} align="center" style={{flex: .2, color: '#C0C6C8', backgroundColor: 'red', height: 30}}>
+                                        <div>
+                                            {item[0].toString().split('T')[0]}
+                                        </div>
+                                        <div>
+                                            {item[0].toString().split('T')[1].substring(0, 8)}
+                                        </div>
                                     </td>
-                                    <td padding={'none'} align="center" style={{width: 120, color: '#C0C6C8', backgroundColor: 'red', height: 30}}>
-                                        sdfsdfsdfsdfsdf
+                                    <td padding={'none'} align="center" style={{flex: .4, color: '#C0C6C8', backgroundColor: 'red', height: 30}}>
+                                        <React.Fragment>
+                                            <div>
+                                                {item[1].toString().substring(0, 15)}
+
+                                            </div>
+                                            <div>
+                                                {item[1].toString().substring(15, item[1].toString().length)}
+                                            </div>
+                                        </React.Fragment>
                                     </td>
-                                    <td padding={'none'} align="center" style={{width: 120, color: '#C0C6C8', backgroundColor: 'red', height: 30}}>
-                                        sdfsdfsdfsdfsdfsd
+                                    <td padding={'none'} align="center" style={{flex: .4, color: '#C0C6C8', backgroundColor: 'red', height: 30}}>
+                                        <div>
+                                            {item[9]}
+                                        </div>
+                                        <div>
+                                            [{item[10]}]
+                                        </div>
                                     </td>
                                 </React.Fragment>
 
