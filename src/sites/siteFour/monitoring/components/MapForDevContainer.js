@@ -120,8 +120,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 value: 0,
             },
             {
-                //url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
-                //url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
                 url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-midnight/{z}/{x}/{y}.png',
                 name: 'dark2',
                 value: 1,
