@@ -22,12 +22,11 @@ function getWindowDimensions() {
 export default function AppInstEventLogListHook_VirtualScroll(props) {
     const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
     let itemHeight = 35
-    let gridWidth = window.innerWidth / 5;
+    //let gridWidth = window.innerWidth / 5;
 
     useEffect(() => {
 
-        console.log(`eventLogListlength====>`, props.eventLogList.length);
-
+        console.log(`eventLogList_length====>`, props.eventLogList.length);
 
         function handleResize() {
             setWindowDimensions(getWindowDimensions());
@@ -62,13 +61,13 @@ export default function AppInstEventLogListHook_VirtualScroll(props) {
 
                 <thead style={{backgroundColor: 'red', fontFamily: 'Ubuntu', zIndex: 99999999999,}} fixedHeader={true}>
                 <tr style={{display: 'flex', backgroundColor: '#303030'}}>
-                    <td padding={'none'} align="center" style={{color: 'white', flex: .3}}>
+                    <td padding={'none'} align="center" style={{color: 'white', flex: .25}}>
                         TIME
                     </td>
-                    <td padding={'none'} align="center" style={{color: 'white', flex: .3}}>
+                    <td padding={'none'} align="center" style={{color: 'white', flex: .4}}>
                         APP
                     </td>
-                    <td padding={'none'} align="center" style={{color: 'white', flex: .4}}>
+                    <td padding={'none'} align="center" style={{color: 'white', flex: .35}}>
                         EVENT[STATUS]
                     </td>
 
@@ -90,7 +89,8 @@ export default function AppInstEventLogListHook_VirtualScroll(props) {
                                 style={style}
                             >
                                 <React.Fragment style={{backgroundColor: 'red'}}>
-                                    <td padding={'none'} align="center" style={{flex: .3, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight}}>
+                                    {/*111111*/}
+                                    <td padding={'none'} align="center" style={{flex: .25, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight}}>
                                         <div style={{marginLeft: 2}}>
                                             {props.eventLogList[index][0].toString().split('T')[0]}
                                         </div>
@@ -98,11 +98,12 @@ export default function AppInstEventLogListHook_VirtualScroll(props) {
                                             {props.eventLogList[index][0].toString().split('T')[1].substring(0, 8)}
                                         </div>
                                     </td>
-                                    <td padding={'none'} align="center" style={{flex: .3, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight}}>
+                                    {/*222222*/}
+                                    <td padding={'none'} align="center" style={{flex: .4, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight}}>
                                         {windowDimensions.width <= 1440 ?
                                             <React.Fragment>
                                                 <div>
-                                                    {props.eventLogList[index][1].toString().substring(0, 15)}
+                                                    {props.eventLogList[index][1].toString().substring(0, 15)} {/*-{index}*/}
 
                                                 </div>
                                                 <div>
@@ -112,7 +113,7 @@ export default function AppInstEventLogListHook_VirtualScroll(props) {
                                             :
                                             <React.Fragment>
                                                 <div>
-                                                    {props.eventLogList[index][1].toString().substring(0, 20)}
+                                                    {props.eventLogList[index][1].toString().substring(0, 20)} {/*-{index}*/}
 
                                                 </div>
                                                 <div>
@@ -121,7 +122,8 @@ export default function AppInstEventLogListHook_VirtualScroll(props) {
                                             </React.Fragment>
                                         }
                                     </td>
-                                    <td padding={'none'} align="center" style={{flex: .4, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight,}}>
+                                    {/*333333*/}
+                                    <td padding={'none'} align="center" style={{flex: .35, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight,}}>
                                         <div>
                                             {props.eventLogList[index][9]}
                                         </div>
