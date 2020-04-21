@@ -97,6 +97,9 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
                 appInstCount++;
                 let data = JSON.parse(event.data);
+
+                console.log(`onmessage====>`,data);
+
                 let uuid = data.data.client_key.uuid;
                 if (data.code === 200) {
                     _this.setState({

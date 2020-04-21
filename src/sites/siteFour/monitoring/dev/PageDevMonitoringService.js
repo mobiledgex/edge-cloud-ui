@@ -140,7 +140,7 @@ export const defaultLayoutForCluster = [
 
 
     {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
-    {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": true},//MAP
+    {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
     {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
     {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//bubble
     {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//appinst event log
@@ -208,7 +208,7 @@ desc:#######################################
 export const defaultLayoutForAppInst = [
 
     {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
-    {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": true},//MAP
+    {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
     {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
     {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//DISK
     {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},
@@ -1487,11 +1487,11 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     color: "#505050",
                 },
                 ticks: {
-                    maxTicksLimit: 7,//@desc: maxTicksLimit
+                    maxTicksLimit: isBig ? 20 : 7,//@desc: maxTicksLimit
                     fontSize: 11,
                     fontColor: 'white',
                     //maxRotation: 0.05,
-                    autoSkip: true,
+                    autoSkip: isBig ? false : true,
                     maxRotation: 0,//xAxis text rotation
                     minRotation: 0,//xAxis text rotation
                     /*maxRotation: 45,//xAxis text rotation
@@ -1805,6 +1805,14 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
     return lineChartData;
 }
 
+export const reduceString = (str: string, lengthLimit: number) => {
+    if (str.length > lengthLimit) {
+        return str.substring(0, lengthLimit) + "..";
+    } else {
+        return str;
+    }
+}
+
 
 /**
  *
@@ -1907,7 +1915,6 @@ export const renderLineChartCoreForDev = (_this: PageDevMonitoring, lineChartDat
         showToast(e.toString())
     }
 };
-
 
 
 //let chunkedSize = 12;
