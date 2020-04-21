@@ -1710,6 +1710,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                                         marginTop: 2,
 
                                                                     }}
+                                                                    title={item.cluster + " [" + item.cloudlet + "]"}
                                                                 >
                                                                     {this.renderLegendClusterName(item)}
                                                                 </ClusterCluoudletLable>
