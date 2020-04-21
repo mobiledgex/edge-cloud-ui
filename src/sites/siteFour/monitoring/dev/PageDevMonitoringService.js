@@ -1487,11 +1487,11 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     color: "#505050",
                 },
                 ticks: {
-                    maxTicksLimit: 7,//@desc: maxTicksLimit
+                    maxTicksLimit: isBig ? 20 : 7,//@desc: maxTicksLimit
                     fontSize: 11,
                     fontColor: 'white',
                     //maxRotation: 0.05,
-                    autoSkip: true,
+                    autoSkip: isBig ? false : true,
                     maxRotation: 0,//xAxis text rotation
                     minRotation: 0,//xAxis text rotation
                     /*maxRotation: 45,//xAxis text rotation

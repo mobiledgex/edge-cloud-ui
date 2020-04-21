@@ -458,7 +458,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     >
                                         {this.mapTileList.map((item, index) => {
                                             return (
-                                                <Option  style={{color: 'white'}} defaultChecked={index === 0} value={item.value}>{item.name}</Option>
+                                                <Option style={{color: 'white'}} defaultChecked={index === 0} value={item.value}>{item.name}</Option>
                                             )
                                         })}
                                     </Select>
@@ -475,31 +475,40 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     return (
                                         <MarkerClusterGroup>
                                             {groupedClientList[objkeyOne].map((item, index) => {
-                                                return (
-                                                    <React.Fragment>
-                                                        <Marker
-                                                            icon={cellphoneIcon2}
-                                                            position={
-                                                                [item.latitude, item.longitude]
-                                                            }
-                                                        >
-                                                            <Popup className='clientPopup'
-                                                                   style={{fontSize: 11}}>{item.uuid}</Popup>
-                                                        </Marker>
-                                                        {/*@desc:#####################################..*/}
-                                                        {/*@desc:Render lines....                       */}
-                                                        {/*@desc:#####################################..*/}
-                                                        <Polyline
-                                                            dashArray={['3,5,8']}
-                                                            id={index}
-                                                            positions={[
-                                                                [item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
-                                                            ]}
-                                                            color={this.props.lineColor}
-                                                        />
 
-                                                    </React.Fragment>
-                                                )
+                                                if (item.serverLocInfo !== undefined) {
+                                                    return (
+                                                        <React.Fragment>
+                                                            <Marker
+                                                                icon={cellphoneIcon2}
+                                                                position={
+                                                                    [item.latitude, item.longitude]
+                                                                }
+                                                            >
+                                                                <Popup className='clientPopup'
+                                                                       style={{fontSize: 11}}>{item.uuid}</Popup>
+                                                            </Marker>
+                                                            {/*@desc:#####################################..*/}
+                                                            {/*@desc:Render lines....                       */}
+                                                            {/*@desc:#####################################..*/}
+                                                            <Polyline
+                                                                dashArray={['3,5,8']}
+                                                                id={index}
+                                                                positions={[
+                                                                    [item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
+                                                                ]}
+                                                                color={this.props.lineColor}
+                                                            />
+
+                                                        </React.Fragment>
+                                                    )
+                                                } else {
+                                                    notification.warning({
+                                                        duration: 0.5,
+                                                        message: 'Currently, it is not possible to bring the server location. \nPlease ask the admin about this problem.',
+                                                    });
+                                                }
+
 
                                             })
 
