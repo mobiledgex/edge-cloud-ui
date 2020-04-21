@@ -94,6 +94,7 @@ import {
     PageDevMonitoringMapStateToProps
 } from "./PageDevMonitoringPropsState";
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
+import AppInstEventLog_Virtual from "../components/AppInstEventLog_Virtual";
 
 
 const ASubMenu = AMenu.SubMenu;
@@ -289,7 +290,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
 
             }
-
 
             async loadInitDataForCluster(isInterval: boolean = false) {
                 let promiseList = []
@@ -968,7 +968,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             {/*desc:############################*/}
                             {/*desc:    delete btn                */}
                             {/*desc:############################*/}
-                            {graphType.toUpperCase() !== GRID_ITEM_TYPE.MAP &&
                             <div className="remove page_monitoring_widget_icon"
                                  onClick={() => {
                                      this.removeGridItem(uniqueIndex)
@@ -976,7 +975,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             >
                                 <MaterialIcon size={'tiny'} icon='delete' color={'white'}/>
                             </div>
-                            }
                         </div>
 
 
@@ -1069,18 +1067,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                     return this.state.loading ? renderPlaceHolderCircular() :
-                        <AppInstEventLogListHook
+                        /* <AppInstEventLogListHook
+                             currentAppInst={this.state.currentAppInst}
+                             parent={this}
+                             handleAppInstDropdown={this.handleAppInstDropdown}
+                             eventLogList={this.state.filteredAppInstEventLogs}
+                         />*/
+                        <AppInstEventLog_Virtual
                             currentAppInst={this.state.currentAppInst}
                             parent={this}
                             handleAppInstDropdown={this.handleAppInstDropdown}
                             eventLogList={this.state.filteredAppInstEventLogs}
                         />
-                    /*<AppInstEventLog_Virtual
-                        currentAppInst={this.state.currentAppInst}
-                        parent={this}
-                        handleAppInstDropdown={this.handleAppInstDropdown}
-                        eventLogList={this.state.filteredAppInstEventLogs}
-                    />*/
                 }
             }
 
