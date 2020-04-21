@@ -12,7 +12,6 @@ import AppInstReg from './appInstReg';
 import * as constant from '../../../constant';
 import * as shared from '../../../services/model/shared';
 import TerminalViewer from '../../../container/TerminalViewer';
-import * as serviceMC from '../../../services/serviceMC';
 import { Dialog } from '@material-ui/core';
 import { Icon } from 'semantic-ui-react';
 
@@ -44,15 +43,15 @@ class AppInstList extends React.Component {
             if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM) {
                 visible = true
             }
-            // else {
-            //     let runtimeInfo = data[fields.runtimeInfo]
-            //     if (runtimeInfo) {
-            //         let containers = runtimeInfo[fields.container_ids]
-            //         if (containers && containers.length > 0) {
-            //             visible = true
-            //         }
-            //     }
-            // }
+            else {
+                let runtimeInfo = data[fields.runtimeInfo]
+                if (runtimeInfo) {
+                    let containers = runtimeInfo[fields.container_ids]
+                    if (containers && containers.length > 0) {
+                        visible = true
+                    }
+                }
+            }
         }
         return visible
     }
