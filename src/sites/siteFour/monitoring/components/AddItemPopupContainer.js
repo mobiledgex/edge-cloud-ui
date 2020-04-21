@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import {Modal as AModal, notification, Radio} from "antd";
+import {Modal as AModal, notification, Radio, Select} from "antd";
 import {Dropdown} from "semantic-ui-react";
 import {PageMonitoringStyles} from "../PageMonitoringCommonService";
 import {CLASSIFICATION, EVENT_LOG_ITEM_LIST, GRID_ITEM_TYPE, HARDWARE_TYPE} from "../../../../shared/Constants";
@@ -19,8 +19,11 @@ type State = {
     currentHwType: string,
     isShowHWDropDown: boolean,
     isShowEventLog: boolean,
+    currentHwTypeList: any,
 
 };
+
+const Option = Select.Option;
 
 export default class AddItemPopupContainer extends React.Component<Props, State> {
 
@@ -30,7 +33,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
         this.state = {
             //isOpenEditView: [],
             currentItemType: GRID_ITEM_TYPE.LINE,
-            currentHwType: HARDWARE_TYPE.CPU,
+            currentHwTypeList: HARDWARE_TYPE.CPU,
             isShowHWDropDown: true,
             isShowEventLog: false,
         }
@@ -64,30 +67,52 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
 
     handleAddClicked = async () => {
 
-        let message = '';
-        if (this.state.currentItemType === GRID_ITEM_TYPE.BUBBLE
-            || this.state.currentItemType === GRID_ITEM_TYPE.APP_INST_EVENT_LOG
-            || this.state.currentItemType === GRID_ITEM_TYPE.MAP
-            || this.state.currentItemType === GRID_ITEM_TYPE.PERFORMANCE_SUM
-        ) {
-            message = `${this.props.parent.state.currentClassification} ${this.state.currentItemType} Item Added`
+        if (this.state.currentHwTypeList.length > 0) {
+            let {currentHwTypeList} = this.state;
+
+
+            for (let i in currentHwTypeList) {
+                await this.props.parent.addGridItem(currentHwTypeList[i], this.state.currentItemType);
+            }
+
+            notification.success({
+                placement: 'bottomLeft',
+                duration: 3,
+                message: `${this.state.currentItemType} [${currentHwTypeList}] item added`,
+            });
+            this.closePopupWindow();
         } else {
-            message = `${this.props.parent.state.currentClassification} ${this.state.currentItemType} [${this.state.currentHwType}] Chart Item Added`
+            notification.warning({
+                placement: 'topLeft',
+                duration: 1,
+                message: `Please, Select HW Type`,
+            });
         }
 
 
-        notification.success({
-            placement: 'bottomLeft',
-            duration: 3,
-            message: message,
-        });
-
-
-        await this.props.parent.addGridItem(this.state.currentHwType, this.state.currentItemType);
-        this.closePopupWindow();
     }
 
     render() {
+
+        console.log(`hwListForCluster====>`, this.props.parent.state.hwListForCluster);
+        let hardwareDropdownList = []
+        let hwDropdownChildren = [];
+        if (this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER) {
+            hardwareDropdownList = this.props.parent.state.hwListForCluster
+        } else {
+            hardwareDropdownList = this.props.parent.state.hwListForAppInst
+        }
+
+        hardwareDropdownList.map(item => {
+            hwDropdownChildren.push(<Option key={item.value}>{item.text}</Option>);
+        })
+
+        /*const children = [];
+        for (let i = 10; i < 36; i++) {
+            children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
+        }*/
+
+
         return (
             <div style={{flex: 1, display: 'flex'}}>
                 <AModal
@@ -299,20 +324,19 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                     </Center>
                                 </div>
                                 <div className='page_monitoring_form_column_right'>
-                                    <Dropdown
-                                        style={PageMonitoringStyles.dropDownForClusterCloudlet3}
-                                        selectOnBlur={false}
-                                        onClick={e => e.stopPropagation()}
-                                        placeholder="Select HW Type"
-                                        selection
-                                        onChange={async (e, {value}) => {
+                                    <Select
+                                        mode="multiple"
+                                        style={{width: '100%'}}
+                                        placeholder="Please Select Hardware Type"
+                                        //defaultValue={['CPU']}
+                                        onChange={(values) => {
                                             this.setState({
-                                                currentHwType: value,
+                                                currentHwTypeList: values,
                                             })
                                         }}
-                                        value={this.state.currentHwType}
-                                        options={this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER ? this.props.parent.state.hwListForCluster : this.props.parent.state.hwListForAppInst}
-                                    />
+                                    >
+                                        {hwDropdownChildren}
+                                    </Select>
                                 </div>
                             </div>
                         </div>}
