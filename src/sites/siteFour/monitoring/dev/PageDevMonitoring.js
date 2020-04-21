@@ -1608,9 +1608,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 if (this.state.chunkedSize === 12) {
                     return reduceString(item.cluster, 5) + "[" + reduceString(item.cloudlet, 5) + "]"
                 } else {
-                    return reduceString(item.cluster, 35) + "[" + reduceString(item.cloudlet, 35) + "]"
+                    return reduceString(item.cluster, 25) + "[" + reduceString(item.cloudlet, 25) + "]"
                 }
-
             }
 
 
@@ -1677,7 +1676,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                         //todo: ################################
                                                         //todo: cluster cell one
                                                         //todo: ################################
-                                                        <Center2 style={{width: chunkedSize === 12 ? 135 : 360}}>
+                                                        <Center2 style={{width: chunkedSize === 12 ? 135 : 390}}>
                                                             {/*desc: ##############*/}
                                                             {/*desc: circle area   */}
                                                             {/*desc: ##############*/}
