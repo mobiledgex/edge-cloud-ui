@@ -62,10 +62,10 @@ export default function AppInstEventLogListHook_VirtualScroll(props) {
 
                 <thead style={{backgroundColor: 'red', fontFamily: 'Ubuntu', zIndex: 99999999999,}} fixedHeader={true}>
                 <tr style={{display: 'flex', backgroundColor: '#303030'}}>
-                    <td padding={'none'} align="center" style={{color: 'white', flex: .2}}>
+                    <td padding={'none'} align="center" style={{color: 'white', flex: .3}}>
                         TIME
                     </td>
-                    <td padding={'none'} align="center" style={{color: 'white', flex: .4}}>
+                    <td padding={'none'} align="center" style={{color: 'white', flex: .3}}>
                         APP
                     </td>
                     <td padding={'none'} align="center" style={{color: 'white', flex: .4}}>
@@ -90,15 +90,15 @@ export default function AppInstEventLogListHook_VirtualScroll(props) {
                                 style={style}
                             >
                                 <React.Fragment style={{backgroundColor: 'red'}}>
-                                    <td padding={'none'} align="center" style={{flex: .2, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight}}>
-                                        <div>
+                                    <td padding={'none'} align="center" style={{flex: .3, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight}}>
+                                        <div style={{marginLeft: 2}}>
                                             {props.eventLogList[index][0].toString().split('T')[0]}
                                         </div>
-                                        <div>
+                                        <div style={{marginLeft: 2}}>
                                             {props.eventLogList[index][0].toString().split('T')[1].substring(0, 8)}
                                         </div>
                                     </td>
-                                    <td padding={'none'} align="center" style={{flex: .4, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight}}>
+                                    <td padding={'none'} align="center" style={{flex: .3, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight}}>
                                         {windowDimensions.width <= 1440 ?
                                             <React.Fragment>
                                                 <div>
