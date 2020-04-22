@@ -725,7 +725,6 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
 
                 classificationName = pUsageList[i].cluster + "\n[" + pUsageList[i].cloudlet + "]";
                 let usageList = [];
-
                 for (let j in series) {
                     let usageOne = series[j][usageIndex];
                     usageList.push(usageOne);
