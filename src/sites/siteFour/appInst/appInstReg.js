@@ -68,6 +68,7 @@ class ClusterInstReg extends React.Component {
             this.appList = [...this.appList, ...await getAppList(this, { region: region })]
         }
         this.updateUI(form)
+        forms = this.appNameValueChange(form, forms, true)
         this.setState({ forms: forms })
     }
 
@@ -102,6 +103,7 @@ class ClusterInstReg extends React.Component {
             else if (form.field === fields.ipAccess) {
                 form.visible = currentForm.value
                 form.value = currentForm.value ? form.value : undefined
+                this.ipAccessValueChange(form, forms, true)
             }
         }
         if (isInit === undefined || isInit === false) {
@@ -114,6 +116,7 @@ class ClusterInstReg extends React.Component {
             let form = forms[i]
             if (form.field === fields.privacyPolicyName) {
                 form.visible = currentForm.value === constant.IP_ACCESS_DEDICATED ? true : false
+                form.value = undefined
             }
         }
          if (isInit === undefined || isInit === false) {
@@ -121,29 +124,37 @@ class ClusterInstReg extends React.Component {
         }
     }
 
-    organizationValueChange = (currentForm, forms, isInit) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
-            if (form.field === fields.appName) {
-                this.updateUI(form)
-                if (isInit === undefined || isInit === false) {
-                    this.setState({ forms: forms })
-                }
-                break;
-            }
-        }
-    }
-
     appNameValueChange = (currentForm, forms, isInit) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
+        let nForms = []
+        nForms = forms.filter((form) => {
             if (form.field === fields.version) {
                 this.updateUI(form)
-                if (isInit === undefined || isInit === false) {
-                    this.setState({ forms: forms })
-                }
+                return form
             }
+            else if(form.field === fields.autoClusterInstance)
+            {
+                form.visible = false
+                form.value = false
+                this.autoClusterValueChange(form, forms, true)
+                return form
+            }
+            else if(form.field === fields.clusterName || form.label === 'Configs')
+            {
+                form.visible = false
+                form.value = undefined
+                return form
+            }
+            else if (form.field === fields.configs) {
+                //remove all configs
+            }
+            else{
+                return form
+            }
+        })
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: nForms })
         }
+        return nForms
     }
 
     versionValueChange = (currentForm, forms, isInit) => {
@@ -240,6 +251,13 @@ class ClusterInstReg extends React.Component {
                     this.getCloudletInfo(form, forms)
                 }
             }
+            else if (form.field === fields.appName) {
+                this.updateUI(form)
+                forms = this.appNameValueChange(form, forms, true)
+            }
+        }
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
         }
     }
 
