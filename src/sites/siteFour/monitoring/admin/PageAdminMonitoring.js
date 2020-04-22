@@ -41,7 +41,7 @@ import {TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
-import {renderGridLoader2, renderLoaderArea, renderPlaceHolderSkeleton, showToast, showToast2} from "../PageMonitoringCommonService";
+import {renderGridLoader2, renderLoaderArea, renderPlaceHolderLoader, showToast, showToast2} from "../PageMonitoringCommonService";
 import '../PageMonitoring.css'
 import {getAppInstList, getAppLevelUsageList, getCloudletListAll} from "../PageMonitoringMetricService";
 
@@ -638,7 +638,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderSkeleton() : makeBarChartDataForInst(this.state.filteredAppInstUsageList, hwType)}
+                            {this.state.loading ? renderPlaceHolderLoader() : makeBarChartDataForInst(this.state.filteredAppInstUsageList, hwType)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -651,7 +651,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderSkeleton() : makeLineChartDataForAppInst(this, this.state.filteredAppInstUsageList, hwType)}
+                            {this.state.loading ? renderPlaceHolderLoader() : makeLineChartDataForAppInst(this, this.state.filteredAppInstUsageList, hwType)}
                         </div>
                     </div>
                 </div>
@@ -668,7 +668,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderSkeleton('network') : makeBarChartDataForInst(this.state.filteredAppInstUsageList, hwType, this)}
+                            {this.state.loading ? renderPlaceHolderLoader('network') : makeBarChartDataForInst(this.state.filteredAppInstUsageList, hwType, this)}
                         </div>
                     </div>
                     <div className='page_monitoring_dual_container'>
@@ -681,7 +681,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderSkeleton('network') : makeLineChartDataForAppInst(this, this.state.filteredAppInstUsageList, hwType, this)}
+                            {this.state.loading ? renderPlaceHolderLoader('network') : makeLineChartDataForAppInst(this, this.state.filteredAppInstUsageList, hwType, this)}
                         </div>
                     </div>
                 </div>
@@ -1091,7 +1091,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     </div>
                                                     <div className='page_monitoring_container'>
 
-                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolderSkeleton() : renderSixGridForAppInstOnCloudlet(this.state.appInstanceListGroupByCloudlet, this)}
+                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolderLoader() : renderSixGridForAppInstOnCloudlet(this.state.appInstanceListGroupByCloudlet, this)}
                                                     </div>
 
                                                 </div>

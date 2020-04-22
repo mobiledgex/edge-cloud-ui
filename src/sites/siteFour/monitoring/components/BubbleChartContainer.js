@@ -2,7 +2,7 @@
 import * as React from 'react';
 import BubbleChartCore from "./BubbleChartCore";
 import {handleHardwareTabChanges, handleLegendAndBubbleClickedEvent, makeLineChartDataForCluster} from "../dev/PageDevMonitoringService";
-import {makeBubbleChartDataForCluster, PageMonitoringStyles, renderPlaceHolderSkeleton, showToast} from "../PageMonitoringCommonService";
+import {makeBubbleChartDataForCluster, PageMonitoringStyles, renderPlaceHolderLoader, showToast} from "../PageMonitoringCommonService";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import {Dropdown} from "semantic-ui-react";
 import {HARDWARE_OPTIONS_FOR_CLUSTER} from "../../../../shared/Constants";
@@ -95,7 +95,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
             return (
                 <>
                     {this.props.loading ?
-                        renderPlaceHolderSkeleton()
+                        renderPlaceHolderLoader()
                         : <div style={{
                             //backgroundColor: 'blue',
                             //backgroundColor: '#1e2124',

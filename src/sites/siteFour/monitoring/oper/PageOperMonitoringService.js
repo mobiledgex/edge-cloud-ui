@@ -1,7 +1,7 @@
 import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX} from "../../../../shared/Constants";
 import React from "react";
 import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
-import {PageMonitoringStyles, renderBarChartCore, renderLineChartCore, renderPlaceHolderSkeleton, renderUsageByType2, sortUsageListByType} from "../PageMonitoringCommonService";
+import {PageMonitoringStyles, renderBarChartCore, renderLineChartCore, renderPlaceHolderLoader, renderUsageByType2, sortUsageListByType} from "../PageMonitoringCommonService";
 import PageOperMonitoring from "./PageOperMonitoring";
 import {Table} from "semantic-ui-react";
 import {Progress} from "antd";
@@ -111,7 +111,7 @@ export const renderBottomGridAreaForCloudlet = (_this: PageOperMonitoring) => {
                 {_this.state.loading &&
                 <Table.Row className='page_monitoring_popup_table_empty'>
                     <Table.Cell>
-                        {renderPlaceHolderSkeleton()}
+                        {renderPlaceHolderLoader()}
                     </Table.Cell>
                 </Table.Row>}
                 {!_this.state.loading && _this.state.filteredCloudletUsageList.map((item, index) => {
