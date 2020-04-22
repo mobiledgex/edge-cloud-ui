@@ -5,7 +5,7 @@ import {fields} from './format';
 
 export const additionalDetail = (data) => {
     return (
-        data[fields.type] === 'developer' || 'Developer' ?
+        data[fields.type].toLowerCase() === 'developer' ?
             <div style={{ margin: 20, color: 'white' }}>
                 <div className="newOrg3-2">
                     <div>
@@ -98,6 +98,7 @@ export const showProgress = (data, isDetailView) => {
             case 3:
             case 7:
             case 14:
+            case 13:
                 icon = <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading color='green' name='circle notch' />} />
                 break;
             case 10:

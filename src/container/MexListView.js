@@ -273,7 +273,7 @@ class MexListView extends React.Component {
         let stream = this.props.requestInfo.streamType;
         if (stream) {
             let state = data[fields.state];
-            if (state === 2 || state === 3 || state === 6 || state === 7 || state === 9 || state === 10 || state === 12 || state === 14) {
+            if (state === 2 || state === 3 || state === 6 || state === 7 || state === 9 || state === 10 || state === 12 || state === 13 || state === 14) {
                 serverData.sendWSRequest(this, stream(data), this.requestResponse)
             }
         }
