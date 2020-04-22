@@ -286,7 +286,7 @@ const MexForms = (props) => {
                     <Grid.Column width={11}>
                         {
                             form.forms ?
-                                loadMultiForm(index, form) :
+                            <Grid key={index} id={form.field} style={{ marginLeft: -13, width: '100%' }}>{loadHorizontalForms(index, form.forms)}</Grid> :
                                 form.formType === SELECT || form.formType === MULTI_SELECT || form.formType === DUALLIST ?
                                     loadDropDownForms(form, required, disabled) :
                                     form.formType === INPUT || form.formType === TEXT_AREA ?
@@ -307,14 +307,6 @@ const MexForms = (props) => {
         )
     }
 
-    const loadMultiForm = (index, form) => {
-        return (
-            <Grid key={index} id={form.field} style={{ marginLeft: -13, width: '100%' }}>
-                {loadHorizontalForms(index, form.forms)}
-            </Grid>
-        )
-    }
-
     return (
         forms ?
             <Form>
@@ -328,7 +320,8 @@ const MexForms = (props) => {
                                     form.formType === HEADER ?
                                         loadHeader(i, form) :
                                         form.formType === MULTI_FORM ?
-                                            form.forms ? loadMultiForm(i, form)
+                                            form.forms ?
+                                                <Grid.Row key={i} id={form.field} style={{ marginLeft: -13, width: '100%' }}>{loadHorizontalForms(i, form.forms)}</Grid.Row>
                                                 : null :
                                             loadForms(i, form) :
                                     null
