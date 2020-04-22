@@ -156,6 +156,8 @@ export type PageDevMonitoringState = {
     chunkedSize: number,
     selectedAppInstIndex: number,
 }
+
+
 export const CustomSwitch = withStyles({
     switchBase: {
         color: '#D32F2F',
