@@ -174,6 +174,7 @@ export type PageDevMonitoringState = {
     legendHeight: number,
     isLegendExpanded: boolean,
     chunkedSize: number,
+    selectedAppInstIndex:number,
 }
 
 

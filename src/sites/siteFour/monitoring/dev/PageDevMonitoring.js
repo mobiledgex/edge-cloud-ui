@@ -230,6 +230,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     mapLoading: false,
                     isLegendExpanded: false,
                     chunkedSize: 12,
+                    selectedAppInstIndex: -1,
                 };
             }
 
@@ -572,6 +573,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         await this.setState({
                             selectedClientLocationListOnAppInst: [],
                             dropdownRequestLoading: true,
+                            selectedAppInstIndex: -1,
                         })
 
                         let selectData = selectedClusterOne.split("|")
@@ -1003,6 +1005,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             handleAppInstDropdown={this.handleAppInstDropdown}
                             isFullScreenMap={false}
                             isShowAppInstPopup={this.state.isShowAppInstPopup}
+                            selectedAppInstIndex={this.state.selectedAppInstIndex}
                         />
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
@@ -1602,8 +1605,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             renderLegendClusterName(item) {
                 if (this.state.chunkedSize === 12) {
                     return reduceString(item.cluster, 5) + "[" + reduceString(item.cloudlet, 5) + "]"
-                } else {
-                    return reduceString(item.cluster, 25) + "[" + reduceString(item.cloudlet, 25) + "]"
+                } else {//when legend expanded
+                    return reduceString(item.cluster, 23) + "[" + reduceString(item.cloudlet, 23) + "]"
                 }
             }
 
@@ -1654,7 +1657,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else {
                     return (
-                        <Legend style={{height: !this.state.isLegendExpanded ? legendHeight : chunkArrayClusterUsageList.length * legendHeight,}}>
+                        <Legend style={{height: this.state.isLegendExpanded && this.state.currentClassification === CLASSIFICATION.CLUSTER ? chunkArrayClusterUsageList.length * legendHeight : legendHeight}}>
 
                             {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER ?
 
@@ -1671,7 +1674,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                         //todo: ################################
                                                         //todo: cluster cell one
                                                         //todo: ################################
-                                                        <Center2 style={{width: chunkedSize === 12 ? 135 : 390}}>
+                                                        <Center2 style={{width: chunkedSize === 12 ? 135 : 390, backgroundColor: 'transparent'}}>
                                                             {/*desc: ##############*/}
                                                             {/*desc: circle area   */}
                                                             {/*desc: ##############*/}
@@ -1709,7 +1712,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                                         cursor: 'pointer',
                                                                         marginTop: 2,
 
+
                                                                     }}
+                                                                    title={item.cluster + " [" + item.cloudlet + "]"}
                                                                 >
                                                                     {this.renderLegendClusterName(item)}
                                                                 </ClusterCluoudletLable>

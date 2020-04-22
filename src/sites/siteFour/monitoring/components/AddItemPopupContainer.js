@@ -34,7 +34,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
         this.state = {
             //isOpenEditView: [],
             currentItemType: GRID_ITEM_TYPE.LINE,
-            currentHwTypeList: HARDWARE_TYPE.CPU,
+            currentHwTypeList: [],
             isShowHWDropDown: true,
             isShowEventLog: false,
             selectDefaultValues: [],

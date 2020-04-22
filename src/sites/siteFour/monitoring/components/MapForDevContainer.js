@@ -107,6 +107,7 @@ type State = {
     cloudIcon: string,
     cloudletIconColor: string,
     mapCenter: any,
+    selectedAppInstIndex: number,
 
 };
 
@@ -119,8 +120,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 value: 0,
             },
             {
-                //url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
-                //url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
                 url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-midnight/{z}/{x}/{y}.png',
                 name: 'dark2',
                 value: 1,
@@ -188,6 +187,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 lineColor: 'yellow',
                 cloudletIconColor: 'green',
                 mapCenter: [43.4, 51.7],
+                selectedAppInstIndex: -1,
 
             };
 
@@ -299,6 +299,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 })
 
                 this.setState({
+                    selectedAppInstIndex: -1,
                     newCloudLetLocationList: newCloudLetLocationList,
                     arrIsShowCloudlet: arrIsShowCloudlet,
                     appInstanceListGroupByCloudlet: pAppInstanceListGroupByCloudlet,
@@ -405,6 +406,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                             try {
                                                 await this.setState({
                                                     zoom: 1,
+                                                    selectedAppInstIndex: -1,
                                                 }, () => {
                                                     notification.success({
                                                         placement: 'bottomLeft',
@@ -542,6 +544,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                     this.setState({
                                                         newCloudLetLocationList: toggleNewCloudletLocationList,
                                                         isUpdateEnable: true,
+                                                        selectedAppInstIndex: -1,
                                                     })
                                                     //this.props.handleSelectCloudletForMapkerClicked(item.CloudletName)
                                                 }}
@@ -567,7 +570,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                 {/*desc:appInstPopup                    */}
                                                 {/*desc:################################*/}
                                                 <Popup className='popup1' ref={this.appInstPopup}>
-                                                    {listAppName.map(AppFullName => {
+                                                    {listAppName.map((AppFullName, innerIndex) => {
                                                         let AppName = AppFullName.trim().split(" | ")[0].trim()
                                                         let ClusterInst = AppFullName.trim().split(" | ")[1].trim()
                                                         let Region = AppFullName.trim().split(" | ")[2].trim()
@@ -592,12 +595,16 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                                 flexDirection: 'column',
                                                                 marginTop: 5,
                                                                 marginBottom: 5,
+                                                                backgroundColor: innerIndex === this.state.selectedAppInstIndex ? 'rgba(97, 102, 97,.412)' : null,
                                                             }}
                                                             >
                                                                 <Ripples
                                                                     style={{marginLeft: 5,}}
                                                                     color='#1cecff' during={500}
                                                                     onClick={() => {
+                                                                        this.setState({
+                                                                            selectedAppInstIndex: innerIndex,
+                                                                        })
                                                                         this.handleClickAppInst(fullAppInstOne)
                                                                     }}
                                                                 >
