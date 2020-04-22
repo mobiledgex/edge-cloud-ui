@@ -717,12 +717,10 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
                     series = pUsageList[i].networkSeriesList
                 }
 
-
                 classificationName = pUsageList[i].cluster + "\n[" + pUsageList[i].cloudlet + "]";
                 let usageList = [];
 
                 for (let j in series) {
-
                     let usageOne = 0;
                     if (hardwareType === HARDWARE_TYPE.CPU) {
                         usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.CPU];
@@ -826,9 +824,7 @@ export const makeGradientColor = (canvas, height) => {
 };
 
 export const hexToRGB = (hex, alpha) => {
-    let r = parseInt(hex.slice(1, 3), 16),
-        g = parseInt(hex.slice(3, 5), 16),
-        b = parseInt(hex.slice(5, 7), 16);
+    let r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
     if (alpha) {
         return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")";
     } else {
@@ -1042,8 +1038,8 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
             animation: {
                 duration: 500
             },
-            maintainAspectRatio: false,//@todo
-            responsive: true,//@todo
+            maintainAspectRatio: false,
+            responsive: true,
             datasetStrokeWidth: 1,
             pointDotStrokeWidth: 2,
             layout: {
@@ -1055,7 +1051,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                 }
             },
             legend: {
-                display: isBig ? true : false,//@todo:리전드display
+                display: isBig ? true : false,
                 position: 'top',
                 labels: {
                     boxWidth: 10,
@@ -1063,7 +1059,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     fontSize: 12,
                     fontFamily: 'ubuntu',
                     fontWeight: 'bold',
-                },//@todo: lineChart 리전드 클릭 이벤트.
+                },
                 onClick: (e, clickedItem) => {
                     /*let selectedClusterOne = clickedItem.text.toString().replace('\n', "|");
                     handleLegendAndBubbleClickedEvent(_this, selectedClusterOne, lineChartDataSet)*/
@@ -1474,9 +1470,6 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
                 labels: newDateTimeList,
                 datasets: finalSeriesDataSets,
             }
-
-            console.log(`_result===${hwType}>`, _result);
-
             return _result;
         };
 
@@ -1532,27 +1525,6 @@ export const tempClusterList = [
     'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet30',
 ]
 
-
-export const makeSelectBoxListWithKeyValuePipe = (arrList, keyName, valueName) => {
-    try {
-        let newArrList = [];
-        newArrList.push({
-            key: '',
-            value: '',
-            text: 'all',
-        })
-        for (let i in arrList) {
-            newArrList.push({
-                key: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim(),
-                value: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim(),
-                text: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim(),
-            })
-        }
-        return newArrList;
-    } catch (e) {
-
-    }
-};
 
 export const makeSelectBoxListWithKeyValuePipeForCluster = (arrList, keyName, valueName) => {
     try {
