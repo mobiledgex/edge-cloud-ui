@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Table} from "semantic-ui-react";
-import {PageMonitoringStyles, renderPlaceHolderCircular} from "../PageMonitoringCommonService";
+import {PageMonitoringStyles, renderPlaceHolderSkeleton} from "../PageMonitoringCommonService";
 import '../PageMonitoring.css'
 
 
@@ -112,7 +112,7 @@ export default function ClusterEventLogListHook(props) {
                             )
                         })
                         :
-                        renderPlaceHolderCircular()
+                        renderPlaceHolderSkeleton()
                     }
                 </Table.Body>
             </Table>

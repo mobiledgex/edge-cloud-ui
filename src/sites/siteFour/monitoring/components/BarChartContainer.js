@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import {renderBarChartCore, renderPlaceHolderCircular} from "../PageMonitoringCommonService";
+import {renderBarChartCore, renderPlaceHolderSkeleton} from "../PageMonitoringCommonService";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 
 type Props = {
@@ -69,7 +69,7 @@ export default class BarChartContainer extends React.Component<Props, State> {
                         </div>
                     </div>
                     <div className='page_monitoring_container'>
-                        {this.props.loading ? renderPlaceHolderCircular() : renderBarChartCore(this.state.chartDataSet.chartDataList, this.state.chartDataSet.hardwareType, this, this.state.graphType, this.state.isResizeComplete)}
+                        {this.props.loading ? renderPlaceHolderSkeleton() : renderBarChartCore(this.state.chartDataSet.chartDataList, this.state.chartDataSet.hardwareType, this, this.state.graphType, this.state.isResizeComplete)}
                     </div>
                 </div>
             </div>

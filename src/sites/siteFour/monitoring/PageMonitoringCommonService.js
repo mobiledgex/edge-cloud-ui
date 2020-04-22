@@ -1,4 +1,5 @@
 import React from 'react';
+import Skeleton, {SkeletonTheme} from "react-loading-skeleton";
 import './PageMonitoring.css';
 import {toast} from "react-semantic-toasts";
 import {GRID_ITEM_TYPE, HARDWARE_TYPE, USAGE_TYPE,} from "../../../shared/Constants";
@@ -503,7 +504,19 @@ export const renderGridLoader = () => {
 }
 
 
-export const renderPlaceHolderCircular = (type: string = '') => {
+export const renderPlaceHolderSkeleton = (type: string = '') => {
+    return (
+        <div style={{marginTop: 35,}}>
+            <SkeletonTheme color="#22252C" highlightColor="#444">
+                <p>
+                    <Skeleton count={13}/>
+                </p>
+            </SkeletonTheme>
+        </div>
+    )
+}
+
+export const renderPlaceHolderCircular007 = (type: string = '') => {
     return (
         <div className='page_monitoring_blank_box'
              style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%', zIndex: 999999999999999999999}}>
@@ -1081,7 +1094,7 @@ export const showToast2 = (title: string, time = 2) => {
  * @param time
  * @param color
  */
-export const showToast3 = (title: string, time = 2, color='green') => {
+export const showToast3 = (title: string, time = 2, color = 'green') => {
     toast({
         type: 'success',
         title: title,
