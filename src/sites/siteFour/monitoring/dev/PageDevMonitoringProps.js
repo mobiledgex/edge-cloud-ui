@@ -1,6 +1,5 @@
 import * as actions from "../../../../actions";
 
-
 export type PageDevMonitoringProps = {
     handleLoadingSpinner: Function,
     toggleLoading: Function,
@@ -18,8 +17,6 @@ export type PageDevMonitoringProps = {
         height: number,
     }
 }
-
-
 
 export const PageDevMonitoringMapStateToProps = (state) => {
     return {
