@@ -305,6 +305,7 @@
     font-size: 14px;
     font-weight: 600;
     color: rgba(255,255,255,.6);
+    cursor:pointer;
 }
 
 .timeline_header_summary_label{
@@ -432,6 +433,7 @@
     font-size: 14px;
     font-weight: 600;
     height:28px;
+    cursor: pointer;
 
 }
 .timeline_button_arrow_box{
@@ -450,6 +452,7 @@
     width: 28px;
     padding:0;
     border: none;
+    cursor: pointer;
 }
 
 .timeline_button_arrow .material-icons {

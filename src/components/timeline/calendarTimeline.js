@@ -473,7 +473,8 @@ export default class CalendarTimeline extends React.PureComponent {
                                 return (
                                     <div {...getRootProps()}>
                                         <div className="timeline_header_summary">
-                                            <div className="timeline_header_summary_column">
+                                            <button className="timeline_header_summary_column"
+                                                    onClick={() => this.handleStatusClick("normal")}>
                                                 <div className="timeline_header_summary_label">
                                                     Normal
                                                 </div>
@@ -483,13 +484,10 @@ export default class CalendarTimeline extends React.PureComponent {
                                                             .statusCount[0]
                                                             .normalCount
                                                     }
-                                                    <button
-                                                        onClick={() => this.handleStatusClick("normal")}
-                                                    >
-                                                    </button>
                                                 </div>
-                                            </div>
-                                            <div className="timeline_header_summary_column">
+                                            </button>
+                                            <button className="timeline_header_summary_column"
+                                                    onClick={() => this.handleStatusClick("error")}>
                                                 <div className="timeline_header_summary_label">
                                                     Error
                                                 </div>
@@ -499,12 +497,8 @@ export default class CalendarTimeline extends React.PureComponent {
                                                             .statusCount[0]
                                                             .errorCount
                                                     }
-                                                    <button
-                                                        onClick={() => this.handleStatusClick("error")}
-                                                    >
-                                                    </button>
                                                 </div>
-                                            </div>
+                                            </button>
                                         </div>
                                     </div>
                                 );
