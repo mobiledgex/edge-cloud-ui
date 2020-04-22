@@ -160,9 +160,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
         constructor(props: Props) {
             super(props);
-
             this.appInstPopup = React.createRef();
-
             this.state = {
                 zoom: 2,//mapZoom
                 appInstanceListGroupByCloudlet: '',
@@ -234,9 +232,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     let newClientList = []
                     clientList.map((item: TypeClient, index) => {
                         let clientLocation = parseFloat(item.latitude).toFixed(1).toString() + parseFloat(item.longitude).toFixed(1).toString();
-
                         console.log(`clientLocation${item.latitude}===${item.longitude}>`, clientLocation);
-
                         item.clientLocation = clientLocation;
                         newClientList.push(item);
                     })
@@ -249,7 +245,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     }, () => {
                         console.log("selectedClientLocationListOnAppInst====>", this.state.clientList);
                         console.log("clientObjKeys====>", this.state.clientObjKeys);
-
                     })
                 }
             } catch (e) {
@@ -603,7 +598,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                         }
 
                                                         let fullAppInstOne = AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version + " | " + Operator + " | " + JSON.stringify(serverLocation);
-
 
                                                         return (
                                                             <div style={{
