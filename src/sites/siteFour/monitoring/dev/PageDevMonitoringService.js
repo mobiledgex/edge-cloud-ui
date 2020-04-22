@@ -684,9 +684,6 @@ export const renderSmallProgress = () => {
 
 export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: string, _this) => {
     try {
-        //@desc : sort by type
-        //pUsageList = sortUsageListByTypeForCluster(pUsageList, hardwareType);
-
         if (pUsageList.length === 0) {
             return "";
         } else {
