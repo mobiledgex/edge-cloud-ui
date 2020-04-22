@@ -1381,10 +1381,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 //backgroundColor: 'yellow'
                             }}>
                                 {/*
-                        todo :####################################
-                        todo : Clusterstream toggle button
-                        todo :####################################
-                        */}
+                                todo :####################################
+                                todo : Clusterstream toggle button
+                                todo :####################################
+                                */}
                                 {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
                                 <div style={{
                                     alignItems: 'center',
@@ -1423,10 +1423,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }
 
                                 {/*
-                        desc :####################################
-                        desc : appInst stream toggle button
-                        desc :####################################
-                        */}
+                                desc :####################################
+                                desc : appInst stream toggle button
+                                desc :####################################
+                                */}
                                 {this.state.currentClassification === CLASSIFICATION.APPINST &&
                                 <div style={{
                                     alignItems: 'center',
