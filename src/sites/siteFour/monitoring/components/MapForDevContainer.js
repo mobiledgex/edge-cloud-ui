@@ -184,7 +184,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 currentTyleLayer: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
                 currentWidgetWidth: window.innerWidth / 3,
                 clientObjKeys: [],
-                lineColor: 'yellow',
+                lineColor: 'green',
                 cloudletIconColor: 'green',
                 mapCenter: [43.4, 51.7],
                 selectedAppInstIndex: -1,
@@ -233,7 +233,10 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
                     let newClientList = []
                     clientList.map((item: TypeClient, index) => {
-                        let clientLocation = parseFloat(item.latitude).toFixed(3).toString() + parseFloat(item.longitude).toFixed(2).toString();
+                        let clientLocation = parseFloat(item.latitude).toFixed(1).toString() + parseFloat(item.longitude).toFixed(1).toString();
+
+                        console.log(`clientLocation${item.latitude}===${item.longitude}>`, clientLocation);
+
                         item.clientLocation = clientLocation;
                         newClientList.push(item);
                     })
@@ -244,7 +247,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
                         clientList: groupedClientList,
                         clientObjKeys: clientObjKeys,
                     }, () => {
-                        //console.log("selectedClientLocationListOnAppInst====>", this.state.clientList);
+                        console.log("selectedClientLocationListOnAppInst====>", this.state.clientList);
+                        console.log("clientObjKeys====>", this.state.clientObjKeys);
 
                     })
                 }
@@ -445,7 +449,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                         onChange={async (value) => {
                                             let index = value
 
-                                            let lineColor = DARK_LINE_COLOR;
+                                            let lineColor = DARK_LINE_COLOR
                                             let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
                                             if (Number(index) >= 4) {
                                                 lineColor = WHITE_LINE_COLOR;
@@ -474,6 +478,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {this.state.clientObjKeys.map((objkeyOne, index) => {
                                     let groupedClientList = this.state.clientList;
 
+                                    console.log(`groupedClientList===>`, groupedClientList);
+
                                     return (
                                         <MarkerClusterGroup>
                                             {groupedClientList[objkeyOne].map((item, index) => {
@@ -488,25 +494,37 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                                 }
                                                             >
                                                                 <Popup className='clientPopup'
-                                                                       style={{fontSize: 11}}>{item.uuid}</Popup>
+                                                                       style={{fontSize: 11}}>
+                                                                    <div style={{display: 'flex'}}>
+                                                                        <div style={{color: 'white', fontFamily: 'ubuntu'}}>
+                                                                            {item.uuid}
+                                                                        </div>
+                                                                        <div style={{width: 10}}/>
+                                                                        <div style={{color: 'pink', fontFamily: 'ubuntu',}}>
+                                                                            {`[${item.unique_id_type}]`}
+                                                                        </div>
+                                                                    </div>
+
+                                                                </Popup>
                                                             </Marker>
                                                             {/*@desc:#####################################..*/}
                                                             {/*@desc:Render lines....                       */}
                                                             {/*@desc:#####################################..*/}
                                                             <Polyline
-                                                                dashArray={['3,5,8']}
+                                                                dashArray={['2,1,2']}
                                                                 id={index}
                                                                 positions={[
                                                                     [item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
                                                                 ]}
                                                                 color={this.props.lineColor}
+
                                                             />
 
                                                         </React.Fragment>
                                                     )
                                                 } else {
                                                     notification.warning({
-                                                        duration: 0.5,
+                                                        duration: 2.5,
                                                         message: 'Currently, it is not possible to bring the server location. \nPlease ask the admin about this problem.',
                                                     });
                                                 }

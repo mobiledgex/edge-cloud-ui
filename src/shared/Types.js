@@ -57,6 +57,7 @@ export type TypeClientLocation = {
     speed: number,
     timestamp: any,
     uuid: string,
+    unique_id_type: string,
     serverLocInfo: {
         lat: number,
         long: number,

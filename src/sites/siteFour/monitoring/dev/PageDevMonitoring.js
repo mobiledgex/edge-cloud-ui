@@ -220,7 +220,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     isShowAppInstPopup: false,
                     isShowPopOverMenu: false,
                     isOpenEditView2: false,
-                    showAppInstClient: false,
+                    showAppInstClient: true,//@desc: isShowAppInstClient
                     filteredClusterList: [],
                     currentWidth: '100%',
                     emptyPosXYInGrid: {},

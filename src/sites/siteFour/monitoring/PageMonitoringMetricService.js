@@ -98,17 +98,19 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
                 appInstCount++;
                 let data = JSON.parse(event.data);
 
-                console.log(`onmessage====>`,data);
+                console.log(`onmessage====>`, data);
 
-                let uuid = data.data.client_key.uuid;
+                let uniqueId = data.data.client_key.unique_id;
+                let unique_id_type = data.data.client_key.unique_id_type;
                 if (data.code === 200) {
                     _this.setState({
                         loading: true,
                     })
                 }
                 let clientLocationOne: TypeClientLocation = data.data.location;
-                if (!isEmpty(uuid)) {
-                    clientLocationOne.uuid = uuid;
+                if (!isEmpty(uniqueId)) {
+                    clientLocationOne.uuid = uniqueId;
+                    clientLocationOne.unique_id_type = unique_id_type;
                     let serverLocation = pCurrentAppInst.split('|')[7].trim()
                     clientLocationOne.serverLocInfo = JSON.parse(serverLocation)
                 }
@@ -382,7 +384,6 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                 appInstanceHealth: appInstanceHealthCheckList[index],
             });
         })
-
 
 
         let allUsageList = []
