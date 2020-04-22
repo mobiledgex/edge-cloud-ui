@@ -1,5 +1,4 @@
 import {fields} from "./services/model/format"
-import {createMuiTheme} from "@material-ui/core";
 
 export const TYPE_JSON = 'JSON'
 export const TYPE_JSON_NEW_LINE = 'JSON_NEW_LINE'
