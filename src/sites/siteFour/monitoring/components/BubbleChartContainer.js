@@ -136,6 +136,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                                     selection
                                                     loading={this.props.parent.state.bubbleChartLoader}
                                                     options={HARDWARE_OPTIONS_FOR_CLUSTER}
+                                                    scrolling={true}
                                                     defaultValue={HARDWARE_OPTIONS_FOR_CLUSTER[0].value}
                                                     onChange={async (e, {value}) => {
 
