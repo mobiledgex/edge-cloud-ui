@@ -60,7 +60,6 @@ import type {PageDevMonitoringProps} from "./PageDevMonitoringProps";
 import {PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageDevMonitoringProps";
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListHook_VirtualScroll from "../components/AppInstEventLogListHook_VirtualScroll";
-import Tooltip from "antd/es/tooltip";
 
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -1736,19 +1735,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                             </div>
 
                                                             {!this.state.isLegendExpanded ?
-                                                                <Tooltip placement="top" title={item.cluster + " [" + item.cloudlet + "]"}>
-                                                                    <ClusterCluoudletLable
-                                                                        style={{
-                                                                            marginLeft: 4,
-                                                                            marginRight: 10,
-                                                                            marginBottom: 0,
-                                                                            cursor: 'pointer',
-                                                                            marginTop: 2,
-                                                                        }}
-                                                                    >
-                                                                        {this.reduceLegendClusterName(item)}
-                                                                    </ClusterCluoudletLable>
-                                                                </Tooltip>
+                                                                <ClusterCluoudletLable
+                                                                    style={{
+                                                                        marginLeft: 4,
+                                                                        marginRight: 10,
+                                                                        marginBottom: 0,
+                                                                        cursor: 'pointer',
+                                                                        marginTop: 2,
+                                                                    }}
+                                                                    title={item.cluster + " [" + item.cloudlet + "]"}
+                                                                >
+                                                                    {this.reduceLegendClusterName(item)}
+                                                                </ClusterCluoudletLable>
                                                                 :
                                                                 <ClusterCluoudletLable
                                                                     style={{
