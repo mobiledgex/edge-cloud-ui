@@ -309,9 +309,9 @@ const MexForms = (props) => {
 
     const loadMultiForm = (index, form) => {
         return (
-            <Grid key={index} id={form.field} style={{ marginLeft: -13, width: '100%' }}>
+            <Grid.Row key={index} id={form.field} style={{ marginLeft: -13, width: '100%' }}>
                 {loadHorizontalForms(index, form.forms)}
-            </Grid>
+            </Grid.Row>
         )
     }
 
