@@ -696,7 +696,6 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
             let dateTimeList = [];
             let series = [];
             for (let i in pUsageList) {
-
                 if (hardwareType === HARDWARE_TYPE.CPU) {
                     series = pUsageList[i].cpuSeriesList
                 } else if (hardwareType === HARDWARE_TYPE.MEM) {
