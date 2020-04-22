@@ -693,50 +693,41 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
             let dateTimeList = [];
             let series = [];
             for (let i in pUsageList) {
+                let usageIndex = 0;
                 if (hardwareType === HARDWARE_TYPE.CPU) {
                     series = pUsageList[i].cpuSeriesList
+                    usageIndex = USAGE_INDEX_FOR_CLUSTER.CPU
                 } else if (hardwareType === HARDWARE_TYPE.MEM) {
                     series = pUsageList[i].memSeriesList
+                    usageIndex = USAGE_INDEX_FOR_CLUSTER.MEM
                 } else if (hardwareType === HARDWARE_TYPE.DISK) {
                     series = pUsageList[i].diskSeriesList
+                    usageIndex = USAGE_INDEX_FOR_CLUSTER.DISK
                 } else if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
                     series = pUsageList[i].tcpSeriesList
+                    usageIndex = USAGE_INDEX_FOR_CLUSTER.TCPCONNS
                 } else if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
                     series = pUsageList[i].tcpSeriesList
+                    usageIndex = USAGE_INDEX_FOR_CLUSTER.TCPRETRANS
                 } else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
                     series = pUsageList[i].udpSeriesList
+                    usageIndex = USAGE_INDEX_FOR_CLUSTER.UDPSENT
                 } else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
                     series = pUsageList[i].udpSeriesList
+                    usageIndex = USAGE_INDEX_FOR_CLUSTER.UDPRECV
                 } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
                     series = pUsageList[i].networkSeriesList
+                    usageIndex = USAGE_INDEX_FOR_CLUSTER.SENDBYTES
                 } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
                     series = pUsageList[i].networkSeriesList
+                    usageIndex = USAGE_INDEX_FOR_CLUSTER.RECVBYTES
                 }
 
                 classificationName = pUsageList[i].cluster + "\n[" + pUsageList[i].cloudlet + "]";
                 let usageList = [];
 
                 for (let j in series) {
-                    let usageOne = 0;
-                    if (hardwareType === HARDWARE_TYPE.CPU) {
-                        usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.CPU];
-                    } else if (hardwareType === HARDWARE_TYPE.MEM) {
-                        usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.MEM];
-                    } else if (hardwareType === HARDWARE_TYPE.DISK) {
-                        usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.DISK];
-                    } else if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
-                        usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.TCPCONNS];
-                    } else if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
-                        usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.TCPRETRANS];
-                    } else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
-                        usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.UDPSENT];
-                    } else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
-                        usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.UDPRECV];
-                    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-                        usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.SENDBYTES];
-                    } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-                        usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.RECVBYTES];
-                    }
+                    let usageOne = series[j][usageIndex];
                     usageList.push(usageOne);
                     let dateOne = series[j]["0"];
                     dateOne = dateOne.toString().split("T");
