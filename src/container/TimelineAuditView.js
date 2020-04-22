@@ -82,6 +82,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             orgName: '',
             isLoading: false,
             isLoading2: false,
+            isLoading3: false,
             timesList: [],
             timeLineIndex: 0,
             tasksList: [],
@@ -96,7 +97,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             nameList:[],
             timelineSelectedIndex: 0,
             unCheckedErrorCount: 0,
-            unCheckedErrorToggle: false
+            unCheckedErrorToggle: false,
+            statusErrorToggle: false,
+            statusNormalToggle: false
         };
         jsonViewProps = {
             name: null,
@@ -290,11 +293,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     }
                 })
 
-                this.setState({}, () => sgmail.send(msg)
+                this.setState({isLoading3 : true}, () => sgmail.send(msg)
                                                             .then(() => {
                                                                 alert('success')
                                                                 this.setStorageData(traceid, "trace")
-                                                                this.setState({ openSendEmail: false })
+                                                                this.setState({ openSendEmail: false, isLoading3 : false })
                                                             })
                                                             .catch((err) => {
                                                                 alert('error -> ' + err)
@@ -568,7 +571,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     tasksList.push(taskValue)
                     timesList.push(datetime)
                     statusList.push({"status":status, "traceid":traceid});
-                } else if(task === v.value){
+                } else if(v.value === task){
                     tasksList.push(taskValue)
                     timesList.push(datetime)
                     statusList.push({"status":status, "traceid":traceid});
@@ -579,17 +582,30 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                         timesList.push(datetime)
                         statusList.push({"status":status, "traceid":traceid});
                     }
-                } else if(v.value === 'uncheck'){
-                    if(status !== 200){
-                        let storageTimeIndex = (storageTimeList) ? storageTimeList.findIndex(s => Date.parse(s) === newDate.valueOf()) : (-1)
-                        if(storageTimeIndex === (-1)){
-                            tasksList.push(taskValue)
-                            timesList.push(datetime)
-                            statusList.push({"status":status, "traceid":traceid});
+                } else if(v.value === 'uncheck') {
+                    if (status !== 200) {
+                        if(v.status){
+                            if (v.status === 'error') {
+                                tasksList.push(taskValue)
+                                timesList.push(datetime)
+                                statusList.push({"status": status, "traceid": traceid});
+                            }
+                        } else {
+                            let storageTimeIndex = (storageTimeList) ? storageTimeList.findIndex(s => Date.parse(s) === newDate.valueOf()) : (-1)
+                            if (storageTimeIndex === (-1)) {
+                                tasksList.push(taskValue)
+                                timesList.push(datetime)
+                                statusList.push({"status": status, "traceid": traceid});
+                            }
                         }
+                    } else if (status === 200 && v.status === 'normal'){
+                        tasksList.push(taskValue)
+                        timesList.push(datetime)
+                        statusList.push({"status": status, "traceid": traceid});
                     }
                 }
             })
+            console.log('20200422 ', status)
 
             timelineList.push({'timesList' : timesList ,'tasksList':tasksList, 'statusList': statusList})
             this.setState({timelineList: timelineList})
@@ -618,6 +634,29 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 this.setState({unCheckedErrorToggle: true})
             }
             this.dropDownOnChange(null,value)
+        }
+
+        onClickStatus = (status) => {
+            let statusErrorToggle = this.state.statusErrorToggle
+            let statusNormalToggle = this.state.statusNormalToggle
+            let value = {'value':'uncheck', 'status': status}
+            console.log("20200422____ " + status)
+            if(status === 'normal'){
+                if(statusNormalToggle){
+                    value = {'value':'all'}
+                    this.setState({statusNormalToggle: false})
+                } else {
+                    this.setState({statusNormalToggle: true})
+                }
+            } else {
+                if(statusErrorToggle){
+                    value = {'value':'all'}
+                    this.setState({statusErrorToggle: false})
+                } else {
+                    this.setState({statusErrorToggle: true})
+                }
+            }
+            this.dropDownOnChange('status', value)
         }
 
 
@@ -699,7 +738,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
                         <div  style={{width:this.getWidth(), height:(this.state.closeMap)? 'calc(100% - 20px)' : 'calc(50% - 27px)', overflow:'hidden'}}>
                             {(this.state.timesList.length > 0) ?
-                                <CalendarTimeline timelineList={this.state.timelineList[0]} onItemSelectCallback={this.onItemSelect} onItemClickCloseMap={this.onCloseMap} onCanvasClickCloseMap={this.onClickCavasCloseMap} onPopupEmail={this.onPopupEmail} statusCount={this.state.statusCount} timelineSelectedIndex={this.state.timelineSelectedIndex}/>
+                                <CalendarTimeline timelineList={this.state.timelineList[0]} onItemSelectCallback={this.onItemSelect} onClickStatus={this.onClickStatus} onItemClickCloseMap={this.onCloseMap} onCanvasClickCloseMap={this.onClickCavasCloseMap} onPopupEmail={this.onPopupEmail} statusCount={this.state.statusCount} timelineSelectedIndex={this.state.timelineSelectedIndex}/>
                                 :null
                             }
                         </div>
@@ -769,6 +808,12 @@ class SendEmailView extends React.Component {
         let { dimmer, open, close, callback, rawViewData } = this.props;
         return (
             <Modal dimmer={dimmer} open={open} onClose={close} closeIcon>
+                {this.state.isLoading3 &&
+                <FlexBox style={{ position: 'absolute', bottom: '54%', left: '5%', zIndex: 9999999 }}>
+                    <CircularProgress style={{ color: '#1cecff', zIndex: 9999999, fontSize: 10 }}
+                                      size={20} />
+                </FlexBox>
+                }
                 <Modal.Header>New Email</Modal.Header>
                 <Modal.Content>
                     <Modal.Description>
