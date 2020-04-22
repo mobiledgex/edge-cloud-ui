@@ -109,9 +109,13 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                     message: `${this.state.currentItemType} [${this.state.currentHwType}] item added`,
                 });
             }
+
+
         } catch (e) {
             throw new Error(e)
+        } finally {
         }
+
 
     }
 
@@ -158,6 +162,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                     <div style={{width: '100%'}}>
                         <div style={{display: 'flex', width: '100%',}}>
                             {this.renderPrevBtn2()}
+                            {this.state.loading ? <div style={{marginLeft: 20,}}><CircularProgress/></div> : null}
                             <div className='page_monitoring_popup_title'>
                                 Add Item [{this.props.parent.state.currentClassification}]
                             </div>
@@ -413,7 +418,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                 }}
                             >Cancel
                             </Button>
-                            {this.state.loading ? <div style={{marginLeft: 20,}}><CircularProgress/></div> : null}
+
                         </div>
 
                     </div>

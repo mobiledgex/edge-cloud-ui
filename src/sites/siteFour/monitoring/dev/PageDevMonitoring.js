@@ -6,7 +6,7 @@ import {Dropdown, Modal} from 'semantic-ui-react'
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
 import {CircularProgress, Toolbar} from '@material-ui/core'
-import {Dropdown as ADropdown, Menu as AMenu, Tooltip,} from 'antd';
+import {Dropdown as ADropdown, Menu as AMenu,} from 'antd';
 import {
     defaultHwMapperListForCluster,
     defaultLayoutForAppInst,
@@ -248,7 +248,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     mapLoading: true,
 
                 })
-                await this.loadInitDataForCluster();
+                await this.loadInitDataForDevMon();
                 this.setState({
                     loading: false,
                     bubbleChartLoader: false,
@@ -256,7 +256,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             }
 
-            async loadInitDataForCluster(isInterval: boolean = false) {
+            async loadInitDataForDevMon(isInterval: boolean = false) {
                 let promiseList = []
                 let promiseList2 = []
                 try {
@@ -393,7 +393,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     loading: true,
                     dropdownRequestLoading: true
                 })
-                await this.loadInitDataForCluster();
+                await this.loadInitDataForDevMon();
                 this.setState({
                     loading: false,
                 })
@@ -1611,7 +1611,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            makeLegend() {
+            renderLegend() {
                 const chunkedSize = this.state.chunkedSize;
 
                 //@todo: ##############################
@@ -1689,20 +1689,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                             </div>
 
                                                             {!this.state.isLegendExpanded ?
-                                                                <Tooltip placement="top" title={item.cluster + " [" + item.cloudlet + "]"}>
-                                                                    <ClusterCluoudletLable
-                                                                        style={{
-                                                                            marginLeft: 4,
-                                                                            marginRight: 10,
-                                                                            marginBottom: 0,
-                                                                            cursor: 'pointer',
-                                                                            marginTop: 2,
-                                                                        }}
-                                                                        //title={item.cluster + " [" + item.cloudlet + "]"}
-                                                                    >
-                                                                        {this.renderLegendClusterName(item)}
-                                                                    </ClusterCluoudletLable>
-                                                                </Tooltip>
+                                                                <ClusterCluoudletLable
+                                                                    style={{
+                                                                        marginLeft: 4,
+                                                                        marginRight: 10,
+                                                                        marginBottom: 0,
+                                                                        cursor: 'pointer',
+                                                                        marginTop: 2,
+                                                                    }}
+                                                                    title={item.cluster + " [" + item.cloudlet + "]"}
+                                                                >
+                                                                    {this.renderLegendClusterName(item)}
+                                                                </ClusterCluoudletLable>
                                                                 :
                                                                 <ClusterCluoudletLable
                                                                     style={{
@@ -1857,7 +1855,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 {/*desc:---------------------------------*/}
                                 {/*desc:Legend                           */}
                                 {/*desc:---------------------------------*/}
-                                {this.makeLegend()}
+                                {this.renderLegend()}
                                 <div className="page_monitoring"
                                      style={{
                                          overflowY: 'auto',
