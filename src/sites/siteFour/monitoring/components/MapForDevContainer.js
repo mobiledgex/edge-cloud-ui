@@ -500,7 +500,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                                             {item.uuid}
                                                                         </div>
                                                                         <div style={{width: 10}}/>
-                                                                        <div style={{color: 'pink', fontFamily: 'ubuntu',}}>
+                                                                        <div style={{color: 'orange', fontFamily: 'ubuntu',}}>
                                                                             {`[${item.unique_id_type}]`}
                                                                         </div>
                                                                     </div>
@@ -511,13 +511,12 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                             {/*@desc:Render lines....                       */}
                                                             {/*@desc:#####################################..*/}
                                                             <Polyline
-                                                                dashArray={['2,1,2']}
+                                                                //dashArray={['30,1,30']}
                                                                 id={index}
                                                                 positions={[
                                                                     [item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
                                                                 ]}
                                                                 color={this.props.lineColor}
-
                                                             />
 
                                                         </React.Fragment>
