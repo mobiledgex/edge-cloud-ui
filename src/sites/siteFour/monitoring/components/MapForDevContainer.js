@@ -19,14 +19,11 @@ import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WH
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 
 const {Option} = Select;
+
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
     zoom: 13,
 }
-
-
-
-
 
 
 let cellphoneIcon2 = L.icon({
