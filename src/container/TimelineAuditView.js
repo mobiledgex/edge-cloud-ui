@@ -738,7 +738,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
                         <div  style={{width:this.getWidth(), height:(this.state.closeMap)? 'calc(100% - 20px)' : 'calc(50% - 27px)', overflow:'hidden'}}>
                             {(this.state.timesList.length > 0) ?
-                                <CalendarTimeline timelineList={this.state.timelineList[0]} onItemSelectCallback={this.onItemSelect} onClickStatus={this.onClickStatus} onItemClickCloseMap={this.onCloseMap} onCanvasClickCloseMap={this.onClickCavasCloseMap} onPopupEmail={this.onPopupEmail} statusCount={this.state.statusCount} timelineSelectedIndex={this.state.timelineSelectedIndex}/>
+                                <CalendarTimeline
+                                    timelineList={this.state.timelineList[0]}
+                                    onItemSelectCallback={this.onItemSelect}
+                                    onClickStatus={this.onClickStatus}
+                                    onItemClickCloseMap={this.onCloseMap}
+                                    onCanvasClickCloseMap={this.onClickCavasCloseMap}
+                                    onPopupEmail={this.onPopupEmail}
+                                    statusCount={this.state.statusCount}
+                                    timelineSelectedIndex={this.state.timelineSelectedIndex}
+                                    statusNormalToggle={this.state.statusNormalToggle}
+                                    statusErrorToggle={this.state.statusErrorToggle}
+
+                                />
                                 :null
                             }
                         </div>

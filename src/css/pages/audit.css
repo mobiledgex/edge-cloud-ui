@@ -308,6 +308,14 @@
     cursor:pointer;
 }
 
+.timeline_header_summary_column.button_on:first-child {
+    background-color: #011900;
+}
+
+.timeline_header_summary_column.button_on:last-child {
+    background-color: #220001;
+}
+
 .timeline_header_summary_label{
     margin-right:10px;
 }
@@ -436,6 +444,11 @@
     cursor: pointer;
 
 }
+.timeline_button_current:hover {
+    background-color: #090C0F;
+
+}
+
 .timeline_button_arrow_box{
     display: flex;
     flex:1;

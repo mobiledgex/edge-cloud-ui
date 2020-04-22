@@ -473,7 +473,7 @@ export default class CalendarTimeline extends React.PureComponent {
                                 return (
                                     <div {...getRootProps()}>
                                         <div className="timeline_header_summary">
-                                            <button className="timeline_header_summary_column"
+                                            <button className={this.props.statusNormalToggle ? "timeline_header_summary_column button_on" : "timeline_header_summary_column button_off"}
                                                     onClick={() => this.handleStatusClick("normal")}>
                                                 <div className="timeline_header_summary_label">
                                                     Normal
@@ -486,7 +486,7 @@ export default class CalendarTimeline extends React.PureComponent {
                                                     }
                                                 </div>
                                             </button>
-                                            <button className="timeline_header_summary_column"
+                                            <button className={this.props.statusErrorToggle ? "timeline_header_summary_column button_on" : "timeline_header_summary_column button_off"}
                                                     onClick={() => this.handleStatusClick("error")}>
                                                 <div className="timeline_header_summary_label">
                                                     Error
