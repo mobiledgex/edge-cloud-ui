@@ -98,6 +98,7 @@ export const showProgress = (data, isDetailView) => {
             case 3:
             case 7:
             case 14:
+            case 13:
                 icon = <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading color='green' name='circle notch' />} />
                 break;
             case 10:
