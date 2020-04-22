@@ -350,7 +350,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         allowClear={true}
                                         mode="multiple"
                                         style={{width: '100%'}}
-                                        placeholder="Please Select Hardware Type"
+                                        placeholder="Select Hardware Type"
                                         value={this.state.currentHwTypeList}
                                         onChange={(values) => {
                                             this.setState({
