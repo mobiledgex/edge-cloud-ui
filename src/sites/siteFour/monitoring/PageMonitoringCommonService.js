@@ -504,16 +504,29 @@ export const renderGridLoader = () => {
 }
 
 
-export const renderPlaceHolderSkeleton = (type: string = '') => {
-    return (
-        <div style={{marginTop: 35,}}>
-            <SkeletonTheme color="#22252C" highlightColor="#444">
-                <p>
-                    <Skeleton count={13}/>
-                </p>
-            </SkeletonTheme>
-        </div>
-    )
+export const renderPlaceHolderSkeleton = (type = 'sk') => {
+
+    if (type === 'sk') {
+        return (
+            <div style={{marginTop: 35,}}>
+                <SkeletonTheme color="#22252C" highlightColor="#444">
+                    <p>
+                        <Skeleton count={13}/>
+                    </p>
+                </SkeletonTheme>
+            </div>
+        )
+    } else {
+        return (
+            <div className='page_monitoring_blank_box'
+                 style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%', zIndex: 999999999999999999999}}>
+                <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}
+                />
+            </div>
+        )
+    }
+
+
 }
 
 export const renderPlaceHolderCircular = (type: string = '') => {
