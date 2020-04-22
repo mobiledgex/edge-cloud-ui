@@ -1,6 +1,6 @@
 import * as formatter from './format'
 import _ from 'lodash';
-import { TYPE_JSON_NEW_LINE } from '../../constant';
+import { TYPE_YAML } from '../../constant';
 import * as serverData from './serverData'
 import * as constant from '../../constant'
 import { SHOW_APP, CREATE_APP, UPDATE_APP, DELETE_APP } from './endPointTypes'
@@ -14,7 +14,7 @@ export const keys = () => ([
     { field: fields.version, serverField: 'key#OS#version', label: 'Version', visible: true },
     { field: fields.deployment, serverField: 'deployment', label: 'Deployment', sortable: true, visible: true, filter:true },
     { field: fields.command, serverField: 'command', label: 'Command' },
-    { field: fields.deploymentManifest, serverField: 'deployment_manifest', label: 'Deployment Manifest', dataType: TYPE_JSON_NEW_LINE },
+    { field: fields.deploymentManifest, serverField: 'deployment_manifest', label: 'Deployment Manifest', dataType: TYPE_YAML },
     { field: fields.deploymentGenerator, serverField: 'deployment_generator', label: 'Deployment Generator' },
     { field: fields.imageType, serverField: 'image_type', label: 'Image Type' },
     { field: fields.imagePath, serverField: 'image_path', label: 'Image Path' },
