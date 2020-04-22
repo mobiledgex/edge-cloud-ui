@@ -516,7 +516,7 @@ export const renderPlaceHolderSkeleton = (type: string = '') => {
     )
 }
 
-export const renderPlaceHolderCircular007 = (type: string = '') => {
+export const renderPlaceHolderCircular = (type: string = '') => {
     return (
         <div className='page_monitoring_blank_box'
              style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%', zIndex: 999999999999999999999}}>
