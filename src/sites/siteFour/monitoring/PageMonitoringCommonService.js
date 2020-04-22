@@ -504,7 +504,7 @@ export const renderGridLoader = () => {
 }
 
 
-export const renderPlaceHolderSkeleton = (type = 'sk') => {
+export const renderPlaceHolderLoader = (type = 'sk') => {
 
     if (type === 'sk') {
         return (
@@ -525,7 +525,6 @@ export const renderPlaceHolderSkeleton = (type = 'sk') => {
             </div>
         )
     }
-
 
 }
 

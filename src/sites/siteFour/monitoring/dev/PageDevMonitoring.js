@@ -31,7 +31,7 @@ import {ADD_ITEM_LIST, CHART_COLOR_LIST, CLASSIFICATION, GRID_ITEM_TYPE, HARDWAR
 import type {TypeBarChartData, TypeLineChartData} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
-import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, PageMonitoringStyles, renderPlaceHolderSkeleton, renderWifiLoader, showToast} from "../PageMonitoringCommonService";
+import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, PageMonitoringStyles, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../PageMonitoringCommonService";
 import {getAllAppInstEventLogs, getAllClusterEventLogList, getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList, requestShowAppInstClientWS} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
@@ -1007,7 +1007,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     }
 
                     return (
-                        this.state.loading ? renderPlaceHolderSkeleton() :
+                        this.state.loading ? renderPlaceHolderLoader() :
                             <LineChartContainer
                                 isResizeComplete={this.state.isResizeComplete}
                                 loading={this.state.loading}
@@ -1053,7 +1053,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
                     return (
-                        this.state.loading ? renderPlaceHolderSkeleton() :
+                        this.state.loading ? renderPlaceHolderLoader() :
                             this.state.currentClassification === CLASSIFICATION.CLUSTER ?
                                 <PerformanceSummaryForClusterHook
                                     parent={this}
@@ -1076,7 +1076,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <ClusterEventLogListHook eventLogList={this.state.filteredClusterEventLogList} parent={this}/>
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
-                    return this.state.loading ? renderPlaceHolderSkeleton() :
+                    return this.state.loading ? renderPlaceHolderLoader() :
                         <AppInstEventLogListHook_VirtualScroll
                             currentAppInst={this.state.currentAppInst}
                             parent={this}
