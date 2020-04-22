@@ -24,6 +24,11 @@ const DEFAULT_VIEWPORT = {
     zoom: 13,
 }
 
+
+
+
+
+
 let cellphoneIcon2 = L.icon({
     iconUrl: require('../images/cellhone_white003.png'),
     iconSize: [25, 41],
