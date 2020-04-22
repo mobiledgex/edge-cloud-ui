@@ -18,7 +18,6 @@ import {
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
     makeDropdownListWithValuePipeForAppInst,
-    makeGradientColorList2,
     makeid,
     makeLineChartDataForAppInst,
     makeLineChartDataForBigModal,
@@ -406,51 +405,49 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             }
 
-            makeGradientBarCharData(chartData) {
-                let canvasDatas = (canvas) => {
-                    let CHARTCOLORLIST = this.state.chartColorList;
-                    let gradientList = makeGradientColorList2(canvas, 305, CHARTCOLORLIST, true);
-                    let chartDatas = chartData.chartDataList
-                    let labelList = [];
-                    let graphDatasets = [];
-                    chartDatas.map((item, index) => {
-                        if (index > 0) {
-                            labelList.push(item[0]);
-                        }
-                    })
+            /* makeGradientBarCharData(chartData) {
+                 let canvasDatas = (canvas) => {
+                     let CHARTCOLORLIST = this.state.chartColorList;
+                     let gradientList = makeGradientColorList2(canvas, 305, CHARTCOLORLIST, true);
+                     let chartDatas = chartData.chartDataList
+                     let labelList = [];
+                     let graphDatasets = [];
+                     chartDatas.map((item, index) => {
+                         if (index > 0) {
+                             labelList.push(item[0]);
+                         }
+                     })
 
-                    chartDatas.map((item, index) => {
-                        if (index > 0) {
-                            let itemOne = item[3].replace('\"', '')
-                            itemOne = itemOne.replace('%', '')
-                            itemOne = parseFloat(itemOne)
-                            graphDatasets.push(itemOne);
-                        }
-                    })
+                     chartDatas.map((item, index) => {
+                         if (index > 0) {
+                             let itemOne = item[3].replace('\"', '')
+                             itemOne = itemOne.replace('%', '')
+                             itemOne = parseFloat(itemOne)
+                             graphDatasets.push(itemOne);
+                         }
+                     })
 
-                    let dataSets = [
-                        {
-                            backgroundColor: gradientList,
-                            borderColor: gradientList,
-                            borderWidth: 1,
-                            hoverBackgroundColor: gradientList,
-                            hoverBorderColor: 'rgb(0,0,0)',
-                            data: graphDatasets,
-                        }
-                    ]
+                     let dataSets = [
+                         {
+                             backgroundColor: gradientList,
+                             borderColor: gradientList,
+                             borderWidth: 1,
+                             hoverBackgroundColor: gradientList,
+                             hoverBorderColor: 'rgb(0,0,0)',
+                             data: graphDatasets,
+                         }
+                     ]
 
-                    let completeData = {
-                        labels: labelList,
-                        datasets: dataSets
-                    }
+                     let completeData = {
+                         labels: labelList,
+                         datasets: dataSets
+                     }
 
-                    return completeData;
+                     return completeData;
 
-                };
-
-                return canvasDatas;
-
-            }
+                 };
+                 return canvasDatas;
+             }*/
 
             makeBarChartData(hwType, graphType) {
 
@@ -641,7 +638,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            handleAppInstDropdown = async (pCurrentAppInst, isStreamBtnClick = false) => {
+            handleAppInstDropdown = async (pCurrentAppInst) => {
                 clearInterval(this.intervalForAppInst)
                 clearInterval(this.intervalForCluster)
                 //@desc: ################################
@@ -682,7 +679,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
                 let arrDateTime = getOneYearStartEndDatetime();
-
                 let appInstUsageList = [];
                 await this.setState({dropdownRequestLoading: true})
                 try {
@@ -768,7 +764,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         graphType: graphType,
                     }
 
-
                     //##########################
                     // calculate empty space
                     //##########################
@@ -824,8 +819,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     let removedLayout = _.reject(this.state.layoutForCluster, {i: i});
                     reactLocalStorage.setObject(getUserId() + "_layout", removedLayout)
-                    //reactLocalStorage.setObject(getUserId() + "_layout_mapper", removedLayout)
-
                     this.setState({
                         layoutForCluster: removedLayout,
                     });
@@ -836,7 +829,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         layoutForAppInst: removedLayout,
                     });
                 }
-
             }
 
 
