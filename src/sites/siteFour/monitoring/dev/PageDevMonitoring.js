@@ -1595,7 +1595,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            renderLegendClusterName(item) {
+            reduceLegendClusterName(item) {
                 if (this.state.chunkedSize === 12) {
                     return reduceString(item.cluster, 5) + "[" + reduceString(item.cloudlet, 5) + "]"
                 } else {//when legend expanded
@@ -1660,7 +1660,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             //todo: ################################
                                             //todo: oneROW
                                             //todo: ################################
-                                            <div style={{display: 'flex', marginTop: 0, marginLeft: 5, backgroundColor: 'transparent', height: 22}}>
+                                            <div style={{display: 'flex', marginTop: 0, marginLeft: 5, backgroundColor: 'transparent', height: 22,}}>
                                                 {itemList.map((item, index) => {
                                                     return (
 
@@ -1671,13 +1671,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                             {/*desc: ##############*/}
                                                             {/*desc: circle area   */}
                                                             {/*desc: ##############*/}
-                                                            <div style={{
-                                                                backgroundColor: this.state.chartColorList[index + (outerIndex * chunkedSize)],
-                                                                width: 15,
-                                                                height: 15,
-                                                                borderRadius: 50,
-                                                                marginTop: 3,
-                                                            }}>
+                                                            <div
+                                                                style={{
+                                                                    backgroundColor: this.state.chartColorList[index + (outerIndex * chunkedSize)],
+                                                                    width: 15,
+                                                                    height: 15,
+                                                                    borderRadius: 50,
+                                                                    marginTop: 3,
+                                                                }}
+                                                                title={item.cluster + " [" + item.cloudlet + "]"}
+                                                            >
 
                                                             </div>
 
@@ -1692,7 +1695,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                                     }}
                                                                     title={item.cluster + " [" + item.cloudlet + "]"}
                                                                 >
-                                                                    {this.renderLegendClusterName(item)}
+                                                                    {this.reduceLegendClusterName(item)}
                                                                 </ClusterCluoudletLable>
                                                                 :
                                                                 <ClusterCluoudletLable
@@ -1707,7 +1710,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                                     }}
                                                                     title={item.cluster + " [" + item.cloudlet + "]"}
                                                                 >
-                                                                    {this.renderLegendClusterName(item)}
+                                                                    {this.reduceLegendClusterName(item)}
                                                                 </ClusterCluoudletLable>
                                                             }
                                                         </Center2>

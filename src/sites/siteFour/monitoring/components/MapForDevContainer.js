@@ -474,56 +474,47 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {/*@desc:#####################################..*/}
                                 {this.state.clientObjKeys.map((objkeyOne, index) => {
                                     let groupedClientList = this.state.clientList;
-
                                     console.log(`groupedClientList===>`, groupedClientList);
 
                                     return (
                                         <MarkerClusterGroup>
                                             {groupedClientList[objkeyOne].map((item, index) => {
-
-                                                if (item.serverLocInfo !== undefined) {
-                                                    return (
-                                                        <React.Fragment>
-                                                            <Marker
-                                                                icon={cellphoneIcon2}
-                                                                position={
-                                                                    [item.latitude, item.longitude]
-                                                                }
-                                                            >
-                                                                <Popup className='clientPopup'
-                                                                       style={{fontSize: 11}}>
-                                                                    <div style={{display: 'flex'}}>
-                                                                        <div style={{color: 'white', fontFamily: 'ubuntu'}}>
-                                                                            {item.uuid}
-                                                                        </div>
-                                                                        <div style={{width: 10}}/>
-                                                                        <div style={{color: 'orange', fontFamily: 'ubuntu',}}>
-                                                                            {`[${item.unique_id_type}]`}
-                                                                        </div>
+                                                return (
+                                                    <React.Fragment>
+                                                        <Marker
+                                                            icon={cellphoneIcon2}
+                                                            position={
+                                                                [item.latitude, item.longitude]
+                                                            }
+                                                        >
+                                                            <Popup className='clientPopup'
+                                                                   style={{fontSize: 11}}>
+                                                                <div style={{display: 'flex'}}>
+                                                                    <div style={{color: 'white', fontFamily: 'ubuntu'}}>
+                                                                        {item.uuid}
                                                                     </div>
+                                                                    <div style={{width: 10}}/>
+                                                                    <div style={{color: 'orange', fontFamily: 'ubuntu',}}>
+                                                                        {`[${item.unique_id_type}]`}
+                                                                    </div>
+                                                                </div>
 
-                                                                </Popup>
-                                                            </Marker>
-                                                            {/*@desc:#####################################..*/}
-                                                            {/*@desc:Render lines....                       */}
-                                                            {/*@desc:#####################################..*/}
-                                                            <Polyline
-                                                                //dashArray={['30,1,30']}
-                                                                id={index}
-                                                                positions={[
-                                                                    [item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
-                                                                ]}
-                                                                color={this.props.lineColor}
-                                                            />
+                                                            </Popup>
+                                                        </Marker>
+                                                        {/*@desc:#####################################..*/}
+                                                        {/*@desc:Render lines....                       */}
+                                                        {/*@desc:#####################################..*/}
+                                                        <Polyline
+                                                            //dashArray={['30,1,30']}
+                                                            id={index}
+                                                            positions={[
+                                                                [item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
+                                                            ]}
+                                                            color={this.props.lineColor}
+                                                        />
 
-                                                        </React.Fragment>
-                                                    )
-                                                } else {
-                                                    notification.warning({
-                                                        duration: 2.5,
-                                                        message: 'Currently, it is not possible to bring the server location. \nPlease ask the admin about this problem.',
-                                                    });
-                                                }
+                                                    </React.Fragment>
+                                                )
 
 
                                             })
