@@ -1,3 +1,4 @@
+import yaml from 'yaml-js';
 export const toJson = (data) => {
     let toJson = []
     if (data) {
@@ -15,22 +16,11 @@ export const toJson = (data) => {
     return toJson
 }
 
-export const newLineToJsonObject = (data) => {
+export const YAMLtoJSON = (data) => {
     try {
-        let formatedData = {}
-        if (data && data.includes('\n')) {
-            let dataArray = data.split('\n');
-            for (let i = 0; i < dataArray.length; i++) {
-                let dataObject = dataArray[i].split(':')
-                if (dataObject.length == 2) {
-                    formatedData[dataObject[0].trim()] = dataObject[1].trim()
-                }
-            }
-            return formatedData
-        }
-        return data
+        return yaml.load_all(data)
     }
     catch (e) {
-        console.log('MexError', e)
+        return data
     }
 }

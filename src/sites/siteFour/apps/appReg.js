@@ -23,7 +23,7 @@ class ClusterInstReg extends React.Component {
         super(props);
         this.state = {
             forms: [],
-            stepsArray:[]
+            stepsArray: []
         }
         this.isUpdate = this.props.isUpdate
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
@@ -37,14 +37,12 @@ class ClusterInstReg extends React.Component {
         //To avoid refetching data from server
     }
 
-    validatePortRange=(form)=>
-    {
+    validatePortRange = (form) => {
         if (form.value && form.value.length > 0) {
             let value = parseInt(form.value)
-            if(value < 1 || value > 65535)
-            {
-                form.error = 'Invalid Port Range (must be between 1-65535)' 
-                return false; 
+            if (value < 1 || value > 65535) {
+                form.error = 'Invalid Port Range (must be between 1-65535)'
+                return false;
             }
         }
         form.error = undefined;
@@ -90,7 +88,7 @@ class ClusterInstReg extends React.Component {
     /**Deployment manifest block */
 
     portForm = () => ([
-        { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number' }, width: 9, visible: true, update: true, dataValidateFunc: this.validatePortRange},
+        { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number' }, width: 9, visible: true, update: true, dataValidateFunc: this.validatePortRange },
         { field: fields.protocol, label: 'Protocol', formType: SELECT, rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp'], update: true },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm, update: true }
     ])
@@ -359,32 +357,35 @@ class ClusterInstReg extends React.Component {
                     data[uuid] = undefined
                 }
             }
-            if (ports.length > 0) {
-                data[fields.accessPorts] = ports
+            if ((data[fields.imagePath] && data[fields.imagePath].length > 0) || (data[fields.deploymentManifest] && data[fields.deploymentManifest].length > 0)) {
+                if (ports.length > 0) {
+                    data[fields.accessPorts] = ports
 
-                if (annotations.length > 0) {
-                    data[fields.annotations] = annotations
-                }
-                if (configs.length > 0) {
-                    data[fields.configs] = configs
-                }
-    
-                let isUpdate = this.props.isUpdate;
-                let valid = isUpdate ? await updateApp(this, data, this.originalData) : await createApp(this, data)
-                if (valid) {
-                    this.props.handleAlertInfo('success', `App ${data[fields.appName]} ${isUpdate ? 'updated' : 'created'} successfully`)
-                    if(data[fields.refreshAppInst])
-                    {
-                        serverData.sendWSRequest(this, refreshAllAppInst(data), this.onUpgradeResponse, data)
+                    if (annotations.length > 0) {
+                        data[fields.annotations] = annotations
                     }
-                    else
-                    {
-                        this.props.onClose(true)
+                    if (configs.length > 0) {
+                        data[fields.configs] = configs
                     }
+
+                    let isUpdate = this.props.isUpdate;
+                    let valid = isUpdate ? await updateApp(this, data, this.originalData) : await createApp(this, data)
+                    if (valid) {
+                        this.props.handleAlertInfo('success', `App ${data[fields.appName]} ${isUpdate ? 'updated' : 'created'} successfully`)
+                        if (data[fields.refreshAppInst]) {
+                            serverData.sendWSRequest(this, refreshAllAppInst(data), this.onUpgradeResponse, data)
+                        }
+                        else {
+                            this.props.onClose(true)
+                        }
+                    }
+                }
+                else {
+                    this.props.handleAlertInfo('error', 'At least one port is mandatory')
                 }
             }
-            else{
-                this.props.handleAlertInfo('error', 'At least one port is mandatory')
+            else {
+                this.props.handleAlertInfo('error', 'Please input image path or deployment manifest')
             }
         }
     }
@@ -542,7 +543,7 @@ class ClusterInstReg extends React.Component {
             { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
             { field: fields.accessType, label: 'Access Type', formType: SELECT, placeholder: 'Select Access Type', rules: { required: true }, visible: true },
             { field: fields.imageType, label: 'Image Type', formType: INPUT, placeholder: 'Select Deployment Type', rules: { required: true, disabled: true }, visible: true, tip: 'ImageType specifies image type of an App' },
-            { field: fields.imagePath, label: 'Image Path', formType: INPUT, placeholder: 'Enter Image Path', rules: { required: true }, visible: true, update: true, tip: 'URI of where image resides' },
+            { field: fields.imagePath, label: 'Image Path', formType: INPUT, placeholder: 'Enter Image Path', rules: { required: false }, visible: true, update: true, tip: 'URI of where image resides' },
             { field: fields.authPublicKey, label: 'Auth Public Key', formType: TEXT_AREA, placeholder: 'Enter Auth Public Key', rules: { required: false }, visible: true, update: true, tip: 'auth_public_key' },
             { field: fields.flavorName, label: 'Default Flavor', formType: SELECT, placeholder: 'Select Flavor', rules: { required: true }, visible: true, update: true, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: fields.region }] },
             { field: fields.privacyPolicyName, label: 'Default Privacy Policy', formType: SELECT, placeholder: 'Select Privacy Policy', rules: { required: false }, visible: true, update: true, tip: 'Privacy policy when creating auto cluster', dependentData: [{ index: 1, field: fields.region }] },
@@ -552,7 +553,7 @@ class ClusterInstReg extends React.Component {
             { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: CHECKBOX, visible: false, value: false, update: true },
             { field: fields.command, label: 'Command', formType: INPUT, placeholder: 'Enter Command', rules: { required: false }, visible: true, update: true, tip: 'Command that the container runs to start service' },
             { uuid: uuid(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, update: true, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
-            { field: fields.refreshAppInst, label: 'Upgrade All App Instances', formType: CHECKBOX, visible: this.isUpdate, value: false , tip: 'Upgrade App Instances running in the cloudlets'},
+            { field: fields.refreshAppInst, label: 'Upgrade All App Instances', formType: CHECKBOX, visible: this.isUpdate, value: false, tip: 'Upgrade App Instances running in the cloudlets' },
             { label: 'Ports', formType: 'Header', forms: [{ formType: BUTTON, label: 'Add Port Mapping', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getPortForm }, { formType: BUTTON, label: 'Add Multiport Mapping', visible: true, onClick: this.addMultiForm, multiForm: this.getMultiPortForm }], visible: true, tip: 'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443' },
             { label: 'Annotations', formType: 'Header', forms: [{ formType: BUTTON, label: 'Add Annotation', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getAnnotationForm }], visible: false },
             { label: 'Configs', formType: 'Header', forms: [{ formType: BUTTON, label: 'Add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getConfigForm }], visible: false }
