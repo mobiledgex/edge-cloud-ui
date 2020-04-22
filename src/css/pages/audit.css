@@ -519,3 +519,8 @@
     font-size: 12px;
     /*color: #202329;*/
 }
+
+.timeline_header_current {
+    margin-left: 10px;
+    color: rgb(118, 255, 3);
+}

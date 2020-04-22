@@ -531,6 +531,9 @@ export default class CalendarTimeline extends React.PureComponent {
                                                 >
                                                     <div className="sticky">
                                                         {interval.startTime.format('YYYY-MM-DD HH:mm:SS')}
+                                                        <span className='timeline_header_current'>
+                                                            {(interval.startTime.format('YYYY-MM-DD HH:mm:SS') === this.makeUTCDateTime(moment(), "YYYY-MM-DD HH").format('YYYY-MM-DD HH:00:00'))?"Current":null}
+                                                        </span>
                                                     </div>
                                                 </div>
                                             )
