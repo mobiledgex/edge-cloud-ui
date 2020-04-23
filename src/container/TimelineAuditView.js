@@ -713,39 +713,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                         <label className='content_title_label'>Audit Logs</label>
                         <div className="page_audit_history">
                             <div className="page_audit_history_option">
-                                <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
-                                <div className="page_audit_history_option_period">
-                                    <div>Current Coordinated Universal Time (UTC)</div>
-                                    <div>{moment(this.state.realtime).utc().format("YYYY-MM-DDTHH:mm")}</div>
-                                </div>
-                                <div className="page_audit_history_option_period">
-                                    <button className="page_audit_error_box" onClick={this.onCurrentClick}>
-                                        <div className="page_audit_error_label">Current Time</div>
-                                    </button>
-                                </div>
-                                <div className="page_audit_history_option_period">
-                                    <ButtonGroup>
-                                        <Button onClick={() => this.onClickStatus("all")}>All</Button>
-                                        <Button onClick={() => this.onClickStatus("normal")}>Normal</Button>
-                                        <Button onClick={() => this.onClickStatus("error")}>error</Button>
-                                    </ButtonGroup>
-                                    <button className="page_audit_error_box" onClick={() => this.onClickStatus("normal")}>
-                                        <div className="page_audit_error_label">Normal</div>
-                                        <div className="page_audit_error_number">{(this.state.statusCount.length)?this.state.statusCount[0].normalCount:0}</div>
-                                    </button>
-                                </div>
-                                <div className="page_audit_history_option_period">
-                                    <button className="page_audit_error_box" onClick={() => this.onClickStatus("error")}>
-                                        <div className="page_audit_error_label">Error</div>
-                                        <div className="page_audit_error_number">{(this.state.statusCount.length)?this.state.statusCount[0].errorCount:0}</div>
-                                    </button>
-                                </div>
-                                <div className="page_audit_history_option_period">
-                                    <button className="page_audit_error_box" onClick={this.onClickUnCheckedError}>
-                                        <div className="page_audit_error_label">Unchecked Error</div>
-                                        <div className="page_audit_error_number">{this.state.unCheckedErrorCount}</div>
-                                    </button>
-                                </div>
                                 <div className="page_audit_history_option_period">
                                     <div className="page_audit_history_label">
                                         Name
@@ -760,6 +727,44 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                         onChange={this.dropDownOnNameChange}
                                         style={{ width: 200 }}
                                     />
+                                </div>
+                                <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
+                                <div className="page_audit_history_option_period">
+                                    <button className="page_audit_error_box" onClick={this.onCurrentClick}>
+                                        <div className="page_audit_error_label">Current Time (UTC)</div>
+                                        <div style={{marginLeft:10}}>{moment(this.state.realtime).utc().format("YYYY-MM-DDTHH:mm")}</div>
+                                    </button>
+                                </div>
+                                <div className="page_audit_history_option_period">
+                                    <ButtonGroup>
+                                        <Button onClick={() => this.onClickStatus("all")}>
+                                            <div className="page_audit_error_label">
+                                                {'All'}
+                                                <span style={{marginLeft:10, color:'skyblue'}}>
+                                                    {(this.state.statusCount.length)?this.state.statusCount[0].normalCount + this.state.statusCount[0].errorCount:0}
+                                                </span>
+                                            </div>
+                                        </Button>
+                                        <Button onClick={() => this.onClickStatus("normal")}>
+                                            <div className="page_audit_error_label">
+                                                {'Normal'}
+                                                <span style={{marginLeft:10, color:'green'}}>{(this.state.statusCount.length)?this.state.statusCount[0].normalCount:0}</span>
+                                            </div>
+                                        </Button>
+                                        <Button onClick={() => this.onClickStatus("error")}>
+
+                                            <div className="page_audit_error_label">
+                                                {'Error'}
+                                                <span style={{marginLeft:10, color:'red'}}>{(this.state.statusCount.length)?this.state.statusCount[0].errorCount:0}</span>
+                                            </div>
+                                        </Button>
+                                    </ButtonGroup>
+                                </div>
+                                <div className="page_audit_history_option_period">
+                                    <button className="page_audit_error_box" onClick={this.onClickUnCheckedError}>
+                                        <div className="page_audit_error_label">Unchecked Error</div>
+                                        <div className="page_audit_error_number">{this.state.unCheckedErrorCount}</div>
+                                    </button>
                                 </div>
                             </div>
                         </div>

@@ -204,9 +204,10 @@ export default class CalendarTimeline extends React.PureComponent {
         newHeight = 48; //height of item
         customStyles.overflow = "hidden";
         customStyles.height = newHeight + "px";
-        customStyles.minWidth = "20%";
-        customStyles.maxWidth = "20%";
-        customStyles.marginTop = "-10px";
+        customStyles.minWidth = "calc(20% - 10px)";
+        customStyles.maxWidth = "calc(20% - 10px)";
+        customStyles.marginLeft = "3px";
+        customStyles.marginTop = "-5px";
         properties.style = customStyles;
 
         return (
@@ -342,8 +343,8 @@ export default class CalendarTimeline extends React.PureComponent {
             visibleTimeEnd
         } = this.state;
         return (
-            <div style={{ height: "100%" }}>
-                <div>
+            <div style={{ height: "100%", position:'relative' }}>
+                <div style={{position:'absolute', top:3, left:0, zIndex:1000, width:'100%'}}>
                     <div className="timeline_button_layout">
                         {/*<button*/}
                         {/*    className="timeline_button_current"*/}

@@ -457,7 +457,7 @@
     flex:1;
     flex-direction: row;
     justify-content: space-between;
-    padding: 2px;
+    padding: 2px 0;
 }
 
 .timeline_button_arrow {
@@ -469,6 +469,7 @@
     padding:0;
     border: none;
     cursor: pointer;
+    background-color: #202329;
 }
 
 .timeline_button_arrow .material-icons {
