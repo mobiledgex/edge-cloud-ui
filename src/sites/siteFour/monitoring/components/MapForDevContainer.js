@@ -416,7 +416,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                     });
                                                 })
 
-                                                await this.props.parent.handleClusterDropdown_Reset('');
+                                                await this.props.parent.handleClusterDropdownAndReset('');
                                             } catch (e) {
 
                                             }
