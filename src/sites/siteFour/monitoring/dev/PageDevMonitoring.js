@@ -477,40 +477,26 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                  return canvasDatas;
              }*/
 
-            makeBarChartData(hwType, graphType) {
+            /*  makeBarChartData(hwType, graphType) {
 
-                let barChartDataSet: TypeBarChartData = [];
-                if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                    barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
-                } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
-                    barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
-                }
-                if (barChartDataSet === undefined) {
-                    barChartDataSet = []
-                }
 
-                console.log(`barChartDataSet___${graphType}===>`, barChartDataSet);
 
-                return (<BarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this}
-                                           loading={this.state.loading} chartDataSet={barChartDataSet}
-                                           pHardwareType={hwType} graphType={graphType}/>)
-
-                /* if (!isEmpty(barChartDataSet)) {
-                     let chartDatas = this.makeGradientBarCharData(barChartDataSet)
-                     console.log("makeGradientBarCharData===>", barChartDataSet.chartDataList.length);
-                     return (
-                         <GradientBarChartContainer
-                             isResizeComplete={this.state.isResizeComplete}
-                             parent={this}
-                             loading={this.state.loading}
-                             chartDataSet={chartDatas}
-                             pHardwareType={hwType}
-                             graphType={graphType}
-                             dataLength={barChartDataSet.chartDataList.length}
-                         />
-                     )
-                 }*/
-            }
+                  /!* if (!isEmpty(barChartDataSet)) {
+                       let chartDatas = this.makeGradientBarCharData(barChartDataSet)
+                       console.log("makeGradientBarCharData===>", barChartDataSet.chartDataList.length);
+                       return (
+                           <GradientBarChartContainer
+                               isResizeComplete={this.state.isResizeComplete}
+                               parent={this}
+                               loading={this.state.loading}
+                               chartDataSet={chartDatas}
+                               pHardwareType={hwType}
+                               graphType={graphType}
+                               dataLength={barChartDataSet.chartDataList.length}
+                           />
+                       )
+                   }*!/
+              }*/
 
 
             convertToClassification(pClassification) {
@@ -1002,14 +988,22 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             />
                     )
 
-                } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BAR) {
-                    return (
-                        this.makeBarChartData(hwType, graphType)
-                    )
-                } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.COLUMN) {
-                    return (
-                        this.makeBarChartData(hwType, graphType)
-                    )
+                } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BAR || graphType.toUpperCase() === GRID_ITEM_TYPE.COLUMN) {
+
+                    let barChartDataSet: TypeBarChartData = [];
+                    if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                        barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
+                    } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
+                        barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
+                    }
+                    if (barChartDataSet === undefined) {
+                        barChartDataSet = []
+                    }
+                    console.log(`barChartDataSet___${graphType}===>`, barChartDataSet);
+                    return (<BarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this}
+                                               loading={this.state.loading} chartDataSet={barChartDataSet}
+                                               pHardwareType={hwType} graphType={graphType}/>)
+
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BUBBLE) {
                     return (
                         <BubbleChartContainer
