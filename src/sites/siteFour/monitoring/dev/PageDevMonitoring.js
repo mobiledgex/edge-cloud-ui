@@ -107,7 +107,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let layoutMapperAppInstKey = getUserId() + "_layout2_mapper"
                 let themeKey = getUserId() + "_mon_theme";
                 let themeTitle = getUserId() + "_mon_theme_title";
-                //@TODO: DELETE THEME COLOR
+                //@fixme: DELETE THEME COLOR
                 /*reactLocalStorage.remove(themeTitle)
                 reactLocalStorage.remove(themeKey)*/
                 this.state = {
@@ -223,7 +223,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     chartDataForBigModal: [],
                     popupGraphType: '',
                     isPopupMap: false,
-                    //reactLocalStorage.setObject(getUserId() + "_mon_theme")
                     chartColorList: isEmpty(reactLocalStorage.get(themeKey)) ? CHART_COLOR_LIST : reactLocalStorage.getObject(themeKey),
                     themeTitle: isEmpty(reactLocalStorage.get(themeTitle)) ? 'DEFAULT' : reactLocalStorage.get(themeTitle),
                     addItemList: ADD_ITEM_LIST,
@@ -248,7 +247,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     isShowAppInstPopup: false,
                     isShowPopOverMenu: false,
                     isOpenEditView2: false,
-                    showAppInstClient: true,//@desc: isShowAppInstClient
+                    showAppInstClient: true,
                     filteredClusterList: [],
                     currentWidth: '100%',
                     emptyPosXYInGrid: {},
@@ -281,8 +280,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     loading: false,
                     bubbleChartLoader: false,
                 })
-
-            }
+            };
 
 
             async loadInitDataForDevMon(isInterval: boolean = false) {
@@ -291,9 +289,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 try {
                     clearInterval(this.intervalForAppInst)
                     await this.setState({dropdownRequestLoading: true})
-                    //@todo:#############################################
-                    //@todo: (cloudletList ,clusterList, appnInstList)
-                    //@todo:#############################################
+                    //@desc:#############################################
+                    //@desc: (cloudletList ,clusterList, appnInstList)
+                    //@desc:#############################################
                     promiseList.push(getCloudletList())
                     promiseList.push(getClusterList())
                     promiseList.push(getAppInstList())
@@ -303,18 +301,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let appInstList = newPromiseList[2];
                     let clusterDropdownList = makeSelectBoxListWithKeyValuePipeForCluster(clusterList, 'ClusterName', 'Cloudlet')
 
-                    //@todo:#########################################################################
-                    //@todo: map Marker
-                    //@todo:#########################################################################
+                    //@desc:#########################################################################
+                    //@desc: map Marker
+                    //@desc:#########################################################################
                     let appInstanceListGroupByCloudlet = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
                     await this.setState({
                         appInstanceListGroupByCloudlet: !isInterval && appInstanceListGroupByCloudlet,
                         mapLoading: false,
                     })
 
-                    //@todo:#########################################################################
-                    //@todo: getAllClusterEventLogList, getAllAppInstEventLogs ,allClusterUsageList
-                    //@todo:#########################################################################
+                    //@desc:#########################################################################
+                    //@desc: getAllClusterEventLogList, getAllAppInstEventLogs ,allClusterUsageList
+                    //@desc:#########################################################################
                     promiseList2.push(getAllClusterEventLogList(clusterList))
                     promiseList2.push(getAllAppInstEventLogs());
                     promiseList2.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
@@ -396,7 +394,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     filteredAppInstEventLogs: this.state.allAppInstEventLogs,
                     appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
                 })
-                //todo: reset bubble chart data
+                //desc: reset bubble chart data
                 let bubbleChartData = await makeBubbleChartDataForCluster(this.state.allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
                 await this.setState({
                     bubbleChartData: bubbleChartData,
@@ -512,8 +510,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                          />
                      )
                  }*/
-
-
             }
 
 
@@ -582,20 +578,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            async handleClusterDropdown_Reset(selectedClusterOne) {
+            async handleClusterDropdownAndReset(selectedClusterOne) {
                 try {
                     let filteredClusterUsageList = []
-                    //todo: When selected all Cluster options
+                    //desc: When selected all Cluster options
                     if (selectedClusterOne === '') {
                         await this.setState({
                             filteredClusterList: this.state.clusterList,
                         })
                         await this.resetLocalData();
-                        /*  notification.success({
-                              placement: 'bottomLeft',
-                              duration: 1,
-                              message: 'Fetch locally stored data.',
-                          });*/
                     } else {
                         await this.setState({
                             selectedClientLocationListOnAppInst: [],
@@ -614,7 +605,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 filteredClusterUsageList.push(item)
                             }
                         })
-
 
                         //desc: filter clusterEventlog
                         let allClusterEventLogList = this.state.allClusterEventLogList
@@ -652,9 +642,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     }
 
-                    //todo: ############################
-                    //todo: setStream
-                    //todo: ############################
+                    //desc: ############################
+                    //desc: setStream
+                    //desc: ############################
                     if (this.state.isStream) {
                         this.setClusterInterval()
                     } else {
@@ -1188,7 +1178,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             style={{display: 'flex'}}
                             key="1"
                             onClick={async () => {
-                                await this.handleClusterDropdown_Reset('')
+                                await this.handleClusterDropdownAndReset('')
                             }}
                         >
                             <MaterialIcon icon={'history'} color={'white'}/>
@@ -1442,7 +1432,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                     clearInterval(this.intervalForAppInst)
                                                     clearInterval(this.intervalForCluster)
                                                 } else {
-                                                    await this.handleClusterDropdown_Reset(this.state.currentCluster)
+                                                    await this.handleClusterDropdownAndReset(this.state.currentCluster)
                                                 }
                                             }}
 
@@ -1591,7 +1581,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 } else {
                                     await this.filterClusterList(value)
                                 }
-                                await this.handleClusterDropdown_Reset(value.trim())
+                                await this.handleClusterDropdownAndReset(value.trim())
                             }}
                         />
                     </div>
@@ -1636,7 +1626,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 const chunkedSize = this.state.chunkedSize;
 
                 //@desc: ##############################
-                //@desc: chunked array,
+                //@desc: chunked array
                 //@desc: ##############################
                 let chunkArrayClusterUsageList = _.chunk(this.state.filteredClusterUsageList, chunkedSize);
 
