@@ -4,7 +4,7 @@ pipeline {
     }
     agent any
     environment {
-        DOCKER_BUILD_TAG = sh(returnStdout: true, script: "git describe --tags")
+        DOCKER_BUILD_TAG = sh(returnStdout: true, script: "git -C edge-cloud-ui describe --tags")
     }
     stages {
         stage('Set build tag') {
