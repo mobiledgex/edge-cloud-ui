@@ -129,7 +129,7 @@ class SiteFour extends React.Component {
             token: token,
             method: serviceMC.getEP().SHOW_CONTROLLER
         }, _self.receiveControllerResult);
-        _self.setState({currentVersion: process.env.REACT_APP_BUILD_VERSION ? "v"+ process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'})
+        _self.setState({currentVersion: process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'})
     }
 
 
