@@ -693,9 +693,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let filteredAppList = filterByClassification(this.state.appInstanceList, Cloudlet, 'Cloudlet');
                 filteredAppList = filterByClassification(filteredAppList, ClusterInst, 'ClusterInst');
                 filteredAppList = filterByClassification(filteredAppList, AppName, 'AppName');
-                //todo:########################################
-                //todo:Terminal
-                //todo:########################################
+                //desc:########################################
+                //desc:Terminal
+                //desc:########################################
                 this.setState({
                     terminalData: null
                 })
@@ -722,9 +722,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 pCurrentAppInst = pCurrentAppInst.trim();
                 pCurrentAppInst = pCurrentAppInst.split("|")[0].trim() + " | " + pCurrentAppInst.split('|')[1].trim() + " | " + pCurrentAppInst.split('|')[2].trim()
 
-                //todo: ############################
-                //todo: filtered AppInstEventLogList
-                //todo: ############################
+                //desc: ############################
+                //desc: filtered AppInstEventLogList
+                //desc: ############################
                 let _allAppInstEventLog = this.state.allAppInstEventLogs;
                 let filteredAppInstEventLogList = _allAppInstEventLog.filter(item => {
                     if (item[1].trim() === AppName && item[4].trim() === ClusterInst) {
@@ -744,9 +744,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     clusterSelectBoxPlaceholder: 'Select Cluster',
                 });
 
-                //todo: ############################
-                //todo: setStream
-                //todo: ############################
+                //desc: ############################
+                //desc: setStream
+                //desc: ############################
                 if (this.state.isStream) {
                     this.setAppInstInterval(filteredAppList)
                 } else {
@@ -775,9 +775,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             async addGridItem(hwType, graphType = 'line') {
-                //@TODO: ##########################
-                //@TODO: CLUSTER
-                //@TODO: ##########################
+                //@desc: ##########################
+                //@desc: CLUSTER
+                //@desc: ##########################
                 if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
 
                     let currentItems = this.state.layoutForCluster;
@@ -813,9 +813,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
                 } else {
-                    //@TODO: ##########################
-                    //@TODO: APPINST
-                    //@TODO: ##########################
+                    //@desc: ##########################
+                    //@desc: APPINST
+                    //@desc: ##########################
                     let currentItems = this.state.layoutForAppInst;
                     let maxY = -1;
                     if (!isEmpty(currentItems)) {
@@ -852,7 +852,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     this.setState({
                         layoutForCluster: removedLayout,
                     });
-                } else {//@todo: AppInst Level
+                } else {//@desc: AppInst Level
                     let removedLayout = _.reject(this.state.layoutForAppInst, {i: i});
                     reactLocalStorage.setObject(getUserId() + "_layout2", removedLayout)
                     this.setState({
@@ -863,7 +863,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             showBigModal = (hwType, graphType) => {
-
                 let chartDataSets = []
                 if (graphType.toUpperCase() == GRID_ITEM_TYPE.LINE) {
 
@@ -1636,9 +1635,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             makeLegend() {
                 const chunkedSize = this.state.chunkedSize;
 
-                //@todo: ##############################
-                //@todo: chunked array,
-                //@todo: ##############################
+                //@desc: ##############################
+                //@desc: chunked array,
+                //@desc: ##############################
                 let chunkArrayClusterUsageList = _.chunk(this.state.filteredClusterUsageList, chunkedSize);
 
                 let fullClusterList = '';
@@ -1687,16 +1686,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 <div style={{flex: .97, marginTop: -3,}}>
                                     {chunkArrayClusterUsageList.map((itemList, outerIndex) => {
                                         return (
-                                            //todo: ################################
-                                            //todo: oneROW
-                                            //todo: ################################
+                                            //desc: ################################
+                                            //desc: oneROW
+                                            //desc: ################################
                                             <div style={{display: 'flex', marginTop: 0, marginLeft: 5, backgroundColor: 'transparent', height: 22,}}>
                                                 {itemList.map((item, index) => {
                                                     return (
 
-                                                        //todo: ################################
-                                                        //todo: cluster cell one
-                                                        //todo: ################################
+                                                        //desc: ################################
+                                                        //desc: cluster cell one
+                                                        //desc: ################################
                                                         <Center2 style={{width: chunkedSize === 12 ? 135 : 390, backgroundColor: 'transparent'}}>
                                                             {/*desc: ##############*/}
                                                             {/*desc: circle area   */}
@@ -1779,9 +1778,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                             }
 
-                            {/*todo: ################################*/}
-                            {/*todo:unfold_more_less_icon            */}
-                            {/*todo: ################################*/}
+                            {/*desc: ################################*/}
+                            {/*desc:unfold_more_less_icon            */}
+                            {/*desc: ################################*/}
                             {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER &&
                             <div
                                 style={{
@@ -1896,9 +1895,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }
                                 </div>
                             </div>
-                            {/*todo:---------------------------------*/}
-                            {/*todo:terminal button                   */}
-                            {/*todo:---------------------------------*/}
+                            {/*desc:---------------------------------*/}
+                            {/*desc:terminal button                   */}
+                            {/*desc:---------------------------------*/}
                             {this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?
                                 <div className='page_monitoring_terminal_button' style={{marginBottom: 10}}
                                      onClick={() => this.setState({openTerminal: true})}
@@ -1913,7 +1912,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             }}/>
                         </Modal>
                     </div>
-
                 )//return End
             }
         }
