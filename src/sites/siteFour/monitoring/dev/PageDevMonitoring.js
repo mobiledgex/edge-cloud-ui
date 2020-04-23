@@ -852,6 +852,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
+            removeGridAllItem() {
+                if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                    reactLocalStorage.setObject(getUserId() + "_layout", [])
+                    this.setState({
+                        layoutForCluster: [],
+                    });
+                } else {//@desc: AppInst Level
+                    reactLocalStorage.setObject(getUserId() + "_layout2", [])
+                    this.setState({
+                        layoutForAppInst: [],
+                    });
+                }
+            }
+
+
             showBigModal = (hwType, graphType) => {
                 let chartDataSets = []
                 if (graphType.toUpperCase() == GRID_ITEM_TYPE.LINE) {
@@ -917,7 +932,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 cursor: 'pointer',
                                 textAlign: 'right',
                                 marginRight: '-15px',
-                                //backgroundColor: 'red',
                             }}>
 
                             {/*desc:############################*/}
@@ -952,6 +966,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             >
                                 <MaterialIcon size={'tiny'} icon='delete' color={'white'}/>
                             </div>
+
+
                         </div>
 
 
@@ -1245,6 +1261,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Revert To The Default Layout
                             </div>
                         </AMenu.Item>
+
                         {/*desc: ######################*/}
                         {/*desc:Stacked Line Chart     */}
                         {/*desc: ######################*/}
@@ -1322,6 +1339,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     checked={this.state.showAppInstClient}
                                     color="primary"
                                 />
+                            </div>
+                        </AMenu.Item>
+                        {/*desc: ######################*/}
+                        {/*desc:  Delete All Grid Item*/}
+                        {/*desc: ######################*/}
+                        <AMenu.Item style={{display: 'flex'}}
+                                    key="1"
+                                    onClick={async () => {
+                                        await this.removeGridAllItem();
+                                        showToast('All items deleted.')
+                                    }}
+                        >
+                            <MaterialIcon icon={'delete'} color={'white'}/>
+                            <div style={PageMonitoringStyles.listItemTitle}>
+                                Delete All Grid Items
                             </div>
                         </AMenu.Item>
                     </AMenu>
@@ -1879,6 +1911,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                          marginRight: 50,
                                          backgroundColor: this.props.themeType === 'light' ? 'white' : null
                                      }}>
+                                    {!this.state.loading && this.state.layoutForCluster.length === 0 &&
+                                    <div style={{marginLeft: 15, marginTop: 10, fontSize: 25, fontFamily: 'ubuntu', color: 'orange'}}>No Item</div>
+                                    }
                                     {this.state.currentClassification === CLASSIFICATION.CLUSTER
                                         ? this.renderGridLayoutForCluster()
                                         : this.renderGridLayoutForAppInst()
