@@ -7,15 +7,10 @@ pipeline {
         DOCKER_BUILD_TAG = sh(returnStdout: true, script: "git describe --tags")
     }
     stages {
-        stage('Checkout') {
+        stage('Set build tag') {
             steps {
-                dir(path: 'edge-cloud-ui') {
-                    git url: 'git@github.com:mobiledgex/edge-cloud-ui.git'
-                }
                 script {
-                    dir(path: 'edge-cloud-ui') {
-                        currentBuild.displayName = "${DOCKER_BUILD_TAG}"
-                    }
+                    currentBuild.displayName = "${DOCKER_BUILD_TAG}"
                 }
             }
         }
@@ -24,15 +19,6 @@ pipeline {
                 dir(path: 'edge-cloud-ui') {
                     sh "make build && make publish"
                 }
-            }
-        }
-        stage('Deploy') {
-            when {
-                 tag comparator: 'REGEXP', pattern: '^v[0-9\\.]$'
-            }
-            steps {
-                build job: 'console-deploy',
-                      parameters: [string(name: 'TAG', value: "${DOCKER_BUILD_TAG}"), string(name: 'DEPLOY_ENVIRONMENT', value: 'staging')]
             }
         }
     }
