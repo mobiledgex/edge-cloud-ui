@@ -27,7 +27,7 @@ export default function PageMonitoringMain() {
             notification.success({
                 placement: 'bottomLeft',
                 duration: 3,
-                message: e.toString(),
+                message: 'There are some errors, please contact the administrator.',
             });
         }
     }
