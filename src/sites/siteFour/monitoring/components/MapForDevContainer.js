@@ -474,7 +474,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {/*@desc:#####################################..*/}
                                 {this.state.clientObjKeys.map((objkeyOne, index) => {
                                     let groupedClientList = this.state.clientList;
-                                    console.log(`groupedClientList===>`, groupedClientList);
                                     return (
                                         <MarkerClusterGroup>
                                             {groupedClientList[objkeyOne].map((item, index) => {
