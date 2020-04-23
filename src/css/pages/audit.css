@@ -229,6 +229,9 @@
     background: #1e2124 !important;
     overflow: auto;
 }
+.page_audit_code .react-json-view .pretty-json-container {
+    word-break: break-word;
+}
 .page_audit_timeline .events {
     margin-top:0 !important;
 }

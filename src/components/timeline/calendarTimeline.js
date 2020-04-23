@@ -69,6 +69,7 @@ export default class CalendarTimeline extends React.PureComponent {
     handleClickCloseMap = (itemId, _, time) => {
         this.props.onItemClickCloseMap();
     };
+
     handleCanvasCloseMap = (itemId, _, time) => {
         this.props.onCanvasClickCloseMap();
     };
@@ -79,129 +80,69 @@ export default class CalendarTimeline extends React.PureComponent {
         let groups = [];
 
         tasksList.map((tValue, tIndex) => {
-            let renderValue = this.groupTitleRender(tValue);
-            let groupsIndex = groups.findIndex(g => g.title === renderValue);
-            if (groupsIndex === -1) {
-                groups.push({
-                    id: tIndex + 1,
-                    title: renderValue,
-                    border: "1px solid #db2828"
-                });
-            }
-        });
-
-        groups.map((gValue, gIndex) => {
-            let status = false;
-            tasksList.map((tValue, tIndex) => {
-                let renderValue = this.groupTitleRender(tValue);
-                if (gValue.title === renderValue) {
-                    if (statusList[tIndex].status !== 200) {
-                        status = true;
-                    }
-                }
+            groups.push({
+                id: tIndex + 1,
+                title: tValue,
+                border: "1px solid #db2828",
+                status: (statusList[tIndex].status !== 200)? true:false
             });
-            groups[gIndex].status = status;
         });
 
         return groups;
     };
 
-    groupTitleRender(value) {
-        let renderValue = null;
-        value = value.toLowerCase();
-
-        if (value.indexOf("cloudletpool") > -1) {
-            renderValue = "CloudletPool";
-        } else if (value.indexOf("cloudlet") > -1) {
-            renderValue = "Cloudlet";
-        } else if (value.indexOf("cluster") > -1) {
-            renderValue = "Cluster";
-        } else if (value.indexOf("appinst") > -1) {
-            renderValue = "AppInst";
-        } else if (value.indexOf("flavor") > -1) {
-            renderValue = "Flavor";
-        } else if (value.indexOf("app") > -1) {
-            renderValue = "App";
-        } else if (value.indexOf("audit") > -1) {
-            renderValue = "Audit";
-        } else if (value.indexOf("login") > -1) {
-            renderValue = "Login";
-        } else if (value.indexOf("user") > -1) {
-            renderValue = "User";
-        } else {
-            renderValue = "Other";
-        }
-        return renderValue;
-    }
-
     getParseDate = item => {
         let parseDate = item;
         parseDate = moment(item, "YYYY-MM-DD HH:mm:ss");
         return parseDate;
-    };
+    }
+
     generateItemsData = groups => {
-        let status = this.props.timelineList.statusList;
+        let statusList = this.props.timelineList.statusList;
+        let tasksList = this.props.timelineList.tasksList;
+        let timesList = this.props.timelineList.timesList;
         let items = [];
-        this.props.timelineList.tasksList.map((tValue, tIndex) => {
-            let renderValue = this.groupTitleRender(tValue);
-            for (let i = 0; i < this.props.timelineList.tasksList.length; i++) {
-                if (groups[i] !== undefined) {
-                    if (groups[i].title === renderValue) {
-                        this.props.timelineList.timesList.map((item, index) => {
-                            const startDate = Date.parse(
-                                this.getParseDate(item)
-                            );
-                            const startHour = Date.parse(
-                                moment(item,"YYYY-MM-DD HH")
-                            );
-                            const startValue =
-                                Math.floor(
-                                    moment(startDate).valueOf() / 10000000
-                                ) * 10000000;
-                            const endValue = moment(
-                                startDate + 250 * 60 * 1000
-                            ).valueOf();
-                            if (tIndex === index) {
-                                items.push({
-                                    id: index + "",
-                                    group: groups[i].id + "",
-                                    title: status[index].traceid,
-                                    start: startHour,
-                                    end: endValue,
-                                    startDate: startDate,
-                                    canMove: startValue > new Date().getTime(),
-                                    canResize:
-                                        startValue > new Date().getTime()
-                                            ? endValue > new Date().getTime()
-                                                ? "both"
-                                                : "left"
-                                            : endValue > new Date().getTime()
-                                            ? "right"
-                                            : false,
-                                    className:
-                                        status[index].status === 200
-                                            ? "normal"
-                                            : "error",
-                                    bgColor: "#202329",
-                                    selectedBgColor: "#202329",
-                                    // itemTime: moment(item, "DD/MM/YY HH:mm:ss").format("DD/MM/YY HH:mm:ss"),
-                                    itemTime: this.getParseDate(item).format("DD-MM-YY HH:mm:ss"),
-                                    taskItem: tValue,
-                                    borderColor:
-                                        status[index].status === 200
-                                        ? "#21ba45"
-                                        : "#db2828",
-                                    selectedBorderColor:
-                                        status[index].status === 200
-                                            ? "#21ba45"
-                                            : "#db2828"
-                                });
-                            }
-                        });
-                    }
-                }
-            }
+        tasksList.map((tValue, tIndex) => {
+            const startDate = Date.parse(this.getParseDate(timesList[tIndex]));
+            const startHour = Date.parse(moment(timesList[tIndex],"YYYY-MM-DD HH"));
+            const startValue =Math.floor(moment(startDate).valueOf() / 10000000) * 10000000;
+            const endValue = moment(startDate + 250 * 60 * 1000).valueOf();
+            items.push({
+                id: tIndex + "",
+                group: groups[tIndex].id + "",
+                title: statusList[tIndex].traceid,
+                start: startHour,
+                end: endValue,
+                startDate: startDate,
+                canMove: startValue > new Date().getTime(),
+                canResize:
+                    startValue > new Date().getTime()
+                        ? endValue > new Date().getTime()
+                            ? "both"
+                            : "left"
+                        : endValue > new Date().getTime()
+                        ? "right"
+                        : false,
+                className:
+                    statusList[tIndex].status === 200
+                        ? "normal"
+                        : "error",
+                bgColor: "#202329",
+                selectedBgColor: "#202329",
+                // itemTime: moment(item, "DD/MM/YY HH:mm:ss").format("DD/MM/YY HH:mm:ss"),
+                itemTime: this.getParseDate(timesList[tIndex]).format("YYYY-MM-DDTHH:mm:ss"),
+                taskItem: tValue,
+                borderColor:
+                    statusList[tIndex].status === 200
+                    ? "#21ba45"
+                    : "#db2828",
+                selectedBorderColor:
+                    statusList[tIndex].status === 200
+                        ? "#21ba45"
+                        : "#db2828"
+            });
         });
+
         items = items.sort((a, b) => b - a);
         this.setState({ items: items });
 
@@ -228,23 +169,19 @@ export default class CalendarTimeline extends React.PureComponent {
                 ? "#db2828"
                 : item.borderColor
             : item.borderColor;
-        const storageTimeList = JSON.parse(
-            localStorage.getItem("selectedTime")
-        );
-        let storageTimeIndex = -1;
-        if (storageTimeList) {
-            storageTimeIndex = storageTimeList.findIndex(
-                s => Date.parse(s) === moment(item.itemTime,'DD-MM-YY HH:mm:ss').valueOf()
+        const storageSelectedTraceidList = JSON.parse(localStorage.getItem("selectedTraceid"));
+        let storageSelectedTraceidIndex = -1;
+        if (storageSelectedTraceidList) {
+            storageSelectedTraceidIndex = storageSelectedTraceidList.findIndex(
+                s => s === itemContext.title
             );
         }
 
 
-        const storageTraceList = JSON.parse(
-            localStorage.getItem("sendedTraceid")
-        );
-        let storageTraceIndex = (-1);
-        if (storageTraceList) {
-            storageTraceIndex = storageTraceList.findIndex(
+        const storageSendedTraceidList = JSON.parse(localStorage.getItem("sendedTraceid"));
+        let storageSendedTraceidIndex = (-1);
+        if (storageSendedTraceidList) {
+            storageSendedTraceidIndex = storageSendedTraceidList.findIndex(
                 s => s === itemContext.title
             );
         }
@@ -267,7 +204,7 @@ export default class CalendarTimeline extends React.PureComponent {
         };
 
         let newHeight = 0;
-        newHeight = 74; //height of item
+        newHeight = 48; //height of item
         customStyles.overflow = "hidden";
         customStyles.height = newHeight + "px";
         customStyles.minWidth = "20%";
@@ -288,7 +225,7 @@ export default class CalendarTimeline extends React.PureComponent {
                     <div style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
                         <div style={{display:'flex', flex:1}}>{item.taskItem} ({item.itemTime})</div>
                         <div className="timeline_item_dot" style={{backgroundColor: borderColor}}>
-                        {storageTimeIndex !== -1 ?
+                        {storageSelectedTraceidIndex !== -1 ?
                         <span className="material-icons">done</span>
                         : null}
                         </div>
@@ -296,14 +233,14 @@ export default class CalendarTimeline extends React.PureComponent {
                     <div style={{width:'100%'}}>
                         <span style={{ fontWeight: 600, marginRight:10 }}>TRACE ID</span>{itemContext.title}
                     </div>
-                    <div className="timeline_item_button">
-                        <button
-                            style={{ cursor: "pointer" }}
-                            onClick={this.props.onPopupEmail}
-                        >
-                            Send E-mail Trace ID <span>{storageTraceIndex !== (-1) ? <span style={{fontSize:12, width:14}} class="material-icons">done</span> : null}</span>
-                        </button>
-                    </div>
+                    {/*<div className="timeline_item_button">*/}
+                    {/*    <button*/}
+                    {/*        style={{ cursor: "pointer" }}*/}
+                    {/*        onClick={this.props.onPopupEmail}*/}
+                    {/*    >*/}
+                    {/*        Send E-mail Trace ID <span>{storageSendedTraceidIndex !== (-1) ? <span style={{fontSize:12, width:14}} class="material-icons">done</span> : null}</span>*/}
+                    {/*    </button>*/}
+                    {/*</div>*/}
                 </div>
 
                 {itemContext.useResizeHandle ? (
@@ -385,6 +322,7 @@ export default class CalendarTimeline extends React.PureComponent {
     };
 
     onCurrentClick = () => {
+        this.props.onCurrentClick()
         this.setState({
             visibleTimeStart: this.makeUTCDateTime(moment()).startOf("hour").add(-4, 'hour').toDate(),
             visibleTimeEnd: this.makeUTCDateTime(moment()).startOf("hour").add(1, 'hour').toDate(),
@@ -415,12 +353,12 @@ export default class CalendarTimeline extends React.PureComponent {
             <div style={{ height: "100%" }}>
                 <div>
                     <div className="timeline_button_layout">
-                        <button
-                            className="timeline_button_current"
-                            onClick={this.onCurrentClick}
-                        >
-                            {"Current Time"}
-                        </button>
+                        {/*<button*/}
+                        {/*    className="timeline_button_current"*/}
+                        {/*    onClick={this.onCurrentClick}*/}
+                        {/*>*/}
+                        {/*    {"Current Time(UTC)"}*/}
+                        {/*</button>*/}
                         <div className="timeline_button_arrow_box">
                             <button
                                 className="timeline_button_arrow"
@@ -442,18 +380,18 @@ export default class CalendarTimeline extends React.PureComponent {
                     groups={groups}
                     items={items}
                     keys={keys}
-                    lineHeight={80} // size of vertical gap
+                    lineHeight={60} // size of vertical gap
                     canMove
                     canSelect
                     itemsSorted
                     itemTouchSendsClick={false}
                     minResizeWidth={200}
-                    minZoom={60*60*1000*5}
-                    maxZoom={60*60*1000*5}
+                    minZoom={60*60*1000*6}
+                    maxZoom={60*60*1000*6}
                     stackItems
                     showCursorLine
                     minResizeWidth={550}
-                    sidebarWidth={200}
+                    sidebarWidth={0}
                     defaultTimeStart={defaultTimeStart}
                     defaultTimeEnd={defaultTimeEnd}
                     visibleTimeStart={visibleTimeStart}
@@ -468,42 +406,6 @@ export default class CalendarTimeline extends React.PureComponent {
                     style={{ height: "calc(100% - 32px)" }}
                 >
                     <TimelineHeaders className="sticky">
-                        <SidebarHeader>
-                            {({ getRootProps }) => {
-                                return (
-                                    <div {...getRootProps()}>
-                                        <div className="timeline_header_summary">
-                                            <button className={this.props.statusNormalToggle ? "timeline_header_summary_column button_on" : "timeline_header_summary_column button_off"}
-                                                    onClick={() => this.handleStatusClick("normal")}>
-                                                <div className="timeline_header_summary_label">
-                                                    Normal
-                                                </div>
-                                                <div className="timeline_header_summary_normal">
-                                                    {
-                                                        this.props
-                                                            .statusCount[0]
-                                                            .normalCount
-                                                    }
-                                                </div>
-                                            </button>
-                                            <button className={this.props.statusErrorToggle ? "timeline_header_summary_column button_on" : "timeline_header_summary_column button_off"}
-                                                    onClick={() => this.handleStatusClick("error")}>
-                                                <div className="timeline_header_summary_label">
-                                                    Error
-                                                </div>
-                                                <div className="timeline_header_summary_error">
-                                                    {
-                                                        this.props
-                                                            .statusCount[0]
-                                                            .errorCount
-                                                    }
-                                                </div>
-                                            </button>
-                                        </div>
-                                    </div>
-                                );
-                            }}
-                        </SidebarHeader>
                         <CustomHeader className="custom-header" height={50} width="200px !important" headerData={{someData: 'data'}} unit="hour">
                             {({
                                   headerContext: { intervals },
@@ -530,7 +432,7 @@ export default class CalendarTimeline extends React.PureComponent {
                                                     })}
                                                 >
                                                     <div className="sticky">
-                                                        {interval.startTime.format('YYYY-MM-DD HH:mm:SS')}
+                                                        {interval.startTime.format('YYYY-MM-DDTHH:mm')}(UTC)
                                                         <span className='timeline_header_current'>
                                                             {(interval.startTime.format('YYYY-MM-DD HH:mm:SS') === this.makeUTCDateTime(moment(), "YYYY-MM-DD HH").format('YYYY-MM-DD HH:00:00'))?"Current":null}
                                                         </span>
