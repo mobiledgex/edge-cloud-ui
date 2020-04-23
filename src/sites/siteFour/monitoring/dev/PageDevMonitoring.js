@@ -765,7 +765,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-            makeGridSizeHeightByType(graphType) {
+            makeGridHeight(graphType) {
                 if (graphType === GRID_ITEM_TYPE.MAP) {
                     return 1;
                 } else {
@@ -803,7 +803,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
                             y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
                             w: this.makeGridSizeByType(graphType),
-                            h: this.makeGridSizeHeightByType(graphType),
+                            h: this.makeGridHeight(graphType),
                         }),
                         layoutMapperForCluster: mapperList.concat(itemOne),
                     })
@@ -1065,22 +1065,22 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-            calculateEmptyPosInGrid(layout, pDefaultLayoutXYPos) {
-                let emptyPosXYInGrid = {};
-                pDefaultLayoutXYPos.map((item) => {
-                    let isExist = false;
+            calculateEmptyPosInGrid(layout, defaultLayoutXYPos) {
+                let emptyLayoutPosXYList = []
+                defaultLayoutXYPos.map((item) => {
+                    let isItemExistInGridXYPos = false;
                     for (let j = 0; j < layout.length; j++) {
                         if (layout[j].x === item.x && layout[j].y === item.y) {
-                            isExist = true;
+                            isItemExistInGridXYPos = true;
                             break;
                         }
                     }
-                    if (isExist === false) {
-                        emptyPosXYInGrid = item;
+                    if (isItemExistInGridXYPos === false) {
+                        emptyLayoutPosXYList.push(item)
                     }
                 })
                 this.setState({
-                    emptyPosXYInGrid: emptyPosXYInGrid,
+                    emptyPosXYInGrid: emptyLayoutPosXYList[0],//first cell in gridList
                 })
             }
 
@@ -1679,7 +1679,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else {
                     return (
-                        <Legend style={{height: this.state.isLegendExpanded && this.state.currentClassification === CLASSIFICATION.CLUSTER ? chunkArrayClusterUsageList.length * legendHeight : legendHeight}}>
+                        <Legend
+                            style={{height: this.state.isLegendExpanded && this.state.currentClassification === CLASSIFICATION.CLUSTER ? chunkArrayClusterUsageList.length * legendHeight : legendHeight}}>
 
                             {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER ?
 
