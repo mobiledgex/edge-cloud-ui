@@ -364,7 +364,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                         marginBottom: -2,
                                         fontWeight: 'bold',
                                     }}
-                                                      size={14}/>
+                                                      size={14}
+                                    />
                                 </div>
                             </div>
                         </div>

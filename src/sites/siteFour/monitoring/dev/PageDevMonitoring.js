@@ -1391,7 +1391,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         <CircularProgress
                                             style={{
                                                 color: 'green',
-                                                zIndex: 9999999,
                                             }}
                                             size={45}
                                         />
@@ -1404,7 +1403,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         <CircularProgress
                                             style={{
                                                 color: 'green',
-                                                zIndex: 9999999,
                                                 fontSize: 10
                                             }}
                                             size={20}

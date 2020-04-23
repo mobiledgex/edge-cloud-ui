@@ -70,7 +70,7 @@ export default class BarChartContainer extends React.Component<Props, State> {
                                     key={this.state.isResizeComplete}
                                     height={'100%'}
                                     chartType={this.state.graphType === GRID_ITEM_TYPE.BAR ? 'BarChart' : 'ColumnChart'}
-                                    loader={<div><CircularProgress style={{color: '#1cecff', zIndex: 999999}}/></div>}
+                                    loader={<div><CircularProgress style={{color: '#1cecff',}}/></div>}
                                     data={this.state.chartDataSet.chartDataList}
                                     options={this.state.graphType === GRID_ITEM_TYPE.BAR ? barChartOption(this.state.chartDataSet.hardwareType) : columnChartOption(this.state.chartDataSet.hardwareType)}
                                 />

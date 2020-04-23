@@ -33,8 +33,8 @@ export default function ClusterEventLogListHook(props) {
                 </div>
 
             </div>
-            <Table basic='very' sortable striped celled fixed collapsing
-                   styles={{zIndex: 999999999999}}>
+            <Table basic='very' sortable striped celled fixed collapsing styles={{zIndex: 999999999999}}>
+
                 <div>
                     <Table.Row style={PageMonitoringStyles.tableHeaderRow2}>
                         <Table.HeaderCell style={{flex: .3, padding: 0}}>
