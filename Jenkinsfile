@@ -16,9 +16,7 @@ pipeline {
         }
         stage('Docker Image') {
             steps {
-                dir(path: 'edge-cloud-ui') {
-                    sh "make build && make publish"
-                }
+                sh "make build && make publish"
             }
         }
     }
