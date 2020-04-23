@@ -731,19 +731,19 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             }
 
-            makeGridSizeByType(graphType) {
+            makeGridItemWidth(graphType) {
                 if (graphType === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
                     return 4;
                 } else if (graphType === GRID_ITEM_TYPE.MAP) {
-                    return 1;
+                    return 2;
                 } else {
                     return 1;
                 }
             }
 
-            makeGridHeight(graphType) {
+            makeGridIItemHeight(graphType) {
                 if (graphType === GRID_ITEM_TYPE.MAP) {
-                    return 1;
+                    return 2;
                 } else {
                     return 1;
                 }
@@ -769,17 +769,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         hwType: hwType,
                         graphType: graphType,
                     }
-
-                    //##########################
-                    // calculate empty space
-                    //##########################
+                    //@desc: ######################################
+                    //@desc:  calculate empty space in gridLayout
+                    //@desc: ######################################
                     await this.setState({
                         layoutForCluster: this.state.layoutForCluster.concat({
                             i: uniqueId,
                             x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
                             y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
-                            w: this.makeGridSizeByType(graphType),
-                            h: this.makeGridHeight(graphType),
+                            w: this.makeGridItemWidth(graphType),
+                            h: this.makeGridIItemHeight(graphType),
                         }),
                         layoutMapperForCluster: mapperList.concat(itemOne),
                     })
@@ -1628,7 +1627,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             value={this.state.currentAppInst}
                             placeholder={this.state.appInstSelectBoxPlaceholder}
                             selection
-                            // style={PageMonitoringStyles.dropDown}
                             options={this.state.allAppInstDropdown}
                             onChange={async (e, {value}) => {
                                 await this.handleAppInstDropdown(value.trim())
@@ -1656,13 +1654,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 //@desc: ##############################
                 let chunkArrayClusterUsageList = _.chunk(this.state.filteredClusterUsageList, chunkedSize);
 
-                let fullClusterList = '';
-                let region = '';
+                /*let fullClusterList = '';
+                let region = '';*/
                 if (this.state.currentCluster) {
                     let cluster = this.state.currentCluster.split(" | ")[0]
                     let cloudlet = this.state.currentCluster.split(" | ")[1]
-                    region = this.state.currentCluster.split(" | ")[2]
-                    fullClusterList = cloudlet + " > " + cluster;
+                    /*region = this.state.currentCluster.split(" | ")[2]
+                    fullClusterList = cloudlet + " > " + cluster;*/
                 }
 
                 let legendHeight = 26
@@ -1795,7 +1793,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             }
 
                             {/*desc: ################################*/}
-                            {/*desc:unfold_more_less_icon            */}
+                            {/*desc: unfold_more_less_icon           */}
                             {/*desc: ################################*/}
                             {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER &&
                             <div
@@ -1905,8 +1903,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                          marginRight: 50,
                                          backgroundColor: this.props.themeType === 'light' ? 'white' : null
                                      }}>
-                                    {!this.state.loading && this.state.layoutForCluster.length === 0 &&
-                                    <div style={{marginLeft: 15, marginTop: 10, fontSize: 25, fontFamily: 'ubuntu', color: 'orange'}}>No Item</div>
+
+                                    {/*desc: no item message for cluster*/}
+                                    {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER && this.state.layoutForCluster.length === 0 &&
+                                    <div style={{marginLeft: 15, marginTop: 10, fontSize: 25, fontFamily: 'ubuntu', color: 'rgba(255,255,255,.6)'}}>No Item</div>
+                                    }
+                                    {/*desc: no item message for appInst*/}
+                                    {!this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST && this.state.layoutForAppInst.length === 0 &&
+                                    <div style={{marginLeft: 15, marginTop: 10, fontSize: 25, fontFamily: 'ubuntu', color: 'rgba(255,255,255,.6)'}}>No Item</div>
                                     }
                                     {this.state.currentClassification === CLASSIFICATION.CLUSTER
                                         ? this.renderGridLayoutForCluster()
