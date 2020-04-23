@@ -12,6 +12,7 @@ import moment from "moment";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {GridLoader, PulseLoader} from "react-spinners";
 import {barChartOption, columnChartOption, numberWithCommas,} from "./PageMonitoringUtils";
+import {notification} from "antd";
 
 export const PageMonitoringStyles = {
     topRightMenu: {
@@ -1079,15 +1080,11 @@ export const getOneYearStartEndDatetime2 = () => {
 }
 
 
-export const showToast = (title: string, time = 2) => {
-    toast({
-        type: 'success',
-        //icon: 'smile',
-        title: title,
-        animation: 'swing left',
-        time: time * 750,
-        color: '#77BD25',
-        size: 'tiny'
+export const showToast = (title: string, time = 3) => {
+    notification.success({
+        placement: 'bottomLeft',
+        duration: time,
+        message: title,
     });
 }
 export const showToast2 = (title: string, time = 2) => {
