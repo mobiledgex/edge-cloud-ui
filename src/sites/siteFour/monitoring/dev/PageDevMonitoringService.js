@@ -438,7 +438,7 @@ export const sortByKey = (arrList, key) => {
 
 export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageDevMonitoring) => {
     try {
-        usageList = sortUsageListByTypeForCluster(usageList, hardwareType);
+        //usageList = sortUsageListByTypeForCluster(usageList, hardwareType); //fixme: descending sort option
 
         if (usageList.length === 0) {
             return "";
@@ -451,7 +451,7 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageD
                         usageList[index].cluster.toString() + "\n[" + usageList[index].cloudlet + "]",//clusterName
                         renderUsageByType(usageList[index], hardwareType, _this),
                         _this.state.chartColorList[index],
-                        renderUsageLabelByTypeForCluster(usageList[index], hardwareType)
+                        renderUsageLabelByTypeForCluster(usageList[index], hardwareType) //@desc:annotation
                     ];
                     chartDataList.push(barDataOne);
                 }
