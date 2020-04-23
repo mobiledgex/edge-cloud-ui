@@ -1,9 +1,12 @@
 import React from "react";
 import _ from "lodash";
 import sizeMe from "react-sizeme";
-import MonitoringLayout from "../layout/layout";
+import MonitoringLayout from "./layout/layout";
+import { connect } from "react-redux";
+import * as actions from "../../../actions";
 //
-import ChartWidget from "../container/ChartWidget";
+import ChartWidget from "./container/ChartWidget";
+import * as serviceMC from "../../../services/model/serviceMC";
 
 class MonitoringAdmin extends React.Component {
     state = {
@@ -19,6 +22,7 @@ class MonitoringAdmin extends React.Component {
     }
 
     render() {
+        let _self = this;
         let containerWidth = this.props.size.width;
         let containerHeight = this.props.size.height;
         return (
@@ -32,9 +36,9 @@ class MonitoringAdmin extends React.Component {
                 <div>{containerWidth}</div>
                 <div>{containerHeight}</div>
                 <MonitoringLayout
-                    initialLayout={generateLayout(this.props.size)}
+                    initialLayout={generateLayout(this.props)}
                     sizeInfo={this.props.size}
-                    items={generateComponentAdmin(this.props.size)}
+                    items={generateComponentAdmin(_self, this.props)}
                 ></MonitoringLayout>
             </div>
         );
@@ -67,96 +71,141 @@ const generateLayout = size => {
         };
     });
 };
-
-export default sizeMe({ monitorHeight: true, refreshMode: "debounce" })(
-    MonitoringAdmin
-);
+const mapDispatchProps = dispatch => {
+    return {
+        handleAlertInfo: (mode, msg) => {
+            dispatch(actions.alertInfo(mode, msg));
+        },
+        handleLoadingSpinner: data => {
+            dispatch(actions.loadingSpinner(data));
+        },
+        onLoadComplete: data => {
+            alert(JSON.stringify(data));
+        }
+    };
+};
+export default connect(
+    null,
+    mapDispatchProps
+)(sizeMe({ monitorHeight: true, refreshMode: "debounce" })(MonitoringAdmin));
 
 const generatWidget = info => (
     <ChartWidget
-        url={info.url}
+        method={info.method}
         chartType={info.chartType}
         type={info.type}
         size={info.sizeInfo}
+        wprops={info.props}
+        self={info.self}
     />
 );
-const generateComponentAdmin = sizeInfo => {
+const generateComponentAdmin = (self, infos) => {
     return [
         generatWidget({
-            url: "https://test1",
+            id: "countCluster",
+            method: null,
             chartType: "counter",
             type: "",
-            sizeInfo: sizeInfo
+            sizeInfo: infos.size,
+            self,
+            props: infos.props
         }),
         generatWidget({
-            url: "https://test2",
+            id: "networkCloudlet",
+            method: null,
             chartType: "timeseries",
             type: "scatter",
-            sizeInfo: sizeInfo
+            sizeInfo: infos.size,
+            self,
+            props: infos.props
         }),
         generatWidget({
-            url: "https://test3",
+            id: "findCloudlet",
+            method: null,
             chartType: "map",
             type: "scatter",
-            sizeInfo: sizeInfo
+            sizeInfo: infos.size,
+            self,
+            props: infos.props
         }),
         generatWidget({
-            url: "https://test4",
+            id: "findCloudlet",
+            method: null,
             chartType: "carousel",
             type: "scatter",
-            sizeInfo: sizeInfo
+            sizeInfo: infos.size,
+            self,
+            props: infos.props
         }),
         generatWidget({
-            url: "https://test5",
+            id: "findCloudlet",
+            method: null,
             chartType: "timeseries",
             type: "bar",
-            sizeInfo: sizeInfo
+            sizeInfo: infos.size,
+            self,
+            props: infos.props
         }),
         generatWidget({
-            url: "https://test6",
+            id: "eventCloudlet",
+            method: serviceMC.getEP().EVENT_CLOUDLET,
             chartType: "table",
             type: "",
-            sizeInfo: sizeInfo
+            sizeInfo: infos.size,
+            self,
+            props: infos.props
         })
     ];
 };
-const generateComponentOperator = sizeInfo => {
+const generateComponentOperator = (self, infos) => {
     return [
         generatWidget({
             url: "https://test1",
             chartType: "gauge",
             type: "",
-            sizeInfo: sizeInfo
+            sizeInfo: infos.size,
+            self,
+            props: infos.props
         }),
         generatWidget({
             url: "https://test2",
             chartType: "timeseries",
             type: "scatter",
-            sizeInfo: sizeInfo
+            sizeInfo: infos.size,
+            self,
+            props: infos.props
         }),
         generatWidget({
             url: "https://test3",
             chartType: "map",
             type: "scatter",
-            sizeInfo: sizeInfo
+            sizeInfo: infos.size,
+            self,
+            props: infos.props
         }),
         generatWidget({
             url: "https://test4",
             chartType: "timeseries",
             type: "scatter",
-            sizeInfo: sizeInfo
+            sizeInfo: infos.size,
+            self,
+            props: infos.props
         }),
         generatWidget({
             url: "https://test5",
             chartType: "timeseries",
             type: "bar",
-            sizeInfo: sizeInfo
+            sizeInfo: infos.size,
+            self,
+            props: infos.props
         }),
         generatWidget({
             url: "https://test6",
             chartType: "table",
             type: "",
-            sizeInfo: sizeInfo
+            sizeInfo: infos.size,
+            self,
+            props: infos.props
         })
     ];
 };

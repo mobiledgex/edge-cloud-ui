@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PageMonitoringForOperator from "./oper/PageOperMonitoring";
 import PageMonitoringForDeveloper from "./dev/PageDevMonitoring";
-import MonitoringAdmin from "./admin";
+import MonitoringAdmin from "./";
 import { Card } from "@material-ui/core";
 
 export default function PageMonitoringMain() {
