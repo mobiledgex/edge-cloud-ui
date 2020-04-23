@@ -2,10 +2,10 @@ import {Center2, ClusterCluoudletLable, Legend} from '../PageMonitoringStyledCom
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Dropdown, Modal} from 'semantic-ui-react'
+import {Dropdown} from 'semantic-ui-react'
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
-import {CircularProgress, Toolbar} from '@material-ui/core'
+import {CircularProgress, Toolbar, Dialog} from '@material-ui/core'
 import {Dropdown as ADropdown, Menu as AMenu, Tooltip,} from 'antd';
 import {
     defaultHwMapperListForCluster,
@@ -59,7 +59,7 @@ import type {PageDevMonitoringProps, PageDevMonitoringState} from "./PageDevMoni
 import {ColorLinearProgress, CustomSwitch, defaultLayoutXYPosForAppInst, defaultLayoutXYPosForCluster, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageDevMonitoringPropsState";
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListHook_VirtualScroll from "../components/AppInstEventLogListHook_VirtualScroll";
-
+import {fields} from '../../../../services/model/format'
 
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -503,8 +503,17 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 if (appInst && appInst.length > 0) {
                     let runtime = appInst[0].Runtime
                     if (runtime && runtime.container_ids && runtime.container_ids.length > 0) {
+                        let tempAppInst = {}
+                        tempAppInst[fields.region] = appInst[0].Region
+                        tempAppInst[fields.runtimeInfo] = appInst[0].Runtime
+                        tempAppInst[fields.organizationName] = appInst[0].OrganizationName
+                        tempAppInst[fields.appName] = appInst[0].AppName
+                        tempAppInst[fields.version] = appInst[0].Version
+                        tempAppInst[fields.clusterName] = appInst[0].ClusterInst
+                        tempAppInst[fields.operatorName] = appInst[0].Operator
+                        tempAppInst[fields.cloudletName] = appInst[0].Cloudlet
                         this.setState({
-                            terminalData: appInst[0]
+                            terminalData: tempAppInst
                         })
                     }
                 }
@@ -1883,11 +1892,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 : null
                             }
                         </div>
-                        <Modal style={{width: '100%', height: '100%'}} open={this.state.openTerminal}>
+                        <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen open={this.state.openTerminal} onClose={() => { this.setState({ openTerminal: false }) }}>
                             <TerminalViewer data={this.state.terminalData} onClose={() => {
-                                this.setState({openTerminal: false})
-                            }}/>
-                        </Modal>
+                                this.setState({ openTerminal: false })
+                            }} />
+                        </Dialog>
                     </div>
 
                 )//return End
