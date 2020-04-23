@@ -157,6 +157,10 @@ class MexTerminal extends Component {
                 })
             }
         }
+        else
+        {
+            this.close()
+        }
     }
 
     openTerminal = (data) => {
