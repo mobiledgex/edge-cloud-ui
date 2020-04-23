@@ -45,6 +45,8 @@ import submitObj from './submitObj';
 import LoadingReducer from "./LoadingReducer";
 import MapTyleLayerReducer from "./MapTyleLayerReducer";
 import HeaderReducer from "./HeaderReducer";
+import ThemeReducer from "./ThemeReducer";
+import ChartDataReducer from "./ChartDataReducer";
 
 const reducers = combineReducers({
     videoControl,
@@ -90,8 +92,10 @@ const reducers = combineReducers({
     alertInfo,
     dataExist,
     LoadingReducer,
-    MapTyleLayerReducer ,
+    MapTyleLayerReducer,
     HeaderReducer,
+    ThemeReducer,
+    ChartDataReducer,
     form: formReducer
 });
 

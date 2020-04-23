@@ -1,7 +1,6 @@
 import React from 'react';
-import { Table } from 'semantic-ui-react'
 import ReactJson from 'react-json-view';
-import { Card } from '@material-ui/core';
+import { Card, Table, TableHead, TableRow, TableBody, TableCell } from '@material-ui/core';
 import * as constant from '../../constant'
 import * as JsonUtils from '../../utils/JsonUtil'
 
@@ -19,69 +18,65 @@ const jsonViewProps = {
     displayDataTypes: false,
     iconStyle: "triangle"
 }
-const getJson = (data, item) =>
-{
-   if(item.dataType === constant.TYPE_JSON_NEW_LINE)
-   {
-       data = JsonUtils.newLineToJsonObject(data)
-   }
-   return <ReactJson src={data} {...jsonViewProps} />
+const getJson = (data, item) => {
+    try {
+        if (item.dataType === constant.TYPE_YAML) {
+            data = JsonUtils.YAMLtoJSON(data)
+        }
+        return <ReactJson src={data} {...jsonViewProps} />
+    }
+    catch (e) {
+        return data
+    }
 }
 const subView = (keys, dataList) => {
     return (
-        <Table celled>
-            <Table.Header>
-                <Table.Row>
+        <Table size='small'>
+            <TableHead>
+                <TableRow>
                     {keys.map((item, i) => {
-                        return <Table.HeaderCell key={i}>{item.label}</Table.HeaderCell>
+                        return <TableCell key={i}>{item.label}</TableCell>
                     })}
-                </Table.Row>
-            </Table.Header>
-            <Table.Body>
+                </TableRow>
+            </TableHead>
+            <TableBody>
                 {dataList.map((data, i) => {
                     return (
-                        <Table.Row key={i}>{(
+                        <TableRow key={i} style={{backgroundColor: i%2 ===0 ? '#1E2123' : 'transparent'}}>{(
                             keys.map((item, j) => {
                                 return (
-                                    <Table.Cell key={j}>
-                                        {item.dataType === constant.TYPE_JSON || item.dataType === constant.TYPE_JSON_NEW_LINE ?
+                                    <TableCell key={j} style={{ borderBottom: "none"}}>
+                                        {item.dataType === constant.TYPE_JSON || item.dataType === constant.TYPE_YAML ?
                                             getJson(data[item.field], item) :
                                             data[item.field]}
-                                    </Table.Cell>)
+                                    </TableCell>)
                             }))
                         }
-                        </Table.Row>)
+                        </TableRow>)
                 })}
-            </Table.Body>
+            </TableBody>
         </Table>
     )
 }
 
 const getRow = (id, item, data) => {
     return (
-        <Table.Row key={id} verticalAlign='top'>
-            <Table.Cell>{item.label}</Table.Cell>
-            <Table.Cell>
-                {item.dataType === constant.TYPE_JSON || item.dataType === constant.TYPE_JSON_NEW_LINE ?
+        <TableRow key={id}>
+            <TableCell style={{ borderBottom: "none", verticalAlign:'text-top' }}>{item.label}</TableCell>
+            <TableCell style={{ borderBottom: "none" }}>
+                {item.dataType === constant.TYPE_JSON || item.dataType === constant.TYPE_YAML ?
                     getJson(data, item) :
                     item.customizedData ? item.customizedData(data, true) : data}
-            </Table.Cell>
-        </Table.Row>
+            </TableCell>
+        </TableRow>
     )
 }
 
 const MexDetailViewer = (props) => {
     let detailData = props.detailData;
     return (
-        <Card style={{width:'100%', backgroundColor:'transparent', color:'white', height:constant.getHeight(155)}}>
-            <Table celled style={{ width: '100%', backgroundColor: '#2A2C33', border: 'none'}}>
-                <Table.Header>
-                    <Table.Row>
-                        <Table.HeaderCell>Key</Table.HeaderCell>
-                        <Table.HeaderCell>Value</Table.HeaderCell>
-                    </Table.Row>
-                </Table.Header>
-                <Table.Body>
+        <Table style={{ width: '100%', backgroundColor: '#2A2C33', border: 'none'}}>
+                <TableBody>
                     {props.keys.map((item, i) => {
                         let data = detailData[item.field]
                         return (
@@ -95,10 +90,8 @@ const MexDetailViewer = (props) => {
 
                         )
                     })}
-                </Table.Body>
+                </TableBody>
             </Table>
-            
-        </Card>
     )
 }
 

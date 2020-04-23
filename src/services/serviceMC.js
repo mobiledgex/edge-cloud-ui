@@ -38,7 +38,7 @@ const showError = (request, message) => {
             position: 'top-right',
             effect: 'slide',
             beep: true,
-            timeout: 3000,
+            timeout: 20000,
             offset: 100,
             html: true
         });
@@ -67,6 +67,10 @@ function responseError(self, request, response, callback) {
                 if (callback) {
                     callback({request: request, error: {code: code, message: message}})
                 }
+            }
+            else if(request.method === EP.VERIFY_EMAIL)
+            {
+                showError(request, 'Oops, this link is expired')
             }
         }
     }

@@ -1,9 +1,10 @@
 import React from 'react'
 import { Dropdown } from 'semantic-ui-react'
-import { IconButton, Toolbar, Switch, withStyles } from '@material-ui/core'
+import { IconButton, Toolbar, Switch, withStyles, TextField, Input, InputAdornment } from '@material-ui/core'
 import RefreshIcon from '@material-ui/icons/Refresh';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
+import SearchIcon from '@material-ui/icons/Search';
 
 export const REGION_ALL = 1;
 export const ACTION_REGION = 1
@@ -43,9 +44,19 @@ const MexToolbar = (props) => {
             </IconButton>
         </div>
     )
+
     const getList = (props) =>
         (
             <div style={{ right: 0, position: 'absolute' }}>
+                <Input 
+                    onChange={(e) => { props.onFilterValue(e) }} 
+                    startAdornment={
+                        <InputAdornment position="start">
+                            <SearchIcon />
+                        </InputAdornment>
+                    }
+                    placeholder={'Search'} 
+                />
                 {requestInfo.isRegion ?
                     <div style={{ display: 'inline', margin: 20 }}>
                         <strong>Region:&nbsp;&nbsp;</strong>

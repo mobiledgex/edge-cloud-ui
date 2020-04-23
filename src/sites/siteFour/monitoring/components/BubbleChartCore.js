@@ -2,9 +2,8 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
-import {THEME_OPTIONS} from "../shared/Constants";
 
-export default class BubbleChart extends Component {
+export default class BubbleChartCore extends Component {
     constructor(props) {
         super(props);
 
@@ -55,70 +54,13 @@ export default class BubbleChart extends Component {
         const bubblesWidth = showLegend ? width * (1 - (legendPercentage / 100)) : width;
         const legendWidth = width - bubblesWidth;
 
-
-        var categorical = [
-            {"name": "schemeAccent", "n": 8},
-            {"name": "schemeDark2", "n": 8},
-            {"name": "schemePastel2", "n": 8},
-            {"name": "schemeSet2", "n": 8},
-            {"name": "schemeSet1", "n": 9},
-            {"name": "schemePastel1", "n": 9},
-            {"name": "schemeCategory10", "n": 10},
-            {"name": "schemeSet3", "n": 12},
-            {"name": "schemePaired", "n": 12},
-            {"name": "schemeCategory20", "n": 20},
-            {"name": "schemeCategory20b", "n": 20},
-            {"name": "schemeCategory20c", "n": 20}
-        ]
-
         let colors = function (s) {
             return s.match(/.{6}/g).map(function (x) {
                 return "#" + x;
             });
         };
-
-        //const color = d3.scaleOrdinal(d3.schemeCategory20c);
-        //'#609732', '#6EDC12', '#69BA27', '#527536', '#405330'
-
-        //const color = d3.scaleOrdinal(colors("1f77b4ff7f0e2ca02cd627289467bd8c564be377c27f7f7fbcbd2217becf"));
-
-        //6097326EDC1269BA27527536405330
         let colorCodes = 'DE0000FF9600FFF6005BCB000096FF'
-        if (this.props.themeTitle === THEME_OPTIONS.DEFAULT) {
-            let eundewColorCodes = 'DE0000FF9600FFF6005BCB000096FF00FFFF0080800000FF000080FF00FF800080800000808080808000'
-            colorCodes = eundewColorCodes;
-        }
-        if (this.props.themeTitle === THEME_OPTIONS.BLUE) {//#00FFFF#008080#0000FF#000080#FF00FF#800080#800000#808080#808000
-            let blueColorCodes = '65DEF1A8DCD1DCE2C8F96900F17F2900FFFF0080800000FF000080FF00FF800080800000808080808000'
-            colorCodes = blueColorCodes;
-        }
-        if (this.props.themeTitle === THEME_OPTIONS.GREEN) {
-            let greenColorCodes = "008000d7fff1556B2F32CD328cd79000FFFF0080800000FF000080FF00FF800080800000808080808000"
-            colorCodes = greenColorCodes;
-        }
-
-        if (this.props.themeTitle === THEME_OPTIONS.RED) {
-            let redColorCodes = 'FF0000FFBDAAD4826A802D1555130000FFFF0080800000FF000080FF00FF800080800000808080808000'
-            colorCodes = redColorCodes;
-        }
-
-        if (this.props.themeTitle === THEME_OPTIONS.MONOKAI) {
-            let monokaiColor = 'F92672FD971FA6E22EE6DB74A6E22E00FFFF0080800000FF000080FF00FF800080800000808080808000'
-            colorCodes = monokaiColor;
-        }
-
-        if (this.props.themeTitle === THEME_OPTIONS.APPLE) {
-            let appleColors = '0A84FF30D158FF453AFF9F0AFF375F00FFFF0080800000FF000080FF00FF800080800000808080808000'
-            colorCodes = appleColors;
-        }
-
-
-
-//const color = d3.scaleOrdinal(colors("6097326EDC1269BA27527536405330"));//green
         const color = d3.scaleOrdinal(colors(colorCodes));//green
-
-
-
         const pack = d3.pack()
             .size([bubblesWidth * graph.zoom, bubblesWidth * graph.zoom])
             .padding(padding);
@@ -134,25 +76,21 @@ export default class BubbleChart extends Component {
             .each((d) => {
                 if (d.data.label) {
                     d.label = '' + d.data.label; //todo:라벨 셋팅 부분..
+                    d.type = '' + d.data.type; //todo:type
                     d.id = d.data.label.toLowerCase().replace(/ |\//g, "-");
                     d.favor = d.data.favor;
                     d.fullLabel = d.data.fullLabel;
                     d.cluster_cloudlet = d.data.cluster_cloudlet;
                     d.index = d.data.index;
+                    //@todo####################################
+                    //@todo  colorOne
+                    //@todo####################################
+                    d.color = d.data.color;
                 }
             });
 
         // Pass the data to the pack layout to calculate the distribution.
         const nodes = pack(root).leaves();
-
-        /*  let newNodes=[]
-          nodes.map(item=>{
-              if ( item.data.value >0){
-                  newNodes.push(item)
-              }
-          })*/
-
-        // console.log('nodes===>', nodes)
 
         this.renderBubbles(bubblesWidth, nodes, color);
         // Call to the function that draw the legend.
@@ -170,15 +108,13 @@ export default class BubbleChart extends Component {
             labelFont,
         } = this.props;
 
-
-        console.log('renderBubbles===>', data);
-
         const bubbleChart = d3.select(this.svg).append("g")
             .attr("class", "bubble-chart")
             .attr("transform", function (d) {
+                //@todo####################################
                 //todo: Bubble chart location setting...
-                //todo: Bubble chart location setting...
-                return "translate(" + ((width * 3 / 16)-0) + "," + (width * graph.offsetY-30) + ")"; //버블차트 위치
+                //@todo####################################
+                return "translate(" + ((width * 3 / 16) - 0) + "," + (width * graph.offsetY - 30) + ")"; //버블차트 위치
             });
         ;
 
@@ -203,7 +139,10 @@ export default class BubbleChart extends Component {
                 return d.r - (d.r * .04);
             })
             .style("fill", function (d) {
-                return d.data.color ? d.data.color : color(nodes.indexOf(d));
+                //@todo####################################
+                //todo : set colorOne in color_list
+                //@todo####################################
+                return d.data.color
             })
             .style("z-index", 1)
             .on('mouseover', function (d) {
@@ -245,11 +184,15 @@ export default class BubbleChart extends Component {
                 return valueFont.lineWeight ? valueFont.lineWeight : 0;
             })
             .text((d) => {
-                //@todo:value를 랜더링 하는 부분..
-                //@todo:value를 랜더링 하는 부분..
-
+                //@todo####################################
+                //@todo:render number value (%)
+                //@todo####################################
                 if (d.value > 0) {
-                    return d.favor; //@todo:value를 랜더링 하는 부분..
+                    if (d.type === 'CPU' || d.type === 'DISK' || d.type === 'MEM') {
+                        return d.favor + "%";
+                    } else {
+                        return d.favor;
+                    }
                 }
 
             });
@@ -266,6 +209,7 @@ export default class BubbleChart extends Component {
                 return labelFont.weight ? labelFont.weight : 300;
             })
             .style("font-family", labelFont.family)
+            //.style("font-family", 'Roboto Condensed')
             .style("fill", () => {
                 return labelFont.color ? labelFont.color : '#000';
             })
@@ -276,7 +220,7 @@ export default class BubbleChart extends Component {
                 return labelFont.lineWeight ? labelFont.lineWeight : 0;
             })
             .text(function (d) {
-                return d.label;//Label그리는 부분..
+                return d.label
             });
 
         // Center the texts inside the circles.
@@ -289,13 +233,14 @@ export default class BubbleChart extends Component {
                 const self = d3.select(this);
                 const width = self.node().getBBox().width;
                 d.hideLabel = width * 1.05 > (d.r * 2);
-                return d.hideLabel ? 0 : 1;
+                return d.hideLabel ? 0 : 0.5;
             })
             .attr("y", function (d) {
                 return labelFont.size / 2
             })
-
-        // Center the texts inside the circles.
+        //@todo####################################
+        //todo: Center the texts inside the circles.
+        //@todo####################################
         d3.selectAll(".value-text").attr("x", function (d) {
             const self = d3.select(this);
             const width = self.node().getBBox().width;
@@ -311,15 +256,14 @@ export default class BubbleChart extends Component {
             });
 
 
+        //@desc: tooltip
         node.append("title")
             .text(function (d) {
-                return d.label;
+                return d.fullLabel; //@todo: cluster name
             });
     }
 
-
     /**
-     * @todo: renderLegend
      * @todo: renderLegend
      * @param width
      * @param height
@@ -335,9 +279,6 @@ export default class BubbleChart extends Component {
         } = this.props;
         const bubble = d3.select('.bubble-chart');
         const bubbleHeight = bubble.node().getBBox().height;
-
-        console.log(' bubbleHeight===>', bubbleHeight * 0.30);
-
         const legend = d3.select(this.svg).append("g")
             .attr("transform", function () {
                 // return `translate(${offset},${(bubbleHeight) * 0.18})`;
@@ -354,8 +295,9 @@ export default class BubbleChart extends Component {
             .attr("transform", (d, i) => {
                 const offset = textOffset;
                 textOffset += legendFont.size + 10;
+                //@todo####################################
                 //todo: first param is x-axis .renderLegend
-                //todo: first param is x-axis .renderLegend
+                //@todo####################################
                 return `translate(-430,${offset})`;
             })
             .on('mouseover', function (d) {
@@ -387,16 +329,7 @@ export default class BubbleChart extends Component {
             });
 
         texts.append("text")
-            //.style("font-size", `${legendFont.size}px`)
             .style("font-size", `12px`)
-            /*.style("font-weight", (d) => {
-                return legendFont.weight ? legendFont.weight : 50;
-            })*/
-            //.style("font-family", legendFont.family)
-            //.style("font-family", 'Righteous')
-            /*.style("fill", () => {
-                return legendFont.color ? legendFont.color : '#000';
-            })*/
             .style("fill", () => {
                 return 'white';
             })
@@ -416,7 +349,7 @@ export default class BubbleChart extends Component {
     }
 }
 
-BubbleChart.propTypes = {
+BubbleChartCore.propTypes = {
     graph: PropTypes.shape({
         zoom: PropTypes.number,
         offsetX: PropTypes.number,
@@ -447,7 +380,7 @@ BubbleChart.propTypes = {
     }),
     themeTitle: PropTypes.string,
 }
-BubbleChart.defaultProps = {
+BubbleChartCore.defaultProps = {
     graph: {
         zoom: 1.1,
         offsetX: -0.05,

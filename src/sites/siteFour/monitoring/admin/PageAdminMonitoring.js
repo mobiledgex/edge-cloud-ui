@@ -248,7 +248,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let store = JSON.parse(localStorage.PROJECT_INIT);
             let token = store ? store.userToken : 'null';
 
-            console.log('token===>', token);
             try {
                 await this.loadInitData();
             } catch (e) {
@@ -279,8 +278,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         async loadInitData() {
             try {
                 let userRole = localStorage.getItem('selectRole')
-                console.log('userRole====>', userRole);
-
                 this.setState({
                     isAppInstaceOnCloudletDataReady: false,
                     loading: true,
@@ -342,9 +339,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 }
 
                 //fixme: fakedata
-                //allAppInstUsageList = require('./appAppLevelUsageList__all')
-                console.log('allAppInstUsageList====>', allAppInstUsageList);
-
 
                 //todo: MAKE SELECTBOX.
                 let clusterInstanceGroupList = reducer.groupBy(appInstanceList, CLASSIFICATION.CLUSTER_INST)
@@ -357,19 +351,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     dropDownCloudletList: dropDownCloudletList,
                     clusterList: clusterList,
                 }, () => {
-                    console.log('allAppInstUsageList====>', allAppInstUsageList);
                 });
 
                 //todo: -------------------------------------------------------------
                 //todo: MAKE TOP5 INSTANCE LIST
                 //todo: -------------------------------------------------------------
 
-                console.log("filteredAppInstUsageList===>", this.state.filteredAppInstUsageList);
 
                 let appInstanceListTop5 = makeSelectBoxListByClassification(cutArrayList(5, this.state.filteredAppInstUsageList), CLASSIFICATION.appName)
-
-                console.log('appInstanceListTop5====>', appInstanceListTop5);
-
                 let gridInstanceList = makeGridInstanceList(allAppInstUsageList);
                 let gridInstanceListMemMax = Math.max.apply(Math, gridInstanceList.map(function (o) {
                     return o.sumMemUsage;
@@ -386,7 +375,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     gridInstanceListMemMax: gridInstanceListMemMax,
                     gridInstanceListCpuMax: gridInstanceListCpuMax,
                 }, () => {
-                    console.log('filteredGridInstanceList===>', this.state.filteredGridInstanceList);
                 });
 
 
@@ -429,8 +417,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                     this.setState({loading: true})
                     let appInstUsageList_byDate = await getAppLevelUsageList(this.state.appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
-
-                    console.log('appInstUsageList_byDate====>', appInstUsageList_byDate);
 
                     this.setState({
                         usageListByDate: appInstUsageList_byDate,
@@ -599,17 +585,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     let top5UsageList = await cutArrayList(5, this.state.filteredAppInstUsageList);
 
 
-                    console.log('top5UsageList====>', top5UsageList);
-
                     //todo: MAKE TOP5 INSTANCE LIST
                     let appInstanceListTop5 = makeSelectBoxListByClassification_byKey(top5UsageList, CLASSIFICATION.appName)
 
-                    console.log('appInstanceListTop5====>', appInstanceListTop5);
 
                     await this.setState({
                         appInstanceListTop5: appInstanceListTop5,
                     }, () => {
-                        console.log('appInstanceListTop5===>', appInstanceListTop5);
                     });
                 }
                 await this.setState({
@@ -1098,7 +1080,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <Grid.Column>
                                 <div className="table-no-resized">
 
-                                    <div className={isIOS ? 'page_monitoring page_isIOS' : 'page_monitoring'} style={{height:this.getHeight()}}>
+                                    <div className={isIOS ? 'page_monitoring page_isIOS' : 'page_monitoring'} style={{height: this.getHeight()}}>
                                         {/*todo:---------------------------------*/}
                                         {/*todo:SELECTBOX_ROW        */}
                                         {/*todo:---------------------------------*/}
@@ -1268,7 +1250,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*todo:---------------------------------*/}
                                                         {/*todo: BOTTOM APP INSTACE LIST         */}
                                                         {/*todo:---------------------------------*/}
-                                                       {/* <div className=''>
+                                                        {/* <div className=''>
                                                             {this.state.filteredGridInstanceList.length && this.state.isReady === 0 ?
                                                                 <div style={PageMonitoringStyles.noData}>
                                                                     NO DATA

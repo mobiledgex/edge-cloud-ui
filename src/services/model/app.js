@@ -1,6 +1,6 @@
 import * as formatter from './format'
 import _ from 'lodash';
-import { TYPE_JSON_NEW_LINE } from '../../constant';
+import { TYPE_YAML } from '../../constant';
 import * as serverData from './serverData'
 import * as constant from '../../constant'
 import { SHOW_APP, CREATE_APP, UPDATE_APP, DELETE_APP } from './endPointTypes'
@@ -8,28 +8,28 @@ import { SHOW_APP, CREATE_APP, UPDATE_APP, DELETE_APP } from './endPointTypes'
 let fields = formatter.fields
 
 export const keys = () => ([
-    { field: fields.region, label: 'Region', sortable: true, visible: true },
-    { field: fields.organizationName, serverField: 'key#OS#organization', sortable: true, label: 'Organization', visible: true },
-    { field: fields.appName, serverField: 'key#OS#name', label: 'App', sortable: true, visible: true },
+    { field: fields.region, label: 'Region', sortable: true, visible: true, filter:true },
+    { field: fields.organizationName, serverField: 'key#OS#organization', sortable: true, label: 'Organization', visible: true, filter:true },
+    { field: fields.appName, serverField: 'key#OS#name', label: 'App', sortable: true, visible: true, filter:true },
     { field: fields.version, serverField: 'key#OS#version', label: 'Version', visible: true },
-    { field: fields.deployment, serverField: 'deployment', label: 'Deployment', sortable: true, visible: true },
+    { field: fields.deployment, serverField: 'deployment', label: 'Deployment', sortable: true, visible: true, filter:true },
     { field: fields.command, serverField: 'command', label: 'Command' },
-    { field: fields.deploymentManifest, serverField: 'deployment_manifest', label: 'Deployment Manifest', dataType: TYPE_JSON_NEW_LINE },
+    { field: fields.deploymentManifest, serverField: 'deployment_manifest', label: 'Deployment Manifest', dataType: TYPE_YAML },
     { field: fields.deploymentGenerator, serverField: 'deployment_generator', label: 'Deployment Generator' },
     { field: fields.imageType, serverField: 'image_type', label: 'Image Type' },
     { field: fields.imagePath, serverField: 'image_path', label: 'Image Path' },
-    { field: fields.flavorName, serverField: 'default_flavor#OS#name', sortable: true, label: 'Default Flavor', visible: true },
-    { field: fields.accessPorts, serverField: 'access_ports', label: 'Ports', visible: true },
+    { field: fields.flavorName, serverField: 'default_flavor#OS#name', sortable: true, label: 'Default Flavor', visible: true, filter:true },
+    { field: fields.accessPorts, serverField: 'access_ports', label: 'Ports' },
     { field: fields.accessType, serverField: 'access_type', label: 'Access Type' },
     { field: fields.authPublicKey, serverField: 'auth_public_key', label: 'Auth Public Key' },
     { field: fields.scaleWithCluster, serverField: 'scale_with_cluster', label: 'Scale With Cluster' },
     { field: fields.officialFQDN, serverField: 'official_fqdn', label: 'Official FQDN' },
     { field: fields.androidPackageName, serverField: 'android_package_name', label: '' },
-    { field: fields.revision, serverField: 'revision', label: 'Revision' },
     { field: fields.autoPolicyName, serverField: 'auto_prov_policy', label: 'Auto Provisioning Policy' },
     { field: fields.privacyPolicyName, serverField: 'default_privacy_policy', label: 'Default Privacy Policy' },
     { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: constant.TYPE_JSON },
-    { field: fields.annotations, serverField: 'annotations', label: 'Annotations', visible: true },
+    { field: fields.annotations, serverField: 'annotations', label: 'Annotations', visible: false },
+    { field: fields.revision, serverField: 'revision', label: 'Revision' },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
@@ -145,9 +145,21 @@ export const updateApp = async (self, data, originalData) => {
     {
         updateFields.push("9.1")
     }
+    if(!compareObjects(data[fields.command], originalData[fields.command]))
+    {
+        updateFields.push("13")
+    }
     if(!compareObjects(data[fields.deploymentManifest], originalData[fields.deploymentManifest]))
     {
         updateFields.push("16")
+    }
+    if(!compareObjects(data[fields.autoPolicyName], originalData[fields.autoPolicyName]))
+    {
+        updateFields.push("28")
+    }
+    if(!compareObjects(data[fields.privacyPolicyName], originalData[fields.privacyPolicyName]))
+    {
+        updateFields.push("30")
     }
     requestData.app.fields = updateFields
     let request = { method: UPDATE_APP, data: requestData }
@@ -163,6 +175,7 @@ export const deleteApp = (data) => {
 const customData = (value) => {
     value[fields.accessType] = constant.accessType(value[fields.accessType])
     value[fields.imageType] = constant.imageType(value[fields.imageType])
+    value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
     if(value[fields.configs])
     {
         let configs = value[fields.configs]

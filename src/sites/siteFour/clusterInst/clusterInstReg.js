@@ -209,7 +209,7 @@ class ClusterInstReg extends React.Component {
             if (mcRequest.response && mcRequest.response.data) {
                 data = mcRequest.response.data;
             }
-            this.setState({ stepsArray: updateStepper(this.state.stepsArray, cloudletName, data) })
+            this.setState({ stepsArray: updateStepper(this.state.stepsArray, cloudletName, data, cloudletName) })
         }
     }
 
@@ -363,7 +363,7 @@ class ClusterInstReg extends React.Component {
 
     formKeys = () => {
         return [
-            { label: 'Cluster Instance', formType: 'Header', visible: true },
+            { label: 'Create Cluster Instance', formType: 'Header', visible: true },
             { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
             { field: fields.clusterName, label: 'Cluster Name', formType: 'Input', placeholder: 'Enter Cluster Inst Name', rules: { required: true }, visible: true, },
             { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: true, disabled: getOrganization() ? true : false }, visible: true, value: getOrganization() },

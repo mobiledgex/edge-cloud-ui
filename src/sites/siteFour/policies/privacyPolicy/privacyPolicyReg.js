@@ -141,7 +141,7 @@ class AutoProvPolicyReg extends React.Component {
     )
 
     getForms = () => ([
-        { label: 'Create Privacy Policy', formType: 'Header' },
+        { label: 'Create Privacy Policy', formType: 'Header', visible: true },
         { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region' },
         { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true },
         { field: fields.privacyPolicyName, label: 'Privacy Policy Name', formType: 'Input', placeholder: 'Enter Privacy Policy Name', rules: { required: true }, visible: true },
