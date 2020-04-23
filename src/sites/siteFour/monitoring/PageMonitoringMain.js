@@ -33,7 +33,15 @@ export default function PageMonitoringMain() {
     }
 
     return (
-        <Card style={{width: '100%', height: '100%', backgroundColor: '#292c33', padding: 10, color: 'white'}}>
+        <Card style={{
+            width: '100%',
+            height: '100%',
+            backgroundColor: '#292c33',
+            paddingTop: 10,
+            paddingLeft: 10,
+            paddingRight: 10,
+            color: 'white'
+        }}>
             {renderMainPage()}
         </Card>
     );
