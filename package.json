@@ -138,7 +138,8 @@
         "three-orbitcontrols": "^2.99.1",
         "topojson-client": "^3.1.0",
         "ua-parser-js": "^0.7.20",
-        "uuid": "^3.4.0"
+        "uuid": "^3.4.0",
+        "yaml-js": "^0.2.3"
     },
     "module": "dist/index.js",
     "typings": "dist/index.d.ts",

@@ -18,13 +18,16 @@ const jsonViewProps = {
     displayDataTypes: false,
     iconStyle: "triangle"
 }
-const getJson = (data, item) =>
-{
-   if(item.dataType === constant.TYPE_JSON_NEW_LINE)
-   {
-       data = JsonUtils.newLineToJsonObject(data)
-   }
-   return <ReactJson src={data} {...jsonViewProps} />
+const getJson = (data, item) => {
+    try {
+        if (item.dataType === constant.TYPE_YAML) {
+            data = JsonUtils.YAMLtoJSON(data)
+        }
+        return <ReactJson src={data} {...jsonViewProps} />
+    }
+    catch (e) {
+        return data
+    }
 }
 const subView = (keys, dataList) => {
     return (
@@ -32,18 +35,18 @@ const subView = (keys, dataList) => {
             <TableHead>
                 <TableRow>
                     {keys.map((item, i) => {
-                        return <TableCell style={{ borderBottom: "none" }} key={i}>{item.label}</TableCell>
+                        return <TableCell key={i}>{item.label}</TableCell>
                     })}
                 </TableRow>
             </TableHead>
             <TableBody>
                 {dataList.map((data, i) => {
                     return (
-                        <TableRow key={i}>{(
+                        <TableRow key={i} style={{backgroundColor: i%2 ===0 ? '#1E2123' : 'transparent'}}>{(
                             keys.map((item, j) => {
                                 return (
-                                    <TableCell key={j} style={{ borderBottom: "none" }}>
-                                        {item.dataType === constant.TYPE_JSON || item.dataType === constant.TYPE_JSON_NEW_LINE ?
+                                    <TableCell key={j} style={{ borderBottom: "none"}}>
+                                        {item.dataType === constant.TYPE_JSON || item.dataType === constant.TYPE_YAML ?
                                             getJson(data[item.field], item) :
                                             data[item.field]}
                                     </TableCell>)
@@ -59,9 +62,9 @@ const subView = (keys, dataList) => {
 const getRow = (id, item, data) => {
     return (
         <TableRow key={id}>
-            <TableCell style={{ borderBottom: "none" }}>{item.label}</TableCell>
+            <TableCell style={{ borderBottom: "none", verticalAlign:'text-top' }}>{item.label}</TableCell>
             <TableCell style={{ borderBottom: "none" }}>
-                {item.dataType === constant.TYPE_JSON || item.dataType === constant.TYPE_JSON_NEW_LINE ?
+                {item.dataType === constant.TYPE_JSON || item.dataType === constant.TYPE_YAML ?
                     getJson(data, item) :
                     item.customizedData ? item.customizedData(data, true) : data}
             </TableCell>
