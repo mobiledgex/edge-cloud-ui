@@ -188,6 +188,23 @@ export const defaultLayoutXYPosForCluster = [
     {x: 0, y: 1},
     {x: 3, y: 1},
     {x: 0, y: 2},
+
+
+    //////////// 4,5,6rd row
+    {x: 0, y: 3},
+    {x: 1, y: 3},
+    {x: 2, y: 3},
+    {x: 3, y: 3},
+
+    {x: 0, y: 4},
+    {x: 1, y: 4},
+    {x: 2, y: 4},
+    {x: 3, y: 4},
+
+    {x: 0, y: 5},
+    {x: 1, y: 5},
+    {x: 2, y: 5},
+    {x: 3, y: 5},
 ]
 
 export const defaultLayoutXYPosForAppInst = [
@@ -197,4 +214,20 @@ export const defaultLayoutXYPosForAppInst = [
     {x: 0, y: 1},
     {x: 3, y: 1},
     {x: 0, y: 2},
+
+    //////////// 4,5,6rd row
+    {x: 0, y: 3},
+    {x: 1, y: 3},
+    {x: 2, y: 3},
+    {x: 3, y: 3},
+
+    {x: 0, y: 4},
+    {x: 1, y: 4},
+    {x: 2, y: 4},
+    {x: 3, y: 4},
+
+    {x: 0, y: 5},
+    {x: 1, y: 5},
+    {x: 2, y: 5},
+    {x: 3, y: 5},
 ]
