@@ -75,17 +75,11 @@ export default class CalendarTimeline extends React.PureComponent {
     };
 
     generateGroupsData = props => {
-        let statusList = props.timelineList.statusList;
-        let tasksList = props.timelineList.tasksList;
-        let groups = [];
+        let groups = []
 
-        tasksList.map((tValue, tIndex) => {
-            groups.push({
-                id: tIndex + 1,
-                title: tValue,
-                border: "1px solid #db2828",
-                status: (statusList[tIndex].status !== 200)? true:false
-            });
+        groups.push({
+            id: 1,
+            title: ""
         });
 
         return groups;
@@ -102,27 +96,30 @@ export default class CalendarTimeline extends React.PureComponent {
         let tasksList = this.props.timelineList.tasksList;
         let timesList = this.props.timelineList.timesList;
         let items = [];
+
+        console.log("20200423_________ " + JSON.stringify(groups))
+
         tasksList.map((tValue, tIndex) => {
             const startDate = Date.parse(this.getParseDate(timesList[tIndex]));
             const startHour = Date.parse(moment(timesList[tIndex],"YYYY-MM-DD HH"));
             const startValue =Math.floor(moment(startDate).valueOf() / 10000000) * 10000000;
-            const endValue = moment(startDate + 250 * 60 * 1000).valueOf();
+            const endValue = moment(startDate + 1 * 60 * 1000).valueOf();
             items.push({
                 id: tIndex + "",
-                group: groups[tIndex].id + "",
+                group: groups[0].id + "",
                 title: statusList[tIndex].traceid,
                 start: startHour,
                 end: endValue,
                 startDate: startDate,
-                canMove: startValue > new Date().getTime(),
-                canResize:
-                    startValue > new Date().getTime()
-                        ? endValue > new Date().getTime()
-                            ? "both"
-                            : "left"
-                        : endValue > new Date().getTime()
-                        ? "right"
-                        : false,
+                // canMove: startValue > new Date().getTime(),
+                // canResize:
+                //     startValue > new Date().getTime()
+                //         ? endValue > new Date().getTime()
+                //         ? "both"
+                //         : "left"
+                //         : endValue > new Date().getTime()
+                //         ? "right"
+                //         : false,
                 className:
                     statusList[tIndex].status === 200
                         ? "normal"
@@ -134,8 +131,8 @@ export default class CalendarTimeline extends React.PureComponent {
                 taskItem: tValue,
                 borderColor:
                     statusList[tIndex].status === 200
-                    ? "#21ba45"
-                    : "#db2828",
+                        ? "#21ba45"
+                        : "#db2828",
                 selectedBorderColor:
                     statusList[tIndex].status === 200
                         ? "#21ba45"
@@ -317,17 +314,12 @@ export default class CalendarTimeline extends React.PureComponent {
                 scrolling: true
             }));
         } else {
-            this.onCurrentClick()
+            this.setState({
+                visibleTimeStart: this.makeUTCDateTime(moment()).startOf("hour").add(-4, 'hour').toDate(),
+                visibleTimeEnd: this.makeUTCDateTime(moment()).startOf("hour").add(1, 'hour').toDate(),
+                scrolling: true
+            });
         }
-    };
-
-    onCurrentClick = () => {
-        this.props.onCurrentClick()
-        this.setState({
-            visibleTimeStart: this.makeUTCDateTime(moment()).startOf("hour").add(-4, 'hour').toDate(),
-            visibleTimeEnd: this.makeUTCDateTime(moment()).startOf("hour").add(1, 'hour').toDate(),
-            scrolling: true
-        });
     };
 
     handleTimeChange = (visibleTimeStart, visibleTimeEnd) => {

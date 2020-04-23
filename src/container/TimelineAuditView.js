@@ -12,7 +12,7 @@ import * as actions from "../actions";
 import FlexBox from "flexbox-react";
 import CalendarTimeline from "../components/timeline/calendarTimeline";
 import { hot } from "react-hot-loader/root";
-import {Card, IconButton, Toolbar} from '@material-ui/core';
+import {Card, IconButton, Toolbar, ButtonGroup} from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 const sgmail = require('@sendgrid/mail')
@@ -567,11 +567,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     tasksList.push(taskValue)
                     timesList.push(datetime)
                     statusList.push({"status": allValue.status, "traceid": allValue.traceid})
+                    this.setState({dropDownOnChangeValue:v.value})
                 }
             })
 
             timelineList.push({'timesList' : timesList ,'tasksList':tasksList, 'statusList': statusList})
-            this.setState({timelineList: timelineList, dropDownOnChangeValue: v.value})
+            this.setState({timelineList: timelineList})
         }
 
         onClickUnCheckedError = () => {
@@ -611,11 +612,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                             statusList.push({"status": allValue.status, "traceid": allValue.traceid})
                         }
                     }
+                    this.setState({dropDownOnChangeValue:'uncheck'})
                 }
             })
 
             timelineList.push({'timesList' : timesList ,'tasksList':tasksList, 'statusList': statusList})
-            this.setState({timelineList: timelineList, dropDownOnChangeValue:value})
+            this.setState({timelineList: timelineList})
         }
 
         onClickStatus = (status) => {
@@ -635,13 +637,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 } else {
                     this.setState({statusNormalToggle: true, statusErrorToggle: false})
                 }
-            } else {
+            } else if(status === 'error'){
                 if(statusErrorToggle){
                     value = 'all'
                     this.setState({statusErrorToggle: false})
                 } else {
                     this.setState({statusErrorToggle: true, statusNormalToggle: false})
                 }
+            } else {
+                console.log("20200423___________ ")
+                value = 'all'
+                this.setState({statusErrorToggle: false, statusNormalToggle: false})
             }
 
             allData.map((allValue, allIndex) => {
@@ -665,15 +671,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                         timesList.push(datetime)
                         statusList.push({"status": allValue.status, "traceid": allValue.traceid});
                     }
+                    this.setState({dropDownOnChangeValue:status})
                 }
             })
 
             timelineList.push({'timesList' : timesList ,'tasksList':tasksList, 'statusList': statusList})
-            this.setState({timelineList: timelineList, dropDownOnChangeValue:status})
+            this.setState({timelineList: timelineList})
         }
 
         onCurrentClick = () => {
             let value = this.state.dropDownOnChangeValue
+
+            console.log("20200423 " + value)
 
             if(value === ''){
                 this.dropDownOnNameChange('name', {value:'all'})
@@ -681,7 +690,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 this.onClickStatus(value)
             } else if(value === 'uncheck'){
                 this.onClickUnCheckedError()
-            } else{
+            } else {
                 this.dropDownOnNameChange('name', value)
             }
         };
@@ -715,6 +724,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                     </button>
                                 </div>
                                 <div className="page_audit_history_option_period">
+                                    <ButtonGroup>
+                                        <Button onClick={() => this.onClickStatus("all")}>All</Button>
+                                        <Button onClick={() => this.onClickStatus("normal")}>Normal</Button>
+                                        <Button onClick={() => this.onClickStatus("error")}>error</Button>
+                                    </ButtonGroup>
                                     <button className="page_audit_error_box" onClick={() => this.onClickStatus("normal")}>
                                         <div className="page_audit_error_label">Normal</div>
                                         <div className="page_audit_error_number">{(this.state.statusCount.length)?this.state.statusCount[0].normalCount:0}</div>
