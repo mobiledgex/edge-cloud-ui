@@ -504,7 +504,7 @@ export const renderGridLoader = () => {
 }
 
 
-export const renderPlaceHolderLoader = (type = 'sk') => {
+export const renderPlaceHolderLoader = (type = '') => {
 
     if (type === 'sk') {
         return (

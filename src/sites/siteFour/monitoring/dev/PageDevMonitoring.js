@@ -27,12 +27,40 @@ import {
     reduceString,
     revertToDefaultLayout,
 } from "./PageDevMonitoringService";
-import {ADD_ITEM_LIST, CHART_COLOR_LIST, CLASSIFICATION, GRID_ITEM_TYPE, HARDWARE_OPTIONS_FOR_APPINST, HARDWARE_OPTIONS_FOR_CLUSTER, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, THEME_OPTIONS_LIST} from "../../../../shared/Constants";
+import {
+    ADD_ITEM_LIST,
+    CHART_COLOR_LIST,
+    CLASSIFICATION,
+    GRID_ITEM_TYPE,
+    HARDWARE_OPTIONS_FOR_APPINST,
+    HARDWARE_OPTIONS_FOR_CLUSTER,
+    HARDWARE_TYPE,
+    NETWORK_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    THEME_OPTIONS_LIST
+} from "../../../../shared/Constants";
 import type {TypeBarChartData, TypeLineChartData} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
-import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, PageMonitoringStyles, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../PageMonitoringCommonService";
-import {getAllAppInstEventLogs, getAllClusterEventLogList, getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList, requestShowAppInstClientWS} from "../PageMonitoringMetricService";
+import {
+    getOneYearStartEndDatetime,
+    isEmpty,
+    makeBubbleChartDataForCluster,
+    PageMonitoringStyles,
+    renderPlaceHolderLoader,
+    renderWifiLoader,
+    showToast
+} from "../PageMonitoringCommonService";
+import {
+    getAllAppInstEventLogs,
+    getAllClusterEventLogList,
+    getAppInstList,
+    getAppLevelUsageList,
+    getCloudletList,
+    getClusterLevelUsageList,
+    getClusterList,
+    requestShowAppInstClientWS
+} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
@@ -256,55 +284,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             }
 
-
-            async loadInitDataForCluster__FOR__DEV00000000000000777777(isInterval: boolean = false) {
-                try {
-                    clearInterval(this.intervalForAppInst)
-                    this.setState({dropdownRequestLoading: true})
-                    let clusterList = require('../aaa____TESTCODE____/Jsons/clusterList')
-                    let cloudletList = require('../aaa____TESTCODE____/Jsons/cloudletList')
-                    let appInstanceList = require('../aaa____TESTCODE____/Jsons/appInstanceList')
-                    let clusterDropdownList = makeSelectBoxListWithKeyValuePipeForCluster(clusterList, 'ClusterName', 'Cloudlet')
-                    let __allAppInstEvLogListValues = require('../aaa____TESTCODE____/Jsons/allAppInstEventLogList')
-                    let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
-                    let allClusterUsageList = require('../aaa____TESTCODE____/Jsons/allClusterUsageList')
-                    let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
-
-                    let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
-                        return o.sumCpuUsage;
-                    }));
-                    let maxMem = Math.max.apply(Math, allClusterUsageList.map(function (o) {
-                        return o.sumMemUsage;
-                    }));
-
-                    await this.setState({
-                        appInstanceListGroupByCloudlet: !isInterval && appInstanceListGroupByCloudlet,
-                        allClusterEventLogList: [],
-                        filteredClusterEventLogList: [],
-                        allAppInstEventLogs: __allAppInstEvLogListValues,
-                        filteredAppInstEventLogs: __allAppInstEvLogListValues,
-                        isReady: true,
-                        clusterDropdownList: clusterDropdownList,
-                        dropDownCloudletList: cloudletList,
-                        clusterList: clusterList,
-                        isAppInstaceDataReady: true,
-                        appInstanceList: appInstanceList,
-                        filteredAppInstanceList: appInstanceList,
-                        dropdownRequestLoading: false,
-                        bubbleChartData: bubbleChartData,
-                        clusterListLoading: false,
-                        allCloudletUsageList: allClusterUsageList,
-                        allClusterUsageList: allClusterUsageList,
-                        filteredClusterUsageList: allClusterUsageList,
-                        maxCpu: maxCpu,
-                        maxMem: maxMem,
-                        isRequesting: false,
-                        currentCluster: '',
-                    })
-                } catch (e) {
-
-                }
-            }
 
             async loadInitDataForDevMon(isInterval: boolean = false) {
                 let promiseList = []

@@ -468,14 +468,12 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 </div>
                                 }
 
-
                                 {/*@desc:#####################################..*/}
-                                {/*@desc:client Markers                      ...*/}
+                                {/*@desc:client Markers  (MarkerClusterGroup)...*/}
                                 {/*@desc:#####################################..*/}
                                 {this.state.clientObjKeys.map((objkeyOne, index) => {
                                     let groupedClientList = this.state.clientList;
                                     console.log(`groupedClientList===>`, groupedClientList);
-
                                     return (
                                         <MarkerClusterGroup>
                                             {groupedClientList[objkeyOne].map((item, index) => {
@@ -493,12 +491,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                                     <div style={{color: 'white', fontFamily: 'ubuntu'}}>
                                                                         {item.uuid}
                                                                     </div>
-                                                                    {/*
-                                                                    <div style={{width: 10}}/>
-                                                                    <div style={{color: 'orange', fontFamily: 'ubuntu',}}>
-                                                                        {`[${item.unique_id_type}]`}
-                                                                    </div>
-                                                                    */}
                                                                 </div>
 
                                                             </Popup>
