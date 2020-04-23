@@ -4,7 +4,7 @@ pipeline {
     }
     agent any
     environment {
-        DOCKER_BUILD_TAG = sh(returnStdout: true, script: "git -C edge-cloud-ui describe --tags")
+        DOCKER_BUILD_TAG = sh(returnStdout: true, script: "git describe --tags")
     }
     stages {
         stage('Set build tag') {
@@ -16,9 +16,7 @@ pipeline {
         }
         stage('Docker Image') {
             steps {
-                dir(path: 'edge-cloud-ui') {
-                    sh "make build && make publish"
-                }
+                sh "make build && make publish"
             }
         }
     }
