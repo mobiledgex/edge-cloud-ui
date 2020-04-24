@@ -3,7 +3,7 @@ import * as React from 'react';
 import {Modal as AModal, notification, Radio, Select} from "antd";
 import {Dropdown} from "semantic-ui-react";
 import {PageMonitoringStyles} from "../PageMonitoringCommonService";
-import {CLASSIFICATION, EVENT_LOG_ITEM_LIST, GRID_ITEM_TYPE, HARDWARE_TYPE} from "../../../../shared/Constants";
+import {CLASSIFICATION, EVENT_LOG_ITEM_LIST, GRID_ITEM_TYPE} from "../../../../shared/Constants";
 import {ReactSVG} from 'react-svg'
 import {CircularProgress} from "@material-ui/core";
 import {Center, ChartIconOuterDiv} from "../PageMonitoringStyledComponent";
@@ -21,14 +21,13 @@ type State = {
     isShowEventLog: boolean,
     currentHwTypeList: any,
     selectDefaultValues: any,
+    loading: boolean,
 
 };
 
 const Option = Select.Option;
 
 export default class AddItemPopupContainer extends React.Component<Props, State> {
-
-
     constructor(props: Props) {
         super(props)
         this.state = {
@@ -38,6 +37,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
             isShowHWDropDown: true,
             isShowEventLog: false,
             selectDefaultValues: [],
+            loading: false,
         }
     }
 
@@ -68,47 +68,52 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
     }
 
     handleAddClicked = async () => {
+        try {
+            if (this.state.currentItemType === GRID_ITEM_TYPE.LINE || this.state.currentItemType === GRID_ITEM_TYPE.BAR || this.state.currentItemType === GRID_ITEM_TYPE.COLUMN) {
+                if (this.state.currentHwTypeList.length === 0) {
+                    notification.warning({
+                        placement: 'topLeft',
+                        duration: 1,
+                        message: `Please, Select HW Type`,
+                    });
+                } else {
+                    let {currentHwTypeList} = this.state;
 
-        if (this.state.currentItemType === GRID_ITEM_TYPE.LINE || this.state.currentItemType === GRID_ITEM_TYPE.BAR || this.state.currentItemType === GRID_ITEM_TYPE.COLUMN) {
-            if (this.state.currentHwTypeList.length === 0) {
-                notification.warning({
-                    placement: 'topLeft',
-                    duration: 1,
-                    message: `Please, Select HW Type`,
-                });
-            } else {
-                let {currentHwTypeList} = this.state;
+
+                    for (let i in currentHwTypeList) {
+                        await this.props.parent.addGridItem(currentHwTypeList[i], this.state.currentItemType);
+                    }
 
 
-                for (let i in currentHwTypeList) {
-                    await this.props.parent.addGridItem(currentHwTypeList[i], this.state.currentItemType);
+                    //todo:init dropdown selected values
+                    await this.setState({
+                        currentHwTypeList: [],
+                    })
+
+                    this.closePopupWindow();
+
+                    notification.success({
+                        placement: 'bottomLeft',
+                        duration: 3,
+                        message: `${this.state.currentItemType} [${currentHwTypeList}] items added`,
+                    });
                 }
 
+            } else {
 
-                //todo:init dropdown selected values
-                await this.setState({
-                    currentHwTypeList: [],
-                })
-
+                await this.props.parent.addGridItem(this.state.currentHwType, this.state.currentItemType);
                 this.closePopupWindow();
-
                 notification.success({
                     placement: 'bottomLeft',
                     duration: 3,
-                    message: `${this.state.currentItemType} [${currentHwTypeList}] items added`,
+                    message: `${this.state.currentItemType} [${this.state.currentHwType}] item added`,
                 });
             }
 
-        } else {
 
-            await this.props.parent.addGridItem(this.state.currentHwType, this.state.currentItemType);
-            this.closePopupWindow();
-
-            notification.success({
-                placement: 'bottomLeft',
-                duration: 3,
-                message: `${this.state.currentItemType} [${this.state.currentHwType}] item added`,
-            });
+        } catch (e) {
+            throw new Error(e)
+        } finally {
         }
 
 
@@ -157,6 +162,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                     <div style={{width: '100%'}}>
                         <div style={{display: 'flex', width: '100%',}}>
                             {this.renderPrevBtn2()}
+                            {this.state.loading ? <div style={{marginLeft: 20,}}><CircularProgress/></div> : null}
                             <div className='page_monitoring_popup_title'>
                                 Add Item [{this.props.parent.state.currentClassification}]
                             </div>
@@ -344,7 +350,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         allowClear={true}
                                         mode="multiple"
                                         style={{width: '100%'}}
-                                        placeholder="Please Select Hardware Type"
+                                        placeholder="Select Hardware Type"
                                         value={this.state.currentHwTypeList}
                                         onChange={(values) => {
                                             this.setState({
@@ -412,6 +418,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                 }}
                             >Cancel
                             </Button>
+
                         </div>
 
                     </div>

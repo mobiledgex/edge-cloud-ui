@@ -287,7 +287,6 @@ export default function MiniDrawer(props) {
             {process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'}
         </div>
     )
-
     /**
      * Legend Block
      * * */

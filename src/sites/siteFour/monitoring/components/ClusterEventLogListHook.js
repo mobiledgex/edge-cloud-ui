@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Table} from "semantic-ui-react";
-import {PageMonitoringStyles, renderPlaceHolderCircular} from "../PageMonitoringCommonService";
+import {PageMonitoringStyles, renderPlaceHolderLoader} from "../PageMonitoringCommonService";
 import '../PageMonitoring.css'
 
 
@@ -33,8 +33,8 @@ export default function ClusterEventLogListHook(props) {
                 </div>
 
             </div>
-            <Table basic='very' sortable striped celled fixed collapsing
-                   styles={{zIndex: 999999999999}}>
+            <Table basic='very' sortable striped celled fixed collapsing styles={{zIndex: 999999999999}}>
+
                 <div>
                     <Table.Row style={PageMonitoringStyles.tableHeaderRow2}>
                         <Table.HeaderCell style={{flex: .3, padding: 0}}>
@@ -112,7 +112,7 @@ export default function ClusterEventLogListHook(props) {
                             )
                         })
                         :
-                        renderPlaceHolderCircular()
+                        renderPlaceHolderLoader()
                     }
                 </Table.Body>
             </Table>

@@ -165,7 +165,13 @@ tbody:hover {
 }
 
 .clientPopup {
-    width: 300px;
+    width: 280px;
+    font-family: Ubuntu !important;
+    font-size: 9pt !important;
+}
+
+.leaflet-popup-content {
+    font-size: 10pt !important;
 }
 
 .leaflet-popup-content-wrapper2 {

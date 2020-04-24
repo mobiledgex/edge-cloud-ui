@@ -18,7 +18,7 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {PageMonitoringStyles, renderLoaderArea, renderPlaceHolderCircular, showToast} from "../PageMonitoringCommonService";
+import {PageMonitoringStyles, renderLoaderArea, renderPlaceHolderLoader, showToast} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
 import {handleBubbleChartDropDownForCloudlet, makeBarChartDataForCloudlet, makeLineChartForCloudlet, renderBottomGridAreaForCloudlet} from "./PageOperMonitoringService";
 import LeafletMap from "../components/MapForOperContainer";
@@ -371,7 +371,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.VCPU)}
+                            {this.state.loading ? renderPlaceHolderLoader() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.VCPU)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -384,7 +384,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.VCPU)}
+                            {this.state.loading ? renderPlaceHolderLoader() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.VCPU)}
                         </div>
                     </div>
                 </div>
@@ -404,7 +404,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.MEM)}
+                            {this.state.loading ? renderPlaceHolderLoader() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.MEM)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -417,7 +417,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.MEM)}
+                            {this.state.loading ? renderPlaceHolderLoader() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.MEM)}
                         </div>
                     </div>
 
@@ -436,7 +436,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.DISK)}
+                            {this.state.loading ? renderPlaceHolderLoader() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.DISK)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -447,7 +447,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.DISK)}
+                            {this.state.loading ? renderPlaceHolderLoader() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.DISK)}
                         </div>
                     </div>
                 </div>
@@ -465,7 +465,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.FLOATING_IPS)}
+                            {this.state.loading ? renderPlaceHolderLoader() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.FLOATING_IPS)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -476,7 +476,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.FLOATING_IPS)}
+                            {this.state.loading ? renderPlaceHolderLoader() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.FLOATING_IPS)}
                         </div>
                     </div>
                 </div>
@@ -494,7 +494,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.IPV4)}
+                            {this.state.loading ? renderPlaceHolderLoader() : makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, HARDWARE_TYPE.IPV4)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -505,7 +505,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.IPV4)}
+                            {this.state.loading ? renderPlaceHolderLoader() : makeLineChartForCloudlet(this, this.state.filteredCloudletUsageList, HARDWARE_TYPE.IPV4)}
                         </div>
                     </div>
                 </div>
@@ -523,7 +523,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular('network') : makeBarChartDataForCloudlet(this.state.allCloudletUsageList, networkType, this)}
+                            {this.state.loading ? renderPlaceHolderLoader('network') : makeBarChartDataForCloudlet(this.state.allCloudletUsageList, networkType, this)}
                         </div>
                     </div>
                     <div className='page_monitoring_dual_container'>
@@ -556,7 +556,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderCircular('network') : makeLineChartForCloudlet(this, this.state.allCloudletUsageList, networkType)}
+                            {this.state.loading ? renderPlaceHolderLoader('network') : makeLineChartForCloudlet(this, this.state.allCloudletUsageList, networkType)}
                         </div>
                     </div>
                 </div>
@@ -1182,7 +1182,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*todo: RENDER BUBBLE          */}
                                                     {/*todo:---------------------------------*/}
                                                     <div className='page_monitoring_container'>
-                                                        {this.state.loading ? renderPlaceHolderCircular() : renderBubbleChartForCloudlet(this, this.state.currentHardwareType, this.state.bubbleChartData)}
+                                                        {this.state.loading ? renderPlaceHolderLoader() : renderBubbleChartForCloudlet(this, this.state.currentHardwareType, this.state.bubbleChartData)}
                                                     </div>
                                                 </div>
                                                 {/*todo: renderCloudletEventLog*/}
