@@ -1,26 +1,27 @@
-import {convertByteToMegaByte} from "../sites/siteFour/monitoring/PageMonitoringCommonService";
+//export const RECENT_DATA_LIMIT_COUNT = 50
+export const RECENT_DATA_LIMIT_COUNT = 10
 
-export const RECENT_DATA_LIMIT_COUNT = 50
 
 export const API_ENDPOINT_PREFIX = '/api/v1/';
-export const BORDER_CHART_COLOR_LIST = ["#70001C", "#FF5E1D", "#E3DC39", "#128702", "#1C22FF", '#66D9EF', '#272822', '#75715E',]
-export const CHART_COLOR_LIST = ['#DE0000', '#FF9600', '#FFF600', '#5BCB00', '#0096FF', '#66D9EF', '#272822', '#75715E',]
-export const CHART_COLOR_LIST2 = ['#65DEF1', '#A8DCD1', '#DCE2C8', '#F96900', '#F17F29', '#66D9EF', '#272822', '#75715E',]
+export const BORDER_CHART_COLOR_LIST = ["#70001C", "#FF5E1D", "#E3DC39", "#128702", "#1C22FF", '#66D9EF', '#272822', '#75715E', '#808000', '#000080', '#808000', '#800000']
 
-export const CHART_COLOR_LIST3 = ['#008000', '#d7fff1', '#556B2F', '#32CD32', '#8cd790', '#66D9EF', '#272822', '#75715E',]
 
-export const CHART_COLOR_LIST4 = ['#FF0000', '#FFBDAA', '#D4826A', '#802D15', '#551300', '#66D9EF', '#272822', '#75715E',]
+export const CHART_COLOR_LIST = ['#DE0000', '#FF9600', '#FFF600', '#5BCB00', '#0096FF', '#66D9EF', '#E38B9E', '#8591FF', '#BB1924', '#98D259', '#E3A88B', '#D11AC6', '#7DD11A', '#D1521A', '#008CF8', '#521AD1', '#7D0000', '#EB155C', '#EBEE04', '#1CA41F', '#FF0037', '#C092FF', '#999900', '#E8FFAA', '#FFBA99']
+export const CHART_COLOR_LIST2 = ['#65DEF1', '#A8DCD1', '#DCE2C8', '#F96900', '#F17F29', '#66D9EF', '#E38B9E', '#8591FF', '#BB1924', '#98D259', '#E3A88B', '#D11AC6', '#7DD11A', '#D1521A', '#008CF8', '#521AD1', '#7D0000', '#EB155C', '#EBEE04', '#1CA41F', '#FF0037', '#C092FF', '#999900', '#E8FFAA', '#FFBA99']
+export const CHART_COLOR_LIST3 = ['#008000', '#d7fff1', '#556B2F', '#32CD32', '#8cd790', '#66D9EF', '#E38B9E', '#8591FF', '#BB1924', '#98D259', '#E3A88B', '#D11AC6', '#7DD11A', '#D1521A', '#008CF8', '#521AD1', '#7D0000', '#EB155C', '#EBEE04', '#1CA41F', '#FF0037', '#C092FF', '#999900', '#E8FFAA', '#FFBA99']
+export const CHART_COLOR_LIST4 = ['#FF0000', '#FFBDAA', '#D4826A', '#802D15', '#551300', '#66D9EF', '#E38B9E', '#8591FF', '#BB1924', '#98D259', '#E3A88B', '#D11AC6', '#7DD11A', '#D1521A', '#008CF8', '#521AD1', '#7D0000', '#EB155C', '#EBEE04', '#1CA41F', '#FF0037', '#C092FF', '#999900', '#E8FFAA', '#FFBA99']
+export const CHART_COLOR_MONOKAI = ['#F92672', '#FD971F', '#A6E22E', '#E6DB74', '#A6E22E', '#66D9EF', '#E38B9E', '#8591FF', '#BB1924', '#98D259', '#E3A88B', '#D11AC6', '#7DD11A', '#D1521A', '#008CF8', '#521AD1', '#7D0000', '#EB155C', '#EBEE04', '#1CA41F', '#FF0037', '#C092FF', '#999900', '#E8FFAA', '#FFBA99']
+export const CHART_COLOR_APPLE = ['#0A84FF', '#30D158', '#FF453A', '#FF9F0A', '#FF375F', '#66D9EF', '#E38B9E', '#8591FF', '#BB1924', '#98D259', '#E3A88B', '#D11AC6', '#7DD11A', '#D1521A', '#008CF8', '#521AD1', '#7D0000', '#EB155C', '#EBEE04', '#1CA41F', '#FF0037', '#C092FF', '#999900', '#E8FFAA', '#FFBA99']
+export const CHART_COLOR_EXOTIC_ORCHIDS = ['#72a2c0', '#00743f', '#f2a104', '#192e5b', '#1d65a6', '#66D9EF', '#E38B9E', '#8591FF', '#BB1924', '#98D259', '#E3A88B', '#D11AC6', '#7DD11A', '#D1521A', '#008CF8', '#521AD1', '#7D0000', '#EB155C', '#EBEE04', '#1CA41F', '#FF0037', '#C092FF', '#999900', '#E8FFAA', '#FFBA99']
+export const CHART_COLOR_URBAN_SKYLINE = ['#522E75', '#7e7d7b', '#52591F', '#A3765D', '#714E3D', '#66D9EF', '#E38B9E', '#8591FF', '#BB1924', '#98D259', '#E3A88B', '#D11AC6', '#7DD11A', '#D1521A', '#008CF8', '#521AD1', '#7D0000', '#EB155C', '#EBEE04', '#1CA41F', '#FF0037', '#C092FF', '#999900', '#E8FFAA', '#FFBA99']
+export const CHART_COLOR_BERRIES_GALORE = ['#777CA8', '#BB1924', '#EE6C81', '#F092A5', '#AFBADC', '#66D9EF', '#E38B9E', '#8591FF', '#BB1924', '#98D259', '#E3A88B', '#D11AC6', '#7DD11A', '#D1521A', '#008CF8', '#521AD1', '#7D0000', '#EB155C', '#EBEE04', '#1CA41F', '#FF0037', '#C092FF', '#999900', '#E8FFAA', '#FFBA99']
+export const CHART_COLOR_BRIGHT_AND_ENERGETIC = ['#F14D49', '#002485', '#118C8B', '#BCA18D', '#F2746B', '#66D9EF', '#E38B9E', '#8591FF', '#BB1924', '#98D259', '#E3A88B', '#D11AC6', '#7DD11A', '#D1521A', '#008CF8', '#521AD1', '#7D0000', '#EB155C', '#EBEE04', '#1CA41F', '#FF0037', '#C092FF', '#999900', '#E8FFAA', '#FFBA99']
+export const CHART_COLOR_EARTHY_AND_NATURAL = ['#E4EBF2', '#52733B', '#84A45A', '#818A6F', '#715E4E', '#66D9EF', '#E38B9E', '#8591FF', '#BB1924', '#98D259', '#E3A88B', '#D11AC6', '#7DD11A', '#D1521A', '#008CF8', '#521AD1', '#7D0000', '#EB155C', '#EBEE04', '#1CA41F', '#FF0037', '#C092FF', '#999900', '#E8FFAA', '#FFBA99']
+export const CHART_COLOR_JAZZ_NIGHT = ['#C59CDB', '#DFD0F1', '#A67B04', '#F3EED6', '#701B05', '#66D9EF', '#E38B9E', '#8591FF', '#BB1924', '#98D259', '#E3A88B', '#D11AC6', '#7DD11A', '#D1521A', '#008CF8', '#521AD1', '#7D0000', '#EB155C', '#EBEE04', '#1CA41F', '#FF0037', '#C092FF', '#999900', '#E8FFAA', '#FFBA99']
 
-export const CHART_COLOR_MONOKAI = ['#F92672', '#FD971F', '#A6E22E', '#E6DB74', '#A6E22E', '#66D9EF', '#272822', '#75715E',]
-export const CHART_COLOR_APPLE = ['#0A84FF', '#30D158', '#FF453A', '#FF9F0A', '#FF375F', '#66D9EF', '#272822', '#75715E',]
-
-export const CHART_COLOR_LIST5 = ['#609732', '#6EDC12', '#69BA27', '#527536', '#405330']
-export const CHART_COLOR_LIST6 = ['#AA5939', '#F75514', '#D15A2B', '#83513C', '#5D4136']
-export const CHART_COLOR_LIST7 = ['#6F256F', '#A10DA1', '#881C88', '#552755', '#3C233C']
 
 export const DARK_LINE_COLOR = 'yellow'
 export const DARK_CLOUTLET_ICON_COLOR = 'green'
-
 export const WHITE_LINE_COLOR = 'black'
 export const WHITE_CLOUTLET_ICON_COLOR = 'blue'
 
@@ -39,6 +40,12 @@ export const THEME_OPTIONS = {
     RED: 'RED',
     MONOKAI: 'MONOKAI',
     APPLE: 'APPLE',
+    BRIGHT_AND_ENERGETIC: 'BRIGHT_AND_ENERGETIC',
+    BERRIES_GALORE: 'BERRIES_GALORE',
+    EARTHY_AND_NATURAL: 'EARTHY_AND_NATURAL',
+    EXOTIC_ORCHIDS: 'EXOTIC_ORCHIDS',
+    URBAN_SKYLINE: 'URBAN_SKYLINE',
+    JAZZ_NIGHT: 'JAZZ_NIGHT',
 }
 
 export const THEME_OPTIONS_LIST = [
@@ -48,7 +55,13 @@ export const THEME_OPTIONS_LIST = [
     {value: 'RED', text: 'RED'},
     {value: 'MONOKAI', text: 'MONOKAI'},
     {value: 'APPLE', text: 'APPLE'},
-    //CHART_COLOR_APPLE
+    {value: 'BRIGHT_AND_ENERGETIC', text: 'BRIGHT AND ENERGETIC'},
+    {value: 'BERRIES_GALORE', text: 'BERRIES GALORE'},
+    {value: 'EARTHY_AND_NATURAL', text: 'EARTHY AND NATURAL'},
+    {value: 'EXOTIC_ORCHIDS', text: 'EXOTIC ORCHIDS'},
+    {value: 'URBAN_SKYLINE', text: 'URBAN SKYLINE'},
+    {value: 'JAZZ_NIGHT', text: 'JAZZ NIGHT'},
+
 ]
 
 export const ITEM_TYPE = [
@@ -57,8 +70,6 @@ export const ITEM_TYPE = [
     {text: 'COLUMN_CHART', value: 'COLUMN_CHART'},
     {text: 'EVENT_LOG', value: 'EVENT_LOG'},
     {text: 'MAP', value: 'MAP'},
-
-    //CHART_COLOR_APPLE
 ]
 
 
@@ -334,9 +345,8 @@ export const ADD_ITEM_LIST = [
 ]
 
 export const EVENT_LOG_ITEM_LIST = [
-
     {text: 'PERFORMANCE SUM', value: 'PERFORMANCE_SUM'},
-    {text: 'CLUSTER EVENT LOG', value: 'CLUSTER_EVENTLOG_LIST'},
+    //{text: 'CLUSTER EVENT LOG', value: 'CLUSTER_EVENTLOG_LIST'},
     {text: 'APP INST EVENT LOG', value: 'APP_INST_EVENT_LOG'},
 ]
 

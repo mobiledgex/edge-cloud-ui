@@ -293,7 +293,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 }
 
                 allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList);
-                console.log('cloudletList===>', cloudletList);
 
                 let cloudletListForDropdown = [];
                 cloudletList.map(item => {
@@ -310,12 +309,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     filteredCloudletEventLogs: allCloudletEventLogList,
                     dropdownCloudletList: cloudletListForDropdown,
                 }, () => {
-                    console.log('dropdownCloudletList===>', this.state.dropdownCloudletList);
                 })
 
                 let allCloudletUsageList = await getCloudletLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
 
-                console.log("allCloudletUsageList===>", allCloudletUsageList);
 
                 let bubbleChartData = await this.makeBubbleChartDataForCloudlet(allCloudletUsageList);
                 await this.setState({
@@ -670,7 +667,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 let filteredCloudletList = filterByClassification(this.state.cloudletList, selectedRegion, CLASSIFICATION.REGION)
                 let filteredCloudletUsageList = filterByClassification(this.state.allCloudletUsageList, selectedRegion, CLASSIFICATION.REGION)
                 let dropdownCloudletList = makeSelectBoxListWithKey(filteredCloudletList, "CloudletName")
-                console.log('dropdownCloudletList===>', dropdownCloudletList);
                 await this.setState({
                     cloudLetSelectBoxPlaceholder: 'Select cloudlet',
                     filteredCloudletList: filteredCloudletList,

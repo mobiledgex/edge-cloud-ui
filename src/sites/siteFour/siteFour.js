@@ -51,7 +51,6 @@ class SiteFour extends React.Component {
             setMotion: defaultMotion,
             OrganizationName: '',
             adminShow: false,
-            currentVersion: 'v-',
             searchChangeValue: 'Username',
             menuClick: false,
             showItem: false,
@@ -129,7 +128,6 @@ class SiteFour extends React.Component {
             token: token,
             method: serviceMC.getEP().SHOW_CONTROLLER
         }, _self.receiveControllerResult);
-        _self.setState({currentVersion: process.env.REACT_APP_BUILD_VERSION ? "v"+ process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'})
     }
 
 
@@ -291,7 +289,7 @@ class SiteFour extends React.Component {
                     position: 'top-right',
                     effect: 'slide',
                     beep: true,
-                    timeout: 5000,
+                    timeout: 10000,
                     offset: 100
                 });
             } else if (nextProps.alertInfo.mode === 'error') {
@@ -299,13 +297,10 @@ class SiteFour extends React.Component {
                     position: 'top-right',
                     effect: 'slide',
                     beep: true,
-                    timeout: 5000,
+                    timeout: 20000,
                     offset: 100,
                     html: true
                 });
-                //return(<MexMessage open={true} info={{error:400,message:nextProps.alertInfo.msg}}/>)
-
-
             }
             nextProps.handleAlertInfo('', '');
         }

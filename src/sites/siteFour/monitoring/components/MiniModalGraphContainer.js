@@ -5,6 +5,7 @@ import {Line} from 'react-chartjs-2';
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import type {TypeLineChartData2} from "../../../../shared/Types";
 import {lineGraphOptions} from "../../../../shared/Constants";
+import {makeGradientColorList} from "../dev/PageDevMonitoringService";
 
 type Props = {
     modalIsOpen: boolean,
@@ -21,7 +22,7 @@ type State = {
 
 };
 
-export default class ModalGraph extends React.Component<Props, State> {
+export default class MiniModalGraphContainer extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
@@ -53,38 +54,58 @@ export default class ModalGraph extends React.Component<Props, State> {
 
             let index = nextProps.selectedClusterUsageOneIndex
 
-            let arrayDatasetsList = []
-            let datasetsOne = {
-                label: currentClusterName,
-                backgroundColor: this.props.parent.state.chartColorList[index],
-                borderColor: this.props.parent.state.chartColorList[index],
-                borderCapStyle: 'butt',
-                fill: false,//todo: 라인차트 area fill True/false
-                //backgroundColor: '',
-                borderWidth: 3.5, //lineBorder
-                lineTension: 0.5,
-                pointColor: "#fff",
-                pointStrokeColor: 'white',
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: 'white',
-                data: usageSetList,
-                radius: 0,
-                pointRadius: 1,
+
+            const lineChartData = (canvas) => {
+                let arrayDatasetsList = []
+                let gradientList = makeGradientColorList(canvas, 250, this.props.parent.state.chartColorList);
+
+                let isGradientColor = this.props.parent.state.isStackedLineChart;
+
+                let datasetsOne = {
+                    label: currentClusterName,
+                    fill: isGradientColor,// @desc:fill@desc:fill@desc:fill@desc:fill
+                    backgroundColor: isGradientColor ? gradientList[index] : this.props.parent.state.chartColorList[index],
+                    borderColor: isGradientColor ? gradientList[index] : this.props.parent.state.chartColorList[index],
+                    borderCapStyle: 'butt',
+                    //backgroundColor: '',
+                    borderWidth: 3.5, //lineBorder
+                    lineTension: 0.5,
+                    pointColor: "#fff",
+                    pointStrokeColor: gradientList[index],
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: gradientList[index],
+                    data: usageSetList,
+                    radius: 0,
+                    pointBorderColor: gradientList[index],
+                    pointBackgroundColor: gradientList[index],
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: gradientList[index],
+                    pointHoverBorderColor: gradientList[index],
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+                    order: index,
+                }
+
+                arrayDatasetsList.push(datasetsOne)
+
+                let lineChartData = {
+                    labels: newDateTimeList,
+                    datasets: arrayDatasetsList,
+                }
+
+                return lineChartData;
+
+
             }
 
-            arrayDatasetsList.push(datasetsOne)
-
-            let lineChartData = {
-                labels: newDateTimeList,
-                datasets: arrayDatasetsList,
-            }
 
             this.setState({
                 lineChartData: lineChartData,
                 options: lineGraphOptions,
                 hardwareType: hardwareType,
             }, () => {
-                console.log('lineChartData333333===>', this.state.lineChartData)
             })
         }
     }
@@ -96,7 +117,7 @@ export default class ModalGraph extends React.Component<Props, State> {
             <div style={{flex: 1, display: 'flex', width: '100%'}}>
                 <AModal
                     mask={false}
-                    style={{top: 220, left: -470,}} //@fixme :modal popup container location( absoulte)
+                    style={{top: 220, left: 140,}} //@fixme :modal popup container location( absoulte)
                     //title={this.props.currentGraphAppInst + " [" + this.props.cluster + "]" + "  " + this.state.hardwareType}
                     visible={this.props.modalIsOpen}
                     onOk={() => {
@@ -112,15 +133,16 @@ export default class ModalGraph extends React.Component<Props, State> {
                         })
 
                     }}
-                    maskStyle={{color:'white'}}
+                    maskStyle={{color: 'white'}}
                     bodyStyle={{
-                      //  height: window.innerHeight - 20,
+                        //  height: window.innerHeight - 20,
                         backgroundColor: 'rgb(41, 44, 51)',
                     }}
                     width={'30%'}
                     height={'85%'}
                     footer={null}
                 >
+
                     <div style={{display: 'flex', backgroundColor: 'transparent', width: '100%', height: 59}}>
                         <div style={{
                             flex: .85,
@@ -135,13 +157,14 @@ export default class ModalGraph extends React.Component<Props, State> {
                         </div>
                         <div
                             style={{
-                                flex: .15,
+                                flex: .13,
                                 color: 'white',
-                                fontFamily: 'Roboto Condensed',
+                                fontFamily: 'ubuntu',
                                 fontSize: 18,
                                 fontWeight: 'bold',
                                 textAlign: 'right',
                                 display: 'flex',
+                                marginRight: 20,
                             }}>
                             {this.state.hardwareType}
                         </div>
@@ -152,9 +175,7 @@ export default class ModalGraph extends React.Component<Props, State> {
                         height={window.innerHeight / 3.5}
                         data={this.state.lineChartData}
                         options={this.state.options}
-                        //data={data222}
                     />
-
                 </AModal>
 
             </div>

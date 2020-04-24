@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import BubbleChart from "../../../../components/BubbleChart";
+import BubbleChartCore from "./BubbleChartCore";
 import {handleHardwareTabChanges, handleLegendAndBubbleClickedEvent, makeLineChartDataForCluster} from "../dev/PageDevMonitoringService";
 import {makeBubbleChartDataForCluster, PageMonitoringStyles, renderPlaceHolderCircular, showToast} from "../PageMonitoringCommonService";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
@@ -33,6 +33,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
     componentDidMount(): void {
         this.setState({
             bubbleChartData: this.props.bubbleChartData,
+        }, () => {
         })
     }
 
@@ -79,7 +80,6 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
 
 
             function renderOffsetY(listLength) {
-                console.log("renderOffsetY===>", listLength);
                 if (listLength === 0) {
                     return 0.05;
                 } else if (listLength === 1) {
@@ -87,7 +87,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                 } else if (listLength <= 4) {
                     return 0.05;
                 } else {
-                    return 0.00;
+                    return 0.02;
                 }
             }
 
@@ -142,10 +142,12 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                                         await handleHardwareTabChanges(this.props.parent, value)
 
                                                         try {
-                                                            let bubbleChartData = makeBubbleChartDataForCluster(this.props.parent.state.filteredClusterUsageList, value);
+                                                            let bubbleChartData = makeBubbleChartDataForCluster(this.props.parent.state.filteredClusterUsageList, value, this.props.parent.state.chartColorList);
+
                                                             this.props.parent.setState({
                                                                 bubbleChartData: bubbleChartData,
                                                                 currentHardwareType: value,
+                                                            }, () => {
                                                             })
 
                                                         } catch (e) {
@@ -164,7 +166,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                     </div>
                                 </div>
                                 <div className='page_monitoring_container'>
-                                    <BubbleChart
+                                    <BubbleChartCore
                                         className='bubbleChart'
                                         style={{height: this.props.isBig ? window.innerHeight : 350, marginLeft: -350}}
                                         graph={{
@@ -193,13 +195,12 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                             fontStyle: 'italic',
                                         }}
                                         labelFont={{
-                                            //family: 'Righteous',
-                                            size: 14,
+                                            family: 'Abel',
+                                            size: 11,
                                             color: 'black',
-                                            //weight: 'bold',
+                                            weight: 'bold',
                                         }}
                                         bubbleClickFun={async (cluster_cloudlet, index) => {
-
                                             try {
                                                 let lineChartDataSet = makeLineChartDataForCluster(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
                                                 cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
@@ -207,17 +208,16 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                             } catch (e) {
 
                                             }
-
 
                                         }}
                                         legendClickFun={async (cluster_cloudlet, index) => {
-                                            try {
-                                                let lineChartDataSet = makeLineChartDataForCluster(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
-                                                cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
-                                                handleLegendAndBubbleClickedEvent(this.props.parent, cluster_cloudlet, lineChartDataSet)
-                                            } catch (e) {
+                                            /*   try {
+                                                   let lineChartDataSet = makeLineChartDataForCluster(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
+                                                   cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
+                                                   handleLegendAndBubbleClickedEvent(this.props.parent, cluster_cloudlet, lineChartDataSet)
+                                               } catch (e) {
 
-                                            }
+                                               }*/
                                         }}
                                         data={pBubbleChartData}
                                     />

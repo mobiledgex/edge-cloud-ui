@@ -9,7 +9,7 @@ import MexTab from '../../../hoc/forms/MexTab';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
-import { fields } from '../../../services/model/format';
+import { fields, getOrganization } from '../../../services/model/format';
 //model
 import { getOrganizationList } from '../../../services/model/organization';
 import { createCloudlet, updateCloudlet } from '../../../services/model/cloudlet';
@@ -68,7 +68,7 @@ class ClusterInstReg extends React.Component {
             if (mcRequest.response && mcRequest.response.data) {
                 data = mcRequest.response.data;
             }
-            this.setState({ stepsArray: updateStepper(this.state.stepsArray, cloudletName, data) })
+            this.setState({ stepsArray: updateStepper(this.state.stepsArray, cloudletName, data, cloudletName) })
         }
     }
 
@@ -246,10 +246,10 @@ class ClusterInstReg extends React.Component {
 
     formKeys = () => {
         return [
-            { label: 'Cloudlet', formType: 'Header', visible: true },
+            { label: 'Create Cloudlet', formType: 'Header', visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Select region where you want to deploy.' },
             { field: fields.cloudletName, label: 'Cloudlet Name', formType: INPUT, placeholder: 'Enter cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.' },
-            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, tip: 'Name of the organization you are currently managing.' },
+            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: getOrganization() ? true : false}, visible: true, value: getOrganization(), tip: 'Name of the organization you are currently managing.' },
             { uuid: uuid(), field: fields.cloudletLocation, label: 'Cloudlet Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'Cloudlet Location' },
             { field: fields.ipSupport, label: 'IP Support', formType: SELECT, placeholder: 'Select IP Support', rules: { required: true }, visible: true, tip: 'Ip Support indicates the type of public IP support provided by the Cloudlet. Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.' },
             { field: fields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: INPUT, placeholder: 'Enter Number of Dynamic IPs', rules: { required: true, type: 'number' }, visible: true, tip: 'Number of dynamic IPs available for dynamic IP support.' },
@@ -297,7 +297,7 @@ class ClusterInstReg extends React.Component {
             this.operatorList = []
             for (let i = 0; i < organizationList.length; i++) {
                 let organization = organizationList[i]
-                if (organization[fields.type] === 'operator') {
+                if (organization[fields.type] === 'operator' || getOrganization()) {
                     this.operatorList.push(organization[fields.organizationName])
                 }
             }

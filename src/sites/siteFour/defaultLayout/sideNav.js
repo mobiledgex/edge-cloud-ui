@@ -101,7 +101,7 @@ const useStyles = makeStyles(theme => ({
 
 const options = [
     {label: 'Organizations', icon: <SupervisorAccountOutlinedIcon/>, pg: 0, page: <SiteFourPageOrganization/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']},
-    {label: 'Users & Roles', icon: <AssignmentIndOutlinedIcon/>, pg: 1, page: <SiteFourPageUser/>, roles: ['AdminManager']},
+    {label: 'Users & Roles', icon: <AssignmentIndOutlinedIcon/>, pg: 1, page: <SiteFourPageUser/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']},
     {label: 'Accounts', icon: <DvrOutlinedIcon/>, pg: 101, page: <SiteFourPageAccount/>, roles: ['AdminManager']},
     {divider: true},
     {label: 'Cloudlets', icon: <CloudQueueOutlinedIcon/>, pg: 2, page: <SiteFourPageCloudlet/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']},
@@ -197,44 +197,49 @@ export default function MiniDrawer(props) {
             <ListItem onClick={(e) => {
                 setOpenLegend(localStorage.selectRole && localStorage.selectRole != 'null')
             }}>
-                <ListItemIcon>
-                    {localStorage.selectRole ?
-                        <div className="markBox">
-                            {
-                                (localStorage.selectRole === 'AdminManager') ?
-                                    <div className="mark markA markS">S</div>
-                                    :
-                                    (localStorage.selectRole === 'DeveloperManager') ?
-                                        <div className="mark markD markM">M</div>
+                {
+                localStorage.selectRole && localStorage.selectRole!=='null'?
+                    <ListItemIcon>
+                            <div className="markBox">
+                                {
+                                    (localStorage.selectRole === 'AdminManager') ?
+                                        <div className="mark markA markS">S</div>
                                         :
-                                        (localStorage.selectRole === 'DeveloperContributor') ?
-                                            <div className="mark markD markC">C</div>
+                                        (localStorage.selectRole === 'DeveloperManager') ?
+                                            <div className="mark markD markM">M</div>
                                             :
-                                            (localStorage.selectRole === 'DeveloperViewer') ?
-                                                <div className="mark markD markV">V</div>
+                                            (localStorage.selectRole === 'DeveloperContributor') ?
+                                                <div className="mark markD markC">C</div>
                                                 :
-                                                (localStorage.selectRole === 'OperatorManager') ?
-                                                    <div className="mark markO markM">M</div>
+                                                (localStorage.selectRole === 'DeveloperViewer') ?
+                                                    <div className="mark markD markV">V</div>
                                                     :
-                                                    (localStorage.selectRole === 'OperatorContributor') ?
-                                                        <div className="mark markO markC">C</div>
+                                                    (localStorage.selectRole === 'OperatorManager') ?
+                                                        <div className="mark markO markM">M</div>
                                                         :
-                                                        (localStorage.selectRole === 'OperatorViewer') ?
-                                                            <div className="mark markO markV">V</div>
+                                                        (localStorage.selectRole === 'OperatorContributor') ?
+                                                            <div className="mark markO markC">C</div>
                                                             :
-                                                            <div className="mark markA markS">?</div>
-                            }
-                        </div> : null}
-                </ListItemIcon>
+                                                            (localStorage.selectRole === 'OperatorViewer') ?
+                                                                <div className="mark markO markV">V</div>
+                                                                :
+                                                                null
+                                }
+                            </div>
+                    </ListItemIcon> : 
+                    open ? 
+                    null :  
+                    <ListItemIcon><div className="markBox"><div className="mark markA markS">?</div></div></ListItemIcon>
+                }
                 <ListItemText>
-                    <strong style={{color: '#BFC0C2', fontSize: 12}}>
+                    <strong style={{color: '#BFC0C2', fontSize: 14}}>
                         {
                             localStorage.selectRole && localStorage.selectRole != 'null' ? localStorage.selectRole :
-                                <div>
+                            open ? <div>
                                     <p>No Organization selected</p>
                                     <p>Click Manage to view and</p>
                                     <p>manage your Organization</p>
-                                </div>
+                                </div> : null
                         }
                     </strong>
 
@@ -279,7 +284,7 @@ export default function MiniDrawer(props) {
 
     const versionInfo = () => (
         <div style={{position: 'absolute', bottom: 5, marginLeft: 10, color: '#B1B2B4'}}>
-            {process.env.REACT_APP_BUILD_VERSION ? "v" + process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'}
+            {process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'}
         </div>
     )
 
@@ -316,7 +321,6 @@ export default function MiniDrawer(props) {
                 <div className={classes.toolbar}>
                     <Image wrapped size='small' src='/assets/brand/logo_mex.svg'/>
                     <IconButton style={{color: '#B1B2B4'}} onClick={handleDrawerClose}>
-                        {/*{theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}*/}
                         {!open ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
                     </IconButton>
                 </div>

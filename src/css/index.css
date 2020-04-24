@@ -1909,7 +1909,7 @@ body ::-webkit-scrollbar-track {
     overflow-y: auto;
 }
 
-/* Rahul 코드 오버로딩*/
+/*코드 오버로딩*/
 .MuiToolbar-regular {
     min-height: 48px !important;
 }

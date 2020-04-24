@@ -68,6 +68,7 @@ class ClusterInstReg extends React.Component {
             this.appList = [...this.appList, ...await getAppList(this, { region: region })]
         }
         this.updateUI(form)
+        forms = this.appNameValueChange(form, forms, true)
         this.setState({ forms: forms })
     }
 
@@ -99,9 +100,10 @@ class ClusterInstReg extends React.Component {
                 form.rules.disabled = currentForm.value ? true : false
                 form.error = currentForm.value ? undefined : form.error
             }
-            else if (form.field === fields.privacyPolicyName || form.field === fields.ipAccess) {
+            else if (form.field === fields.ipAccess) {
                 form.visible = currentForm.value
                 form.value = currentForm.value ? form.value : undefined
+                this.ipAccessValueChange(form, forms, true)
             }
         }
         if (isInit === undefined || isInit === false) {
@@ -109,29 +111,50 @@ class ClusterInstReg extends React.Component {
         }
     }
 
-    organizationValueChange = (currentForm, forms, isInit) => {
+    ipAccessValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.appName) {
-                this.updateUI(form)
-                if (isInit === undefined || isInit === false) {
-                    this.setState({ forms: forms })
-                }
-                break;
+            if (form.field === fields.privacyPolicyName) {
+                form.visible = currentForm.value === constant.IP_ACCESS_DEDICATED ? true : false
+                form.value = undefined
             }
+        }
+         if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
         }
     }
 
     appNameValueChange = (currentForm, forms, isInit) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
+        let nForms = []
+        nForms = forms.filter((form) => {
             if (form.field === fields.version) {
                 this.updateUI(form)
-                if (isInit === undefined || isInit === false) {
-                    this.setState({ forms: forms })
-                }
+                return form
             }
+            else if(form.field === fields.autoClusterInstance)
+            {
+                form.visible = false
+                form.value = false
+                this.autoClusterValueChange(form, forms, true)
+                return form
+            }
+            else if(form.field === fields.clusterName || form.label === 'Configs')
+            {
+                form.visible = false
+                form.value = undefined
+                return form
+            }
+            else if (form.field === fields.configs) {
+                //remove all configs
+            }
+            else{
+                return form
+            }
+        })
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: nForms })
         }
+        return nForms
     }
 
     versionValueChange = (currentForm, forms, isInit) => {
@@ -228,6 +251,13 @@ class ClusterInstReg extends React.Component {
                     this.getCloudletInfo(form, forms)
                 }
             }
+            else if (form.field === fields.appName) {
+                this.updateUI(form)
+                forms = this.appNameValueChange(form, forms, true)
+            }
+        }
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
         }
     }
 
@@ -260,7 +290,7 @@ class ClusterInstReg extends React.Component {
 
     formKeys = () => {
         return [
-            { label: 'App Instances', formType: 'Header', visible: true },
+            { label: 'Create App Instances', formType: 'Header', visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
             { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of' },
             { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: true }, fullData: true, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
@@ -294,6 +324,9 @@ class ClusterInstReg extends React.Component {
         else if (form.field === fields.version) {
             this.versionValueChange(form, forms, isInit)
         }
+        else if (form.field === fields.ipAccess) {
+            this.ipAccessValueChange(form, forms, isInit)
+        }
     }
 
     /**Required */
@@ -312,7 +345,7 @@ class ClusterInstReg extends React.Component {
             if (mcRequest.response && mcRequest.response.data) {
                 data = mcRequest.response.data;
             }
-            this.setState({ stepsArray: updateStepper(this.state.stepsArray, cloudletName, data) })
+            this.setState({ stepsArray: updateStepper(this.state.stepsArray, cloudletName, data, cloudletName) })
         }
     }
 
@@ -379,7 +412,7 @@ class ClusterInstReg extends React.Component {
         }
     }
 
-    updateUI(form) {
+    updateUI(form, data) {
         if (form) {
             this.resetFormValue(form)
             if (form.field) {
@@ -410,7 +443,7 @@ class ClusterInstReg extends React.Component {
                             form.options = this.appList
                             break;
                         case fields.ipAccess:
-                            form.options = [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED]
+                            form.options = data && data[fields.accessType] === constant.ACCESS_TYPE_LOAD_BALANCER ? [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED] : [constant.IP_ACCESS_DEDICATED]
                             break;
                         default:
                             form.options = undefined;
@@ -467,7 +500,7 @@ class ClusterInstReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             form.tip = constant.getTip(form.field)
-            this.updateUI(form)
+            this.updateUI(form, data)
             if (data) {
                 form.value = data[form.field]
                 this.checkForms(form, forms, true)
