@@ -69,7 +69,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             intervalForAppInst = null;
             intervalForCluster = null;
             webSocketInst: WebSocket = null;
-            gridItemHeight = 255;
+            gridItemHeight = 265;
 
             constructor(props) {
                 super(props);
@@ -1854,7 +1854,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         }}>
                             <div style={{
                                 width: '100%',
-                                height: '106%',
+                                height: '110%',
                             }}>
                                 {/*desc:---------------------------------*/}
                                 {/*desc:Content Header                   */}
