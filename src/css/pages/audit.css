@@ -229,6 +229,9 @@
     background: #1e2124 !important;
     overflow: auto;
 }
+.page_audit_code .react-json-view .pretty-json-container {
+    word-break: break-word;
+}
 .page_audit_timeline .events {
     margin-top:0 !important;
 }
@@ -305,6 +308,15 @@
     font-size: 14px;
     font-weight: 600;
     color: rgba(255,255,255,.6);
+    cursor:pointer;
+}
+
+.timeline_header_summary_column.button_on:first-child {
+    background-color: #011900;
+}
+
+.timeline_header_summary_column.button_on:last-child {
+    background-color: #220001;
 }
 
 .timeline_header_summary_label{
@@ -432,30 +444,44 @@
     font-size: 14px;
     font-weight: 600;
     height:28px;
+    cursor: pointer;
 
 }
+.timeline_button_current:hover {
+    background-color: #090C0F;
+
+}
+
 .timeline_button_arrow_box{
     display: flex;
     flex:1;
     flex-direction: row;
     justify-content: space-between;
-    padding: 2px;
+    padding: 2px 0;
 }
 
 .timeline_button_arrow {
     vertical-align: middle;
     background-color: transparent;
     color: rgba(255,255,255,.7);
-    height:28px;
-    width: 28px;
+    height:32px;
+    width: 22px;
     padding:0;
     border: none;
+    cursor: pointer;
+    background-color: rgb(41, 44, 51);
 }
+
+.timeline_button_arrow{
+    color: rgba(255,255,255,.9);
+}
+
 
 .timeline_button_arrow .material-icons {
     font-family: 'Material Icons';
     color: rgba(255,255,255,.4);
-    font-size: 24px;
+    margin-top: 4px;
+    font-size: 22px;
     line-height: 1;
     letter-spacing: normal;
     text-transform: none;
@@ -467,12 +493,18 @@
     -webkit-font-smoothing: antialiased;
 }
 
+.timeline_button_arrow.double .material-icons {
+    font-size: 18px;
+}
+
+
 .page_audit_error_box {
     cursor: pointer;
     line-height: 1em;
     white-space: nowrap;
-    min-width: 14em;
+    min-width: fit-content;
     min-height: 2.71428571em;
+    height: 36px;
     display: flex;
     flex-direction: row;
     padding: .78571429em 1em .78571429em 1em;
@@ -487,12 +519,81 @@
 }
 .page_audit_error_label {
     display: flex;
+    align-items: center;
     flex:1;
 }
 
-.page_audit_error_number {
+.page_audit_error_box.with_button {
+    border-radius: .28571429rem 0 0 .28571429rem;
+    cursor: default;
+    border-width: 1px 0 1px 1px;
+    border-style: solid;
+    border-color: rgba(255,255,255,.2);
+}
+
+.page_audit_error_button {
+    height: 36px;
+    width:36px;
+    background-color: #292C33;
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 0 .28571429rem .28571429rem 0;
+    font-weight: 600;
+    color:rgba(255,255,255,.7);
+    vertical-align: middle;
+    text-align: center;
+    padding: 0;
+    cursor: pointer;
+}
+
+.page_audit_error_button:hover {
+    color:rgba(255,255,255,.9);
+
+}
+
+.page_audit_error_button .material-icons {
+    font-size: 18px;
+    margin-top: 4px;
+}
+
+.page_audit_history_option_period .button_off,
+.page_audit_history_option_period .button_on {
+    background-color: #292c33;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255,255,255,.6);
+}
+
+.page_audit_history_option_period .button_on {
+    background-color: rgba(0,0,0,.6);
+    color: rgba(255,255,255,.9);
+}
+
+.page_audit_badge_number {
     display: flex;
-    color: #db2828;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    background-color: #CE0000;
+    height: 14px;
+    font-size: 10px;
+    padding: 0 7px;
+    border-radius: 10px;
+    margin-left: 10px;
+}
+
+.button_off .page_audit_badge_number {
+    background-color: #53565F;
+}
+
+.button_on .page_audit_badge_number.all {
+    background-color: #00A2FF;
+}
+
+.button_on .page_audit_badge_number.normal {
+    background-color: #05CE00;
+}
+
+.button_on .page_audit_badge_number.error {
+    background-color: #CE0000;
 }
 
 .react-calendar-timeline .rct-vertical-lines .rct-vl.rct-day-6, .react-calendar-timeline .rct-vertical-lines .rct-vl.rct-day-0 {
@@ -504,8 +605,8 @@
 }
 
 .timeline_item_dot {
-    width:12px;
-    height:12px;
+    width:20px;
+    height:20px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
@@ -513,6 +614,16 @@
 }
 
 .timeline_item_dot .material-icons {
-    font-size: 12px;
+    font-size: 18px;
+    color:rgba(255,255,255,.3)
     /*color: #202329;*/
+}
+
+.timeline_item_dot .material-icons.checked {
+    color:#fff;
+}
+
+.timeline_header_current {
+    margin-left: 10px;
+    color: rgb(118, 255, 3);
 }

@@ -104,6 +104,9 @@ body, button, input, textarea, optgroup, select, textarea,
     white-space: nowrap;
 }
 
+ .ui.selection.dropdown.active, .ui.selection.dropdown.visible {
+     z-index: 100;
+ }
 
 /* button style */
 .button,
