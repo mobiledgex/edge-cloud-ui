@@ -33,8 +33,8 @@ export default class CalendarTimeline extends React.PureComponent {
         const items = this.generateItemsData(groups);
         const defaultTimeStart = this.makeUTCDateTime(moment()).startOf("hour").add(-4, 'hour').toDate();
         const defaultTimeEnd = this.makeUTCDateTime(moment()).startOf("hour").add(1, 'hour').toDate();
-        const visibleTimeStart= this.makeUTCDateTime(moment()).startOf("hour").add(-4, 'hour').toDate();
-        const visibleTimeEnd= this.makeUTCDateTime(moment()).startOf("hour").add(1, 'hour').toDate();
+        const visibleTimeStart = this.makeUTCDateTime(moment()).startOf("hour").add(-4, 'hour').toDate();
+        const visibleTimeEnd = this.makeUTCDateTime(moment()).startOf("hour").add(1, 'hour').toDate();
 
         this.state = {
             groups,
@@ -96,51 +96,50 @@ export default class CalendarTimeline extends React.PureComponent {
         let tasksList = this.props.timelineList.tasksList;
         let timesList = this.props.timelineList.timesList;
         let items = [];
-
-        tasksList.map((tValue, tIndex) => {
-            const startDate = Date.parse(this.getParseDate(timesList[tIndex]));
-            const startHour = Date.parse(moment(timesList[tIndex],"YYYY-MM-DD HH"));
-            const startValue =Math.floor(moment(startDate).valueOf() / 10000000) * 10000000;
-            const endValue = moment(startDate + 1 * 60 * 1000).valueOf();
-            items.push({
-                id: tIndex + "",
-                group: groups[0].id + "",
-                title: statusList[tIndex].traceid,
-                start: startHour,
-                end: endValue,
-                startDate: startDate,
-                canMove: startValue > new Date().getTime(),
-                canResize:
-                    startValue > new Date().getTime()
-                        ? endValue > new Date().getTime()
-                        ? "both"
-                        : "left"
-                        : endValue > new Date().getTime()
-                        ? "right"
-                        : false,
-                className:
-                    statusList[tIndex].status === 200
-                        ? "normal"
-                        : "error",
-                bgColor: "#202329",
-                selectedBgColor: "#202329",
-                // itemTime: moment(item, "DD/MM/YY HH:mm:ss").format("DD/MM/YY HH:mm:ss"),
-                itemTime: this.getParseDate(timesList[tIndex]).format("YYYY-MM-DDTHH:mm:ss"),
-                taskItem: tValue,
-                borderColor:
-                    statusList[tIndex].status === 200
-                        ? "#05CE00"
-                        : "#CE0000",
-                selectedBorderColor:
-                    statusList[tIndex].status === 200
-                        ? "#05CE00"
-                        : "#CE0000"
+        if (statusList && statusList.length > 0 && timesList && timesList.length > 0 && tasksList && tasksList.length > 0) {
+            tasksList.map((tValue, tIndex) => {
+                const startDate = Date.parse(this.getParseDate(timesList[tIndex]));
+                const startHour = Date.parse(moment(timesList[tIndex], "YYYY-MM-DD HH"));
+                const startValue = Math.floor(moment(startDate).valueOf() / 10000000) * 10000000;
+                const endValue = moment(startDate + 1 * 60 * 1000).valueOf();
+                items.push({
+                    id: tIndex + "",
+                    group: groups[0].id + "",
+                    title: statusList[tIndex].traceid,
+                    start: startHour,
+                    end: endValue,
+                    startDate: startDate,
+                    canMove: startValue > new Date().getTime(),
+                    canResize:
+                        startValue > new Date().getTime()
+                            ? endValue > new Date().getTime()
+                                ? "both"
+                                : "left"
+                            : endValue > new Date().getTime()
+                                ? "right"
+                                : false,
+                    className:
+                        statusList[tIndex].status === 200
+                            ? "normal"
+                            : "error",
+                    bgColor: "#202329",
+                    selectedBgColor: "#202329",
+                    // itemTime: moment(item, "DD/MM/YY HH:mm:ss").format("DD/MM/YY HH:mm:ss"),
+                    itemTime: this.getParseDate(timesList[tIndex]).format("YYYY-MM-DDTHH:mm:ss"),
+                    taskItem: tValue,
+                    borderColor:
+                        statusList[tIndex].status === 200
+                            ? "#05CE00"
+                            : "#CE0000",
+                    selectedBorderColor:
+                        statusList[tIndex].status === 200
+                            ? "#05CE00"
+                            : "#CE0000"
+                });
             });
-        });
-
-        items = items.sort((a, b) => b - a);
-        this.setState({ items: items });
-
+            items = items.sort((a, b) => b - a);
+            this.setState({ items: items });
+        }
         return items;
     };
 
@@ -208,14 +207,14 @@ export default class CalendarTimeline extends React.PureComponent {
                 ) : null}
 
                 <div className="timeline_item_box">
-                    <div style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
-                        <div style={{display:'flex', flex:1}}>{item.taskItem} ({item.itemTime})</div>
-                        <div className="timeline_item_dot" style={{backgroundColor: borderColor}}>
-                        <span className={storageSelectedTraceidIndex !== -1 ? "material-icons checked" : "material-icons"} >done</span>
+                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', flex: 1 }}>{item.taskItem} ({item.itemTime})</div>
+                        <div className="timeline_item_dot" style={{ backgroundColor: borderColor }}>
+                            <span className={storageSelectedTraceidIndex !== -1 ? "material-icons checked" : "material-icons"} >done</span>
                         </div>
                     </div>
-                    <div style={{width:'100%'}}>
-                        <span style={{ fontWeight: 600, marginRight:10 }}>TRACE ID</span>{item.title}
+                    <div style={{ width: '100%' }}>
+                        <span style={{ fontWeight: 600, marginRight: 10 }}>TRACE ID</span>{item.title}
                     </div>
                 </div>
 
@@ -233,7 +232,7 @@ export default class CalendarTimeline extends React.PureComponent {
             >
                 <div className="title">
                     {group.title}
-                    <div style={{backgroundColor: group.status ? "#db2828" : "#21ba45" }} className="timeline_group_dot"> </div>
+                    <div style={{ backgroundColor: group.status ? "#db2828" : "#21ba45" }} className="timeline_group_dot"> </div>
                 </div>
 
             </div>
@@ -259,10 +258,10 @@ export default class CalendarTimeline extends React.PureComponent {
             let items = this.generateItemsData(groups);
             let defaultTimeStart = this.makeUTCDateTime(moment()).startOf("hour").add(-4, 'hour').toDate();
             let defaultTimeEnd = this.makeUTCDateTime(moment()).startOf("hour").add(1, 'hour').toDate();
-            let visibleTimeStart= this.makeUTCDateTime(moment()).startOf("hour").add(-4, 'hour').toDate();
-            let visibleTimeEnd= this.makeUTCDateTime(moment()).startOf("hour").add(1, 'hour').toDate();
+            let visibleTimeStart = this.makeUTCDateTime(moment()).startOf("hour").add(-4, 'hour').toDate();
+            let visibleTimeEnd = this.makeUTCDateTime(moment()).startOf("hour").add(1, 'hour').toDate();
 
-            this.setState ({
+            this.setState({
                 groups,
                 items,
                 defaultTimeStart,
@@ -285,7 +284,7 @@ export default class CalendarTimeline extends React.PureComponent {
 
     onNextClick = () => {
         const zoom = this.state.visibleTimeEnd - this.state.visibleTimeStart;
-        if(this.state.visibleTimeEnd + zoom <= moment(this.state.defaultTimeEnd).valueOf()){
+        if (this.state.visibleTimeEnd + zoom <= moment(this.state.defaultTimeEnd).valueOf()) {
             this.setState(state => ({
                 visibleTimeStart: state.visibleTimeStart + zoom,
                 visibleTimeEnd: state.visibleTimeEnd + zoom,
@@ -311,7 +310,7 @@ export default class CalendarTimeline extends React.PureComponent {
 
     onHourNextClick = () => {
         const zoom = 60 * 60 * 1000;
-        if(this.state.visibleTimeEnd + zoom <= moment(this.state.defaultTimeEnd).valueOf()){
+        if (this.state.visibleTimeEnd + zoom <= moment(this.state.defaultTimeEnd).valueOf()) {
             this.setState(state => ({
                 visibleTimeStart: state.visibleTimeStart + zoom,
                 visibleTimeEnd: state.visibleTimeEnd + zoom,
@@ -327,7 +326,7 @@ export default class CalendarTimeline extends React.PureComponent {
     };
 
     handleTimeChange = (visibleTimeStart, visibleTimeEnd) => {
-        if(parseInt(visibleTimeEnd) <= moment(this.state.defaultTimeEnd).valueOf()){
+        if (parseInt(visibleTimeEnd) <= moment(this.state.defaultTimeEnd).valueOf()) {
             this.setState({
                 visibleTimeStart,
                 visibleTimeEnd,
@@ -346,8 +345,8 @@ export default class CalendarTimeline extends React.PureComponent {
             visibleTimeEnd
         } = this.state;
         return (
-            <div style={{ height: "100%", position:'relative' }}>
-                <div style={{position:'absolute', left:0, zIndex:1000, width:'100%'}}>
+            <div style={{ height: "100%", position: 'relative' }}>
+                <div style={{ position: 'absolute', left: 0, zIndex: 1000, width: '100%' }}>
                     <div className="timeline_button_layout">
                         <div className="timeline_button_arrow_box">
                             <div>
@@ -365,24 +364,24 @@ export default class CalendarTimeline extends React.PureComponent {
                                 </button>
                             </div>
                             <div>
-                            <button
-                                className="timeline_button_arrow"
-                                onClick={this.onHourNextClick}
-                            >
-                                <MaterialIcon icon={"arrow_right"} />
-                            </button>
-                            <button
-                                className="timeline_button_arrow double"
-                                onClick={this.onNextClick}
-                            >
-                                <MaterialIcon icon={"fast_forward"} />
-                            </button>
+                                <button
+                                    className="timeline_button_arrow"
+                                    onClick={this.onHourNextClick}
+                                >
+                                    <MaterialIcon icon={"arrow_right"} />
+                                </button>
+                                <button
+                                    className="timeline_button_arrow double"
+                                    onClick={this.onNextClick}
+                                >
+                                    <MaterialIcon icon={"fast_forward"} />
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
                 <Timeline
-                    ref={r => {this.timeline = r}}
+                    ref={r => { this.timeline = r }}
                     groups={groups}
                     items={items}
                     keys={keys}
@@ -392,8 +391,8 @@ export default class CalendarTimeline extends React.PureComponent {
                     itemsSorted
                     itemTouchSendsClick={false}
                     minResizeWidth={200}
-                    minZoom={60*60*1000*6}
-                    maxZoom={60*60*1000*6}
+                    minZoom={60 * 60 * 1000 * 6}
+                    maxZoom={60 * 60 * 1000 * 6}
                     stackItems
                     showCursorLine
                     minResizeWidth={550}
@@ -412,12 +411,12 @@ export default class CalendarTimeline extends React.PureComponent {
                     style={{ height: "100%" }}
                 >
                     <TimelineHeaders className="sticky">
-                        <CustomHeader className="custom-header" height={50} width="200px !important" headerData={{someData: 'data'}} unit="hour">
+                        <CustomHeader className="custom-header" height={50} width="200px !important" headerData={{ someData: 'data' }} unit="hour">
                             {({
-                                  headerContext: { intervals },
-                                  getRootProps,
-                                  getIntervalProps
-                              }) => {
+                                headerContext: { intervals },
+                                getRootProps,
+                                getIntervalProps
+                            }) => {
                                 return (
                                     <div className="timeline_header_date" {...getRootProps()}>
                                         {intervals.map(interval => {
@@ -434,11 +433,11 @@ export default class CalendarTimeline extends React.PureComponent {
                                                 <div
                                                     {...getIntervalProps({
                                                         interval,
-                                                        style: setTimeout(() => intervalStyle , 2000)
+                                                        style: setTimeout(() => intervalStyle, 2000)
                                                     })}
                                                 >
                                                     <div className="sticky"
-                                                         style={{color:(interval.startTime.format('YYYY-MM-DD HH:mm:SS') === this.makeUTCDateTime(moment(), "YYYY-MM-DD HH").format('YYYY-MM-DD HH:00:00')) ? '#92DF18' : "rgba(255,255,255,.6)"}}
+                                                        style={{ color: (interval.startTime.format('YYYY-MM-DD HH:mm:SS') === this.makeUTCDateTime(moment(), "YYYY-MM-DD HH").format('YYYY-MM-DD HH:00:00')) ? '#92DF18' : "rgba(255,255,255,.6)" }}
                                                     >
                                                         {interval.startTime.format('YYYY-MM-DDTHH:mm')}(UTC)
                                                     </div>
