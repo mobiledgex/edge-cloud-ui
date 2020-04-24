@@ -12,7 +12,6 @@
         "@material-ui/icons": "^3.0.2",
         "@sendgrid/mail": "^6.5.5",
         "@types/chart.js": "^2.9.18",
-        "@sendgrid/mail": "^6.5.5",
         "ansi-to-react": "^6.0.5",
         "antd": "^3.26.6",
         "axios": "^0.18.0",

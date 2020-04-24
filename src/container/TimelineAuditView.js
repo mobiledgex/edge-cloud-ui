@@ -1,6 +1,6 @@
 import 'react-hot-loader'
 import React from 'react';
-import { Button, Dropdown, Modal, Icon } from 'semantic-ui-react';
+import {Button, Dropdown, Modal, Icon, Grid} from 'semantic-ui-react';
 import * as moment from 'moment';
 import ReactJson from 'react-json-view';
 import { connect } from 'react-redux';
@@ -12,10 +12,10 @@ import * as actions from "../actions";
 import FlexBox from "flexbox-react";
 import CalendarTimeline from "../components/timeline/calendarTimeline";
 import { hot } from "react-hot-loader/root";
-import {Card, IconButton, Toolbar, ButtonGroup} from '@material-ui/core';
-import RefreshIcon from '@material-ui/icons/Refresh';
+import {Card, IconButton, Toolbar, ButtonGroup, Button as ButtonM} from '@material-ui/core';
+import OfflinePinIcon from '@material-ui/icons/OfflinePin';
+import AccountCircleOutlinedIcon from "@material-ui/core/SvgIcon/SvgIcon";
 
-const sgmail = require('@sendgrid/mail')
 const countryOptions = [
     { key: '24', value: 24, flag: '24', text: 'Last 24 hours' },
     { key: '18', value: 18, flag: '18', text: 'Last 18 hours' },
@@ -24,8 +24,8 @@ const countryOptions = [
     { key: '1', value: 1, flag: '1', text: 'Last hour' },
 ]
 
-const typeOptions = [{ key: 'all', value: 'all', flag: 'all', text: 'All' }]
-const nameOptions = [{ key: 'all', value: 'all', flag: 'all', text: 'All' }]
+const typeOptions = [{ key: 'all', value: 'all', text: 'All' }]
+const nameOptions = [{ key: 'all', value: 'all', text: 'All' }]
 let _self = null;
 const jsonView = (jsonObj, self) => {
     return <ReactJson src={jsonObj} {...self.jsonViewProps} style={{ width: '100%' }} />
@@ -127,7 +127,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 {display:'block', marginTop:20, width:'100%', height: 'fit-content',}
             ]
 
-            sgmail.setApiKey('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')
         }
 
         componentWillMount() {
@@ -139,10 +138,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         }
 
         componentDidMount() {
-            if (this.props.location.state !== undefined) {
-                let orgName = this.props.location.state.orgName;
+            let subPaths = this.props.history.location.search
+            let subPath = ''
+            let subParam = []
+            if (subPaths.indexOf('&org=') > (-1)) {
+                let paths = subPaths.split('&')
+                subPath = paths[0]
+                subParam = paths[1].split('=')
+            }
+            if(subParam[0] === 'org'){
                 this.setState({
-                    orgName
+                    orgName: subParam[1]
                 })
             }
 
@@ -208,7 +214,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                         let nameIndex = nameOptions.findIndex(t => t.value === makeOperName)
                         if(nameIndex === (-1)){
                             nameOptions.push({
-                                key: makeOperName, value: makeOperName, flag: makeOperName, text: makeOperName
+                                key: makeOperName, value: makeOperName, text: makeOperName
                             })
                         }
 
@@ -217,7 +223,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
                         if(typesIndex === (-1)){
                             typeOptions.push({
-                                 key: renderValue, value: renderValue, flag: renderValue, text: renderValue
+                                 key: renderValue, value: renderValue, text: renderValue
                             })
                         }
                     }
@@ -256,7 +262,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     })
                     if(!check || storageSelectedTraceidList.length > 200){
                         localStorage.removeItem('selectedTime')
-                        localStorage.removeItem('sendedTraceid')
                     }
 
                     let timelineList = []
@@ -280,29 +285,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
                 }
 
-            }
-            //submit form
-            if (nextProps.onSubmit) {
-                console.log('20191030 send mail contents == ', nextProps)
-                let msg = nextProps.sendingValues
-                let traceid = null;
-
-                nextProps.data.data.map((v, i) => {
-                    if(nextProps.sendingValues.html.indexOf(v.traceid) > (-1)){
-                        traceid = v.traceid
-                    }
-                })
-
-                this.setState({isLoading3 : true}, () => sgmail.send(msg)
-                                                            .then(() => {
-                                                                alert('success')
-                                                                this.setStorageData(traceid, "trace")
-                                                                this.setState({ openSendEmail: false, isLoading3 : false })
-                                                            })
-                                                            .catch((err) => {
-                                                                alert('error -> ' + err)
-                                                            })
-                )
             }
 
         };
@@ -362,7 +344,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         }
 
         makeOper = (logName) => {
-            // let lastSub = logName.substring(logName.lastIndexOf('/') + 1);
             let item = '';
             let nameArray = logName.substring(1).split("/").filter(name => name != 'ws');
 
@@ -408,29 +389,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
         setStorageData(data, type) {
             let traceidList = [];
-            let localStorageName = ""
-            let storageTraceidList = []
-            if(type === 'selected'){
-                localStorageName = "selectedTraceid"
-                storageTraceidList = JSON.parse(localStorage.getItem(localStorageName))
-            } else if(type === 'trace'){
-                localStorageName = "sendedTraceid"
-                storageTraceidList = JSON.parse(localStorage.getItem(localStorageName))
-            }
-                console.log("20200423_____1 ")
-                if (storageTraceidList) {
-                    console.log("20200423_____2 ")
-                    traceidList = storageTraceidList
-                    let storageTraceidIndex = storageTraceidList.findIndex(s => s === data)
-                    if(storageTraceidIndex === (-1)){
-                        console.log("20200423_____3 ")
-                        traceidList.push(data)
-                        localStorage.setItem(localStorageName, JSON.stringify(traceidList))
-                    }
-                } else {
-                    traceidList[0] = data
+            let localStorageName = "selectedTraceid"
+            let storageTraceidList = JSON.parse(localStorage.getItem(localStorageName))
+
+            if (storageTraceidList) {
+                traceidList = storageTraceidList
+                let storageTraceidIndex = storageTraceidList.findIndex(s => s === data)
+                if(storageTraceidIndex === (-1)){
+                    traceidList.push(data)
                     localStorage.setItem(localStorageName, JSON.stringify(traceidList))
                 }
+            } else {
+                traceidList[0] = data
+                localStorage.setItem(localStorageName, JSON.stringify(traceidList))
+            }
         }
 
         setAllView(dummyConts, sId) {
@@ -449,7 +421,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         };
 
         onItemSelect = (item, i) => {
-            let value = '';
             let times = this.state.timelineList[0].timesList
             let status = this.state.timelineList[0].statusList
             let storageSelectedTraceidList = JSON.parse(localStorage.getItem("selectedTraceid"))
@@ -575,8 +546,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             this.setState({timelineList: timelineList})
         }
 
-        onClickUnCheckedError = () => {
-            let unCheckedToggle = this.state.unCheckedErrorToggle
+        onClickUnCheckedError = (e) => {
+            let unCheckedToggle = (e === 'current')?false:this.state.unCheckedErrorToggle
             let value = 'uncheck'
             let allData = this.state.rawAllData
             let timelineList = []
@@ -645,10 +616,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     this.setState({statusErrorToggle: true, statusNormalToggle: false})
                 }
             } else {
-                console.log("20200423___________ ")
                 value = 'all'
                 this.setState({statusErrorToggle: false, statusNormalToggle: false})
             }
+
 
             allData.map((allValue, allIndex) => {
                 let taskValue = this.makeOper(allValue.operationname)
@@ -682,16 +653,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         onCurrentClick = () => {
             let value = this.state.dropDownOnChangeValue
 
-            console.log("20200423 " + value)
-
             if(value === ''){
                 this.dropDownOnNameChange('name', {value:'all'})
             } else if(value === 'error' || value === 'normal'){
                 this.onClickStatus(value)
             } else if(value === 'uncheck'){
-                this.onClickUnCheckedError()
+                this.onClickUnCheckedError("current")
             } else {
-                this.dropDownOnNameChange('name', value)
+                this.dropDownOnNameChange('name', {value:value})
             }
         };
 
@@ -711,6 +680,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 <div style={{display:'flex', height:'100%', flexDirection: 'column'}}>
                     <Toolbar>
                         <label className='content_title_label'>Audit Logs</label>
+                        <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
                         <div className="page_audit_history">
                             <div className="page_audit_history_option">
                                 <div className="page_audit_history_option_period">
@@ -718,53 +688,56 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                         Name
                                     </div>
                                     <Dropdown
-                                        className='dropDownName'
                                         placeholder='All'
                                         fluid
                                         search
                                         selection
                                         options={this.state.nameList}
                                         onChange={this.dropDownOnNameChange}
-                                        style={{ width: 200 }}
+                                        style={{ width: 150 }}
                                     />
-                                </div>
-                                <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
-                                <div className="page_audit_history_option_period">
-                                    <button className="page_audit_error_box" onClick={this.onCurrentClick}>
-                                        <div className="page_audit_error_label">Current Time (UTC)</div>
-                                        <div style={{marginLeft:10}}>{moment(this.state.realtime).utc().format("YYYY-MM-DDTHH:mm")}</div>
-                                    </button>
                                 </div>
                                 <div className="page_audit_history_option_period">
                                     <ButtonGroup>
-                                        <Button onClick={() => this.onClickStatus("all")}>
-                                            <div className="page_audit_error_label">
-                                                {'All'}
-                                                <span style={{marginLeft:10, color:'skyblue'}}>
-                                                    {(this.state.statusCount.length)?this.state.statusCount[0].normalCount + this.state.statusCount[0].errorCount:0}
-                                                </span>
+                                        <ButtonM onClick={() => this.onClickStatus("all")}
+                                                 className={this.state.statusNormalToggle === false && this.state.statusErrorToggle === false ? "button_on" : "button_off"}>
+                                            <div className="page_audit_error_label">All</div>
+                                            <div className="page_audit_badge_number all">
+                                                {(this.state.statusCount.length)?this.state.statusCount[0].normalCount + this.state.statusCount[0].errorCount:0}
                                             </div>
-                                        </Button>
-                                        <Button onClick={() => this.onClickStatus("normal")}>
-                                            <div className="page_audit_error_label">
-                                                {'Normal'}
-                                                <span style={{marginLeft:10, color:'green'}}>{(this.state.statusCount.length)?this.state.statusCount[0].normalCount:0}</span>
+                                        </ButtonM>
+                                        <ButtonM onClick={() => this.onClickStatus("normal")}
+                                                 className={this.state.statusNormalToggle === true ? "button_on" : "button_off"}>
+                                            <div className="page_audit_error_label">Normal</div>
+                                            <div className="page_audit_badge_number normal">
+                                                {(this.state.statusCount.length)?this.state.statusCount[0].normalCount:0}
                                             </div>
-                                        </Button>
-                                        <Button onClick={() => this.onClickStatus("error")}>
-
-                                            <div className="page_audit_error_label">
-                                                {'Error'}
-                                                <span style={{marginLeft:10, color:'red'}}>{(this.state.statusCount.length)?this.state.statusCount[0].errorCount:0}</span>
+                                        </ButtonM>
+                                        <ButtonM onClick={() => this.onClickStatus("error")}
+                                                 className={this.state.statusErrorToggle === true ? "button_on" : "button_off"}>
+                                            <div className="page_audit_error_label">Error</div>
+                                            <div className="page_audit_badge_number error">
+                                                {(this.state.statusCount.length)?this.state.statusCount[0].errorCount:0}
                                             </div>
-                                        </Button>
+                                        </ButtonM>
                                     </ButtonGroup>
                                 </div>
                                 <div className="page_audit_history_option_period">
-                                    <button className="page_audit_error_box" onClick={this.onClickUnCheckedError}>
+                                    <button className="page_audit_error_box with_button" >
                                         <div className="page_audit_error_label">Unchecked Error</div>
-                                        <div className="page_audit_error_number">{this.state.unCheckedErrorCount}</div>
+                                        <div className="page_audit_badge_number">{this.state.unCheckedErrorCount}</div>
                                     </button>
+                                    <button className="page_audit_error_button"  onClick={this.onClickUnCheckedError}>
+
+                                            <OfflinePinIcon fontSize='small' style={{marginTop:5}}/>
+                                    </button>
+                                </div>
+                                <div className="page_audit_history_option_period">
+                                    <div className="page_audit_error_box with_button" onClick={this.onCurrentClick}>
+                                        <div className="page_audit_error_label">(UTC) {moment(this.state.realtime).utc().format("YYYY-MM-DDTHH:mm")}</div>
+                                    </div>
+                                    <button className="page_audit_error_button"  onClick={this.onCurrentClick}>Go</button>
+
                                 </div>
                             </div>
                         </div>
@@ -779,7 +752,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                     onClickStatus={this.onClickStatus}
                                     onItemClickCloseMap={this.onCloseMap}
                                     onCanvasClickCloseMap={this.onClickCavasCloseMap}
-                                    // onPopupEmail={this.onPopupEmail}
+                                    onPopupEmail={this.onPopupEmail}
                                     timelineSelectedIndex={this.state.timelineSelectedIndex}
                                 />
                                 :null
