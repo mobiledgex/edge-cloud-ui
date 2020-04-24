@@ -1,6 +1,6 @@
 import 'react-hot-loader'
 import React from 'react';
-import { Button, Dropdown, Modal, Icon } from 'semantic-ui-react';
+import {Button, Dropdown, Modal, Icon, Grid} from 'semantic-ui-react';
 import * as moment from 'moment';
 import ReactJson from 'react-json-view';
 import { connect } from 'react-redux';
@@ -12,8 +12,9 @@ import * as actions from "../actions";
 import FlexBox from "flexbox-react";
 import CalendarTimeline from "../components/timeline/calendarTimeline";
 import { hot } from "react-hot-loader/root";
-import {Card, IconButton, Toolbar, ButtonGroup} from '@material-ui/core';
-import RefreshIcon from '@material-ui/icons/Refresh';
+import {Card, IconButton, Toolbar, ButtonGroup, Button as ButtonM} from '@material-ui/core';
+import OfflinePinIcon from '@material-ui/icons/OfflinePin';
+import AccountCircleOutlinedIcon from "@material-ui/core/SvgIcon/SvgIcon";
 
 const sgmail = require('@sendgrid/mail')
 const countryOptions = [
@@ -24,8 +25,8 @@ const countryOptions = [
     { key: '1', value: 1, flag: '1', text: 'Last hour' },
 ]
 
-const typeOptions = [{ key: 'all', value: 'all', flag: 'all', text: 'All' }]
-const nameOptions = [{ key: 'all', value: 'all', flag: 'all', text: 'All' }]
+const typeOptions = [{ key: 'all', value: 'all', text: 'All' }]
+const nameOptions = [{ key: 'all', value: 'all', text: 'All' }]
 let _self = null;
 const jsonView = (jsonObj, self) => {
     return <ReactJson src={jsonObj} {...self.jsonViewProps} style={{ width: '100%' }} />
@@ -148,7 +149,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 if (subPaths.indexOf('&org=')) {
                     let paths = subPaths.split('&')
                     subPath = paths[0];
-                    subParam = paths[1].split('=');
                 }
                 if(subParam[0] === 'org'){
                     this.setState({
@@ -219,7 +219,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                         let nameIndex = nameOptions.findIndex(t => t.value === makeOperName)
                         if(nameIndex === (-1)){
                             nameOptions.push({
-                                key: makeOperName, value: makeOperName, flag: makeOperName, text: makeOperName
+                                key: makeOperName, value: makeOperName, text: makeOperName
                             })
                         }
 
@@ -228,7 +228,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
                         if(typesIndex === (-1)){
                             typeOptions.push({
-                                 key: renderValue, value: renderValue, flag: renderValue, text: renderValue
+                                 key: renderValue, value: renderValue, text: renderValue
                             })
                         }
                     }
@@ -721,52 +721,66 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                         Name
                                     </div>
                                     <Dropdown
-                                        className='dropDownName'
                                         placeholder='All'
                                         fluid
                                         search
                                         selection
                                         options={this.state.nameList}
                                         onChange={this.dropDownOnNameChange}
-                                        style={{ width: 200 }}
+                                        style={{ width: 150 }}
                                     />
-                                </div>
-                                <div className="page_audit_history_option_period">
-                                    <button className="page_audit_error_box" onClick={this.onCurrentClick}>
-                                        <div className="page_audit_error_label">Current Time (UTC)</div>
-                                        <div style={{marginLeft:10}}>{moment(this.state.realtime).utc().format("YYYY-MM-DDTHH:mm")}</div>
-                                    </button>
+                                    {/*<Dropdown*/}
+                                    {/*    className='dropDownName'*/}
+                                    {/*    placeholder='All'*/}
+                                    {/*    fluid*/}
+                                    {/*    search*/}
+                                    {/*    selection*/}
+                                    {/*    options={this.state.nameList}*/}
+                                    {/*    onChange={this.dropDownOnNameChange}*/}
+                                    {/*    style={{ width: 200 }}*/}
+                                    {/*/>*/}
                                 </div>
                                 <div className="page_audit_history_option_period">
                                     <ButtonGroup>
-                                        <Button onClick={() => this.onClickStatus("all")}>
-                                            <div className="page_audit_error_label">
-                                                {'All'}
-                                                <span style={{marginLeft:10, color:'skyblue'}}>
-                                                    {(this.state.statusCount.length)?this.state.statusCount[0].normalCount + this.state.statusCount[0].errorCount:0}
-                                                </span>
+                                        <ButtonM onClick={() => this.onClickStatus("all")}
+                                                 className={this.state.statusNormalToggle === false && this.state.statusErrorToggle === false ? "button_on" : "button_off"}>
+                                            <div className="page_audit_error_label">All</div>
+                                            <div className="page_audit_badge_number all">
+                                                {(this.state.statusCount.length)?this.state.statusCount[0].normalCount + this.state.statusCount[0].errorCount:0}
                                             </div>
-                                        </Button>
-                                        <Button onClick={() => this.onClickStatus("normal")}>
-                                            <div className="page_audit_error_label">
-                                                {'Normal'}
-                                                <span style={{marginLeft:10, color:'green'}}>{(this.state.statusCount.length)?this.state.statusCount[0].normalCount:0}</span>
+                                        </ButtonM>
+                                        <ButtonM onClick={() => this.onClickStatus("normal")}
+                                                 className={this.state.statusNormalToggle === true ? "button_on" : "button_off"}>
+                                            <div className="page_audit_error_label">Normal</div>
+                                            <div className="page_audit_badge_number normal">
+                                                {(this.state.statusCount.length)?this.state.statusCount[0].normalCount:0}
                                             </div>
-                                        </Button>
-                                        <Button onClick={() => this.onClickStatus("error")}>
-
-                                            <div className="page_audit_error_label">
-                                                {'Error'}
-                                                <span style={{marginLeft:10, color:'red'}}>{(this.state.statusCount.length)?this.state.statusCount[0].errorCount:0}</span>
+                                        </ButtonM>
+                                        <ButtonM onClick={() => this.onClickStatus("error")}
+                                                 className={this.state.statusErrorToggle === true ? "button_on" : "button_off"}>
+                                            <div className="page_audit_error_label">Error</div>
+                                            <div className="page_audit_badge_number error">
+                                                {(this.state.statusCount.length)?this.state.statusCount[0].errorCount:0}
                                             </div>
-                                        </Button>
+                                        </ButtonM>
                                     </ButtonGroup>
                                 </div>
                                 <div className="page_audit_history_option_period">
-                                    <button className="page_audit_error_box" onClick={this.onClickUnCheckedError}>
+                                    <button className="page_audit_error_box with_button" >
                                         <div className="page_audit_error_label">Unchecked Error</div>
-                                        <div className="page_audit_error_number">{this.state.unCheckedErrorCount}</div>
+                                        <div className="page_audit_badge_number">{this.state.unCheckedErrorCount}</div>
                                     </button>
+                                    <button className="page_audit_error_button"  onClick={this.onClickUnCheckedError}>
+
+                                            <OfflinePinIcon fontSize='small' style={{marginTop:5}}/>
+                                    </button>
+                                </div>
+                                <div className="page_audit_history_option_period">
+                                    <div className="page_audit_error_box with_button" onClick={this.onCurrentClick}>
+                                        <div className="page_audit_error_label">(UTC) {moment(this.state.realtime).utc().format("YYYY-MM-DDTHH:mm")}</div>
+                                    </div>
+                                    <button className="page_audit_error_button"  onClick={this.onCurrentClick}>Go</button>
+
                                 </div>
                             </div>
                         </div>

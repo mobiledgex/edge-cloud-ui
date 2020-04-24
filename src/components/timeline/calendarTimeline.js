@@ -129,12 +129,12 @@ export default class CalendarTimeline extends React.PureComponent {
                 taskItem: tValue,
                 borderColor:
                     statusList[tIndex].status === 200
-                        ? "#21ba45"
-                        : "#db2828",
+                        ? "#05CE00"
+                        : "#CE0000",
                 selectedBorderColor:
                     statusList[tIndex].status === 200
-                        ? "#21ba45"
-                        : "#db2828"
+                        ? "#05CE00"
+                        : "#CE0000"
             });
         });
 
@@ -221,9 +221,7 @@ export default class CalendarTimeline extends React.PureComponent {
                     <div style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
                         <div style={{display:'flex', flex:1}}>{item.taskItem} ({item.itemTime})</div>
                         <div className="timeline_item_dot" style={{backgroundColor: borderColor}}>
-                        {storageSelectedTraceidIndex !== -1 ?
-                        <span className="material-icons">done</span>
-                        : null}
+                        <span className={storageSelectedTraceidIndex !== -1 ? "material-icons checked" : "material-icons"} >done</span>
                         </div>
                     </div>
                     <div style={{width:'100%'}}>
@@ -334,21 +332,37 @@ export default class CalendarTimeline extends React.PureComponent {
         } = this.state;
         return (
             <div style={{ height: "100%", position:'relative' }}>
-                <div style={{position:'absolute', top:3, left:0, zIndex:1000, width:'100%'}}>
+                <div style={{position:'absolute', left:0, zIndex:1000, width:'100%'}}>
                     <div className="timeline_button_layout">
                         <div className="timeline_button_arrow_box">
-                            <button
-                                className="timeline_button_arrow"
-                                onClick={this.onPrevClick}
-                            >
-                                <MaterialIcon icon={"keyboard_arrow_left"} />
-                            </button>
+                            <div>
+                                <button
+                                    className="timeline_button_arrow  double"
+                                    onClick={this.onPrevClick}
+                                >
+                                    <MaterialIcon icon={"fast_rewind"} />
+                                </button>
+                                <button
+                                    className="timeline_button_arrow"
+                                    onClick={this.onPrevClick}
+                                >
+                                    <MaterialIcon icon={"arrow_left"} />
+                                </button>
+                            </div>
+                            <div>
                             <button
                                 className="timeline_button_arrow"
                                 onClick={this.onNextClick}
                             >
-                                <MaterialIcon icon={"keyboard_arrow_right"} />
+                                <MaterialIcon icon={"arrow_right"} />
                             </button>
+                            <button
+                                className="timeline_button_arrow double"
+                                onClick={this.onNextClick}
+                            >
+                                <MaterialIcon icon={"fast_forward"} />
+                            </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -380,7 +394,7 @@ export default class CalendarTimeline extends React.PureComponent {
                     onItemSelect={this.handleItemSelect}
                     onItemClick={this.handleClickCloseMap}
                     onCanvasClick={this.handleCanvasCloseMap}
-                    style={{ height: "calc(100% - 32px)" }}
+                    style={{ height: "100%" }}
                 >
                     <TimelineHeaders className="sticky">
                         <CustomHeader className="custom-header" height={50} width="200px !important" headerData={{someData: 'data'}} unit="hour">
@@ -408,11 +422,10 @@ export default class CalendarTimeline extends React.PureComponent {
                                                         style: setTimeout(() => intervalStyle , 2000)
                                                     })}
                                                 >
-                                                    <div className="sticky">
+                                                    <div className="sticky"
+                                                         style={{color:(interval.startTime.format('YYYY-MM-DD HH:mm:SS') === this.makeUTCDateTime(moment(), "YYYY-MM-DD HH").format('YYYY-MM-DD HH:00:00')) ? '#92DF18' : "rgba(255,255,255,.6)"}}
+                                                    >
                                                         {interval.startTime.format('YYYY-MM-DDTHH:mm')}(UTC)
-                                                        <span className='timeline_header_current'>
-                                                            {(interval.startTime.format('YYYY-MM-DD HH:mm:SS') === this.makeUTCDateTime(moment(), "YYYY-MM-DD HH").format('YYYY-MM-DD HH:00:00'))?"Current":null}
-                                                        </span>
                                                     </div>
                                                 </div>
                                             )
