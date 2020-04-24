@@ -201,7 +201,8 @@ class MexListView extends React.Component {
     }
 
     onWarning = async (action, actionLabel, isMultiple, data) => {
-        this.setState({ dialogMessageInfo: { message: `Are you sure you want to ${actionLabel} ${isMultiple ? '' : data[this.props.requestInfo.nameField]}?`, action: action, isMultiple:isMultiple, data:data } });
+        let message = action.dialogMessage ? action.dialogMessage(action, data) : undefined
+        this.setState({ dialogMessageInfo: { message: message ? message : `Are you sure you want to ${actionLabel} ${isMultiple ? '' : data[this.props.requestInfo.nameField]}?`, action: action, isMultiple:isMultiple, data:data } });
     }
 
     /***Action Block */
@@ -253,7 +254,10 @@ class MexListView extends React.Component {
             if (data.code === 200) {
                 type = 'success'
             }
-            this.props.handleAlertInfo(type, data.message)
+            if(data.message !== `Key doesn't exist`)
+            {
+                this.props.handleAlertInfo(type, data.message)
+            }
         }
     }
 
