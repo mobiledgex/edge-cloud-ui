@@ -97,8 +97,6 @@ export default class CalendarTimeline extends React.PureComponent {
         let timesList = this.props.timelineList.timesList;
         let items = [];
 
-        console.log("20200423_________ " + JSON.stringify(groups))
-
         tasksList.map((tValue, tIndex) => {
             const startDate = Date.parse(this.getParseDate(timesList[tIndex]));
             const startHour = Date.parse(moment(timesList[tIndex],"YYYY-MM-DD HH"));
@@ -111,15 +109,15 @@ export default class CalendarTimeline extends React.PureComponent {
                 start: startHour,
                 end: endValue,
                 startDate: startDate,
-                // canMove: startValue > new Date().getTime(),
-                // canResize:
-                //     startValue > new Date().getTime()
-                //         ? endValue > new Date().getTime()
-                //         ? "both"
-                //         : "left"
-                //         : endValue > new Date().getTime()
-                //         ? "right"
-                //         : false,
+                canMove: startValue > new Date().getTime(),
+                canResize:
+                    startValue > new Date().getTime()
+                        ? endValue > new Date().getTime()
+                        ? "both"
+                        : "left"
+                        : endValue > new Date().getTime()
+                        ? "right"
+                        : false,
                 className:
                     statusList[tIndex].status === 200
                         ? "normal"
@@ -231,14 +229,6 @@ export default class CalendarTimeline extends React.PureComponent {
                     <div style={{width:'100%'}}>
                         <span style={{ fontWeight: 600, marginRight:10 }}>TRACE ID</span>{itemContext.title}
                     </div>
-                    {/*<div className="timeline_item_button">*/}
-                    {/*    <button*/}
-                    {/*        style={{ cursor: "pointer" }}*/}
-                    {/*        onClick={this.props.onPopupEmail}*/}
-                    {/*    >*/}
-                    {/*        Send E-mail Trace ID <span>{storageSendedTraceidIndex !== (-1) ? <span style={{fontSize:12, width:14}} class="material-icons">done</span> : null}</span>*/}
-                    {/*    </button>*/}
-                    {/*</div>*/}
                 </div>
 
                 {itemContext.useResizeHandle ? (
@@ -346,12 +336,6 @@ export default class CalendarTimeline extends React.PureComponent {
             <div style={{ height: "100%", position:'relative' }}>
                 <div style={{position:'absolute', top:3, left:0, zIndex:1000, width:'100%'}}>
                     <div className="timeline_button_layout">
-                        {/*<button*/}
-                        {/*    className="timeline_button_current"*/}
-                        {/*    onClick={this.onCurrentClick}*/}
-                        {/*>*/}
-                        {/*    {"Current Time(UTC)"}*/}
-                        {/*</button>*/}
                         <div className="timeline_button_arrow_box">
                             <button
                                 className="timeline_button_arrow"

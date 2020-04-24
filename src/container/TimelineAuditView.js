@@ -140,10 +140,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
         componentDidMount() {
             if (this.props.location.state !== undefined) {
+                console.log("20200424 " + JSON.stringify(this.props.history))
                 let orgName = this.props.location.state.orgName;
-                this.setState({
-                    orgName
-                })
+                let subPaths = this.props.history.location.search
+                let subPath = ''
+                let subParam = []
+                if (subPaths.indexOf('&org=')) {
+                    let paths = subPaths.split('&')
+                    subPath = paths[0];
+                    subParam = paths[1].split('=');
+                }
+                if(subParam[0] === 'org'){
+                    this.setState({
+                        orgName: subParam[1]
+                    })
+                }
             }
 
             setInterval(() => this.realtimeChange()), (1000*60)
@@ -362,7 +373,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         }
 
         makeOper = (logName) => {
-            // let lastSub = logName.substring(logName.lastIndexOf('/') + 1);
             let item = '';
             let nameArray = logName.substring(1).split("/").filter(name => name != 'ws');
 
@@ -417,20 +427,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 localStorageName = "sendedTraceid"
                 storageTraceidList = JSON.parse(localStorage.getItem(localStorageName))
             }
-                console.log("20200423_____1 ")
-                if (storageTraceidList) {
-                    console.log("20200423_____2 ")
-                    traceidList = storageTraceidList
-                    let storageTraceidIndex = storageTraceidList.findIndex(s => s === data)
-                    if(storageTraceidIndex === (-1)){
-                        console.log("20200423_____3 ")
-                        traceidList.push(data)
-                        localStorage.setItem(localStorageName, JSON.stringify(traceidList))
-                    }
-                } else {
-                    traceidList[0] = data
+            if (storageTraceidList) {
+                traceidList = storageTraceidList
+                let storageTraceidIndex = storageTraceidList.findIndex(s => s === data)
+                if(storageTraceidIndex === (-1)){
+                    traceidList.push(data)
                     localStorage.setItem(localStorageName, JSON.stringify(traceidList))
                 }
+            } else {
+                traceidList[0] = data
+                localStorage.setItem(localStorageName, JSON.stringify(traceidList))
+            }
         }
 
         setAllView(dummyConts, sId) {
@@ -449,7 +456,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         };
 
         onItemSelect = (item, i) => {
-            let value = '';
             let times = this.state.timelineList[0].timesList
             let status = this.state.timelineList[0].statusList
             let storageSelectedTraceidList = JSON.parse(localStorage.getItem("selectedTraceid"))
@@ -645,7 +651,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     this.setState({statusErrorToggle: true, statusNormalToggle: false})
                 }
             } else {
-                console.log("20200423___________ ")
                 value = 'all'
                 this.setState({statusErrorToggle: false, statusNormalToggle: false})
             }
@@ -681,9 +686,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
         onCurrentClick = () => {
             let value = this.state.dropDownOnChangeValue
-
-            console.log("20200423 " + value)
-
             if(value === ''){
                 this.dropDownOnNameChange('name', {value:'all'})
             } else if(value === 'error' || value === 'normal'){
@@ -711,6 +713,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 <div style={{display:'flex', height:'100%', flexDirection: 'column'}}>
                     <Toolbar>
                         <label className='content_title_label'>Audit Logs</label>
+                        <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
                         <div className="page_audit_history">
                             <div className="page_audit_history_option">
                                 <div className="page_audit_history_option_period">
@@ -728,7 +731,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                         style={{ width: 200 }}
                                     />
                                 </div>
-                                <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
                                 <div className="page_audit_history_option_period">
                                     <button className="page_audit_error_box" onClick={this.onCurrentClick}>
                                         <div className="page_audit_error_label">Current Time (UTC)</div>
@@ -779,7 +781,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                     onClickStatus={this.onClickStatus}
                                     onItemClickCloseMap={this.onCloseMap}
                                     onCanvasClickCloseMap={this.onClickCavasCloseMap}
-                                    // onPopupEmail={this.onPopupEmail}
+                                    onPopupEmail={this.onPopupEmail}
                                     timelineSelectedIndex={this.state.timelineSelectedIndex}
                                 />
                                 :null
