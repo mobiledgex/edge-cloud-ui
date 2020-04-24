@@ -111,11 +111,15 @@ class ClusterInstReg extends React.Component {
         }
     }
 
-    ipAccessValueChange = (currentForm, forms, isInit) => {
+    ipAccessValueChange = (currentForm, forms, isInit, data) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.privacyPolicyName) {
                 form.visible = currentForm.value === constant.IP_ACCESS_DEDICATED ? true : false
+                if(data)
+                {
+                    form.visible = data[fields.deployment] ===  constant.DEPLOYMENT_TYPE_VM ? false : form.visible
+                }
                 form.value = undefined
             }
         }
@@ -157,6 +161,23 @@ class ClusterInstReg extends React.Component {
         return nForms
     }
 
+    updateIPAccess = (form, data) =>
+    {
+        if (data) {
+            if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM) {
+                form.visible = true
+                form.rules.disabled = true
+                form.value = constant.IP_ACCESS_DEDICATED
+                form.options = [constant.IP_ACCESS_DEDICATED]
+            }
+            else {
+                form.options = data[fields.accessType] === constant.ACCESS_TYPE_LOAD_BALANCER ? [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED] : [constant.IP_ACCESS_DEDICATED]
+                form.value = undefined
+            }
+        }
+        return form
+    }
+
     versionValueChange = (currentForm, forms, isInit) => {
         //hide cluster and autoCluster if deployment type is vm
         let nForms = []
@@ -181,9 +202,7 @@ class ClusterInstReg extends React.Component {
                         return form
                     }
                     else if (form.field === fields.ipAccess) {
-                        form.options = app[fields.accessType] === constant.ACCESS_TYPE_LOAD_BALANCER ? [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED] : [constant.IP_ACCESS_DEDICATED]
-                        form.value = undefined
-                        return form
+                        return this.updateIPAccess(form, app)
                     }
                     else if (form.field === fields.clusterName) {
                         form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_VM ? false : true
@@ -298,14 +317,14 @@ class ClusterInstReg extends React.Component {
             { field: fields.operatorName, label: 'Operator', formType: 'Select', placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
             { field: fields.cloudletName, label: 'Cloudlet', formType: 'MultiSelect', placeholder: 'Select Cloudlets', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 5, field: fields.operatorName }] },
             { field: fields.autoClusterInstance, label: 'Auto Cluster Instance', formType: CHECKBOX, visible: false, value: false },
-            { field: fields.ipAccess, label: 'IP Access', formType: 'Select', placeholder: 'Select IP Access', visible: false },
+            { field: fields.ipAccess, label: 'IP Access', formType: 'Select', placeholder: 'Select IP Access', rules: { required: false }, visible: false },
             { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: 'Select', placeholder: 'Select Privacy Policy', rules: { required: false }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
             { field: fields.clusterName, label: 'Cluster', formType: 'Select', placeholder: 'Select Clusters', rules: { required: true }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
             { label: 'Configs', formType: 'Header', forms: [{ formType: ICON_BUTTON, icon: 'add', visible: true, update: true, onClick: this.addConfigs, style:{color:'white'} }], visible: false }
         ]
     }
 
-    checkForms = (form, forms, isInit) => {
+    checkForms = (form, forms, isInit, data) => {
         if (form.field === fields.region) {
             this.regionValueChange(form, forms, isInit)
         }
@@ -325,7 +344,7 @@ class ClusterInstReg extends React.Component {
             this.versionValueChange(form, forms, isInit)
         }
         else if (form.field === fields.ipAccess) {
-            this.ipAccessValueChange(form, forms, isInit)
+            this.ipAccessValueChange(form, forms, isInit, data)
         }
     }
 
@@ -443,7 +462,7 @@ class ClusterInstReg extends React.Component {
                             form.options = this.appList
                             break;
                         case fields.ipAccess:
-                            form.options = data && data[fields.accessType] === constant.ACCESS_TYPE_LOAD_BALANCER ? [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED] : [constant.IP_ACCESS_DEDICATED]
+                            form = this.updateIPAccess(form, data)
                             break;
                         default:
                             form.options = undefined;
@@ -502,8 +521,8 @@ class ClusterInstReg extends React.Component {
             form.tip = constant.getTip(form.field)
             this.updateUI(form, data)
             if (data) {
-                form.value = data[form.field]
-                this.checkForms(form, forms, true)
+                form.value = data[form.field] ? data[form.field] : form.value
+                this.checkForms(form, forms, true, data)
             }
         }
 
