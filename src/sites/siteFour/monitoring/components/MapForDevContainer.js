@@ -18,12 +18,14 @@ import * as actions from "../../../../actions";
 import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 
+
 const {Option} = Select;
 
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
     zoom: 13,
 }
+
 
 let cellphoneIcon2 = L.icon({
     iconUrl: require('../images/cellhone_white003.png'),
@@ -160,9 +162,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
         constructor(props: Props) {
             super(props);
-
             this.appInstPopup = React.createRef();
-
             this.state = {
                 zoom: 2,//mapZoom
                 appInstanceListGroupByCloudlet: '',
@@ -184,7 +184,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 currentTyleLayer: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
                 currentWidgetWidth: window.innerWidth / 3,
                 clientObjKeys: [],
-                lineColor: 'yellow',
+                lineColor: 'green',
                 cloudletIconColor: 'green',
                 mapCenter: [43.4, 51.7],
                 selectedAppInstIndex: -1,
@@ -233,7 +233,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
                     let newClientList = []
                     clientList.map((item: TypeClient, index) => {
-                        let clientLocation = parseFloat(item.latitude).toFixed(3).toString() + parseFloat(item.longitude).toFixed(2).toString();
+                        let clientLocation = parseFloat(item.latitude).toFixed(1).toString() + parseFloat(item.longitude).toFixed(1).toString();
+                        console.log(`clientLocation${item.latitude}===${item.longitude}>`, clientLocation);
                         item.clientLocation = clientLocation;
                         newClientList.push(item);
                     })
@@ -244,8 +245,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
                         clientList: groupedClientList,
                         clientObjKeys: clientObjKeys,
                     }, () => {
-                        //console.log("selectedClientLocationListOnAppInst====>", this.state.clientList);
-
+                        console.log("selectedClientLocationListOnAppInst====>", this.state.clientList);
+                        console.log("clientObjKeys====>", this.state.clientObjKeys);
                     })
                 }
             } catch (e) {
@@ -363,7 +364,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                         marginBottom: -2,
                                         fontWeight: 'bold',
                                     }}
-                                                      size={14}/>
+                                                      size={14}
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -415,7 +417,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                     });
                                                 })
 
-                                                await this.props.parent.handleClusterDropdown_Reset('');
+                                                await this.props.parent.handleClusterDropdownAndReset('');
                                             } catch (e) {
 
                                             }
@@ -445,7 +447,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                         onChange={async (value) => {
                                             let index = value
 
-                                            let lineColor = DARK_LINE_COLOR;
+                                            let lineColor = DARK_LINE_COLOR
                                             let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
                                             if (Number(index) >= 4) {
                                                 lineColor = WHITE_LINE_COLOR;
@@ -467,49 +469,46 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 </div>
                                 }
 
-
                                 {/*@desc:#####################################..*/}
-                                {/*@desc:client Markers                      ...*/}
+                                {/*@desc:client Markers  (MarkerClusterGroup)...*/}
                                 {/*@desc:#####################################..*/}
                                 {this.state.clientObjKeys.map((objkeyOne, index) => {
                                     let groupedClientList = this.state.clientList;
-
                                     return (
                                         <MarkerClusterGroup>
                                             {groupedClientList[objkeyOne].map((item, index) => {
+                                                return (
+                                                    <React.Fragment>
+                                                        <Marker
+                                                            icon={cellphoneIcon2}
+                                                            position={
+                                                                [item.latitude, item.longitude]
+                                                            }
+                                                        >
+                                                            <Popup className='clientPopup'
+                                                                   style={{fontSize: 11}}>
+                                                                <div style={{display: 'flex'}}>
+                                                                    <div style={{color: 'white', fontFamily: 'ubuntu'}}>
+                                                                        {item.uuid}
+                                                                    </div>
+                                                                </div>
 
-                                                if (item.serverLocInfo !== undefined) {
-                                                    return (
-                                                        <React.Fragment>
-                                                            <Marker
-                                                                icon={cellphoneIcon2}
-                                                                position={
-                                                                    [item.latitude, item.longitude]
-                                                                }
-                                                            >
-                                                                <Popup className='clientPopup'
-                                                                       style={{fontSize: 11}}>{item.uuid}</Popup>
-                                                            </Marker>
-                                                            {/*@desc:#####################################..*/}
-                                                            {/*@desc:Render lines....                       */}
-                                                            {/*@desc:#####################################..*/}
-                                                            <Polyline
-                                                                dashArray={['3,5,8']}
-                                                                id={index}
-                                                                positions={[
-                                                                    [item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
-                                                                ]}
-                                                                color={this.props.lineColor}
-                                                            />
+                                                            </Popup>
+                                                        </Marker>
+                                                        {/*@desc:#####################################..*/}
+                                                        {/*@desc:Render lines....                       */}
+                                                        {/*@desc:#####################################..*/}
+                                                        <Polyline
+                                                            //dashArray={['30,1,30']}
+                                                            id={index}
+                                                            positions={[
+                                                                [item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
+                                                            ]}
+                                                            color={this.props.lineColor}
+                                                        />
 
-                                                        </React.Fragment>
-                                                    )
-                                                } else {
-                                                    notification.warning({
-                                                        duration: 0.5,
-                                                        message: 'Currently, it is not possible to bring the server location. \nPlease ask the admin about this problem.',
-                                                    });
-                                                }
+                                                    </React.Fragment>
+                                                )
 
 
                                             })
@@ -587,7 +586,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
                                                         let fullAppInstOne = AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version + " | " + Operator + " | " + JSON.stringify(serverLocation);
 
-
                                                         return (
                                                             <div style={{
                                                                 fontSize: 14,
@@ -601,11 +599,15 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                                 <Ripples
                                                                     style={{marginLeft: 5,}}
                                                                     color='#1cecff' during={500}
-                                                                    onClick={() => {
-                                                                        this.setState({
-                                                                            selectedAppInstIndex: innerIndex,
-                                                                        })
-                                                                        this.handleClickAppInst(fullAppInstOne)
+                                                                    onClick={async () => {
+                                                                        try {
+                                                                            this.setState({
+                                                                                selectedAppInstIndex: innerIndex,
+                                                                            })
+                                                                            await this.handleClickAppInst(fullAppInstOne)
+                                                                        } catch (e) {
+
+                                                                        }
                                                                     }}
                                                                 >
                                                                     {AppName} [{Version}]

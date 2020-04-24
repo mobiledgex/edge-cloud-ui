@@ -4,7 +4,9 @@ import {
     APP_INST_MATRIX_HW_USAGE_INDEX,
     CHART_COLOR_APPLE,
     CHART_COLOR_BERRIES_GALORE,
+    CHART_COLOR_BLUE_MOUNTAIN_PEAKS_AND_CLOUDS,
     CHART_COLOR_BRIGHT_AND_ENERGETIC,
+    CHART_COLOR_BRIGHT_AND_FRUITY,
     CHART_COLOR_EARTHY_AND_NATURAL,
     CHART_COLOR_EXOTIC_ORCHIDS,
     CHART_COLOR_JAZZ_NIGHT,
@@ -438,7 +440,7 @@ export const sortByKey = (arrList, key) => {
 
 export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageDevMonitoring) => {
     try {
-        usageList = sortUsageListByTypeForCluster(usageList, hardwareType);
+        //usageList = sortUsageListByTypeForCluster(usageList, hardwareType); //fixme: descending sort option
 
         if (usageList.length === 0) {
             return "";
@@ -451,7 +453,7 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageD
                         usageList[index].cluster.toString() + "\n[" + usageList[index].cloudlet + "]",//clusterName
                         renderUsageByType(usageList[index], hardwareType, _this),
                         _this.state.chartColorList[index],
-                        renderUsageLabelByTypeForCluster(usageList[index], hardwareType)
+                        renderUsageLabelByTypeForCluster(usageList[index], hardwareType) //@desc:annotation
                     ];
                     chartDataList.push(barDataOne);
                 }
@@ -725,7 +727,6 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
 
                 classificationName = pUsageList[i].cluster + "\n[" + pUsageList[i].cloudlet + "]";
                 let usageList = [];
-
                 for (let j in series) {
                     let usageOne = series[j][usageIndex];
                     usageList.push(usageOne);
@@ -871,73 +872,67 @@ export const handleThemeChanges = async (themeTitle, _this) => {
         await _this.setState({
             chartColorList: CHART_COLOR_LIST
         })
-    }
-    if (themeTitle === THEME_OPTIONS.BLUE) {
+    } else if (themeTitle === THEME_OPTIONS.BLUE) {
         await _this.setState({
             chartColorList: CHART_COLOR_LIST2
         })
-    }
-    if (themeTitle === THEME_OPTIONS.GREEN) {
+    } else if (themeTitle === THEME_OPTIONS.GREEN) {
         await _this.setState({
             chartColorList: CHART_COLOR_LIST3
         })
-    }
-    if (themeTitle === THEME_OPTIONS.RED) {
+    } else if (themeTitle === THEME_OPTIONS.RED) {
         await _this.setState({
             chartColorList: CHART_COLOR_LIST4
         })
-    }
-
-    if (themeTitle === THEME_OPTIONS.MONOKAI) {
+    } else if (themeTitle === THEME_OPTIONS.MONOKAI) {
         await _this.setState({
             chartColorList: CHART_COLOR_MONOKAI
         })
-    }
-
-    if (themeTitle === THEME_OPTIONS.APPLE) {
+    } else if (themeTitle === THEME_OPTIONS.APPLE) {
         await _this.setState({
             chartColorList: CHART_COLOR_APPLE
         })
-    }
-
-    if (themeTitle === THEME_OPTIONS.EXOTIC_ORCHIDS) {
+    } else if (themeTitle === THEME_OPTIONS.EXOTIC_ORCHIDS) {
         await _this.setState({
             chartColorList: CHART_COLOR_EXOTIC_ORCHIDS
         })
-    }
-
-    if (themeTitle === THEME_OPTIONS.URBAN_SKYLINE) {
+    } else if (themeTitle === THEME_OPTIONS.URBAN_SKYLINE) {
         await _this.setState({
             chartColorList: CHART_COLOR_URBAN_SKYLINE
         })
-    }
-
-    if (themeTitle === THEME_OPTIONS.BERRIES_GALORE) {
+    } else if (themeTitle === THEME_OPTIONS.BERRIES_GALORE) {
         await _this.setState({
             chartColorList: CHART_COLOR_BERRIES_GALORE
         })
-    }
-    if (themeTitle === THEME_OPTIONS.BRIGHT_AND_ENERGETIC) {
+    } else if (themeTitle === THEME_OPTIONS.BRIGHT_AND_ENERGETIC) {
         await _this.setState({
             chartColorList: CHART_COLOR_BRIGHT_AND_ENERGETIC
         })
-    }
-
-    if (themeTitle === THEME_OPTIONS.EARTHY_AND_NATURAL) {
+    } else if (themeTitle === THEME_OPTIONS.EARTHY_AND_NATURAL) {
         await _this.setState({
             chartColorList: CHART_COLOR_EARTHY_AND_NATURAL
         })
-    }
-
-    if (themeTitle === THEME_OPTIONS.BRIGHT_AND_ENERGETIC) {
+    } else if (themeTitle === THEME_OPTIONS.BRIGHT_AND_ENERGETIC) {
         await _this.setState({
             chartColorList: CHART_COLOR_BRIGHT_AND_ENERGETIC
         })
-    }
-
-    if (themeTitle === THEME_OPTIONS.JAZZ_NIGHT) {
+    } else if (themeTitle === THEME_OPTIONS.JAZZ_NIGHT) {
         await _this.setState({
             chartColorList: CHART_COLOR_JAZZ_NIGHT
+        })
+    } else if (themeTitle === THEME_OPTIONS.JAZZ_NIGHT) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_JAZZ_NIGHT
+        })
+    } else if (themeTitle === THEME_OPTIONS.BLUE_MOUNTAIN_PEAKS_AND_CLOUDS) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_BLUE_MOUNTAIN_PEAKS_AND_CLOUDS
+        })
+    }
+
+    else if (themeTitle === THEME_OPTIONS.BRIGHT_AND_FRUITY) {
+        await _this.setState({
+            chartColorList: CHART_COLOR_BRIGHT_AND_FRUITY
         })
     }
 

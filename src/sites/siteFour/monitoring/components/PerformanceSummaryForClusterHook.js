@@ -86,6 +86,8 @@ export default function PerformanceSummaryForClusterHook(props: Props) {
                     <TableHead style={{backgroundColor: 'red', fontFamily: 'Ubuntu', fontSize: 20}} fixedHeader={true}>
                         <TableRow>
                             <TableCell padding={'none'} align="center" style={{}}>
+                            </TableCell>
+                            <TableCell padding={'none'} align="center" style={{}}>
                                 CLUSTER
                             </TableCell>
                             <TableCell padding={'none'} align="center" style={{}}>
@@ -129,6 +131,23 @@ export default function PerformanceSummaryForClusterHook(props: Props) {
                                     }}
                                 >
 
+                                    <TableCell padding={'default'} align="center" style={{width: 30, color: '#C0C6C8',}}>
+                                        <div style={{
+                                            marginBottom: 0,
+                                            marginTop: 0,
+                                            display: 'flex',
+                                            alignItems: 'flex-start',
+                                            justifyContent: 'center'
+                                        }}>
+                                            <div style={{
+                                                backgroundColor: props.parent.state.chartColorList[index],
+                                                width: 15,
+                                                height: 15,
+                                                borderRadius: 50,
+                                            }}>
+                                            </div>
+                                        </div>
+                                    </TableCell>
                                     <TableCell padding={'default'} align="center" style={{width: 320, color: '#C0C6C8',}}>
                                         <div style={{
                                             display: "flex",
@@ -137,21 +156,6 @@ export default function PerformanceSummaryForClusterHook(props: Props) {
                                             height: 30,
                                             padding: 0,
                                         }}>
-                                            <div style={{
-                                                marginBottom: 0,
-                                                marginTop: 0,
-                                                display: 'flex',
-                                                alignItems: 'flex-start',
-                                                justifyContent: 'center'
-                                            }}>
-                                                <div style={{
-                                                    backgroundColor: props.parent.state.chartColorList[index],
-                                                    width: 15,
-                                                    height: 15,
-                                                    borderRadius: 50,
-                                                }}>
-                                                </div>
-                                            </div>
                                             <div style={{
                                                 marginBottom: 0, marginTop: 0, marginLeft: 20, display: 'flex', alignItems: 'center', justifyContent: 'center'
                                             }}>

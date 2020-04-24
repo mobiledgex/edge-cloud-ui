@@ -97,18 +97,17 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
                 appInstCount++;
                 let data = JSON.parse(event.data);
-
-                console.log(`onmessage====>`,data);
-
-                let uuid = data.data.client_key.uuid;
+                let uniqueId = data.data.client_key.unique_id;
+                let unique_id_type = data.data.client_key.unique_id_type;
                 if (data.code === 200) {
                     _this.setState({
                         loading: true,
                     })
                 }
                 let clientLocationOne: TypeClientLocation = data.data.location;
-                if (!isEmpty(uuid)) {
-                    clientLocationOne.uuid = uuid;
+                if (!isEmpty(uniqueId)) {
+                    clientLocationOne.uuid = uniqueId;
+                    clientLocationOne.unique_id_type = unique_id_type;
                     let serverLocation = pCurrentAppInst.split('|')[7].trim()
                     clientLocationOne.serverLocInfo = JSON.parse(serverLocation)
                 }
@@ -297,18 +296,6 @@ export const getCloudletList = async () => {
                 })
             }
         })
-
-
-        //todo: current org에 관한것만 flitering
-        /* let mergedOrgCloudletList = []
-         mergedCloudletList.map(item => {
-             if (item.Operator === localStorage.selectOrg) {
-                 mergedOrgCloudletList.push(item)
-             }
-         })
-
-         console.log("mergedOrgCloudletList====>", mergedOrgCloudletList);*/
-
         return mergedCloudletList;
     } catch (e) {
         showToast('getCloudletList=ERROR!!!==>' + e.toString())
@@ -382,7 +369,6 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                 appInstanceHealth: appInstanceHealthCheckList[index],
             });
         })
-
 
 
         let allUsageList = []
@@ -774,7 +760,6 @@ export const getCloudletLevelUsageList = async (cloudletList, pHardwareType, rec
 }
 
 export const getCloudletLevelMatric = async (serviceBody: any, pToken: string) => {
-    console.log('token2===>', pToken);
     let result = await axios({
         url: '/api/v1/auth/metrics/cloudlet',
         method: 'post',
@@ -816,7 +801,6 @@ export const getAppLevelMetrics = async (serviceBodyForAppInstanceOneInfo: any) 
 
 export const getClusterLevelMatric = async (serviceBody: any, pToken: string) => {
     try {
-        console.log('token2===>', pToken);
         let result = await axios({
             url: '/api/v1/auth/metrics/cluster',
             method: 'post',
@@ -987,33 +971,6 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster) => 
         //showToast(e)
     }
 }
-
-/*export const getAppInstanceAllEventLogList = async (appInstList) => {
-    try {
-        let promiseList = []
-        //todo: 모든 AppInst 대한 이벤트 로그를 요청 비동기식 promiseList
-        appInstList.map((appInstOne, index) => {
-            promiseList.push(getAppInstEventLogListOne(appInstOne))
-        })
-
-        let allAppInstEventLogs = await Promise.all(promiseList);
-        let completedEventLogList = []
-        allAppInstEventLogs.map((item, index) => {
-            if (item.Series !== null) {
-                let eventLogList = item.Series["0"].values;
-                eventLogList.map(item => {
-                    completedEventLogList.push(item)
-                })
-            }
-        })
-
-        console.log("completedEventLogList===>", completedEventLogList);
-        return completedEventLogList;
-    } catch (e) {
-        showToast(e.toString())
-    }
-}*/
-
 
 export const getAppInstEventLogByRegion = async (region = 'EU') => {
     try {
