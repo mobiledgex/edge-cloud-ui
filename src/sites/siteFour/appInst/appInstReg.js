@@ -412,7 +412,7 @@ class ClusterInstReg extends React.Component {
         }
     }
 
-    updateUI(form) {
+    updateUI(form, data) {
         if (form) {
             this.resetFormValue(form)
             if (form.field) {
@@ -443,7 +443,7 @@ class ClusterInstReg extends React.Component {
                             form.options = this.appList
                             break;
                         case fields.ipAccess:
-                            form.options = [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED]
+                            form.options = data && data[fields.accessType] === constant.ACCESS_TYPE_LOAD_BALANCER ? [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED] : [constant.IP_ACCESS_DEDICATED]
                             break;
                         default:
                             form.options = undefined;
@@ -500,7 +500,7 @@ class ClusterInstReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             form.tip = constant.getTip(form.field)
-            this.updateUI(form)
+            this.updateUI(form, data)
             if (data) {
                 form.value = data[form.field]
                 this.checkForms(form, forms, true)
