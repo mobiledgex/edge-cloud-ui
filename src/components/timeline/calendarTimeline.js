@@ -31,10 +31,10 @@ export default class CalendarTimeline extends React.PureComponent {
 
         const groups = this.generateGroupsData(props);
         const items = this.generateItemsData(groups);
-        const defaultTimeStart = this.makeUTCDateTime(moment()).startOf("hour").add(-4, 'hour').toDate()
-        const defaultTimeEnd = this.makeUTCDateTime(moment()).startOf("hour").add(1, 'hour').toDate()
-        const visibleTimeStart= this.makeUTCDateTime(moment()).startOf("hour").add(-4, 'hour').toDate()
-        const visibleTimeEnd= this.makeUTCDateTime(moment()).startOf("hour").add(1, 'hour').toDate()
+        const defaultTimeStart = this.makeUTCDateTime(moment()).startOf("hour").add(-4, 'hour').toDate();
+        const defaultTimeEnd = this.makeUTCDateTime(moment()).startOf("hour").add(1, 'hour').toDate();
+        const visibleTimeStart= this.makeUTCDateTime(moment()).startOf("hour").add(-4, 'hour').toDate();
+        const visibleTimeEnd= this.makeUTCDateTime(moment()).startOf("hour").add(1, 'hour').toDate();
 
         this.state = {
             groups,
@@ -48,8 +48,8 @@ export default class CalendarTimeline extends React.PureComponent {
     }
 
     makeUTCDateTime = (time) => {
-        let momentTime = moment(time)
-        let newTime = moment(momentTime).utc().format('YYYY/MM/DD HH:mm:ss:SSS')
+        let momentTime = moment(time);
+        let newTime = moment(momentTime).utc().format('YYYY/MM/DD HH:mm:ss:SSS');
         return moment(newTime, "YYYY-MM-DD HH:mm:ss");
     }
 
@@ -63,19 +63,19 @@ export default class CalendarTimeline extends React.PureComponent {
     };
 
     handleStatusClick = (status) => {
-        this.props.onClickStatus(status);
+        this.props.onClickStatus(status)
     }
 
     handleClickCloseMap = (itemId, _, time) => {
-        this.props.onItemClickCloseMap();
+        this.props.onItemClickCloseMap()
     };
 
     handleCanvasCloseMap = (itemId, _, time) => {
-        this.props.onCanvasClickCloseMap();
+        this.props.onCanvasClickCloseMap()
     };
 
     generateGroupsData = props => {
-        let groups = []
+        let groups = [];
 
         groups.push({
             id: 1,
@@ -172,16 +172,6 @@ export default class CalendarTimeline extends React.PureComponent {
             );
         }
 
-
-        const storageSendedTraceidList = JSON.parse(localStorage.getItem("sendedTraceid"));
-        let storageSendedTraceidIndex = (-1);
-        if (storageSendedTraceidList) {
-            storageSendedTraceidIndex = storageSendedTraceidList.findIndex(
-                s => s === itemContext.title
-            );
-        }
-
-
         let properties = getItemProps();
         let additional = {};
         let customStyles = {
@@ -225,7 +215,7 @@ export default class CalendarTimeline extends React.PureComponent {
                         </div>
                     </div>
                     <div style={{width:'100%'}}>
-                        <span style={{ fontWeight: 600, marginRight:10 }}>TRACE ID</span>{itemContext.title}
+                        <span style={{ fontWeight: 600, marginRight:10 }}>TRACE ID</span>{item.title}
                     </div>
                 </div>
 
@@ -264,14 +254,13 @@ export default class CalendarTimeline extends React.PureComponent {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log("20200416 snapshot = ", snapshot);
         if (snapshot) {
             let groups = this.generateGroupsData(snapshot);
             let items = this.generateItemsData(groups);
-            const defaultTimeStart = this.makeUTCDateTime(moment()).startOf("hour").add(-4, 'hour').toDate()
-            const defaultTimeEnd = this.makeUTCDateTime(moment()).startOf("hour").add(1, 'hour').toDate()
-            const visibleTimeStart= this.makeUTCDateTime(moment()).startOf("hour").add(-4, 'hour').toDate()
-            const visibleTimeEnd= this.makeUTCDateTime(moment()).startOf("hour").add(1, 'hour').toDate()
+            let defaultTimeStart = this.makeUTCDateTime(moment()).startOf("hour").add(-4, 'hour').toDate();
+            let defaultTimeEnd = this.makeUTCDateTime(moment()).startOf("hour").add(1, 'hour').toDate();
+            let visibleTimeStart= this.makeUTCDateTime(moment()).startOf("hour").add(-4, 'hour').toDate();
+            let visibleTimeEnd= this.makeUTCDateTime(moment()).startOf("hour").add(1, 'hour').toDate();
 
             this.setState ({
                 groups,
@@ -296,6 +285,32 @@ export default class CalendarTimeline extends React.PureComponent {
 
     onNextClick = () => {
         const zoom = this.state.visibleTimeEnd - this.state.visibleTimeStart;
+        if(this.state.visibleTimeEnd + zoom <= moment(this.state.defaultTimeEnd).valueOf()){
+            this.setState(state => ({
+                visibleTimeStart: state.visibleTimeStart + zoom,
+                visibleTimeEnd: state.visibleTimeEnd + zoom,
+                scrolling: true
+            }));
+        } else {
+            this.setState({
+                visibleTimeStart: this.makeUTCDateTime(moment()).startOf("hour").add(-4, 'hour').toDate(),
+                visibleTimeEnd: this.makeUTCDateTime(moment()).startOf("hour").add(1, 'hour').toDate(),
+                scrolling: true
+            });
+        }
+    };
+
+    onHourPrevClick = () => {
+        const zoom = 60 * 60 * 1000;
+        this.setState(state => ({
+            visibleTimeStart: state.visibleTimeStart - zoom,
+            visibleTimeEnd: state.visibleTimeEnd - zoom,
+            scrolling: true
+        }));
+    };
+
+    onHourNextClick = () => {
+        const zoom = 60 * 60 * 1000;
         if(this.state.visibleTimeEnd + zoom <= moment(this.state.defaultTimeEnd).valueOf()){
             this.setState(state => ({
                 visibleTimeStart: state.visibleTimeStart + zoom,
@@ -344,7 +359,7 @@ export default class CalendarTimeline extends React.PureComponent {
                                 </button>
                                 <button
                                     className="timeline_button_arrow"
-                                    onClick={this.onPrevClick}
+                                    onClick={this.onHourPrevClick}
                                 >
                                     <MaterialIcon icon={"arrow_left"} />
                                 </button>
@@ -352,7 +367,7 @@ export default class CalendarTimeline extends React.PureComponent {
                             <div>
                             <button
                                 className="timeline_button_arrow"
-                                onClick={this.onNextClick}
+                                onClick={this.onHourNextClick}
                             >
                                 <MaterialIcon icon={"arrow_right"} />
                             </button>

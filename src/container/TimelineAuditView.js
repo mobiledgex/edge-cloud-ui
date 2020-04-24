@@ -16,7 +16,6 @@ import {Card, IconButton, Toolbar, ButtonGroup, Button as ButtonM} from '@materi
 import OfflinePinIcon from '@material-ui/icons/OfflinePin';
 import AccountCircleOutlinedIcon from "@material-ui/core/SvgIcon/SvgIcon";
 
-const sgmail = require('@sendgrid/mail')
 const countryOptions = [
     { key: '24', value: 24, flag: '24', text: 'Last 24 hours' },
     { key: '18', value: 18, flag: '18', text: 'Last 18 hours' },
@@ -128,7 +127,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 {display:'block', marginTop:20, width:'100%', height: 'fit-content',}
             ]
 
-            sgmail.setApiKey('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')
         }
 
         componentWillMount() {
@@ -140,21 +138,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         }
 
         componentDidMount() {
-            if (this.props.location.state !== undefined) {
-                console.log("20200424 " + JSON.stringify(this.props.history))
-                let orgName = this.props.location.state.orgName;
-                let subPaths = this.props.history.location.search
-                let subPath = ''
-                let subParam = []
-                if (subPaths.indexOf('&org=')) {
-                    let paths = subPaths.split('&')
-                    subPath = paths[0];
-                }
-                if(subParam[0] === 'org'){
-                    this.setState({
-                        orgName: subParam[1]
-                    })
-                }
+            let subPaths = this.props.history.location.search
+            let subPath = ''
+            let subParam = []
+            if (subPaths.indexOf('&org=') > (-1)) {
+                let paths = subPaths.split('&')
+                subPath = paths[0]
+                subParam = paths[1].split('=')
+            }
+            if(subParam[0] === 'org'){
+                this.setState({
+                    orgName: subParam[1]
+                })
             }
 
             setInterval(() => this.realtimeChange()), (1000*60)
@@ -267,7 +262,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     })
                     if(!check || storageSelectedTraceidList.length > 200){
                         localStorage.removeItem('selectedTime')
-                        localStorage.removeItem('sendedTraceid')
                     }
 
                     let timelineList = []
@@ -291,29 +285,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
                 }
 
-            }
-            //submit form
-            if (nextProps.onSubmit) {
-                console.log('20191030 send mail contents == ', nextProps)
-                let msg = nextProps.sendingValues
-                let traceid = null;
-
-                nextProps.data.data.map((v, i) => {
-                    if(nextProps.sendingValues.html.indexOf(v.traceid) > (-1)){
-                        traceid = v.traceid
-                    }
-                })
-
-                this.setState({isLoading3 : true}, () => sgmail.send(msg)
-                                                            .then(() => {
-                                                                alert('success')
-                                                                this.setStorageData(traceid, "trace")
-                                                                this.setState({ openSendEmail: false, isLoading3 : false })
-                                                            })
-                                                            .catch((err) => {
-                                                                alert('error -> ' + err)
-                                                            })
-                )
             }
 
         };
@@ -418,15 +389,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
         setStorageData(data, type) {
             let traceidList = [];
-            let localStorageName = ""
-            let storageTraceidList = []
-            if(type === 'selected'){
-                localStorageName = "selectedTraceid"
-                storageTraceidList = JSON.parse(localStorage.getItem(localStorageName))
-            } else if(type === 'trace'){
-                localStorageName = "sendedTraceid"
-                storageTraceidList = JSON.parse(localStorage.getItem(localStorageName))
-            }
+            let localStorageName = "selectedTraceid"
+            let storageTraceidList = JSON.parse(localStorage.getItem(localStorageName))
+
             if (storageTraceidList) {
                 traceidList = storageTraceidList
                 let storageTraceidIndex = storageTraceidList.findIndex(s => s === data)
@@ -581,8 +546,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             this.setState({timelineList: timelineList})
         }
 
-        onClickUnCheckedError = () => {
-            let unCheckedToggle = this.state.unCheckedErrorToggle
+        onClickUnCheckedError = (e) => {
+            let unCheckedToggle = (e === 'current')?false:this.state.unCheckedErrorToggle
             let value = 'uncheck'
             let allData = this.state.rawAllData
             let timelineList = []
@@ -655,6 +620,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 this.setState({statusErrorToggle: false, statusNormalToggle: false})
             }
 
+
             allData.map((allValue, allIndex) => {
                 let taskValue = this.makeOper(allValue.operationname)
                 let date = this.makeUTC(allValue.starttime)
@@ -686,14 +652,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
         onCurrentClick = () => {
             let value = this.state.dropDownOnChangeValue
+
             if(value === ''){
                 this.dropDownOnNameChange('name', {value:'all'})
             } else if(value === 'error' || value === 'normal'){
                 this.onClickStatus(value)
             } else if(value === 'uncheck'){
-                this.onClickUnCheckedError()
+                this.onClickUnCheckedError("current")
             } else {
-                this.dropDownOnNameChange('name', value)
+                this.dropDownOnNameChange('name', {value:value})
             }
         };
 
@@ -729,16 +696,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                         onChange={this.dropDownOnNameChange}
                                         style={{ width: 150 }}
                                     />
-                                    {/*<Dropdown*/}
-                                    {/*    className='dropDownName'*/}
-                                    {/*    placeholder='All'*/}
-                                    {/*    fluid*/}
-                                    {/*    search*/}
-                                    {/*    selection*/}
-                                    {/*    options={this.state.nameList}*/}
-                                    {/*    onChange={this.dropDownOnNameChange}*/}
-                                    {/*    style={{ width: 200 }}*/}
-                                    {/*/>*/}
                                 </div>
                                 <div className="page_audit_history_option_period">
                                     <ButtonGroup>
