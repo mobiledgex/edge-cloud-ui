@@ -40,6 +40,15 @@ export const ADMIN_MANAGER = 'AdminManager'
 export const OPERATOR_MANAGER = 'OperatorManager'
 export const OPERATOR_CONTRIBUTOR = 'OperatorContributor'
 
+export const CRM_OVERRIDE_NO_OVERRIDE = 0
+export const CRM_OVERRIDE_IGNORE_CRM_ERRORS= 1
+export const CRM_OVERRIDE_IGNORE_CRM = 2
+export const CRM_OVERRIDE_IGNORE_TRANSIENT_STATE = 3
+export const CRM_OVERRIDE_IGNORE_CRM_AND_TRANSIENT_STATE = 4
+
+export const CLOUDLET_STATUS_READY = 2
+export const CLOUDLET_STATUS_UNKNOWN = 0
+
 export const getHeight = (height) => {
     return window.innerHeight - (height ? height : 85)
 }

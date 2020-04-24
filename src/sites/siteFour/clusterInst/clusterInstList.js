@@ -9,6 +9,7 @@ import * as shared from '../../../services/model/shared';
 import { fields } from '../../../services/model/format';
 import { keys, showClusterInsts, deleteClusterInst, streamClusterInst, multiDataRequest } from '../../../services/model/clusterInstance';
 import { showCloudlets } from '../../../services/model/cloudlet';
+import { showCloudletInfos } from '../../../services/model/cloudletInfo';
 //list
 import MexListView from '../../../container/MexListView';
 //reg
@@ -25,19 +26,24 @@ class ClusterInstView extends React.Component {
         this.keys = keys();
     }
 
-    onRegClose = (isEdited)=>
-    {
+    onRegClose = (isEdited) => {
         this.setState({ currentView: null })
     }
 
     onAdd = (action, data) => {
-        this.setState({ currentView: <ClusterInstReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose}/> })
+        this.setState({ currentView: <ClusterInstReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> })
+    }
+
+    getDeleteActionMessage = (action, data) => {
+        if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY) {
+            return `Cloudlet status is not online, due you still want to proceed with ${data[fields.clusterName]} Cluster Instance deletion?`
+        }
     }
 
     actionMenu = () => {
         return [
             { label: 'Update', onClick: this.onAdd },
-            { label: 'Delete', onClick: deleteClusterInst, ws: true }
+            { label: 'Delete', onClick: deleteClusterInst, dialogMessage: this.getDeleteActionMessage, ws: true }
         ]
     }
 
@@ -46,7 +52,7 @@ class ClusterInstView extends React.Component {
             id: 'ClusterInst',
             headerLabel: 'Cluster Instances',
             nameField: fields.clusterName,
-            requestType: [showClusterInsts, showCloudlets],
+            requestType: [showClusterInsts, showCloudlets, showCloudletInfos],
             streamType: streamClusterInst,
             isRegion: true,
             isMap: true,
