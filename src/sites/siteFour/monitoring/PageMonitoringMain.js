@@ -3,6 +3,7 @@ import PageMonitoringForOperator from "./oper/PageOperMonitoring";
 import PageMonitoringForDeveloper from "./dev/PageDevMonitoring";
 import MonitoringAdmin from "./";
 import { Card } from "@material-ui/core";
+import { notification } from "antd";
 
 export default function PageMonitoringMain() {
     const [userRole, setUserRole] = useState(
@@ -10,13 +11,21 @@ export default function PageMonitoringMain() {
     );
 
     const renderMainPage = () => {
-        if (userRole.includes("Admin")) {
-            return <MonitoringAdmin />;
-        } else if (userRole.includes("Operator")) {
-            return <PageMonitoringForOperator />;
-        } else {
-            //Developer***
-            return <PageMonitoringForDeveloper />;
+        try {
+            if (userRole.includes("Admin")) {
+                return <MonitoringAdmin />;
+            } else if (userRole.includes("Operator")) {
+                return <PageMonitoringForOperator />;
+            } else {
+                return <PageMonitoringForDeveloper />;
+            }
+        } catch (e) {
+            notification.success({
+                placement: "bottomLeft",
+                duration: 3,
+                message:
+                    "There are some errors, please contact the administrator."
+            });
         }
     };
 
@@ -26,7 +35,9 @@ export default function PageMonitoringMain() {
                 width: "100%",
                 height: "100%",
                 backgroundColor: "#292c33",
-                padding: 10,
+                paddingTop: 10,
+                paddingLeft: 10,
+                paddingRight: 10,
                 color: "white"
             }}
         >

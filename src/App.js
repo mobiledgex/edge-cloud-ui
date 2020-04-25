@@ -255,7 +255,7 @@ class App extends Component {
                     Alert.error('Login timeout expired.<br/>Please login again', {
                         position: 'top-right',
                         effect: 'slide',
-                        timeout: 50000,
+                        timeout: 20000,
                         html: true,
 
                     });

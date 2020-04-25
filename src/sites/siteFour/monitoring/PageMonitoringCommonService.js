@@ -1,4 +1,5 @@
 import React from 'react';
+import Skeleton, {SkeletonTheme} from "react-loading-skeleton";
 import './PageMonitoring.css';
 import {toast} from "react-semantic-toasts";
 import {GRID_ITEM_TYPE, HARDWARE_TYPE, USAGE_TYPE,} from "../../../shared/Constants";
@@ -11,6 +12,7 @@ import moment from "moment";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {GridLoader, PulseLoader} from "react-spinners";
 import {barChartOption, columnChartOption, numberWithCommas,} from "./PageMonitoringUtils";
+import {notification} from "antd";
 
 export const PageMonitoringStyles = {
     topRightMenu: {
@@ -84,6 +86,14 @@ export const PageMonitoringStyles = {
         zIndex: 1,
         //height: '50px',
     },
+    dropDownForClusterCloudlet3: {
+        minWidth: '180px',
+        fontSize: '11px',
+        minHeight: '30px',
+        marginLeft: '-2px',
+        zIndex: 1,
+        //height: '50px',
+    },
     dropDownForClusterCloudlet2: {
         minWidth: '320px',
         fontSize: '11px',
@@ -114,6 +124,19 @@ export const PageMonitoringStyles = {
         minHeight: '40px',
         zIndex: 1,
         //height: '50px',
+    },
+    chartIcon: {
+        width: 65,
+        height: 65,
+    },
+    chartIconOuter: {
+        width: 130,
+        height: 85,
+        //backgroundColor: 'red',
+        display: 'flex',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        alignItems: 'center',
     },
     cell000: {
         marginLeft: 0,
@@ -432,7 +455,6 @@ export const renderLoaderArea = (_this) => (
         </div>
         <div style={{position: 'absolute', top: '40%', left: '40%', zIndex: 999999999999999}}>
             <GridLoader
-                style={{zIndex: 99999999999}}
                 sizeUnit={"px"}
                 size={22}
                 color={'#70b2bc'}
@@ -446,7 +468,6 @@ export const renderLoaderArea = (_this) => (
 export const renderGridLoader2 = (width, height) => {
     return (
         <GridLoader
-            style={{zIndex: 99999999999}}
             sizeUnit={"px"}
             size={18}
             color={'#70b2bc'}
@@ -458,13 +479,13 @@ export const renderGridLoader2 = (width, height) => {
 
 export const renderCircleLoaderForMap = (width, height) => {
     return (
-        <div style={{zIndex: 99999999999, marginLeft: 20, marginBottom: 0, height: 20,}}>
+        <div style={{marginLeft: 20, marginBottom: 0, height: 20,}}>
             <PulseLoader
                 sizeUnit={"px"}
                 size={20}
                 color={'#70b2bc'}
                 loading={true}
-                style={{zIndex: 999999999999999, marginLeft: -30}}
+                style={{zIndex: 1, marginLeft: -30}}
             />
         </div>
     )
@@ -482,23 +503,40 @@ export const renderGridLoader = () => {
 }
 
 
+export const renderPlaceHolderLoader = (type = '') => {
+
+    if (type === 'sk') {
+        return (
+            <div style={{marginTop: 35,}}>
+                <SkeletonTheme color="#22252C" highlightColor="#444">
+                    <p>
+                        <Skeleton count={13}/>
+                    </p>
+                </SkeletonTheme>
+            </div>
+        )
+    } else {
+        return (
+            <div className='page_monitoring_blank_box'
+                 style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%',}}>
+                <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}
+                />
+            </div>
+        )
+    }
+
+}
+
 export const renderPlaceHolderCircular = (type: string = '') => {
     return (
         <div className='page_monitoring_blank_box'
-             style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%', zIndex: 999999999999999999999}}>
+             style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%',}}>
             <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}
             />
         </div>
     )
 }
 
-export const renderPlaceHolderCircular3 = (type: string = '') => {
-    return (
-        <div style={{height: '100%', width: '100%', zIndex: 999999999999999999999}}>
-            <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}/>
-        </div>
-    )
-}
 
 export const renderWifiLoader = (width = 25, height = 25) => {
     return (
@@ -517,30 +555,6 @@ export const renderWifiLoader = (width = 25, height = 25) => {
                 speed={2.5}
                 width={width}
                 height={height}
-                isStopped={false}
-                isPaused={false}
-            />
-        </div>
-    )
-}
-
-
-export const renderPlaceHolderLottiePinJump = (type: string = '') => {
-    return (
-        <div className='page_monitoring_blank_box'
-             style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%', zIndex: 999999999999}}>
-            <Lottie
-                options={{
-                    loop: true,
-                    autoplay: true,
-                    animationData: require('../../../lotties/pinjump'),
-                    rendererSettings: {
-                        preserveAspectRatio: 'xMidYMid slice'
-                    }
-                }}
-                speed={2.1}
-                height={150}
-                width={150}
                 isStopped={false}
                 isPaused={false}
             />
@@ -631,16 +645,6 @@ export const renderPlaceHolderLottie = (type: string = '') => {
         </div>
     )
 }*/
-
-export const renderPlaceHolder3 = (type: string = '') => {
-    // let boxWidth = window.innerWidth / 3 - 50;
-    return (
-        <div className='page_monitoring_blank_box'
-             style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
-            <CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 20}}/>
-        </div>
-    )
-}
 
 export const convertByteToMegaByte = (value, hardwareType) => {
     if (value > 1000000) {
@@ -956,7 +960,7 @@ export const renderBarChartCore = (chartDataList, hardwareType, _this, graphType
                 height={'100%'}
                 chartType={graphType === GRID_ITEM_TYPE.BAR ? 'BarChart' : 'ColumnChart'}
                 //chartType={'ColumnChart'}
-                loader={<div><CircularProgress style={{color: '#1cecff', zIndex: 999999}}/></div>}
+                loader={<div><CircularProgress style={{color: '#1cecff',}}/></div>}
                 data={chartDataList}
                 options={graphType === GRID_ITEM_TYPE.BAR ? barChartOption(hardwareType) : columnChartOption(hardwareType)}
             />
@@ -1033,35 +1037,37 @@ export const getOneYearStartEndDatetime2 = () => {
 }
 
 
-export const showToast = (title: string, time = 2) => {
-    toast({
-        type: 'success',
-        //icon: 'smile',
-        title: title,
-        animation: 'swing left',
-        time: time * 750,
-        color: '#77BD25',
-        size: 'tiny'
+export const showToast = (title: string, time = 3) => {
+    notification.success({
+        placement: 'bottomLeft',
+        duration: time,
+        message: title,
     });
 }
 export const showToast2 = (title: string, time = 2) => {
     toast({
         type: 'success',
-        icon: 'star',
         title: title,
         //animation: 'swing left',
         time: time * 1000,
         color: 'black',
     });
 }
-export const showToast3 = (title: string, time = 2) => {
+
+/**
+ *
+ * @param title
+ * @param time
+ * @param color
+ */
+export const showToast3 = (title: string, time = 2, color = 'green') => {
     toast({
-        type: 'warning',
-        icon: 'star',
+        type: 'success',
         title: title,
-        animation: 'swing left',
+        animation: 'swing right',
         time: time * 1000,
-        color: 'black',
+        color: color,
+        //size: 'tiny',
     });
 }
 

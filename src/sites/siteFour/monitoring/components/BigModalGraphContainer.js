@@ -164,7 +164,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         <div className='page_monitoring_popup_title' style={{display: 'flex'}}>
                                             Cluster {this.props.popupGraphHWType} Usage
                                             {this.props.intervalLoading &&
-                                            <div style={{backgroundColor: 'transparent', zIndex:999999999999, marginLeft:25}}>
+                                            <div style={{backgroundColor: 'transparent', zIndex: 999999999999, marginLeft: 25}}>
                                                 {renderWifiLoader(35, 35)}
                                             </div>
                                             }
@@ -177,7 +177,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             <div className='page_monitoring_popup_title' style={{display: 'flex'}}>
                                                 App Instance {this.props.popupGraphHWType} Usage
                                                 {this.props.intervalLoading &&
-                                                <div style={{backgroundColor: 'transparent', zIndex:999999999999, marginLeft:25}}>
+                                                <div style={{backgroundColor: 'transparent', zIndex: 1, marginLeft: 25}}>
                                                     {renderWifiLoader(35, 35)}
                                                 </div>
                                                 }
@@ -222,7 +222,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         height={'100%'}
                                         chartType={this.state.graphType === GRID_ITEM_TYPE.BAR ? 'BarChart' : 'ColumnChart'}
                                         //chartType={'ColumnChart'}
-                                        loader={<div><CircularProgress style={{color: '#1cecff', zIndex: 999999}}/>
+                                        loader={<div><CircularProgress style={{color: '#1cecff',}}/>
                                         </div>}
                                         data={this.state.chartDataForRendering}
                                         options={this.state.graphType === GRID_ITEM_TYPE.BAR ? barChartOption(this.state.popupGraphHWType) : columnChartOption(this.state.popupGraphHWType)}

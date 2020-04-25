@@ -37,6 +37,7 @@ class MexListView extends React.Component {
             uuid: 0,
             refresh: true,
         };
+        this.filterText = ''
         this.requestCount = 0;
         this.keys = props.requestInfo.keys;
         this.selectedRow = {};
@@ -200,7 +201,8 @@ class MexListView extends React.Component {
     }
 
     onWarning = async (action, actionLabel, isMultiple, data) => {
-        this.setState({ dialogMessageInfo: { message: `Are you sure you want to ${actionLabel} ${isMultiple ? '' : data[this.props.requestInfo.nameField]}?`, action: action, isMultiple:isMultiple, data:data } });
+        let message = action.dialogMessage ? action.dialogMessage(action, data) : undefined
+        this.setState({ dialogMessageInfo: { message: message ? message : `Are you sure you want to ${actionLabel} ${isMultiple ? '' : data[this.props.requestInfo.nameField]}?`, action: action, isMultiple:isMultiple, data:data } });
     }
 
     /***Action Block */
@@ -252,7 +254,10 @@ class MexListView extends React.Component {
             if (data.code === 200) {
                 type = 'success'
             }
-            this.props.handleAlertInfo(type, data.message)
+            if(data.message !== `Key doesn't exist`)
+            {
+                this.props.handleAlertInfo(type, data.message)
+            }
         }
     }
 
@@ -272,7 +277,7 @@ class MexListView extends React.Component {
         let stream = this.props.requestInfo.streamType;
         if (stream) {
             let state = data[fields.state];
-            if (state === 2 || state === 3 || state === 6 || state === 7 || state === 9 || state === 10 || state === 12 || state === 14) {
+            if (state === 2 || state === 3 || state === 6 || state === 7 || state === 9 || state === 10 || state === 12 || state === 13 || state === 14) {
                 serverData.sendWSRequest(this, stream(data), this.requestResponse)
             }
         }
@@ -368,6 +373,7 @@ class MexListView extends React.Component {
       */
 
      onFilterValue = (e) => {
+        this.filterText = e ? e.target.value.toLowerCase() : this.filterText
         let dataList = this.state.dataList
         let filterCount = 0
         let filterList = dataList.filter(data=>{
@@ -376,7 +382,7 @@ class MexListView extends React.Component {
                 {   
                     filterCount =+ 1
                     let tempData = data[key.field] ? data[key.field] : ''
-                    return tempData.toLowerCase().includes(e.target.value.toLowerCase()) 
+                    return tempData.toLowerCase().includes(this.filterText) 
                 }
             })
             return filterCount === 0 || valid.includes(true)
@@ -491,9 +497,9 @@ class MexListView extends React.Component {
             this.props.handleAlertInfo('error', 'Requested data is empty')
         }
         this.setState({
-            dataList: Object.assign([], dataList),
-            filterList: Object.assign([], dataList)
+            dataList: Object.assign([], dataList)
         })
+        this.onFilterValue()
     }
 
     dataFromServer = (region) => {

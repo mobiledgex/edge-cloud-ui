@@ -50,6 +50,8 @@ module.exports = {
                 'jsx-a11y/iframe-has-title': 'off',
                 'react-hooks/exhaustive-deps': 'off',
                 'no-undef': 'off',
+                'no-loop-func': 'off',
+
             }
         }
     },
@@ -105,10 +107,9 @@ module.exports = {
                                             '@text-color-secondary': 'fade(@light, 45)',
                                             '@disabled-color': 'fade(@light, 25)',
                                             '@primary-5': '#0b4c06',
-                                            '@primary-6': '#096dd9',
-                                            //todo:'@primary-color': '#77BD25',
+                                            '@primary-6': '#1cecff',
                                             '@primary-color': '#77BD25',
-                                            '@outline-color': '@primary-color',
+                                            '@outline-color': '@primary-6',
                                             '@icon-color': 'fade(@light, 65)',
                                             '@icon-color-hover': 'fade(@light, 85)',
                                             '@border-color-base': '@border-color-split',
