@@ -21,6 +21,10 @@ class MonitoringAdmin extends React.Component {
         this.setState({ mounted: true });
     }
 
+    componentWillReceiveProps(nextProps) {
+        console.log("20200423   nextprops in monitoring....== ....", nextProps);
+    }
+
     render() {
         let _self = this;
         let containerWidth = this.props.size.width;
@@ -80,7 +84,10 @@ const mapDispatchProps = dispatch => {
             dispatch(actions.loadingSpinner(data));
         },
         onLoadComplete: data => {
-            alert(JSON.stringify(data));
+            console.log(
+                "20200423 receive from data ++++ ==== >>>>> ",
+                JSON.stringify(data)
+            );
         }
     };
 };
@@ -95,117 +102,93 @@ const generatWidget = info => (
         chartType={info.chartType}
         type={info.type}
         size={info.sizeInfo}
-        wprops={info.props}
-        self={info.self}
     />
 );
 const generateComponentAdmin = (self, infos) => {
+    let defaultProp = { sizeInfo: infos.size, self: self };
     return [
         generatWidget({
             id: "countCluster",
             method: null,
             chartType: "counter",
             type: "",
-            sizeInfo: infos.size,
-            self,
-            props: infos.props
+            ...defaultProp
         }),
         generatWidget({
             id: "networkCloudlet",
             method: null,
             chartType: "timeseries",
             type: "scatter",
-            sizeInfo: infos.size,
-            self,
-            props: infos.props
+            ...defaultProp
         }),
         generatWidget({
             id: "findCloudlet",
             method: null,
             chartType: "map",
             type: "scatter",
-            sizeInfo: infos.size,
-            self,
-            props: infos.props
+            ...defaultProp
         }),
         generatWidget({
-            id: "findCloudlet",
+            id: "registClient",
             method: null,
             chartType: "carousel",
             type: "scatter",
-            sizeInfo: infos.size,
-            self,
-            props: infos.props
+            ...defaultProp
         }),
         generatWidget({
             id: "findCloudlet",
             method: null,
             chartType: "timeseries",
             type: "bar",
-            sizeInfo: infos.size,
-            self,
-            props: infos.props
+            ...defaultProp
         }),
         generatWidget({
             id: "eventCloudlet",
             method: serviceMC.getEP().EVENT_CLOUDLET,
             chartType: "table",
             type: "",
-            sizeInfo: infos.size,
-            self,
-            props: infos.props
+            ...defaultProp
         })
     ];
 };
 const generateComponentOperator = (self, infos) => {
+    let defaultProp = { sizeInfo: infos.size, self, props: infos.props };
     return [
         generatWidget({
             url: "https://test1",
             chartType: "gauge",
             type: "",
-            sizeInfo: infos.size,
-            self,
-            props: infos.props
+            ...defaultProp
         }),
         generatWidget({
             url: "https://test2",
             chartType: "timeseries",
             type: "scatter",
-            sizeInfo: infos.size,
-            self,
-            props: infos.props
+            ...defaultProp
         }),
         generatWidget({
             url: "https://test3",
             chartType: "map",
             type: "scatter",
-            sizeInfo: infos.size,
-            self,
-            props: infos.props
+            ...defaultProp
         }),
         generatWidget({
             url: "https://test4",
             chartType: "timeseries",
             type: "scatter",
-            sizeInfo: infos.size,
-            self,
-            props: infos.props
+            ...defaultProp
         }),
         generatWidget({
             url: "https://test5",
             chartType: "timeseries",
             type: "bar",
-            sizeInfo: infos.size,
-            self,
-            props: infos.props
+            ...defaultProp
         }),
         generatWidget({
             url: "https://test6",
             chartType: "table",
             type: "",
-            sizeInfo: infos.size,
-            self,
-            props: infos.props
+            ...defaultProp
         })
     ];
 };

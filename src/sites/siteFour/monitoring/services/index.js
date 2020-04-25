@@ -27,9 +27,9 @@ const getArgs = info => {
 /***********************************
  * LIST CLOUDLET
  ************************************/
-const getListCloud = _self => {
+const getListCloud = (params, self) => {
     // First, need to get data for all cloudltes
-    let resultCloudlet = Cloudlet.getCloudletList(_self, {});
+    let resultCloudlet = Cloudlet.getCloudletList(params, self);
 };
 
 /***********************************
@@ -56,10 +56,10 @@ const getEventCloudlet = async _self => {
 };
 
 let cloudletList = [];
-const MetricsService = async (defaultValue: MetricsParmaType) => {
-    let resultCloudlet = await getListCloud(defaultValue.self);
+const MetricsService = async (defaultValue: MetricsParmaType, self: any) => {
+    let resultCloudlet = await getListCloud(defaultValue, self);
     console.log(
-        "20200423 metric service ... ",
+        "20200424 metric service ... ",
         defaultValue.method,
         ":",
         resultCloudlet
@@ -70,7 +70,7 @@ const MetricsService = async (defaultValue: MetricsParmaType) => {
     ) {
         //this.props.handleLoadingSpinner(true);
         return serviceMC.sendSyncRequest(
-            defaultValue.self,
+            self,
             getEventCloudlet(defaultValue.self)
         );
     }

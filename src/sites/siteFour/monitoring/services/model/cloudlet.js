@@ -67,17 +67,19 @@ const onServerResponse = mcRequestList => {
         newDataList = _.orderBy(newDataList, requestInfo.sortBy);
         dataList = [...dataList, ...newDataList];
 
-        _self.props.onLoadComplete(dataList);
+        _self.props.onLoadComplete({ [requestInfo.id]: dataList });
     }
     if (requestCount === 0 && dataList.length === 0) {
-        if (_self)
+        if (_self) {
+            //_self.props.handleLoadingSpinner(false);
             _self.props.handleAlertInfo("error", "Requested data is empty");
+        }
     }
 
     console.log("20200423 dataList --->>>", dataList);
 };
 
-const dataFromServer = async (region, self) => {
+const dataFromServer = async (region, self, method) => {
     dataList = [];
     filterList = [];
     selected = [];
@@ -86,6 +88,7 @@ const dataFromServer = async (region, self) => {
         let filterList = getFilterInfo(requestInfo(), region);
         requestCount = filterList.length;
         if (filterList && filterList.length > 0) {
+            //self.props.handleLoadingSpinner(true);
             for (let i = 0; i < filterList.length; i++) {
                 let filter = filterList[i];
                 serverData.showMultiDataFromServer(
@@ -108,10 +111,9 @@ const dataFromServer = async (region, self) => {
 /*******************************************************
  * START GET LIST
  * If you want get list to like that 'getCloudletList()'
- * @param {*} self
- * @param {*} data
+ 
  *******************************************************/
-export const getCloudletList = (self, data) => {
+export const getCloudletList = (param, self) => {
     _self = self;
-    dataFromServer(REGION_ALL, self);
+    dataFromServer(REGION_ALL, _self, param.method);
 };

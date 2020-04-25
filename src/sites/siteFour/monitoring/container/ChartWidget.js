@@ -33,7 +33,7 @@ class ChartWidget extends React.Component {
         }
     }
     render() {
-        const { data, chartType, type, size, wprops } = this.props;
+        const { data, chartType, type, size } = this.props;
         //const { size } = this.state;
         return (
             <div
