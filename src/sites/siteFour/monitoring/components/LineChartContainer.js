@@ -88,17 +88,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
         } else {
             return title
         }
-
     }
-
-    handleChartClick(element) {
-        const {datasets} = element[0]._chart.tooltip._data
-        const datasetIndex = element[0]._datasetIndex
-        const dataIndex = element[0]._index
-
-        alert(`${datasets[datasetIndex].label}: ${datasets[datasetIndex].data[dataIndex]}`)
-    }
-
 
     render() {
         return (
