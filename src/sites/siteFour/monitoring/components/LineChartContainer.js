@@ -82,9 +82,9 @@ export default class LineChartContainer extends React.Component<Props, State> {
         } else if (title.includes(HARDWARE_TYPE.UDPSENT)) {
             return 'UDP SENT'
         } else if (title.includes(HARDWARE_TYPE.RECVBYTES)) {
-            return 'RECV BYTES'
+            return 'NETWORK RECV'
         } else if (title.includes(HARDWARE_TYPE.SENDBYTES)) {
-            return 'SEND BYTES'
+            return 'NETWORK SEND'
         } else {
             return title
         }

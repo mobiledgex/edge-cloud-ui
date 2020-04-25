@@ -98,8 +98,6 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
                 appInstCount++;
                 let data = JSON.parse(event.data);
 
-                console.log(`onmessage====>`, data);
-
                 let uniqueId = data.data.client_key.unique_id;
                 let unique_id_type = data.data.client_key.unique_id_type;
                 if (data.code === 200) {

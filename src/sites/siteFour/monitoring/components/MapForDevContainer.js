@@ -245,8 +245,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                         clientList: groupedClientList,
                         clientObjKeys: clientObjKeys,
                     }, () => {
-                        console.log("selectedClientLocationListOnAppInst====>", this.state.clientList);
-                        console.log("clientObjKeys====>", this.state.clientObjKeys);
                     })
                 }
             } catch (e) {
@@ -474,7 +472,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {/*@desc:#####################################..*/}
                                 {this.state.clientObjKeys.map((objkeyOne, index) => {
                                     let groupedClientList = this.state.clientList;
-                                    console.log(`groupedClientList===>`, groupedClientList);
                                     return (
                                         <MarkerClusterGroup>
                                             {groupedClientList[objkeyOne].map((item, index) => {

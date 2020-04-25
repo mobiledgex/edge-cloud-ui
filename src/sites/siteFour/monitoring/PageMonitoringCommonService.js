@@ -671,6 +671,23 @@ export const convertByteToMegaGigaByte = (bytes) => {
     else return (bytes / gigaBytes).toFixed(decimal) + " GB";
 }
 
+export const convertByteToMegaGigaForNumber = (bytes) => {
+    let marker = 1024; // Change to 1000 if required
+    let decimal = 0; // Change as required
+    let kilo = marker; // One Kilobyte is 1024 bytes
+    let mega = marker * marker; // One MB is 1024 KB
+    let giga = marker * marker * marker; // One GB is 1024 MB
+    let tera = marker * marker * marker * marker; // One TB is 1024 GB
+    // return bytes if less than a KB
+    if (bytes < kilo) return bytes;
+    // return KB if less than a MB
+    else if (bytes < mega) return (bytes / kilo).toFixed(decimal) + " K";
+    // return MB if less than a GB
+    else if (bytes < giga) return (bytes / mega).toFixed(decimal) + " M";
+    // return GB if less than a TB
+    else return (bytes / giga).toFixed(decimal) + " G";
+}
+
 
 export const convertByteToMegaByte2 = (value, hardwareType) => {
     if (value > 1000000) {

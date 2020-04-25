@@ -22,7 +22,7 @@ import {
     USAGE_INDEX_FOR_CLUSTER
 } from "../../../../shared/Constants";
 import PageDevMonitoring from "./PageDevMonitoring";
-import {convertByteToMegaByte, convertByteToMegaGigaByte, makeBubbleChartDataForCluster, PageMonitoringStyles, renderUsageByType, showToast} from "../PageMonitoringCommonService";
+import {convertByteToMegaByte, convertByteToMegaGigaByte, convertByteToMegaGigaForNumber, makeBubbleChartDataForCluster, PageMonitoringStyles, renderUsageByType, showToast} from "../PageMonitoringCommonService";
 import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
 import {CircularProgress, createMuiTheme} from "@material-ui/core";
 import {reactLocalStorage} from "reactjs-localstorage";
@@ -580,19 +580,15 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
             )
         } else {
 
-
             let instanceAppName = '';
             let instanceNameList = [];
             let usageSetList = [];
             let dateTimeList = [];
 
-
             hardwareUsageList.map((item: TypeAppInstanceUsage2, index) => {
                 let usageColumnList = hardwareUsageList[0].columns;
                 let seriesValues = [];
                 let hardWareUsageIndex;
-
-                console.log(`hardwareType===>`, hardwareType);
 
                 if (hardwareType === HARDWARE_TYPE.CPU) {
                     seriesValues = item.cpuSeriesValue
@@ -613,7 +609,6 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
                 }
 
                 hardWareUsageIndex = findUsageIndexByKey(usageColumnList, hardwareType)
-
                 instanceAppName = item.instance.AppName;
                 let usageList = [];
                 for (let j in seriesValues) {
@@ -992,16 +987,16 @@ export const addUnitNameForUsage = (value, hardwareType, _this) => {
             } else if (hardwareType === HARDWARE_TYPE.SENDBYTES || hardwareType === HARDWARE_TYPE.RECVBYTES) {
                 return convertByteToMegaByte(value, hardwareType)
             } else if (hardwareType === HARDWARE_TYPE.UDPRECV || hardwareType === HARDWARE_TYPE.UDPSENT) {
-                return value + " DG";
+                return convertByteToMegaGigaForNumber(value);
             } else {
-                return value;
+                return convertByteToMegaGigaForNumber(value);
             }
 
         } else if (_this.state.currentClassification === CLASSIFICATION.APPINST) {
             if (hardwareType === HARDWARE_TYPE.CPU) {
                 return value.toString().substring(0, 9) + " %";
             } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM || hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
-                return convertByteToMegaGigaByte(value, hardwareType)
+                return convertByteToMegaGigaByte(value)
             } else {
                 return value;
             }

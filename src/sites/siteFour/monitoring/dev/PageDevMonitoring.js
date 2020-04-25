@@ -992,7 +992,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     if (barChartDataSet === undefined) {
                         barChartDataSet = []
                     }
-                    console.log(`barChartDataSet___${graphType}===>`, barChartDataSet);
                     return (<BarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this}
                                                loading={this.state.loading} chartDataSet={barChartDataSet}
                                                pHardwareType={hwType} graphType={graphType}/>)

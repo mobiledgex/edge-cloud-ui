@@ -121,7 +121,6 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
 
     render() {
 
-        console.log(`hwListForCluster====>`, this.props.parent.state.hwListForCluster);
         let hardwareDropdownList = []
         let hwDropdownChildren = [];
         if (this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER) {
@@ -177,8 +176,6 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                             </div>
                             <Radio.Group
                                 onChange={(e) => {
-                                    console.log('radio checked',);
-
                                     let selectedItem = e.target.value;
 
                                     this.setState({

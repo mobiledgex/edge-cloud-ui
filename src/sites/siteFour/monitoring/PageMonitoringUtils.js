@@ -6,7 +6,6 @@ export const numberWithCommas = (x) => {
     try {
         value = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     } catch (e) {
-        console.log('error===>', e);
     } finally {
         return value;
     }
