@@ -409,6 +409,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
             if (item.appInstanceHealth !== undefined) {
                 let series = item.appInstanceHealth.data["0"].Series;
+                console.log(`series===>`, series);
 
                 if (series !== null) {
                     if (series["3"] !== undefined) {
@@ -424,6 +425,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
                     if (series["1"] !== undefined) {
                         let memSeries = series["1"]
+                        columns = memSeries.columns;
                         memSeriesValue = memSeries.values;
                         memSeries.values.map(item => {
                             let usageOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.MEM];//memUsage..index
@@ -443,6 +445,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
                     if (series["0"] !== undefined) {
                         let networkSeries = series["0"]
+                        columns = networkSeries.columns;
                         networkSeriesValue = networkSeries.values;
                         networkSeries.values.map(item => {
                             let sendBytesOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.SENDBYTES];//sendBytesOne
@@ -455,6 +458,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
                     if (series["4"] !== undefined) {
                         let connectionsSeries = series["4"]
+                        columns = connectionsSeries.columns;
                         connectionsSeriesValue = connectionsSeries.values;
                         connectionsSeries.values.map(item => {
                             let connection1One = item[APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE];//1

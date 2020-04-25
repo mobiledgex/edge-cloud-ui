@@ -117,9 +117,6 @@ export default class LineChartContainer extends React.Component<Props, State> {
                             height: '99%'
                         }}>
                             <Line
-                               /* onElementsClick={elems => {
-
-                                }}*/
                                 data={this.state.chartDataSet}
                                 options={makeLineChartOptions(this.state.pHardwareType, this.state.chartDataSet, this.props.parent)}
                                 //options={simpleGraphOptions}
