@@ -85,10 +85,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
             return 'NETWORK RECV'
         } else if (title.includes(HARDWARE_TYPE.SENDBYTES)) {
             return 'NETWORK SENT'
-        }else if (title.includes(HARDWARE_TYPE.DISK)) {
-            return 'DISK Usage'
-        }
-        else {
+        } else {
             return title + " Utilization"
         }
     }
