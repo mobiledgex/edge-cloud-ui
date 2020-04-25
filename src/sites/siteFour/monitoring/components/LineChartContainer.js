@@ -78,15 +78,18 @@ export default class LineChartContainer extends React.Component<Props, State> {
         } else if (title.includes(HARDWARE_TYPE.TCPCONNS)) {
             return 'TCP CONNS'
         } else if (title.includes(HARDWARE_TYPE.UDPRECV)) {
-            return 'RECEIVED UDP Datagram'
+            return 'RECV UDP Datagram'
         } else if (title.includes(HARDWARE_TYPE.UDPSENT)) {
             return 'SENT UDP Datagram'
         } else if (title.includes(HARDWARE_TYPE.RECVBYTES)) {
             return 'NETWORK RECV'
         } else if (title.includes(HARDWARE_TYPE.SENDBYTES)) {
-            return 'NETWORK SEND'
-        } else {
-            return title
+            return 'NETWORK SENT'
+        }else if (title.includes(HARDWARE_TYPE.DISK)) {
+            return 'DISK Usage'
+        }
+        else {
+            return title + " Utilization"
         }
     }
 
