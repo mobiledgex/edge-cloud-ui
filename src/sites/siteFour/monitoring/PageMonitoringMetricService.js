@@ -396,7 +396,6 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
             let sumRecvBytes = 0;
             let sumSendBytes = 0;
             let sumCpuUsage = 0;
-
             let sumActiveConnection = 0;
             let sumHandledConnection = 0
             let sumAcceptsConnection = 0
@@ -409,8 +408,6 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
             if (item.appInstanceHealth !== undefined) {
                 let series = item.appInstanceHealth.data["0"].Series;
-                console.log(`series===>`, series);
-
                 if (series !== null) {
                     if (series["3"] !== undefined) {
                         let cpuSeries = series["3"]
@@ -505,14 +502,10 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                         values: [],
                         appName: appName,
                     })
-
-
                 }
             }
 
         })
-        console.log(`allUsageList===>`, allUsageList);
-
         return allUsageList;
     } catch (e) {
         //throw new Error(e.toString())
