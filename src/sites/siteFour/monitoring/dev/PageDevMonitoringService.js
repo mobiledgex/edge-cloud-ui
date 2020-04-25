@@ -336,7 +336,6 @@ export const getUserId = () => {
     return store.email;
 };
 
-
 export const filterByClassification = (originalList, selectOne, filterKey,) => {
     try {
         //todo:리전인 경우.....
