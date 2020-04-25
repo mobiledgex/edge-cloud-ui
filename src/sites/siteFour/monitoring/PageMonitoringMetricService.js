@@ -511,8 +511,6 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
             }
 
         })
-
-
         console.log(`allUsageList===>`, allUsageList);
 
         return allUsageList;
