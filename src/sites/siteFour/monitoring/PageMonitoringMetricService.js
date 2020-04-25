@@ -409,6 +409,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
             if (item.appInstanceHealth !== undefined) {
                 let series = item.appInstanceHealth.data["0"].Series;
+                console.log(`series===>`, series);
 
                 if (series !== null) {
                     if (series["3"] !== undefined) {
@@ -453,6 +454,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                             sumRecvBytes += recvBytesOne;
                         })
                     }
+
 
                     if (series["4"] !== undefined) {
                         let connectionsSeries = series["4"]
@@ -509,6 +511,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
             }
 
         })
+        console.log(`allUsageList===>`, allUsageList);
 
         return allUsageList;
     } catch (e) {
