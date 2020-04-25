@@ -61,6 +61,7 @@ import {PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} f
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListHook_VirtualScroll from "../components/AppInstEventLogListHook_VirtualScroll";
 import {fields} from '../../../../services/model/format'
+import {APP_INST_MATRIX_HW_USAGE_INDEX} from '../../../../shared/Constants'
 
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -685,7 +686,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 //desc: ############################
                 let _allAppInstEventLog = this.state.allAppInstEventLogs;
                 let filteredAppInstEventLogList = _allAppInstEventLog.filter(item => {
-                    if (item[1].trim() === AppName && item[3].trim() === ClusterInst) {
+                    if (item[APP_INST_MATRIX_HW_USAGE_INDEX.APP].trim() === AppName && item[APP_INST_MATRIX_HW_USAGE_INDEX.CLUSTER].trim() === ClusterInst) {
                         return true;
                     }
                 })
