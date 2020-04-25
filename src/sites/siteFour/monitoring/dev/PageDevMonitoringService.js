@@ -344,7 +344,7 @@ export const filterByClassification = (originalList, selectOne, filterKey,) => {
             if (selectOne !== 'ALL') {
                 let filteredList = [];
                 originalList.map(item => {
-                    if (item[filterKey] === selectOne) {
+                    if (item[filterKey].toString().trim() === selectOne) {
                         filteredList.push(item);
                     }
                 });
@@ -355,7 +355,7 @@ export const filterByClassification = (originalList, selectOne, filterKey,) => {
         } else {
             let filteredInstanceList = [];
             originalList.map(item => {
-                if (item[filterKey] === selectOne) {
+                if (item[filterKey].trim() === selectOne) {
                     filteredInstanceList.push(item);
                 }
             });
@@ -928,9 +928,7 @@ export const handleThemeChanges = async (themeTitle, _this) => {
         await _this.setState({
             chartColorList: CHART_COLOR_BLUE_MOUNTAIN_PEAKS_AND_CLOUDS
         })
-    }
-
-    else if (themeTitle === THEME_OPTIONS.BRIGHT_AND_FRUITY) {
+    } else if (themeTitle === THEME_OPTIONS.BRIGHT_AND_FRUITY) {
         await _this.setState({
             chartColorList: CHART_COLOR_BRIGHT_AND_FRUITY
         })

@@ -1290,6 +1290,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                                         this.setState({
                                             showAppInstClient: !this.state.showAppInstClient,
+                                        }, () => {
+                                            if (this.state.showAppInstClient === false) {
+                                                this.webSocketInst.close();
+                                            }
                                         })
 
                                     }}
