@@ -23,6 +23,7 @@ export const keys = () => ([
     { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
     { field: fields.status, serverField: 'status', label: 'Status', dataType: TYPE_JSON },
     { field: fields.reservable, serverField: 'reservable', label: 'Reservable', roles: ['AdminManager'] },
+    { field: fields.reservedBy, serverField: 'reserved_by', label: 'Reserved By', roles: ['AdminManager'] },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
@@ -102,6 +103,9 @@ export const clusterKey = (data, isCreate) => {
             clusterinst.ip_access = parseInt(IPAccessLabel(data[fields.ipAccess]))
         }
         clusterinst.reservable = data[fields.reservable]
+        if (data[fields.reservedBy]) {
+            clusterinst.reserved_by = data[fields.reservedBy]
+        }
         if (data[fields.numberOfMasters]) {
             clusterinst.num_masters = parseInt(data[fields.numberOfMasters])
         }
