@@ -73,7 +73,6 @@ import {PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} f
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListHook_VirtualScroll from "../components/AppInstEventLogListHook_VirtualScroll";
 import {fields} from '../../../../services/model/format'
-import {APP_INST_MATRIX_HW_USAGE_INDEX} from '../../../../shared/Constants'
 
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);

@@ -671,7 +671,7 @@ export const convertByteToMegaGigaByte = (bytes) => {
     else return (bytes / gigaBytes).toFixed(decimal) + " GB";
 }
 
-export const convertByteToMegaGigaForNumber = (bytes) => {
+export const convertToMegaGigaForNumber = (bytes) => {
     let marker = 1024; // Change to 1000 if required
     let decimal = 0; // Change as required
     let kilo = marker; // One Kilobyte is 1024 bytes

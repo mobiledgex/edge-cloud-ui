@@ -52,6 +52,7 @@ module.exports = {
                 'no-undef': 'off',
                 'no-loop-func': 'off',
                 'no-unused-expressions': 'off',
+                'no-sequences': 'off',
             }
         }
     },

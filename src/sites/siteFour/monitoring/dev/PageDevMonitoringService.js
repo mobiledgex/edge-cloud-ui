@@ -22,7 +22,7 @@ import {
     USAGE_INDEX_FOR_CLUSTER
 } from "../../../../shared/Constants";
 import PageDevMonitoring from "./PageDevMonitoring";
-import {convertByteToMegaByte, convertByteToMegaGigaByte, convertByteToMegaGigaForNumber, makeBubbleChartDataForCluster, PageMonitoringStyles, renderUsageByType, showToast} from "../PageMonitoringCommonService";
+import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, PageMonitoringStyles, renderUsageByType, showToast} from "../PageMonitoringCommonService";
 import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
 import {CircularProgress, createMuiTheme} from "@material-ui/core";
 import {reactLocalStorage} from "reactjs-localstorage";
@@ -557,14 +557,6 @@ export const handleHardwareTabChanges = async (_this: PageDevMonitoring, selecte
 
 /**
  * fixme: makeLineChartDataForAppInst========================>
- * fixme: makeLineChartDataForAppInst========================>
- * fixme: makeLineChartDataForAppInst========================>
- * fixme: makeLineChartDataForAppInst========================>
- * fixme: makeLineChartDataForAppInst========================>
- * fixme: makeLineChartDataForAppInst========================>
- * fixme: makeLineChartDataForAppInst========================>
- * fixme: makeLineChartDataForAppInst========================>
- * fixme: makeLineChartDataForAppInst========================>
  * @param hardwareUsageList
  * @param hardwareType
  * @param _this
@@ -682,6 +674,13 @@ export const renderSmallProgress = () => {
 }
 
 
+/**
+ * fixme: makeLineChartDataForCluster========================>
+ * @param pUsageList
+ * @param hardwareType
+ * @param _this
+ * @returns {string|{levelTypeNameList: *, hardwareType: *, usageSetList: *, newDateTimeList: *}}
+ */
 export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: string, _this) => {
     try {
         if (pUsageList.length === 0) {
@@ -737,8 +736,7 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
                 usageSetList.push(usageList);
             }
 
-
-            //@todo: CUS LIST INTO RECENT_DATA_LIMIT_COUNT
+            //@todo: CUT LIST INTO RECENT_DATA_LIMIT_COUNT
             let newDateTimeList = [];
             for (let i in dateTimeList) {
                 if (i < RECENT_DATA_LIMIT_COUNT) {
@@ -985,11 +983,11 @@ export const addUnitNameForUsage = (value, hardwareType, _this) => {
             } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
                 return value + " %";
             } else if (hardwareType === HARDWARE_TYPE.SENDBYTES || hardwareType === HARDWARE_TYPE.RECVBYTES) {
-                return convertByteToMegaByte(value, hardwareType)
+                return convertByteToMegaGigaByte(value, hardwareType)
             } else if (hardwareType === HARDWARE_TYPE.UDPRECV || hardwareType === HARDWARE_TYPE.UDPSENT) {
-                return convertByteToMegaGigaForNumber(value);
+                return convertToMegaGigaForNumber(value);
             } else {
-                return convertByteToMegaGigaForNumber(value);
+                return convertToMegaGigaForNumber(value);
             }
 
         } else if (_this.state.currentClassification === CLASSIFICATION.APPINST) {
