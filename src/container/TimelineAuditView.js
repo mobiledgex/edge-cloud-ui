@@ -1,6 +1,6 @@
 import 'react-hot-loader'
 import React from 'react';
-import { Button, Dropdown, Modal, Icon } from 'semantic-ui-react';
+import {Button, Dropdown, Modal, Icon, Grid} from 'semantic-ui-react';
 import * as moment from 'moment';
 import ReactJson from 'react-json-view';
 import { connect } from 'react-redux';
@@ -12,10 +12,10 @@ import * as actions from "../actions";
 import FlexBox from "flexbox-react";
 import CalendarTimeline from "../components/timeline/calendarTimeline";
 import { hot } from "react-hot-loader/root";
-import {Card, IconButton, Toolbar} from '@material-ui/core';
-import RefreshIcon from '@material-ui/icons/Refresh';
+import {Card, IconButton, Toolbar, ButtonGroup, Button as ButtonM} from '@material-ui/core';
+import OfflinePinIcon from '@material-ui/icons/OfflinePin';
+import AccountCircleOutlinedIcon from "@material-ui/core/SvgIcon/SvgIcon";
 
-const sgmail = require('@sendgrid/mail')
 const countryOptions = [
     { key: '24', value: 24, flag: '24', text: 'Last 24 hours' },
     { key: '18', value: 18, flag: '18', text: 'Last 18 hours' },
@@ -24,8 +24,8 @@ const countryOptions = [
     { key: '1', value: 1, flag: '1', text: 'Last hour' },
 ]
 
-const typeOptions = [{ key: 'all', value: 'all', flag: 'all', text: 'All' }]
-const nameOptions = [{ key: 'all', value: 'all', flag: 'all', text: 'All' }]
+const typeOptions = [{ key: 'all', value: 'all', text: 'All' }]
+const nameOptions = [{ key: 'all', value: 'all', text: 'All' }]
 let _self = null;
 const jsonView = (jsonObj, self) => {
     return <ReactJson src={jsonObj} {...self.jsonViewProps} style={{ width: '100%' }} />
@@ -69,7 +69,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         state = {
             value: 0,
             dates: [],
-            contData: [],
             rawAllData: [],
             rawViewData: [],
             requestData: [],
@@ -82,6 +81,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             orgName: '',
             isLoading: false,
             isLoading2: false,
+            isLoading3: false,
             timesList: [],
             timeLineIndex: 0,
             tasksList: [],
@@ -89,14 +89,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             currentTask: '',
             currentTaskTime: '',
             closeMap:false,
-            storageTimeList: [],
             statusList: [],
             statusCount: [],
             typeList:[],
             nameList:[],
             timelineSelectedIndex: 0,
             unCheckedErrorCount: 0,
-            unCheckedErrorToggle: false
+            unCheckedErrorToggle: false,
+            statusErrorToggle: false,
+            statusNormalToggle: false,
+            dropDownOnChangeValue: '',
+            realtime: moment()
         };
         jsonViewProps = {
             name: null,
@@ -124,7 +127,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 {display:'block', marginTop:20, width:'100%', height: 'fit-content',}
             ]
 
-            sgmail.setApiKey('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')
         }
 
         componentWillMount() {
@@ -136,12 +138,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         }
 
         componentDidMount() {
-            if (this.props.location.state !== undefined) {
-                let orgName = this.props.location.state.orgName;
+            let subPaths = this.props.history.location.search
+            let subPath = ''
+            let subParam = []
+            if (subPaths.indexOf('&org=') > (-1)) {
+                let paths = subPaths.split('&')
+                subPath = paths[0]
+                subParam = paths[1].split('=')
+            }
+            if(subParam[0] === 'org'){
                 this.setState({
-                    orgName
+                    orgName: subParam[1]
                 })
             }
+
+            setInterval(() => this.realtimeChange()), (1000*60)
+
             this.setState({
                 mounted: true,
             });
@@ -157,7 +169,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     tasksList: [],
                     isLoading: true,
                 })
-                let storageTimeList = JSON.parse(localStorage.getItem("selectedTime"))
+                let storageSelectedTraceidList = JSON.parse(localStorage.getItem("selectedTraceid"))
 
                 if (!nextProps.location.search.toString().includes('org=')) {
                     await this.setState({
@@ -202,7 +214,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                         let nameIndex = nameOptions.findIndex(t => t.value === makeOperName)
                         if(nameIndex === (-1)){
                             nameOptions.push({
-                                key: makeOperName, value: makeOperName, flag: makeOperName, text: makeOperName
+                                key: makeOperName, value: makeOperName, text: makeOperName
                             })
                         }
 
@@ -211,7 +223,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
                         if(typesIndex === (-1)){
                             typeOptions.push({
-                                 key: renderValue, value: renderValue, flag: renderValue, text: renderValue
+                                 key: renderValue, value: renderValue, text: renderValue
                             })
                         }
                     }
@@ -228,11 +240,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                         if(auditList[i].status === 200){
                             normalCount++
                         } else {
-                            let makeDate = this.makeUTC(auditList[i].starttime)
-                            let makeTime = this.makeNotUTC(auditList[i].starttime)
-                            let newDate =  this.getParseDate(makeDate + " " + makeTime)
-                            let storageTimeIndex = (storageTimeList) ? storageTimeList.findIndex(s => this.getParseDate(s).valueOf() === newDate.valueOf()) : (-1)
-                            if(storageTimeIndex === (-1)){
+                            let storageSelectedTraceidIndex = (storageSelectedTraceidList) ? storageSelectedTraceidList.findIndex(s => s === traceid) : (-1)
+                            if(storageSelectedTraceidIndex === (-1)){
                                 unCheckedErrorCount++
                             }
                             errorCount++
@@ -242,18 +251,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     statusCount.push({"errorCount":errorCount, "normalCount":normalCount})
 
                     let check = false
-                    newTimesList.map((time) => {
-                        if(storageTimeList){
-                            storageTimeList.map((storage) => {
-                                if(new Date(storage).getTime() === new Date(time).getTime()){
+                    statusList.map((value) => {
+                        if(storageSelectedTraceidList){
+                            storageSelectedTraceidList.map((storage) => {
+                                if(storage === value.traceid){
                                     check = true
                                 }
                             })
                         }
                     })
-                    if(!check || storageTimeList.length > 200){
+                    if(!check || storageSelectedTraceidList.length > 200){
                         localStorage.removeItem('selectedTime')
-                        localStorage.removeItem('sendedTraceid')
                     }
 
                     let timelineList = []
@@ -278,35 +286,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 }
 
             }
-            //submit form
-            if (nextProps.onSubmit) {
-                console.log('20191030 send mail contents == ', nextProps)
-                let msg = nextProps.sendingValues
-                let traceid = null;
-
-                nextProps.data.data.map((v, i) => {
-                    if(nextProps.sendingValues.html.indexOf(v.traceid) > (-1)){
-                        traceid = v.traceid
-                    }
-                })
-
-                this.setState({}, () => sgmail.send(msg)
-                                                            .then(() => {
-                                                                alert('success')
-                                                                this.setStorageData(traceid, "trace")
-                                                                this.setState({ openSendEmail: false })
-                                                            })
-                                                            .catch((err) => {
-                                                                alert('error -> ' + err)
-                                                            })
-                )
-            }
 
         };
 
         componentWillUnmount() {
             this.setState({ mounted: false })
 
+        }
+
+        realtimeChange = () => {
+            this.setState({realtime:moment()})
         }
 
         typeRender(value) {
@@ -355,7 +344,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         }
 
         makeOper = (logName) => {
-            // let lastSub = logName.substring(logName.lastIndexOf('/') + 1);
             let item = '';
             let nameArray = logName.substring(1).split("/").filter(name => name != 'ws');
 
@@ -369,6 +357,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 } else {
                     item = nameArray[3] + nameArray[4].charAt(0).toUpperCase() + nameArray[4].slice(1)
                 }
+            } else {
+                item = nameArray[2]
             }
             return item
         }
@@ -386,7 +376,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     timelineDataOne = data
                 }
             })
-            this.setStorageData(timelineDataOne.starttime, "time")
+            this.setStorageData(timelineDataOne.traceid, "selected")
             setTimeout(() => {
                 this.setRequestView(timelineDataOne)
                 this.setResponseView(timelineDataOne)
@@ -398,39 +388,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         }
 
         setStorageData(data, type) {
-            if(type === 'time'){
-                let timeList = [];
-                let storageTimeList = JSON.parse(localStorage.getItem("selectedTime"))
-                let makeDate = this.makeUTC(data)
-                let makeTime = this.makeNotUTC(data)
-                let newDate =  this.getParseDate(makeDate + " " + makeTime)
+            let traceidList = [];
+            let localStorageName = "selectedTraceid"
+            let storageTraceidList = JSON.parse(localStorage.getItem(localStorageName))
 
-                if (storageTimeList) {
-                    timeList = storageTimeList
-                    let storageTimeIndex = storageTimeList.findIndex(s => Date.parse(s) === newDate.valueOf())
-                    if(storageTimeIndex === (-1)){
-                        timeList.push(newDate)
-                        localStorage.setItem("selectedTime", JSON.stringify(timeList))
-                    }
-                } else {
-                    timeList[0] = newDate
-                    localStorage.setItem("selectedTime", JSON.stringify(timeList))
+            if (storageTraceidList) {
+                traceidList = storageTraceidList
+                let storageTraceidIndex = storageTraceidList.findIndex(s => s === data)
+                if(storageTraceidIndex === (-1)){
+                    traceidList.push(data)
+                    localStorage.setItem(localStorageName, JSON.stringify(traceidList))
                 }
-            } else if(type === 'trace'){
-                let traceList = []
-                let storageTraceList = JSON.parse(localStorage.getItem("sendedTraceid"))
-
-                if (storageTraceList) {
-                    traceList = storageTraceList
-                    let storageTraceIndex = storageTraceList.findIndex(s => s.traceid === data)
-                    if(storageTraceIndex === (-1)){
-                        traceList.push(data)
-                        localStorage.setItem("sendedTraceid", JSON.stringify(traceList))
-                    }
-                } else {
-                    traceList[0] = data
-                    localStorage.setItem("sendedTraceid", JSON.stringify(traceList))
-                }
+            } else {
+                traceidList[0] = data
+                localStorage.setItem(localStorageName, JSON.stringify(traceidList))
             }
         }
 
@@ -450,10 +421,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         };
 
         onItemSelect = (item, i) => {
-            let value = '';
             let times = this.state.timelineList[0].timesList
             let status = this.state.timelineList[0].statusList
-            let storageTimeList = JSON.parse(localStorage.getItem("selectedTime"))
+            let storageSelectedTraceidList = JSON.parse(localStorage.getItem("selectedTraceid"))
             this.setState({closeMap:false})
 
             times.map((time, index) => {
@@ -461,9 +431,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     this.setState({"timelineSelectedIndex" : i})
                     this.onHandleIndexClick({"value" : i, "traceid": status[index].traceid})
                     if(status[index].status !== 200){
-                        if(storageTimeList){
-                            let storageTimeIndex = (storageTimeList) ? storageTimeList.findIndex(s => Date.parse(s) === this.getParseDate(time).valueOf()) : (-1)
-                            if(storageTimeIndex === (-1)){
+                        if(storageSelectedTraceidList){
+                            let storageSelectedTraceidIndex = (storageSelectedTraceidList) ? storageSelectedTraceidList.findIndex(s => s === status[index].traceid) : (-1)
+                            if(storageSelectedTraceidIndex === (-1)){
                                 this.setState({"unCheckedErrorCount" : this.state.unCheckedErrorCount - 1})
                             }
                         }
@@ -546,7 +516,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         }
         close = () => this.setState({ openSendEmail: false })
 
-        dropDownOnChange = (e, v) => {
+        dropDownOnNameChange = (e, v) => {
             let allData = this.state.rawAllData
             let timelineList = []
             let tasksList = []
@@ -554,40 +524,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             let statusList = []
 
             allData.map((allValue, allIndex) => {
-                let storageTimeList = JSON.parse(localStorage.getItem("selectedTime"))
                 let taskValue = this.makeOper(allValue.operationname)
-                let task = (e === 'type')? this.typeRender(allValue.operationname):taskValue
                 let date = this.makeUTC(allValue.starttime)
                 let time = this.makeNotUTC(allValue.starttime)
                 let datetime = date + " " + time
-                let newDate = this.getParseDate(datetime)
-                let status = allValue.status
-                let traceid = allValue.traceid;
 
-                if(v.value === 'all' || v.value === 'All'){
+                if (v.value === 'all') {
                     tasksList.push(taskValue)
                     timesList.push(datetime)
-                    statusList.push({"status":status, "traceid":traceid});
-                } else if(task === v.value){
+                    statusList.push({"status": allValue.status, "traceid": allValue.traceid})
+                    this.setState({dropDownOnChangeValue:''})
+                } else if (v.value === taskValue) {
                     tasksList.push(taskValue)
                     timesList.push(datetime)
-                    statusList.push({"status":status, "traceid":traceid});
-                } else if(v.value > 0){
-                    let newDate = (moment().valueOf() - (v.value * 1000 * 3600))
-                    if(newDate < datetime.valueOf()){
-                        tasksList.push(task)
-                        timesList.push(datetime)
-                        statusList.push({"status":status, "traceid":traceid});
-                    }
-                } else if(v.value === 'uncheck'){
-                    if(status !== 200){
-                        let storageTimeIndex = (storageTimeList) ? storageTimeList.findIndex(s => Date.parse(s) === newDate.valueOf()) : (-1)
-                        if(storageTimeIndex === (-1)){
-                            tasksList.push(taskValue)
-                            timesList.push(datetime)
-                            statusList.push({"status":status, "traceid":traceid});
-                        }
-                    }
+                    statusList.push({"status": allValue.status, "traceid": allValue.traceid})
+                    this.setState({dropDownOnChangeValue:v.value})
                 }
             })
 
@@ -595,30 +546,123 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             this.setState({timelineList: timelineList})
         }
 
-        dropDownOnNameChange = (e, v) => {
-            this.dropDownOnChange('name', v)
+        onClickUnCheckedError = (e) => {
+            let unCheckedToggle = (e === 'current')?false:this.state.unCheckedErrorToggle
+            let value = 'uncheck'
+            let allData = this.state.rawAllData
+            let timelineList = []
+            let tasksList = []
+            let timesList = []
+            let statusList = []
 
-        }
-
-        dropDownOnTypeChange = (e, v) => {
-            this.dropDownOnChange('type', v)
-        }
-
-        // dropDownOnDateChange = (e, v) => {
-        //     this.dropDownOnChange('date', v)
-        // }
-
-        onClickUnCheckedError = (e, v) => {
-            let unCheckedToggle = this.state.unCheckedErrorToggle
-            let value = {'value':'uncheck'}
             if(unCheckedToggle){
-                value = {'value':'all'}
+                value = 'all'
                 this.setState({unCheckedErrorToggle: false})
             } else {
                 this.setState({unCheckedErrorToggle: true})
             }
-            this.dropDownOnChange(null,value)
+
+            allData.map((allValue, allIndex) => {
+                let storageSelectedTraceidList = JSON.parse(localStorage.getItem("selectedTraceid"))
+                let taskValue = this.makeOper(allValue.operationname)
+                let date = this.makeUTC(allValue.starttime)
+                let time = this.makeNotUTC(allValue.starttime)
+                let datetime = date + " " + time
+
+                if(value === 'all'){
+                    tasksList.push(taskValue)
+                    timesList.push(datetime)
+                    statusList.push({"status":allValue.status, "traceid":allValue.traceid})
+                    this.setState({dropDownOnChangeValue:''})
+                } if(value === 'uncheck') {
+                    if (allValue.status !== 200) {
+                        let storageSelectedTraceidIndex = (storageSelectedTraceidList) ? storageSelectedTraceidList.findIndex(s => s === allValue.traceid) : (-1)
+                        if (storageSelectedTraceidIndex === (-1)) {
+                            tasksList.push(taskValue)
+                            timesList.push(datetime)
+                            statusList.push({"status": allValue.status, "traceid": allValue.traceid})
+                        }
+                    }
+                    this.setState({dropDownOnChangeValue:'uncheck'})
+                }
+            })
+
+            timelineList.push({'timesList' : timesList ,'tasksList':tasksList, 'statusList': statusList})
+            this.setState({timelineList: timelineList})
         }
+
+        onClickStatus = (status) => {
+            let statusErrorToggle = this.state.statusErrorToggle
+            let statusNormalToggle = this.state.statusNormalToggle
+            let allData = this.state.rawAllData
+            let timelineList = []
+            let tasksList = []
+            let timesList = []
+            let statusList = []
+            let value = "status"
+
+            if(status === 'normal'){
+                if(statusNormalToggle){
+                    value = 'all'
+                    this.setState({statusNormalToggle: false})
+                } else {
+                    this.setState({statusNormalToggle: true, statusErrorToggle: false})
+                }
+            } else if(status === 'error'){
+                if(statusErrorToggle){
+                    value = 'all'
+                    this.setState({statusErrorToggle: false})
+                } else {
+                    this.setState({statusErrorToggle: true, statusNormalToggle: false})
+                }
+            } else {
+                value = 'all'
+                this.setState({statusErrorToggle: false, statusNormalToggle: false})
+            }
+
+
+            allData.map((allValue, allIndex) => {
+                let taskValue = this.makeOper(allValue.operationname)
+                let date = this.makeUTC(allValue.starttime)
+                let time = this.makeNotUTC(allValue.starttime)
+                let datetime = date + " " + time
+
+                if(value === 'all'){
+                    tasksList.push(taskValue)
+                    timesList.push(datetime)
+                    statusList.push({"status":allValue.status, "traceid":allValue.traceid})
+                    this.setState({dropDownOnChangeValue:''})
+                } else if(value === 'status'){
+                    if (status === 'error' && allValue.status !== 200) {
+                        tasksList.push(taskValue)
+                        timesList.push(datetime)
+                        statusList.push({"status": allValue.status, "traceid": allValue.traceid})
+                    } else if (allValue.status === 200 && status === 'normal'){
+                        tasksList.push(taskValue)
+                        timesList.push(datetime)
+                        statusList.push({"status": allValue.status, "traceid": allValue.traceid});
+                    }
+                    this.setState({dropDownOnChangeValue:status})
+                }
+            })
+
+            timelineList.push({'timesList' : timesList ,'tasksList':tasksList, 'statusList': statusList})
+            this.setState({timelineList: timelineList})
+        }
+
+        onCurrentClick = () => {
+            let value = this.state.dropDownOnChangeValue
+
+            if(value === ''){
+                this.dropDownOnNameChange('name', {value:'all'})
+            } else if(value === 'error' || value === 'normal'){
+                this.onClickStatus(value)
+            } else if(value === 'uncheck'){
+                this.onClickUnCheckedError("current")
+            } else {
+                this.dropDownOnNameChange('name', {value:value})
+            }
+        };
 
 
         getWidth = () => {
@@ -636,62 +680,65 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 <div style={{display:'flex', height:'100%', flexDirection: 'column'}}>
                     <Toolbar>
                         <label className='content_title_label'>Audit Logs</label>
+                        <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
                         <div className="page_audit_history">
                             <div className="page_audit_history_option">
-                                <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
-                                <div className="page_audit_history_option_period">
-                                    <button className="page_audit_error_box" onClick={this.onClickUnCheckedError}>
-                                        <div className="page_audit_error_label">Unchecked Error</div>
-                                        <div className="page_audit_error_number">{this.state.unCheckedErrorCount}</div>
-                                    </button>
-                                </div>
-                                <div className="page_audit_history_option_period">
-                                    <div className="page_audit_history_label">
-                                        Type
-                                    </div>
-                                    <Dropdown
-                                        className='dropDownType'
-                                        placeholder='All'
-                                        fluid
-                                        search
-                                        selection
-                                        options={this.state.typeList}
-                                        onChange={this.dropDownOnTypeChange}
-                                        style={{ width: 200 }}
-                                    />
-                                </div>
                                 <div className="page_audit_history_option_period">
                                     <div className="page_audit_history_label">
                                         Name
                                     </div>
                                     <Dropdown
-                                        className='dropDownName'
                                         placeholder='All'
                                         fluid
                                         search
                                         selection
                                         options={this.state.nameList}
                                         onChange={this.dropDownOnNameChange}
-                                        style={{ width: 200 }}
+                                        style={{ width: 150 }}
                                     />
                                 </div>
-                                {/*<div className="page_audit_history_option_period">*/}
-                                {/*    <div className="page_audit_history_label">*/}
-                                {/*        Date Range*/}
-                                {/*    </div>*/}
-                                {/*    <Dropdown*/}
-                                {/*        placeholder='Custom Time Range'*/}
-                                {/*        fluid*/}
-                                {/*        search*/}
-                                {/*        selection*/}
-                                {/*        options={countryOptions}*/}
-                                {/*        onChange={this.dropDownOnDateChange}*/}
-                                {/*        style={{ width: 200, height:30 }}*/}
-                                {/*    />*/}
-                                {/*    <IconButton aria-label="refresh">*/}
-                                {/*        <RefreshIcon style={{ color: '#76ff03', marginTop:-6 }} onClick={(e)=>{this.refreshData()}}/>*/}
-                                {/*    </IconButton>*/}
-                                {/*</div>*/}
+                                <div className="page_audit_history_option_period">
+                                    <ButtonGroup>
+                                        <ButtonM onClick={() => this.onClickStatus("all")}
+                                                 className={this.state.statusNormalToggle === false && this.state.statusErrorToggle === false ? "button_on" : "button_off"}>
+                                            <div className="page_audit_error_label">All</div>
+                                            <div className="page_audit_badge_number all">
+                                                {(this.state.statusCount.length)?this.state.statusCount[0].normalCount + this.state.statusCount[0].errorCount:0}
+                                            </div>
+                                        </ButtonM>
+                                        <ButtonM onClick={() => this.onClickStatus("normal")}
+                                                 className={this.state.statusNormalToggle === true ? "button_on" : "button_off"}>
+                                            <div className="page_audit_error_label">Normal</div>
+                                            <div className="page_audit_badge_number normal">
+                                                {(this.state.statusCount.length)?this.state.statusCount[0].normalCount:0}
+                                            </div>
+                                        </ButtonM>
+                                        <ButtonM onClick={() => this.onClickStatus("error")}
+                                                 className={this.state.statusErrorToggle === true ? "button_on" : "button_off"}>
+                                            <div className="page_audit_error_label">Error</div>
+                                            <div className="page_audit_badge_number error">
+                                                {(this.state.statusCount.length)?this.state.statusCount[0].errorCount:0}
+                                            </div>
+                                        </ButtonM>
+                                    </ButtonGroup>
+                                </div>
+                                <div className="page_audit_history_option_period">
+                                    <button className="page_audit_error_box with_button" >
+                                        <div className="page_audit_error_label">Unchecked Error</div>
+                                        <div className="page_audit_badge_number">{this.state.unCheckedErrorCount}</div>
+                                    </button>
+                                    <button className="page_audit_error_button"  onClick={this.onClickUnCheckedError}>
+
+                                            <OfflinePinIcon fontSize='small' style={{marginTop:5}}/>
+                                    </button>
+                                </div>
+                                <div className="page_audit_history_option_period">
+                                    <div className="page_audit_error_box with_button" onClick={this.onCurrentClick}>
+                                        <div className="page_audit_error_label">(UTC) {moment(this.state.realtime).utc().format("YYYY-MM-DDTHH:mm")}</div>
+                                    </div>
+                                    <button className="page_audit_error_button"  onClick={this.onCurrentClick}>Go</button>
+
+                                </div>
                             </div>
                         </div>
                     </Toolbar>
@@ -699,7 +746,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
                         <div  style={{width:this.getWidth(), height:(this.state.closeMap)? 'calc(100% - 20px)' : 'calc(50% - 27px)', overflow:'hidden'}}>
                             {(this.state.timesList.length > 0) ?
-                                <CalendarTimeline timelineList={this.state.timelineList[0]} onItemSelectCallback={this.onItemSelect} onItemClickCloseMap={this.onCloseMap} onCanvasClickCloseMap={this.onClickCavasCloseMap} onPopupEmail={this.onPopupEmail} statusCount={this.state.statusCount} timelineSelectedIndex={this.state.timelineSelectedIndex}/>
+                                <CalendarTimeline
+                                    timelineList={this.state.timelineList[0]}
+                                    onItemSelectCallback={this.onItemSelect}
+                                    onClickStatus={this.onClickStatus}
+                                    onItemClickCloseMap={this.onCloseMap}
+                                    onCanvasClickCloseMap={this.onClickCavasCloseMap}
+                                    onPopupEmail={this.onPopupEmail}
+                                    timelineSelectedIndex={this.state.timelineSelectedIndex}
+                                />
                                 :null
                             }
                         </div>
@@ -769,6 +824,12 @@ class SendEmailView extends React.Component {
         let { dimmer, open, close, callback, rawViewData } = this.props;
         return (
             <Modal dimmer={dimmer} open={open} onClose={close} closeIcon>
+                {this.state.isLoading3 &&
+                <FlexBox style={{ position: 'absolute', bottom: '54%', left: '5%', zIndex: 9999999 }}>
+                    <CircularProgress style={{ color: '#1cecff', zIndex: 9999999, fontSize: 10 }}
+                                      size={20} />
+                </FlexBox>
+                }
                 <Modal.Header>New Email</Modal.Header>
                 <Modal.Content>
                     <Modal.Description>

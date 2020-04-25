@@ -232,7 +232,7 @@ export const NETWORK_OPTIONS2 = [
 
 export const APP_INST_MATRIX_HW_USAGE_INDEX = {
     /*
-        =============================================================NEW HW INDEX=====================================================
+       /*
         0: "time"
         1: "app"
         2: "ver"
@@ -241,7 +241,7 @@ export const APP_INST_MATRIX_HW_USAGE_INDEX = {
         5: "cloudlet"
         6: "cloudletorg"
         7: "apporg"
-        8: "pod"
+        8: "pod_1"
         9: "cpu"
         10: "mem"
         11: "disk"
@@ -266,10 +266,11 @@ export const APP_INST_MATRIX_HW_USAGE_INDEX = {
      */
     TIME: 0,
     APP: 1,
-    CLUSTER: 2,
-    DEV: 3,
-    CLOUDLET: 4,
-    OPERATOR: 5,
+    VERSION: 2,
+    CLUSTER: 3,
+    DEV: 4,
+    CLOUDLET: 5,
+    OPERATOR: 6,
     CPU: 9,
     MEM: 10,
     DISK: 11,
