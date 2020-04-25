@@ -78,9 +78,9 @@ export default class LineChartContainer extends React.Component<Props, State> {
         } else if (title.includes(HARDWARE_TYPE.TCPCONNS)) {
             return 'TCP CONNS'
         } else if (title.includes(HARDWARE_TYPE.UDPRECV)) {
-            return 'UDP RECV'
+            return 'RECEIVED UDP Datagram'
         } else if (title.includes(HARDWARE_TYPE.UDPSENT)) {
-            return 'UDP SENT'
+            return 'SENT UDP Datagram'
         } else if (title.includes(HARDWARE_TYPE.RECVBYTES)) {
             return 'NETWORK RECV'
         } else if (title.includes(HARDWARE_TYPE.SENDBYTES)) {
@@ -106,7 +106,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
                 <div className='page_monitoring_dual_container' style={{flex: 1}}>
                     <div className='page_monitoring_title_area draggable' style={{backgroundColor: 'transparent'}}>
                         <div className='page_monitoring_title' style={{fontFamily: 'Ubuntu'}}>
-                            {convertToClassification(this.props.currentClassification)} {this.state.pHardwareType !== undefined && this.makeToShortTitle(this.state.pHardwareType)} Usage
+                            {convertToClassification(this.props.currentClassification)} {this.state.pHardwareType !== undefined && this.makeToShortTitle(this.state.pHardwareType)}
                         </div>
                     </div>
                     <div className='page_monitoring_container'>
