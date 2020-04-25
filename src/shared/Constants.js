@@ -375,11 +375,11 @@ export const HARDWARE_OPTIONS_FOR_APPINST = [
     {text: 'CPU', value: 'CPU'},
     {text: 'MEM', value: 'MEM'},
     {text: 'DISK', value: 'DISK'},
-    {text: 'RECV BYTES', value: 'RECV_BYTES'},
-    {text: 'SEND BYTES', value: 'SEND_BYTES'},
-    {text: 'ACTIVE CONNECTION', value: 'ACTIVE_CONNECTION'},
-    {text: 'HANDLED CONNECTION', value: 'HANDLED_CONNECTION'},
-    {text: 'ACCEPTS CONNECTION', value: 'ACCEPTS_CONNECTION'},
+    {text: 'RECV BYTES', value: 'RECVBYTES'},
+    {text: 'SEND BYTES', value: 'SENDBYTES'},
+    {text: 'ACTIVE CONNECTION', value: 'ACTIVE'},
+    {text: 'HANDLED CONNECTION', value: 'HANDLED'},
+    {text: 'ACCEPTS CONNECTION', value: 'ACCEPTS'},
 ]
 
 
@@ -451,8 +451,8 @@ export const HARDWARE_TYPE = {
     TCPRETRANS: 'TCPRETRANS',
 
     //NETWORK
-    SENDBYTES: 'SEND_BYTES',
-    RECVBYTES: 'RECV_BYTES',
+    SENDBYTES: 'SENDBYTES',
+    RECVBYTES: 'RECVBYTES',
 
     MEM: 'MEM',
     MEM2: 'MEM',
@@ -460,9 +460,9 @@ export const HARDWARE_TYPE = {
     SEND_BYTES: 'SEND_BYTES',
     DISK: 'DISK',
     CONNECTIONS: 'CONNECTIONS',
-    ACTIVE_CONNECTION: 'ACTIVE_CONNECTION',//12
-    HANDLED_CONNECTION: 'HANDLED_CONNECTION',//13
-    ACCEPTS_CONNECTION: 'ACCEPTS_CONNECTION',//14 (index)
+    ACTIVE_CONNECTION: 'ACTIVE',//12
+    HANDLED_CONNECTION: 'HANDLED',//13
+    ACCEPTS_CONNECTION: 'ACCEPTS',//14 (index)
 
 }
 

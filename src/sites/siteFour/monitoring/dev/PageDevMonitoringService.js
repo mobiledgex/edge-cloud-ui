@@ -1,7 +1,6 @@
 import React from 'react';
 import '../PageMonitoring.css';
 import {
-    APP_INST_MATRIX_HW_USAGE_INDEX,
     CHART_COLOR_APPLE,
     CHART_COLOR_BERRIES_GALORE,
     CHART_COLOR_BLUE_MOUNTAIN_PEAKS_AND_CLOUDS,
@@ -27,7 +26,7 @@ import {convertByteToMegaByte, convertByteToMegaGigaByte, makeBubbleChartDataFor
 import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
 import {CircularProgress, createMuiTheme} from "@material-ui/core";
 import {reactLocalStorage} from "reactjs-localstorage";
-import {numberWithCommas} from "../PageMonitoringUtils";
+import {findUsageIndexByKey, numberWithCommas} from "../PageMonitoringUtils";
 
 export const materialUiDarkTheme = createMuiTheme({
     palette: {
@@ -555,6 +554,22 @@ export const handleHardwareTabChanges = async (_this: PageDevMonitoring, selecte
     }
 };
 
+
+/**
+ * fixme: makeLineChartDataForAppInst========================>
+ * fixme: makeLineChartDataForAppInst========================>
+ * fixme: makeLineChartDataForAppInst========================>
+ * fixme: makeLineChartDataForAppInst========================>
+ * fixme: makeLineChartDataForAppInst========================>
+ * fixme: makeLineChartDataForAppInst========================>
+ * fixme: makeLineChartDataForAppInst========================>
+ * fixme: makeLineChartDataForAppInst========================>
+ * fixme: makeLineChartDataForAppInst========================>
+ * @param hardwareUsageList
+ * @param hardwareType
+ * @param _this
+ * @returns {{levelTypeNameList: *, hardwareType: *, usageSetList: *, newDateTimeList: *}|*}
+ */
 export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareType: string = 'all', _this: PageDevMonitoring) => {
     try {
         if (hardwareUsageList.length === 0) {
@@ -571,59 +586,48 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
             let usageSetList = [];
             let dateTimeList = [];
 
-            if (hardwareType === 'all') {
 
-            } else {
-                hardwareUsageList.map((item: TypeAppInstanceUsage2, index) => {
+            hardwareUsageList.map((item: TypeAppInstanceUsage2, index) => {
+                let usageColumnList = hardwareUsageList[0].columns;
+                let seriesValues = [];
+                let hardWareUsageIndex;
 
-                    let seriesValues = [];
-                    if (hardwareType === HARDWARE_TYPE.CPU) {
-                        seriesValues = item.cpuSeriesValue
-                    } else if (hardwareType === HARDWARE_TYPE.MEM) {
-                        seriesValues = item.memSeriesValue
-                    } else if (hardwareType === HARDWARE_TYPE.DISK) {
-                        seriesValues = item.diskSeriesValue
-                    } else if (hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
-                        seriesValues = item.networkSeriesValue
-                    } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-                        seriesValues = item.connectionsSeriesValue
-                    }
+                console.log(`hardwareType===>`, hardwareType);
 
-                    instanceAppName = item.instance.AppName;
-                    let usageList = [];
+                if (hardwareType === HARDWARE_TYPE.CPU) {
+                    seriesValues = item.cpuSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.MEM) {
+                    seriesValues = item.memSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.DISK) {
+                    seriesValues = item.diskSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+                    seriesValues = item.networkSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+                    seriesValues = item.networkSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+                    seriesValues = item.connectionsSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+                    seriesValues = item.connectionsSeriesValue
+                } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+                    seriesValues = item.connectionsSeriesValue
+                }
 
-                    for (let j in seriesValues) {
-                        let usageOne = 0;
-                        if (hardwareType === HARDWARE_TYPE.CPU) {
-                            usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.CPU];
-                        } else if (hardwareType === HARDWARE_TYPE.MEM) {
-                            usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.MEM]; //mem usage
-                        } else if (hardwareType === HARDWARE_TYPE.DISK) {
-                            usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.DISK];
-                        } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-                            usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.SENDBYTES];
-                        } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-                            usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.RECVBYTES];
-                        } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-                            usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE.toString()];
-                        } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
-                            usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.HANDLED.toString()];
-                        } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-                            usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACCEPTS.toString()];
-                        }
+                hardWareUsageIndex = findUsageIndexByKey(usageColumnList, hardwareType)
 
-                        usageList.push(usageOne);
-                        let dateOne = seriesValues[j]["0"];
-                        dateOne = dateOne.toString().split("T");
+                instanceAppName = item.instance.AppName;
+                let usageList = [];
+                for (let j in seriesValues) {
+                    let usageOne = 0;
+                    usageOne = seriesValues[j][hardWareUsageIndex];
+                    usageList.push(usageOne);
+                    let dateOne = seriesValues[j]["0"];
+                    dateOne = dateOne.toString().split("T");
+                    dateTimeList.push(dateOne[1]);
+                }
+                instanceNameList.push(instanceAppName);
+                usageSetList.push(usageList);
 
-                        dateTimeList.push(dateOne[1]);
-                    }
-
-                    instanceNameList.push(instanceAppName);
-                    usageSetList.push(usageList);
-
-                })
-            }
+            })
             //@todo: CUT LIST INTO RECENT_DATA_LIMIT_COUNT
             let newDateTimeList = [];
             for (let i in dateTimeList) {
@@ -980,9 +984,7 @@ export const handleLegendAndBubbleClickedEvent = (_this: PageDevMonitoring, clic
 
 export const addUnitNameForUsage = (value, hardwareType, _this) => {
     try {
-
         if (_this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-
             if (hardwareType === HARDWARE_TYPE.CPU || hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
                 return value + " %";
             } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {

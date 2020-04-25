@@ -3,6 +3,7 @@ import * as React from 'react';
 import {convertToClassification, makeGradientLineChartData, makeLineChartOptions} from "../dev/PageDevMonitoringService";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import {Line} from 'react-chartjs-2';
+import {HARDWARE_TYPE} from "../../../../shared/Constants";
 
 type Props = {
     parent: PageDevMonitoring,
@@ -66,25 +67,23 @@ export default class LineChartContainer extends React.Component<Props, State> {
 
     makeToShortTitle(hwType) {
         let title = hwType.replace("_", "")
-        if (title.includes('ACTIVECONNECTION')) {
+        if (title.includes(HARDWARE_TYPE.ACTIVE_CONNECTION)) {
             return 'ACTIVE CONN'
-        } else if (title.includes('ACTIVECONNECTION')) {
-            return 'ACTIVE CONN'
-        } else if (title.includes('HANDLEDCONNECTION')) {
+        } else if (title.includes(HARDWARE_TYPE.HANDLED_CONNECTION)) {
             return 'HANDLED CONN'
-        } else if (title.includes('ACCEPTSCONNECTION')) {
+        } else if (title.includes(HARDWARE_TYPE.ACTIVE_CONNECTION)) {
             return 'ACCEPTS CONN'
-        } else if (title.includes('TCPRETRANS')) {
+        } else if (title.includes(HARDWARE_TYPE.TCPRETRANS)) {
             return 'TCP RETRANS'
-        } else if (title.includes('TCPCONNS')) {
+        } else if (title.includes(HARDWARE_TYPE.TCPCONNS)) {
             return 'TCP CONNS'
-        } else if (title.includes('UDPRECV')) {
+        } else if (title.includes(HARDWARE_TYPE.UDPRECV)) {
             return 'UDP RECV'
-        } else if (title.includes('UDPSENT')) {
+        } else if (title.includes(HARDWARE_TYPE.UDPSENT)) {
             return 'UDP SENT'
-        } else if (title.includes('RECVBYTES')) {
+        } else if (title.includes(HARDWARE_TYPE.RECVBYTES)) {
             return 'RECV BYTES'
-        } else if (title.includes('SENDBYTES')) {
+        } else if (title.includes(HARDWARE_TYPE.SENDBYTES)) {
             return 'SEND BYTES'
         } else {
             return title
