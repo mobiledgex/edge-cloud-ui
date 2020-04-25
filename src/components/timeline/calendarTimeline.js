@@ -249,7 +249,11 @@ export default class CalendarTimeline extends React.PureComponent {
 
     componentDidMount() {
         let _self = this;
-        setTimeout(() => _self.timeline.changeZoom(0.1), 500);
+        setTimeout(() => {
+            if (_self && _self.timeline) {
+                _self.timeline.changeZoom(0.1)
+            }
+        }, 500)
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
