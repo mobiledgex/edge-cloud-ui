@@ -506,7 +506,6 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
         return allUsageList;
     } catch (e) {
         //throw new Error(e.toString())
-        //alert(e.toString())
     }
 
 }
