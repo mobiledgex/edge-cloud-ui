@@ -685,7 +685,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 //desc: ############################
                 let _allAppInstEventLog = this.state.allAppInstEventLogs;
                 let filteredAppInstEventLogList = _allAppInstEventLog.filter(item => {
-                    if (item[1].trim() === AppName && item[4].trim() === ClusterInst) {
+                    if (item[1].trim() === AppName && item[3].trim() === ClusterInst) {
                         return true;
                     }
                 })
