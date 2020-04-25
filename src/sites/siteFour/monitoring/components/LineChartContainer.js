@@ -64,7 +64,6 @@ export default class LineChartContainer extends React.Component<Props, State> {
 
     }
 
-
     makeToShortTitle(hwType) {
         let title = hwType.replace("_", "")
         if (title.includes(HARDWARE_TYPE.ACTIVE_CONNECTION)) {
