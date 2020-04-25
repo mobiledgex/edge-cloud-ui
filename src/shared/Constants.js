@@ -402,8 +402,8 @@ export const HARDWARE_OPTIONS_FOR_CLUSTER = [
     {text: 'TCP RETRANS', value: 'TCPRETRANS'},
     {text: 'UDP RECV', value: 'UDPRECV'},
     {text: 'UDP SENT', value: 'UDPSENT'},
-    {text: 'RECV BYTES', value: 'RECV_BYTES'},
-    {text: 'SEND BYTES', value: 'SEND_BYTES'},
+    {text: 'RECV BYTES', value: 'RECVBYTES'},
+    {text: 'SEND BYTES', value: 'SENDBYTES'},
 ]
 
 
