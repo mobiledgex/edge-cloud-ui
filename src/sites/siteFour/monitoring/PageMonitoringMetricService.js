@@ -372,7 +372,6 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
         try {
             appInstanceHealthCheckList = await Promise.all(promiseList);
         } catch (e) {
-            alert(e)
             //throw new Error(e)
         }
 
