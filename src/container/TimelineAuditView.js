@@ -249,6 +249,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                         statusList.push({"status":status, "traceid":traceid});
                     }
                     statusCount.push({"errorCount":errorCount, "normalCount":normalCount})
+                    this.onHandleIndexClick({traceid:statusList[0].traceid})
 
                     let check = false
                     statusList.map((value) => {
@@ -371,7 +372,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             })
             let timelineDataOne = null
             this.state.rawAllData.map((data, index) => {
-
                 if(value.traceid === data.traceid){
                     timelineDataOne = data
                 }

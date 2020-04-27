@@ -392,6 +392,7 @@
 .react-calendar-timeline .rct-horizontal-lines .rct-hl-odd {
     border-top: 2px solid #292c33;
     border-bottom: none;
+    min-font-size: 5000px;
     /*background: rgba(0, 0, 0, 0.1);*/
 }
 
