@@ -3,6 +3,7 @@ import * as React from 'react';
 import {convertToClassification, makeGradientLineChartData, makeLineChartOptions} from "../dev/PageDevMonitoringService";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import {Line} from 'react-chartjs-2';
+import {HARDWARE_TYPE} from "../../../../shared/Constants";
 
 type Props = {
     parent: PageDevMonitoring,
@@ -63,43 +64,30 @@ export default class LineChartContainer extends React.Component<Props, State> {
 
     }
 
-
     makeToShortTitle(hwType) {
         let title = hwType.replace("_", "")
-        if (title.includes('ACTIVECONNECTION')) {
-            return 'ACTIVE CONN'
-        } else if (title.includes('ACTIVECONNECTION')) {
-            return 'ACTIVE CONN'
-        } else if (title.includes('HANDLEDCONNECTION')) {
-            return 'HANDLED CONN'
-        } else if (title.includes('ACCEPTSCONNECTION')) {
+        if (title.includes(HARDWARE_TYPE.ACCEPTS_CONNECTION)) {
             return 'ACCEPTS CONN'
-        } else if (title.includes('TCPRETRANS')) {
+        } else if (title.includes(HARDWARE_TYPE.HANDLED_CONNECTION)) {
+            return 'HANDLED CONN'
+        } else if (title.includes(HARDWARE_TYPE.ACTIVE_CONNECTION)) {
+            return 'ACTIVE CONN'
+        } else if (title.includes(HARDWARE_TYPE.TCPRETRANS)) {
             return 'TCP RETRANS'
-        } else if (title.includes('TCPCONNS')) {
+        } else if (title.includes(HARDWARE_TYPE.TCPCONNS)) {
             return 'TCP CONNS'
-        } else if (title.includes('UDPRECV')) {
-            return 'UDP RECV'
-        } else if (title.includes('UDPSENT')) {
-            return 'UDP SENT'
-        } else if (title.includes('RECVBYTES')) {
-            return 'RECV BYTES'
-        } else if (title.includes('SENDBYTES')) {
-            return 'SEND BYTES'
+        } else if (title.includes(HARDWARE_TYPE.UDPRECV)) {
+            return 'RECV UDP Datagram'
+        } else if (title.includes(HARDWARE_TYPE.UDPSENT)) {
+            return 'SENT UDP Datagram'
+        } else if (title.includes(HARDWARE_TYPE.RECVBYTES)) {
+            return 'NETWORK RECV'
+        } else if (title.includes(HARDWARE_TYPE.SENDBYTES)) {
+            return 'NETWORK SENT'
         } else {
-            return title
+            return title + " Utilization"
         }
-
     }
-
-    handleChartClick(element) {
-        const {datasets} = element[0]._chart.tooltip._data
-        const datasetIndex = element[0]._datasetIndex
-        const dataIndex = element[0]._index
-
-        alert(`${datasets[datasetIndex].label}: ${datasets[datasetIndex].data[dataIndex]}`)
-    }
-
 
     render() {
         return (
@@ -107,7 +95,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
                 <div className='page_monitoring_dual_container' style={{flex: 1}}>
                     <div className='page_monitoring_title_area draggable' style={{backgroundColor: 'transparent'}}>
                         <div className='page_monitoring_title' style={{fontFamily: 'Ubuntu'}}>
-                            {convertToClassification(this.props.currentClassification)} {this.state.pHardwareType !== undefined && this.makeToShortTitle(this.state.pHardwareType)} Usage
+                            {convertToClassification(this.props.currentClassification)} {this.state.pHardwareType !== undefined && this.makeToShortTitle(this.state.pHardwareType)}
                         </div>
                     </div>
                     <div className='page_monitoring_container'>
@@ -117,9 +105,6 @@ export default class LineChartContainer extends React.Component<Props, State> {
                             height: '99%'
                         }}>
                             <Line
-                               /* onElementsClick={elems => {
-
-                                }}*/
                                 data={this.state.chartDataSet}
                                 options={makeLineChartOptions(this.state.pHardwareType, this.state.chartDataSet, this.props.parent)}
                                 //options={simpleGraphOptions}

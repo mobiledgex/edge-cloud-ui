@@ -245,8 +245,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                         clientList: groupedClientList,
                         clientObjKeys: clientObjKeys,
                     }, () => {
-                        console.log("selectedClientLocationListOnAppInst====>", this.state.clientList);
-                        console.log("clientObjKeys====>", this.state.clientObjKeys);
                     })
                 }
             } catch (e) {

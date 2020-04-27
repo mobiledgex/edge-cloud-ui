@@ -3,7 +3,6 @@ import PageMonitoringForOperator from "./oper/PageOperMonitoring";
 import PageMonitoringForDeveloper from "./dev/PageDevMonitoring";
 import PageMonitoringForAdmin from "./admin/PageAdminMonitoring";
 import {Card} from "@material-ui/core";
-import {notification} from "antd";
 
 export default function PageMonitoringMain() {
     const [userRole, setUserRole] = useState(localStorage.getItem('selectRole'));
@@ -24,11 +23,11 @@ export default function PageMonitoringMain() {
                 )
             }
         } catch (e) {
-            notification.success({
+          /*  notification.success({
                 placement: 'bottomLeft',
                 duration: 3,
-                message: 'There are some errors, please contact the administrator.',
-            });
+                message: e.toString(),
+            });*/
         }
     }
 

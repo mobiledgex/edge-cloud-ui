@@ -5,8 +5,8 @@ import React, {Component} from 'react';
 import {Dropdown} from 'semantic-ui-react'
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
-import {CircularProgress, Toolbar, Dialog} from '@material-ui/core'
-import {Dropdown as ADropdown, Menu as AMenu, Tooltip,} from 'antd';
+import {CircularProgress, Dialog, Toolbar} from '@material-ui/core'
+import {Dropdown as ADropdown, Menu as AMenu,} from 'antd';
 import {
     defaultHwMapperListForCluster,
     defaultLayoutForAppInst,
@@ -27,7 +27,19 @@ import {
     reduceString,
     revertToDefaultLayout,
 } from "./PageDevMonitoringService";
-import {ADD_ITEM_LIST, CHART_COLOR_LIST, CLASSIFICATION, GRID_ITEM_TYPE, HARDWARE_OPTIONS_FOR_APPINST, HARDWARE_OPTIONS_FOR_CLUSTER, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, THEME_OPTIONS_LIST} from "../../../../shared/Constants";
+import {
+    ADD_ITEM_LIST,
+    APP_INST_MATRIX_HW_USAGE_INDEX,
+    CHART_COLOR_LIST,
+    CLASSIFICATION,
+    GRID_ITEM_TYPE,
+    HARDWARE_OPTIONS_FOR_APPINST,
+    HARDWARE_OPTIONS_FOR_CLUSTER,
+    HARDWARE_TYPE,
+    NETWORK_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    THEME_OPTIONS_LIST
+} from "../../../../shared/Constants";
 import type {TypeBarChartData, TypeLineChartData} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
@@ -61,7 +73,6 @@ import {PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} f
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListHook_VirtualScroll from "../components/AppInstEventLogListHook_VirtualScroll";
 import {fields} from '../../../../services/model/format'
-import {APP_INST_MATRIX_HW_USAGE_INDEX} from '../../../../shared/Constants'
 
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -981,7 +992,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     if (barChartDataSet === undefined) {
                         barChartDataSet = []
                     }
-                    console.log(`barChartDataSet___${graphType}===>`, barChartDataSet);
                     return (<BarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this}
                                                loading={this.state.loading} chartDataSet={barChartDataSet}
                                                pHardwareType={hwType} graphType={graphType}/>)
@@ -1909,10 +1919,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 : null
                             }
                         </div>
-                        <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen open={this.state.openTerminal} onClose={() => { this.setState({ openTerminal: false }) }}>
+                        <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen open={this.state.openTerminal} onClose={() => {
+                            this.setState({openTerminal: false})
+                        }}>
                             <TerminalViewer data={this.state.terminalData} onClose={() => {
-                                this.setState({ openTerminal: false })
-                            }} />
+                                this.setState({openTerminal: false})
+                            }}/>
                         </Dialog>
                     </div>
                 )//return End
