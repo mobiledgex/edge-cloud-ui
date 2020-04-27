@@ -50,9 +50,13 @@ const checkExpiry = (self, message) => {
     if (isExpired && self) {
         localStorage.setItem('userInfo', null)
         localStorage.setItem('sessionData', null)
-        setTimeout(() => self.props.history.push({
-            pathname: '/logout'
-        }), 2000);
+        setTimeout(() => {
+            if (self && self.props && self.props.history) {
+                self.props.history.push({
+                    pathname: '/logout'
+                })
+            }
+        }, 2000);
     }
     return !isExpired;
 }
