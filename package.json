@@ -148,7 +148,8 @@
         "@material-ui/styles": "^4.9.10",
         "craco-plugin-react-hot-reload": "^0.1.0",
         "react-scripts": "^3.4.1",
-        "webpack": "^4.42.0"
+        "webpack": "^4.42.0",
+        "babel-plugin-transform-remove-console": "^6.9.4"
     },
     "scripts": {
         "start": "craco start",
