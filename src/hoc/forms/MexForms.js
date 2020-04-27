@@ -321,7 +321,7 @@ const MexForms = (props) => {
                                         loadHeader(i, form) :
                                         form.formType === MULTI_FORM ?
                                             form.forms ?
-                                            <Grid.Row key={i} id={form.field} style={{ marginLeft: -13, width: '100%' }}>{loadHorizontalForms(i, form.forms)}</Grid.Row>
+                                                <Grid.Row key={i} id={form.field} style={{ marginLeft: -13, width: '100%' }}>{loadHorizontalForms(i, form.forms)}</Grid.Row>
                                                 : null :
                                             loadForms(i, form) :
                                     null
