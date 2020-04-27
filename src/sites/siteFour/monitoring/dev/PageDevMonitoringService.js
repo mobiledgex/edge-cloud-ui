@@ -22,7 +22,14 @@ import {
     USAGE_INDEX_FOR_CLUSTER
 } from "../../../../shared/Constants";
 import PageDevMonitoring from "./PageDevMonitoring";
-import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, PageMonitoringStyles, renderUsageByType, showToast} from "../PageMonitoringCommonService";
+import {
+    convertByteToMegaGigaByte,
+    convertToMegaGigaForNumber,
+    makeBubbleChartDataForCluster,
+    PageMonitoringStyles,
+    renderUsageByType,
+    showToast
+} from "../PageMonitoringCommonService";
 import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
 import {CircularProgress, createMuiTheme} from "@material-ui/core";
 import {reactLocalStorage} from "reactjs-localstorage";
@@ -641,47 +648,93 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
 
 };
 
-export const convertHwTypePhrases = (pHardwareType) => {
-    try {
-        if (pHardwareType === HARDWARE_TYPE.RECVBYTES || pHardwareType === HARDWARE_TYPE.SENDBYTES) {
-            return "Network"
-        } else if (pHardwareType === HARDWARE_TYPE.TCPCONNS || pHardwareType === HARDWARE_TYPE.TCPRETRANS) {
-            return "Tcp"
-        } else if (pHardwareType === HARDWARE_TYPE.UDPRECV || pHardwareType === HARDWARE_TYPE.UDPSENT) {
-            return "Udp"
-        } else if (pHardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || pHardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || pHardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-            return "Connections"
-        } else if (pHardwareType === HARDWARE_TYPE.CPU) {
-            return "Cpu"
-        } else if (pHardwareType === HARDWARE_TYPE.MEM) {
-            return "Mem"
-        } else if (pHardwareType === HARDWARE_TYPE.DISK) {
-            return "Disk"
-        }
-    } catch (e) {
-
-    }
-};
-
-export const renderSmallProgress = () => {
-    return (
-        <div style={{display: 'flex', width: '100%', justifyContent: 'center', height: 20}}>
-            <CircularProgress style={{fontWeight: 'bold', color: '#1cecff'}}
-                              color={'#1cecff'}
-                              size={15}/>
-        </div>
-    )
-}
-
-
 /**
- * fixme: makeLineChartDataForCluster========================>
- * @param pUsageList
+ *
+ * @param hardwareUsageList
  * @param hardwareType
  * @param _this
  * @returns {string|{levelTypeNameList: *, hardwareType: *, usageSetList: *, newDateTimeList: *}}
  */
-export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: string, _this) => {
+export const makeLineChartDataForCluster = (hardwareUsageList: Array, hardwareType: string, _this) => {
+    try {
+
+        console.log("hardwareType===>", hardwareType);
+
+        if (hardwareUsageList.length === 0) {
+            return "";
+        } else {
+            let classificationName = '';
+            let levelTypeNameList = [];
+            let usageSetList = [];
+            let dateTimeList = [];
+            let series = [];
+
+            hardwareUsageList.map((item, index) => {
+                let usageColumnList = item.columns;
+                let hardWareUsageIndex;
+                if (hardwareType === HARDWARE_TYPE.CPU) {
+                    series = item.cpuSeriesList
+                } else if (hardwareType === HARDWARE_TYPE.MEM) {
+                    series = item.memSeriesList
+                } else if (hardwareType === HARDWARE_TYPE.DISK) {
+                    series = item.diskSeriesList
+                } else if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
+                    series = item.tcpSeriesList
+                } else if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
+                    series = item.tcpSeriesList
+                } else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
+                    series = item.udpSeriesList
+                } else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
+                    series = item.udpSeriesList
+                } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+                    series = item.networkSeriesList
+                } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+                    series = item.networkSeriesList
+                }
+
+                hardWareUsageIndex = findUsageIndexByKey(usageColumnList, hardwareType)
+                classificationName = item.cluster + "\n[" + item.cloudlet + "]";
+                let usageList = [];
+                for (let j in series) {
+                    let usageOne = series[j][hardWareUsageIndex];
+                    usageList.push(usageOne);
+                    let dateOne = series[j]["0"];
+                    dateOne = dateOne.toString().split("T");
+                    dateTimeList.push(dateOne[1]);
+                }
+
+                levelTypeNameList.push(classificationName);
+                usageSetList.push(usageList);
+            });
+
+
+            //@desc: cut List with RECENT_DATA_LIMIT_COUNT
+            let newDateTimeList = [];
+            for (let i in dateTimeList) {
+                if (i < RECENT_DATA_LIMIT_COUNT) {
+                    let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
+                    let timeOne = splitDateTimeArrayList[0].replace("T", "T");
+                    newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
+                }
+
+            }
+
+            return {
+                levelTypeNameList,
+                usageSetList,
+                newDateTimeList,
+                hardwareType,
+            }
+        }
+    } catch (e) {
+
+    }
+
+};
+
+
+
+export const makeLineChartDataForCluster222222_XXXXXXXXXX = (pUsageList: Array, hardwareType: string, _this) => {
     try {
         if (pUsageList.length === 0) {
             return "";
