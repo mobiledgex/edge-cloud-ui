@@ -21,8 +21,6 @@ import {Popper, Grow, Paper, ClickAwayListener, MenuList, MenuItem} from '@mater
 import { getUserRole } from '../../services/model/format';
 import MaterialIcon from 'material-icons-react';
 import Icon from '@material-ui/core/Icon';
-import * as actions from "../../actions";
-import {REGION_ALL} from "../../container/MexToolbar";
 
 
 const StyledTableRow = withStyles((theme) => ({
@@ -394,5 +392,4 @@ export default function EnhancedTable(props) {
             {getActionMenu()}
         </div>
     );
-
 }
