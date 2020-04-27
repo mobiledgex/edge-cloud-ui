@@ -563,7 +563,6 @@ export const handleHardwareTabChanges = async (_this: PageDevMonitoring, selecte
 
 
 /**
- * fixme: makeLineChartDataForAppInst========================>
  * @param hardwareUsageList
  * @param hardwareType
  * @param _this
@@ -657,9 +656,6 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
  */
 export const makeLineChartDataForCluster = (hardwareUsageList: Array, hardwareType: string, _this) => {
     try {
-
-        console.log("hardwareType===>", hardwareType);
-
         if (hardwareUsageList.length === 0) {
             return "";
         } else {
@@ -732,89 +728,6 @@ export const makeLineChartDataForCluster = (hardwareUsageList: Array, hardwareTy
 
 };
 
-
-
-export const makeLineChartDataForCluster222222_XXXXXXXXXX = (pUsageList: Array, hardwareType: string, _this) => {
-    try {
-        if (pUsageList.length === 0) {
-            return "";
-        } else {
-            let classificationName = '';
-            let levelTypeNameList = [];
-            let usageSetList = [];
-            let dateTimeList = [];
-            let series = [];
-            for (let i in pUsageList) {
-                let usageIndex = 0;
-                if (hardwareType === HARDWARE_TYPE.CPU) {
-                    series = pUsageList[i].cpuSeriesList
-                    usageIndex = USAGE_INDEX_FOR_CLUSTER.CPU
-                } else if (hardwareType === HARDWARE_TYPE.MEM) {
-                    series = pUsageList[i].memSeriesList
-                    usageIndex = USAGE_INDEX_FOR_CLUSTER.MEM
-                } else if (hardwareType === HARDWARE_TYPE.DISK) {
-                    series = pUsageList[i].diskSeriesList
-                    usageIndex = USAGE_INDEX_FOR_CLUSTER.DISK
-                } else if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
-                    series = pUsageList[i].tcpSeriesList
-                    usageIndex = USAGE_INDEX_FOR_CLUSTER.TCPCONNS
-                } else if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
-                    series = pUsageList[i].tcpSeriesList
-                    usageIndex = USAGE_INDEX_FOR_CLUSTER.TCPRETRANS
-                } else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
-                    series = pUsageList[i].udpSeriesList
-                    usageIndex = USAGE_INDEX_FOR_CLUSTER.UDPSENT
-                } else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
-                    series = pUsageList[i].udpSeriesList
-                    usageIndex = USAGE_INDEX_FOR_CLUSTER.UDPRECV
-                } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-                    series = pUsageList[i].networkSeriesList
-                    usageIndex = USAGE_INDEX_FOR_CLUSTER.SENDBYTES
-                } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-                    series = pUsageList[i].networkSeriesList
-                    usageIndex = USAGE_INDEX_FOR_CLUSTER.RECVBYTES
-                }
-
-                classificationName = pUsageList[i].cluster + "\n[" + pUsageList[i].cloudlet + "]";
-                let usageList = [];
-                for (let j in series) {
-                    let usageOne = series[j][usageIndex];
-                    usageList.push(usageOne);
-                    let dateOne = series[j]["0"];
-                    dateOne = dateOne.toString().split("T");
-                    dateTimeList.push(dateOne[1]);
-                }
-
-                levelTypeNameList.push(classificationName);
-                usageSetList.push(usageList);
-            }
-
-            //@todo: CUT LIST INTO RECENT_DATA_LIMIT_COUNT
-            let newDateTimeList = [];
-            for (let i in dateTimeList) {
-                if (i < RECENT_DATA_LIMIT_COUNT) {
-                    let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
-                    let timeOne = splitDateTimeArrayList[0].replace("T", "T");
-                    newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
-                }
-
-            }
-
-            let lineChartDataSet = {
-                levelTypeNameList,
-                usageSetList,
-                newDateTimeList,
-                hardwareType,
-            };
-
-
-            return lineChartDataSet
-        }
-    } catch (e) {
-
-    }
-
-};
 
 /**
  *
