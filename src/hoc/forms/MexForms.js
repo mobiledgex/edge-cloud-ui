@@ -286,7 +286,7 @@ const MexForms = (props) => {
                     <Grid.Column width={11}>
                         {
                             form.forms ?
-                            <Grid.Row key={index} id={form.field} style={{ width: '100%' }}>{loadHorizontalForms(index, form.forms)}</Grid.Row> :
+                            <Grid key={index} id={form.field} style={{ width: '100%' }}>{loadHorizontalForms(index, form.forms)}</Grid> :
                                 form.formType === SELECT || form.formType === MULTI_SELECT || form.formType === DUALLIST ?
                                     loadDropDownForms(form, required, disabled) :
                                     form.formType === INPUT || form.formType === TEXT_AREA ?
