@@ -32,6 +32,7 @@ class ClusterInstView extends React.Component {
 
     onAdd = (action, data) => {
         this.setState({ currentView: <ClusterInstReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> })
+        this.props.handleViewMode( true )
     }
 
     getDeleteActionMessage = (action, data) => {
@@ -99,7 +100,8 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) }
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
     };
 };
 

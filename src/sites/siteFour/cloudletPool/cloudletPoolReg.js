@@ -127,6 +127,7 @@ class CloudletPoolReg extends React.Component {
                 step: 2,
                 forms: step
             })
+            this.props.handleChangeStep( '03' )
         }
         else {
             this.props.handleAlertInfo('error', 'No organizations to unlink')
@@ -224,6 +225,7 @@ class CloudletPoolReg extends React.Component {
                 step: 1,
                 forms: step2
             })
+            this.props.handleChangeStep( '02' )
         } else {
             this.props.handleAlertInfo('error', 'No Cloudlets present')
             if (this.props.action) {
@@ -272,7 +274,7 @@ class CloudletPoolReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <div className="grid_table" style={{ overflow: 'auto' }}>
+                <div className="grid_table" >
                     <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
                         {this.props.action ? null :
                             <Step.Group stackable='tablet' style={{ width: '100%' }}>
@@ -354,6 +356,12 @@ class CloudletPoolReg extends React.Component {
     componentDidMount() {
         this.getFormData(this.props.data)
     }
+
+    componentWillUnmount() {
+        this.props.handleViewMode( false );
+        this.props.handleChangeStep( null )
+    }
+
 };
 
 const mapStateToProps = (state) => {
@@ -378,7 +386,9 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
+        handleViewMode: (data) => { dispatch(actions.viewMode(data)) },
+        handleChangeStep: (data) => { dispatch(actions.changeStep(data)) },
     };
 };
 

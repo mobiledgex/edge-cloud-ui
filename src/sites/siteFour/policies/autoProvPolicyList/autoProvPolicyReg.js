@@ -105,6 +105,7 @@ class AutoProvPolicyReg extends React.Component {
                 step: 1,
                 forms: forms
             })
+            this.props.handleChangeStep('02');
         }
         else
         {
@@ -173,8 +174,8 @@ class AutoProvPolicyReg extends React.Component {
 
     render() {
         return (
-            <div className="round_panel">
-                <div className="grid_table" style={{ height: constant.getHeight(), overflow: 'auto' }}>
+            <div className="round_panel" >
+                <div className="grid_table" >
                     <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
                         {this.props.action ? null :
                             <Step.Group stackable='tablet' style={{ width: '100%' }}>
@@ -277,6 +278,11 @@ class AutoProvPolicyReg extends React.Component {
     componentDidMount() {
         this.getFormData(this.props.data)
     }
+
+    componentWillUnmount() {
+        this.props.handleViewMode( false );
+        this.props.handleChangeStep( null )
+    }
 };
 const mapStateToProps = (state) => {
 
@@ -298,7 +304,9 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
+        handleViewMode: (data) => { dispatch(actions.viewMode(data)) },
+        handleChangeStep: (data) => { dispatch(actions.changeStep(data)) },
     };
 };
 

@@ -30,7 +30,8 @@ class OrganizationList extends React.Component {
     }
 
     onAdd = (action, data) => {
-        this.setState({ currentView: <OrganizationReg data={data} action={action ? 'AddUser' : null} onClose={this.onRegClose} /> })
+        this.setState({ currentView: <OrganizationReg data={data} action={action ? 'AddUser' : null} onClose={this.onRegClose} /> });
+        this.props.handleViewMode( true )
     }
 
     /**Action menu block */
@@ -75,7 +76,9 @@ class OrganizationList extends React.Component {
 
     getManage = (data) => {
         return (
-            <Button size={'small'} style={{ width: 100, backgroundColor: localStorage.selectOrg === data[fields.organizationName] ? '#559901' : 'grey', color: 'white' }}>
+            <Button size={'small'}
+                    className='buttonManage'
+                    style={{ width: 100, backgroundColor: localStorage.selectOrg === data[fields.organizationName] ? '#559901' : 'grey', color: 'white' }}>
                 <label>Manage</label>
             </Button>)
     }
@@ -184,7 +187,8 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleUserRole: (data) => { dispatch(actions.showUserRole(data)) },
         handleRoleInfo: (data) => { dispatch(actions.roleInfo(data)) },
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) }
+        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
+        handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
     };
 };
 

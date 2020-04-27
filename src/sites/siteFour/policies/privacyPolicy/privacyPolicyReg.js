@@ -241,7 +241,7 @@ class AutoProvPolicyReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <div className="grid_table" style={{ overflow: 'auto' }}>
+                <div className="grid_table" >
                     <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
                         <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} />
                     </Item>
@@ -353,6 +353,10 @@ class AutoProvPolicyReg extends React.Component {
         this.getFormData(this.props.data)
     }
 
+    componentWillUnmount() {
+        this.props.handleViewMode( false )
+    }
+
 };
 
 const mapStateToProps = (state) => {
@@ -375,7 +379,8 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
+        handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
     };
 };
 

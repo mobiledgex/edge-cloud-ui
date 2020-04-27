@@ -494,7 +494,10 @@ class MexListView extends React.Component {
         }
         
         if (this.requestCount === 0 && dataList.length === 0) {
-            this.props.handleAlertInfo('error', 'Requested data is empty')
+            this.props.handleAlertInfo('error', 'Requested data is empty');
+            this.props.handleDataExist( false )
+        } else {
+            this.props.handleDataExist( true )
         }
         this.setState({
             dataList: Object.assign([], dataList)
@@ -544,7 +547,8 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) }
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleDataExist: (data) => { dispatch(actions.dataExist(data)) }
     };
 };
 

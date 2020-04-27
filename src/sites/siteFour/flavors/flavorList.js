@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { fields, isAdmin } from '../../../services/model/format';
 import { keys, showFlavors, deleteFlavor } from '../../../services/model/flavor';
 import FlavorReg from './flavorReg';
+import * as actions from "../../../actions";
 
 class FlavorList extends React.Component {
     constructor(props) {
@@ -24,7 +25,8 @@ class FlavorList extends React.Component {
     }
 
     onAdd = () => {
-        this.setState({ currentView: <FlavorReg onClose={this.onRegClose}/> })
+        this.setState({ currentView: <FlavorReg onClose={this.onRegClose}/> });
+        this.props.handleViewMode( true )
     }
 
     /**Action menu block */
@@ -62,6 +64,7 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchProps = (dispatch) => {
     return {
+        handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
     };
 };
 

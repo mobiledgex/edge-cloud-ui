@@ -54,7 +54,7 @@ export default function Header(props) {
     return (
 
         <AppBar
-            position="fixed"
+            position="absolute"
             className={clsx(classes.appBar, {
                 [classes.appBarShift]: props.open,
             })}
@@ -80,10 +80,11 @@ export default function Header(props) {
                 </IconButton>
                 <div className={classes.grow}/>
                 <div className={classes.sectionDesktop}>
-                    <IconButton>
-                        {localStorage.selectOrg ?
-                            <h5>
-                                <strong>Organization:</strong> {localStorage.selectOrg}</h5> : null}
+                    <IconButton className="orgName">
+                        <h5>
+                            <strong>Organization: </strong>
+                            {localStorage.selectRole === 'AdminManager' ? "Mexadmin" : localStorage.selectOrg ? localStorage.selectOrg : 'no selected organization'}
+                        </h5>
                     </IconButton>
                     <IconButton aria-label="show 4 new mails" color="inherit"
                                 onClick={(e) => props.gotoUrl('/site1', 'pg=0')}>

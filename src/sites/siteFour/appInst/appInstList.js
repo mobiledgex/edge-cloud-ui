@@ -35,7 +35,8 @@ class AppInstList extends React.Component {
     }
 
     onAdd = () => {
-        this.setState({ currentView: <AppInstReg onClose={this.onRegClose} /> })
+        this.setState({ currentView: <AppInstReg onClose={this.onRegClose} /> });
+        this.props.handleViewMode( true )
     }
 
     onTerminalVisible = (data) => {
@@ -155,7 +156,8 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchProps = (dispatch) => {
     return {
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) }
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
     };
 };
 

@@ -188,7 +188,7 @@ const MexForms = (props) => {
         form.id = { id: index }
         let subForms = form.forms
         return (
-            <div key={index} style={{ width: '100%' }}>
+            <div key={index} className={'formHeader-'+index} style={{ width: '100%' }}>
                 <br/>
                 <h2 style={{ color: "white", display: 'inline' }}>{form.label}
                     {
@@ -279,14 +279,14 @@ const MexForms = (props) => {
         }
         return (
             form.field ?
-                <Grid.Row columns={3} key={uuid() + '' + index}>
+                <Grid.Row columns={3} key={uuid() + '' + index} className={'formRow-'+index}>
                     <Grid.Column width={4} className='detail_item'>
                         <div style={form.labelStyle}>{form.label}{required ? ' *' : ''}</div>
                     </Grid.Column>
                     <Grid.Column width={11}>
                         {
                             form.forms ?
-                            <Grid key={index} id={form.field} style={{ marginLeft: -13, width: '100%' }}>{loadHorizontalForms(index, form.forms)}</Grid> :
+                            <Grid.Row key={index} id={form.field} style={{ width: '100%' }}>{loadHorizontalForms(index, form.forms)}</Grid.Row> :
                                 form.formType === SELECT || form.formType === MULTI_SELECT || form.formType === DUALLIST ?
                                     loadDropDownForms(form, required, disabled) :
                                     form.formType === INPUT || form.formType === TEXT_AREA ?
@@ -321,7 +321,7 @@ const MexForms = (props) => {
                                         loadHeader(i, form) :
                                         form.formType === MULTI_FORM ?
                                             form.forms ?
-                                                <Grid.Row key={i} id={form.field} style={{ marginLeft: -13, width: '100%' }}>{loadHorizontalForms(i, form.forms)}</Grid.Row>
+                                                <Grid.Row key={i} id={form.field} style={{ width: '100%' }}>{loadHorizontalForms(i, form.forms)}</Grid.Row>
                                                 : null :
                                             loadForms(i, form) :
                                     null
@@ -334,6 +334,7 @@ const MexForms = (props) => {
                         {forms.map((form, i) => {
                             return (form.formType === BUTTON ?
                                 <MexButton
+                                    className = {'formButton-'+i}
                                     form={form}
                                     key={i}
                                     onClick={onSubmit} />

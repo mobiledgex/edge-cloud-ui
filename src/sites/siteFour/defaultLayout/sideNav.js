@@ -194,9 +194,11 @@ export default function MiniDrawer(props) {
 
     const roleInfo = () => {
         return (
-            <ListItem onClick={(e) => {
-                setOpenLegend(localStorage.selectRole && localStorage.selectRole != 'null')
-            }}>
+            <ListItem
+                onClick={(e) => {
+                    setOpenLegend(localStorage.selectRole && localStorage.selectRole != 'null')
+                }}
+            >
                 {
                 localStorage.selectRole && localStorage.selectRole!=='null'?
                     <ListItemIcon>

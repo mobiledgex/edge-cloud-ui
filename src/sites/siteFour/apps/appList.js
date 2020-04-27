@@ -27,14 +27,16 @@ class AppList extends React.Component {
     }
 
     onAdd = (action , data) => {
-        this.setState({ currentView: <AppReg isUpdate={action ? true : false} data={data} onClose={this.onRegClose}/> })
+        this.setState({ currentView: <AppReg isUpdate={action ? true : false} data={data} onClose={this.onRegClose}/> });
+        this.props.handleViewMode( true )
     }
 
     /***Action Block */
 
 
     onLaunch = (action, data) => {
-        this.setState({ currentView: <AppInstReg isLaunch={action ? true : false} data={data} onClose={this.onRegClose}/> })
+        this.setState({ currentView: <AppInstReg isLaunch={action ? true : false} data={data} onClose={this.onRegClose}/> });
+        this.props.handleViewMode( true )
     }
 
     actionMenu = () => {
@@ -73,7 +75,8 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleAppLaunch: (data) => { dispatch(actions.appLaunch(data))},
         handleEditInstance: (data) => { dispatch(actions.editInstance(data))},
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) }
+        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
+        handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
     };
 };
 

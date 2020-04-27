@@ -25,15 +25,18 @@ class AutoProvPolicy extends React.Component {
     }
 
     onAdd = () => {
-        this.setState({ currentView: <AutoProvPolicyReg onClose={this.onRegClose}/> })
+        this.setState({ currentView: <AutoProvPolicyReg onClose={this.onRegClose}/> });
+        this.props.handleViewMode( true )
     }
 
     onAddCloudlet = (action, data) => {
-        this.setState({ currentView: <AutoProvPolicyReg data={data} action={'Add'} onClose={this.onRegClose}/> })
+        this.setState({ currentView: <AutoProvPolicyReg data={data} action={'Add'} onClose={this.onRegClose}/> });
+        this.props.handleViewMode( true )
     }
 
     onDeleteCloudlet = (action, data) => {
-        this.setState({ currentView: <AutoProvPolicyReg data={data} action={'Delete'} onClose={this.onRegClose}/> })
+        this.setState({ currentView: <AutoProvPolicyReg data={data} action={'Delete'} onClose={this.onRegClose}/> });
+        this.props.handleViewMode( true )
     }
 
     actionMenu = () => {
@@ -68,7 +71,8 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) }
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
     };
 };
 

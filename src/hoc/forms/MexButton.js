@@ -12,7 +12,8 @@ const MexButton = (props)=>
         return form.style ? form.style : {backgroundColor:'#74AA19', color:'white', margin:10}
     }
     const getForms = () => (
-        <Button 
+        <Button
+            className = {props.className ? props.className : ''}
             variant="contained" 
             style={getStyle(form)}
             onClick={(e) => { props.onClick(form) }}>
