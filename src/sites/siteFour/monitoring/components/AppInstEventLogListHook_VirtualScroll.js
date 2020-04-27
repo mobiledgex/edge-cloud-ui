@@ -25,9 +25,6 @@ export default function AppInstEventLogListHook_VirtualScroll(props) {
     //let gridWidth = window.innerWidth / 5;
 
     useEffect(() => {
-
-        console.log(`eventLogList_length====>`, props.eventLogList.length);
-
         function handleResize() {
             setWindowDimensions(getWindowDimensions());
         }
