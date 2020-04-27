@@ -6,10 +6,27 @@ export const numberWithCommas = (x) => {
     try {
         value = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     } catch (e) {
-        console.log('error===>', e);
     } finally {
         return value;
     }
+}
+
+
+/**
+ *
+ * @param pKeyName
+ * @param pColumnList
+ * @returns {null}
+ */
+export const findUsageIndexByKey = (pColumnList, pKeyName) => {
+    let result = null;
+    for (let index in pColumnList) {
+        if (pKeyName.toLowerCase() === pColumnList[index].toLowerCase()) {
+            result = index;
+            break;
+        }
+    }
+    return result;
 }
 
 export function getWindowDimensions() {
@@ -160,7 +177,7 @@ export const columnChartOption = (hardwareType) => {
             chartArea: {
                 // left: 20, right: 150, top: 50, bottom: 25,
                 //left:10,
-                right:25,
+                right: 25,
                 width: "87%", height: "80%",
             },
             legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..

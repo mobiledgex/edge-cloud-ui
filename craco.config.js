@@ -51,7 +51,8 @@ module.exports = {
                 'react-hooks/exhaustive-deps': 'off',
                 'no-undef': 'off',
                 'no-loop-func': 'off',
-
+                'no-unused-expressions': 'off',
+                'no-sequences': 'off',
             }
         }
     },
