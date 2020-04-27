@@ -32,7 +32,7 @@ class OrganizationList extends React.Component {
         return ({
             id: 'userRole',
             headerLabel: 'Users & Roles',
-            nameField: fields.organizationName,
+            nameField: fields.username,
             requestType: [showUsers],
             sortBy: [fields.username],
             keys: this.keys,
