@@ -207,14 +207,12 @@ export default class CalendarTimeline extends React.PureComponent {
                 ) : null}
 
                 <div className="timeline_item_box">
-                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', flex: 1 }}>{item.taskItem} ({item.itemTime})</div>
-                        <div className="timeline_item_dot" style={{ backgroundColor: borderColor }}>
-                            <span className={storageSelectedTraceidIndex !== -1 ? "material-icons checked" : "material-icons"} >done</span>
-                        </div>
+                    <div className="timeline_item_text">
+                        <div>{item.taskItem} ({item.itemTime})</div>
+                        <div><span style={{ fontWeight: 600, marginRight: 10 }}>TRACE ID</span>{item.title}</div>
                     </div>
-                    <div style={{ width: '100%' }}>
-                        <span style={{ fontWeight: 600, marginRight: 10 }}>TRACE ID</span>{item.title}
+                    <div className="timeline_item_dot" style={{ backgroundColor: borderColor }}>
+                        <span className={storageSelectedTraceidIndex !== -1 ? "material-icons checked" : "material-icons"} >done</span>
                     </div>
                 </div>
 

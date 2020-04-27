@@ -694,7 +694,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                         selection
                                         options={this.state.nameList}
                                         onChange={this.dropDownOnNameChange}
-                                        style={{ width: 150 }}
                                     />
                                 </div>
                                 <div className="page_audit_history_option_period">
@@ -728,8 +727,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                         <div className="page_audit_badge_number">{this.state.unCheckedErrorCount}</div>
                                     </button>
                                     <button className="page_audit_error_button"  onClick={this.onClickUnCheckedError}>
-
-                                            <OfflinePinIcon fontSize='small' style={{marginTop:5}}/>
+                                        <OfflinePinIcon fontSize='small' style={{marginTop:5}}/>
                                     </button>
                                 </div>
                                 <div className="page_audit_history_option_period">
