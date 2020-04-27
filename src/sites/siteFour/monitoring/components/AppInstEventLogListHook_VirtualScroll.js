@@ -56,7 +56,7 @@ export default function AppInstEventLogListHook_VirtualScroll(props) {
             <table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll', marginTop: -10}}
                    stickyHeader={true}>
 
-                <thead style={{backgroundColor: 'red', fontFamily: 'Ubuntu', zIndex: 99999999999,}} fixedHeader={true}>
+                <thead style={{backgroundColor: 'red', fontFamily: 'Ubuntu', zIndex: 99999999999,}}>
                 <tr style={{display: 'flex', backgroundColor: '#303030'}}>
                     <td padding={'none'} align="center" style={{color: 'white', flex: .25}}>
                         TIME
@@ -85,7 +85,7 @@ export default function AppInstEventLogListHook_VirtualScroll(props) {
                             <tr key={index} className='table0000001'
                                 style={style}
                             >
-                                <React.Fragment style={{backgroundColor: 'red'}}>
+                                <React.Fragment>
                                     {/*111111*/}
                                     <td padding={'none'} align="center"
                                         style={{flex: .25, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight}}>

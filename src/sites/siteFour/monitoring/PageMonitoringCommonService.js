@@ -24,7 +24,18 @@ export const PageMonitoringStyles = {
         alignSelf: 'center',
         justifyContent: 'center',
     },
-
+    gridItemHeader:{
+        position: 'absolute',
+        right: 25, top: 10,
+        display: 'inline-block',
+        width: '100px',
+        lineHeight: '1.2',
+        fontSize: '18px',
+        marginLeft: '15px',
+        cursor: 'pointer',
+        textAlign: 'right',
+        marginRight: '-15px',
+    },
     listItemTitle: {
         marginLeft: 10,
     },

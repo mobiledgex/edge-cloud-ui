@@ -43,8 +43,25 @@ import {
 import type {TypeBarChartData, TypeLineChartData} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
-import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, PageMonitoringStyles, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../PageMonitoringCommonService";
-import {getAllAppInstEventLogs, getAllClusterEventLogList, getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList, requestShowAppInstClientWS} from "../PageMonitoringMetricService";
+import {
+    getOneYearStartEndDatetime,
+    isEmpty,
+    makeBubbleChartDataForCluster,
+    PageMonitoringStyles,
+    renderPlaceHolderLoader,
+    renderWifiLoader,
+    showToast
+} from "../PageMonitoringCommonService";
+import {
+    getAllAppInstEventLogs,
+    getAllClusterEventLogList,
+    getAppInstList,
+    getAppLevelUsageList,
+    getCloudletList,
+    getClusterLevelUsageList,
+    getClusterList,
+    requestShowAppInstClientWS
+} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
@@ -243,6 +260,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     isLegendExpanded: false,
                     chunkedSize: 12,
                     selectedAppInstIndex: -1,
+                    openTerminal: false,
                 };
             }
 
@@ -899,20 +917,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     >
 
                         <div
-                            class='draggable'
-                            style={{
-                                position: 'absolute',
-                                right: 25, top: 10,
-                                display: 'inline-block',
-                                width: '100px',
-                                lineHeight: '1.2',
-                                fontSize: '18px',
-                                marginLeft: '15px',
-                                cursor: 'pointer',
-                                textAlign: 'right',
-                                marginRight: '-15px',
-                            }}>
-
+                            className='draggable'
+                            style={PageMonitoringStyles.gridItemHeader}>
                             {/*desc:############################*/}
                             {/*desc:    maximize button         */}
                             {/*desc:############################*/}

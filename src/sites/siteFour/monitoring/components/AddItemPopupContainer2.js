@@ -141,7 +141,7 @@ export default class AddItemPopupContainer2 extends React.Component<Props, State
                                 {CHART_COLOR_LIST.map((item, index) => {
                                     if (index < 5) {
                                         return (
-                                            <Center2>
+                                            <Center2 key={index}>
                                                 <div style={{
                                                     backgroundColor: item,
                                                     width: 15,
