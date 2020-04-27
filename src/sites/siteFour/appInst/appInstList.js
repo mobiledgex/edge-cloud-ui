@@ -5,7 +5,7 @@ import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
 
-import { fields } from '../../../services/model/format';
+import { fields, isAdmin } from '../../../services/model/format';
 import { keys, showAppInsts, deleteAppInst, streamAppInst, refreshAppInst, multiDataRequest } from '../../../services/model/appInstance';
 import { showApps } from '../../../services/model/app';
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
@@ -66,7 +66,7 @@ class AppInstList extends React.Component {
     }
 
     getDeleteActionMessage = (action, data) => {
-        if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY) {
+        if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && isAdmin()) {
             return `Cloudlet status is not online, due you still want to proceed with ${data[fields.appName]} App Instance deletion?`
         }
     }
