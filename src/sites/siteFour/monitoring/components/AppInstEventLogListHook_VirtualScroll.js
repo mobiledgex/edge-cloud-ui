@@ -87,7 +87,8 @@ export default function AppInstEventLogListHook_VirtualScroll(props) {
                             >
                                 <React.Fragment style={{backgroundColor: 'red'}}>
                                     {/*111111*/}
-                                    <td padding={'none'} align="center" style={{flex: .25, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight}}>
+                                    <td padding={'none'} align="center"
+                                        style={{flex: .25, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight}}>
                                         <div style={{marginLeft: 2}}>
                                             {props.eventLogList[index][0].toString().split('T')[0]}
                                         </div>
@@ -96,7 +97,8 @@ export default function AppInstEventLogListHook_VirtualScroll(props) {
                                         </div>
                                     </td>
                                     {/*222222*/}
-                                    <td padding={'none'} align="center" style={{flex: .4, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight}}>
+                                    <td padding={'none'} align="center"
+                                        style={{flex: .4, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight}}>
                                         {windowDimensions.width <= 1440 ?
                                             <React.Fragment>
                                                 <div>
@@ -120,12 +122,13 @@ export default function AppInstEventLogListHook_VirtualScroll(props) {
                                         }
                                     </td>
                                     {/*333333*/}
-                                    <td padding={'none'} align="center" style={{flex: .35, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight,}}>
+                                    <td padding={'none'} align="center"
+                                        style={{flex: .35, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight,}}>
                                         <div>
-                                            {props.eventLogList[index][9]}
+                                            {props.eventLogList[index][8]}
                                         </div>
                                         <div>
-                                            [{props.eventLogList[index][10]}]
+                                            [{props.eventLogList[index][9]}]
                                         </div>
                                     </td>
                                 </React.Fragment>
