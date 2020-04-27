@@ -1,6 +1,5 @@
 import React from "react";
 import * as L from 'leaflet';
-import "../PageMonitoring.css";
 import 'react-leaflet-fullscreen-control'
 import type {TypeAppInstance, TypeClient} from "../../../../shared/Types";
 import Ripples from "react-ripples";
@@ -17,6 +16,7 @@ import {connect} from "react-redux";
 import * as actions from "../../../../actions";
 import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
+import '../PageMonitoring.css'
 
 
 const {Option} = Select;
@@ -326,6 +326,86 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
         }
 
+        makeMapThemeDropDown() {
+            return (
+                <Select
+                    size={"small"}
+                    defaultValue="dark1"
+                    style={{width: 70}}
+                    showArrow={false}
+                    bordered={false}
+                    listHeight={550}
+                    onChange={async (value) => {
+                        let index = value
+
+                        let lineColor = DARK_LINE_COLOR
+                        let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
+                        if (Number(index) >= 4) {
+                            lineColor = WHITE_LINE_COLOR;
+                            cloudletIconColor = WHITE_CLOUTLET_ICON_COLOR
+                        }
+
+                        this.props.setMapTyleLayer(this.mapTileList[index].url);
+                        this.props.setLineColor(lineColor);
+                        this.props.setCloudletIconColor(cloudletIconColor);
+
+                    }}
+                >
+                    {this.mapTileList.map((item, index) => {
+                        return (
+                            <Option style={{color: 'white'}} defaultChecked={index === 0} value={item.value}>{item.name}</Option>
+                        )
+                    })}
+                </Select>
+            )
+        }
+
+        makeClusterGrpForClient(objkeyOne, index) {
+            let groupedClientList = this.state.clientList;
+            return (
+                <MarkerClusterGroup key={index}>
+                    {groupedClientList[objkeyOne].map((item, index) => {
+                        return (
+                            <React.Fragment>
+                                <Marker
+                                    icon={cellphoneIcon2}
+                                    position={
+                                        [item.latitude, item.longitude]
+                                    }
+                                >
+                                    <Popup className='clientPopup'
+                                           style={{fontSize: 11}}>
+                                        <div style={{display: 'flex'}}>
+                                            <div style={{color: 'white', fontFamily: 'ubuntu'}}>
+                                                {item.uuid}
+                                            </div>
+                                        </div>
+
+                                    </Popup>
+                                </Marker>
+                                {/*@desc:#####################################..*/}
+                                {/*@desc:Render lines....                       */}
+                                {/*@desc:#####################################..*/}
+                                <Polyline
+                                    //dashArray={['30,1,30']}
+                                    id={index}
+                                    positions={[
+                                        [item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
+                                    ]}
+                                    color={this.props.lineColor}
+                                />
+
+                            </React.Fragment>
+                        )
+
+
+                    })
+
+                    }
+                </MarkerClusterGroup>
+            )
+        }
+
         render() {
 
             return (
@@ -435,88 +515,21 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {/*@todo:#####################################..*/}
                                 {/*@todo: topRight Dropdown changing MapTyles...*/}
                                 {/*@todo:#####################################..*/}
-                                {this.props.isFullScreenMap &&
-                                <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
-                                    <Select
-                                        defaultValue="dark1"
-                                        style={{width: 120}}
-                                        //showArrow={false}
-                                        listHeight={550}
-                                        onChange={async (value) => {
-                                            let index = value
-
-                                            let lineColor = DARK_LINE_COLOR
-                                            let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
-                                            if (Number(index) >= 4) {
-                                                lineColor = WHITE_LINE_COLOR;
-                                                cloudletIconColor = WHITE_CLOUTLET_ICON_COLOR
-                                            }
-
-                                            this.props.setMapTyleLayer(this.mapTileList[index].url);
-                                            this.props.setLineColor(lineColor);
-                                            this.props.setCloudletIconColor(cloudletIconColor);
-
-                                        }}
-                                    >
-                                        {this.mapTileList.map((item, index) => {
-                                            return (
-                                                <Option style={{color: 'white'}} defaultChecked={index === 0} value={item.value}>{item.name}</Option>
-                                            )
-                                        })}
-                                    </Select>
-                                </div>
+                                {this.props.isFullScreenMap ?
+                                    <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
+                                        {this.makeMapThemeDropDown()}
+                                    </div>
+                                    : <Control position="topright" style={{marginTop: 3}}>
+                                        {this.makeMapThemeDropDown()}
+                                    </Control>
                                 }
 
                                 {/*@desc:#####################################..*/}
-                                {/*@desc:client Markers  (MarkerClusterGroup)...*/}
+                                {/*@desc: Client Markers  (MarkerClusterGroup)...*/}
                                 {/*@desc:#####################################..*/}
-                                {this.state.clientObjKeys.map((objkeyOne, index) => {
-                                    let groupedClientList = this.state.clientList;
-                                    return (
-                                        <MarkerClusterGroup>
-                                            {groupedClientList[objkeyOne].map((item, index) => {
-                                                return (
-                                                    <React.Fragment>
-                                                        <Marker
-                                                            icon={cellphoneIcon2}
-                                                            position={
-                                                                [item.latitude, item.longitude]
-                                                            }
-                                                        >
-                                                            <Popup className='clientPopup'
-                                                                   style={{fontSize: 11}}>
-                                                                <div style={{display: 'flex'}}>
-                                                                    <div style={{color: 'white', fontFamily: 'ubuntu'}}>
-                                                                        {item.uuid}
-                                                                    </div>
-                                                                </div>
-
-                                                            </Popup>
-                                                        </Marker>
-                                                        {/*@desc:#####################################..*/}
-                                                        {/*@desc:Render lines....                       */}
-                                                        {/*@desc:#####################################..*/}
-                                                        <Polyline
-                                                            //dashArray={['30,1,30']}
-                                                            id={index}
-                                                            positions={[
-                                                                [item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
-                                                            ]}
-                                                            color={this.props.lineColor}
-                                                        />
-
-                                                    </React.Fragment>
-                                                )
-
-
-                                            })
-
-                                            }
-                                        </MarkerClusterGroup>
-                                    )
-
-
-                                })}
+                                {this.state.clientObjKeys.map((objkeyOne, index) =>
+                                    this.makeClusterGrpForClient(objkeyOne, index)
+                                )}
 
 
                                 {/*@desc:#####################################..*/}
