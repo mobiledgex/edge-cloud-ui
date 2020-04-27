@@ -584,10 +584,9 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
             let dateTimeList = [];
 
             hardwareUsageList.map((item: TypeAppInstanceUsage2, index) => {
-                let usageColumnList = hardwareUsageList[0].columns;
+                let usageColumnList = item.columns;
                 let seriesValues = [];
                 let hardWareUsageIndex;
-
                 if (hardwareType === HARDWARE_TYPE.CPU) {
                     seriesValues = item.cpuSeriesValue
                 } else if (hardwareType === HARDWARE_TYPE.MEM) {
