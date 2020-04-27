@@ -69,6 +69,11 @@ module.exports = {
                 'ant'
             ],
         ],
+        "env": {
+            "production": {
+                "plugins": ["transform-remove-console"]
+            }
+        }
     },
     plugins: [
         {
