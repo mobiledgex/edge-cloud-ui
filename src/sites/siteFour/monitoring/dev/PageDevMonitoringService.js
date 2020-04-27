@@ -653,7 +653,7 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
  * @param _this
  * @returns {string|{levelTypeNameList: *, hardwareType: *, usageSetList: *, newDateTimeList: *}}
  */
-export const makeLineChartDataForCluster = (hardwareUsageList: Array, hardwareType: string, _this) => {
+export const makeLineChartDataForCluster = (hardwareUsageList: Array, hardwareType: string, _this: PageDevMonitoring) => {
     try {
         if (hardwareUsageList.length === 0) {
             return "";
