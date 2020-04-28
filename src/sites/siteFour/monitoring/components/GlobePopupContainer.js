@@ -5,7 +5,7 @@ import {Button, Modal as AModal, Tabs} from "antd";
 import '../PageMonitoring.css'
 import ReactGlobe from "react-globe";
 import type {TypeAppInstance, TypeCloudletMarker} from "../../../../shared/Types";
-import {isEmpty} from "../PageMonitoringCommonService";
+import {isEmpty, showToast} from "../PageMonitoringCommonService";
 import {BoxGeometry, Mesh, MeshLambertMaterial, SphereGeometry, EdgesGeometry} from "three";
 
 const {TabPane} = Tabs;
@@ -168,7 +168,7 @@ export default function GlobePopupContainer(props) {
                         })
 
                         return (
-                            `${AppNames.toString()} `
+                            `<p >[${marker.Cloudlet.toString()}]</p> <p style="color: yellow">${AppNames.toString()}</p> `
                         )
 
                     },
@@ -227,7 +227,7 @@ export default function GlobePopupContainer(props) {
                         marginTop: 10,
                     }}>
                         {renderGlobe()}
-                        <div style={{position: 'absolute', right: 100, top: 100,}}>
+                        <div style={{position: 'absolute', right: 10, top: 80,}}>
                             <div style={{display: 'flex'}}>
 
                                 <div style={{width: 10}}/>
@@ -236,7 +236,7 @@ export default function GlobePopupContainer(props) {
                                         setTyle('https://raw.githubusercontent.com/chrisrzhou/react-globe/master/textures/globe.jpg')
                                     }}
                                 >
-                                    light
+                                    default
                                 </Button>
                                 <div style={{width: 10}}/>
                                 <Button
@@ -248,12 +248,11 @@ export default function GlobePopupContainer(props) {
                                     dark
                                 </Button>
                             </div>
-                            <div style={{color: '#77BD25', fontWeight: 'bold', fontSize: 30,}}>
+                            <div style={{height: 10}}/>
+                            <div style={{color: 'maroon', fontWeight: 'bold', fontSize: 12, fontFamily: 'Black Ops One'}}>
                                 {cloudletLocationList.length.toString()} Cloudlets
                             </div>
-                            <br/>
-                            <br/>
-                            <br/>
+                            <div style={{height: 10}}/>
                             {cloudletLocationList.map((item: TypeCloudletMarker, index) => {
 
                                 let AppList = item.AppNames.split(",");
@@ -261,12 +260,10 @@ export default function GlobePopupContainer(props) {
                                 return (
                                     <React.Fragment>
                                         <div
-                                            style={{backgroundColor: cloudletIndex === index ? 'rgba(150,111,0,.5)' : null}}
+                                            style={{backgroundColor: cloudletIndex === index ? 'rgba(128,128,128,.3)' : null, padding: 30, borderRadius: 15}}
                                             onClick={() => {
                                                 //setInitialCoordinates([item.CloudletLocation.latitude, item.CloudletLocation.longitude])
-
                                                 setCloudletIndex(index);
-
                                                 setAnimationSequence(
                                                     [
                                                         {
@@ -282,15 +279,17 @@ export default function GlobePopupContainer(props) {
 
                                             }}>
                                             <div style={{display: 'flex'}}>
-                                                <div style={{cursor: 'pointer', fontWeight: 'bold', fontFamily: 'ubuntu', fontSize: 18}}>
+                                                <div style={{cursor: 'pointer', fontWeight: 'bold', fontFamily: 'Roboto Condensed', fontSize: 18}}>
                                                     {item.Cloudlet}
                                                 </div>
                                             </div>
                                             <div style={{marginLeft: 25}}>
-                                                {AppList.map((item2, index) => {
+                                                {AppList.map((AppInstOne, index) => {
                                                     return (
-                                                        <div style={{color: 'yellow', fontFamily: 'ubuntu'}}>
-                                                            -{item2.toString().split("|")[0]}
+                                                        <div onClick={() => {
+                                                            showToast(AppInstOne)
+                                                        }} style={{color: 'yellow', fontFamily: 'ubuntu'}}>
+                                                            -{AppInstOne.toString().split("|")[0]}
                                                         </div>
                                                     )
                                                 })}

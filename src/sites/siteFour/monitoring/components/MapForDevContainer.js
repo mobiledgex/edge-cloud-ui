@@ -402,6 +402,25 @@ export default connect(mapStateToProps, mapDispatchProps)(
             )
         }
 
+        handleRefresh = async () => {
+            try {
+                await this.setState({
+                    zoom: 1,
+                    selectedAppInstIndex: -1,
+                }, () => {
+                    notification.success({
+                        placement: 'bottomLeft',
+                        duration: 1.5,
+                        message: 'Fetch locally stored data.',
+                    });
+                })
+
+                await this.props.parent.handleClusterDropdownAndReset('');
+            } catch (e) {
+
+            }
+        }
+
         render() {
 
             return (
@@ -475,39 +494,33 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     minZoom={2}
                                     style={{zIndex: 1}}
                                 />
-                                <Control position="topleft" style={{marginTop: 3}}>
-                                    <Icon
-                                        icon={'history'}
-                                        onClick={async () => {
-                                            try {
-                                                await this.setState({
-                                                    zoom: 1,
-                                                    selectedAppInstIndex: -1,
-                                                }, () => {
-                                                    notification.success({
-                                                        placement: 'bottomLeft',
-                                                        duration: 1.5,
-                                                        message: 'Fetch locally stored data.',
-                                                    });
-                                                })
-
-                                                await this.props.parent.handleClusterDropdownAndReset('');
-                                            } catch (e) {
-
-                                            }
-                                        }}
-                                        name='redo'
-                                        color={'black'}
-                                        style={{
-                                            color: 'black',
-                                            fontSize: 18,
-                                            borderRadius: 3,
-                                            backgroundColor: 'white',
-                                            height: 26,
-                                            width: 27,
-                                            cursor: 'pointer'
-                                        }}
-                                    />
+                                {/*@todo:#####################################..*/}
+                                {/*@todo: reset, globe button...*/}
+                                {/*@todo:#####################################..*/}
+                                <Control position="topright" style={{marginTop: 3, display: 'flex',}}>
+                                    <div style={{
+                                        display: 'flex',
+                                        //backgroundColor: 'rgba(128,128,128,.3)', borderRadius: 15,
+                                    }}>
+                                        <div style={{backgroundColor: 'transparent', height: 35}}>
+                                            <Icon
+                                                name='redo'
+                                                onClick={this.handleRefresh}
+                                                style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
+                                            />
+                                        </div>
+                                        <div style={{width: 2}}/>
+                                        <div style={{backgroundColor: 'transparent', height: 35, width: 30, display: 'flex', justifyContent: 'center', alignSelf: 'center'}}>
+                                            <FontAwesomeIcon
+                                                name="globe" style={{fontSize: 25, color: 'white', cursor: 'pointer', marginTop: 2}}
+                                                onClick={() => {
+                                                    this.props.parent.setState({
+                                                        isOpenGlobe: true,
+                                                    })
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
                                 </Control>
                                 {/*@todo:#####################################..*/}
                                 {/*@todo: topRight Dropdown changing MapTyles...*/}
@@ -516,25 +529,10 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
                                         {this.makeMapThemeDropDown()}
                                     </div>
-                                    : <Control position="topright" style={{marginTop: 1, marginRight: -1}}>
+                                    : <Control position="bottomright" style={{marginTop: 1, marginRight: -1}}>
                                         {this.makeMapThemeDropDown()}
                                     </Control>
                                 }
-                                {/*@todo:##############isOpenGlobeisOpenGlobeisOpenGlobeisOpenGlobe#######################..*/}
-                                {/*@todo: magnetmagnetmagnetmagnetmagnetmagnetmagnet...*/}
-                                {/*@todo:#####################################..*/}
-                                {!this.props.parent.state.mapLoading &&
-                                <Control position="topright" style={{marginTop: 30}}>
-                                    <FontAwesomeIcon name="globe" style={{fontSize: 25, color: 'white'}}
-                                                     onClick={() => {
-                                                         this.props.parent.setState({
-                                                             isOpenGlobe: true,
-                                                         })
-                                                     }}
-                                    />
-                                </Control>
-                                }
-
                                 {/*@desc:#####################################..*/}
                                 {/*@desc: Client Markers  (MarkerClusterGroup)...*/}
                                 {/*@desc:#####################################..*/}
