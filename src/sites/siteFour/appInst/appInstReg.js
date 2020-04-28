@@ -412,7 +412,12 @@ class ClusterInstReg extends React.Component {
             {
                 data[fields.clusterName] = data[fields.autoClusterInstance] ? 'autocluster' + data[fields.appName].toLowerCase().replace(/ /g, "") : data[fields.clusterName]
             }
-            if (cloudlets && cloudlets.length > 0) {
+            if (this.props.isUpdate) {
+                this.props.handleLoadingSpinner(true)
+                data[fields.clusterdeveloper] = this.clusterInstList[0][fields.clusterdeveloper]
+                updateAppInst(this, data, this.onCreateResponse)
+            }
+            else if (cloudlets && cloudlets.length > 0) {
                 for (let i = 0; i < cloudlets.length; i++) {
                     let cloudlet = cloudlets[i];
                     data[fields.cloudletName] = cloudlet;
@@ -493,7 +498,7 @@ class ClusterInstReg extends React.Component {
                     switch(form.field)
                     {
                         case fields.autoClusterInstance:
-                            form.visible = !this.isUpdate
+                            form.visible = (this.isUpdate && form.visible) ? false : form.visible
                     }
                 }
             }
@@ -532,7 +537,28 @@ class ClusterInstReg extends React.Component {
                 clusterInst[fields.clusterName] = data[fields.clusterName]
                 clusterInst[fields.cloudletName] = data[fields.cloudletName]
                 clusterInst[fields.operatorName] = data[fields.operatorName]
+                clusterInst[fields.clusterdeveloper] = data[fields.clusterdeveloper]
                 this.clusterInstList.push(clusterInst)
+
+                let multiFormCount = 0
+                if (data[fields.configs]) {
+                    let configs = data[fields.configs]
+                    for (let i = 0; i < configs.length; i++) {
+                        let config = configs[i]
+                        let configForms = this.configForm()
+                        for (let j = 0; j < configForms.length; j++) {
+                            let configForm = configForms[j];
+                            if (configForm.field === fields.kind) {
+                                configForm.value = config[fields.kind]
+                            }
+                            else if (configForm.field === fields.config) {
+                                configForm.value = config[fields.config]
+                            }
+                        }
+                        forms.splice(12 + multiFormCount, 0, this.getConfigForm(configForms))
+                        multiFormCount += 1
+                    }
+                }
             }
 
             let app = {}
@@ -558,7 +584,7 @@ class ClusterInstReg extends React.Component {
         }
 
         forms.push(
-            { label: 'Create', formType: BUTTON, onClick: this.onCreate, validate: true },
+            { label: this.isUpdate ? 'Update' : 'Create', formType: BUTTON, onClick: this.onCreate, validate: true },
             { label: 'Cancel', formType: BUTTON, onClick: this.onAddCancel })
 
 

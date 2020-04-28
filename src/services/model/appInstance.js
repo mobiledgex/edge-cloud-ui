@@ -143,7 +143,8 @@ export const createAppInst = (self, data, callback) => {
 
 export const updateAppInst = (self, data, callback) =>{
   let requestData = getKey(data, true)
-  let updateFields = ["27"]
+  let updateFields = ["27", '27.1', '27.2']
+  requestData.appinst.fields = updateFields
   let request = { uuid: data.uuid ? data.uuid : uuid(), method: UPDATE_APP_INST, data: requestData }
   return serverData.sendWSRequest(self, request, callback, data)
 }
