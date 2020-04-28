@@ -311,7 +311,7 @@ export const getCloudletList = async () => {
 
         return mergedCloudletList;
     } catch (e) {
-        showToast('getCloudletList=ERROR!!!==>' + e.toString())
+        //showToast( e.toString())
     }
 }
 

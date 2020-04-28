@@ -270,11 +270,11 @@ export default function GlobePopupContainer(props) {
                                                 setAnimationSequence(
                                                     [
                                                         {
-                                                            animationDuration: 750,
+                                                            animationDuration: 1000,
                                                             coordinates: [item.CloudletLocation.latitude, item.CloudletLocation.longitude],
                                                             distanceRadiusScale: 2,
-                                                            //easingFunction: ['Linear', 'None'],
-                                                            easingFunction: ['Elastic', 'In'],
+                                                            easingFunction: ['Linear', 'None'],
+                                                            //easingFunction: ['Elastic', 'In'],
                                                             //easingFunction: ['Exponential', 'In']
                                                         },
                                                     ]
