@@ -283,7 +283,7 @@ export default function MiniDrawer(props) {
     }
 
     const versionInfo = () => (
-        <div style={{position: 'absolute', bottom: 5, marginLeft: 10, color: '#B1B2B4'}}>
+        <div style={{position: 'absolute', bottom: 5, marginLeft: 4, color: '#B1B2B4'}}>
             {process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'}
         </div>
     )
