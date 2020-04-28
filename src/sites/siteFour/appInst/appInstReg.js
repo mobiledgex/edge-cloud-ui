@@ -210,7 +210,7 @@ class ClusterInstReg extends React.Component {
                         return form
                     }
                     else if (form.label === 'Configs') {
-                        form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM ? true : false
+                        form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM ||  app[fields.deployment] === constant.DEPLOYMENT_TYPE_VM? true : false
                         return form
                     }
                     else if (form.field === fields.configs) {
