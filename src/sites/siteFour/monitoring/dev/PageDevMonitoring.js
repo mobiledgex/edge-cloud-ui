@@ -90,6 +90,7 @@ import {PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} f
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListHook_VirtualScroll from "../components/AppInstEventLogListHook_VirtualScroll";
 import {fields} from '../../../../services/model/format'
+import GlobePopupContainer from "../components/GlobePopupContainer";
 
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -261,6 +262,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     chunkedSize: 12,
                     selectedAppInstIndex: -1,
                     openTerminal: false,
+                    isOpenGlobe: false,
                 };
             }
 
@@ -1856,6 +1858,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         <AddItemPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}/>
                         <AddItemPopupContainer2 parent={this} isOpenEditView2={this.state.isOpenEditView2}/>
+                        <GlobePopupContainer
+                            parent={this}
+                            isOpenGlobe={this.state.isOpenGlobe}
+                            appInstanceListGroupByCloudlet={this.state.appInstanceListGroupByCloudlet}
+                        />
                         <MiniModalGraphContainer selectedClusterUsageOne={this.state.selectedClusterUsageOne}
                                                  selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
                                                  parent={this}
@@ -1874,6 +1881,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
                             loading={this.state.loading}
                         />
+
 
                         <div style={{
                             width: '100%',

@@ -34,6 +34,16 @@ export type TypeClient = {
     }
 }
 
+export type TypeCloudletMarker = {
+    AppNames: string,
+    CloudletLocation: {
+        latitude: number,
+        longitude: number,
+    },
+    timestamp: string,
+    Cloudlet: string,
+}
+
 /*export type TypeMapTyleLayerReducer = {
     currentTyleLayer: string,
     lineColor: string,

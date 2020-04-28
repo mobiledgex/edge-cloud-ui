@@ -476,7 +476,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 />
                                 <Control position="topleft" style={{marginTop: 3}}>
                                     <Icon
-                                        icon={'history'} color={'black'}
+                                        icon={'history'}
                                         onClick={async () => {
                                             try {
                                                 await this.setState({
@@ -496,6 +496,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                             }
                                         }}
                                         name='redo'
+                                        color={'black'}
                                         style={{
                                             color: 'black',
                                             fontSize: 18,
@@ -518,6 +519,28 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                         {this.makeMapThemeDropDown()}
                                     </Control>
                                 }
+                                {/*@todo:#####################################..*/}
+                                {/*@todo: magnetmagnetmagnetmagnetmagnetmagnetmagnet...*/}
+                                {/*@todo:#####################################..*/}
+                                <Control position="topright" style={{marginTop: 25}}>
+                                    <Icon
+                                        onClick={() => {
+                                            this.props.parent.setState({
+                                                isOpenGlobe: true,
+                                            })
+                                        }}
+                                        name='magnet'
+                                        style={{
+                                            color: 'black',
+                                            fontSize: 18,
+                                            borderRadius: 3,
+                                            backgroundColor: 'white',
+                                            height: 26,
+                                            width: 27,
+                                            cursor: 'pointer'
+                                        }}
+                                    />
+                                </Control>
 
                                 {/*@desc:#####################################..*/}
                                 {/*@desc: Client Markers  (MarkerClusterGroup)...*/}
