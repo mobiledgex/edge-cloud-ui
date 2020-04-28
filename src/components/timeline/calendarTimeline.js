@@ -101,7 +101,7 @@ export default class CalendarTimeline extends React.PureComponent {
             tasksList.map((tValue, tIndex) => {
                 const startDate = this.getParseDate(timesList[tIndex]);
                 const startHour = moment(timesList[tIndex],"YYYY-MM-DD HH");
-                const endValue = moment(startDate + 1 * 60 * 1000).valueOf();
+                const endValue = moment(startDate).valueOf();
                 items.push({
                     id: tIndex + "",
                     group: groups[0].id + "",
@@ -161,7 +161,7 @@ export default class CalendarTimeline extends React.PureComponent {
         let storageSelectedTraceidIndex = -1;
         if (storageSelectedTraceidList) {
             storageSelectedTraceidIndex = storageSelectedTraceidList.findIndex(
-                s => s === itemContext.title
+                s => s === item.title
             );
         }
 

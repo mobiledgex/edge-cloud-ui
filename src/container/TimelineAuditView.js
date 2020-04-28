@@ -24,7 +24,6 @@ const countryOptions = [
     { key: '1', value: 1, flag: '1', text: 'Last hour' },
 ]
 
-const typeOptions = [{ key: 'all', value: 'all', text: 'All' }]
 const nameOptions = [{ key: 'all', value: 'all', text: 'All' }]
 let _self = null;
 const jsonView = (jsonObj, self) => {
@@ -91,14 +90,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             closeMap:false,
             statusList: [],
             statusCount: [],
-            typeList:[],
             nameList:[],
             timelineSelectedIndex: 0,
             unCheckedErrorCount: 0,
             unCheckedErrorToggle: false,
             statusErrorToggle: false,
             statusNormalToggle: false,
-            dropDownOnChangeValue: '',
+            dropDownStatusValue: '',
+            dropDownNameValue: 'All',
             realtime: moment()
         };
         jsonViewProps = {
@@ -217,15 +216,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 key: makeOperName, value: makeOperName, text: makeOperName
                             })
                         }
-
-                        let renderValue = this.typeRender(this.makeOper(operName))
-                        let typesIndex = typeOptions.findIndex(t => t.value === renderValue)
-
-                        if(typesIndex === (-1)){
-                            typeOptions.push({
-                                 key: renderValue, value: renderValue, text: renderValue
-                            })
-                        }
                     }
 
                     let statusList = []
@@ -273,7 +263,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                         timelineList: timelineList,
                         timesList: newTimesList,//@:todo: TimesList to display above the timeline Dot
                         statusCount: statusCount,
-                        typeList: typeOptions,
                         nameList: nameOptions,
                         unCheckedErrorCount: unCheckedErrorCount,
                         currentTask: timelineList[0].tasksList[0],
@@ -371,12 +360,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 isLoading2: true,
             })
             let timelineDataOne = null
+            let storageSelectedTraceidList = JSON.parse(localStorage.getItem("selectedTraceid"))
             this.state.rawAllData.map((data, index) => {
                 if(value.traceid === data.traceid){
                     timelineDataOne = data
                 }
             })
             this.setStorageData(timelineDataOne.traceid, "selected")
+            if(timelineDataOne.status !== 200){
+                if(storageSelectedTraceidList){
+                    let storageSelectedTraceidIndex = (storageSelectedTraceidList) ? storageSelectedTraceidList.findIndex(s => s === timelineDataOne.traceid) : (-1)
+                    if(storageSelectedTraceidIndex === (-1)){
+                        this.setState({"unCheckedErrorCount" : this.state.unCheckedErrorCount - 1})
+                    }
+                }
+            }
             setTimeout(() => {
                 this.setRequestView(timelineDataOne)
                 this.setResponseView(timelineDataOne)
@@ -426,18 +424,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             let storageSelectedTraceidList = JSON.parse(localStorage.getItem("selectedTraceid"))
             this.setState({closeMap:false})
 
+
             times.map((time, index) => {
-                if(Date.parse(this.getParseDate(time)) === item){
+                if(this.getParseDate(time).valueOf() === item.valueOf()){
                     this.setState({"timelineSelectedIndex" : i})
                     this.onHandleIndexClick({"value" : i, "traceid": status[index].traceid})
-                    if(status[index].status !== 200){
-                        if(storageSelectedTraceidList){
-                            let storageSelectedTraceidIndex = (storageSelectedTraceidList) ? storageSelectedTraceidList.findIndex(s => s === status[index].traceid) : (-1)
-                            if(storageSelectedTraceidIndex === (-1)){
-                                this.setState({"unCheckedErrorCount" : this.state.unCheckedErrorCount - 1})
-                            }
-                        }
-                    }
                 }
             })
         }
@@ -516,8 +507,24 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         }
         close = () => this.setState({ openSendEmail: false })
 
+        dropDownOnChangeStatusCount = (list, v) => {
+            let normalCount = 0;
+            let errorCount = 0;
+
+            list.map((value, index)=>{
+                if(this.makeOper(value.operationname) === v.value){
+                    (value.status === 200)?normalCount++ : errorCount++
+                } else if(v.value === 'all'){
+                    (value.status === 200)?normalCount++ : errorCount++
+                }
+            })
+
+            return {normalCount:normalCount, errorCount:errorCount}
+        }
+
         dropDownOnNameChange = (e, v) => {
             let allData = this.state.rawAllData
+            let statusCount = []
             let timelineList = []
             let tasksList = []
             let timesList = []
@@ -533,17 +540,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     tasksList.push(taskValue)
                     timesList.push(datetime)
                     statusList.push({"status": allValue.status, "traceid": allValue.traceid})
-                    this.setState({dropDownOnChangeValue:''})
+
+                    this.setState({dropDownNameValue:'All'})
                 } else if (v.value === taskValue) {
                     tasksList.push(taskValue)
                     timesList.push(datetime)
                     statusList.push({"status": allValue.status, "traceid": allValue.traceid})
-                    this.setState({dropDownOnChangeValue:v.value})
+                    this.setState({dropDownNameValue:v.value})
                 }
             })
 
+            statusCount.push(this.dropDownOnChangeStatusCount(allData, v))
+            if(statusList.length)this.onHandleIndexClick({traceid:statusList[0].traceid})
             timelineList.push({'timesList' : timesList ,'tasksList':tasksList, 'statusList': statusList})
-            this.setState({timelineList: timelineList})
+            this.setState({timelineList: timelineList, statusErrorToggle: false, statusNormalToggle: false, unCheckedErrorToggle:false, statusCount: statusCount})
         }
 
         onClickUnCheckedError = (e) => {
@@ -573,7 +583,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     tasksList.push(taskValue)
                     timesList.push(datetime)
                     statusList.push({"status":allValue.status, "traceid":allValue.traceid})
-                    this.setState({dropDownOnChangeValue:''})
+                    this.setState({dropDownStatusValue:''})
                 } if(value === 'uncheck') {
                     if (allValue.status !== 200) {
                         let storageSelectedTraceidIndex = (storageSelectedTraceidList) ? storageSelectedTraceidList.findIndex(s => s === allValue.traceid) : (-1)
@@ -583,17 +593,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                             statusList.push({"status": allValue.status, "traceid": allValue.traceid})
                         }
                     }
-                    this.setState({dropDownOnChangeValue:'uncheck'})
+                    this.setState({dropDownStatusValue:'uncheck'})
                 }
             })
 
+            if(statusList.length)this.onHandleIndexClick({traceid:statusList[0].traceid})
             timelineList.push({'timesList' : timesList ,'tasksList':tasksList, 'statusList': statusList})
-            this.setState({timelineList: timelineList})
+            this.setState({timelineList: timelineList, statusErrorToggle:false, statusNormalToggle:false, dropDownNameValue: 'All'})
         }
 
         onClickStatus = (status) => {
             let statusErrorToggle = this.state.statusErrorToggle
             let statusNormalToggle = this.state.statusNormalToggle
+            let nameValue = this.state.dropDownNameValue
             let allData = this.state.rawAllData
             let timelineList = []
             let tasksList = []
@@ -628,39 +640,59 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 let datetime = date + " " + time
 
                 if(value === 'all'){
-                    tasksList.push(taskValue)
-                    timesList.push(datetime)
-                    statusList.push({"status":allValue.status, "traceid":allValue.traceid})
-                    this.setState({dropDownOnChangeValue:''})
-                } else if(value === 'status'){
-                    if (status === 'error' && allValue.status !== 200) {
+                    if(nameValue === taskValue){
                         tasksList.push(taskValue)
                         timesList.push(datetime)
-                        statusList.push({"status": allValue.status, "traceid": allValue.traceid})
-                    } else if (allValue.status === 200 && status === 'normal'){
+                        statusList.push({"status":allValue.status, "traceid":allValue.traceid})
+                    } else if(nameValue === 'All') {
                         tasksList.push(taskValue)
                         timesList.push(datetime)
-                        statusList.push({"status": allValue.status, "traceid": allValue.traceid});
+                        statusList.push({"status":allValue.status, "traceid":allValue.traceid})
                     }
-                    this.setState({dropDownOnChangeValue:status})
+                    this.setState({dropDownStatusValue:''})
+                } else if(value === 'status') {
+                    if(nameValue === taskValue){
+                        if (status === 'error' && allValue.status !== 200) {
+                            tasksList.push(taskValue)
+                            timesList.push(datetime)
+                            statusList.push({"status": allValue.status, "traceid": allValue.traceid})
+                        } else if (allValue.status === 200 && status === 'normal'){
+                            tasksList.push(taskValue)
+                            timesList.push(datetime)
+                            statusList.push({"status": allValue.status, "traceid": allValue.traceid});
+                        }
+                    } else if(nameValue === 'All') {
+                        if (status === 'error' && allValue.status !== 200) {
+                            tasksList.push(taskValue)
+                            timesList.push(datetime)
+                            statusList.push({"status": allValue.status, "traceid": allValue.traceid})
+                        } else if (allValue.status === 200 && status === 'normal'){
+                            tasksList.push(taskValue)
+                            timesList.push(datetime)
+                            statusList.push({"status": allValue.status, "traceid": allValue.traceid});
+                        }
+                    }
+                    this.setState({dropDownStatusValue:status})
                 }
-            })
+            });
 
+            if(statusList.length)this.onHandleIndexClick({traceid:statusList[0].traceid})
             timelineList.push({'timesList' : timesList ,'tasksList':tasksList, 'statusList': statusList})
-            this.setState({timelineList: timelineList})
+            this.setState({timelineList: timelineList, unCheckedErrorToggle:false})
         }
 
         onCurrentClick = () => {
-            let value = this.state.dropDownOnChangeValue
+            let statusValue = this.state.dropDownStatusValue
+            let nameValue = this.state.dropDownNameValue
 
-            if(value === ''){
+            if(statusValue === '' && nameValue === 'All'){
                 this.dropDownOnNameChange('name', {value:'all'})
-            } else if(value === 'error' || value === 'normal'){
-                this.onClickStatus(value)
-            } else if(value === 'uncheck'){
+            } else if(statusValue === '' && nameValue !== 'All'){
+                this.dropDownOnNameChange('name', {value:nameValue})
+            } else if(statusValue === 'error' || statusValue === 'normal'){
+                this.onClickStatus(statusValue)
+            } else if(statusValue === 'uncheck'){
                 this.onClickUnCheckedError("current")
-            } else {
-                this.dropDownOnNameChange('name', {value:value})
             }
         };
 
@@ -688,6 +720,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                         Name
                                     </div>
                                     <Dropdown
+                                        className="dropdownName"
                                         placeholder='All'
                                         fluid
                                         search
@@ -735,7 +768,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                         <div className="page_audit_error_label">(UTC) {moment(this.state.realtime).utc().format("YYYY-MM-DDTHH:mm")}</div>
                                     </div>
                                     <button className="page_audit_error_button"  onClick={this.onCurrentClick}>Go</button>
-
                                 </div>
                             </div>
                         </div>
