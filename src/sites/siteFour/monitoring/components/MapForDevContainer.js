@@ -18,6 +18,7 @@ import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WH
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import '../PageMonitoring.css'
 
+const FontAwesomeIcon = require('react-fontawesome')
 
 const {Option} = Select;
 
@@ -515,32 +516,24 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
                                         {this.makeMapThemeDropDown()}
                                     </div>
-                                    : <Control position="topright" style={{marginTop: 3}}>
+                                    : <Control position="topright" style={{marginTop: 1, marginRight: -1}}>
                                         {this.makeMapThemeDropDown()}
                                     </Control>
                                 }
-                                {/*@todo:#####################################..*/}
+                                {/*@todo:##############isOpenGlobeisOpenGlobeisOpenGlobeisOpenGlobe#######################..*/}
                                 {/*@todo: magnetmagnetmagnetmagnetmagnetmagnetmagnet...*/}
                                 {/*@todo:#####################################..*/}
-                                <Control position="topright" style={{marginTop: 25}}>
-                                    <Icon
-                                        onClick={() => {
-                                            this.props.parent.setState({
-                                                isOpenGlobe: true,
-                                            })
-                                        }}
-                                        name='magnet'
-                                        style={{
-                                            color: 'black',
-                                            fontSize: 18,
-                                            borderRadius: 3,
-                                            backgroundColor: 'white',
-                                            height: 26,
-                                            width: 27,
-                                            cursor: 'pointer'
-                                        }}
+                                {!this.props.parent.state.mapLoading &&
+                                <Control position="topright" style={{marginTop: 30}}>
+                                    <FontAwesomeIcon name="globe" style={{fontSize: 25, color: 'white'}}
+                                                     onClick={() => {
+                                                         this.props.parent.setState({
+                                                             isOpenGlobe: true,
+                                                         })
+                                                     }}
                                     />
                                 </Control>
+                                }
 
                                 {/*@desc:#####################################..*/}
                                 {/*@desc: Client Markers  (MarkerClusterGroup)...*/}

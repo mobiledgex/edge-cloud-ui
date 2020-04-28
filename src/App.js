@@ -25,7 +25,6 @@ import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
 import {ThemeProvider} from "@material-ui/styles";
 import {getDarkTheme, getLightTheme, THEME_TYPE} from "./themeStyle";
-import GlobeComponent from "./sites/siteFour/monitoring/dev/GlobeComponent";
 // API
 
 let self = null;
@@ -354,7 +353,6 @@ class App extends Component {
                         <Route exact path='/createAccount' component={DashboardContainer.bind(this, {mainPath: '/createAccount'})}/>
                         <Route exact path='/passwordreset' component={DashboardContainer.bind(this, {mainPath: '/passwordreset'})}/>
                         <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath: '/verify'})}/>
-                        <Route exact path='/Test001' component={GlobeComponent}/>
                     </div>
                 </Router>
             </ThemeProvider>
