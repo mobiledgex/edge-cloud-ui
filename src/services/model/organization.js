@@ -53,7 +53,7 @@ export const createOrganization = async (self, data) => {
 
 export const deleteOrganization = (data) => {
     let requestData = getKey(data);
-    return { method: DELETE_ORG, data: requestData, success: `Organization ${data[fields.organizationName]}` }
+    return { method: DELETE_ORG, data: requestData, success: `Organization ${data[fields.organizationName]} deleted successfully` }
 }
 
 const customData = (value) => {

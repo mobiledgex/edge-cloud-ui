@@ -124,7 +124,7 @@ class MexListView extends React.Component {
                 let valid = false
                 let mcRequest = await serverData.sendRequest(this, action.onClick(data))
                 if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-                    this.props.handleAlertInfo('success', `${mcRequest.request.success} deleted successfully`)
+                    this.props.handleAlertInfo('success', `${mcRequest.request.success}`)
                     filterList.splice(filterList.indexOf(data), 1)
                     dataList.splice(dataList.indexOf(data), 1)
                     this.setState({ dataList:dataList, filterList: filterList})
