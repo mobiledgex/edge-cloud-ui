@@ -4,9 +4,8 @@ import { withRouter } from 'react-router-dom';
 import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
-
 import { fields, isAdmin } from '../../../services/model/format';
-import { keys, showAppInsts, deleteAppInst, streamAppInst, refreshAppInst, multiDataRequest } from '../../../services/model/appInstance';
+import { keys, showAppInsts, deleteAppInst, streamAppInst, refreshAppInst, multiDataRequest, changePowerState } from '../../../services/model/appInstance';
 import { showApps } from '../../../services/model/app';
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
 import AppInstReg from './appInstReg';
@@ -34,8 +33,8 @@ class AppInstList extends React.Component {
         this.setState({ currentView: null })
     }
 
-    onAdd = () => {
-        this.setState({ currentView: <AppInstReg onClose={this.onRegClose} /> })
+    onAdd = (action , data) => {
+        this.setState({ currentView: <AppInstReg isUpdate={action ? true : false} data={data} onClose={this.onRegClose} /> })
     }
 
     onTerminalVisible = (data) => {
@@ -61,8 +60,17 @@ class AppInstList extends React.Component {
         this.setState({ terminalData: data, openTerminal: true })
     }
 
-    onUpdateVisible = (data) => {
+    onPowerStateVisible = (data) =>
+    {
+       return data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM
+    }
+
+    onUpgradeVisible = (data) => {
         return data[fields.updateAvailable]
+    }
+
+    onUpdateVisible = (data) => {
+        return data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM || data[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM
     }
 
     getDeleteActionMessage = (action, data) => {
@@ -73,9 +81,13 @@ class AppInstList extends React.Component {
 
     actionMenu = () => {
         return [
+            { label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd },
+            { label: 'Upgrade', visible: this.onUpgradeVisible, onClick: refreshAppInst },
             { label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, },
-            { label: 'Upgrade', visible: this.onUpdateVisible, onClick: refreshAppInst },
-            { label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal }
+            { label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
+            { label: 'Power On', visible: this.onPowerStateVisible, onClick: changePowerState },
+            { label: 'Power Off', visible: this.onPowerStateVisible, onClick: changePowerState },
+            { label: 'Reboot', visible: this.onPowerStateVisible, onClick: changePowerState }
         ]
     }
 
@@ -115,6 +127,12 @@ class AppInstList extends React.Component {
         )
     }
 
+    showPowerState = (data, isDetailView) => {
+        if (isDetailView) {
+            return constant.PowerState(data)
+        }
+    }
+
     customizedData = () => {
         for (let i = 0; i < this.keys.length; i++) {
             let key = this.keys[i]
@@ -123,6 +141,9 @@ class AppInstList extends React.Component {
             }
             if (key.field === fields.region) {
                 key.customizedData = this.getUpdate
+            }
+            if (key.field === fields.powerState) {
+                key.customizedData = this.showPowerState
             }
         }
     }
