@@ -6,7 +6,7 @@ import * as actions from '../../../actions';
 //model
 import * as constant from '../../../constant';
 import * as shared from '../../../services/model/shared';
-import { fields } from '../../../services/model/format';
+import { fields, isAdmin } from '../../../services/model/format';
 import { keys, showClusterInsts, deleteClusterInst, streamClusterInst, multiDataRequest } from '../../../services/model/clusterInstance';
 import { showCloudlets } from '../../../services/model/cloudlet';
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
@@ -35,7 +35,7 @@ class ClusterInstView extends React.Component {
     }
 
     getDeleteActionMessage = (action, data) => {
-        if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY) {
+        if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && isAdmin()) {
             return `Cloudlet status is not online, due you still want to proceed with ${data[fields.clusterName]} Cluster Instance deletion?`
         }
     }
