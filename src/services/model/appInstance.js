@@ -141,6 +141,13 @@ export const createAppInst = (self, data, callback) => {
   return serverData.sendWSRequest(self, request, callback, data)
 }
 
+export const updateAppInst = (self, data, callback) =>{
+  let requestData = getKey(data, true)
+  let updateFields = ["27"]
+  let request = { uuid: data.uuid ? data.uuid : uuid(), method: UPDATE_APP_INST, data: requestData }
+  return serverData.sendWSRequest(self, request, callback, data)
+}
+
 export const deleteAppInst = (data) => {
   let requestData = getKey(data)
   if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && formatter.isAdmin()) {

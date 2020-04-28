@@ -33,8 +33,8 @@ class AppInstList extends React.Component {
         this.setState({ currentView: null })
     }
 
-    onAdd = () => {
-        this.setState({ currentView: <AppInstReg onClose={this.onRegClose} /> })
+    onAdd = (action , data) => {
+        this.setState({ currentView: <AppInstReg isUpdate={action ? true : false} data={data} onClose={this.onRegClose} /> })
     }
 
     onTerminalVisible = (data) => {
@@ -77,8 +77,9 @@ class AppInstList extends React.Component {
 
     actionMenu = () => {
         return [
-            { label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, },
+            { label: 'Update', onClick: this.onAdd },
             { label: 'Upgrade', visible: this.onUpdateVisible, onClick: refreshAppInst },
+            { label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, },
             { label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
             { label: 'Power On', visible: this.onPowerStateVisible, onClick: changePowerState },
             { label: 'Power Off', visible: this.onPowerStateVisible, onClick: changePowerState },

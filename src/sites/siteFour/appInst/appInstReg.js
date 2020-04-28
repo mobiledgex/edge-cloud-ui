@@ -14,7 +14,7 @@ import { getOrgCloudletList } from '../../../services/model/cloudlet';
 import { getPrivacyPolicyList } from '../../../services/model/privacyPolicy';
 import { getClusterInstList } from '../../../services/model/clusterInstance';
 import { getAppList } from '../../../services/model/app';
-import { createAppInst } from '../../../services/model/appInstance';
+import { createAppInst, updateAppInst } from '../../../services/model/appInstance';
 
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 
@@ -25,6 +25,7 @@ class ClusterInstReg extends React.Component {
             forms: [],
             stepsArray: [],
         }
+        this.isUpdate = this.props.isUpdate
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
         this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
         this.requestedRegionList = []
@@ -294,8 +295,8 @@ class ClusterInstReg extends React.Component {
     }
 
     configForm = () => ([
-        { field: fields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, type: 'number', rows:2 }, width: 9, visible: true },
-        { field: fields.kind, label: 'Kind', formType: SELECT, rules: { required: true}, width: 4, visible: true, options: ['envVarsYaml', 'hemlCustomizationYaml'] },
+        { field: fields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, type: 'number', rows:2 }, width: 9, visible: true, update: true },
+        { field: fields.kind, label: 'Kind', formType: SELECT, rules: { required: true}, width: 4, visible: true, options: ['envVarsYaml', 'hemlCustomizationYaml'], update: true },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeConfigForm }
     ])
 
@@ -468,6 +469,14 @@ class ClusterInstReg extends React.Component {
                             form.options = undefined;
                     }
                 }
+                else if(form.formType === CHECKBOX)
+                {
+                    switch(form.field)
+                    {
+                        case fields.autoClusterInstance:
+                            form.visible = !this.isUpdate
+                    }
+                }
             }
         }
     }
@@ -480,16 +489,7 @@ class ClusterInstReg extends React.Component {
             if (this.props.isLaunch) {
                 this.cloudletList = await getOrgCloudletList(this, { region: data[fields.region], org: data[fields.organizationName] })
                 this.clusterInstList = await getClusterInstList(this, { region: data[fields.region] })
-                this.privacyPolicyList = await getPrivacyPolicyList(this, { region: data[fields.region] })
-                let app = {}
-                app[fields.appName] = data[fields.appName]
-                app[fields.region] = data[fields.region]
-                app[fields.organizationName] = data[fields.organizationName]
-                app[fields.version] = data[fields.version]
-                app[fields.deployment] = data[fields.deployment]
-                app[fields.accessType] = data[fields.accessType]
-                this.appList = [app];
-
+                
                 let disabledFields = [fields.region, fields.organizationName, fields.appName, fields.version]
 
                 for (let i = 0; i < forms.length; i++) {
@@ -499,6 +499,33 @@ class ClusterInstReg extends React.Component {
                     }
                 }
             }
+            else
+            {
+                let cloudlet = {}
+                cloudlet[fields.region] = data[fields.region]
+                cloudlet[fields.cloudletName] = data[fields.cloudletName]
+                cloudlet[fields.operatorName] = data[fields.operatorName]
+                this.cloudletList.push(cloudlet)
+
+                let clusterInst = {}
+                clusterInst[fields.region] = data[fields.region]
+                clusterInst[fields.organizationName] = data[fields.organizationName]
+                clusterInst[fields.clusterName] = data[fields.clusterName]
+                clusterInst[fields.cloudletName] = data[fields.cloudletName]
+                clusterInst[fields.operatorName] = data[fields.operatorName]
+                this.clusterInstList.push(clusterInst)
+            }
+
+            let app = {}
+            app[fields.appName] = data[fields.appName]
+            app[fields.region] = data[fields.region]
+            app[fields.organizationName] = data[fields.organizationName]
+            app[fields.version] = data[fields.version]
+            app[fields.deployment] = data[fields.deployment]
+            app[fields.accessType] = data[fields.accessType]
+            this.appList = [app];
+
+            this.privacyPolicyList = await getPrivacyPolicyList(this, { region: data[fields.region] })
         }
     }
 
@@ -543,7 +570,7 @@ class ClusterInstReg extends React.Component {
         return (
             <div className="round_panel">
                 <div className="grid_table" style={{ height: constant.getHeight(), overflow: 'auto' }}>
-                    <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} />
+                    <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms}  isUpdate={this.isUpdate}/>
                 </div>
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
             </div>
