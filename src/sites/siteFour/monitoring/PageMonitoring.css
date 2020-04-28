@@ -572,3 +572,7 @@ tr td {
 .ant-select-sm {
     background-color: black !important;
 }*/
+
+.draggable {
+    cursor: pointer;
+}
