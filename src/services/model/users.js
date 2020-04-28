@@ -31,7 +31,7 @@ export const addUser = async (self, data) => {
 
 export const deleteUser = (data) => {
     let requestData = getKey(data);
-    return { method: DELETE_USER, data: requestData, success: `User ${data[fields.username]}` }
+    return { method: DELETE_USER, data: requestData, success: `User ${data[fields.username]} removed successfully` }
 }
 
 const customData = (value) => {

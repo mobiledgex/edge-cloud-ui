@@ -31,7 +31,7 @@ export const showAccounts = () => {
 
 export const deleteAccount = (data) => {
     let requestData = getKey(data)
-    return { method: DELETE_ACCOUNT, data: requestData, success: `Account ${data[fields.username]}` }
+    return { method: DELETE_ACCOUNT, data: requestData, success: `Account ${data[fields.username]} deleted successfully` }
 }
 
 const customData = (value) => {

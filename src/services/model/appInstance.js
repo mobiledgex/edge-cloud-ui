@@ -135,7 +135,7 @@ export const deleteAppInst = (data) => {
   if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && formatter.isAdmin()) {
     requestData.appinst.crm_override = constant.CRM_OVERRIDE_IGNORE_CRM
   }
-  return { uuid: data.uuid, method: DELETE_APP_INST, data: requestData, success: `App Instance ${data[fields.appName]}` }
+  return { uuid: data.uuid, method: DELETE_APP_INST, data: requestData, success: `App Instance ${data[fields.appName]} deleted successfully` }
 }
 
 export const refreshAppInst = (data) => {
