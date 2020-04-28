@@ -110,13 +110,13 @@ const options = [
     {label: 'Cluster Instances', icon: <StorageOutlinedIcon/>, pg: 4, page: <SiteFourPageClusterInst/>, roles: ['AdminManager', 'DeveloperManager']},
     {label: 'Apps', icon: <AppsOutlinedIcon/>, pg: 5, page: <SiteFourPageApps/>, roles: ['AdminManager', 'DeveloperManager']},
     {label: 'App Instances', icon: <GamesOutlinedIcon/>, pg: 6, page: <SiteFourPageAppInst/>, roles: ['AdminManager', 'DeveloperManager']},
-    {label: 'Monitoring', icon: <TvOutlinedIcon/>, pg: 'Monitoring', page: <PageMonitoringMain/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']},
     {
         label: 'Policies', icon: <AlbumOutlinedIcon/>, roles: ['AdminManager', 'DeveloperManager'], subOptions: [
             {label: 'Auto Provisioning Policy', icon: <AdjustOutlinedIcon/>, pg: 8, page: <AutoProvPolicy/>, roles: ['AdminManager', 'DeveloperManager']},
             {label: 'Privacy Policy', icon: <AdjustOutlinedIcon/>, pg: 9, page: <PrivacyPolicy/>, roles: ['AdminManager', 'DeveloperManager']},
         ]
     },
+    {label: 'Monitoring', icon: <TvOutlinedIcon/>, pg: 'Monitoring', page: <PageMonitoringMain/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']},
     {label: 'Audit Logs', icon: <FeaturedPlayListOutlinedIcon/>, pg: 'audits', page: <SiteFourPageAudits/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']}
 ]
 
