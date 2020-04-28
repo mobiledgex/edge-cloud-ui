@@ -1,4 +1,6 @@
 //export const RECENT_DATA_LIMIT_COUNT = 50
+import {convertToMegaGigaForNumber} from "../sites/siteFour/monitoring/PageMonitoringCommonService";
+
 export const RECENT_DATA_LIMIT_COUNT = 10
 
 
@@ -99,6 +101,10 @@ export const lineGraphOptions = {
                 min: 0,
                 //max: 100,
                 fontColor: 'white',
+                callback(value, index, label) {
+                    return convertToMegaGigaForNumber(value);
+
+                },
             },
             gridLines: {
                 color: "#505050",

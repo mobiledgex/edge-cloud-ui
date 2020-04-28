@@ -13,6 +13,7 @@ import '../PageMonitoring.css'
 import {handleLegendAndBubbleClickedEvent, makeLineChartDataForCluster} from "../dev/PageDevMonitoringService";
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import {numberWithCommas} from "../PageMonitoringUtils";
+import {convertByteToMegaGigaByte, convertToMegaGigaForNumber} from "../PageMonitoringCommonService";
 
 type Props = {
     filteredUsageList: any,
@@ -223,33 +224,34 @@ export default function PerformanceSummaryForClusterHook(props: Props) {
                                     <TableCell
                                         onClick={() => handleRowClicked(item, HARDWARE_TYPE.RECVBYTES)}
                                         padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
-                                        {numberWithCommas(item.sumRecvBytes.toFixed(0)) + ' '}
+                                        {numberWithCommas(convertByteToMegaGigaByte(item.sumRecvBytes.toFixed(0)))}
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
                                                onClick={() => handleRowClicked(item, HARDWARE_TYPE.SENDBYTES)}
                                     >
-                                        {numberWithCommas(item.sumSendBytes.toFixed(0)) + ' '}
+                                        {numberWithCommas(convertByteToMegaGigaByte(item.sumSendBytes.toFixed(0)))}
                                     </TableCell>
 
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
                                                onClick={() => handleRowClicked(item, HARDWARE_TYPE.TCPCONNS)}
                                     >
-                                        {numberWithCommas(item.sumTcpConns.toFixed(0)) + ' '}
+                                        {numberWithCommas(convertToMegaGigaForNumber(item.sumTcpConns.toFixed(0)))}
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
                                                onClick={() => handleRowClicked(item, HARDWARE_TYPE.TCPRETRANS)}
                                     >
-                                        {numberWithCommas(item.sumTcpRetrans.toFixed(0)) + ' '}
+                                        {numberWithCommas(convertToMegaGigaForNumber(item.sumTcpRetrans.toFixed(0)))}
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
                                                onClick={() => handleRowClicked(item, HARDWARE_TYPE.UDPRECV)}
                                     >
-                                        {numberWithCommas(item.sumUdpRecv.toFixed(0)) + ' '}
+
+                                        {numberWithCommas(convertToMegaGigaForNumber(item.sumUdpRecv.toFixed(0)))}
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
                                                onClick={() => handleRowClicked(item, HARDWARE_TYPE.UDPSENT)}
                                     >
-                                        {numberWithCommas(item.sumUdpSent.toFixed(0)) + ' '}
+                                        {numberWithCommas(convertToMegaGigaForNumber(item.sumUdpSent.toFixed(0)))}
                                     </TableCell>
                                 </TableRow>
                             )
