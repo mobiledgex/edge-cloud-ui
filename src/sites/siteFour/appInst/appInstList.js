@@ -65,8 +65,12 @@ class AppInstList extends React.Component {
        return data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM
     }
 
-    onUpdateVisible = (data) => {
+    onUpgradeVisible = (data) => {
         return data[fields.updateAvailable]
+    }
+
+    onUpdateVisible = (data) => {
+        return data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM || data[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM
     }
 
     getDeleteActionMessage = (action, data) => {
@@ -77,8 +81,8 @@ class AppInstList extends React.Component {
 
     actionMenu = () => {
         return [
-            { label: 'Update', onClick: this.onAdd },
-            { label: 'Upgrade', visible: this.onUpdateVisible, onClick: refreshAppInst },
+            { label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd },
+            { label: 'Upgrade', visible: this.onUpgradeVisible, onClick: refreshAppInst },
             { label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, },
             { label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
             { label: 'Power On', visible: this.onPowerStateVisible, onClick: changePowerState },
