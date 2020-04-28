@@ -232,6 +232,8 @@ class MexListView extends React.Component {
     }
 
     /***Action Block */
+    /*Todo this is temporary we can't hardocode Action type in mexlistview 
+    will be changed to make it more generalize*/
     onActionClose = (action) => {
         let data = this.selectedRow;
         switch (action.label) {
