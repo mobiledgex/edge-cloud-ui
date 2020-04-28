@@ -168,7 +168,7 @@ export const updateApp = async (self, data, originalData) => {
 
 export const deleteApp = (data) => {
     let requestData = getKey(data)
-    return { uuid: data.uuid, method: DELETE_APP, data: requestData, success: `App ${data[fields.appName]}` }
+    return { uuid: data.uuid, method: DELETE_APP, data: requestData, success: `App ${data[fields.appName]} deleted successfully` }
 }
 
 

@@ -98,7 +98,7 @@ export const createCloudletPool = (data) => {
 
 export const deleteCloudletPool = (data) => {
     let requestData = getKey(data)
-    return { method: DELETE_CLOUDLET_POOL, data: requestData, success: `Cloudlet Pool ${data[fields.poolName]}` }
+    return { method: DELETE_CLOUDLET_POOL, data: requestData, success: `Cloudlet Pool ${data[fields.poolName]} deleted successfully` }
 }
 
 const customData = (value) => {

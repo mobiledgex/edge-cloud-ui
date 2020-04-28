@@ -64,7 +64,7 @@ export const createPrivacyPolicy = (data) => {
 
 export const deletePrivacyPolicy = (data) => {
   let requestData = getKey(data)
-  return { method: DELETE_PRIVACY_POLICY, data: requestData, success: `Privacy Policy ${data[fields.privacyPolicyName]}` }
+  return { method: DELETE_PRIVACY_POLICY, data: requestData, success: `Privacy Policy ${data[fields.privacyPolicyName]} deleted successfully` }
 }
 
 const customData = (value) => {
