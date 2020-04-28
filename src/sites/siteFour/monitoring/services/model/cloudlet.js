@@ -53,7 +53,7 @@ const getFilterInfo = (requestInfo, region) => {
 };
 
 const onServerResponse = mcRequestList => {
-    console.log("20200423 ", mcRequestList, _self);
+    //console.log("20200427 ", mcRequestList, _self);
     requestCount -= 1;
     let requestInfo = _requestInfo();
     let newDataList = [];
@@ -76,7 +76,9 @@ const onServerResponse = mcRequestList => {
         }
     }
 
-    console.log("20200423 dataList --->>>", dataList);
+    return new Promise((resolve, reject) => {
+        resolve(dataList);
+    });
 };
 
 const dataFromServer = async (region, self, method) => {

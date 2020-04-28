@@ -28,20 +28,22 @@ const getArgs = info => {
  * LIST CLOUDLET
  ************************************/
 const getListCloud = (params, self) => {
-    // First, need to get data for all cloudltes
-    let resultCloudlet = Cloudlet.getCloudletList(params, self);
+    /* First, need to get data for all cloudltes */
+    Cloudlet.getCloudletList(params, self);
+    /* Through the result to the ContainerWrapper.onLoadComplete after success execute getCloudletList */
 };
 
 /***********************************
  * EVENT CLOUDLET
  ************************************/
-const getEventCloudlet = async _self => {
-    ////// Continue, get events of cloudlets
+const getEventCloudlet = (_self, cloudletInfo) => {
+    console.log("get event cloudlet info -->>>> ", cloudletInfo);
+    /* Continue, get events of cloudlets */
     let execrequest = getArgs({
-        pRegion: "EU",
-        selectOrg: "TDG",
-        cloudletSelectedOne: "berlin-test",
-        last: 100
+        pRegion: cloudletInfo.cloudlet.region,
+        selectOrg: cloudletInfo.cloudlet.org,
+        cloudletSelectedOne: cloudletInfo.cloudlet.name,
+        last: 1
     });
 
     let store = JSON.parse(localStorage.PROJECT_INIT);
@@ -57,21 +59,15 @@ const getEventCloudlet = async _self => {
 
 let cloudletList = [];
 const MetricsService = async (defaultValue: MetricsParmaType, self: any) => {
-    let resultCloudlet = await getListCloud(defaultValue, self);
-    console.log(
-        "20200424 metric service ... ",
-        defaultValue.method,
-        ":",
-        resultCloudlet
-    );
-    if (
-        defaultValue.method === serviceMC.getEP().EVENT_CLOUDLET &&
-        resultCloudlet
-    ) {
+    console.log("20200427 metric service ... ", defaultValue.method);
+    if (defaultValue.method === serviceMC.getEP().SHOW_CLOUDLET) {
+        getListCloud(defaultValue, self);
+    }
+    if (defaultValue.method === serviceMC.getEP().EVENT_CLOUDLET) {
         //this.props.handleLoadingSpinner(true);
-        return serviceMC.sendSyncRequest(
+        return await serviceMC.sendSyncRequest(
             self,
-            getEventCloudlet(defaultValue.self)
+            getEventCloudlet(defaultValue.self, defaultValue.cloudletInfo)
         );
     }
 };

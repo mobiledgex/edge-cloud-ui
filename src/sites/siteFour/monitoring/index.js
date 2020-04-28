@@ -7,6 +7,7 @@ import * as actions from "../../../actions";
 //
 import ChartWidget from "./container/ChartWidget";
 import * as serviceMC from "../../../services/model/serviceMC";
+import * as ChartType from "./layout/chartType";
 
 class MonitoringAdmin extends React.Component {
     state = {
@@ -82,12 +83,6 @@ const mapDispatchProps = dispatch => {
         },
         handleLoadingSpinner: data => {
             dispatch(actions.loadingSpinner(data));
-        },
-        onLoadComplete: data => {
-            console.log(
-                "20200423 receive from data ++++ ==== >>>>> ",
-                JSON.stringify(data)
-            );
         }
     };
 };
@@ -117,7 +112,7 @@ const generateComponentAdmin = (self, infos) => {
         generatWidget({
             id: "networkCloudlet",
             method: null,
-            chartType: "timeseries",
+            chartType: "graph",
             type: "scatter",
             ...defaultProp
         }),
@@ -138,15 +133,15 @@ const generateComponentAdmin = (self, infos) => {
         generatWidget({
             id: "findCloudlet",
             method: null,
-            chartType: "timeseries",
+            chartType: "graph",
             type: "bar",
             ...defaultProp
         }),
         generatWidget({
             id: "eventCloudlet",
             method: serviceMC.getEP().EVENT_CLOUDLET,
-            chartType: "table",
-            type: "",
+            chartType: ChartType.TABLE,
+            type: "alarm",
             ...defaultProp
         })
     ];

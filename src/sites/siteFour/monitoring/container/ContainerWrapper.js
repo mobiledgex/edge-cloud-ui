@@ -4,34 +4,169 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import * as actions from "../../../../actions";
 import MetricsService from "../services";
+import * as serviceMC from "../../../../services/model/serviceMC";
+import * as FormatChart from "../formatter/formatChart";
 
+let _self = null;
+let hasCloudlets = [];
+let doCloudlets = null;
+let regionCount = 0;
+let count = 0;
+let stepTwoCount = 0;
 const ContainerWrapper = obj =>
     compose(connect(mapStateToProps, mapDispatchProps), WrapperComponent => {
         return class extends React.Component {
+            constructor() {
+                super();
+                _self = this;
+            }
             state = {
-                data: null,
-                chartType: ""
+                data: [],
+                chartType: "",
+                chartMethod: ""
             };
 
             async initialize(props: any, self: any) {
                 try {
                     //TODO :
                     console.log(
-                        "20200423 initial props ... method..",
+                        "20200427 initial props ... method..",
                         props.method
                     );
+
                     if (props.method) {
-                        const response = await MetricsService(props, self);
-                        console.log("20200423 init service ==>>>> ", response);
+                        this.setState({ chartMethod: props.method });
+                        await MetricsService(props, self);
                     }
                 } catch (e) {
                     console.log(e);
                 }
             }
+
+            getWidgetData = async (props: any, self: any) => {
+                try {
+                    let resultData = null;
+
+                    let concatData = [];
+                    console.log(
+                        "20200427 has cloudlet length == ",
+                        hasCloudlets.length
+                    );
+                    if (props.method && hasCloudlets.length > 0) {
+                        ///////////////
+                        let regionMap = hasCloudlets.map(async cloudlets => {
+                            let clMap = cloudlets.map(async (cloudlet, i) => {
+                                props["cloudletInfo"] = {
+                                    cloudlet: {
+                                        region: cloudlet.region,
+                                        org: cloudlet.operatorName,
+                                        name: cloudlet.cloudletName
+                                    }
+                                };
+                                return await MetricsService(props, self);
+                            });
+                            resultData = await Promise.all(clMap);
+
+                            console.log(
+                                "20200427 get widgetData....resultData..",
+                                count,
+                                ":",
+                                resultData
+                            );
+
+                            return await concatData.concat(resultData);
+                        });
+                        return await Promise.all(regionMap);
+                        ///////////////
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
+            };
+
+            async onReceiveResult(result) {
+                if (result["Cloudlets"]) {
+                    hasCloudlets.push(result["Cloudlets"]);
+                    count--;
+                } else {
+                }
+
+                console.log(
+                    "20200427 Finally  get widget data ++++ <<<<<< ",
+                    result,
+                    ":",
+                    count
+                );
+                /*********************************************
+                 * * STEP # 2
+                 * Once loaded cloudlets, get data from MC fallower
+                 * cloudlet의 정보를 먼저 가져온 후에 진행
+                 *********************************************/
+                if (count <= 0) {
+                    let getData = await this.getWidgetData(
+                        {
+                            method: this.props.method,
+                            region: this.props.regionInfo.region
+                        },
+                        _self
+                    );
+
+                    console.log(
+                        "20200427 Finally  get widget data ++++ ==== ==================== ",
+                        getData
+                    );
+
+                    if (getData.length > 0) {
+                        /** Just test - delete me */
+                        getData.map(data => {
+                            data.map((item, i) => {
+                                console.log(
+                                    "20200427 data parse fit chartType ----- ",
+                                    this.props.chartType,
+                                    ":",
+                                    item.response.data.data[0].Series[0]
+                                );
+                            });
+                        });
+
+                        /** set data as format  */
+                        console.log(
+                            "20200427 format -->> ",
+                            FormatChart.makeFormat(
+                                getData,
+                                this.props.chartType
+                            )
+                        );
+                        // this.setState({
+                        //     data: FormatChart.formatData(
+                        //         getData,
+                        //         this.props.chartType
+                        //     )
+                        // });
+                    }
+                }
+            }
             componentDidMount() {
                 let _self = this;
                 this.setState({ chartType: this.props.chartType });
-                this.initialize(this.props, _self);
+
+                /*********************************************
+                 * STEP # 1
+                 * request data from MC server from every widget
+                 * has to be name of method
+                 *********************************************/
+                if (hasCloudlets.length === 0 && !doCloudlets) {
+                    doCloudlets = true;
+                    regionCount = this.props.regionInfo.region.length;
+                    count = this.props.regionInfo.region.length;
+                    this.initialize(
+                        {
+                            method: serviceMC.getEP().SHOW_CLOUDLET,
+                            region: this.props.regionInfo.region
+                        },
+                        _self
+                    );
+                }
             }
             render() {
                 const { data, chartType } = this.state;
@@ -66,10 +201,7 @@ const mapDispatchProps = dispatch => {
             dispatch(actions.loadingSpinner(data));
         },
         onLoadComplete: data => {
-            console.log(
-                "20200423 receive from data ++++ ==== ==================== ",
-                JSON.stringify(data)
-            );
+            _self.onReceiveResult(data);
         }
     };
 };

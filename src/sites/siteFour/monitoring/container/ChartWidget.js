@@ -9,6 +9,7 @@ import ContainerHealth from "./ContainerHealth";
 import Map from "../../../../libs/simpleMaps/with-react-motion/index_clusters";
 import CounterWidget from "./CounterWidget";
 import { Segment } from "semantic-ui-react";
+import MonitoringListViewer from "../components/MonitoringListViewer.js";
 
 class ChartWidget extends React.Component {
     state = {
@@ -27,6 +28,12 @@ class ChartWidget extends React.Component {
         console.log("20200419 did mount widget size..", this.props.size);
     }
     componentWillReceiveProps(nextProps, prevProps) {
+        console.log(
+            "20200423 receive data in the ChartWidget ....",
+            nextProps.chartType,
+            ":",
+            nextProps
+        );
         if (nextProps.size !== this.props.size) {
             console.log("20200419 widget size..", nextProps.size);
             //this.setState({ size: this.props.size });
@@ -43,8 +50,6 @@ class ChartWidget extends React.Component {
                     backgroundColor: "transparent"
                 }}
             >
-                {chartType}
-                {size.width + ":" + size.height}
                 {chartType === "timeseries" ? (
                     <TimeSeries size={size} type={type} />
                 ) : chartType === "gauge" ? (
@@ -77,8 +82,17 @@ class ChartWidget extends React.Component {
 export default ContainerWrapper()(ChartWidget);
 
 class DataGrid extends React.Component {
+    state = {
+        data: null,
+        size: null
+    };
+    componentWillReceiveProps(nextProps) {
+        console.log("20200423 receive data in DataGrid ....", nextProps);
+        this.setState({ data: nextProps.data, size: nextProps.size });
+    }
     render() {
-        return <div>DataGrid chart</div>;
+        let { data, size } = this.state;
+        return <MonitoringListViewer sizeInfo={size}></MonitoringListViewer>;
     }
 }
 

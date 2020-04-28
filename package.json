@@ -50,7 +50,9 @@
         "lodash": "^4.17.11",
         "lodash.isequal": "^4.5.0",
         "material-icons-react": "1.0.4",
+        "material-table": "^1.57.2",
         "moment": "^2.23.0",
+        "mui-datatables": "^2.14.0",
         "plotly.js": "^1.52.3",
         "prop-types": "^15.7.2",
         "public-ip": "^4.0.0",
@@ -148,14 +150,14 @@
     "module": "dist/index.js",
     "typings": "dist/index.d.ts",
     "devDependencies": {
+        "@material-ui/styles": "^4.9.10",
+        "@typescript-eslint/eslint-plugin": "^2.30.0",
+        "@typescript-eslint/parser": "^2.30.0",
         "babel-eslint": "^10.1.0",
         "craco-plugin-react-hot-reload": "^0.1.0",
-        "@typescript-eslint/eslint-plugin": "^2.27.0",
-        "@typescript-eslint/parser": "^2.27.0",
         "eslint": "^6.8.0",
         "eslint-plugin-react": "^7.19.0",
         "react-scripts": "^3.4.1",
-        "@material-ui/styles": "^4.9.10",
         "webpack": "^4.42.0"
     },
     "scripts": {
