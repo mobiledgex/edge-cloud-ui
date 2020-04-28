@@ -236,52 +236,52 @@ export const APP_INST_MATRIX_HW_USAGE_INDEX = {
         0: "time"
         1: "app"
         2: "ver"
-        3: "pod"
-        4: "cluster"
-        5: "clusterorg"
-        6: "cloudlet"
-        7: "cloudletorg"
-        8: "apporg"
-        9: "pod_1"
-        10: "cpu"
-        11: "mem"
-        12: "disk"
-        13: "sendBytes"
-        14: "recvBytes"
-        15: "port"
-        16: "active"
-        17: "handled"
-        18: "accepts"
-        19: "bytesSent"
-        20: "bytesRecvd"
-        21: "P0"
-        22: "P25"
-        23: "P50"
-        24: "P75"
-        25: "P90"
-        26: "P95"
-        27: "P99"
-        28: "P99.5"
-        29: "P99.9"
-        30: "P100"
+        3: "cluster"
+        4: "clusterorg"
+        5: "cloudlet"
+        6: "cloudletorg"
+        7: "apporg"
+        8: "pod_1"
+        9: "cpu"
+        10: "mem"
+        11: "disk"
+        12: "sendBytes"
+        13: "recvBytes"
+        14: "port"
+        15: "active"
+        16: "handled"
+        17: "accepts"
+        18: "bytesSent"
+        19: "bytesRecvd"
+        20: "P0"
+        21: "P25"
+        22: "P50"
+        23: "P75"
+        24: "P90"
+        25: "P95"
+        26: "P99"
+        27: "P99.5"
+        28: "P99.9"
+        29: "P100"
      */
     TIME: 0,
     APP: 1,
-    CLUSTER: 2,
-    DEV: 3,
-    CLOUDLET: 4,
-    OPERATOR: 5,
-    CPU: 10,
-    MEM: 11,
-    DISK: 12,
-    SENDBYTES: 13,
-    RECVBYTES: 14,
-    PORT: 15,
-    ACTIVE: 16,
-    HANDLED: 17,
-    ACCEPTS: 18,
-    BYTESSENT: 19,
-    BYTESRECVD: 20,
+    VERSION: 2,
+    CLUSTER: 3,
+    DEV: 4,
+    CLOUDLET: 5,
+    OPERATOR: 6,
+    CPU: 9,
+    MEM: 10,
+    DISK: 11,
+    SENDBYTES: 12,
+    RECVBYTES: 13,
+    PORT: 14,
+    ACTIVE: 15,
+    HANDLED: 16,
+    ACCEPTS: 17,
+    BYTESSENT: 18,
+    BYTESRECVD: 19,
 }
 
 export const USAGE_INDEX = {
@@ -375,11 +375,11 @@ export const HARDWARE_OPTIONS_FOR_APPINST = [
     {text: 'CPU', value: 'CPU'},
     {text: 'MEM', value: 'MEM'},
     {text: 'DISK', value: 'DISK'},
-    {text: 'RECV BYTES', value: 'RECV_BYTES'},
-    {text: 'SEND BYTES', value: 'SEND_BYTES'},
-    {text: 'ACTIVE CONNECTION', value: 'ACTIVE_CONNECTION'},
-    {text: 'HANDLED CONNECTION', value: 'HANDLED_CONNECTION'},
-    {text: 'ACCEPTS CONNECTION', value: 'ACCEPTS_CONNECTION'},
+    {text: 'RECV BYTES', value: 'RECVBYTES'},
+    {text: 'SEND BYTES', value: 'SENDBYTES'},
+    {text: 'ACTIVE CONNECTION', value: 'ACTIVE'},
+    {text: 'HANDLED CONNECTION', value: 'HANDLED'},
+    {text: 'ACCEPTS CONNECTION', value: 'ACCEPTS'},
 ]
 
 
@@ -402,8 +402,8 @@ export const HARDWARE_OPTIONS_FOR_CLUSTER = [
     {text: 'TCP RETRANS', value: 'TCPRETRANS'},
     {text: 'UDP RECV', value: 'UDPRECV'},
     {text: 'UDP SENT', value: 'UDPSENT'},
-    {text: 'RECV BYTES', value: 'RECV_BYTES'},
-    {text: 'SEND BYTES', value: 'SEND_BYTES'},
+    {text: 'RECV BYTES', value: 'RECVBYTES'},
+    {text: 'SEND BYTES', value: 'SENDBYTES'},
 ]
 
 
@@ -451,8 +451,8 @@ export const HARDWARE_TYPE = {
     TCPRETRANS: 'TCPRETRANS',
 
     //NETWORK
-    SENDBYTES: 'SEND_BYTES',
-    RECVBYTES: 'RECV_BYTES',
+    SENDBYTES: 'SENDBYTES',
+    RECVBYTES: 'RECVBYTES',
 
     MEM: 'MEM',
     MEM2: 'MEM',
@@ -460,9 +460,9 @@ export const HARDWARE_TYPE = {
     SEND_BYTES: 'SEND_BYTES',
     DISK: 'DISK',
     CONNECTIONS: 'CONNECTIONS',
-    ACTIVE_CONNECTION: 'ACTIVE_CONNECTION',//12
-    HANDLED_CONNECTION: 'HANDLED_CONNECTION',//13
-    ACCEPTS_CONNECTION: 'ACCEPTS_CONNECTION',//14 (index)
+    ACTIVE_CONNECTION: 'ACTIVE',//12
+    HANDLED_CONNECTION: 'HANDLED',//13
+    ACCEPTS_CONNECTION: 'ACCEPTS',//14 (index)
 
 }
 

@@ -68,7 +68,7 @@ class ClusterInstReg extends React.Component {
             this.appList = [...this.appList, ...await getAppList(this, { region: region })]
         }
         this.updateUI(form)
-        forms = this.appNameValueChange(form, forms, true)
+        this.appNameValueChange(form, forms, true)
         this.setState({ forms: forms })
     }
 
@@ -129,36 +129,16 @@ class ClusterInstReg extends React.Component {
     }
 
     appNameValueChange = (currentForm, forms, isInit) => {
-        let nForms = []
-        nForms = forms.filter((form) => {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
             if (form.field === fields.version) {
                 this.updateUI(form)
-                return form
+                this.versionValueChange(form, forms, isInit)
             }
-            else if(form.field === fields.autoClusterInstance)
-            {
-                form.visible = false
-                form.value = false
-                this.autoClusterValueChange(form, forms, true)
-                return form
-            }
-            else if(form.field === fields.clusterName || form.label === 'Configs')
-            {
-                form.visible = false
-                form.value = undefined
-                return form
-            }
-            else if (form.field === fields.configs) {
-                //remove all configs
-            }
-            else{
-                return form
-            }
-        })
-        if (isInit === undefined || isInit === false) {
-            this.setState({ forms: nForms })
         }
-        return nForms
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
+        }
     }
 
     updateIPAccess = (form, data) =>
@@ -190,7 +170,6 @@ class ClusterInstReg extends React.Component {
                 break;
             }
         }
-        
         for (let i = 0; i < this.appList.length; i++) {
             let app = this.appList[i]
             if (app[fields.appName] === appName && app[fields.version] === currentForm.value) {
@@ -210,7 +189,7 @@ class ClusterInstReg extends React.Component {
                         return form
                     }
                     else if (form.label === 'Configs') {
-                        form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM ? true : false
+                        form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM ||  app[fields.deployment] === constant.DEPLOYMENT_TYPE_VM? true : false
                         return form
                     }
                     else if (form.field === fields.configs) {
@@ -224,6 +203,30 @@ class ClusterInstReg extends React.Component {
                     }
                 })
                 break;
+            }
+            else
+            {
+                nForms = forms.filter((form) => {
+                    if(form.field === fields.autoClusterInstance)
+                    {
+                        form.visible = false
+                        form.value = false
+                        this.autoClusterValueChange(form, forms, true)
+                        return form
+                    }
+                    else if(form.field === fields.clusterName || form.label === 'Configs')
+                    {
+                        form.visible = false
+                        form.value = undefined
+                        return form
+                    }
+                    else if (form.field === fields.configs) {
+                        //remove all configs
+                    }
+                    else{
+                        return form
+                    }
+                })
             }
         }
         if (isInit === undefined || isInit === false) {
@@ -272,7 +275,20 @@ class ClusterInstReg extends React.Component {
             }
             else if (form.field === fields.appName) {
                 this.updateUI(form)
-                forms = this.appNameValueChange(form, forms, true)
+                this.appNameValueChange(form, forms, true)
+            }
+        }
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
+        }
+    }
+
+    cloudletValueChange = (currentForm, forms, isInit)=>
+    {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (form.field === fields.clusterName) {
+                this.updateUI(form)
             }
         }
         if (isInit === undefined || isInit === false) {
@@ -319,7 +335,7 @@ class ClusterInstReg extends React.Component {
             { field: fields.autoClusterInstance, label: 'Auto Cluster Instance', formType: CHECKBOX, visible: false, value: false },
             { field: fields.ipAccess, label: 'IP Access', formType: 'Select', placeholder: 'Select IP Access', rules: { required: false }, visible: false },
             { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: 'Select', placeholder: 'Select Privacy Policy', rules: { required: false }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
-            { field: fields.clusterName, label: 'Cluster', formType: 'Select', placeholder: 'Select Clusters', rules: { required: true }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
+            { field: fields.clusterName, label: 'Cluster', formType: 'Select', placeholder: 'Select Clusters', rules: { required: true }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }, { index: 5, field: fields.operatorName },  { index: 6, field: fields.cloudletName }] },
             { label: 'Configs', formType: 'Header', forms: [{ formType: ICON_BUTTON, icon: 'add', visible: true, update: true, onClick: this.addConfigs, style:{color:'white'} }], visible: false }
         ]
     }
@@ -333,6 +349,9 @@ class ClusterInstReg extends React.Component {
         }
         else if (form.field === fields.operatorName) {
             this.operatorValueChange(form, forms, isInit)
+        }
+        else if (form.field === fields.cloudletName) {
+            this.cloudletValueChange(form, forms, isInit)
         }
         else if (form.field === fields.autoClusterInstance) {
             this.autoClusterValueChange(form, forms, isInit)

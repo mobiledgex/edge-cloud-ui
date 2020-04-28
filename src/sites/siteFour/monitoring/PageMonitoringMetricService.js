@@ -97,6 +97,7 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
                 appInstCount++;
                 let data = JSON.parse(event.data);
+
                 let uniqueId = data.data.client_key.unique_id;
                 let unique_id_type = data.data.client_key.unique_id_type;
                 if (data.code === 200) {
@@ -296,6 +297,18 @@ export const getCloudletList = async () => {
                 })
             }
         })
+
+
+        //todo: current org에 관한것만 flitering
+        /* let mergedOrgCloudletList = []
+         mergedCloudletList.map(item => {
+             if (item.Operator === localStorage.selectOrg) {
+                 mergedOrgCloudletList.push(item)
+             }
+         })
+
+         console.log("mergedOrgCloudletList====>", mergedOrgCloudletList);*/
+
         return mergedCloudletList;
     } catch (e) {
         showToast('getCloudletList=ERROR!!!==>' + e.toString())
@@ -359,7 +372,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
         try {
             appInstanceHealthCheckList = await Promise.all(promiseList);
         } catch (e) {
-            throw new Error(e)
+            //throw new Error(e)
         }
 
         let usageListForAllInstance = []
@@ -380,7 +393,6 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
             let sumRecvBytes = 0;
             let sumSendBytes = 0;
             let sumCpuUsage = 0;
-
             let sumActiveConnection = 0;
             let sumHandledConnection = 0
             let sumAcceptsConnection = 0
@@ -393,7 +405,6 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
             if (item.appInstanceHealth !== undefined) {
                 let series = item.appInstanceHealth.data["0"].Series;
-
                 if (series !== null) {
                     if (series["3"] !== undefined) {
                         let cpuSeries = series["3"]
@@ -408,6 +419,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
                     if (series["1"] !== undefined) {
                         let memSeries = series["1"]
+                        columns = memSeries.columns;
                         memSeriesValue = memSeries.values;
                         memSeries.values.map(item => {
                             let usageOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.MEM];//memUsage..index
@@ -427,6 +439,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
                     if (series["0"] !== undefined) {
                         let networkSeries = series["0"]
+                        columns = networkSeries.columns;
                         networkSeriesValue = networkSeries.values;
                         networkSeries.values.map(item => {
                             let sendBytesOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.SENDBYTES];//sendBytesOne
@@ -439,6 +452,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
                     if (series["4"] !== undefined) {
                         let connectionsSeries = series["4"]
+                        columns = connectionsSeries.columns;
                         connectionsSeriesValue = connectionsSeries.values;
                         connectionsSeries.values.map(item => {
                             let connection1One = item[APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE];//1
@@ -485,18 +499,13 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                         values: [],
                         appName: appName,
                     })
-
-
                 }
             }
 
         })
-
-
         return allUsageList;
     } catch (e) {
         //throw new Error(e.toString())
-        showToast(e.toString())
     }
 
 }
@@ -760,6 +769,7 @@ export const getCloudletLevelUsageList = async (cloudletList, pHardwareType, rec
 }
 
 export const getCloudletLevelMatric = async (serviceBody: any, pToken: string) => {
+    console.log('token2===>', pToken);
     let result = await axios({
         url: '/api/v1/auth/metrics/cloudlet',
         method: 'post',
@@ -801,6 +811,7 @@ export const getAppLevelMetrics = async (serviceBodyForAppInstanceOneInfo: any) 
 
 export const getClusterLevelMatric = async (serviceBody: any, pToken: string) => {
     try {
+        console.log('token2===>', pToken);
         let result = await axios({
             url: '/api/v1/auth/metrics/cluster',
             method: 'post',
@@ -971,6 +982,33 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster) => 
         //showToast(e)
     }
 }
+
+/*export const getAppInstanceAllEventLogList = async (appInstList) => {
+    try {
+        let promiseList = []
+        //todo: 모든 AppInst 대한 이벤트 로그를 요청 비동기식 promiseList
+        appInstList.map((appInstOne, index) => {
+            promiseList.push(getAppInstEventLogListOne(appInstOne))
+        })
+
+        let allAppInstEventLogs = await Promise.all(promiseList);
+        let completedEventLogList = []
+        allAppInstEventLogs.map((item, index) => {
+            if (item.Series !== null) {
+                let eventLogList = item.Series["0"].values;
+                eventLogList.map(item => {
+                    completedEventLogList.push(item)
+                })
+            }
+        })
+
+        console.log("completedEventLogList===>", completedEventLogList);
+        return completedEventLogList;
+    } catch (e) {
+        showToast(e.toString())
+    }
+}*/
+
 
 export const getAppInstEventLogByRegion = async (region = 'EU') => {
     try {

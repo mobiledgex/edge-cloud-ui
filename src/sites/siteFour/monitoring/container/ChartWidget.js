@@ -50,7 +50,7 @@ class ChartWidget extends React.Component {
                     backgroundColor: "transparent"
                 }}
             >
-                {chartType === "timeseries" ? (
+                {chartType === "graph" ? (
                     <TimeSeries size={size} type={type} />
                 ) : chartType === "gauge" ? (
                     <ContainerHealth size={size} type={type} />

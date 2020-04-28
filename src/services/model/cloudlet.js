@@ -112,7 +112,7 @@ export const getOrgCloudletList = async (self, data) => {
 
 export const deleteCloudlet = (data) => {
     let requestData = getKey(data)
-    return { uuid: data.uuid, method: DELETE_CLOUDLET, data: requestData, success: `Cloudlet ${data[fields.cloudletName]}` }
+    return { uuid: data.uuid, method: DELETE_CLOUDLET, data: requestData, success: `Cloudlet ${data[fields.cloudletName]} deleted successfully` }
 }
 
 export const streamCloudlet = (data) => {

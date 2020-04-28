@@ -69,9 +69,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
             if (this.props.chartDataForBigModal !== nextProps.chartDataForBigModal) {
-
-                console.log("chartDataForRendering===>", nextProps.chartDataForBigModal);
-
                 this.setState({
                     chartDataForRendering: nextProps.chartDataForBigModal,
                     graphType: nextProps.graphType.toUpperCase(),
