@@ -287,7 +287,7 @@ export default function GlobePopupContainer(props) {
                                                 {AppList.map((AppInstOne, index) => {
                                                     return (
                                                         <div onClick={() => {
-                                                            showToast(AppInstOne)
+                                                            showToast(AppInstOne, 5)
                                                         }} style={{color: 'yellow', fontFamily: 'ubuntu'}}>
                                                             -{AppInstOne.toString().split("|")[0]}
                                                         </div>
