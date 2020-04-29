@@ -24,6 +24,9 @@ export default function GlobePopupContainer(props) {
     const [cloudletLocationList, setCloudletLocationList] = useState([])
     const [currentGlobeTheme, setCurrentGlobeTheme] = useState(GLOBE_THEME.DEFAULT)
     const [markerList, setMarkerList] = useState([])
+
+    const [currentLevel, setCurrentLevel] = useState('cluster')
+
     const [animationSequence, setAnimationSequence] = useState()
     const [initialCoordinates, setInitialCoordinates] = useState([0, 30])
     const [globeTyle, setGlobeTyle] = useState('https://raw.githubusercontent.com/chrisrzhou/react-globe/master/textures/globe.jpg')
@@ -59,6 +62,7 @@ export default function GlobePopupContainer(props) {
         for (let index in clientLocationList) {
             tempMarketList.push({
                 id: index,
+                uuid: clientLocationList[index].uuid,
                 Cloudlet: clientLocationList[index].uuid,
                 AppNames: clientLocationList[index].uuid,
                 color: 'green',
@@ -270,6 +274,8 @@ export default function GlobePopupContainer(props) {
     let websocketInstance = null;
 
     function handleClickedAppInst(AppInstOne) {
+
+        setCurrentLevel('client')
         showToast(AppInstOne.split("|")[0], 5)
         try {
             websocketInstance = requestShowAppInstClientWS(AppInstOne.toString(), props.parent)
@@ -278,8 +284,8 @@ export default function GlobePopupContainer(props) {
         }
     }
 
-    const makeCloudletLocationDivOne = () => (
-        cloudletLocationList.map((outerItem: TypeCloudletMarker, index) => {
+    const makeCloudletLocationDivOne = () => {
+        return cloudletLocationList.map((outerItem: TypeCloudletMarker, index) => {
             let AppList = outerItem.AppNames.split(",");
 
 
@@ -290,7 +296,8 @@ export default function GlobePopupContainer(props) {
                             backgroundColor: makeBackgroundOnCloudletDiv(cloudletIndex, index),
                             padding: 10,
                             borderRadius: 10,
-                            height: 'auto'
+                            height: 'auto',
+                            cursor: 'pointer',
                         }}
                         onClick={() => handleClickedCloudlet(index, outerItem)}>
                         <div style={{display: 'flex'}}>
@@ -298,7 +305,7 @@ export default function GlobePopupContainer(props) {
                                 {outerItem.Cloudlet}
                             </div>
                         </div>
-                        <div style={{marginLeft: 25}}>
+                        <div style={{marginLeft: 25, cursor: 'pointer !important'}}>
                             {AppList.map((AppInstOne, index) => {
 
                                 let AppName = AppInstOne.trim().split(" | ")[0].trim()
@@ -318,7 +325,7 @@ export default function GlobePopupContainer(props) {
                                 let fullAppInstOne = AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version + " | " + Operator + " | " + JSON.stringify(serverLocation);
 
                                 return (
-                                    <div onClick={() => handleClickedAppInst(fullAppInstOne)} style={{color: 'yellow', fontFamily: 'ubuntu', cursor: 'pointer !important'}}>
+                                    <div onClick={() => handleClickedAppInst(fullAppInstOne)} style={{color: 'yellow', fontFamily: 'ubuntu', cursor: 'crosshair !important'}}>
                                         -{AppInstOne.toString().split("|")[0].trim()}
                                     </div>
                                 )
@@ -329,7 +336,8 @@ export default function GlobePopupContainer(props) {
                 </React.Fragment>
             )
         })
-    )
+    }
+
 
     const renderTopButtons = () => (
         <Right>
@@ -407,10 +415,34 @@ export default function GlobePopupContainer(props) {
                         marginTop: 10,
                     }}>
                         {renderGlobe()}
-                        <div style={{position: 'absolute', right: 40, top: 80,}}>
+                        <div style={{position: 'absolute', right: 40, top: 100,}}>
                             {renderTopButtons()}
                             <div style={{height: 10}}/>
                             {makeCloudletLocationDivOne()}
+                        </div>
+
+                        <div style={{position: 'absolute', left: 40, top: 80,}}>
+                            <div style={{height: 10}}/>
+                            Client List on Current AppInst
+                            <div>
+                                {markerList.map((item, index) => {
+                                    return (
+                                        <div style={{display: 'flex'}}>
+
+                                            {item.uuid !== undefined &&
+                                            <div style={{display: 'flex'}}>
+                                                <div>
+                                                    {item.id}
+                                                </div>
+                                                <div style={{color: 'maroon', fontWeight: 'bold', marginLeft: 20,}}>
+                                                    {item.uuid.toString()}
+                                                </div>
+                                            </div>
+                                            }
+                                        </div>
+                                    )
+                                })}
+                            </div>
                         </div>
                     </div>
                 </div>
