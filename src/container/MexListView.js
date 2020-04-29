@@ -593,7 +593,6 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-        handleDataExist: (data) => { dispatch(actions.dataExist(data)) },
         handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
     };
 };
