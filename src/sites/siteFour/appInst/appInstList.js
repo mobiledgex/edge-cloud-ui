@@ -70,7 +70,7 @@ class AppInstList extends React.Component {
     }
 
     onUpdateVisible = (data) => {
-        return data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM || data[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM
+        return data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES || data[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM
     }
 
     getDeleteActionMessage = (action, data) => {
