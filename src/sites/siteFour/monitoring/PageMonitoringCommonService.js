@@ -584,31 +584,6 @@ export const renderWifiLoader = (width = 25, height = 25, margin = 3) => {
     )
 }
 
-/*export const renderWifiLoader2 = (width = 25, height = 25) => {
-    return (
-        <div
-            style={{marginBottom: 3,}}>
-
-            <Lottie
-                options={{
-                    loop: true,
-                    autoplay: true,
-                    animationData: require('../../../lotties/6698-location-pin22222'),
-                    rendererSettings: {
-                        preserveAspectRatio: 'xMidYMid slice'
-                    }
-                }}
-                speed={2.9}
-                height={50}
-                width={50}
-                isStopped={false}
-                isPaused={false}
-            />
-        </div>
-    )
-}*/
-
-
 export const removeDuplicates = (paramArrayList, key) => {
     let newArray = [];
     let uniqueObject = {};
