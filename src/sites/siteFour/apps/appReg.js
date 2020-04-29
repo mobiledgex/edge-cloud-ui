@@ -67,13 +67,19 @@ class ClusterInstReg extends React.Component {
         input.onchange = (event) => {
             let file = event.target.files[0];
             if (file) {
-                let reader = new FileReader();
-                reader.onload = () => {
-                    let manifestForm = form.parent.form.forms[0]
-                    manifestForm.value = reader.result;
-                    this.reloadForms()
-                };
-                reader.readAsText(file)
+                if (file.size <= 1000000) {
+                    let reader = new FileReader();
+                    reader.onload = () => {
+                        let manifestForm = form.parent.form.forms[0]
+                        manifestForm.value = reader.result;
+                        this.reloadForms()
+                    };
+                    reader.readAsText(file)
+                }
+                else
+                {
+                    this.props.handleAlertInfo('error', 'File size cannot be >1MB')
+                }
             }
         };
         input.click();
