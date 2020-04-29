@@ -1,12 +1,11 @@
 // @flow
-import Ripples from "react-ripples";
 import React, {useEffect, useState} from 'react';
 import {Button, Modal as AModal, Tabs} from "antd";
 import '../PageMonitoring.css'
 import ReactGlobe from "react-globe";
 import type {TypeAppInstance, TypeCloudletMarker} from "../../../../shared/Types";
 import {isEmpty, showToast} from "../PageMonitoringCommonService";
-import {BoxGeometry, Mesh, MeshLambertMaterial, SphereGeometry, EdgesGeometry} from "three";
+import {Right} from "../PageMonitoringStyledComponent";
 
 const {TabPane} = Tabs;
 const FA = require('react-fontawesome')
@@ -17,25 +16,22 @@ type Props = {
 export default function GlobePopupContainer(props) {
 
     const [cloudletLocationList, setCloudletLocationList] = useState([])
-    //marketList
+    const [currentGlobeTheme, setCurrentGlobeTheme] = useState('default')
     const [markerList, setMarkerList] = useState([])
     const [animationSequence, setAnimationSequence] = useState()
     const [initialCoordinates, setInitialCoordinates] = useState([0, 30])
-
-    const [tyle, setTyle] = useState('https://raw.githubusercontent.com/chrisrzhou/react-globe/master/textures/globe.jpg')
-
+    const [globeTyle, setGlobeTyle] = useState('https://raw.githubusercontent.com/chrisrzhou/react-globe/master/textures/globe.jpg')
     const [cloudletIndex, setCloudletIndex] = useState(0)
 
+
     useEffect(() => {
-        console.log(`appInstanceListGroupByCloudlet====>`, props.appInstanceListGroupByCloudlet);
-
         let appInstanceListOnCloudlet = props.appInstanceListGroupByCloudlet
-
         if (!isEmpty(appInstanceListOnCloudlet)) {
             makeAppInstLocation(appInstanceListOnCloudlet)
         } else {
             setMarkerList([]);
             setCloudletLocationList([])
+            setCloudletIndex(0)
         }
 
 
@@ -140,7 +136,7 @@ export default function GlobePopupContainer(props) {
         return (
             <ReactGlobe
                 globeOptions={{
-                    texture: tyle,
+                    texture: globeTyle,
                 }}
                 animations={animationSequence}
                 //initialCoordinates={initialCoordinates}
@@ -168,7 +164,7 @@ export default function GlobePopupContainer(props) {
                         })
 
                         return (
-                            `<p >[${marker.Cloudlet.toString()}]</p> <p style="color: yellow">${AppNames.toString()}</p> `
+                            `<p style="font-size: 17pt; font-weight: bold; font-family: Ubuntu">${marker.Cloudlet.toString()}</p> <p style="color: yellow">${AppNames.toString()}</p> `
                         )
 
                     },
@@ -187,6 +183,99 @@ export default function GlobePopupContainer(props) {
             />
         )
     }
+
+    function makeBackgroundOnCloudletDiv(cloudletIndex, index) {
+        if (cloudletIndex === index) {
+            return 'rgba(128,128,128,.3)'
+        } else {
+            return null;
+        }
+    }
+
+    const makeCloudletLocationDivOne = () => (
+        cloudletLocationList.map((item: TypeCloudletMarker, index) => {
+            let AppList = item.AppNames.split(",");
+            return (
+                <React.Fragment>
+                    <div
+                        style={{
+                            backgroundColor: makeBackgroundOnCloudletDiv(cloudletIndex, index),
+                            padding: 10,
+                            borderRadius: 10,
+                            height: 'auto'
+                        }}
+                        onClick={() => {
+                            //setInitialCoordinates([item.CloudletLocation.latitude, item.CloudletLocation.longitude])
+                            setCloudletIndex(index);
+                            setAnimationSequence(
+                                [
+                                    {
+                                        animationDuration: 1000,
+                                        coordinates: [item.CloudletLocation.latitude, item.CloudletLocation.longitude],
+                                        distanceRadiusScale: 2,
+                                        easingFunction: ['Linear', 'None'],
+                                        //easingFunction: ['Elastic', 'In'],
+                                        //easingFunction: ['Exponential', 'In']
+                                    },
+                                ]
+                            )
+
+                        }}>
+                        <div style={{display: 'flex'}}>
+                            <div style={{cursor: 'pointer', fontWeight: 'bold', fontFamily: 'ubuntu', fontSize: 18}}>
+                                {item.Cloudlet}
+                            </div>
+                        </div>
+                        <div style={{marginLeft: 25}}>
+                            {AppList.map((AppInstOne, index) => {
+                                return (
+                                    <div onClick={() => {
+                                        showToast(AppInstOne, 5)
+                                    }} style={{color: 'yellow', fontFamily: 'ubuntu', cursor: 'pointer'}}>
+                                        -{AppInstOne.toString().split("|")[0].trim()}
+                                    </div>
+                                )
+                            })}
+
+                        </div>
+                    </div>
+                </React.Fragment>
+            )
+        })
+    )
+
+    const renderTopButtons = () => (
+        <Right>
+            <div style={{display: 'flex'}}>
+                <div style={{width: 10}}/>
+                <Button
+                    //type={currentGlobeTheme ==='default' }
+                    onClick={() => {
+                        setCurrentGlobeTheme('default')
+                        setGlobeTyle('https://raw.githubusercontent.com/chrisrzhou/react-globe/master/textures/globe.jpg')
+                    }}
+                >
+                    default
+                </Button>
+                <div style={{width: 10}}/>
+                <Button
+                    color={'primary'}
+                    onClick={() => {
+                        setCurrentGlobeTheme('dark')
+                        setGlobeTyle('https://raw.githubusercontent.com/chrisrzhou/react-globe/master/textures/globe_dark.jpg')
+                    }}
+                >
+                    dark
+                </Button>
+            </div>
+            <div style={{height: 10}}/>
+            {/*
+            <div style={{color: 'maroon', fontWeight: 'bold', fontSize: 12, fontFamily: 'Black Ops One'}}>
+                {cloudletLocationList.length.toString()} Cloudlets
+            </div>
+            */}
+        </Right>
+    )
 
 
     return (
@@ -217,7 +306,7 @@ export default function GlobePopupContainer(props) {
                     <div style={{display: 'flex', width: '100%',}}>
                         {renderPrevBtn2()}
                         <div className='page_monitoring_popup_title'>
-                            Deployed App Instance On Globe
+                            Deployed Instance On Globe
                         </div>
                     </div>
                     <div style={{
@@ -227,82 +316,10 @@ export default function GlobePopupContainer(props) {
                         marginTop: 10,
                     }}>
                         {renderGlobe()}
-                        <div style={{position: 'absolute', right: 10, top: 80,}}>
-                            <div style={{display: 'flex'}}>
-
-                                <div style={{width: 10}}/>
-                                <Button
-                                    onClick={() => {
-                                        setTyle('https://raw.githubusercontent.com/chrisrzhou/react-globe/master/textures/globe.jpg')
-                                    }}
-                                >
-                                    default
-                                </Button>
-                                <div style={{width: 10}}/>
-                                <Button
-                                    color={'primary'}
-                                    onClick={() => {
-                                        setTyle('https://raw.githubusercontent.com/chrisrzhou/react-globe/master/textures/globe_dark.jpg')
-                                    }}
-                                >
-                                    dark
-                                </Button>
-                            </div>
+                        <div style={{position: 'absolute', right: 40, top: 80,}}>
+                            {renderTopButtons()}
                             <div style={{height: 10}}/>
-                            <div style={{color: 'maroon', fontWeight: 'bold', fontSize: 12, fontFamily: 'Black Ops One'}}>
-                                {cloudletLocationList.length.toString()} Cloudlets
-                            </div>
-                            <div style={{height: 10}}/>
-                            {cloudletLocationList.map((item: TypeCloudletMarker, index) => {
-
-                                let AppList = item.AppNames.split(",");
-
-                                return (
-                                    <React.Fragment>
-                                        <div
-                                            style={{backgroundColor: cloudletIndex === index ? 'rgba(128,128,128,.3)' : null, padding: 30, borderRadius: 15}}
-                                            onClick={() => {
-                                                //setInitialCoordinates([item.CloudletLocation.latitude, item.CloudletLocation.longitude])
-                                                setCloudletIndex(index);
-                                                setAnimationSequence(
-                                                    [
-                                                        {
-                                                            animationDuration: 1000,
-                                                            coordinates: [item.CloudletLocation.latitude, item.CloudletLocation.longitude],
-                                                            distanceRadiusScale: 2,
-                                                            easingFunction: ['Linear', 'None'],
-                                                            //easingFunction: ['Elastic', 'In'],
-                                                            //easingFunction: ['Exponential', 'In']
-                                                        },
-                                                    ]
-                                                )
-
-                                            }}>
-                                            <div style={{display: 'flex'}}>
-                                                <div style={{cursor: 'pointer', fontWeight: 'bold', fontFamily: 'Roboto Condensed', fontSize: 18}}>
-                                                    {item.Cloudlet}
-                                                </div>
-                                            </div>
-                                            <div style={{marginLeft: 25}}>
-                                                {AppList.map((AppInstOne, index) => {
-                                                    return (
-                                                        <div onClick={() => {
-                                                            showToast(AppInstOne, 5)
-                                                        }} style={{color: 'yellow', fontFamily: 'ubuntu'}}>
-                                                            -{AppInstOne.toString().split("|")[0]}
-                                                        </div>
-                                                    )
-                                                })}
-
-                                            </div>
-                                        </div>
-                                        <br/>
-                                        <br/>
-                                    </React.Fragment>
-
-                                )
-                            })}
-
+                            {makeCloudletLocationDivOne()}
                         </div>
                     </div>
                 </div>

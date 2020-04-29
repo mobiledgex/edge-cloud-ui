@@ -1,3 +1,4 @@
+/*
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import PageDevMonitoring from "../dev/PageDevMonitoring";
@@ -145,3 +146,4 @@ export default function AppInstEventLogListHook(props) {
         </div>
     )
 };
+*/

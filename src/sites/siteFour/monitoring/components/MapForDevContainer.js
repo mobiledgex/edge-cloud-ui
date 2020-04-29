@@ -8,7 +8,7 @@ import {Map, Marker, Polyline, Popup, TileLayer, Tooltip,} from "react-leaflet";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {groupByKey_, removeDuplicates} from "../PageMonitoringCommonService";
+import {groupByKey_, PageMonitoringStyles, removeDuplicates} from "../PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
 import {notification, Select} from 'antd'
@@ -481,9 +481,11 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                  dragging={true}
                                  boundsOptions={{padding: [50, 50]}}
                                  maxZoom={15}
+                                 zoomControl={false}
                                  onResize={() => {
 
                                  }}
+
                                  ref={(ref) => {
                                      this.map = ref;
                                  }}
@@ -495,20 +497,59 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     style={{zIndex: 1}}
                                 />
                                 {/*@todo:#####################################..*/}
-                                {/*@todo: reset, globe button...*/}
+                                {/*@todo: zoom, reset button...*/}
                                 {/*@todo:#####################################..*/}
-                                <Control position="topright" style={{marginTop: 3, display: 'flex',}}>
-                                    <div style={{
-                                        display: 'flex',
-                                        //backgroundColor: 'rgba(128,128,128,.3)', borderRadius: 15,
-                                    }}>
-                                        <div style={{backgroundColor: 'transparent', height: 35}}>
+                                <Control position="topleft" style={{marginTop: 3, display: 'flex',}}>
+                                    <div style={PageMonitoringStyles.mapControlDiv}>
+                                        <div
+                                            style={{backgroundColor: 'transparent', height: 30}}
+                                            onClick={() => {
+                                                this.setState({
+                                                    zoom: this.state.zoom + 1,
+                                                })
+                                            }}
+                                        >
+                                            <Icon
+                                                name='add'
+
+                                                style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
+                                            />
+                                        </div>
+                                        <div style={{width: 2}}/>
+                                        <div
+                                            style={{backgroundColor: 'transparent', height: 30, width: 30, display: 'flex', justifyContent: 'center', alignSelf: 'center'}}
+                                            onClick={() => {
+                                                this.setState({
+                                                    zoom: this.state.zoom - 1,
+                                                })
+                                            }}
+                                        >
+                                            <Icon
+                                                name='minus'
+
+                                                style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
+                                            />
+                                        </div>
+                                        <div
+                                            style={{backgroundColor: 'transparent', height: 30, width: 30, display: 'flex', justifyContent: 'center', alignSelf: 'center'}}
+                                        >
                                             <Icon
                                                 name='redo'
                                                 onClick={this.handleRefresh}
                                                 style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
                                             />
                                         </div>
+                                    </div>
+                                </Control>
+                                {/*@todo:#####################################..*/}
+                                {/*@todo:  globe button...*/}
+                                {/*@todo:#####################################..*/}
+                                <Control position="topright" style={{marginTop: 3, display: 'flex',}}>
+                                    <div style={{
+                                        display: 'flex',
+                                        //backgroundColor: 'rgba(128,128,128,.3)', borderRadius: 15,
+                                    }}>
+
                                         <div style={{width: 2}}/>
                                         <div style={{backgroundColor: 'transparent', height: 35, width: 30, display: 'flex', justifyContent: 'center', alignSelf: 'center'}}>
                                             <FontAwesomeIcon

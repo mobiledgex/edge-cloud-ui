@@ -12,6 +12,15 @@ export const Center = styled.div`
   font-family: Ubuntu;
 `;
 
+export const Right = styled.div`
+  justify-content: flex-end;
+  text-align: center;
+  display : flex;
+  align-items: flex-end;
+  align-self: center;
+  font-family: Ubuntu;
+`;
+
 
 export const OuterHeader = styled.div`
     margin-left: 20px;

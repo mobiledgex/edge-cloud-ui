@@ -24,7 +24,7 @@ export const PageMonitoringStyles = {
         alignSelf: 'center',
         justifyContent: 'center',
     },
-    gridItemHeader:{
+    gridItemHeader: {
         position: 'absolute',
         right: 25, top: 10,
         display: 'inline-block',
@@ -148,6 +148,18 @@ export const PageMonitoringStyles = {
         justifyContent: 'center',
         alignSelf: 'center',
         alignItems: 'center',
+    },
+    mapControlDiv: {
+        display: 'flex',
+        backgroundColor: 'rgba(128,128,128,.3)',
+        borderRadius: 3,
+        width: 'auto',
+        height: 'auto',
+        paddingLeft: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+        //marginLeft: -10,
     },
     cell000: {
         marginLeft: 0,

@@ -4,6 +4,7 @@ import {useEffect, useState} from 'react';
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import {FixedSizeList} from "react-window";
 
+const FontAwesomeIcon = require('react-fontawesome')
 type Props = {
     eventLogList: any,
     columnList: any,
@@ -128,7 +129,18 @@ export default function AppInstEventLogListHook_VirtualScroll(props) {
                                             {props.eventLogList[index][8]}
                                         </div>
                                         <div>
-                                            [{props.eventLogList[index][9]}]
+                                            {/*[]*/}
+
+                                            {props.eventLogList[index][9].toLowerCase() === 'up' ?
+                                                <FontAwesomeIcon
+                                                    name="arrow-up" style={{fontSize: 15, color: 'green', cursor: 'pointer', marginTop: 2}}
+                                                />
+                                                :
+                                                <FontAwesomeIcon
+                                                    name="arrow-down" style={{fontSize: 15, color: 'red', cursor: 'pointer', marginTop: 2}}
+                                                />
+                                            }
+
                                         </div>
                                     </td>
                                 </React.Fragment>
