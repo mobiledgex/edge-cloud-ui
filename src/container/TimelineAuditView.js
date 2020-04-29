@@ -120,7 +120,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             _self = this;
             this.sameTime = '0';
             this.addCount = 0;
-
+            this.interval = null
             this.mapzoneStyle = [
                 {display:'block', marginTop:20, width:'100%', height: '100%', overflowY: 'scroll'},
                 {display:'block', marginTop:20, width:'100%', height: 'fit-content',}
@@ -151,7 +151,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 })
             }
 
-            setInterval(() => this.realtimeChange()), (1000*60)
+            this.interval = setInterval(() => this.realtimeChange(), (1000*60))
 
             this.setState({
                 mounted: true,
@@ -280,6 +280,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         };
 
         componentWillUnmount() {
+            if(this.interval) clearInterval(this.interval)
             this.setState({ mounted: false })
 
         }
