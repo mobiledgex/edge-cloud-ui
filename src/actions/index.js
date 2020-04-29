@@ -14,10 +14,10 @@ export function changeSite(state) {
     };
 }
 
-export function viewMode(state) {
+export function viewMode(mode) {
     return {
         type: types.VIEW_MODE,
-        mode: state
+        mode: mode
     };
 }
 

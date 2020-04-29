@@ -19,6 +19,10 @@ export const organizationTutor = () => {
                     intro: '<span>Organization page is used to create new organizations and to manage and view organizations that you are part of.</span>',
                 },
                 {
+                    element: '.buttonCreate',
+                    intro: '<span>Click “+” button to create new organization.</span>',
+                },
+                {
                     element: '.buttonActions',
                     intro: 'If you are a manager of an organization, you have privilege to Add Users to this organization.',
                 },
@@ -29,6 +33,14 @@ export const organizationTutor = () => {
 
             ],
             stepsOrgDataDeveloper: [
+                {
+                    element: '.none',
+                    intro: '<span>Organization page is used to create new organizations and to manage and view organizations that you are part of.</span>',
+                },
+                {
+                    element: '.buttonCreate',
+                    intro: '<span>Click “+” button to create new organization.</span>',
+                },
                 {
                     element: '.buttonManage',
                     intro: 'Click manage to select organization that you would like to manage or view.',
@@ -93,7 +105,7 @@ export const organizationTutor = () => {
             ],
             stepsNewOrg3: [
                 {
-                    element: '.newOrg3-1',
+                    element: '.MuiTable-root',
                     intro: 'Please read this page carefully, as it provides instruction to upload your backend image to MobiledgeX registry.',
                 },
                 // {
@@ -265,6 +277,10 @@ export const organizationTutor = () => {
                 {
                     element: '.progressIndicator',
                     intro: 'Click to View Detail Progress'
+                },
+                {
+                    element: '.buttonActions',
+                    intro: 'Click this button to perform "Delete" or "Terminal".'
                 }
             ],
             stepsCreateAppInst: [

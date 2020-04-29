@@ -8,6 +8,10 @@ import * as actions from '../../../../actions';
 
 import PrivacyPolicyReg from './privacyPolicyReg'
 import { keys, fields, showPrivacyPolicies, deletePrivacyPolicy } from '../../../../services/model/privacyPolicy';
+import {PolicyTutor} from "../../../../tutorial";
+
+
+const policySteps = PolicyTutor();
 
 class PrivacyPolicy extends React.Component {
     constructor(props) {
@@ -24,7 +28,7 @@ class PrivacyPolicy extends React.Component {
 
     onAdd = () => {
         this.setState({ currentView: <PrivacyPolicyReg onClose={this.onRegClose} /> });
-        this.props.handleViewMode( true )
+        this.props.handleViewMode( policySteps.stepsNewPolicyPrivacy )
     }
 
     onUpdate = (action, data) => {
@@ -46,7 +50,8 @@ class PrivacyPolicy extends React.Component {
             nameField: fields.privacyPolicyName,
             sortBy: [fields.region, fields.privacyPolicyName],
             keys: keys,
-            onAdd: this.onAdd
+            onAdd: this.onAdd,
+            viewMode : policySteps.stepsPolicy
         })
     }
 

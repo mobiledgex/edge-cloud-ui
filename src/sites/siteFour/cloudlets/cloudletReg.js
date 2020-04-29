@@ -320,9 +320,6 @@ class ClusterInstReg extends React.Component {
         this.getFormData(this.props.data)
     }
 
-    componentWillUnmount() {
-        this.props.handleViewMode( false )
-    }
 
 };
 
@@ -346,7 +343,6 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
-        handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
     };
 };
 

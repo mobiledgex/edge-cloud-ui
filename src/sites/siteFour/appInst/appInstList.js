@@ -15,6 +15,10 @@ import * as shared from '../../../services/model/shared';
 import TerminalViewer from '../../../container/TerminalViewer';
 import { Dialog } from '@material-ui/core';
 import { Icon } from 'semantic-ui-react';
+import {organizationTutor} from "../../../tutorial";
+
+
+const orgaSteps = organizationTutor();
 
 class AppInstList extends React.Component {
     constructor(props) {
@@ -36,7 +40,7 @@ class AppInstList extends React.Component {
 
     onAdd = () => {
         this.setState({ currentView: <AppInstReg onClose={this.onRegClose} /> });
-        this.props.handleViewMode( true )
+        this.props.handleViewMode( orgaSteps.stepsCreateAppInst )
     }
 
     onTerminalVisible = (data) => {
@@ -99,7 +103,8 @@ class AppInstList extends React.Component {
             selection: true,
             sortBy: [fields.region, fields.appName],
             keys: this.keys,
-            onAdd: this.onAdd
+            onAdd: this.onAdd,
+            viewMode : orgaSteps.stepsAppInst
         })
     }
 

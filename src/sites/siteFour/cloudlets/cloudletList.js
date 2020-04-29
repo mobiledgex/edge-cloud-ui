@@ -12,6 +12,9 @@ import * as constant from '../../../constant'
 import * as shared from '../../../services/model/shared';
 import { Button } from 'semantic-ui-react';
 import * as actions from "../../../actions";
+import {CloudletTutor} from "../../../tutorial";
+
+const cloudletSteps = CloudletTutor();
 
 class CloudletList extends React.Component {
     constructor(props) {
@@ -31,7 +34,7 @@ class CloudletList extends React.Component {
 
     onAdd = (action, data) => {
         this.setState({ currentView: <ClouldletReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose}/> });
-        this.props.handleViewMode( true )
+        this.props.handleViewMode( cloudletSteps.stepsCloudletReg )
     }
 
     actionMenu = () => {
@@ -64,7 +67,8 @@ class CloudletList extends React.Component {
             isMap: true,
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
-            onAdd: this.canAdd() ? this.onAdd : undefined
+            onAdd: this.canAdd() ? this.onAdd : undefined,
+            viewMode : cloudletSteps.stepsCloudlet
         })
     }
 

@@ -1,7 +1,7 @@
 import * as types from '../actions/ActionTypes';
 
 const initialState = {
-    mode: false
+    mode: null
 };
 export default function ViewMode( state = initialState, action) {
     switch( action.type ) {

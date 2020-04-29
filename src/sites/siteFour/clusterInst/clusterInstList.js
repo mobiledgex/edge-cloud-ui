@@ -14,6 +14,9 @@ import { showCloudletInfos } from '../../../services/model/cloudletInfo';
 import MexListView from '../../../container/MexListView';
 //reg
 import ClusterInstReg from './clusterInstReg';
+import {organizationTutor} from "../../../tutorial";
+
+const orgaSteps = organizationTutor();
 
 class ClusterInstView extends React.Component {
     constructor(props) {
@@ -32,7 +35,7 @@ class ClusterInstView extends React.Component {
 
     onAdd = (action, data) => {
         this.setState({ currentView: <ClusterInstReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> })
-        this.props.handleViewMode( true )
+        this.props.handleViewMode( orgaSteps.stepsClusterInstReg )
     }
 
     getDeleteActionMessage = (action, data) => {
@@ -59,7 +62,8 @@ class ClusterInstView extends React.Component {
             isMap: true,
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
-            onAdd: this.onAdd
+            onAdd: this.onAdd,
+            viewMode : orgaSteps.stepsClusterInst
         })
     }
 

@@ -13,7 +13,10 @@ import { fields, getOrganization } from '../../../../services/model/format';
 import { getOrganizationList } from '../../../../services/model/organization';
 import { getOrgCloudletList } from '../../../../services/model/cloudlet';
 import { createAutoProvPolicy, addAutoProvCloudletKey, deleteAutoProvCloudletKey } from '../../../../services/model/autoProvisioningPolicy';
+import {PolicyTutor} from "../../../../tutorial";
 
+
+const policySteps = PolicyTutor();
 
 const stepData = [
     {
@@ -105,7 +108,7 @@ class AutoProvPolicyReg extends React.Component {
                 step: 1,
                 forms: forms
             })
-            this.props.handleChangeStep('02');
+            this.props.handleViewMode( policySteps.stepsNewPolicy2 );
         }
         else
         {
@@ -279,10 +282,7 @@ class AutoProvPolicyReg extends React.Component {
         this.getFormData(this.props.data)
     }
 
-    componentWillUnmount() {
-        this.props.handleViewMode( false );
-        this.props.handleChangeStep( null )
-    }
+
 };
 const mapStateToProps = (state) => {
 
@@ -306,7 +306,6 @@ const mapDispatchProps = (dispatch) => {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
         handleViewMode: (data) => { dispatch(actions.viewMode(data)) },
-        handleChangeStep: (data) => { dispatch(actions.changeStep(data)) },
     };
 };
 

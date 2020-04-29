@@ -13,6 +13,9 @@ import { fields } from '../../../services/model/format';
 import { keys, createOrganization } from '../../../services/model/organization';
 import { addUser } from '../../../services/model/users';
 import { } from '../../../services/model/cloudlet';
+import {organizationTutor} from "../../../tutorial";
+
+const orgaSteps = organizationTutor();
 
 const stepData = [
     {
@@ -125,7 +128,7 @@ class OrganizationReg extends React.Component {
         }
         else {
             this.setState({ step: 2 });
-            this.props.handleChangeStep( '03' );
+            this.props.handleViewMode( orgaSteps.stepsNewOrg3 );
         }
     }
 
@@ -160,7 +163,7 @@ class OrganizationReg extends React.Component {
             step: 1,
             forms: forms
         })
-        this.props.handleChangeStep( '02' );
+        this.props.handleViewMode( orgaSteps.stepsNewOrg2 );
     }
 
 
@@ -330,7 +333,7 @@ class OrganizationReg extends React.Component {
             this.organizationInfo = data
             this.addUserForm(data)
             this.setState({ step: 1 })
-            this.props.handleChangeStep('02' );
+            this.props.handleViewMode( orgaSteps.stepsNewOrg2 );
         }
         else {
 
@@ -360,11 +363,6 @@ class OrganizationReg extends React.Component {
         this.getFormData(this.props.data)
     }
 
-
-    componentWillUnmount() {
-        this.props.handleViewMode( false );
-        this.props.handleChangeStep( null )
-    }
 };
 
 const mapStateToProps = (state) => {
@@ -377,7 +375,6 @@ const mapDispatchProps = (dispatch) => {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
         handleViewMode: (data) => { dispatch(actions.viewMode(data)) },
-        handleChangeStep: (data) => { dispatch(actions.changeStep(data)) },
     };
 };
 

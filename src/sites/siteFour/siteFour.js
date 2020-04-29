@@ -28,11 +28,8 @@ import changeStep from "../../reducers/changeStep";
 let defaultMotion = {left: window.innerWidth / 2, top: window.innerHeight / 2, opacity: 1}
 let _self = null
 const orgaSteps = organizationTutor();
-const cloudletSteps = CloudletTutor();
-const cloudletPoolSteps = CloudletPoolTutor();
-const policySteps = PolicyTutor();
+
 const monitoringSteps = MonitoringTutor();
-const auditSteps = AuditTutor();
 
 
 class SiteFour extends React.Component {
@@ -154,96 +151,10 @@ class SiteFour extends React.Component {
 
     enableSteps = () => {
         let enable = false;
-        let currentStep = null;
-        if (_self.props.params.mainPath === "/site4" && _self.props.params.subPath === "pg=0"  && _self.props.ViewMode === true ) {
-            if (_self.props.changeStep === '02') {
-                currentStep = orgaSteps.stepsNewOrg2;
-            } else if (_self.props.changeStep === '03') {
-                currentStep = orgaSteps.stepsNewOrg3;
-            } else {
-                currentStep = orgaSteps.stepsNewOrg;
-            }
-            enable = true;
-        } else if (_self.props.params.subPath === "pg=0") {
-            if (_self.props.dataExist) {
-                if (localStorage.selectRole === 'AdminManager') {
-                    currentStep = orgaSteps.stepsOrgDataAdmin;
-                } else {
-                    currentStep = orgaSteps.stepsOrgDataDeveloper;
-                }
-            } else {
-                currentStep = orgaSteps.stepsOrg;
-            }
+        let currentStep = this.props.ViewMode ? this.props.ViewMode : null;
 
-            enable = true;
-        } else if (_self.props.params.subPath === "pg=2" && _self.props.ViewMode === true) {
-            currentStep = cloudletSteps.stepsCloudletReg;
-            enable = true;
-        } else if (_self.props.params.subPath === "pg=2") {
-            //Cloudlets
-            if (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer') {
-                currentStep = cloudletSteps.stepsCloudletDev;
-            } else {
-                currentStep = cloudletSteps.stepsCloudlet;
-            }
-            enable = true;
-        } else if (_self.props.params.subPath === "pg=3" && _self.props.ViewMode === true) {
-            currentStep = orgaSteps.stepsCreateFlavor;
-            enable = true;
-        } else if (_self.props.params.subPath === "pg=3") {
-            //Flavors
-            currentStep = orgaSteps.stepsFlavors;
-            enable = true;
-        } else if (_self.props.params.subPath === "pg=4" && _self.props.ViewMode === true) {
-            currentStep = orgaSteps.stepsClusterInstReg;
-            enable = true;
-        } else if (_self.props.params.subPath === "pg=4") {
-            //Cluster Instances
-            currentStep = orgaSteps.stepsClusterInst;
-            enable = true;
-        } else if (_self.props.params.subPath === "pg=5" && _self.props.ViewMode === true) {
-            currentStep = orgaSteps.stepsCreateApp;
-            enable = true;
-        } else if (_self.props.params.subPath === "pg=5") {
-            //Apps
-            currentStep = orgaSteps.stepsApp;
-            enable = true;
-        } else if (_self.props.params.subPath === "pg=6" && _self.props.ViewMode === true) {
-            currentStep = orgaSteps.stepsCreateAppInst;
-            enable = true;
-        } else if (_self.props.params.subPath === "pg=6") {
-            //App Instances
-            currentStep = orgaSteps.stepsAppInst;
-            enable = true;
-        } else if (this.props.params.subPath === "pg=7" && _self.props.ViewMode === true) {
-            if (_self.props.changeStep === '02') {
-                currentStep = cloudletPoolSteps.stepsNewPool2;
-            } else if (_self.props.changeStep === '03') {
-                currentStep = cloudletPoolSteps.stepsNewPool3;
-            } else {
-                currentStep = cloudletPoolSteps.stepsNewPool;
-            }
-            enable = true;
-        } else if (this.props.params.subPath === "pg=7") {
-            currentStep = cloudletPoolSteps.stepsCloudletPool;
-            enable = true;
-        } else if (this.props.params.subPath === "pg=8" && _self.props.ViewMode === true) {
-            if (_self.props.changeStep === '02') {
-                currentStep = policySteps.stepsNewPolicy2;
-            } else {
-                currentStep = policySteps.stepsNewPolicy;
-            }
-            enable = true;
-        } else if (this.props.params.subPath === "pg=8") {
-            currentStep = policySteps.stepsPolicy;
-            enable = true;
-        } else if (this.props.params.subPath === "pg=9" && _self.props.ViewMode === true) {
-            currentStep = policySteps.stepsNewPolicyPrivacy;
-            enable = true;
-        } else if (this.props.params.subPath === "pg=9") {
-            currentStep = policySteps.stepsPolicy;
-            enable = true;
-        } else if (this.props.params.subPath === "pg=Monitoring") {
+        if( currentStep ){ enable = true; }
+        if (this.props.params.subPath === "pg=Monitoring") {
             if (localStorage.selectRole === 'AdminManager') {
                 currentStep = monitoringSteps.stepsMonitoring;
             } else if (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer') {
@@ -251,12 +162,7 @@ class SiteFour extends React.Component {
             } else {
                 currentStep = monitoringSteps.stepsMonitoringOper;
             }
-            enable = true;
-        } else if (this.props.params.subPath === "pg=audits") {
-            currentStep = auditSteps.stepsAudit;
-            enable = true;
         }
-
         _self.setState({steps: currentStep})
 
         let elmentName = (_self.steps) ? currentStep : null;
@@ -288,7 +194,8 @@ class SiteFour extends React.Component {
             }
         }, 4000)
 
-        _self.setState({steps: orgaSteps.stepsZero, intoCity: false});
+        _self.setState({intoCity: false});
+        _self.props.handleViewMode( null );
         //
         if (_self.props.params.subPath !== 'pg=audits') {
             _self.getDataAudit();
@@ -557,7 +464,7 @@ const mapStateToProps = (state) => {
     let selectedOrg = (state.selectOrganiz) ? state.selectOrganiz.org : null;
     let ViewMode = (state.ViewMode) ? state.ViewMode.mode : null;
     let changeStep = (state.changeStep) ? state.changeStep.step : null;
-    console.log('2020 step', changeStep);
+    console.log('2020 mode', ViewMode)
 
     return {
         isShowHeader: state.HeaderReducer.isShowHeader,
@@ -579,7 +486,7 @@ const mapStateToProps = (state) => {
         siteName: (state.siteChanger) ? state.siteChanger.site : null,
         changeStep: changeStep,
         ViewMode: ViewMode,
-        dataExist: state.dataExist.data,
+        // dataExist: state.dataExist.data,
         tutorState: tutorState,
         formInfo: formInfo,
         submitInfo: submitInfo,
@@ -648,6 +555,9 @@ const mapDispatchProps = (dispatch) => {
         },
         handleResetMap: (data) => {
             dispatch(actions.resetMap(data))
+        },
+        handleViewMode: (data) => {
+            dispatch(actions.viewMode(data))
         }
     };
 };

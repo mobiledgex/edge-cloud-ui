@@ -11,6 +11,10 @@ import * as serverData from '../../../services/model/serverData'
 import * as constant from '../../../services/model/shared';
 
 import { Button } from '@material-ui/core';
+import {organizationTutor} from "../../../tutorial";
+
+const orgaSteps = organizationTutor();
+
 
 class OrganizationList extends React.Component {
     constructor(props) {
@@ -31,7 +35,7 @@ class OrganizationList extends React.Component {
 
     onAdd = (action, data) => {
         this.setState({ currentView: <OrganizationReg data={data} action={action ? 'AddUser' : null} onClose={this.onRegClose} /> });
-        this.props.handleViewMode( true )
+        this.props.handleViewMode( orgaSteps.stepsNewOrg )
     }
 
     /**Action menu block */
@@ -111,6 +115,8 @@ class OrganizationList extends React.Component {
     }
 
     requestInfo = () => {
+        let mode = (localStorage.selectRole === 'AdminManager')? orgaSteps.stepsOrgDataAdmin : orgaSteps.stepsOrgDataDeveloper ;
+
         return ({
             id: 'Organizations',
             headerLabel: 'Organizations',
@@ -119,7 +125,8 @@ class OrganizationList extends React.Component {
             sortBy: [fields.organizationName],
             keys: this.keys,
             onAdd: this.onAdd,
-            additionalDetail: constant.additionalDetail
+            additionalDetail: constant.additionalDetail,
+            viewMode: mode
         })
     }
 
@@ -179,7 +186,7 @@ class OrganizationList extends React.Component {
 const mapStateToProps = (state) => {
     return {
         roleInfo: state.roleInfo ? state.roleInfo.role : null,
-        userRole: state.showUserRole ? state.showUserRole.role : null
+        userRole: state.showUserRole ? state.showUserRole.role : null,
     }
 };
 

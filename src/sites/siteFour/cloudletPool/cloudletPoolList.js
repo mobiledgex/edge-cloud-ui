@@ -10,6 +10,9 @@ import { showCloudletPoolMembers } from '../../../services/model/cloudletPoolMem
 import { showCloudletLinkOrg } from '../../../services/model/cloudletLinkOrg';
 import CloudletPoolReg from './cloudletPoolReg';
 import * as actions from "../../../actions";
+import {CloudletPoolTutor} from "../../../tutorial";
+
+const cloudletPoolSteps = CloudletPoolTutor();
 
 class ClouldetPoolList extends React.Component {
     constructor(props) {
@@ -22,7 +25,7 @@ class ClouldetPoolList extends React.Component {
 
     onAdd = () => {
         this.setState({ currentView: <CloudletPoolReg onClose={() => this.setState({ currentView: null })} /> });
-        this.props.handleViewMode(true );
+        this.props.handleViewMode( cloudletPoolSteps.stepsNewPool );
     }
 
     /**Action menu block */
@@ -52,7 +55,8 @@ class ClouldetPoolList extends React.Component {
             isRegion: true,
             sortBy: [fields.poolName],
             keys: this.keys,
-            onAdd: this.onAdd
+            onAdd: this.onAdd,
+            viewMode : cloudletPoolSteps.stepsCloudletPool
         })
     }
 

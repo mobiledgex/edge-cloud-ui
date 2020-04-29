@@ -16,7 +16,10 @@ import { createCloudletPoolMember, deleteCloudletPoolMember } from '../../../ser
 import { createLinkPoolOrg, deleteLinkPoolOrg } from '../../../services/model/cloudletLinkOrg';
 
 import * as constant from '../../../constant';
+import {CloudletPoolTutor} from "../../../tutorial";
 
+
+const cloudletPoolSteps = CloudletPoolTutor();
 
 const stepData = [
     {
@@ -127,7 +130,7 @@ class CloudletPoolReg extends React.Component {
                 step: 2,
                 forms: step
             })
-            this.props.handleChangeStep( '03' )
+            this.props.handleViewMode( cloudletPoolSteps.stepsNewPool3 )
         }
         else {
             this.props.handleAlertInfo('error', 'No organizations to unlink')
@@ -225,7 +228,7 @@ class CloudletPoolReg extends React.Component {
                 step: 1,
                 forms: step2
             })
-            this.props.handleChangeStep( '02' )
+            this.props.handleViewMode( cloudletPoolSteps.stepsNewPool2 )
         } else {
             this.props.handleAlertInfo('error', 'No Cloudlets present')
             if (this.props.action) {
@@ -357,11 +360,6 @@ class CloudletPoolReg extends React.Component {
         this.getFormData(this.props.data)
     }
 
-    componentWillUnmount() {
-        this.props.handleViewMode( false );
-        this.props.handleChangeStep( null )
-    }
-
 };
 
 const mapStateToProps = (state) => {
@@ -388,7 +386,6 @@ const mapDispatchProps = (dispatch) => {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
         handleViewMode: (data) => { dispatch(actions.viewMode(data)) },
-        handleChangeStep: (data) => { dispatch(actions.changeStep(data)) },
     };
 };
 

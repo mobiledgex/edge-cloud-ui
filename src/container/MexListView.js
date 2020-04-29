@@ -17,8 +17,9 @@ import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiSt
 import { getUserRole } from '../services/model/format';
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import Map from '../libs/simpleMaps/with-react-motion/index_clusters';
+import {organizationTutor} from "../tutorial";
 
-
+const orgaSteps = organizationTutor();
 
 class MexListView extends React.Component {
     constructor(props) {
@@ -521,6 +522,8 @@ class MexListView extends React.Component {
                 serverData.showMultiDataFromServer(this, requestInfo.requestType, this.onServerResponse)
             }
         }
+        this.props.handleViewMode( requestInfo.viewMode )
+
     }
 
 
@@ -548,7 +551,8 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-        handleDataExist: (data) => { dispatch(actions.dataExist(data)) }
+        handleDataExist: (data) => { dispatch(actions.dataExist(data)) },
+        handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
     };
 };
 
