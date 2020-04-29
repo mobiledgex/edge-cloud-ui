@@ -141,10 +141,10 @@ export const updateClusterInst = (self, data, callback) => {
 
 export const deleteClusterInst = (data) => {
     let requestData = clusterKey(data)
-    if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY) {
+    if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && formatter.isAdmin()) {
         requestData.clusterinst.crm_override = constant.CRM_OVERRIDE_IGNORE_CRM
     }
-    return { uuid: data.uuid, method: DELETE_CLUSTER_INST, data: requestData, success: `Cluster Instance ${data[fields.appName]}` }
+    return { uuid: data.uuid, method: DELETE_CLUSTER_INST, data: requestData, success: `Cluster Instance ${data[fields.appName]} deleted successfully` }
 }
 
 export const streamClusterInst = (data) => {

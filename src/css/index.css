@@ -1532,7 +1532,10 @@ body, button, input, textarea, optgroup, select, textarea,
     border-top: 1px solid rgba(255,255,255,.1) !important;
     text-align: center !important;
 }
-
+/*Alert word-break*/
+.s-alert-wrapper > .s-alert-box {
+    word-break: keep-all;
+}
 
 /*Alert progress */
 .s-alert-wrapper>.s-alert-box.s-alert-info{

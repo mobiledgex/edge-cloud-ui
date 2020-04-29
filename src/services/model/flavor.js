@@ -49,7 +49,7 @@ export const createFlavor = async (self, data) => {
 
 export const deleteFlavor = (data) => {
     let requestData = getKey(data);
-    return { method: DELETE_FLAVOR, data: requestData, success: `Flavor ${data[fields.flavorName]}` }
+    return { method: DELETE_FLAVOR, data: requestData, success: `Flavor ${data[fields.flavorName]} deleted successfully` }
 }
 
 const customData = (value) => {

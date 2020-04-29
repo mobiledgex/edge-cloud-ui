@@ -46,6 +46,67 @@ export const CRM_OVERRIDE_IGNORE_CRM = 2
 export const CRM_OVERRIDE_IGNORE_TRANSIENT_STATE = 3
 export const CRM_OVERRIDE_IGNORE_CRM_AND_TRANSIENT_STATE = 4
 
+export const POWER_STATE_POWER_STATE_UNKNOWN = 'Unknown'
+export const POWER_STATE_POWER_ON_REQUESTED = 'Power On Requested'
+export const POWER_STATE_POWERING_ON = 'Powering On'
+export const POWER_STATE_POWER_ON = 'Power On'
+export const POWER_STATE_POWER_OFF_REQUESTED = 'Power Off Requested'
+export const POWER_STATE_POWERING_OFF = 'Powering Off'
+export const POWER_STATE_POWER_OFF = 'Power Off'
+export const POWER_STATE_REBOOT_REQUESTED = 'Reboot Requested'
+export const POWER_STATE_REBOOTING = 'Rebooting'
+export const POWER_STATE_REBOOT = 'Reboot'
+export const POWER_STATE_ERROR = 'Error'
+
+export const PowerState = (id) => {
+    switch (id) {
+        case 0:
+            return POWER_STATE_POWER_STATE_UNKNOWN
+        case 1:
+            return POWER_STATE_POWER_ON_REQUESTED
+        case 2:
+            return POWER_STATE_POWERING_ON
+        case 3:
+            return POWER_STATE_POWER_ON
+        case 4:
+            return POWER_STATE_POWER_OFF_REQUESTED
+        case 5:
+            return POWER_STATE_POWERING_OFF
+        case 6:
+            return POWER_STATE_POWER_OFF
+        case 7:
+            return POWER_STATE_REBOOT_REQUESTED
+        case 8:
+            return POWER_STATE_REBOOTING
+        case 9:
+            return POWER_STATE_REBOOT
+        case 10:
+            return POWER_STATE_ERROR
+        case POWER_STATE_POWER_STATE_UNKNOWN:
+            return 0
+        case POWER_STATE_POWER_ON_REQUESTED:
+            return 1
+        case POWER_STATE_POWERING_ON:
+            return 2
+        case POWER_STATE_POWER_ON:
+            return 3
+        case POWER_STATE_POWER_OFF_REQUESTED:
+            return 4
+        case POWER_STATE_POWERING_OFF:
+            return 5
+        case POWER_STATE_POWER_OFF:
+            return 6
+        case POWER_STATE_REBOOT_REQUESTED:
+            return 7
+        case POWER_STATE_REBOOTING:
+            return 8
+        case POWER_STATE_REBOOT:
+            return 9
+        case POWER_STATE_ERROR:
+            return 10
+    }
+}
+
 export const CLOUDLET_STATUS_READY = 2
 export const CLOUDLET_STATUS_UNKNOWN = 0
 
