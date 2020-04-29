@@ -21,9 +21,13 @@ class OrganizationList extends React.Component {
     }
 
     /**Action menu block */
+    getDeleteActionMessage = (action, data) => {
+            return `Are you sure you want to remove ${data[fields.username]} from Organization ${data[fields.organizationName]}?`
+    }
+
     actionMenu = () => {
         return [
-            { label: 'Delete', onClick: deleteUser }
+            { label: 'Delete', onClick: deleteUser, dialogMessage: this.getDeleteActionMessage }
         ]
     }
     /*Action menu block*/

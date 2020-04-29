@@ -71,7 +71,7 @@ export const getAutoProvPolicyList = async (self, data) => {
 
 export const deleteAutoProvPolicy = (data) => {
   let requestData = getAutoProvKey(data)
-  return { method: DELETE_AUTO_PROV_POLICY, data: requestData, success: `Auto Provisioning Policy ${data[fields.autoPolicyName]}` }
+  return { method: DELETE_AUTO_PROV_POLICY, data: requestData, success: `Auto Provisioning Policy ${data[fields.autoPolicyName]} deleted successfully` }
 }
 
 export const createAutoProvPolicy = (data) => {
