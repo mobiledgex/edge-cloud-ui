@@ -561,11 +561,10 @@ export const renderPlaceHolderCircular = (type: string = '') => {
 }
 
 
-export const renderWifiLoader = (width = 25, height = 25) => {
+export const renderWifiLoader = (width = 25, height = 25, margin = 3) => {
     return (
         <div
-            style={{marginBottom: 3,}}>
-
+            style={{marginBottom: margin,}}>
             <Lottie
                 options={{
                     loop: true,
@@ -584,6 +583,30 @@ export const renderWifiLoader = (width = 25, height = 25) => {
         </div>
     )
 }
+
+/*export const renderWifiLoader2 = (width = 25, height = 25) => {
+    return (
+        <div
+            style={{marginBottom: 3,}}>
+
+            <Lottie
+                options={{
+                    loop: true,
+                    autoplay: true,
+                    animationData: require('../../../lotties/6698-location-pin22222'),
+                    rendererSettings: {
+                        preserveAspectRatio: 'xMidYMid slice'
+                    }
+                }}
+                speed={2.9}
+                height={50}
+                width={50}
+                isStopped={false}
+                isPaused={false}
+            />
+        </div>
+    )
+}*/
 
 
 export const removeDuplicates = (paramArrayList, key) => {
@@ -624,6 +647,7 @@ export const renderPlaceHolderLottiePinJump2 = (type: string = '') => {
         </div>
     )
 }
+
 
 export const renderPlaceHolderLottiePinJump3 = (type: string = '') => {
     return (

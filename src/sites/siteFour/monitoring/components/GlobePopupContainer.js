@@ -4,8 +4,8 @@ import {Button, Modal as AModal} from "antd";
 import '../PageMonitoring.css'
 import ReactGlobe from "react-globe";
 import type {TypeAppInstance, TypeCloudletMarker} from "../../../../shared/Types";
-import {showToast} from "../PageMonitoringCommonService";
-import {Right} from "../PageMonitoringStyledComponent";
+import {renderWifiLoader, showToast} from "../PageMonitoringCommonService";
+import {Left, Right} from "../PageMonitoringStyledComponent";
 import {GLOBE_THEME} from "../../../../shared/Constants";
 import {requestShowAppInstClientWS} from "../PageMonitoringMetricService";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
@@ -391,11 +391,14 @@ export default function GlobePopupContainer(props) {
                 footer={null}
             >
                 <div style={{width: '100%'}}>
-                    <div style={{display: 'flex', width: '100%',}}>
+                    <div style={{display: 'flex', width: '100%', height: 50, backgroundColor: 'transparent'}}>
                         {renderPrevBtn2()}
-                        <div className='page_monitoring_popup_title'>
+                        <Left className={'page_monitoring_popup_title'} style={{flex: .2}}>
                             Deployed Instance On Globe
-                        </div>
+                        </Left>
+                        <Left style={{backgroundColor: 'transparent', flex: .8, height: 50,}}>
+                            {props.parent.state.loading && renderWifiLoader(50, 50, 7)}
+                        </Left>
                     </div>
                     <div style={{
                         flex: 1,

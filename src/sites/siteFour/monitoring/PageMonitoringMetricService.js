@@ -53,6 +53,9 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
                 }
             }
         }
+
+
+
         webSocket.onopen = () => {
             try {
                 _this.props.toggleLoading(false)

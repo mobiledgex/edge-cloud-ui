@@ -12,11 +12,28 @@ export const Center = styled.div`
   font-family: Ubuntu;
 `;
 
+export const Center7 = styled.div`
+  justify-content: center;
+  text-align: center;
+  display : flex;
+  align-items: center;
+  align-self: center;
+`;
+
 export const Right = styled.div`
   justify-content: flex-end;
   text-align: center;
   display : flex;
   align-items: flex-end;
+  align-self: center;
+  font-family: Ubuntu;
+`;
+
+export const Left = styled.div`
+  justify-content: flex-start;
+  text-align: center;
+  display : flex;
+  align-items: flex-start;
   align-self: center;
   font-family: Ubuntu;
 `;
