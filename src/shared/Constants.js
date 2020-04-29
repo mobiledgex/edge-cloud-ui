@@ -29,8 +29,12 @@ export const DARK_CLOUTLET_ICON_COLOR = 'green'
 export const WHITE_LINE_COLOR = 'black'
 export const WHITE_CLOUTLET_ICON_COLOR = 'blue'
 
+export const GLOBE_THEME = {
+    DEFAULT: 'DEFAULT',
+    DARK: "DARK",
+}
 
-export const GRAPH_HEIGHT = 300
+
 export const REGION = {
     ALL: 'ALL',
     US: "US",

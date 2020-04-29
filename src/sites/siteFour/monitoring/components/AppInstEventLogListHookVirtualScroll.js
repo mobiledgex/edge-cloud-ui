@@ -20,20 +20,19 @@ function getWindowDimensions() {
 }
 
 
-export default function AppInstEventLogListHook_VirtualScroll(props) {
+export default function AppInstEventLogListHookVirtualScroll(props) {
     const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
     let itemHeight = 35
-    //let gridWidth = window.innerWidth / 5;
 
     useEffect(() => {
-        function handleResize() {
-            setWindowDimensions(getWindowDimensions());
-        }
-
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
 
     }, [props.eventLogList]);
+
+    function handleResize() {
+        setWindowDimensions(getWindowDimensions());
+    }
 
 
     return (

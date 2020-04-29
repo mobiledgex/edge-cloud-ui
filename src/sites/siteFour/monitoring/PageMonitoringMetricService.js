@@ -11,6 +11,10 @@ import PageDevMonitoring from "./dev/PageDevMonitoring";
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
     try {
+
+        /*console.log(`pCurrentAppInst====>`,pCurrentAppInst);
+        alert(pCurrentAppInst.toLocaleString())*/
+
         //AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version;
         let AppName = pCurrentAppInst.split('|')[0].trim()
         let Cloudlet = pCurrentAppInst.split('|')[1].trim()
@@ -49,31 +53,6 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
                 }
             }
         }
-
-        /* let testForm = {
-             "Region": "EU",
-             "AppInstClientKey": {
-                 "key": {
-                     "app_key": {
-                         "name": "MobiledgeX SDK Demo",
-                         "organization": "MobiledgeX",
-                         "version": "2.0"
-                     },
-                     "cluster_inst_key": {
-                         "cluster_key": {
-                             "name": "autoclustermobiledgexsdkdemo"
-                         },
-                         "organization": "MobiledgeX",
-                         "cloudlet_key": {
-                             "name": "hamburg-stage",
-                             "organization": "TDG"//operator
-                         }
-                     }
-                 }
-             }
-         }*/
-
-
         webSocket.onopen = () => {
             try {
                 _this.props.toggleLoading(false)
@@ -98,6 +77,8 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
                 appInstCount++;
                 let data = JSON.parse(event.data);
 
+                console.log(`data====>`,data)
+
                 let uniqueId = data.data.client_key.unique_id;
                 let unique_id_type = data.data.client_key.unique_id_type;
                 if (data.code === 200) {
@@ -116,6 +97,7 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
                 _this.setState({
                     selectedClientLocationListOnAppInst: _this.state.selectedClientLocationListOnAppInst.concat(clientLocationOne),
                 }, () => {
+                    console.log(`selectedClientLocationListOnAppInst====>` + JSON.stringify(_this.state.selectedClientLocationListOnAppInst));
                 })
 
                 setTimeout(() => {
@@ -151,6 +133,8 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
     }
 
 }
+
+
 
 
 export const getAppInstList = async (pArrayRegion = ['EU', 'US'], type: string = '') => {

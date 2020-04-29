@@ -88,7 +88,7 @@ import {ColorLinearProgress, CustomSwitch, defaultLayoutXYPosForAppInst, default
 import type {PageDevMonitoringProps} from "./PageDevMonitoringProps";
 import {PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageDevMonitoringProps";
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
-import AppInstEventLogListHook_VirtualScroll from "../components/AppInstEventLogListHook_VirtualScroll";
+import AppInstEventLogListHookVirtualScroll from "../components/AppInstEventLogListHookVirtualScroll";
 import {fields} from '../../../../services/model/format'
 import GlobePopupContainer from "../components/GlobePopupContainer";
 
@@ -1055,7 +1055,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                     return this.state.loading ? renderPlaceHolderLoader() :
-                        <AppInstEventLogListHook_VirtualScroll
+                        <AppInstEventLogListHookVirtualScroll
                             currentAppInst={this.state.currentAppInst}
                             parent={this}
                             handleAppInstDropdown={this.handleAppInstDropdown}
@@ -1859,6 +1859,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <AddItemPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}/>
                         <AddItemPopupContainer2 parent={this} isOpenEditView2={this.state.isOpenEditView2}/>
                         <GlobePopupContainer
+                            clientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
                             parent={this}
                             isOpenGlobe={this.state.isOpenGlobe}
                             appInstanceListGroupByCloudlet={this.state.appInstanceListGroupByCloudlet}

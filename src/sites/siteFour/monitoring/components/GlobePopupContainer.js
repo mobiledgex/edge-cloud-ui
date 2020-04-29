@@ -1,22 +1,28 @@
 // @flow
 import React, {useEffect, useState} from 'react';
-import {Button, Modal as AModal, Tabs} from "antd";
+import {Button, Modal as AModal} from "antd";
 import '../PageMonitoring.css'
 import ReactGlobe from "react-globe";
 import type {TypeAppInstance, TypeCloudletMarker} from "../../../../shared/Types";
-import {isEmpty, showToast} from "../PageMonitoringCommonService";
+import {showToast} from "../PageMonitoringCommonService";
 import {Right} from "../PageMonitoringStyledComponent";
+import {GLOBE_THEME} from "../../../../shared/Constants";
+import {requestShowAppInstClientWS} from "../PageMonitoringMetricService";
+import PageDevMonitoring from "../dev/PageDevMonitoring";
+import _ from 'lodash'
 
-const {TabPane} = Tabs;
 const FA = require('react-fontawesome')
 type Props = {
     appInstanceListGroupByCloudlet: any,
+    clientLocationListOnAppInst: any,
+    parent: PageDevMonitoring
+
 };
 
 export default function GlobePopupContainer(props) {
 
     const [cloudletLocationList, setCloudletLocationList] = useState([])
-    const [currentGlobeTheme, setCurrentGlobeTheme] = useState('default')
+    const [currentGlobeTheme, setCurrentGlobeTheme] = useState(GLOBE_THEME.DEFAULT)
     const [markerList, setMarkerList] = useState([])
     const [animationSequence, setAnimationSequence] = useState()
     const [initialCoordinates, setInitialCoordinates] = useState([0, 30])
@@ -25,22 +31,69 @@ export default function GlobePopupContainer(props) {
 
 
     useEffect(() => {
-        let appInstanceListOnCloudlet = props.appInstanceListGroupByCloudlet
-        if (!isEmpty(appInstanceListOnCloudlet)) {
-            makeAppInstLocation(appInstanceListOnCloudlet)
+
+        if (!_.isEmpty(props.appInstanceListGroupByCloudlet)) {
+            makeAppInstLocation(props.appInstanceListGroupByCloudlet)
         } else {
             setMarkerList([]);
             setCloudletLocationList([])
             setCloudletIndex(0)
         }
 
+    }, [props.appInstanceListGroupByCloudlet, props.isOpenGlobe])
 
-    }, [props.appInstanceListGroupByCloudlet, props.isOpenGlobe, initialCoordinates])
+    useEffect(() => {
+        if (!_.isEmpty(props.clientLocationListOnAppInst)) {
+            console.log(`clientLocationListOnAppInst====>`, props.clientLocationListOnAppInst)
+            makeClientLocation(props.clientLocationListOnAppInst)
+        } else {
+            setMarkerList([]);
+        }
+    }, [props.clientLocationListOnAppInst])
+
+    function makeClientLocation(clientLocationList) {
+        setMarkerList([])
+        console.log(`appInstListOnCloudlet333..2222====>`, clientLocationList);
+
+        let tempMarketList = []
+        for (let index in clientLocationList) {
+            tempMarketList.push({
+                id: index,
+                Cloudlet: clientLocationList[index].uuid,
+                AppNames: clientLocationList[index].uuid,
+                color: 'green',
+                coordinates: [clientLocationList[index].latitude, clientLocationList[index].longitude],
+                value: 50,
+            })
+
+        }
+
+        console.log(`markerList====>`, tempMarketList);
+
+        if (tempMarketList.length === 0) {
+            showToast('no client on that appInst')
+        }
+
+        setMarkerList(tempMarketList)
+
+        setAnimationSequence(
+            [
+                {
+                    animationDuration: 1500,
+                    coordinates: tempMarketList[0].coordinates,
+                    distanceRadiusScale: 4,
+                    easingFunction: ['Linear', 'None'],
+                },
+            ]
+        )
+
+    }
+
 
     function makeAppInstLocation(appInstListOnCloudlet) {
         let cloudletKeys = Object.keys(appInstListOnCloudlet)
 
-        let newCloudLetLocationList = []
+        let _cloudletLocationList = []
         let markerList = []
 
         ///////////////////
@@ -78,7 +131,7 @@ export default function GlobePopupContainer(props) {
                 value: 50,
             })
 
-            newCloudLetLocationList.push({
+            _cloudletLocationList.push({
                 AppNames: AppNames,
                 CloudletLocation: CloudletLocation,
                 Cloudlet: Cloudlet,
@@ -92,7 +145,7 @@ export default function GlobePopupContainer(props) {
 
 
         setMarkerList(markerList);
-        setCloudletLocationList(newCloudLetLocationList);
+        setCloudletLocationList(_cloudletLocationList);
 
         setAnimationSequence(
             [
@@ -134,6 +187,11 @@ export default function GlobePopupContainer(props) {
 
     function renderGlobe() {
         return (
+            /*@todo:ReactGlobe*/
+            /*@todo:ReactGlobe*/
+            /*@todo:ReactGlobe*/
+            /*@todo:ReactGlobe*/
+            /*@todo:ReactGlobe*/
             <ReactGlobe
                 globeOptions={{
                     texture: globeTyle,
@@ -169,16 +227,16 @@ export default function GlobePopupContainer(props) {
 
                     },
                     radiusScaleRange: [0.01, 0.05],
-                    /*renderer: marker => {
-                        const {color, id, value} = marker
-                        const scaledSize = value / 3
-                        const geometry = new EdgesGeometry(10, 10, scaledSize)
-                        //: new SphereGeometry(scaledSize, 10, 10)
-                        const material = new MeshLambertMaterial({
-                            color: new Color(color),
-                        })
-                        return new Mesh(geometry, material)
-                    },*/
+                    /* renderer: marker => {
+                         const {color, id, value} = marker
+                         const scaledSize = value / 3
+                         const geometry = new SphereGeometry(10, 10, scaledSize)
+                         //: new SphereGeometry(scaledSize, 10, 10)
+                         const material = new MeshLambertMaterial({
+                             color: new Color(color),
+                         })
+                         return new Mesh(geometry, material)
+                     },*/
                 }}
             />
         )
@@ -192,9 +250,39 @@ export default function GlobePopupContainer(props) {
         }
     }
 
+    const handleClickedCloudlet = (index, item) => {
+        makeAppInstLocation(props.appInstanceListGroupByCloudlet)
+        setCloudletIndex(index);
+        setAnimationSequence(
+            [
+                {
+                    animationDuration: 1000,
+                    coordinates: [item.CloudletLocation.latitude, item.CloudletLocation.longitude],
+                    distanceRadiusScale: 2,
+                    easingFunction: ['Linear', 'None'],
+                    //easingFunction: ['Elastic', 'In'],
+                    //easingFunction: ['Exponential', 'In']
+                },
+            ]
+        )
+    }
+
+    let websocketInstance = null;
+
+    function handleClickedAppInst(AppInstOne) {
+        showToast(AppInstOne.split("|")[0], 5)
+        try {
+            websocketInstance = requestShowAppInstClientWS(AppInstOne.toString(), props.parent)
+        } catch (e) {
+            alert(e)
+        }
+    }
+
     const makeCloudletLocationDivOne = () => (
-        cloudletLocationList.map((item: TypeCloudletMarker, index) => {
-            let AppList = item.AppNames.split(",");
+        cloudletLocationList.map((outerItem: TypeCloudletMarker, index) => {
+            let AppList = outerItem.AppNames.split(",");
+
+
             return (
                 <React.Fragment>
                     <div
@@ -204,34 +292,33 @@ export default function GlobePopupContainer(props) {
                             borderRadius: 10,
                             height: 'auto'
                         }}
-                        onClick={() => {
-                            //setInitialCoordinates([item.CloudletLocation.latitude, item.CloudletLocation.longitude])
-                            setCloudletIndex(index);
-                            setAnimationSequence(
-                                [
-                                    {
-                                        animationDuration: 1000,
-                                        coordinates: [item.CloudletLocation.latitude, item.CloudletLocation.longitude],
-                                        distanceRadiusScale: 2,
-                                        easingFunction: ['Linear', 'None'],
-                                        //easingFunction: ['Elastic', 'In'],
-                                        //easingFunction: ['Exponential', 'In']
-                                    },
-                                ]
-                            )
-
-                        }}>
+                        onClick={() => handleClickedCloudlet(index, outerItem)}>
                         <div style={{display: 'flex'}}>
                             <div style={{cursor: 'pointer', fontWeight: 'bold', fontFamily: 'ubuntu', fontSize: 18}}>
-                                {item.Cloudlet}
+                                {outerItem.Cloudlet}
                             </div>
                         </div>
                         <div style={{marginLeft: 25}}>
                             {AppList.map((AppInstOne, index) => {
+
+                                let AppName = AppInstOne.trim().split(" | ")[0].trim()
+                                let ClusterInst = AppInstOne.trim().split(" | ")[1].trim()
+                                let Region = AppInstOne.trim().split(" | ")[2].trim()
+                                let HealthCheck = AppInstOne.trim().split(" | ")[3].trim()
+                                let Version = AppInstOne.trim().split(" | ")[4].trim()
+                                let Operator = AppInstOne.trim().split(" | ")[5].trim()
+                                let lat = outerItem.CloudletLocation.latitude;
+                                let long = outerItem.CloudletLocation.longitude;
+
+                                let serverLocation = {
+                                    lat,
+                                    long,
+                                }
+
+                                let fullAppInstOne = AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version + " | " + Operator + " | " + JSON.stringify(serverLocation);
+
                                 return (
-                                    <div onClick={() => {
-                                        showToast(AppInstOne, 5)
-                                    }} style={{color: 'yellow', fontFamily: 'ubuntu', cursor: 'pointer'}}>
+                                    <div onClick={() => handleClickedAppInst(fullAppInstOne)} style={{color: 'yellow', fontFamily: 'ubuntu', cursor: 'pointer !important'}}>
                                         -{AppInstOne.toString().split("|")[0].trim()}
                                     </div>
                                 )
@@ -249,9 +336,9 @@ export default function GlobePopupContainer(props) {
             <div style={{display: 'flex'}}>
                 <div style={{width: 10}}/>
                 <Button
-                    //type={currentGlobeTheme ==='default' }
+                    type={currentGlobeTheme === GLOBE_THEME.DEFAULT ? 'primary' : null}
                     onClick={() => {
-                        setCurrentGlobeTheme('default')
+                        setCurrentGlobeTheme(GLOBE_THEME.DEFAULT)
                         setGlobeTyle('https://raw.githubusercontent.com/chrisrzhou/react-globe/master/textures/globe.jpg')
                     }}
                 >
@@ -259,9 +346,10 @@ export default function GlobePopupContainer(props) {
                 </Button>
                 <div style={{width: 10}}/>
                 <Button
+                    type={currentGlobeTheme === GLOBE_THEME.DARK ? 'primary' : null}
                     color={'primary'}
                     onClick={() => {
-                        setCurrentGlobeTheme('dark')
+                        setCurrentGlobeTheme(GLOBE_THEME.DARK)
                         setGlobeTyle('https://raw.githubusercontent.com/chrisrzhou/react-globe/master/textures/globe_dark.jpg')
                     }}
                 >

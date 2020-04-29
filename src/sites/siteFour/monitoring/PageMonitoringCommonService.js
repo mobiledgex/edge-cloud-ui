@@ -159,7 +159,7 @@ export const PageMonitoringStyles = {
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'center',
-        //marginLeft: -10,
+        marginLeft: -5,
     },
     cell000: {
         marginLeft: 0,
