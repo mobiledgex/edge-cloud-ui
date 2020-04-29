@@ -18,9 +18,6 @@ import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiSt
 import { getUserRole } from '../services/model/format';
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import Map from '../libs/simpleMaps/with-react-motion/index_clusters';
-import {organizationTutor} from "../tutorial";
-
-const orgaSteps = organizationTutor();
 
 class MexListView extends React.Component {
     constructor(props) {
@@ -544,9 +541,6 @@ class MexListView extends React.Component {
         
         if (this.requestCount === 0 && dataList.length === 0) {
             this.props.handleAlertInfo('error', 'Requested data is empty');
-            this.props.handleDataExist( false )
-        } else {
-            this.props.handleDataExist( true )
         }
         this.setState({
             dataList: Object.assign([], dataList)
