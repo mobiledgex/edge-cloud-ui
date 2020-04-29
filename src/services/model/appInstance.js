@@ -69,9 +69,6 @@ export const changePowerState = (data) => {
   let requestData = getKey(data)
   requestData.appinst.power_state = data[fields.powerState]
   requestData.appinst.fields = ['31']
-  if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY) {
-    requestData.appinst.crm_override = constant.CRM_OVERRIDE_IGNORE_CRM
-  }
   return { uuid: data.uuid, method: UPDATE_APP_INST, data: requestData}
 }
 
