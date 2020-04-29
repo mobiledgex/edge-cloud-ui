@@ -18,8 +18,7 @@ import {
     CLASSIFICATION,
     HARDWARE_TYPE,
     RECENT_DATA_LIMIT_COUNT,
-    THEME_OPTIONS,
-    USAGE_INDEX_FOR_CLUSTER
+    THEME_OPTIONS
 } from "../../../../shared/Constants";
 import PageDevMonitoring from "./PageDevMonitoring";
 import {
@@ -31,7 +30,7 @@ import {
     showToast
 } from "../PageMonitoringCommonService";
 import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
-import {CircularProgress, createMuiTheme} from "@material-ui/core";
+import {createMuiTheme} from "@material-ui/core";
 import {reactLocalStorage} from "reactjs-localstorage";
 import {findUsageIndexByKey, numberWithCommas} from "../PageMonitoringUtils";
 
