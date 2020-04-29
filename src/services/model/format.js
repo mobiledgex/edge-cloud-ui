@@ -113,7 +113,8 @@ export const fields = {
     appInstances:'appInstances',
     upgrade:'upgrade',
     refreshAppInst:'refreshAppInst',
-    restagmap:'restagmap'
+    restagmap:'restagmap',
+    powerState:'powerState'
 }
 
 export const getUserRole = () => {

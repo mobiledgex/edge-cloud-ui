@@ -27,7 +27,16 @@ const MexMultiSelect = (props) => {
                     }
                     for (let j = 0; j < dataList.length; j++) {
                         let data = dataList[j];
-                        if (data[dependentForm.field] === dependentForm.value) {
+                        let valid = false
+                        if(Array.isArray(dependentForm.value))
+                        {
+                            valid =  dependentForm.value.includes(data[dependentForm.field])
+                        }
+                        else if (data[dependentForm.field] === dependentForm.value) {
+                            valid = true
+                        }
+                        if(valid)
+                        {
                             if (data[form.field]) {
                                 if (i === dependentData.length - 1) {
                                     filteredList.push(data[form.field])
