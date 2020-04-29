@@ -343,7 +343,7 @@ class ClusterInstReg extends React.Component {
                             ports = ports + multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMax]
                         }
                         else if (form.field === fields.deploymentManifest) {
-                            data[fields.deploymentManifest] = multiFormData[fields.deploymentManifest]
+                            data[fields.deploymentManifest] = multiFormData[fields.deploymentManifest].trim()
                         }
                         else if (multiFormData[fields.key] && multiFormData[fields.value]) {
                             annotations = annotations.length > 0 ? annotations + ',' : annotations
