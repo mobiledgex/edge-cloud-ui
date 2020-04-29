@@ -55,7 +55,6 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
         }
 
 
-
         webSocket.onopen = () => {
             try {
                 _this.props.toggleLoading(false)
@@ -80,7 +79,7 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
                 appInstCount++;
                 let data = JSON.parse(event.data);
 
-                console.log(`data====>`,data)
+                console.log(`data====>`, data)
 
                 let uniqueId = data.data.client_key.unique_id;
                 let unique_id_type = data.data.client_key.unique_id_type;
@@ -138,6 +137,132 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 }
 
 
+export const requestShowAppInstClientWS222 = (pCurrentAppInst, _this: PageDevMonitoring) => {
+    try {
+
+        /*console.log(`pCurrentAppInst====>`,pCurrentAppInst);
+        alert(pCurrentAppInst.toLocaleString())*/
+
+        //AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version;
+        let AppName = pCurrentAppInst.split('|')[0].trim()
+        let Cloudlet = pCurrentAppInst.split('|')[1].trim()
+        let ClusterInst = pCurrentAppInst.split('|')[2].trim()
+        let Region = pCurrentAppInst.split('|')[3].trim()
+        let HealthCheck = pCurrentAppInst.split('|')[4].trim()
+        let Version = pCurrentAppInst.split('|')[5].trim()
+        let Operator = pCurrentAppInst.split('|')[6].trim()
+
+        let store = JSON.parse(localStorage.PROJECT_INIT);
+        let token = store ? store.userToken : 'null';
+        let organization = localStorage.selectOrg.toString()
+
+
+        let prefixUrl = (process.env.REACT_APP_API_ENDPOINT).replace('http', 'ws');
+        const webSocket = new WebSocket(`${prefixUrl}/ws/api/v1/auth/ctrl/ShowAppInstClient`)
+        let showAppInstClientRequestForm = {
+            "Region": Region,
+            "AppInstClientKey": {
+                "key": {
+                    "app_key": {
+                        "name": AppName,
+                        "organization": organization,
+                        "version": Version,
+                    },
+                    "cluster_inst_key": {
+                        "cluster_key": {
+                            "name": ClusterInst,
+                        },
+                        "organization": organization,
+                        "cloudlet_key": {
+                            "name": Cloudlet,
+                            "organization": Operator
+                        }
+                    }
+                }
+            }
+        }
+
+
+        webSocket.onopen = () => {
+            try {
+                _this.props.toggleLoading(false)
+
+                webSocket.send(JSON.stringify({
+                    token: token,
+                }))
+                webSocket.send(JSON.stringify(showAppInstClientRequestForm))
+            } catch (e) {
+                //alert(e.toString())
+            }
+        }
+
+
+        let appInstCount = 0;
+        let interval = null;
+        webSocket.onmessage = async (event) => {
+            try {
+
+                _this.props.toggleLoading(true)
+
+                appInstCount++;
+                let data = JSON.parse(event.data);
+
+                console.log(`data====>`, data)
+
+                let uniqueId = data.data.client_key.unique_id;
+                let unique_id_type = data.data.client_key.unique_id_type;
+                if (data.code === 200) {
+                    _this.setState({
+                        loading: true,
+                    })
+                }
+                let clientLocationOne: TypeClientLocation = data.data.location;
+                if (!isEmpty(uniqueId)) {
+                    clientLocationOne.uuid = uniqueId;
+                    clientLocationOne.unique_id_type = unique_id_type;
+                    let serverLocation = pCurrentAppInst.split('|')[7].trim()
+                    clientLocationOne.serverLocInfo = JSON.parse(serverLocation)
+                }
+
+                _this.setState({
+                    selectedClientLocationListOnAppInst: _this.state.selectedClientLocationListOnAppInst.concat(clientLocationOne),
+                }, () => {
+                    console.log(`selectedClientLocationListOnAppInst====>` + JSON.stringify(_this.state.selectedClientLocationListOnAppInst));
+                })
+
+                setTimeout(() => {
+                    _this.setState({
+                        loading: false,
+                    })
+                    _this.props.toggleLoading(false)
+                }, 20)
+
+
+            } catch (e) {
+                //alert(e)
+            }
+        }
+
+
+        webSocket.onerror = (event) => {
+            setTimeout(() => {
+                _this.setState({
+                    loading: false,
+                })
+                _this.props.toggleLoading(false)
+            }, 15)
+        };
+
+        webSocket.onclose = function (event) {
+            _this.props.toggleLoading(false)
+        };
+
+        return webSocket;
+    } catch (e) {
+
+    }
+
+}
 
 
 export const getAppInstList = async (pArrayRegion = ['EU', 'US'], type: string = '') => {

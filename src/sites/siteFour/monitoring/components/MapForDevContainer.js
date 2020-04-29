@@ -542,28 +542,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     </div>
                                 </Control>
                                 {/*@todo:#####################################..*/}
-                                {/*@todo:  globe button...*/}
-                                {/*@todo:#####################################..*/}
-                                <Control position="topright" style={{marginTop: 3, display: 'flex',}}>
-                                    <div style={{
-                                        display: 'flex',
-                                        //backgroundColor: 'rgba(128,128,128,.3)', borderRadius: 15,
-                                    }}>
-
-                                        <div style={{width: 2}}/>
-                                        <div style={{backgroundColor: 'transparent', height: 35, width: 30, display: 'flex', justifyContent: 'center', alignSelf: 'center'}}>
-                                            <FontAwesomeIcon
-                                                name="globe" style={{fontSize: 25, color: 'white', cursor: 'pointer', marginTop: 2}}
-                                                onClick={() => {
-                                                    this.props.parent.setState({
-                                                        isOpenGlobe: true,
-                                                    })
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                </Control>
-                                {/*@todo:#####################################..*/}
                                 {/*@todo: topRight Dropdown changing MapTyles...*/}
                                 {/*@todo:#####################################..*/}
                                 {this.props.isFullScreenMap ?

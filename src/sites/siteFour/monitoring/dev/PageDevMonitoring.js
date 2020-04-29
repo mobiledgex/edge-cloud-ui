@@ -90,7 +90,6 @@ import {PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} f
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListHookVirtualScroll from "../components/AppInstEventLogListHookVirtualScroll";
 import {fields} from '../../../../services/model/format'
-import GlobePopupContainer from "../components/GlobePopupContainer";
 
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -1858,12 +1857,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         <AddItemPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}/>
                         <AddItemPopupContainer2 parent={this} isOpenEditView2={this.state.isOpenEditView2}/>
-                        <GlobePopupContainer
-                            clientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
-                            parent={this}
-                            isOpenGlobe={this.state.isOpenGlobe}
-                            appInstanceListGroupByCloudlet={this.state.appInstanceListGroupByCloudlet}
-                        />
                         <MiniModalGraphContainer selectedClusterUsageOne={this.state.selectedClusterUsageOne}
                                                  selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
                                                  parent={this}
