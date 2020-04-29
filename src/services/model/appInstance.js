@@ -65,16 +65,6 @@ export const getKey = (data, isCreate) => {
   })
 }
 
-export const changePowerState = (data) => {
-  let requestData = getKey(data)
-  requestData.appinst.power_state = data[fields.powerState]
-  requestData.appinst.fields = ['31']
-  if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY) {
-    requestData.appinst.crm_override = constant.CRM_OVERRIDE_IGNORE_CRM
-  }
-  return { uuid: data.uuid, method: UPDATE_APP_INST, data: requestData}
-}
-
 export const multiDataRequest = (keys, mcRequestList) => {
   let appInstList = [];
   let appList = [];
@@ -147,6 +137,13 @@ export const updateAppInst = (self, data, callback) =>{
   requestData.appinst.fields = updateFields
   let request = { uuid: data.uuid ? data.uuid : uuid(), method: UPDATE_APP_INST, data: requestData }
   return serverData.sendWSRequest(self, request, callback, data)
+}
+
+export const changePowerState = (data) => {
+  let requestData = getKey(data)
+  requestData.appinst.power_state = data[fields.powerState]
+  requestData.appinst.fields = ['31']
+  return { uuid: data.uuid, method: UPDATE_APP_INST, data: requestData}
 }
 
 export const deleteAppInst = (data) => {
