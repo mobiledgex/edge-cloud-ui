@@ -90,8 +90,6 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
                 _this.setState({
                     selectedClientLocationListOnAppInst: _this.state.selectedClientLocationListOnAppInst.concat(clientLocationOne),
-                }, () => {
-                    //console.log(`selectedClientLocationListOnAppInst====>` + JSON.stringify(_this.state.selectedClientLocationListOnAppInst));
                 })
 
                 setTimeout(() => {
