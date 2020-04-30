@@ -735,8 +735,7 @@ export const getCloudletLevelUsageList = async (cloudletList, pHardwareType, rec
 
         return usageList;
     } catch (e) {
-        alert(e.toString())
-        //showToast('getClouletLevelUsageList'+ e.toString())
+        //throw new Error(e)
     }
 
 }
@@ -776,7 +775,6 @@ export const getAppLevelMetrics = async (serviceBodyForAppInstanceOneInfo: any) 
         return response.data;
     }).catch(e => {
         //throw new Error(e)
-        //showToast(e.toString())
     })
     return result;
 }
@@ -951,8 +949,7 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster) => 
         })
         return result;
     } catch (e) {
-
-        //showToast(e)
+        //throw new Error(e)
     }
 }
 
