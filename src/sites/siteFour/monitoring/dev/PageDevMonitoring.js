@@ -1,4 +1,4 @@
-import {Center2, ClusterCluoudletLable, Legend} from '../PageMonitoringStyles'
+import {Center2, ClusterCluoudletLable, Legend, PageMonitoringStyles} from '../PageMonitoringStyles'
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
