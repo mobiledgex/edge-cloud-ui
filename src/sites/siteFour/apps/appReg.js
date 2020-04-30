@@ -348,7 +348,7 @@ class ClusterInstReg extends React.Component {
                             ports = ports.length > 0 ? ports + ',' : ports
                             ports = ports + multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMax]
                         }
-                        else if (form.field === fields.deploymentManifest) {
+                        else if (form.field === fields.deploymentManifest && multiFormData[fields.deploymentManifest]) {
                             data[fields.deploymentManifest] = multiFormData[fields.deploymentManifest].trim()
                         }
                         else if (multiFormData[fields.key] && multiFormData[fields.value]) {
