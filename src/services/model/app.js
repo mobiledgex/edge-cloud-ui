@@ -111,22 +111,26 @@ export const createApp = async (self, data) => {
     return await serverData.sendRequest(self, request)
 }
 
-const compareObjects = (obj1, obj2, ignoreCase) => {
-    if(obj1 === undefined && obj2 === undefined)
+const compareObjects = (newData, oldData, ignoreCase) => {
+    if(newData === undefined && oldData === undefined)
     {
         return true
     }
-    else if(obj1 === undefined || obj2 === undefined)
+    else if(newData.length === 0 && oldData === undefined)
+    {
+        return true
+    }
+    else if(newData === undefined || oldData === undefined)
     {
         return false
     }
     else if(ignoreCase)
     {
-        return _.isEqual(obj1.toLowerCase(), obj2.toLowerCase())
+        return _.isEqual(newData.toLowerCase(), oldData.toLowerCase())
     }
     else
     {
-        return _.isEqual(obj1, obj2)
+        return _.isEqual(newData, oldData)
     }
 }
 
@@ -152,6 +156,18 @@ export const updateApp = async (self, data, originalData) => {
     if(!compareObjects(data[fields.deploymentManifest], originalData[fields.deploymentManifest]))
     {
         updateFields.push("16")
+    }
+    if(!compareObjects(data[fields.androidPackageName], originalData[fields.androidPackageName]))
+    {
+        updateFields.push("18")
+    }
+    if(!compareObjects(data[fields.scaleWithCluster], originalData[fields.scaleWithCluster]))
+    {
+        updateFields.push("22")
+    }
+    if(!compareObjects(data[fields.officialFQDN], originalData[fields.officialFQDN]))
+    {
+        updateFields.push("25")
     }
     if(!compareObjects(data[fields.autoPolicyName], originalData[fields.autoPolicyName]))
     {
