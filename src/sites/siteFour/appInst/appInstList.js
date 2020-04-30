@@ -62,7 +62,7 @@ class AppInstList extends React.Component {
 
     onPowerStateVisible = (data) =>
     {
-       return data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM
+       return data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM && data[fields.accessType] !== constant.ACCESS_TYPE_LOAD_BALANCER
     }
 
     onUpgradeVisible = (data) => {
