@@ -14,6 +14,7 @@ import {GridLoader, PulseLoader} from "react-spinners";
 import {barChartOption, columnChartOption, numberWithCommas,} from "./PageMonitoringUtils";
 import {notification} from "antd";
 import {PageMonitoringStyles} from "./PageMonitoringStyles";
+
 export const noDataArea = () => (
     <div style={PageMonitoringStyles.center3}>
         There is no data to represent.
@@ -740,26 +741,34 @@ export const hardwareTypeToUsageKey = (hwType: string) => {
  * @returns {[]}
  */
 export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType, chartColorList) => {
+    try {
 
-    let bubbleChartData = []
-    usageList.map((item, index) => {
-        let usageValue: number = item[hardwareTypeToUsageKey(pHardwareType)]
-        usageValue = usageValue.toFixed(2)
+        console.log('makeBubbleChartDataForCluster..1===>', usageList);
+        console.log('makeBubbleChartDataForCluster..2===>', pHardwareType);
 
-        let cluster_cloudlet_fullLabel = item.cluster.toString() + ' [' + item.cloudlet.toString().trim() + "]";
 
-        bubbleChartData.push({
-            type: pHardwareType,
-            index: index,
-            label: cluster_cloudlet_fullLabel.toString().substring(0, 17) + "...",
-            value: usageValue,
-            favor: usageValue,
-            fullLabel: item.cluster.toString() + ' [' + item.cloudlet.toString().trim().substring(0, 15) + "]",
-            cluster_cloudlet: item.cluster.toString() + ' | ' + item.cloudlet.toString(),
-            color: chartColorList[index],
+        let bubbleChartData = []
+        usageList.map((item, index) => {
+            let usageValue: number = item[hardwareTypeToUsageKey(pHardwareType)]
+            usageValue = usageValue.toFixed(2)
+
+            let clusterCloudletFullLabel = item.cluster.toString() + ' [' + item.cloudlet.toString().trim() + "]";
+
+            bubbleChartData.push({
+                type: pHardwareType,
+                index: index,
+                label: clusterCloudletFullLabel.toString().substring(0, 17) + "...",
+                value: usageValue,
+                favor: usageValue,
+                fullLabel: item.cluster.toString() + ' [' + item.cloudlet.toString().trim().substring(0, 15) + "]",
+                cluster_cloudlet: item.cluster.toString() + ' | ' + item.cloudlet.toString(),
+                color: chartColorList[index],
+            })
         })
-    })
 
-    return bubbleChartData;
+        return bubbleChartData;
+    } catch (e) {
+        showToast(e.toString())
+    }
 }
 

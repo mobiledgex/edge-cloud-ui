@@ -505,7 +505,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             async handleClusterDropdownAndReset(selectedClusterOne) {
                 try {
-                    let filteredClusterUsageList = []
+
                     //desc: When selected all Cluster options
                     if (selectedClusterOne === '') {
                         await this.setState({
@@ -522,15 +522,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let selectData = selectedClusterOne.split("|")
                         let selectedCluster = selectData[0].trim();
                         let selectedCloudlet = selectData[1].trim();
+
                         //desc : filter  ClusterUsageList
                         let allClusterUsageList = this.state.allClusterUsageList;
-                        let allUsageList = allClusterUsageList;
-                        allUsageList.map(item => {
+                        let filteredClusterUsageList = []
+                        allClusterUsageList.map(item => {
                             if (item.cluster === selectedCluster && item.cloudlet === selectedCloudlet) {
                                 filteredClusterUsageList.push(item)
                             }
                         })
-
                         //desc: filter clusterEventlog
                         let allClusterEventLogList = this.state.allClusterEventLogList
                         let filteredClusterEventLogList = []
@@ -549,8 +549,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         })
 
                         let appInstDropdown = makeDropdownListWithValuePipeForAppInst(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
-                        let bubbleChartData = await makeBubbleChartDataForCluster(this.state.filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
+                        //@desc: filtered bubbleChartData
+                        let bubbleChartData = makeBubbleChartDataForCluster(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
                         await this.setState({
+                            bubbleChartData: bubbleChartData,
                             currentCluster: selectedClusterOne,
                             currentClassification: CLASSIFICATION.CLUSTER,
                             dropdownRequestLoading: false,
@@ -562,7 +564,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             appInstSelectBoxPlaceholder: 'Select App Inst',
                             filteredAppInstanceList: filteredAppInstList,
                             appInstanceListGroupByCloudlet: reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET),
-                            bubbleChartData: bubbleChartData,
                         });
 
                     }
