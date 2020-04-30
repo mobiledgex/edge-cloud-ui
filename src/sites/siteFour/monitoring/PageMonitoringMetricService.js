@@ -193,7 +193,7 @@ export const getAppInstList = async (pArrayRegion = localStorage.getItem('region
 
 
     } catch (e) {
-        showToast("getAppInstList===>" + e.toString())
+        //throw new Error(e)
     }
 }
 
@@ -202,14 +202,15 @@ export const getClusterList = async () => {
     try {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
-        let requestData = {showSpinner: false, token: token, method: SHOW_CLUSTER_INST, data: {region: REGION.EU}};
-        let requestData2 = {showSpinner: false, token: token, method: SHOW_CLUSTER_INST, data: {region: REGION.US}};
+        let regionList = localStorage.getItem('regions').split(",");
+
         let promiseList = []
-        promiseList.push(sendSyncRequest(this, requestData))
-        promiseList.push(sendSyncRequest(this, requestData2))
+        for (let i in regionList) {
+            let requestData = {showSpinner: false, token: token, method: SHOW_CLUSTER_INST, data: {region: regionList[i]}}
+            promiseList.push(sendSyncRequest(this, requestData))
+        }
+
         let showClusterList = await Promise.all(promiseList);
-
-
         let mergedClusterList = [];
         showClusterList.map(item => {
             //@todo : null check
@@ -221,7 +222,7 @@ export const getClusterList = async () => {
             }
         })
 
-        //todo: 현재 속한 조직의 것만을 가져오도록 필터링
+        //todo: Filter to fetch only those belonging to the current organization
         let orgClusterList = []
         mergedClusterList.map(item => {
             if (item.OrganizationName === localStorage.selectOrg) {
