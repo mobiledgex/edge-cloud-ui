@@ -48,10 +48,7 @@ const ContainerWrapper = obj =>
                     let resultData = null;
 
                     let concatData = [];
-                    console.log(
-                        "20200427 has cloudlet length == ",
-                        hasCloudlets.length
-                    );
+                    console.log("20200427 has cloudlet length == ");
                     if (props.method && hasCloudlets.length > 0) {
                         ///////////////
                         let regionMap = hasCloudlets.map(async cloudlets => {
@@ -85,87 +82,98 @@ const ContainerWrapper = obj =>
             };
 
             async onReceiveResult(result) {
-                if (result["Cloudlets"]) {
-                    hasCloudlets.push(result["Cloudlets"]);
-                    count--;
-                } else {
-                }
+                try {
+                    if (result["Cloudlets"]) {
+                        hasCloudlets.push(result["Cloudlets"]);
+                        count--;
+                    } else {
+                    }
 
+                    console.log(
+                        "20200427 Finally  get widget data ++++ <<<<<< ",
+                        result,
+                        ":",
+                        count
+                    );
+                    /*********************************************
+                     * * STEP # 2
+                     * Once loaded cloudlets, get data from MC fallower
+                     * cloudlet의 정보를 먼저 가져온 후에 진행
+                     *********************************************/
+                    if (count <= 0) {
+                        let getData = await this.getWidgetData(
+                            {
+                                method: this.props.method,
+                                region: this.props.regionInfo.region
+                            },
+                            _self
+                        );
+
+                        console.log(
+                            "20200427 Finally  get widget data ++++ ==== ==================== ",
+                            getData
+                        );
+
+                        if (getData.length > 0) {
+                            /** Just test - delete me */
+                            getData.map(data => {
+                                data.map((item, i) => {
+                                    console.log(
+                                        "20200427 data parse fit chartType ----- ",
+                                        this.props.chartType,
+                                        ":",
+                                        item.response.data.data[0].Series[0]
+                                    );
+                                });
+                            });
+
+                            /** set data as format  */
+                            console.log(
+                                "20200427 format -->> ",
+                                FormatChart.makeFormat(
+                                    getData,
+                                    this.props.chartType
+                                )
+                            );
+                            // this.setState({
+                            //     data: FormatChart.formatData(
+                            //         getData,
+                            //         this.props.chartType
+                            //     )
+                            // });
+                        }
+                    }
+                } catch (e) {}
+            }
+            componentDidMount() {
+                let _self = this;
+                this.setState({ chartType: this.props.chartType });
+            }
+            componentWillReceiveProps(nextProps) {
                 console.log(
-                    "20200427 Finally  get widget data ++++ <<<<<< ",
-                    result,
-                    ":",
-                    count
+                    "20200430 next props in containerWrapper .. ",
+                    nextProps
                 );
-                /*********************************************
-                 * * STEP # 2
-                 * Once loaded cloudlets, get data from MC fallower
-                 * cloudlet의 정보를 먼저 가져온 후에 진행
-                 *********************************************/
-                if (count <= 0) {
-                    let getData = await this.getWidgetData(
+                if (nextProps.cloudlets && nextProps.cloudlets.length > 0) {
+                    /*********************************************
+                     * STEP # 1
+                     * request data from MC server from every widget
+                     * has to be name of method
+                     *********************************************/
+
+                    count = this.props.regionInfo.region.length;
+                    let getData = this.getWidgetData(
                         {
                             method: this.props.method,
                             region: this.props.regionInfo.region
                         },
                         _self
                     );
-
                     console.log(
-                        "20200427 Finally  get widget data ++++ ==== ==================== ",
+                        "20200430 Finally  get widget data ++++ ==== ==================== ",
                         getData
                     );
-
-                    if (getData.length > 0) {
-                        /** Just test - delete me */
-                        getData.map(data => {
-                            data.map((item, i) => {
-                                console.log(
-                                    "20200427 data parse fit chartType ----- ",
-                                    this.props.chartType,
-                                    ":",
-                                    item.response.data.data[0].Series[0]
-                                );
-                            });
-                        });
-
-                        /** set data as format  */
-                        console.log(
-                            "20200427 format -->> ",
-                            FormatChart.makeFormat(
-                                getData,
-                                this.props.chartType
-                            )
-                        );
-                        // this.setState({
-                        //     data: FormatChart.formatData(
-                        //         getData,
-                        //         this.props.chartType
-                        //     )
-                        // });
-                    }
-                }
-            }
-            componentDidMount() {
-                let _self = this;
-                this.setState({ chartType: this.props.chartType });
-
-                /*********************************************
-                 * STEP # 1
-                 * request data from MC server from every widget
-                 * has to be name of method
-                 *********************************************/
-                if (hasCloudlets.length === 0 && !doCloudlets) {
-                    doCloudlets = true;
-                    regionCount = this.props.regionInfo.region.length;
-                    count = this.props.regionInfo.region.length;
-                    this.initialize(
-                        {
-                            method: serviceMC.getEP().SHOW_CLOUDLET,
-                            region: this.props.regionInfo.region
-                        },
-                        _self
-                    );
+                    this.initialize();
                 }
             }
             render() {

@@ -115,7 +115,7 @@ const dataFromServer = async (region, self, method) => {
  * If you want get list to like that 'getCloudletList()'
  
  *******************************************************/
-export const getCloudletList = (param, self) => {
+export const getCloudletList = (self, param) => {
     _self = self;
     dataFromServer(REGION_ALL, _self, param.method);
 };

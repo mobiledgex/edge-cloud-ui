@@ -9,7 +9,8 @@ import ContainerHealth from "./ContainerHealth";
 import Map from "../../../../libs/simpleMaps/with-react-motion/index_clusters";
 import CounterWidget from "./CounterWidget";
 import { Segment } from "semantic-ui-react";
-import MonitoringListViewer from "../components/MonitoringListViewer.js";
+import MonitoringListViewer from "../components/MonitoringListViewer";
+import * as ChartType from "../layout/chartType";
 
 class ChartWidget extends React.Component {
     state = {
@@ -29,7 +30,7 @@ class ChartWidget extends React.Component {
     }
     componentWillReceiveProps(nextProps, prevProps) {
         console.log(
-            "20200423 receive data in the ChartWidget ....",
+            "20200430 receive data in the ChartWidget ....",
             nextProps.chartType,
             ":",
             nextProps
@@ -39,6 +40,12 @@ class ChartWidget extends React.Component {
             //this.setState({ size: this.props.size });
         }
     }
+    makeChart = props =>
+        props.page === "multi" ? (
+            <Slider size={props.size} content={props.content}></Slider>
+        ) : (
+            props.content
+        );
     render() {
         const { data, chartType, type, size } = this.props;
         //const { size } = this.state;
@@ -50,11 +57,11 @@ class ChartWidget extends React.Component {
                     backgroundColor: "transparent"
                 }}
             >
-                {chartType === "graph" ? (
+                {chartType === ChartType.GRAPH ? (
                     <TimeSeries size={size} type={type} />
-                ) : chartType === "gauge" ? (
+                ) : chartType === ChartType.GAUGE ? (
                     <ContainerHealth size={size} type={type} />
-                ) : chartType === "map" ? (
+                ) : chartType === ChartType.MAP ? (
                     <Map
                         size={size}
                         type={type}
@@ -63,14 +70,12 @@ class ChartWidget extends React.Component {
                         reg="cloudletAndClusterMap"
                         zoomControl={{ center: [0, 0], zoom: 1.5 }}
                     ></Map>
-                ) : chartType === "counter" ? (
+                ) : chartType === ChartType.COUNTER ? (
                     <CounterWidget
                         size={size}
                         ref={this.divRef}
                         clusterCnt={this.state.clusterCnt}
                     ></CounterWidget>
-                ) : chartType === "carousel" ? (
-                    <Slider size={size}></Slider>
                 ) : (
                     <DataGrid size={size} data={data} />
                 )}

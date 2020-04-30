@@ -40,7 +40,7 @@ export const SHOW_APP = "ShowApp";
 export const CREATE_APP = "CreateApp";
 export const UPDATE_APP = "UpdateApp";
 export const DELETE_APP = "DeleteApp";
-export const REFRESH_APP_INST = 'RefreshAppInst';
+export const REFRESH_APP_INST = "RefreshAppInst";
 export const SHOW_APP_INST = "ShowAppInst";
 export const CREATE_APP_INST = "CreateAppInst";
 export const UPDATE_APP_INST = "UpdateAppInst";
@@ -85,6 +85,7 @@ export const UPDATE_PRIVACY_POLICY = "UpdatePrivacyPolicy";
 export const CREATE_PRIVACY_POLICY = "CreatePrivacyPolicy";
 export const DELETE_PRIVACY_POLICY = "DeletePrivacyPolicy";
 export const EVENT_CLOUDLET = "CloudletLevelEvents";
+export const METHOD_CLIENT = "MethodClient";
 
 export function getPath(request) {
     switch (request.method) {
@@ -170,6 +171,8 @@ export function getPath(request) {
         case CLUSTER_INST_METRICS_APP:
         case APP_INST_METRICS_APP:
             return "/api/v1/auth/metrics/app";
+        case METHOD_CLIENT:
+            return "/api/v1/auth/metrics/client";
         case SHOW_CLOUDLET_LINKORG:
             return `/api/v1/auth/orgcloudletpool/show`;
         case CREATE_LINK_POOL_ORG:

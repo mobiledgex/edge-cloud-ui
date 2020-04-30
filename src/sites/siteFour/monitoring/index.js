@@ -5,31 +5,102 @@ import MonitoringLayout from "./layout/layout";
 import { connect } from "react-redux";
 import * as actions from "../../../actions";
 //
+import MetricsService from "./services";
 import ChartWidget from "./container/ChartWidget";
 import * as serviceMC from "../../../services/model/serviceMC";
 import * as ChartType from "./layout/chartType";
 
+let doCloudlets = null;
+let regionCount = 0;
+let count = 0;
+let stepTwoCount = 0;
+let _self = null;
 class MonitoringAdmin extends React.Component {
-    state = {
-        currentBreakpoint: "lg",
-        compactType: "vertical",
-        mounted: false,
-        layouts: { lg: this.props.initialLayout },
-        toolbox: { lg: [] }
-    };
+    constructor() {
+        super();
+        _self = this;
+        this.state = {
+            currentBreakpoint: "lg",
+            compactType: "vertical",
+            mounted: false,
+            layouts: { lg: [] },
+            toolbox: { lg: [] },
+            compCloudlet: [],
+            filteredCloudlet: []
+        };
+    }
+
+    hasCloudlets = [];
+
+    async initialize(props: any, self: any) {
+        try {
+            //TODO :
+            console.log("20200427 initial props ... method..", props.method);
+
+            if (props.method) {
+                await MetricsService(props, self);
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
     componentDidMount() {
-        this.setState({ mounted: true });
+        this.setState({
+            urrentBreakpoint: "lg",
+            compactType: "vertical",
+            mounted: true,
+            layouts: { lg: this.props.initialLayout },
+            toolbox: { lg: [] }
+        });
+        /**
+         * Necessary list of cloudlet to request metrics info
+         */
+        let regions = localStorage.regions.split(",");
+        if (this.hasCloudlets.length === 0 && !doCloudlets) {
+            doCloudlets = true;
+            regionCount = regions.length;
+            count = regions.length;
+            this.initialize(
+                {
+                    method: serviceMC.getEP().SHOW_CLOUDLET,
+                    region: regions
+                },
+                this
+            );
+        }
     }
 
     componentWillReceiveProps(nextProps) {
         console.log("20200423   nextprops in monitoring....== ....", nextProps);
+    }
+    onReceiveResult(result) {
+        try {
+            if (result["Cloudlets"]) {
+                this.hasCloudlets = this.hasCloudlets.concat(
+                    result["Cloudlets"]
+                );
+                count--;
+            } else {
+            }
+
+            if (count <= 0) {
+                console.log("20200430 this.hasCloudlets = ", this.hasCloudlets);
+                this.setState({
+                    compCloudlet: this.hasCloudlets,
+                    filteredCloudlet: this.hasCloudlets
+                });
+            }
+        } catch (e) {
+            throw e;
+        }
     }
 
     render() {
         let _self = this;
         let containerWidth = this.props.size.width;
         let containerHeight = this.props.size.height;
+        let { filteredCloudlet } = this.state;
         return (
             <div
                 style={{
@@ -43,7 +114,11 @@ class MonitoringAdmin extends React.Component {
                 <MonitoringLayout
                     initialLayout={generateLayout(this.props)}
                     sizeInfo={this.props.size}
-                    items={generateComponentAdmin(_self, this.props)}
+                    items={generateComponentAdmin(
+                        _self,
+                        this.props,
+                        filteredCloudlet
+                    )}
                 ></MonitoringLayout>
             </div>
         );
@@ -76,6 +151,12 @@ const generateLayout = size => {
         };
     });
 };
+const mapStateToProps = state => {
+    let regionInfo = state.regionInfo ? state.regionInfo : null;
+    return {
+        regionInfo: regionInfo
+    };
+};
 const mapDispatchProps = dispatch => {
     return {
         handleAlertInfo: (mode, msg) => {
@@ -83,11 +164,14 @@ const mapDispatchProps = dispatch => {
         },
         handleLoadingSpinner: data => {
             dispatch(actions.loadingSpinner(data));
+        },
+        onLoadComplete: data => {
+            _self.onReceiveResult(data);
         }
     };
 };
 export default connect(
-    null,
+    mapStateToProps,
     mapDispatchProps
 )(sizeMe({ monitorHeight: true, refreshMode: "debounce" })(MonitoringAdmin));
 
@@ -97,44 +181,55 @@ const generatWidget = info => (
         chartType={info.chartType}
         type={info.type}
         size={info.sizeInfo}
+        cloudlets={info.cloudlets}
     />
 );
-const generateComponentAdmin = (self, infos) => {
-    let defaultProp = { sizeInfo: infos.size, self: self };
+const generateComponentAdmin = (self, infos, cloudlets) => {
+    let defaultProp = {
+        sizeInfo: infos.size,
+        self: self,
+        cloudlets: cloudlets
+    };
     return [
         generatWidget({
             id: "countCluster",
             method: null,
-            chartType: "counter",
+            chartType: ChartType.COUNTER,
             type: "",
+            page: "multi",
+            itemCount: 6,
             ...defaultProp
         }),
         generatWidget({
             id: "networkCloudlet",
             method: null,
-            chartType: "graph",
+            chartType: ChartType.GRAPH,
             type: "scatter",
+            page: "single",
             ...defaultProp
         }),
         generatWidget({
             id: "findCloudlet",
             method: null,
-            chartType: "map",
+            chartType: ChartType.MAP,
             type: "scatter",
+            page: "single",
             ...defaultProp
         }),
         generatWidget({
             id: "registClient",
             method: null,
-            chartType: "carousel",
+            chartType: ChartType.GRAPH,
             type: "scatter",
+            page: "single",
             ...defaultProp
         }),
         generatWidget({
-            id: "findCloudlet",
-            method: null,
-            chartType: "graph",
+            id: "clientMethod",
+            method: serviceMC.getEP().METHOD_CLIENT,
+            chartType: ChartType.GRAPH,
             type: "bar",
+            page: "single",
             ...defaultProp
         }),
         generatWidget({
@@ -142,6 +237,7 @@ const generateComponentAdmin = (self, infos) => {
             method: serviceMC.getEP().EVENT_CLOUDLET,
             chartType: ChartType.TABLE,
             type: "alarm",
+            page: "single",
             ...defaultProp
         })
     ];
@@ -153,36 +249,42 @@ const generateComponentOperator = (self, infos) => {
             url: "https://test1",
             chartType: "gauge",
             type: "",
+            page: "single",
             ...defaultProp
         }),
         generatWidget({
             url: "https://test2",
             chartType: "timeseries",
             type: "scatter",
+            page: "single",
             ...defaultProp
         }),
         generatWidget({
             url: "https://test3",
             chartType: "map",
             type: "scatter",
+            page: "single",
             ...defaultProp
         }),
         generatWidget({
             url: "https://test4",
             chartType: "timeseries",
             type: "scatter",
+            page: "single",
             ...defaultProp
         }),
         generatWidget({
             url: "https://test5",
             chartType: "timeseries",
             type: "bar",
+            page: "single",
             ...defaultProp
         }),
         generatWidget({
             url: "https://test6",
             chartType: "table",
             type: "",
+            page: "single",
             ...defaultProp
         })
     ];
