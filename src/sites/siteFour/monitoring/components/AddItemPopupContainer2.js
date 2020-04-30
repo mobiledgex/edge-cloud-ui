@@ -4,7 +4,7 @@ import {Modal as AModal, Tabs} from "antd";
 import {CHART_COLOR_LIST} from "../../../../shared/Constants";
 import {demoLineChartData, materialUiDarkTheme, simpleGraphOptions} from "../dev/PageDevMonitoringService";
 import {Bar, HorizontalBar, Line} from "react-chartjs-2";
-import {Center2, ClusterCluoudletLable} from "../PageMonitoringStyledComponent";
+import {Center2, ClusterCluoudletLable} from "../PageMonitoringStyles";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import {Button, ThemeProvider} from "@material-ui/core";

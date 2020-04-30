@@ -124,7 +124,8 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
 }
 
-export const getAppInstList = async (pArrayRegion = ['EU', 'US'], type: string = '') => {
+export const getAppInstList = async (pArrayRegion = localStorage.getItem('regions').split(","), type: string = '') => {
+
     try {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let mergedAppInstanceList = [];

@@ -1,4 +1,4 @@
-import {Center2, ClusterCluoudletLable, Legend} from '../PageMonitoringStyledComponent'
+import {Center2, ClusterCluoudletLable, Legend} from '../PageMonitoringStyles'
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
@@ -43,15 +43,7 @@ import {
 import type {TypeBarChartData, TypeLineChartData} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
-import {
-    getOneYearStartEndDatetime,
-    isEmpty,
-    makeBubbleChartDataForCluster,
-    PageMonitoringStyles,
-    renderPlaceHolderLoader,
-    renderWifiLoader,
-    showToast
-} from "../PageMonitoringCommonService";
+import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../PageMonitoringCommonService";
 import {
     getAllAppInstEventLogs,
     getAllClusterEventLogList,

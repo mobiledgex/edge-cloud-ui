@@ -25,7 +25,6 @@ import {
     convertByteToMegaGigaByte,
     convertToMegaGigaForNumber,
     makeBubbleChartDataForCluster,
-    PageMonitoringStyles,
     renderUsageByType,
     showToast
 } from "../PageMonitoringCommonService";
@@ -33,6 +32,7 @@ import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
 import {createMuiTheme} from "@material-ui/core";
 import {reactLocalStorage} from "reactjs-localstorage";
 import {findUsageIndexByKey, numberWithCommas} from "../PageMonitoringUtils";
+import {PageMonitoringStyles} from "../PageMonitoringStyles";
 
 export const materialUiDarkTheme = createMuiTheme({
     palette: {

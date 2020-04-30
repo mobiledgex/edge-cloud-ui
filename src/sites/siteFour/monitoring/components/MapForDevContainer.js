@@ -8,7 +8,7 @@ import {Map, Marker, Polyline, Popup, TileLayer, Tooltip,} from "react-leaflet";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {groupByKey_, PageMonitoringStyles, removeDuplicates} from "../PageMonitoringCommonService";
+import {groupByKey_, removeDuplicates} from "../PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
 import {notification, Select} from 'antd'
@@ -17,6 +17,7 @@ import * as actions from "../../../../actions";
 import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import '../PageMonitoring.css'
+import {PageMonitoringStyles} from "../PageMonitoringStyles";
 
 const FontAwesomeIcon = require('react-fontawesome')
 

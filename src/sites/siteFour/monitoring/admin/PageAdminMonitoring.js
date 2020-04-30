@@ -35,7 +35,18 @@ import {
     renderPlaceHolder2,
     renderSixGridForAppInstOnCloudlet,
 } from "./PageAdminMonitoringService";
-import {APPINSTANCE_INIT_VALUE, CLASSIFICATION, CONNECTIONS_OPTIONS, HARDWARE_OPTIONS, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS, USER_TYPE} from "../../../../shared/Constants";
+import {
+    APPINSTANCE_INIT_VALUE,
+    CLASSIFICATION,
+    CONNECTIONS_OPTIONS,
+    HARDWARE_OPTIONS,
+    HARDWARE_TYPE,
+    NETWORK_OPTIONS,
+    NETWORK_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    REGIONS_OPTIONS,
+    USER_TYPE
+} from "../../../../shared/Constants";
 import type {TypeAppInstance, TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
@@ -279,12 +290,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     cloudletList: allCloudletList,
                 })
 
-
-                //@test: FAKE JSON FOR DEV
-                //let appInstanceList = require('../temp/TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
-
-                //@fixme: realdata
-                let appInstanceList: Array<TypeAppInstance> = await getAppInstList(['EU', 'US'], USER_TYPE.ADMIN);
+                let appInstanceList: Array<TypeAppInstance> = await getAppInstList(localStorage.getItem('regions').split(","), USER_TYPE.ADMIN);
 
                 appInstanceList.map(async (item: TypeAppInstance, index) => {
                     if (index === 0) {
