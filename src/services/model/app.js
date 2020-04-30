@@ -24,7 +24,7 @@ export const keys = () => ([
     { field: fields.authPublicKey, serverField: 'auth_public_key', label: 'Auth Public Key' },
     { field: fields.scaleWithCluster, serverField: 'scale_with_cluster', label: 'Scale With Cluster' },
     { field: fields.officialFQDN, serverField: 'official_fqdn', label: 'Official FQDN' },
-    { field: fields.androidPackageName, serverField: 'android_package_name', label: '' },
+    { field: fields.androidPackageName, serverField: 'android_package_name', label: 'Android Package Name' },
     { field: fields.autoPolicyName, serverField: 'auto_prov_policy', label: 'Auto Provisioning Policy' },
     { field: fields.privacyPolicyName, serverField: 'default_privacy_policy', label: 'Default Privacy Policy' },
     { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: constant.TYPE_JSON },
@@ -111,22 +111,26 @@ export const createApp = async (self, data) => {
     return await serverData.sendRequest(self, request)
 }
 
-const compareObjects = (obj1, obj2, ignoreCase) => {
-    if(obj1 === undefined && obj2 === undefined)
+const compareObjects = (newData, oldData, ignoreCase) => {
+    if(newData === undefined && oldData === undefined)
     {
         return true
     }
-    else if(obj1 === undefined || obj2 === undefined)
+    else if(newData.length === 0 && oldData === undefined)
+    {
+        return true
+    }
+    else if(newData === undefined || oldData === undefined)
     {
         return false
     }
     else if(ignoreCase)
     {
-        return _.isEqual(obj1.toLowerCase(), obj2.toLowerCase())
+        return _.isEqual(newData.toLowerCase(), oldData.toLowerCase())
     }
     else
     {
-        return _.isEqual(obj1, obj2)
+        return _.isEqual(newData, oldData)
     }
 }
 
@@ -153,6 +157,18 @@ export const updateApp = async (self, data, originalData) => {
     {
         updateFields.push("16")
     }
+    if(!compareObjects(data[fields.androidPackageName], originalData[fields.androidPackageName]))
+    {
+        updateFields.push("18")
+    }
+    if(!compareObjects(data[fields.scaleWithCluster], originalData[fields.scaleWithCluster]))
+    {
+        updateFields.push("22")
+    }
+    if(!compareObjects(data[fields.officialFQDN], originalData[fields.officialFQDN]))
+    {
+        updateFields.push("25")
+    }
     if(!compareObjects(data[fields.autoPolicyName], originalData[fields.autoPolicyName]))
     {
         updateFields.push("28")
@@ -176,6 +192,7 @@ const customData = (value) => {
     value[fields.accessType] = constant.accessType(value[fields.accessType])
     value[fields.imageType] = constant.imageType(value[fields.imageType])
     value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
+    value[fields.scaleWithCluster] = value[fields.scaleWithCluster] ? value[fields.scaleWithCluster] : false
     if(value[fields.configs])
     {
         let configs = value[fields.configs]

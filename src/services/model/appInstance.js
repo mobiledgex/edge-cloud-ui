@@ -26,6 +26,7 @@ export const keys = () => ([
   { field: fields.ipAccess, serverField: 'auto_cluster_ip_access', label: 'IP Access'},
   { field: fields.revision, serverField: 'revision', label: 'Revision', visible: false },
   { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
+  { field: fields.powerState, serverField: 'power_state', label: 'Power State', visible: false },
   { field: fields.runtimeInfo, serverField: 'runtime_info', label: 'Runtime', dataType: constant.TYPE_JSON },
   { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_JSON },
   { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
@@ -128,6 +129,21 @@ export const createAppInst = (self, data, callback) => {
   let requestData = getKey(data, true)
   let request = { uuid: data.uuid ? data.uuid : uuid(), method: CREATE_APP_INST, data: requestData }
   return serverData.sendWSRequest(self, request, callback, data)
+}
+
+export const updateAppInst = (self, data, callback) =>{
+  let requestData = getKey(data, true)
+  let updateFields = ["27", '27.1', '27.2']
+  requestData.appinst.fields = updateFields
+  let request = { uuid: data.uuid ? data.uuid : uuid(), method: UPDATE_APP_INST, data: requestData }
+  return serverData.sendWSRequest(self, request, callback, data)
+}
+
+export const changePowerState = (data) => {
+  let requestData = getKey(data)
+  requestData.appinst.power_state = data[fields.powerState]
+  requestData.appinst.fields = ['31']
+  return { uuid: data.uuid, method: UPDATE_APP_INST, data: requestData}
 }
 
 export const deleteAppInst = (data) => {

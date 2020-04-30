@@ -90,7 +90,6 @@ export const showProgress = (data, isDetailView) => {
     }
     else {
         let icon = null;
-        let color = 'red';
         switch (state) {
             case 5:
                 icon = <Popup content={getStateStatus(state)} trigger={<Icon className="progressIndicator" name='check' color='green' />} />

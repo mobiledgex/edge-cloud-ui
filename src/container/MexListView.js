@@ -8,6 +8,7 @@ import * as serverData from '../services/model/serverData';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
+import * as constant from '../constant'
 
 import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP } from './MexToolbar';
 import MexDetailViewer from '../hoc/dataViewer/DetailViewer';
@@ -165,6 +166,26 @@ class MexListView extends React.Component {
         }
     }
 
+    onPowerState = (action, data) =>
+    {
+        let powerState = constant.PowerState(constant.POWER_STATE_POWER_STATE_UNKNOWN)
+        switch(action.label)
+        {
+            case 'Power On':
+                powerState = constant.PowerState(constant.POWER_STATE_POWER_ON)
+                break;
+            case 'Power Off':
+                powerState = constant.PowerState(constant.POWER_STATE_POWER_OFF)
+                break;
+            case 'Reboot':
+                powerState = constant.PowerState(constant.POWER_STATE_REBOOT)
+                break;
+        }
+        data[fields.powerState] = powerState
+        this.props.handleLoadingSpinner(true)
+        serverData.sendWSRequest(this, action.onClick(data), this.onDeleteWSResponse, data)
+    }
+
     onDialogClose = (valid) => {
         let action = this.state.dialogMessageInfo.action;
         let isMultiple = this.state.dialogMessageInfo.isMultiple;
@@ -195,6 +216,11 @@ class MexListView extends React.Component {
                     case 'Upgrade':
                         this.onUpdate(action, data)
                         break;
+                    case 'Power On':
+                    case 'Power Off':
+                    case 'Reboot':
+                        this.onPowerState(action, data)
+                        break;
                 }
             }
         }
@@ -206,6 +232,8 @@ class MexListView extends React.Component {
     }
 
     /***Action Block */
+    /*Todo this is temporary we can't hardocode Action type in mexlistview 
+    will be changed to make it more generalize*/
     onActionClose = (action) => {
         let data = this.selectedRow;
         switch (action.label) {
@@ -214,6 +242,15 @@ class MexListView extends React.Component {
                 break
             case 'Upgrade':
                 this.onWarning(action, 'upgrade', false, data)
+                break;
+            case 'Power On':
+                this.onWarning(action, 'power on', false, data)
+                break;
+            case 'Power Off':
+                this.onWarning(action, 'power off', false, data)
+                break;
+            case 'Reboot':
+                this.onWarning(action, 'reboot', false, data)
                 break;
             default:
                 action.onClick(action, data)
@@ -276,8 +313,19 @@ class MexListView extends React.Component {
     sendWSRequest = (data) => {
         let stream = this.props.requestInfo.streamType;
         if (stream) {
+            let valid = false
             let state = data[fields.state];
             if (state === 2 || state === 3 || state === 6 || state === 7 || state === 9 || state === 10 || state === 12 || state === 13 || state === 14) {
+                valid = true
+            }
+            else if (data[fields.powerState]) {
+                let powerState = data[fields.powerState];
+                if (powerState !== 0 && powerState !== 3 && powerState !== 6 && powerState !== 9 && powerState !== 10) {
+                    valid = true
+                }
+            }
+            if(valid)
+            {
                 serverData.sendWSRequest(this, stream(data), this.requestResponse)
             }
         }
