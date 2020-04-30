@@ -956,33 +956,6 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster) => 
     }
 }
 
-/*export const getAppInstanceAllEventLogList = async (appInstList) => {
-    try {
-        let promiseList = []
-        //todo: 모든 AppInst 대한 이벤트 로그를 요청 비동기식 promiseList
-        appInstList.map((appInstOne, index) => {
-            promiseList.push(getAppInstEventLogListOne(appInstOne))
-        })
-
-        let allAppInstEventLogs = await Promise.all(promiseList);
-        let completedEventLogList = []
-        allAppInstEventLogs.map((item, index) => {
-            if (item.Series !== null) {
-                let eventLogList = item.Series["0"].values;
-                eventLogList.map(item => {
-                    completedEventLogList.push(item)
-                })
-            }
-        })
-
-        console.log("completedEventLogList===>", completedEventLogList);
-        return completedEventLogList;
-    } catch (e) {
-        showToast(e.toString())
-    }
-}*/
-
-
 export const getAppInstEventLogByRegion = async (region = 'EU') => {
     try {
 
