@@ -523,7 +523,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let selectedCluster = selectData[0].trim();
                         let selectedCloudlet = selectData[1].trim();
 
-                        //desc : filter  ClusterUsageList
+                        //desc: filter  ClusterUsageList
                         let allClusterUsageList = this.state.allClusterUsageList;
                         let filteredClusterUsageList = []
                         allClusterUsageList.map(item => {
@@ -531,7 +531,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 filteredClusterUsageList.push(item)
                             }
                         })
-                        //desc: filter clusterEventlog
+                        //desc: filter clusterEventLog
                         let allClusterEventLogList = this.state.allClusterEventLogList
                         let filteredClusterEventLogList = []
                         allClusterEventLogList.map(item => {
@@ -549,7 +549,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         })
 
                         let appInstDropdown = makeDropdownListWithValuePipeForAppInst(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
-                        //@desc: filtered bubbleChartData
                         let bubbleChartData = makeBubbleChartDataForCluster(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
                         await this.setState({
                             bubbleChartData: bubbleChartData,

@@ -743,10 +743,6 @@ export const hardwareTypeToUsageKey = (hwType: string) => {
 export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType, chartColorList) => {
     try {
 
-        console.log('makeBubbleChartDataForCluster..1===>', usageList);
-        console.log('makeBubbleChartDataForCluster..2===>', pHardwareType);
-
-
         let bubbleChartData = []
         usageList.map((item, index) => {
             let usageValue: number = item[hardwareTypeToUsageKey(pHardwareType)]
@@ -768,7 +764,7 @@ export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType, cha
 
         return bubbleChartData;
     } catch (e) {
-        showToast(e.toString())
+        //showToast(e.toString())
     }
 }
 
