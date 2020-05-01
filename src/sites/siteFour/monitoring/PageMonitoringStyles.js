@@ -160,7 +160,7 @@ export const PageMonitoringStyles = {
         cursor: 'pointer',
         backgroundColor: 'transparent',
     },
-    appInstLegendOuterDiv:{
+    appInstLegendOuterDiv: {
         display: 'flex',
         flex: .975,
         justifyContent: 'center',
@@ -536,11 +536,9 @@ export const Legend = styled.div`
   border-style: dotted;
   border-color: dimgrey;
   padding:5px;
-  //margin-top: 10px;
   margin-left: 10px;
   height: 50px;
-  width:98.8%;
-  marginLeft:15px;
+  width: 98.15%;
 `;
 
 export const Legend2 = styled.div`
@@ -548,37 +546,11 @@ export const Legend2 = styled.div`
   border-style: dotted;
   border-color: dimgrey;
   margin-left: 10px; 
-  margin-right: 9px; 
+  margin-right: 15px; 
   display: flex; 
   height: 25px;
+  width: 98.15%;
 `
-
-/*const _Ripples = ({className, children}) => (
-    <Ripples
-        color='#00BCD4' during={500}
-    >
-        <ChartIconOuterDiv>
-            {children}
-        </ChartIconOuterDiv>
-    </Ripples>
-);
-
-export const ChartIconOuter = styled(_Ripples)`
-  display : flex;
-  justify-content: center;
-  text-align: center;
-  flex-direction: column;
-  align-self: center;
-  font-size: 13px;
-  font-family: Ubuntu;
-  border-width: 0.5px;
-  border-style: solid;
-  border-color: dimgrey;
-  padding: 10px 5px;
-  height: 110px;
-  width: 140px;
-`;*/
-
 
 export const ChartIconOuterDiv = styled.div`
   display : flex;

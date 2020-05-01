@@ -24,7 +24,7 @@ import {
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipeForCluster,
     makeSelectBoxListWithValuePipe,
-    reduceLegendClusterName,
+    reduceLegendClusterCloudletName,
     revertToDefaultLayout, tempClusterList,
 } from "./PageDevMonitoringService";
 import {
@@ -1783,7 +1783,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                     </div>
                                                 </div>
                                                 <div className="clusterCloudletBox">
-                                                    {reduceLegendClusterName(item, this)}
+                                                    {reduceLegendClusterCloudletName(item, this)}
                                                 </div>
                                             </Col>
                                         )

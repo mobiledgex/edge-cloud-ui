@@ -1370,10 +1370,6 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
             let gradientList = makeGradientColorList(canvas, 250, _this.state.chartColorList);
             let finalSeriesDataSets = [];
             for (let index in usageSetList) {
-                //@todo: extract top5
-                /*if (index < 5) {
-                }*/
-
                 let datasetsOne = {
                     label: levelTypeNameList[index],
                     radius: 0,
@@ -1399,9 +1395,7 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
                     order: index,
 
                 };
-
                 finalSeriesDataSets.push(datasetsOne)
-
             }
 
             let _result = {
@@ -1425,19 +1419,15 @@ export const convertToClassification = (pClassification) => {
     }
 };
 
-export const reduceLegendClusterName = (item, _this: PageDevMonitoring) => {
+export const reduceLegendClusterCloudletName = (item, _this: PageDevMonitoring) => {
     if (!_this.state.isLegendExpanded) {
-        return reduceString(item.cluster, 5) + "[" + reduceString(item.cloudlet, 5) + "]"
+        return reduceString(item.cluster, 10) + "[" + reduceString(item.cloudlet, 10) + "]"
     } else {//when legend expanded
         return reduceString(item.cluster, 23) + "[" + reduceString(item.cloudlet, 23) + "]"
     }
 }
 
 
-//let chunkedSize = 12;
-//let chunkArrayClusterUsageList = this.toChunkArray2(this.state.filteredClusterUsageList, this.state.chunkedSize);  //realdata
-//let chunkArrayClusterUsageList = this.toChunkArray2(tempClusterList, chunkedSize);
-//_.chunk(['a', 'b', 'c', 'd'], 2);
 export const tempClusterList = [
     {
         cluster: 'autoclustermobiledgexsdkdemo',
