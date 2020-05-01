@@ -119,13 +119,14 @@ export default withSize()(
                             this.closePopupWindow();
 
                         }}
-                        closable={false}
+                        closable={true}
                         bodyStyle={{
-                            height: window.innerHeight * 0.935,
+                            height: window.innerHeight * 0.94,
                             backgroundColor: 'rgb(41, 44, 51)',
                         }}
                         width={'86.2%'}
-                        style={{marginLeft: 258, top: 53, height: window.innerHeight * 0.935,}}
+                        className={'bigModal'}
+                        style={{marginLeft: 258, top: 53, height: window.innerHeight * 0.94,}}
                         footer={null}
                     >
                         <div>
