@@ -142,17 +142,17 @@ export default connect(mapStateToProps, mapDispatchProps)(
             {
                 url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
                 name: 'light2',
-                value: 5,
+                value: 4,
             },
             {
                 url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-antique/{z}/{x}/{y}.png',
                 name: 'light3',
-                value: 6,
+                value: 5,
             },
             {
                 url: 'https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
                 name: 'light4',
-                value: 7,
+                value: 6,
             },
         ]
 
@@ -333,18 +333,22 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     bordered={false}
                     listHeight={550}
                     onChange={async (value) => {
-                        let index = value
+                        try {
+                            let index = value
 
-                        let lineColor = DARK_LINE_COLOR
-                        let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
-                        if (Number(index) >= 4) {
-                            lineColor = WHITE_LINE_COLOR;
-                            cloudletIconColor = WHITE_CLOUTLET_ICON_COLOR
+                            let lineColor = DARK_LINE_COLOR
+                            let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
+                            if (Number(index) >= 4) {
+                                lineColor = WHITE_LINE_COLOR;
+                                cloudletIconColor = WHITE_CLOUTLET_ICON_COLOR
+                            }
+
+                            this.props.setMapTyleLayer(this.mapTileList[index].url);
+                            this.props.setLineColor(lineColor);
+                            this.props.setCloudletIconColor(cloudletIconColor);
+                        } catch (e) {
+
                         }
-
-                        this.props.setMapTyleLayer(this.mapTileList[index].url);
-                        this.props.setLineColor(lineColor);
-                        this.props.setCloudletIconColor(cloudletIconColor);
 
                     }}
                 >
