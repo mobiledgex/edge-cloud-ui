@@ -1815,10 +1815,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         {this.state.currentAppInst.split("|")[0]}
                                     </ClusterCluoudletLabel>
                                 </div>
-
                             }
                             {/*################################*/}
-                            {/*fold/unfoled icons  on right    */}
+                            {/* fold/unfoled icons on right    */}
                             {/*################################*/}
                             {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
                             <div
