@@ -23,7 +23,7 @@ import {CircularProgress} from "@material-ui/core";
 import {handleBubbleChartDropDownForCloudlet, makeBarChartDataForCloudlet, makeLineChartForCloudlet, renderBottomGridAreaForCloudlet} from "./PageOperMonitoringService";
 import LeafletMap from "../components/MapForOperContainer";
 import {filterByClassification, makeSelectBoxListWithKey, sortByKey} from "../dev/PageDevMonitoringService";
-
+import {PageMonitoringStyles} from "../PageMonitoringStyles";
 import {getAllCloudletEventLogs, getCloudletEventLog, getCloudletLevelUsageList, getCloudletList,} from '../PageMonitoringMetricService'
 
 const FA = require('react-fontawesome')
