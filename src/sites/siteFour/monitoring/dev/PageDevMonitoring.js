@@ -1,4 +1,4 @@
-import {ClusterCluoudletLabel, Legend, LegendOuterDiv, PageMonitoringStyles} from '../PageMonitoringStyles'
+import {ClusterCluoudletLabel, LegendOuterDiv, PageMonitoringStyles} from '../PageMonitoringStyles'
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
@@ -25,7 +25,7 @@ import {
     makeSelectBoxListWithKeyValuePipeForCluster,
     makeSelectBoxListWithValuePipe,
     reduceLegendClusterCloudletName,
-    revertToDefaultLayout, tempClusterList,
+    revertToDefaultLayout,
 } from "./PageDevMonitoringService";
 import {
     ADD_ITEM_LIST,
@@ -70,7 +70,6 @@ import MaterialIcon from "material-icons-react";
 import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout, LayoutItem} from "react-grid-layout/lib/utils";
-import AddItemPopupContainer2 from '../components/AddItemPopupContainer2'
 import {THEME_TYPE} from "../../../../themeStyle";
 import BarChartContainer from "../components/BarChartContainer";
 import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryForClusterHook";
@@ -87,7 +86,6 @@ import {
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListHookVirtualScroll from "../components/AppInstEventLogListHookVirtualScroll";
 import {fields} from '../../../../services/model/format'
-import AddItemPopupContainer3 from "../components/AddItemPopupContainer3";
 
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
