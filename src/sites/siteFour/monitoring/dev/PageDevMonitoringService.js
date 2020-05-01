@@ -1421,7 +1421,7 @@ export const convertToClassification = (pClassification) => {
 
 export const reduceLegendClusterCloudletName = (item, _this: PageDevMonitoring) => {
     if (!_this.state.isLegendExpanded) {
-        return reduceString(item.cluster, 10) + "[" + reduceString(item.cloudlet, 10) + "]"
+        return reduceString(item.cluster, 8) + "[" + reduceString(item.cloudlet, 8) + "]"
     } else {//when legend expanded
         return reduceString(item.cluster, 23) + "[" + reduceString(item.cloudlet, 23) + "]"
     }
