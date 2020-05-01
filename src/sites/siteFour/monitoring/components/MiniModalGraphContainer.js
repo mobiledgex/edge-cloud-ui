@@ -174,7 +174,7 @@ export default class MiniModalGraphContainer extends React.Component<Props, Stat
                         ref="chart"
                         height={window.innerHeight / 3.5}
                         data={this.state.lineChartData}
-                        options={this.state.options}
+                        options={lineGraphOptions}
                     />
                 </AModal>
 

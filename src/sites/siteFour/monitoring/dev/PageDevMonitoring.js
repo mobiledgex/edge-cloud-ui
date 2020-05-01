@@ -1,4 +1,4 @@
-import {Center2, ClusterCluoudletLable, Legend} from '../PageMonitoringStyledComponent'
+import {Center2, ClusterCluoudletLable, Legend, PageMonitoringStyles} from '../PageMonitoringStyles'
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
@@ -43,8 +43,17 @@ import {
 import type {TypeBarChartData, TypeLineChartData} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
-import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, PageMonitoringStyles, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../PageMonitoringCommonService";
-import {getAllAppInstEventLogs, getAllClusterEventLogList, getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList, requestShowAppInstClientWS} from "../PageMonitoringMetricService";
+import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../PageMonitoringCommonService";
+import {
+    getAllAppInstEventLogs,
+    getAllClusterEventLogList,
+    getAppInstList,
+    getAppLevelUsageList,
+    getCloudletList,
+    getClusterLevelUsageList,
+    getClusterList,
+    requestShowAppInstClientWS
+} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
@@ -71,7 +80,7 @@ import {ColorLinearProgress, CustomSwitch, defaultLayoutXYPosForAppInst, default
 import type {PageDevMonitoringProps} from "./PageDevMonitoringProps";
 import {PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageDevMonitoringProps";
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
-import AppInstEventLogListHook_VirtualScroll from "../components/AppInstEventLogListHook_VirtualScroll";
+import AppInstEventLogListHookVirtualScroll from "../components/AppInstEventLogListHookVirtualScroll";
 import {fields} from '../../../../services/model/format'
 
 const ASubMenu = AMenu.SubMenu;
@@ -243,6 +252,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     isLegendExpanded: false,
                     chunkedSize: 12,
                     selectedAppInstIndex: -1,
+                    openTerminal: false,
+                    isOpenGlobe: false,
                 };
             }
 
@@ -418,72 +429,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             }
 
-            /* makeGradientBarCharData(chartData) {
-                 let canvasDatas = (canvas) => {
-                     let CHARTCOLORLIST = this.state.chartColorList;
-                     let gradientList = makeGradientColorList2(canvas, 305, CHARTCOLORLIST, true);
-                     let chartDatas = chartData.chartDataList
-                     let labelList = [];
-                     let graphDatasets = [];
-                     chartDatas.map((item, index) => {
-                         if (index > 0) {
-                             labelList.push(item[0]);
-                         }
-                     })
-
-                     chartDatas.map((item, index) => {
-                         if (index > 0) {
-                             let itemOne = item[3].replace('\"', '')
-                             itemOne = itemOne.replace('%', '')
-                             itemOne = parseFloat(itemOne)
-                             graphDatasets.push(itemOne);
-                         }
-                     })
-
-                     let dataSets = [
-                         {
-                             backgroundColor: gradientList,
-                             borderColor: gradientList,
-                             borderWidth: 1,
-                             hoverBackgroundColor: gradientList,
-                             hoverBorderColor: 'rgb(0,0,0)',
-                             data: graphDatasets,
-                         }
-                     ]
-
-                     let completeData = {
-                         labels: labelList,
-                         datasets: dataSets
-                     }
-
-                     return completeData;
-
-                 };
-                 return canvasDatas;
-             }*/
-
-            /*  makeBarChartData(hwType, graphType) {
-
-
-
-                  /!* if (!isEmpty(barChartDataSet)) {
-                       let chartDatas = this.makeGradientBarCharData(barChartDataSet)
-                       console.log("makeGradientBarCharData===>", barChartDataSet.chartDataList.length);
-                       return (
-                           <GradientBarChartContainer
-                               isResizeComplete={this.state.isResizeComplete}
-                               parent={this}
-                               loading={this.state.loading}
-                               chartDataSet={chartDatas}
-                               pHardwareType={hwType}
-                               graphType={graphType}
-                               dataLength={barChartDataSet.chartDataList.length}
-                           />
-                       )
-                   }*!/
-              }*/
-
-
             convertToClassification(pClassification) {
                 if (pClassification === CLASSIFICATION.APPINST) {
                     return "App Instance"
@@ -560,7 +505,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             async handleClusterDropdownAndReset(selectedClusterOne) {
                 try {
-                    let filteredClusterUsageList = []
+
                     //desc: When selected all Cluster options
                     if (selectedClusterOne === '') {
                         await this.setState({
@@ -577,16 +522,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let selectData = selectedClusterOne.split("|")
                         let selectedCluster = selectData[0].trim();
                         let selectedCloudlet = selectData[1].trim();
-                        //desc : filter  ClusterUsageList
+
+                        //desc: filter  ClusterUsageList
                         let allClusterUsageList = this.state.allClusterUsageList;
-                        let allUsageList = allClusterUsageList;
-                        allUsageList.map(item => {
+                        let filteredClusterUsageList = []
+                        allClusterUsageList.map(item => {
                             if (item.cluster === selectedCluster && item.cloudlet === selectedCloudlet) {
                                 filteredClusterUsageList.push(item)
                             }
                         })
-
-                        //desc: filter clusterEventlog
+                        //desc: filter clusterEventLog
                         let allClusterEventLogList = this.state.allClusterEventLogList
                         let filteredClusterEventLogList = []
                         allClusterEventLogList.map(item => {
@@ -604,8 +549,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         })
 
                         let appInstDropdown = makeDropdownListWithValuePipeForAppInst(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
-                        let bubbleChartData = await makeBubbleChartDataForCluster(this.state.filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
+                        let bubbleChartData = makeBubbleChartDataForCluster(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
                         await this.setState({
+                            bubbleChartData: bubbleChartData,
                             currentCluster: selectedClusterOne,
                             currentClassification: CLASSIFICATION.CLUSTER,
                             dropdownRequestLoading: false,
@@ -617,7 +563,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             appInstSelectBoxPlaceholder: 'Select App Inst',
                             filteredAppInstanceList: filteredAppInstList,
                             appInstanceListGroupByCloudlet: reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET),
-                            bubbleChartData: bubbleChartData,
                         });
 
                     }
@@ -899,20 +844,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     >
 
                         <div
-                            class='draggable'
-                            style={{
-                                position: 'absolute',
-                                right: 25, top: 10,
-                                display: 'inline-block',
-                                width: '100px',
-                                lineHeight: '1.2',
-                                fontSize: '18px',
-                                marginLeft: '15px',
-                                cursor: 'pointer',
-                                textAlign: 'right',
-                                marginRight: '-15px',
-                            }}>
-
+                            className='draggable'
+                            style={PageMonitoringStyles.gridItemHeader}>
                             {/*desc:############################*/}
                             {/*desc:    maximize button         */}
                             {/*desc:############################*/}
@@ -1047,7 +980,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                     return this.state.loading ? renderPlaceHolderLoader() :
-                        <AppInstEventLogListHook_VirtualScroll
+                        <AppInstEventLogListHookVirtualScroll
                             currentAppInst={this.state.currentAppInst}
                             parent={this}
                             handleAppInstDropdown={this.handleAppInstDropdown}
@@ -1868,6 +1801,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
                             loading={this.state.loading}
                         />
+
 
                         <div style={{
                             width: '100%',

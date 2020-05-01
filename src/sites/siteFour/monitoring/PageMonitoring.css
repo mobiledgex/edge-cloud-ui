@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Abel|Pathway+Gothic+One|Bungee|Candal|Righteous|Baloo+Bhai+2|Baloo+Bhaina+2|Ubuntu&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Acme|Roboto|Bungee|Barlow+Semi+Condensed|Candal|Encode+Sans+Condensed|Righteous|Karla|Roboto+Condensed&display=swap');
 
+
 .chartIcon {
     width: 120px;
     height: 100px;
@@ -554,4 +555,29 @@ tr td {
 .table0000001 {
     height: 30px;
     display: flex;
+}
+
+.ant-select-selection {
+    background-color: black !important;
+}
+
+.ant-select-dropdown-menu-item-active {
+    background-color: #373f4f !important;
+}
+
+/*.ant-select {
+    background-color: black !important;
+}
+
+.ant-select-sm {
+    background-color: black !important;
+}*/
+
+.draggable {
+    cursor: pointer;
+}
+
+.ant-select-dropdown-menu-item {
+    line-height: 15px !important;
+
 }
