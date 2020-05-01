@@ -117,7 +117,7 @@ class CloudletPoolReg extends React.Component {
             let step = [
                 { label: `${label} Organizations`, formType: 'Header', visible: true },
                 { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible: true, options: [region], value: region },
-                { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { disabled: true }, visible: true, value: data[fields.poolName] },
+                { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Cloudlet Pool Name', rules: { disabled: true }, visible: true, value: data[fields.poolName] },
                 { field: fields.organizations, label: 'Organizations', formType: 'DualList', rules: { required: true }, visible: true, options: this.getData(this.organizationList, fields.organizationName) },
                 { label: `${label} Organizations`, formType: 'Button', onClick: this.onAddOrganizations },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
