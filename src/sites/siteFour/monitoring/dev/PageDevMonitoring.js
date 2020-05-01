@@ -1727,14 +1727,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             makeLegend() {
-                const chunkedSize = this.state.chunkedSize;
-
-                //@desc: ##############################
-                //@desc: chunked array
-                //@desc: ##############################
-                let chunkArrayClusterUsageList = _.chunk(this.state.filteredClusterUsageList, chunkedSize);
                 let legendHeight = 26
-
                 if (this.state.loading) {
                     return (
                         <LegendOuterDiv style={{height: legendHeight}}>
