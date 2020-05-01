@@ -1,4 +1,4 @@
-import {ClusterCluoudletLabel, Legend, Legend2, PageMonitoringStyles} from '../PageMonitoringStyles'
+import {ClusterCluoudletLabel, Legend, LegendOuterDiv, PageMonitoringStyles} from '../PageMonitoringStyles'
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
@@ -1737,7 +1737,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                 if (this.state.loading) {
                     return (
-                        <Legend style={{height: legendHeight}}>
+                        <LegendOuterDiv style={{height: legendHeight}}>
                             <div style={{
                                 display: 'flex',
                                 alignSelf: 'center',
@@ -1758,13 +1758,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }}
                                 />
                             </div>
-                        </Legend>
+                        </LegendOuterDiv>
                     )
                 } else {
 
                     let filteredClusterUsageListLength = this.state.filteredClusterUsageList.length;
                     return (
-                        <Legend2 style={{height: this.state.legendHeight}}>
+                        <LegendOuterDiv style={{height: this.state.legendHeight}}>
 
                             {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
                                 <Row gutter={16} style={{flex: .97, marginLeft: 10, backgroundColor: 'transparent', justifyContent: 'center', alignSelf: 'center'}}>
@@ -1844,7 +1844,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     <UnfoldLess style={{fontSize: 18}}/>
                                 }
                             </div>
-                        </Legend2>
+                        </LegendOuterDiv>
                     )
                 }
             }

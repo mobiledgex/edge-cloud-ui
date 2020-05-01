@@ -524,32 +524,15 @@ export const AppInstOuter = styled.div`
     //margin-right: 50px;
 `
 
-
-export const Legend = styled.div`
-  display : flex;
-  justify-content: flex-start;
-  text-align: center;
-  flex-direction: row;
-  align-self: center;
-  font-size: 13px;
-  border-width: 0.1px;
-  border-style: dotted;
-  border-color: dimgrey;
-  padding:5px;
-  margin-left: 10px;
-  height: 50px;
-  width: 98.15%;
-`;
-
-export const Legend2 = styled.div`
+export const LegendOuterDiv = styled.div`
   border-width: 0.1px;
   border-style: dotted;
   border-color: dimgrey;
   margin-left: 10px; 
-  margin-right: 15px; 
   display: flex; 
   height: 25px;
-  width: 98.15%;
+  width: 98.925%;
+  margin-right: 5px;
 `
 
 export const ChartIconOuterDiv = styled.div`
