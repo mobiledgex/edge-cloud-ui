@@ -595,9 +595,3 @@ tr td {
     margin-left: 5px;
 }
 
-.bigModal {
-    animation-duration: 0s !important;
-    /*animation: zoomIn .5s !important;*/
-    /*animation: zoomIn .5s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards;*/
-    /*animation: blowUpModal .5s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards !important;*/
-}
