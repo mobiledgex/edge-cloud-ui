@@ -1743,6 +1743,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     let filteredClusterUsageListLength = this.state.filteredClusterUsageList.length;
                     return (
+
                         <LegendOuterDiv style={{height: this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.state.legendHeight : 25,}}>
                             {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
                                 <Row gutter={16} style={{flex: .97, marginLeft: 10, backgroundColor: 'transparent', justifyContent: 'center', alignSelf: 'center'}}>
