@@ -240,9 +240,8 @@ export const getCloudletList = async () => {
     try {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
-
-
         let regionList = localStorage.getItem('regions').split(",");
+
         let promiseList = []
         for (let i in regionList) {
             let requestData = {showSpinner: false, token: token, method: SHOW_ORG_CLOUDLET, data: {region: regionList[i]}}
@@ -987,12 +986,13 @@ export const getAppInstEventLogByRegion = async (region = 'EU') => {
 
 export const getAllAppInstEventLogs = async () => {
     try {
-        let promiseList = []
 
         let regionList = localStorage.getItem('regions').split(",");
+        let promiseList = []
         for (let i in regionList) {
             promiseList.push(getAppInstEventLogByRegion(regionList[i]))
         }
+
         let allAppInstEventLogList = await Promise.all(promiseList);
 
         let completedEventLogList = []
