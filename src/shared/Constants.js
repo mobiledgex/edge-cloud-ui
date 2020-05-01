@@ -34,11 +34,8 @@ export const GLOBE_THEME = {
     DARK: "DARK",
 }
 
-
 export const REGION = {
     ALL: 'ALL',
-    US: "US",
-    EU: 'EU',
 }
 
 export const THEME_OPTIONS = {
