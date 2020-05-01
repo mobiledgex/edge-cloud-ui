@@ -87,6 +87,7 @@ import {
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListHookVirtualScroll from "../components/AppInstEventLogListHookVirtualScroll";
 import {fields} from '../../../../services/model/format'
+import AddItemPopupContainer3 from "../components/AddItemPopupContainer3";
 
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -1298,19 +1299,19 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Add Item
                             </div>
                         </AMenu.Item>
-                        {/*<AMenu.Item style={{display: 'flex'}}
-                        key="1"
-                        onClick={() => {
-                        this.setState({
-                        isOpenEditView2: true,
-                        })
-                        }}
+                        <AMenu.Item style={{display: 'flex'}}
+                                    key="1"
+                                    onClick={() => {
+                                        this.setState({
+                                            isOpenEditView2: true,
+                                        })
+                                    }}
                         >
-                        <MaterialIcon icon={'add'} color={'white'}/>
-                        <div style={PageMonitoringStyles.listItemTitle}>
-                        Add Item for test
-                        </div>
-                        </AMenu.Item>*/}
+                            <MaterialIcon icon={'add'} color={'white'}/>
+                            <div style={PageMonitoringStyles.listItemTitle}>
+                                Add Item for test
+                            </div>
+                        </AMenu.Item>
                         {/*desc:#########################################*/}
                         {/*desc:Reload                                  */}
                         {/*desc:#########################################*/}
@@ -1865,7 +1866,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     }}>
 
                         <AddItemPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}/>
-                        <AddItemPopupContainer2 parent={this} isOpenEditView2={this.state.isOpenEditView2}/>
+                        <AddItemPopupContainer3 parent={this} isOpenEditView2={this.state.isOpenEditView2}/>
                         <MiniModalGraphContainer selectedClusterUsageOne={this.state.selectedClusterUsageOne}
                                                  selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
                                                  parent={this}
