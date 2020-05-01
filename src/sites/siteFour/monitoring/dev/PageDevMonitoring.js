@@ -44,16 +44,7 @@ import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData, TypeUtil
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
 import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../PageMonitoringCommonService";
-import {
-    getAllAppInstEventLogs,
-    getAllClusterEventLogList,
-    getAppInstList,
-    getAppLevelUsageList,
-    getCloudletList,
-    getClusterLevelUsageList,
-    getClusterList,
-    requestShowAppInstClientWS
-} from "../PageMonitoringMetricService";
+import {getAllAppInstEventLogs, getAllClusterEventLogList, getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList, requestShowAppInstClientWS} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
@@ -75,14 +66,7 @@ import BarChartContainer from "../components/BarChartContainer";
 import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryForClusterHook";
 import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryForAppInstHook";
 import type {PageDevMonitoringProps} from "./PageDevMonitoringProps";
-import {
-    ColorLinearProgress,
-    CustomSwitch,
-    defaultLayoutXYPosForAppInst,
-    defaultLayoutXYPosForCluster,
-    PageDevMonitoringMapDispatchToProps,
-    PageDevMonitoringMapStateToProps
-} from "./PageDevMonitoringProps";
+import {ColorLinearProgress, CustomSwitch, defaultLayoutXYPosForAppInst, defaultLayoutXYPosForCluster, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageDevMonitoringProps";
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListHookVirtualScroll from "../components/AppInstEventLogListHookVirtualScroll";
 import {fields} from '../../../../services/model/format'
@@ -1749,7 +1733,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 <Row gutter={16} style={{flex: .97, marginLeft: 10, backgroundColor: 'transparent', justifyContent: 'center', alignSelf: 'center'}}>
                                     {this.state.filteredClusterUsageList.map((item, index) => {
                                         return (
-                                            <Col className="gutterRow" span={this.state.legendColSize}>
+                                            <Col className="gutterRow" span={this.state.legendColSize} title={!this.state.isLegendExpanded ? item.cluster + '[' + item.cloudlet + ']' : null}>
                                                 <div style={{backgroundColor: 'transparent', marginTop: 2,}}>
                                                     <div
                                                         style={{
