@@ -18,9 +18,6 @@ import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WH
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import '../PageMonitoring.css'
 import {PageMonitoringStyles} from "../PageMonitoringStyles";
-
-const FontAwesomeIcon = require('react-fontawesome')
-
 const {Option} = Select;
 
 const DEFAULT_VIEWPORT = {
@@ -335,7 +332,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     onChange={async (value) => {
                         try {
                             let index = value
-
                             let lineColor = DARK_LINE_COLOR
                             let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
                             if (Number(index) >= 4) {
