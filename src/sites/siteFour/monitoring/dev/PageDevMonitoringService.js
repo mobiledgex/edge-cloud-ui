@@ -21,13 +21,7 @@ import {
     THEME_OPTIONS
 } from "../../../../shared/Constants";
 import PageDevMonitoring from "./PageDevMonitoring";
-import {
-    convertByteToMegaGigaByte,
-    convertToMegaGigaForNumber,
-    makeBubbleChartDataForCluster,
-    renderUsageByType,
-    showToast
-} from "../PageMonitoringCommonService";
+import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, renderUsageByType, showToast} from "../PageMonitoringCommonService";
 import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
 import {createMuiTheme} from "@material-ui/core";
 import {reactLocalStorage} from "reactjs-localstorage";
@@ -1421,7 +1415,7 @@ export const convertToClassification = (pClassification) => {
 
 export const reduceLegendClusterCloudletName = (item, _this: PageDevMonitoring) => {
     if (!_this.state.isLegendExpanded) {
-        return reduceString(item.cluster, 8) + "[" + reduceString(item.cloudlet, 8) + "]"
+        return reduceString(item.cluster, 7) + "[" + reduceString(item.cloudlet, 7) + "]"
     } else {//when legend expanded
         return reduceString(item.cluster, 23) + "[" + reduceString(item.cloudlet, 23) + "]"
     }
