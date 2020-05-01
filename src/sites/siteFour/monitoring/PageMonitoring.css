@@ -581,12 +581,7 @@ tr td {
     line-height: 15px !important;
 }
 
-.gutter-example .ant-row > div {
-    background: transparent;
-    border: 0;
-}
-
-.gutter-row {
+.gutterRow {
     display: flex;
 }
 
