@@ -1,4 +1,4 @@
-import {Legend, Legend2, PageMonitoringStyles} from '../PageMonitoringStyles'
+import {ClusterCluoudletLabel, Legend, Legend2, PageMonitoringStyles} from '../PageMonitoringStyles'
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
@@ -1762,58 +1762,77 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else {
 
-
-                    let legendHeight = this.state.filteredClusterList.length;
-
+                    let filteredClusterUsageListLength = this.state.filteredClusterUsageList.length;
                     return (
                         <Legend2 style={{height: this.state.legendHeight}}>
-                            <Row gutter={16} style={{flex: .97, marginLeft: 10, backgroundColor: 'red', justifyContent: 'center', alignSelf: 'center'}}>
-                                {this.state.filteredClusterList.map((item, index) => {
-                                    return (
-                                        <Col className="gutter-row" span={this.state.legendColSize}>
+
+                            {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
+                                <Row gutter={16} style={{flex: .97, marginLeft: 10, backgroundColor: 'transparent', justifyContent: 'center', alignSelf: 'center'}}>
+                                    {this.state.filteredClusterUsageList.map((item, index) => {
+                                        return (
+                                            <Col className="gutter-row" span={this.state.legendColSize}>
+                                                <div style={{backgroundColor: 'transparent', marginTop: 2,}}>
+                                                    <div
+                                                        style={{
+                                                            backgroundColor: this.state.chartColorList[index],
+                                                            width: 15,
+                                                            height: 15,
+                                                            borderRadius: 50,
+                                                        }}
+                                                    >
+                                                    </div>
+                                                </div>
+                                                <div className="clusterCloudletBox">
+                                                    {reduceLegendClusterName(item, this)}
+                                                </div>
+                                            </Col>
+                                        )
+                                    })}
+                                </Row>
+                                :
+                                <div style={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    marginLeft: 0,
+                                    backgroundColor: 'transparent',
+                                    flex: 1,
+                                }}>
+                                    <div style={{backgroundColor: 'transparent', marginTop: 2,}}>
+                                        <div style={{backgroundColor: 'transparent', marginTop: 2,}}>
                                             <div
                                                 style={{
-                                                    backgroundColor: this.state.chartColorList[index],
+                                                    backgroundColor: this.state.chartColorList[0],
                                                     width: 15,
                                                     height: 15,
                                                     borderRadius: 50,
-                                                    marginTop: 3,
                                                 }}
-                                                //title={}
                                             >
                                             </div>
-                                            <div className="clusterCloudletBox">
-                                                {reduceLegendClusterName(item, this)}
-                                            </div>
-                                        </Col>
-                                    )
-                                })}
-                            </Row>
+                                        </div>
+                                    </div>
+                                    <ClusterCluoudletLabel
+                                        style={{marginLeft: 5, marginRight: 15, marginBottom: 2}}>
+                                        {this.state.currentAppInst.split("|")[0]}
+                                    </ClusterCluoudletLabel>
+                                </div>
+
+                            }
                             {/*#########################*/}
                             {/*right fold/unfoled icons*/}
                             {/*#########################*/}
                             <div
-                                style={{
-                                    display: 'flex',
-                                    flex: .03,
-                                    justifyContent: 'flex-end',
-                                    alignItems: 'center',
-                                    marginLeft: 0,
-                                    marginRight: -15,
-                                    cursor: 'pointer',
-                                    backgroundColor: 'green',
-                                }}
+                                style={PageMonitoringStyles.expandIconDiv}
                                 onClick={() => {
                                     if (this.state.isLegendExpanded === false) {
                                         this.setState({
                                             isLegendExpanded: true,
-                                            legendHeight: (Math.ceil(legendHeight / 4)) * 25,
+                                            legendHeight: (Math.ceil(filteredClusterUsageListLength / 4)) * 25,
                                             legendColSize: 6,
                                         })
                                     } else {//when expanded
                                         this.setState({
                                             isLegendExpanded: false,
-                                            legendHeight: (Math.ceil(legendHeight / 8)) * 25,
+                                            legendHeight: (Math.ceil(filteredClusterUsageListLength / 8)) * 25,
                                             legendColSize: 3,
                                         })
                                     }

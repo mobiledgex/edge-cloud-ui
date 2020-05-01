@@ -150,6 +150,25 @@ export const PageMonitoringStyles = {
         alignSelf: 'center',
         marginLeft: -5,
     },
+    expandIconDiv: {
+        display: 'flex',
+        flex: .03,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        marginLeft: 0,
+        marginRight: 5,
+        cursor: 'pointer',
+        backgroundColor: 'transparent',
+    },
+    appInstLegendOuterDiv:{
+        display: 'flex',
+        flex: .975,
+        justifyContent: 'center',
+        marginLeft: 0,
+        backgroundColor: 'transparent',
+        marginTop: 3,
+        width: '98.2%',
+    },
     cell000: {
         marginLeft: 0,
         backgroundColor: '#a3a3a3',
@@ -529,7 +548,7 @@ export const Legend2 = styled.div`
   border-style: dotted;
   border-color: dimgrey;
   margin-left: 10px; 
-  margin-right: 25px; 
+  margin-right: 9px; 
   display: flex; 
   height: 25px;
 `
@@ -617,7 +636,7 @@ export const Center2 = styled.div`
 `
 
 
-export const ClusterCluoudletLable = styled.div`
+export const ClusterCluoudletLabel = styled.div`
   justify-content: center;
   text-align: center;
   flex-direction: row;

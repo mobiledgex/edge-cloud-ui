@@ -983,7 +983,6 @@ export const getAppInstEventLogByRegion = async (region = 'EU') => {
 
 }
 
-
 export const getAllAppInstEventLogs = async () => {
     try {
 
