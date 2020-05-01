@@ -1299,19 +1299,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Add Item
                             </div>
                         </AMenu.Item>
-                        <AMenu.Item style={{display: 'flex'}}
-                                    key="1"
-                                    onClick={() => {
-                                        this.setState({
-                                            isOpenEditView2: true,
-                                        })
-                                    }}
-                        >
-                            <MaterialIcon icon={'add'} color={'white'}/>
-                            <div style={PageMonitoringStyles.listItemTitle}>
-                                Add Item for test
-                            </div>
-                        </AMenu.Item>
                         {/*desc:#########################################*/}
                         {/*desc:Reload                                  */}
                         {/*desc:#########################################*/}
