@@ -513,17 +513,6 @@ export const Center0001 = styled.div`
     //margin-right: 50px;
 `
 
-export const AppInstOuter = styled.div`
-    margin-left: 20px;
-    font-size: 20px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    //background-color: green;
-    width: 100%;
-    //margin-right: 50px;
-`
-
 export const LegendOuterDiv = styled.div`
   border-width: 0.1px;
   border-style: dotted;
