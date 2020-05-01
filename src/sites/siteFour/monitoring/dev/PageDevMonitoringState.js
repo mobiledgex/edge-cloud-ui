@@ -155,6 +155,7 @@ export type PageDevMonitoringState = {
     isLegendExpanded: boolean,
     chunkedSize: number,
     selectedAppInstIndex: number,
+    isOpenGlobe:boolean,
 }
 
 

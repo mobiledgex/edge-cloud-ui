@@ -18,15 +18,21 @@ import {
     CLASSIFICATION,
     HARDWARE_TYPE,
     RECENT_DATA_LIMIT_COUNT,
-    THEME_OPTIONS,
-    USAGE_INDEX_FOR_CLUSTER
+    THEME_OPTIONS
 } from "../../../../shared/Constants";
 import PageDevMonitoring from "./PageDevMonitoring";
-import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, PageMonitoringStyles, renderUsageByType, showToast} from "../PageMonitoringCommonService";
+import {
+    convertByteToMegaGigaByte,
+    convertToMegaGigaForNumber,
+    makeBubbleChartDataForCluster,
+    renderUsageByType,
+    showToast
+} from "../PageMonitoringCommonService";
 import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
-import {CircularProgress, createMuiTheme} from "@material-ui/core";
+import {createMuiTheme} from "@material-ui/core";
 import {reactLocalStorage} from "reactjs-localstorage";
 import {findUsageIndexByKey, numberWithCommas} from "../PageMonitoringUtils";
+import {PageMonitoringStyles} from "../PageMonitoringStyles";
 
 export const materialUiDarkTheme = createMuiTheme({
     palette: {
@@ -556,7 +562,6 @@ export const handleHardwareTabChanges = async (_this: PageDevMonitoring, selecte
 
 
 /**
- * fixme: makeLineChartDataForAppInst========================>
  * @param hardwareUsageList
  * @param hardwareType
  * @param _this
@@ -578,10 +583,9 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
             let dateTimeList = [];
 
             hardwareUsageList.map((item: TypeAppInstanceUsage2, index) => {
-                let usageColumnList = hardwareUsageList[0].columns;
+                let usageColumnList = item.columns;
                 let seriesValues = [];
                 let hardWareUsageIndex;
-
                 if (hardwareType === HARDWARE_TYPE.CPU) {
                     seriesValues = item.cpuSeriesValue
                 } else if (hardwareType === HARDWARE_TYPE.MEM) {
@@ -641,49 +645,16 @@ export const makeLineChartDataForAppInst = (hardwareUsageList: Array, hardwareTy
 
 };
 
-export const convertHwTypePhrases = (pHardwareType) => {
-    try {
-        if (pHardwareType === HARDWARE_TYPE.RECVBYTES || pHardwareType === HARDWARE_TYPE.SENDBYTES) {
-            return "Network"
-        } else if (pHardwareType === HARDWARE_TYPE.TCPCONNS || pHardwareType === HARDWARE_TYPE.TCPRETRANS) {
-            return "Tcp"
-        } else if (pHardwareType === HARDWARE_TYPE.UDPRECV || pHardwareType === HARDWARE_TYPE.UDPSENT) {
-            return "Udp"
-        } else if (pHardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || pHardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || pHardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-            return "Connections"
-        } else if (pHardwareType === HARDWARE_TYPE.CPU) {
-            return "Cpu"
-        } else if (pHardwareType === HARDWARE_TYPE.MEM) {
-            return "Mem"
-        } else if (pHardwareType === HARDWARE_TYPE.DISK) {
-            return "Disk"
-        }
-    } catch (e) {
-
-    }
-};
-
-export const renderSmallProgress = () => {
-    return (
-        <div style={{display: 'flex', width: '100%', justifyContent: 'center', height: 20}}>
-            <CircularProgress style={{fontWeight: 'bold', color: '#1cecff'}}
-                              color={'#1cecff'}
-                              size={15}/>
-        </div>
-    )
-}
-
-
 /**
- * fixme: makeLineChartDataForCluster========================>
- * @param pUsageList
+ *
+ * @param hardwareUsageList
  * @param hardwareType
  * @param _this
  * @returns {string|{levelTypeNameList: *, hardwareType: *, usageSetList: *, newDateTimeList: *}}
  */
-export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: string, _this) => {
+export const makeLineChartDataForCluster = (hardwareUsageList: Array, hardwareType: string, _this: PageDevMonitoring) => {
     try {
-        if (pUsageList.length === 0) {
+        if (hardwareUsageList.length === 0) {
             return "";
         } else {
             let classificationName = '';
@@ -691,41 +662,35 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
             let usageSetList = [];
             let dateTimeList = [];
             let series = [];
-            for (let i in pUsageList) {
-                let usageIndex = 0;
+
+            hardwareUsageList.map((item, index) => {
+                let usageColumnList = item.columns;
+                let hardWareUsageIndex;
                 if (hardwareType === HARDWARE_TYPE.CPU) {
-                    series = pUsageList[i].cpuSeriesList
-                    usageIndex = USAGE_INDEX_FOR_CLUSTER.CPU
+                    series = item.cpuSeriesList
                 } else if (hardwareType === HARDWARE_TYPE.MEM) {
-                    series = pUsageList[i].memSeriesList
-                    usageIndex = USAGE_INDEX_FOR_CLUSTER.MEM
+                    series = item.memSeriesList
                 } else if (hardwareType === HARDWARE_TYPE.DISK) {
-                    series = pUsageList[i].diskSeriesList
-                    usageIndex = USAGE_INDEX_FOR_CLUSTER.DISK
+                    series = item.diskSeriesList
                 } else if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
-                    series = pUsageList[i].tcpSeriesList
-                    usageIndex = USAGE_INDEX_FOR_CLUSTER.TCPCONNS
+                    series = item.tcpSeriesList
                 } else if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
-                    series = pUsageList[i].tcpSeriesList
-                    usageIndex = USAGE_INDEX_FOR_CLUSTER.TCPRETRANS
+                    series = item.tcpSeriesList
                 } else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
-                    series = pUsageList[i].udpSeriesList
-                    usageIndex = USAGE_INDEX_FOR_CLUSTER.UDPSENT
+                    series = item.udpSeriesList
                 } else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
-                    series = pUsageList[i].udpSeriesList
-                    usageIndex = USAGE_INDEX_FOR_CLUSTER.UDPRECV
+                    series = item.udpSeriesList
                 } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-                    series = pUsageList[i].networkSeriesList
-                    usageIndex = USAGE_INDEX_FOR_CLUSTER.SENDBYTES
+                    series = item.networkSeriesList
                 } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-                    series = pUsageList[i].networkSeriesList
-                    usageIndex = USAGE_INDEX_FOR_CLUSTER.RECVBYTES
+                    series = item.networkSeriesList
                 }
 
-                classificationName = pUsageList[i].cluster + "\n[" + pUsageList[i].cloudlet + "]";
+                hardWareUsageIndex = findUsageIndexByKey(usageColumnList, hardwareType)
+                classificationName = item.cluster + "\n[" + item.cloudlet + "]";
                 let usageList = [];
                 for (let j in series) {
-                    let usageOne = series[j][usageIndex];
+                    let usageOne = series[j][hardWareUsageIndex];
                     usageList.push(usageOne);
                     let dateOne = series[j]["0"];
                     dateOne = dateOne.toString().split("T");
@@ -734,9 +699,10 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
 
                 levelTypeNameList.push(classificationName);
                 usageSetList.push(usageList);
-            }
+            });
 
-            //@todo: CUT LIST INTO RECENT_DATA_LIMIT_COUNT
+
+            //@desc: cut List with RECENT_DATA_LIMIT_COUNT
             let newDateTimeList = [];
             for (let i in dateTimeList) {
                 if (i < RECENT_DATA_LIMIT_COUNT) {
@@ -747,21 +713,19 @@ export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: str
 
             }
 
-            let lineChartDataSet = {
+            return {
                 levelTypeNameList,
                 usageSetList,
                 newDateTimeList,
                 hardwareType,
-            };
-
-
-            return lineChartDataSet
+            }
         }
     } catch (e) {
 
     }
 
 };
+
 
 /**
  *
