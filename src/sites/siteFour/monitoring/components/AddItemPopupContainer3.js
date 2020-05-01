@@ -121,11 +121,11 @@ export default withSize()(
                         }}
                         closable={false}
                         bodyStyle={{
-                            height: window.innerHeight * 0.915,
+                            height: window.innerHeight * 0.935,
                             backgroundColor: 'rgb(41, 44, 51)',
                         }}
                         width={'86.2%'}
-                        style={{marginLeft: 260, top: 53}}
+                        style={{marginLeft: 258, top: 53, height: window.innerHeight * 0.935,}}
                         footer={null}
                     >
                         <div>
