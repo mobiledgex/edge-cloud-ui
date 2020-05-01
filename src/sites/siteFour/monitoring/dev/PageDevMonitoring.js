@@ -1865,7 +1865,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     }}>
 
                         <AddItemPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}/>
-                        <AddItemPopupContainer3 parent={this} isOpenEditView2={this.state.isOpenEditView2}/>
                         <MiniModalGraphContainer selectedClusterUsageOne={this.state.selectedClusterUsageOne}
                                                  selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
                                                  parent={this}
