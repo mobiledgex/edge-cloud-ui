@@ -1,7 +1,7 @@
 import axios from "axios";
 import type {TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../shared/Types";
 import {SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET} from "../../../services/endPointTypes";
-import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT, REGION, USER_TYPE} from "../../../shared/Constants";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../shared/Constants";
 import {sendSyncRequest} from "../../../services/serviceMC";
 import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
 import {formatData} from "../../../services/formatter/formatComputeInstance";
@@ -203,7 +203,6 @@ export const getClusterList = async () => {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
         let regionList = localStorage.getItem('regions').split(",");
-
         let promiseList = []
         for (let i in regionList) {
             let requestData = {showSpinner: false, token: token, method: SHOW_CLUSTER_INST, data: {region: regionList[i]}}
@@ -241,25 +240,16 @@ export const getCloudletList = async () => {
     try {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
-        let requestData = {
-            showSpinner: false,
-            token: token,
-            method: SHOW_ORG_CLOUDLET,
-            data: {region: REGION.EU, org: localStorage.selectOrg}
-        };
-        let requestData2 = {
-            showSpinner: false,
-            token: token,
-            method: SHOW_ORG_CLOUDLET,
-            data: {region: REGION.US, org: localStorage.selectOrg}
-        };
-        let promiseList = []
-        promiseList.push(sendSyncRequest(this, requestData))
-        promiseList.push(sendSyncRequest(this, requestData2))
-        let orgCloudletList = await Promise.all(promiseList);
-        let cloudletEU = orgCloudletList[0].response.data;
-        let cloudletUS = orgCloudletList[1].response.data;
 
+
+        let regionList = localStorage.getItem('regions').split(",");
+        let promiseList = []
+        for (let i in regionList) {
+            let requestData = {showSpinner: false, token: token, method: SHOW_ORG_CLOUDLET, data: {region: regionList[i]}}
+            promiseList.push(sendSyncRequest(this, requestData))
+        }
+
+        let orgCloudletList = await Promise.all(promiseList);
         let mergedCloudletList = [];
         orgCloudletList.map(item => {
             //@todo : null check
@@ -270,17 +260,6 @@ export const getCloudletList = async () => {
                 })
             }
         })
-
-
-        //todo: current org에 관한것만 flitering
-        /* let mergedOrgCloudletList = []
-         mergedCloudletList.map(item => {
-             if (item.Operator === localStorage.selectOrg) {
-                 mergedOrgCloudletList.push(item)
-             }
-         })
-
-         console.log("mergedOrgCloudletList====>", mergedOrgCloudletList);*/
 
         return mergedCloudletList;
     } catch (e) {
@@ -293,17 +272,14 @@ export const getCloudletListAll = async () => {
 
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
-        //data: { region: region, org: _self.props.selectOrg || localStorage.selectOrg }
-        let requestData = {showSpinner: false, token: token, method: SHOW_CLOUDLET, data: {region: REGION.EU}};
-        let requestData2 = {showSpinner: false, token: token, method: SHOW_CLOUDLET, data: {region: REGION.US}};
+        let regionList = localStorage.getItem('regions').split(",");
+
         let promiseList = []
-
-        promiseList.push(sendSyncRequest(this, requestData))
-        promiseList.push(sendSyncRequest(this, requestData2))
+        for (let i in regionList) {
+            let requestData = {showSpinner: false, token: token, method: SHOW_CLOUDLET, data: {region: regionList[i]}}
+            promiseList.push(sendSyncRequest(this, requestData))
+        }
         let orgCloudletList = await Promise.all(promiseList);
-        /*let cloudletEU = orgCloudletList[0].response.data;
-        let cloudletUS = orgCloudletList[1].response.data;*/
-
         let mergedCloudletList = [];
         orgCloudletList.map(item => {
             //@todo : null check
@@ -1011,14 +987,14 @@ export const getAppInstEventLogByRegion = async (region = 'EU') => {
 
 export const getAllAppInstEventLogs = async () => {
     try {
-        let appInstEventLogByRegion = []
-        appInstEventLogByRegion.push(getAppInstEventLogByRegion(REGION.EU))
-        appInstEventLogByRegion.push(getAppInstEventLogByRegion(REGION.US))
+        let promiseList = []
 
-        let allAppInstEventLogList = await Promise.all(appInstEventLogByRegion);
+        let regionList = localStorage.getItem('regions').split(",");
+        for (let i in regionList) {
+            promiseList.push(getAppInstEventLogByRegion(regionList[i]))
+        }
+        let allAppInstEventLogList = await Promise.all(promiseList);
 
-
-        ///////
         let completedEventLogList = []
         allAppInstEventLogList.map((item, index) => {
 
