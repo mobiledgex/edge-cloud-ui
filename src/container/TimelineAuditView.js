@@ -152,7 +152,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 })
             }
 
-            setInterval(() => this.realtimeChange()), (1000*60)
+            setInterval(() => {this.realtimeChange()}, (1000*60));
 
             this.setState({
                 mounted: true,
