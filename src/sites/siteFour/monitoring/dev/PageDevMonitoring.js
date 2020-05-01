@@ -1817,9 +1817,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 </div>
 
                             }
-                            {/*#########################*/}
-                            {/*right fold/unfoled icons*/}
-                            {/*#########################*/}
+                            {/*################################*/}
+                            {/*fold/unfoled icons  on right    */}
+                            {/*################################*/}
+                            {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
                             <div
                                 style={PageMonitoringStyles.expandIconDiv}
                                 onClick={() => {
@@ -1844,6 +1845,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     <UnfoldLess style={{fontSize: 18}}/>
                                 }
                             </div>
+                            }
                         </LegendOuterDiv>
                     )
                 }
