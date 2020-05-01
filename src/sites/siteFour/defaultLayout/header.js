@@ -80,7 +80,7 @@ export default function Header(props) {
                 </IconButton>
                 <div className={classes.grow}/>
                 <div className={classes.sectionDesktop}>
-                    <IconButton>
+                    <IconButton disabled={true}>
                         {localStorage.selectOrg ?
                             <h5>
                                 <strong>Organization:</strong> {localStorage.selectOrg}</h5> : null}
