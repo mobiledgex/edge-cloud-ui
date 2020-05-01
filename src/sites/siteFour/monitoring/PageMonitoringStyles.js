@@ -521,8 +521,18 @@ export const Legend = styled.div`
   margin-left: 10px;
   height: 50px;
   width:98.8%;
-  //marginLeft:50px;
+  marginLeft:15px;
 `;
+
+export const Legend2 = styled.div`
+  border-width: 0.1px;
+  border-style: dotted;
+  border-color: dimgrey;
+  margin-left: 10px; 
+  margin-right: 25px; 
+  display: flex; 
+  height: 25px;
+`
 
 /*const _Ripples = ({className, children}) => (
     <Ripples

@@ -1,4 +1,4 @@
-import {Center2, ClusterCluoudletLable, Legend, PageMonitoringStyles} from '../PageMonitoringStyles'
+import {Legend, Legend2, PageMonitoringStyles} from '../PageMonitoringStyles'
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
@@ -6,7 +6,7 @@ import {Dropdown} from 'semantic-ui-react'
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
 import {CircularProgress, Dialog, Toolbar} from '@material-ui/core'
-import {Dropdown as ADropdown, Menu as AMenu,} from 'antd';
+import {Col, Dropdown as ADropdown, Menu as AMenu, Row} from 'antd';
 import {
     defaultHwMapperListForCluster,
     defaultLayoutForAppInst,
@@ -24,8 +24,8 @@ import {
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipeForCluster,
     makeSelectBoxListWithValuePipe,
-    reduceString,
-    revertToDefaultLayout,
+    reduceLegendClusterName,
+    revertToDefaultLayout, tempClusterList,
 } from "./PageDevMonitoringService";
 import {
     ADD_ITEM_LIST,
@@ -40,7 +40,7 @@ import {
     RECENT_DATA_LIMIT_COUNT,
     THEME_OPTIONS_LIST
 } from "../../../../shared/Constants";
-import type {TypeBarChartData, TypeLineChartData} from "../../../../shared/Types";
+import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData, TypeUtilization} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
 import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../PageMonitoringCommonService";
@@ -75,16 +75,178 @@ import {THEME_TYPE} from "../../../../themeStyle";
 import BarChartContainer from "../components/BarChartContainer";
 import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryForClusterHook";
 import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryForAppInstHook";
-import type {PageDevMonitoringState} from "./PageDevMonitoringState";
-import {ColorLinearProgress, CustomSwitch, defaultLayoutXYPosForAppInst, defaultLayoutXYPosForCluster} from "./PageDevMonitoringState";
 import type {PageDevMonitoringProps} from "./PageDevMonitoringProps";
-import {PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageDevMonitoringProps";
+import {
+    ColorLinearProgress,
+    CustomSwitch,
+    defaultLayoutXYPosForAppInst,
+    defaultLayoutXYPosForCluster,
+    PageDevMonitoringMapDispatchToProps,
+    PageDevMonitoringMapStateToProps
+} from "./PageDevMonitoringProps";
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListHookVirtualScroll from "../components/AppInstEventLogListHookVirtualScroll";
 import {fields} from '../../../../services/model/format'
 
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
+
+type PageDevMonitoringState = {
+    layoutForCluster: any,
+    layoutForAppInst: any,
+    date: string,
+    time: string,
+    dateTime: string,
+    datesRange: string,
+    appInstanceListGroupByCloudlet: any,
+    loading: boolean,
+    loading0: boolean,
+    dropdownCloudletList: any,
+    clusterInstanceGroupList: any,
+    startTime: string,
+    endTime: string,
+    clusterUsageList: any,
+    filteredCpuUsageList: any,
+    filteredMemUsageList: any,
+    filteredDiskUsageList: any,
+    filteredNetworkUsageList: any,
+    counter: number,
+    appInstanceList: Array<TypeAppInstance>,
+    allAppInstanceList: Array<TypeAppInstance>,
+    appInstanceOne: TypeAppInstance,
+    currentRegion: string,
+    cloudLetSelectBoxPlaceholder: string,
+    clusterSelectBoxPlaceholder: string,
+    appInstSelectBoxPlaceholder: string,
+    currentCloudLet: string,
+    currentCluster: string,
+    currentAppInst: string,
+    isReady: boolean,
+    isModalOpened: false,
+    appInstanceListTop5: Array,
+    selectBoxTop5InstanceForMem: Array,
+    currentAppInstaceListIndex: number,
+    loading777: boolean,
+    currentUtilization: TypeUtilization,
+    regionSelectBoxClearable: boolean,
+    cloudLetSelectBoxClearable: boolean,
+    clusterSelectBoxClearable: boolean,
+    appInstSelectBoxClearable: boolean,
+    isShowUtilizationArea: boolean,
+    currentGridIndex: number,
+    currentTabIndex: number,
+    isShowBottomGrid: boolean,
+    isShowBottomGridForMap: boolean,
+    mapZoomLevel: number,
+    currentHardwareType: string,
+    bubbleChartData: Array,
+    currentNetworkType: string,
+    lineChartData: Array,
+    isReadyNetWorkCharts: boolean,
+    isEnableCloutletDropDown: boolean,
+    isEnableClusterDropDown: boolean,
+    isEnableAppInstDropDown: boolean,
+    currentNetworkTab: number,
+    allGridInstanceList: TypeGridInstanceList,
+    filteredGridInstanceList: any,
+    gridInstanceListMemMax: number,
+    networkTabIndex: number,
+    gridInstanceListCpuMax: number,
+    usageListByDate: Array,
+    userType: string,
+    placeHolderStateTime: string,
+    placeHolderEndTime: string,
+    allConnectionsUsageList: Array,
+    filteredConnectionsUsageList: Array,
+    terminalData: Array,
+    openTerminal: Boolean,
+    connectionsTabIndex: number,
+    tcpTabIndex: number,
+    udpTabIndex: number,
+    maxCpu: number,
+    maxMem: number,
+    intervalLoading: boolean,
+    isRequesting: false,
+    clusterDropdownList: Array,
+    currentClassification: string,
+    cloudletList: Array,
+    filteredAppInstanceList: Array,
+    appInstDropdown: Array,
+    dropdownRequestLoading: boolean,
+    cloudletKeys: Array,
+    allClusterUsageList: Array,
+    filteredClusterUsageList: Array,
+    filteredAppInstUsageList: Array,
+    allAppInstUsageList: Array,
+    clusterListLoading: boolean,
+    bubbleChartLoader: boolean,
+    modalIsOpen: boolean,
+    currentGraphCluster: string,
+    currentAppInstLineChartData: Array,
+    currentGraphAppInst: string,
+    mapPopUploading: boolean,
+    selectedClusterUsageOne: Array,
+    selectedClusterUsageOneIndex: number,
+    gridDraggable: boolean,
+    diskGridItemOneStyleTranslate: string,
+    layoutMapperForCluster: [],
+    layoutMapperForAppInst: [],
+    hwListForCluster: [],
+    isDraggable: boolean,
+    isUpdateEnableForMap: boolean,
+    isStream: boolean,
+    gridLayoutMapperToHwList: [],
+    hwListForAppInst: [],
+    isShowBigGraph: boolean,
+    popupGraphHWType: string,
+    chartDataForRendering: any,
+    popupGraphType: string,
+    isPopupMap: boolean,
+    chartColorList: Array,
+    themeTitle: string,
+    addItemList: any,
+    themeOptions: any,
+    isNoData: boolean,
+    isBubbleChartMaked: boolean,
+    allClusterEventLogList: any,
+    filteredClusterEventLogList: any,
+    isResizeComplete: boolean,
+    allAppInstEventLogs: any,
+    filteredAppInstEventLogs: any,
+    isFixGrid: boolean,
+    webSocketLoading: boolean,
+    selectedClientLocationListOnAppInst: any,
+    isMapUpdate: boolean,
+    currentWidgetWidth: number,
+    isOpenEditView: boolean,
+    isFullScreenMap: boolean,
+    isStackedLineChart: boolean,
+    isGradientColor: boolean,
+    clusterList: any,
+    isShowFilter: boolean,
+    currentNavigation: string,
+    allAppInstDropdown: any,
+    isShowAppInstPopup: boolean,
+    isShowPopOverMenu: boolean,
+    isOpenEditView2: boolean,
+    showAppInstClient: boolean,
+    filteredClusterList: any,
+    chartDataForBigModal: any,
+    //usageListForPerformanceSum: any,
+    windowDimensions: number,
+    currentWidth: number,
+    emptyPosXYInGrid: any,
+    emptyPosXYInGrid2: any,
+    toastMessage: string,
+    isToastOpen: boolean,
+    mapLoading: boolean,
+    legendHeight: number,
+    isLegendExpanded: boolean,
+    chunkedSize: number,
+    selectedAppInstIndex: number,
+    isOpenGlobe: boolean,
+    legendColSize: number,
+}
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
         class PageDevMonitoring extends Component<PageDevMonitoringProps, PageDevMonitoringState> {
@@ -249,11 +411,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     toastMessage: '',
                     isToastOpen: false,
                     mapLoading: false,
-                    isLegendExpanded: false,
                     chunkedSize: 12,
                     selectedAppInstIndex: -1,
                     openTerminal: false,
                     isOpenGlobe: false,
+                    isLegendExpanded: false,
+                    legendColSize: 3,
                 };
             }
 
@@ -326,6 +489,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     }));
 
                     await this.setState({
+                        legendHeight: (Math.ceil(clusterList.length / 8)) * 25,
                         isNoData: appInstList.length === 0,
                         bubbleChartData: bubbleChartData,
                         allClusterEventLogList: allClusterEventLogList,
@@ -1561,14 +1725,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            reduceLegendClusterName(item) {
-                if (this.state.chunkedSize === 12) {
-                    return reduceString(item.cluster, 5) + "[" + reduceString(item.cloudlet, 5) + "]"
-                } else {//when legend expanded
-                    return reduceString(item.cluster, 23) + "[" + reduceString(item.cloudlet, 23) + "]"
-                }
-            }
-
 
             makeLegend() {
                 const chunkedSize = this.state.chunkedSize;
@@ -1577,16 +1733,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 //@desc: chunked array
                 //@desc: ##############################
                 let chunkArrayClusterUsageList = _.chunk(this.state.filteredClusterUsageList, chunkedSize);
-
-                /*let fullClusterList = '';
-                let region = '';*/
-                if (this.state.currentCluster) {
-                    let cluster = this.state.currentCluster.split(" | ")[0]
-                    let cloudlet = this.state.currentCluster.split(" | ")[1]
-                    /*region = this.state.currentCluster.split(" | ")[2]
-                    fullClusterList = cloudlet + " > " + cluster;*/
-                }
-
                 let legendHeight = 26
 
                 if (this.state.loading) {
@@ -1615,147 +1761,71 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         </Legend>
                     )
                 } else {
+
+
+                    let legendHeight = this.state.filteredClusterList.length;
+
                     return (
-                        <Legend
-                            style={{height: this.state.isLegendExpanded && this.state.currentClassification === CLASSIFICATION.CLUSTER ? chunkArrayClusterUsageList.length * legendHeight : legendHeight}}>
-
-                            {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-
-                                <div style={{flex: .97, marginTop: -3,}}>
-                                    {chunkArrayClusterUsageList.map((itemList, outerIndex) => {
-                                        return (
-                                            //desc: ################################
-                                            //desc: oneROW
-                                            //desc: ################################
-                                            <div style={{display: 'flex', marginTop: 0, marginLeft: 5, backgroundColor: 'transparent', height: 22,}}>
-                                                {itemList.map((item, index) => {
-                                                    return (
-
-                                                        //desc: ################################
-                                                        //desc: cluster cell one
-                                                        //desc: ################################
-                                                        <Center2 style={{width: chunkedSize === 12 ? 135 : 390, backgroundColor: 'transparent'}}>
-                                                            {/*desc: ##############*/}
-                                                            {/*desc: circle area   */}
-                                                            {/*desc: ##############*/}
-                                                            <div
-                                                                style={{
-                                                                    backgroundColor: this.state.chartColorList[index + (outerIndex * chunkedSize)],
-                                                                    width: 15,
-                                                                    height: 15,
-                                                                    borderRadius: 50,
-                                                                    marginTop: 3,
-                                                                }}
-                                                                title={item.cluster + " [" + item.cloudlet + "]"}
-                                                            >
-
-                                                            </div>
-
-                                                            {!this.state.isLegendExpanded ?
-                                                                <ClusterCluoudletLable
-                                                                    style={{
-                                                                        marginLeft: 4,
-                                                                        marginRight: 10,
-                                                                        marginBottom: 0,
-                                                                        cursor: 'pointer',
-                                                                        marginTop: 2,
-                                                                    }}
-                                                                    title={item.cluster + " [" + item.cloudlet + "]"}
-                                                                >
-                                                                    {this.reduceLegendClusterName(item)}
-                                                                </ClusterCluoudletLable>
-                                                                :
-                                                                <ClusterCluoudletLable
-                                                                    style={{
-                                                                        marginLeft: 4,
-                                                                        marginRight: 10,
-                                                                        marginBottom: 0,
-                                                                        cursor: 'pointer',
-                                                                        marginTop: 2,
-
-
-                                                                    }}
-                                                                    title={item.cluster + " [" + item.cloudlet + "]"}
-                                                                >
-                                                                    {this.reduceLegendClusterName(item)}
-                                                                </ClusterCluoudletLable>
-                                                            }
-                                                        </Center2>
-
-                                                    )
-                                                })}
+                        <Legend2 style={{height: this.state.legendHeight}}>
+                            <Row gutter={16} style={{flex: .97, marginLeft: 10, backgroundColor: 'red', justifyContent: 'center', alignSelf: 'center'}}>
+                                {this.state.filteredClusterList.map((item, index) => {
+                                    return (
+                                        <Col className="gutter-row" span={this.state.legendColSize}>
+                                            <div
+                                                style={{
+                                                    backgroundColor: this.state.chartColorList[index],
+                                                    width: 15,
+                                                    height: 15,
+                                                    borderRadius: 50,
+                                                    marginTop: 3,
+                                                }}
+                                                //title={}
+                                            >
                                             </div>
-                                        )
-                                    })}
-                                </div> :
-                                !this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST &&
-                                <div style={{
-                                    display: 'flex',
-                                    flex: .975,
-                                    justifyContent: 'center',
-                                    marginLeft: 0,
-                                    backgroundColor: 'transparent',
-                                    marginTop: 3,
-                                    width: '98.2%',
-                                }}>
-                                    <div style={{backgroundColor: 'transparent'}}>
-                                        <div style={{
-                                            backgroundColor: this.state.chartColorList[0],
-                                            width: 15,
-                                            height: 15,
-                                            borderRadius: 50,
-                                            marginTop: -2,
-                                        }}>
-                                        </div>
-                                    </div>
-                                    <ClusterCluoudletLable
-                                        style={{marginLeft: 5, marginRight: 15, marginBottom: 2}}>
-                                        {this.state.currentAppInst.split("|")[0]}
-                                    </ClusterCluoudletLable>
-                                </div>
-
-                            }
-
-                            {/*desc: ################################*/}
-                            {/*desc: unfold_more_less_icon           */}
-                            {/*desc: ################################*/}
-                            {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER &&
+                                            <div className="clusterCloudletBox">
+                                                {reduceLegendClusterName(item, this)}
+                                            </div>
+                                        </Col>
+                                    )
+                                })}
+                            </Row>
+                            {/*#########################*/}
+                            {/*right fold/unfoled icons*/}
+                            {/*#########################*/}
                             <div
                                 style={{
                                     display: 'flex',
-                                    flex: .025,
+                                    flex: .03,
                                     justifyContent: 'flex-end',
                                     alignItems: 'center',
                                     marginLeft: 0,
                                     marginRight: -15,
                                     cursor: 'pointer',
-                                    //backgroundColor: 'blue',
+                                    backgroundColor: 'green',
                                 }}
                                 onClick={() => {
-                                    if (this.state.chunkedSize === 12) {
+                                    if (this.state.isLegendExpanded === false) {
                                         this.setState({
                                             isLegendExpanded: true,
-                                            chunkedSize: 4,
+                                            legendHeight: (Math.ceil(legendHeight / 4)) * 25,
+                                            legendColSize: 6,
                                         })
-                                    } else {
+                                    } else {//when expanded
                                         this.setState({
                                             isLegendExpanded: false,
-                                            chunkedSize: 12,
+                                            legendHeight: (Math.ceil(legendHeight / 8)) * 25,
+                                            legendColSize: 3,
                                         })
                                     }
                                 }}
                             >
-                                {this.state.isLegendExpanded ?
-                                    <div style={{display: 'flex', alignSelf: 'flex-start'}}>
-                                        <UnfoldLess style={{fontSize: 18,}}/>
-                                    </div>
+                                {!this.state.isLegendExpanded ?
+                                    <UnfoldMore style={{fontSize: 18}}/>
                                     :
-                                    <UnfoldMore style={{fontSize: 18, color: chunkArrayClusterUsageList.length > 1 ? 'rgb(118, 255, 3)' : 'white'}}/>
+                                    <UnfoldLess style={{fontSize: 18}}/>
                                 }
                             </div>
-                            }
-
-                        </Legend>
+                        </Legend2>
                     )
                 }
             }

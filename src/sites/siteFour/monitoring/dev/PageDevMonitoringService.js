@@ -1425,42 +1425,77 @@ export const convertToClassification = (pClassification) => {
     }
 };
 
+export const reduceLegendClusterName = (item, _this: PageDevMonitoring) => {
+    if (!_this.state.isLegendExpanded) {
+        return reduceString(item.cluster, 5) + "[" + reduceString(item.cloudlet, 5) + "]"
+    } else {//when legend expanded
+        return reduceString(item.cluster, 23) + "[" + reduceString(item.cloudlet, 23) + "]"
+    }
+}
+
 
 //let chunkedSize = 12;
 //let chunkArrayClusterUsageList = this.toChunkArray2(this.state.filteredClusterUsageList, this.state.chunkedSize);  //realdata
 //let chunkArrayClusterUsageList = this.toChunkArray2(tempClusterList, chunkedSize);
 //_.chunk(['a', 'b', 'c', 'd'], 2);
 export const tempClusterList = [
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet2',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet3',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet4',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet5',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet6',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet7',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet8',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet9',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet10',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet11',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet12',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet13',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet14',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudle115',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet16',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet17',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet18',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet19',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet20',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet21',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet22',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet23',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet24',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet25',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet26',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet27',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet28',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet29',
-    'autoclustermobiledgexsdkdemo [mexplat-stage-hamburg-cloudlet30',
+    {
+        cluster: 'autoclustermobiledgexsdkdemo',
+        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
+    },
+    {
+        cluster: 'autoclustermobiledgexsdkdemo',
+        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
+    },
+    {
+        cluster: 'autoclustermobiledgexsdkdemo',
+        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
+    },
+    {
+        cluster: 'autoclustermobiledgexsdkdemo',
+        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
+    },
+    {
+        cluster: 'autoclustermobiledgexsdkdemo',
+        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
+    },
+    {
+        cluster: 'autoclustermobiledgexsdkdemo',
+        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
+    },
+    {
+        cluster: 'autoclustermobiledgexsdkdemo',
+        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
+    },
+    {
+        cluster: 'autoclustermobiledgexsdkdemo',
+        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
+    },
+    {
+        cluster: 'autoclustermobiledgexsdkdemo',
+        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
+    },
+    {
+        cluster: 'autoclustermobiledgexsdkdemo',
+        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
+    },
+    {
+        cluster: 'autoclustermobiledgexsdkdemo',
+        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
+    },
+    {
+        cluster: 'autoclustermobiledgexsdkdemo',
+        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
+    },
+    {
+        cluster: 'autoclustermobiledgexsdkdemo',
+        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
+    },
+    {
+        cluster: 'autoclustermobiledgexsdkdemo',
+        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
+    },
+
 ]
 
 
