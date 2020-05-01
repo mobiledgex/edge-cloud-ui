@@ -212,7 +212,7 @@ class CloudletPoolReg extends React.Component {
             let label = this.action === constant.DELETE_CLOUDLET ? 'Delete' : 'Add'
 
             let step2 = [
-                { label: 'Add Cloudlets', formType: 'Header', visible: true },
+                { label: `${label} Cloudlets`, formType: 'Header', visible: true },
                 { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible: true, options: [region], value: region },
                 { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { disabled: true }, visible: true, value: data[fields.poolName] },
                 { field: fields.cloudlets, label: 'Clouldets', formType: 'DualList', rules: { required: true }, visible: true, options: this.getData(this.cloudletList, fields.cloudletName) },
