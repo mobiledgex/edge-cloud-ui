@@ -115,7 +115,7 @@ class CloudletPoolReg extends React.Component {
         if (this.organizationList.length > 0) {
             let label = this.action === constant.DELETE_ORGANIZATION ? 'Unlink' : 'Link'
             let step = [
-                { label: 'Link Organization', formType: 'Header', visible: true },
+                { label: `${label} Organization`, formType: 'Header', visible: true },
                 { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible: true, options: [region], value: region },
                 { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { disabled: true }, visible: true, value: data[fields.poolName] },
                 { field: fields.organizations, label: 'Organizations', formType: 'DualList', rules: { required: true }, visible: true, options: this.getData(this.organizationList, fields.organizationName) },
