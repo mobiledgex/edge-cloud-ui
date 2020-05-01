@@ -150,6 +150,25 @@ export const PageMonitoringStyles = {
         alignSelf: 'center',
         marginLeft: -5,
     },
+    expandIconDiv: {
+        display: 'flex',
+        flex: .03,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        marginLeft: 0,
+        marginRight: 5,
+        cursor: 'pointer',
+        backgroundColor: 'transparent',
+    },
+    appInstLegendOuterDiv: {
+        display: 'flex',
+        flex: .975,
+        justifyContent: 'center',
+        marginLeft: 0,
+        backgroundColor: 'transparent',
+        marginTop: 3,
+        width: '98.2%',
+    },
     cell000: {
         marginLeft: 0,
         backgroundColor: '#a3a3a3',
@@ -494,62 +513,16 @@ export const Center0001 = styled.div`
     //margin-right: 50px;
 `
 
-export const AppInstOuter = styled.div`
-    margin-left: 20px;
-    font-size: 20px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    //background-color: green;
-    width: 100%;
-    //margin-right: 50px;
-`
-
-
-export const Legend = styled.div`
-  display : flex;
-  justify-content: flex-start;
-  text-align: center;
-  flex-direction: row;
-  align-self: center;
-  font-size: 13px;
+export const LegendOuterDiv = styled.div`
   border-width: 0.1px;
   border-style: dotted;
   border-color: dimgrey;
-  padding:5px;
-  //margin-top: 10px;
-  margin-left: 10px;
-  height: 50px;
-  width:98.8%;
-  //marginLeft:50px;
-`;
-
-/*const _Ripples = ({className, children}) => (
-    <Ripples
-        color='#00BCD4' during={500}
-    >
-        <ChartIconOuterDiv>
-            {children}
-        </ChartIconOuterDiv>
-    </Ripples>
-);
-
-export const ChartIconOuter = styled(_Ripples)`
-  display : flex;
-  justify-content: center;
-  text-align: center;
-  flex-direction: column;
-  align-self: center;
-  font-size: 13px;
-  font-family: Ubuntu;
-  border-width: 0.5px;
-  border-style: solid;
-  border-color: dimgrey;
-  padding: 10px 5px;
-  height: 110px;
-  width: 140px;
-`;*/
-
+  margin-left: 10px; 
+  display: flex; 
+  height: 25px;
+  width: 98.925%;
+  margin-right: 5px;
+`
 
 export const ChartIconOuterDiv = styled.div`
   display : flex;
@@ -607,7 +580,7 @@ export const Center2 = styled.div`
 `
 
 
-export const ClusterCluoudletLable = styled.div`
+export const ClusterCluoudletLabel = styled.div`
   justify-content: center;
   text-align: center;
   flex-direction: row;

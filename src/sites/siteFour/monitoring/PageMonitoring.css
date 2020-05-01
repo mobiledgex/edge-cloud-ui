@@ -579,5 +579,18 @@ tr td {
 
 .ant-select-dropdown-menu-item {
     line-height: 15px !important;
+}
 
+.gutterRow {
+    display: flex;
+}
+
+.clusterCloudletBox {
+    /*background: #00A0E9;*/
+    padding: 0px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20px;
+    margin-left: 5px;
 }
