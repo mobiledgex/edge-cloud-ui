@@ -62,11 +62,12 @@ const subView = (keys, dataList) => {
 const getRow = (id, item, data) => {
     return (
         <TableRow key={id}>
-            <TableCell style={{ borderBottom: "none", verticalAlign:'text-top' }}>{item.label}</TableCell>
+            <TableCell style={{ borderBottom: "none", verticalAlign:'text-top', width:'20%' }}>{item.label}</TableCell>
             <TableCell style={{ borderBottom: "none" }}>
                 {item.dataType === constant.TYPE_JSON || item.dataType === constant.TYPE_YAML ?
                     getJson(data, item) :
-                    item.customizedData ? item.customizedData(data, true) : data}
+                    <p style={{wordBreak:'break-all'}}>{item.customizedData ? item.customizedData(data, true) : data}</p>
+                }
             </TableCell>
         </TableRow>
     )

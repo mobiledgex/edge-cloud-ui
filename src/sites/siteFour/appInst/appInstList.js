@@ -62,7 +62,7 @@ class AppInstList extends React.Component {
 
     onPowerStateVisible = (data) =>
     {
-       return data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM
+       return data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM && data[fields.accessType] !== constant.ACCESS_TYPE_LOAD_BALANCER
     }
 
     onUpgradeVisible = (data) => {
@@ -75,7 +75,7 @@ class AppInstList extends React.Component {
 
     getDeleteActionMessage = (action, data) => {
         if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && isAdmin()) {
-            return `Cloudlet status is not online, due you still want to proceed with ${data[fields.appName]} App Instance deletion?`
+            return `Cloudlet status is not online, do you still want to proceed with ${data[fields.appName]} App Instance deletion?`
         }
     }
 
