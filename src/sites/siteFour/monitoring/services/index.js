@@ -1,6 +1,7 @@
 import * as serviceMC from "../../../../services/model/serviceMC";
 import * as serverData from "../../../../services/model/serverData";
 import * as Cloudlet from "./model/cloudlet";
+import * as Events from "./model/events";
 
 interface MetricsParmaType {
     id: string;
@@ -11,9 +12,7 @@ interface MetricsParmaType {
     self: any;
 }
 
-const setRemote = result => {
-    console.log("20200414 result of remote --- ", result);
-};
+const setRemote = result => {};
 const getArgs = info => {
     if (info.method) {
     }
@@ -38,27 +37,66 @@ const getListCloud = (self, params) => {
 
 /***********************************
  * EVENT CLOUDLET
+ * 
+ * async function showMessages() {
+  // RIGHT :: Array.map using async-await and Promise.all
+  const messages = await Promise.all(
+    arr.map(user => {
+      return getIntroMessage(user);
+    })
+  );
+  console.log(messages);
+}
+showMessages();
+
+
+
+cloudletName:"hackathon-jimmorris"
+cloudletStatus:4
+containerVersion:"2020-04-20"
+ipSupport:"Dynamic"
+latitude:33.0151
+longitude:-96.5389
+numDynamicIPs:254
+operatorName:"mex"
+physicalName:"hackathon-jimmorris"
+platformType:"Edgebox"
+region:"US"
  ************************************/
-const getEventCloudlet = (self, params) => {
-    console.log("get event cloudlet info -->>>> ", params.cloudletInfo);
+const getEventCloudlet = async (self, params) => {
+    console.log("get event cloudlet info -->>>> ", params);
     /* Continue, get events of cloudlets */
-    let execrequest = getArgs({
-        pRegion: params.cloudletInfo.cloudlet.region,
-        selectOrg: params.cloudletInfo.cloudlet.org,
-        method: serviceMC.getEP().EVENT_CLOUDLET,
-        cloudletSelectedOne: params.cloudletInfo.cloudlet.name,
-        last: 1
-    });
+
+    const execrequest = cloudletInfo =>
+        getArgs({
+            pRegion: cloudletInfo.region,
+            selectOrg: cloudletInfo.operatorName,
+            method: serviceMC.getEP().EVENT_CLOUDLET,
+            cloudletSelectedOne: cloudletInfo.cloudletName,
+            last: 1
+        });
 
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : "null";
-    let requestData = {
-        token: token,
-        method: serviceMC.getEP().EVENT_CLOUDLET,
-        data: execrequest
+    const requestData = cloudlet => {
+        return {
+            token: token,
+            method: serviceMC.getEP().EVENT_CLOUDLET,
+            data: execrequest(cloudlet)
+        };
     };
 
-    return requestData;
+    // serviceMC.sendSyncRequest(self, requestData);
+
+    return Promise.all(
+        params.cloudlets.map(async (cloudlet, i) => {
+            return Events.getCloudletEvent(
+                self,
+                requestData(cloudlet),
+                params.chartType
+            );
+        })
+    );
 };
 
 /***********************************
@@ -108,23 +146,21 @@ const getMethodClient = (self, params) => {
 
 let cloudletList = [];
 const MetricsService = async (defaultValue: MetricsParmaType, self: any) => {
-    console.log("20200427 metric service ... ", defaultValue.method);
     if (defaultValue.method === serviceMC.getEP().SHOW_CLOUDLET) {
         return await getListCloud(self, defaultValue);
     }
     if (defaultValue.method === serviceMC.getEP().EVENT_CLOUDLET) {
         //this.props.handleLoadingSpinner(true);
-        return await serviceMC.sendSyncRequest(
-            self,
-            getEventCloudlet(defaultValue.self, defaultValue)
-        );
+        getEventCloudlet(defaultValue.self, defaultValue).then(async data => {
+            self.onReceiveResult(data);
+        });
     }
-    if (defaultValue.method === serviceMC.getEP().METHOD_CLIENT) {
-        return await serviceMC.sendSyncRequest(
-            self,
-            getMethodClient(defaultValue.self, defaultValue)
-        );
-    }
+    // if (defaultValue.method === serviceMC.getEP().METHOD_CLIENT) {
+    //     return await serviceMC.sendSyncRequest(
+    //         self,
+    //         getMethodClient(defaultValue.self, defaultValue)
+    //     );
+    // }
 };
 
 export default MetricsService;

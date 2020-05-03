@@ -1,8 +1,6 @@
 import * as serviceMC from "../../../../services/model/serviceMC";
 
-const setRemote = result => {
-    console.log("20200414 result of remote --- ", result);
-};
+const setRemote = result => {};
 const getArgs = info => {
     return {
         region: info.pRegion,

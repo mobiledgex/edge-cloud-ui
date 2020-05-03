@@ -141,7 +141,6 @@ class TimeSeries extends React.Component {
 
     render() {
         let { error } = this.props;
-        console.log("20200409 ---------- render ------------");
         return (
             <div
                 className="plotContainer"

@@ -8,7 +8,7 @@ import * as actions from "../../../actions";
 import MetricsService from "./services";
 import ChartWidget from "./container/ChartWidget";
 import * as serviceMC from "../../../services/model/serviceMC";
-import * as ChartType from "./layout/chartType";
+import * as ChartType from "./formatter/chartType";
 
 let doCloudlets = null;
 let regionCount = 0;
@@ -35,7 +35,6 @@ class MonitoringAdmin extends React.Component {
     async initialize(props: any, self: any) {
         try {
             //TODO :
-            console.log("20200427 initial props ... method..", props.method);
 
             if (props.method) {
                 await MetricsService(props, self);
@@ -71,9 +70,7 @@ class MonitoringAdmin extends React.Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        console.log("20200423   nextprops in monitoring....== ....", nextProps);
-    }
+    componentWillReceiveProps(nextProps) {}
     onReceiveResult(result) {
         try {
             if (result["Cloudlets"]) {
@@ -177,6 +174,7 @@ export default connect(
 
 const generatWidget = info => (
     <ChartWidget
+        id={info.id}
         method={info.method}
         chartType={info.chartType}
         type={info.type}

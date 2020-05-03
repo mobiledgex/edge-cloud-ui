@@ -17,12 +17,10 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 const CounterWidget = forwardRef((props, ref) => {
-    console.log("20200418 props== ", props);
     const [clusterCnt, setClusterCnt] = useState(props);
 
     const classes = useStyles();
     const setDataToWidget = value => {
-        console.log("20200418 setDataToWidget== ", value);
         setClusterCnt(value);
     };
     useImperativeHandle(ref, () => {

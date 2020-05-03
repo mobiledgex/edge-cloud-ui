@@ -8,11 +8,8 @@ export default class ContainerHealth extends React.Component {
         selfSize: this.props.size || { height: 200 }
     };
     getHeight = () => this.state.selfSize.height - hGap;
-    componentDidMount() {
-        console.log("20200412 size..did mount...", this.props.size);
-    }
+    componentDidMount() {}
     componentWillReceiveProps(nextProps) {
-        console.log("20200412 receive props size..", nextProps.size);
         this.setState({ selfSize: nextProps.size });
     }
     render() {

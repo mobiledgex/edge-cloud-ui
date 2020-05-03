@@ -136,7 +136,6 @@ export default class MonitoringLayout extends React.Component {
     };
 
     onPutItem = item => {
-        console.log("20200408-", item, this);
         this.setState(prevState => {
             return {
                 toolbox: {

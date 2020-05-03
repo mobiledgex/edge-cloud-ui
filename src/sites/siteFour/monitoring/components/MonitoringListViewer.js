@@ -9,15 +9,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 
-interface Column {
-    id: "name" | "code" | "population" | "size" | "density";
-    label: string;
-    minWidth?: number;
-    align?: "right";
-    format?: (value: number) => string;
-}
-
-const columns: Column[] = [
+const columns = [
     { id: "name", label: "Name", minWidth: 170 },
     { id: "code", label: "ISO\u00a0Code", minWidth: 100 },
     {
@@ -96,11 +88,17 @@ export default function MonitoringListViewer(props) {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [sizeH, setSizeH] = React.useState(190);
+    const [data, setData] = React.useState(props.data);
+    const [columns, setColumns] = React.useState([]);
+    const [rows, setRows] = React.useState([]);
 
     React.useEffect(() => {
         parentSize = props.sizeInfo;
         if (classes && parentSize) {
             setSizeH(parentSize.height - 50);
+        }
+        if (props.data && props.data.length > 0) {
+            console.log("20200503 data in monitroing viewer ... ", props.data);
         }
     }, [props]);
 

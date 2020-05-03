@@ -53,7 +53,6 @@ const getFilterInfo = (requestInfo, region) => {
 };
 
 const onServerResponse = mcRequestList => {
-    //console.log("20200427 ", mcRequestList, _self);
     requestCount -= 1;
     let requestInfo = _requestInfo();
     let newDataList = [];

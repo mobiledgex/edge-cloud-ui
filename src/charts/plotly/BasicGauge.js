@@ -19,7 +19,6 @@ class BasicGauge extends React.Component {
     render() {
         const { width, height } = this.props.size;
         const { title } = this.props;
-        console.log("20200412 size me == ", width, height);
         return (
             <Plot
                 const

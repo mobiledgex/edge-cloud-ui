@@ -10,7 +10,7 @@ import Map from "../../../../libs/simpleMaps/with-react-motion/index_clusters";
 import CounterWidget from "./CounterWidget";
 import { Segment } from "semantic-ui-react";
 import MonitoringListViewer from "../components/MonitoringListViewer";
-import * as ChartType from "../layout/chartType";
+import * as ChartType from "../formatter/chartType";
 
 class ChartWidget extends React.Component {
     state = {
@@ -26,7 +26,6 @@ class ChartWidget extends React.Component {
             if (this.divRef.current)
                 this.divRef.current.setDataToWidget(this.getData());
         }, 6000);
-        console.log("20200419 did mount widget size..", this.props.size);
     }
     componentWillReceiveProps(nextProps, prevProps) {
         console.log(
@@ -36,7 +35,6 @@ class ChartWidget extends React.Component {
             nextProps
         );
         if (nextProps.size !== this.props.size) {
-            console.log("20200419 widget size..", nextProps.size);
             //this.setState({ size: this.props.size });
         }
     }
@@ -92,12 +90,16 @@ class DataGrid extends React.Component {
         size: null
     };
     componentWillReceiveProps(nextProps) {
-        console.log("20200423 receive data in DataGrid ....", nextProps);
         this.setState({ data: nextProps.data, size: nextProps.size });
     }
     render() {
         let { data, size } = this.state;
-        return <MonitoringListViewer sizeInfo={size}></MonitoringListViewer>;
+        return (
+            <MonitoringListViewer
+                sizeInfo={size}
+                data={data}
+            ></MonitoringListViewer>
+        );
     }
 }
 
