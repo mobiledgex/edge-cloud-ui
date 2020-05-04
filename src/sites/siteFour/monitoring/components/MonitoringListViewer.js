@@ -99,8 +99,22 @@ export default function MonitoringListViewer(props) {
         }
         if (props.data && props.data.length > 0) {
             console.log("20200503 data in monitroing viewer ... ", props.data);
+            setColumns(makeColumn(props.data[0]));
+            setRows(props.data);
         }
     }, [props]);
+
+    const makeColumn = list => {
+        let keys = Object.keys(list);
+
+        //////
+        return keys.map(key => ({
+            id: key,
+            label: key,
+            minWidth: 170,
+            align: "right"
+        }));
+    };
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
