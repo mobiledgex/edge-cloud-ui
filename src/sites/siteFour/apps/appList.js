@@ -70,6 +70,26 @@ class AppList extends React.Component {
                 <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} />
         )
     }
+
+    /**
+  * Customized data block
+  **/
+    customizedData = () => {
+        for (let i = 0; i < this.keys.length; i++) {
+            let key = this.keys[i]
+            if (key.field === fields.scaleWithCluster) {
+                key.customizedData = constant.showYesNo
+            }
+        }
+    }
+
+    /**
+    * Customized data block
+    * ** */
+
+    componentDidMount() {
+        this.customizedData()
+    }
 };
 
 const mapStateToProps = (state) => {

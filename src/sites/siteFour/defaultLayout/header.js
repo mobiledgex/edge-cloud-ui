@@ -80,15 +80,11 @@ export default function Header(props) {
                 </IconButton>
                 <div className={classes.grow}/>
                 <div className={classes.sectionDesktop}>
-                    <IconButton className="orgName">
+                    <IconButton disabled={true}  className="orgName">
                         <h5>
                             <strong>Organization: </strong>
                             {localStorage.selectRole === 'AdminManager' ? "Mexadmin" : localStorage.selectOrg ? localStorage.selectOrg : 'no selected organization'}
                         </h5>
-                    </IconButton>
-                    <IconButton aria-label="show 4 new mails" color="inherit"
-                                onClick={(e) => props.gotoUrl('/site1', 'pg=0')}>
-                        <PublicOutlinedIcon fontSize='default'/>
                     </IconButton>
                     <IconButton aria-label="show 17 new notifications" color="inherit"
                                 onClick={(e) => props.helpClick()}>

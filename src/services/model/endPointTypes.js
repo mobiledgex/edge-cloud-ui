@@ -8,7 +8,6 @@ import * as CloudletInfo from './cloudletInfo';
 import * as ClusterInstance from './clusterInstance';
 import * as Flavor from './flavor';
 import * as AppInstance from './appInstance';
-import * as OrgCloudlet from './orgCloudlet';
 import * as AutoProvPolicy from './autoProvisioningPolicy';
 import * as PrivacyPolicy from './privacyPolicy';
 import * as CloudletPool from './cloudletPool';
@@ -197,6 +196,7 @@ export function formatData(request, response) {
             data = Accounts.getData(response, request.data)
             break;
         case SHOW_CLOUDLET:
+        case SHOW_ORG_CLOUDLET:
             data = Cloudlet.getData(response, request.data)
             break;
         case SHOW_CLOUDLET_INFO:
@@ -213,9 +213,6 @@ export function formatData(request, response) {
             break;
         case SHOW_APP_INST:
             data = AppInstance.getData(response, request.data)
-            break;
-        case SHOW_ORG_CLOUDLET:
-            data = OrgCloudlet.getData(response, request.data)
             break;
         case SHOW_AUTO_PROV_POLICY:
             data = AutoProvPolicy.getData(response, request.data)

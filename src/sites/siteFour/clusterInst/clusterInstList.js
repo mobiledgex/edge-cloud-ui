@@ -40,7 +40,7 @@ class ClusterInstView extends React.Component {
 
     getDeleteActionMessage = (action, data) => {
         if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && isAdmin()) {
-            return `Cloudlet status is not online, due you still want to proceed with ${data[fields.clusterName]} Cluster Instance deletion?`
+            return `Cloudlet status is not online, do you still want to proceed with ${data[fields.clusterName]} Cluster Instance deletion?`
         }
     }
 
