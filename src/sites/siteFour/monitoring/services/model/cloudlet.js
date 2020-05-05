@@ -112,30 +112,24 @@ const dataFromServer = async (region, self, method) => {
 
 // TODO: 클라우드렛 당 메트릭스 데이터 가져오기, 모든 region에 모든 cloudlet에 대한 메트릭스 데이터 
 // 한번에 하나씩 가져와 쌓는 구조, 로딩 속도 문제 해결 방안
-const metricFromServer = async (region, self, method) => {
-    let requestData = { region: "" };
-    let response = await serverData.sendRequest(
-        self,
-        makeFormForCloudletLevelMatric(requestData)
-    );
-    _self.props.onLoadComplete(response);
-};
-const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = "", pEndTime = "") => {
-    let formBody = {
-        token: token,
-        params: {
-            region: dataOne.Region,
+const metricFromServer = async (self, data) => {
+    let requestData = {
+        token: data.token,
+        method: data.method,
+        data: {
+            region: data.pRegion,
             cloudlet: {
-                organization: dataOne.Operator,
-                name: dataOne.CloudletName
+                organization: data.selectOrg,
+                name: data.cloudletSelectedOne
             },
-            last: fetchingDataNo,
+            last: data.last,
             selector: "*"
         }
-    };
-
-    return formBody;
+    }
+    let response = await serverData.sendRequest(self, requestData);
+    return response;
 };
+
 /*******************************************************
  * START GET LIST
  * 
@@ -146,8 +140,8 @@ export const getCloudletList = (self, param) => {
     dataFromServer(REGION_ALL, _self, param.method);
 };
 
-export const getCloudletMetrics = (self, param) => {
-    console.log("20200504 get cloudlet metrics.. ", param);
+export const getCloudletMetrics = async (self, params) => {
+    console.log("20200504 get cloudlet metrics.. ", params);
     if (!_self) _self = self;
-    metricFromServer(REGION_ALL, _self, param.method);
+    await metricFromServer(_self, params);
 };

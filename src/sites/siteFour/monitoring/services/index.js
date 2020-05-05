@@ -56,31 +56,25 @@ const getMetricsCloudlet = async (self, params) => {
     console.log("20200504 get metrics cloudlet info -->>>> ", params);
     /* Continue, get events of cloudlets */
 
-    const execrequest = cloudletInfo =>
-        getArgs({
+    const requestData = cloudletInfo => {
+        return {
             token: token,
             pRegion: cloudletInfo.region,
             selectOrg: cloudletInfo.operatorName,
             method: serviceMC.getEP().METRICS_CLOUDLET,
             cloudletSelectedOne: cloudletInfo.cloudletName,
             last: 1
-        });
-
-
-    const requestData = cloudlet => {
-        return {
-            token: token,
-            method: serviceMC.getEP().METRICS_CLOUDLET,
-            data: execrequest(cloudlet)
-        };
+        }
     };
 
-    params.cloudlets.map(async (cloudlet, i) => {
-        return await Cloudlet.getCloudletMetrics(
+    await params.cloudlets.map(async (cloudlet, i) => {
+        let response = await Cloudlet.getCloudletMetrics(
             self,
-            requestData(cloudlet),
-            params.chartType
+            requestData(cloudlet)
         );
+        console.log("20200505 response metrics of cloudlet===== ", response)
+
+        //return response;
     });
 };
 
@@ -181,7 +175,9 @@ const MetricsService = async (defaultValue: MetricsParmaType, self: any) => {
         //     self.onReceiveResult(data);
         // });
         //
-        return await getMetricsCloudlet(self, defaultValue);
+        let result = await getMetricsCloudlet(self, defaultValue);
+        console.log("20200505 result --- +++++ ", result)
+        return result;
     }
 
     // if (defaultValue.method === serviceMC.getEP().METHOD_CLIENT) {

@@ -85,8 +85,8 @@ export const UPDATE_PRIVACY_POLICY = "UpdatePrivacyPolicy";
 export const CREATE_PRIVACY_POLICY = "CreatePrivacyPolicy";
 export const DELETE_PRIVACY_POLICY = "DeletePrivacyPolicy";
 export const EVENT_CLOUDLET = "CloudletLevelEvents";
-export const METRICS_CLOUDLET = "CloudletMetrics";
-export const METRICS_CLUSTER = "ClusterMetrics";
+export const METRICS_CLOUDLET = "cloudlet";
+export const METRICS_CLUSTER = "cluster";
 export const METHOD_CLIENT = "MethodClient";
 
 export function getPath(request) {
