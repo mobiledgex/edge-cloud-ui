@@ -1,4 +1,4 @@
-import {ClusterCluoudletLabel, Legend, LegendOuterDiv, PageMonitoringStyles} from '../PageMonitoringStyles'
+import {ClusterCluoudletLabel, LegendOuterDiv, PageMonitoringStyles} from '../PageMonitoringStyles'
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
@@ -25,7 +25,7 @@ import {
     makeSelectBoxListWithKeyValuePipeForCluster,
     makeSelectBoxListWithValuePipe,
     reduceLegendClusterCloudletName,
-    revertToDefaultLayout, tempClusterList,
+    revertToDefaultLayout,
 } from "./PageDevMonitoringService";
 import {
     ADD_ITEM_LIST,
@@ -44,16 +44,7 @@ import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData, TypeUtil
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
 import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../PageMonitoringCommonService";
-import {
-    getAllAppInstEventLogs,
-    getAllClusterEventLogList,
-    getAppInstList,
-    getAppLevelUsageList,
-    getCloudletList,
-    getClusterLevelUsageList,
-    getClusterList,
-    requestShowAppInstClientWS
-} from "../PageMonitoringMetricService";
+import {getAllAppInstEventLogs, getAllClusterEventLogList, getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList, requestShowAppInstClientWS} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
@@ -70,20 +61,12 @@ import MaterialIcon from "material-icons-react";
 import '../PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout, LayoutItem} from "react-grid-layout/lib/utils";
-import AddItemPopupContainer2 from '../components/AddItemPopupContainer2'
 import {THEME_TYPE} from "../../../../themeStyle";
 import BarChartContainer from "../components/BarChartContainer";
 import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryForClusterHook";
 import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryForAppInstHook";
 import type {PageDevMonitoringProps} from "./PageDevMonitoringProps";
-import {
-    ColorLinearProgress,
-    CustomSwitch,
-    defaultLayoutXYPosForAppInst,
-    defaultLayoutXYPosForCluster,
-    PageDevMonitoringMapDispatchToProps,
-    PageDevMonitoringMapStateToProps
-} from "./PageDevMonitoringProps";
+import {ColorLinearProgress, CustomSwitch, defaultLayoutXYPosForAppInst, defaultLayoutXYPosForCluster, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageDevMonitoringProps";
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListHookVirtualScroll from "../components/AppInstEventLogListHookVirtualScroll";
 import {fields} from '../../../../services/model/format'
@@ -1298,19 +1281,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Add Item
                             </div>
                         </AMenu.Item>
-                        {/*<AMenu.Item style={{display: 'flex'}}
-                        key="1"
-                        onClick={() => {
-                        this.setState({
-                        isOpenEditView2: true,
-                        })
-                        }}
-                        >
-                        <MaterialIcon icon={'add'} color={'white'}/>
-                        <div style={PageMonitoringStyles.listItemTitle}>
-                        Add Item for test
-                        </div>
-                        </AMenu.Item>*/}
                         {/*desc:#########################################*/}
                         {/*desc:Reload                                  */}
                         {/*desc:#########################################*/}
@@ -1757,13 +1727,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     let filteredClusterUsageListLength = this.state.filteredClusterUsageList.length;
                     return (
-                        <LegendOuterDiv style={{height: this.state.legendHeight}}>
 
+                        <LegendOuterDiv style={{height: this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.state.legendHeight : 25,}}>
                             {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
                                 <Row gutter={16} style={{flex: .97, marginLeft: 10, backgroundColor: 'transparent', justifyContent: 'center', alignSelf: 'center'}}>
                                     {this.state.filteredClusterUsageList.map((item, index) => {
                                         return (
-                                            <Col className="gutterRow" span={this.state.legendColSize}>
+                                            <Col className="gutterRow" span={this.state.legendColSize} title={!this.state.isLegendExpanded ? item.cluster + '[' + item.cloudlet + ']' : null}>
                                                 <div style={{backgroundColor: 'transparent', marginTop: 2,}}>
                                                     <div
                                                         style={{
@@ -1865,7 +1835,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     }}>
 
                         <AddItemPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}/>
-                        <AddItemPopupContainer2 parent={this} isOpenEditView2={this.state.isOpenEditView2}/>
                         <MiniModalGraphContainer selectedClusterUsageOne={this.state.selectedClusterUsageOne}
                                                  selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
                                                  parent={this}
