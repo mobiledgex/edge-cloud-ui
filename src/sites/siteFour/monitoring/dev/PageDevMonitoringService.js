@@ -1467,6 +1467,18 @@ export const tempClusterList = [
         cluster: 'autoclustermobiledgexsdkdemo',
         cloudlet: ' [mexplat-stage-hamburg-cloudlet',
     },
+    {
+        cluster: 'autoclustermobiledgexsdkdemo',
+        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
+    },
+    {
+        cluster: 'autoclustermobiledgexsdkdemo',
+        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
+    },
+    {
+        cluster: 'autoclustermobiledgexsdkdemo',
+        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
+    },
 
 ]
 
