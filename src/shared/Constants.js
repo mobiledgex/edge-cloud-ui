@@ -3,7 +3,7 @@ import {convertToMegaGigaForNumber} from "../sites/siteFour/monitoring/PageMonit
 import randomColor from 'randomcolor'
 
 let moreColors = randomColor({
-    count: 300,
+    count: 500,
 });
 export const RECENT_DATA_LIMIT_COUNT = 10
 
