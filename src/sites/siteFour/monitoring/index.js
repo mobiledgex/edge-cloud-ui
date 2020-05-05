@@ -70,15 +70,16 @@ class MonitoringAdmin extends React.Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {}
+    componentWillReceiveProps(nextProps) { }
     onReceiveResult(result) {
         try {
-            if (result["Cloudlets"]) {
+            if (result && result["Cloudlets"]) {
                 this.hasCloudlets = this.hasCloudlets.concat(
                     result["Cloudlets"]
                 );
                 count--;
             } else {
+                return
             }
 
             if (count <= 0) {
@@ -200,7 +201,7 @@ const generateComponentAdmin = (self, infos, cloudlets) => {
         }),
         generatWidget({
             id: "networkCloudlet",
-            method: null,
+            method: serviceMC.getEP().METRICS_CLOUDLET,
             chartType: ChartType.GRAPH,
             type: "scatter",
             page: "single",

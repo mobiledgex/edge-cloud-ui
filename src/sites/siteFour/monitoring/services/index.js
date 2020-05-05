@@ -12,18 +12,31 @@ interface MetricsParmaType {
     self: any;
 }
 
-const setRemote = result => {};
+const setRemote = result => { };
 const getArgs = info => {
-    if (info.method) {
+    if (info.method === serviceMC.getEP().EVENT_CLOUDLET) {
+        return {
+            region: info.pRegion,
+            cloudlet: {
+                organization: info.selectOrg,
+                name: info.cloudletSelectedOne
+            },
+            last: info.last
+        };
+    } else if (info.method === serviceMC.getEP().METRICS_CLOUDLET) {
+        return {
+            token: token,
+            params: {
+                region: info.pRegion,
+                cloudlet: {
+                    organization: info.selectOrg,
+                    name: info.cloudletSelectedOne
+                },
+                last: 1,
+                selector: "*"
+            }
+        };
     }
-    return {
-        region: info.pRegion,
-        cloudlet: {
-            organization: info.selectOrg,
-            name: info.cloudletSelectedOne
-        },
-        last: info.last
-    };
 };
 
 /***********************************
@@ -34,34 +47,45 @@ const getListCloud = (self, params) => {
     Cloudlet.getCloudletList(self, params);
     /* Through the result to the ContainerWrapper.onLoadComplete after success execute getCloudletList */
 };
+/***********************************
+ * METRICS CLOUDLET
+ ************************************/
+let store = JSON.parse(localStorage.PROJECT_INIT);
+let token = store ? store.userToken : "null";
+const getMetricsCloudlet = async (self, params) => {
+    console.log("20200504 get metrics cloudlet info -->>>> ", params);
+    /* Continue, get events of cloudlets */
+
+    const execrequest = cloudletInfo =>
+        getArgs({
+            token: token,
+            pRegion: cloudletInfo.region,
+            selectOrg: cloudletInfo.operatorName,
+            method: serviceMC.getEP().METRICS_CLOUDLET,
+            cloudletSelectedOne: cloudletInfo.cloudletName,
+            last: 1
+        });
+
+
+    const requestData = cloudlet => {
+        return {
+            token: token,
+            method: serviceMC.getEP().METRICS_CLOUDLET,
+            data: execrequest(cloudlet)
+        };
+    };
+
+    params.cloudlets.map(async (cloudlet, i) => {
+        return await Cloudlet.getCloudletMetrics(
+            self,
+            requestData(cloudlet),
+            params.chartType
+        );
+    });
+};
 
 /***********************************
  * EVENT CLOUDLET
- * 
- * async function showMessages() {
-  // RIGHT :: Array.map using async-await and Promise.all
-  const messages = await Promise.all(
-    arr.map(user => {
-      return getIntroMessage(user);
-    })
-  );
-  console.log(messages);
-}
-showMessages();
-
-
-
-cloudletName:"hackathon-jimmorris"
-cloudletStatus:4
-containerVersion:"2020-04-20"
-ipSupport:"Dynamic"
-latitude:33.0151
-longitude:-96.5389
-numDynamicIPs:254
-operatorName:"mex"
-physicalName:"hackathon-jimmorris"
-platformType:"Edgebox"
-region:"US"
  ************************************/
 const getEventCloudlet = async (self, params) => {
     console.log("get event cloudlet info -->>>> ", params);
@@ -85,8 +109,6 @@ const getEventCloudlet = async (self, params) => {
             data: execrequest(cloudlet)
         };
     };
-
-    // serviceMC.sendSyncRequest(self, requestData);
 
     return Promise.all(
         params.cloudlets.map(async (cloudlet, i) => {
@@ -133,8 +155,6 @@ const getMethodClient = (self, params) => {
         last: 1
     });
 
-    let store = JSON.parse(localStorage.PROJECT_INIT);
-    let token = store ? store.userToken : "null";
     let requestData = {
         token: token,
         method: serviceMC.getEP().METHOD_CLIENT,
@@ -155,6 +175,15 @@ const MetricsService = async (defaultValue: MetricsParmaType, self: any) => {
             self.onReceiveResult(data);
         });
     }
+    if (defaultValue.method === serviceMC.getEP().METRICS_CLOUDLET) {
+        //this.props.handleLoadingSpinner(true);
+        // getMetricsCloudlet(self, defaultValue).then(async data => {
+        //     self.onReceiveResult(data);
+        // });
+        //
+        return await getMetricsCloudlet(self, defaultValue);
+    }
+
     // if (defaultValue.method === serviceMC.getEP().METHOD_CLIENT) {
     //     return await serviceMC.sendSyncRequest(
     //         self,

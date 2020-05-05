@@ -85,6 +85,8 @@ export const UPDATE_PRIVACY_POLICY = "UpdatePrivacyPolicy";
 export const CREATE_PRIVACY_POLICY = "CreatePrivacyPolicy";
 export const DELETE_PRIVACY_POLICY = "DeletePrivacyPolicy";
 export const EVENT_CLOUDLET = "CloudletLevelEvents";
+export const METRICS_CLOUDLET = "CloudletMetrics";
+export const METRICS_CLUSTER = "ClusterMetrics";
 export const METHOD_CLIENT = "MethodClient";
 
 export function getPath(request) {
@@ -171,6 +173,9 @@ export function getPath(request) {
         case CLUSTER_INST_METRICS_APP:
         case APP_INST_METRICS_APP:
             return "/api/v1/auth/metrics/app";
+        case METRICS_CLUSTER:
+        case METRICS_CLOUDLET:
+            return `/api/vi/auth/metrics/${request.method}`;
         case METHOD_CLIENT:
             return "/api/v1/auth/metrics/client";
         case SHOW_CLOUDLET_LINKORG:

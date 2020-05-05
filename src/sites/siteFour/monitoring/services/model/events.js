@@ -2,13 +2,7 @@ import * as serviceMC from "../../../../../services/model/serviceMC";
 import * as ChartType from "../../formatter/chartType";
 
 /** type of table */
-interface Data {
-    name: string;
-    code: string;
-    population: number;
-    size: number;
-    density: number;
-}
+
 /* "time","cloudlet","cloudletorg","event","status"*/
 interface eventData {
     time: string;
@@ -31,6 +25,7 @@ function createData(
 const parseData = (response, type) => {
     let resData = {};
     const resSeries = response.response.data.data[0].Series[0];
+    /** events of the cloudlets */
     if (type === ChartType.TABLE) {
         resData = response
             ? createData(

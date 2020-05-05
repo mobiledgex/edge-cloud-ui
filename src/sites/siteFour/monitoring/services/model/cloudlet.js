@@ -1,5 +1,6 @@
 import _ from "lodash";
 import * as serverData from "../../../../../services/model/serverData";
+import * as serviceMC from "../../../../../services/model/serviceMC";
 import {
     showCloudlets,
     streamCloudlet
@@ -109,12 +110,44 @@ const dataFromServer = async (region, self, method) => {
     }
 };
 
+// TODO: 클라우드렛 당 메트릭스 데이터 가져오기, 모든 region에 모든 cloudlet에 대한 메트릭스 데이터 
+// 한번에 하나씩 가져와 쌓는 구조, 로딩 속도 문제 해결 방안
+const metricFromServer = async (region, self, method) => {
+    let requestData = { region: "" };
+    let response = await serverData.sendRequest(
+        self,
+        makeFormForCloudletLevelMatric(requestData)
+    );
+    _self.props.onLoadComplete(response);
+};
+const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = "", pEndTime = "") => {
+    let formBody = {
+        token: token,
+        params: {
+            region: dataOne.Region,
+            cloudlet: {
+                organization: dataOne.Operator,
+                name: dataOne.CloudletName
+            },
+            last: fetchingDataNo,
+            selector: "*"
+        }
+    };
+
+    return formBody;
+};
 /*******************************************************
  * START GET LIST
- * If you want get list to like that 'getCloudletList()'
+ * 
  
  *******************************************************/
 export const getCloudletList = (self, param) => {
-    _self = self;
+    if (!_self) _self = self;
     dataFromServer(REGION_ALL, _self, param.method);
+};
+
+export const getCloudletMetrics = (self, param) => {
+    console.log("20200504 get cloudlet metrics.. ", param);
+    if (!_self) _self = self;
+    metricFromServer(REGION_ALL, _self, param.method);
 };
