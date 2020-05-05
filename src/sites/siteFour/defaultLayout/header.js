@@ -85,10 +85,10 @@ export default function Header(props) {
                             <h5>
                                 <strong>Organization:</strong> {localStorage.selectOrg}</h5> : null}
                     </IconButton>
-                    <IconButton aria-label="show 4 new mails" color="inherit"
+                    {/* <IconButton aria-label="show 4 new mails" color="inherit"
                                 onClick={(e) => props.gotoUrl('/site1', 'pg=0')}>
                         <PublicOutlinedIcon fontSize='default'/>
-                    </IconButton>
+                    </IconButton> */}
                     <IconButton aria-label="show 17 new notifications" color="inherit"
                                 onClick={(e) => props.helpClick()}>
                         <HelpOutlineOutlinedIcon fontSize='default'/>
