@@ -141,20 +141,23 @@ class MexListView extends React.Component {
 
     onMultiResponse = (mcRequest)=>
     {
-        let data = mcRequest.request.orgData
+        let orgData = mcRequest.request.orgData
+        let data = orgData.data
+        let action = orgData.action
         this.props.handleLoadingSpinner(false)
         if (mcRequest) {
             let responseData = undefined;
             if (mcRequest.response && mcRequest.response.data) {
                 responseData = mcRequest.response.data;
             }
-            this.setState({ multiStepsArray: updateStepper(this.state.multiStepsArray, data[fields.uuid], responseData, data[this.props.requestInfo.nameField], mcRequest.wsObj) })
+            let labels = action.multiStepperHeader
+            this.setState({ multiStepsArray: updateStepper(this.state.multiStepsArray, labels, data, responseData, mcRequest.wsObj) })
         } 
     }
 
     onDeleteMultiple = (action, data) => {
         this.props.handleLoadingSpinner(true)
-        serverData.sendWSRequest(this, action.onClick(data), this.onMultiResponse, data)
+        serverData.sendWSRequest(this, action.onClick(data), this.onMultiResponse, {action:action, data : data})
     }
     
     onUpdate = async (action, data) =>
@@ -162,7 +165,7 @@ class MexListView extends React.Component {
         if(data[fields.updateAvailable])
         {
             this.props.handleLoadingSpinner(true)
-            serverData.sendWSRequest(this, action.onClick(data), this.onMultiResponse, data)
+            serverData.sendWSRequest(this, action.onClick(data), this.onMultiResponse, {action:action, data : data})
         }
     }
 
@@ -450,7 +453,7 @@ class MexListView extends React.Component {
             <Card style={{ width: '100%', height: '100%', backgroundColor: '#292c33', padding: 10, color: 'white' }}>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} stepsArray={this.state.stepsArray} />
-                <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} header='App' />
+                <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} />
                 <MexToolbar requestInfo={this.props.requestInfo} onAction={this.onToolbarAction} isDetail={this.state.isDetail} onFilterValue={this.onFilterValue}/>
                 {this.state.currentView ? this.state.currentView : this.listView()}
             </Card>
