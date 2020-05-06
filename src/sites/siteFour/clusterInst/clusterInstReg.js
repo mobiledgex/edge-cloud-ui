@@ -18,6 +18,7 @@ import { getPrivacyPolicyList } from '../../../services/model/privacyPolicy';
 //Map
 import Map from '../../../libs/simpleMaps/with-react-motion/index_clusters';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
+import { object } from 'prop-types';
 import {clusterInstTutor} from "../../../tutorial";
 
 const clusterInstSteps = clusterInstTutor();
@@ -206,13 +207,13 @@ class ClusterInstReg extends React.Component {
     onCreateResponse = (mcRequest) => {
         this.props.handleLoadingSpinner(false)
         if (mcRequest) {
-            let data = undefined;
+            let responseData = undefined;
             let request = mcRequest.request;
-            let cloudletName = request.data.clusterinst.key.cloudlet_key.name;
             if (mcRequest.response && mcRequest.response.data) {
-                data = mcRequest.response.data;
+                responseData = mcRequest.response.data;
             }
-            this.setState({ stepsArray: updateStepper(this.state.stepsArray, cloudletName, data, cloudletName) })
+            let labels = [{label : 'Cloudlet', field : fields.cloudletName}]
+            this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
         }
     }
 
@@ -229,7 +230,7 @@ class ClusterInstReg extends React.Component {
                         let cloudlet = cloudlets[i];
                         data[fields.cloudletName] = cloudlet;
                         this.props.handleLoadingSpinner(true)
-                        createClusterInst(this, data, this.onCreateResponse)
+                        createClusterInst(this, Object.assign({}, data), this.onCreateResponse)
                     }
 
                 }

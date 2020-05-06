@@ -18,6 +18,8 @@ import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WH
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import '../PageMonitoring.css'
 import {PageMonitoringStyles} from "../PageMonitoringStyles";
+import {reduceString} from "../dev/PageDevMonitoringService";
+
 const {Option} = Select;
 
 const DEFAULT_VIEWPORT = {
@@ -624,16 +626,21 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                             long,
                                                         }
 
-                                                        let fullAppInstOne = AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version + " | " + Operator + " | " + JSON.stringify(serverLocation);
+                                                        let fullAppInstOne = AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Version + " | " + Region + " | " + HealthCheck + " | " + Operator + " | " + JSON.stringify(serverLocation);
 
                                                         return (
                                                             <div style={{
                                                                 fontSize: 14,
                                                                 cursor: 'crosshair',
                                                                 flexDirection: 'column',
-                                                                marginTop: 5,
+                                                                marginTop: 0,
                                                                 marginBottom: 5,
-                                                                backgroundColor: innerIndex === this.state.selectedAppInstIndex ? 'rgba(97, 102, 97,.412)' : null,
+                                                                borderRadius: 5,
+                                                                justifyContents: 'center',
+                                                                alignSelf: 'center',
+                                                                alignItem: 'center,',
+                                                                display: 'flex',
+                                                                backgroundColor: innerIndex === this.state.selectedAppInstIndex ? 'rgba(192, 192, 192,.2)' : null,
                                                             }}
                                                             >
                                                                 <Ripples
@@ -650,12 +657,12 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                                         }
                                                                     }}
                                                                 >
-                                                                    {AppName} [{Version}]
+                                                                    {reduceString(AppName.toString(), 25)} [{Version}]
                                                                     <div style={{
                                                                         color: '#77BD25',
                                                                         fontSize: 12
                                                                     }}>
-                                                                        &nbsp;&nbsp;{` [${ClusterInst.trim()}]`}
+                                                                        &nbsp;&nbsp;[{reduceString(ClusterInst.trim(), 25)}]
                                                                     </div>
                                                                     <div>
 
