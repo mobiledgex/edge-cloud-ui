@@ -442,7 +442,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
         setOffset(lat, cloudletIndex) {
             console.log(`zoom===>`, this.state.zoom);
 
-            if (this.state.zoom === 1) {
+          /*  if (this.state.zoom === 1) {
                 return lat + (cloudletIndex * 0.1)
             }
             if (this.state.zoom === 2) {
@@ -471,11 +471,13 @@ export default connect(mapStateToProps, mapDispatchProps)(
             }
             if (this.state.zoom === 10) {
                 return lat + (cloudletIndex * 0.008)
-            }
+            }*/
 
-            if (this.state.zoom > 10) {
-                return lat + (cloudletIndex * 0.0007)
-            }
+            /*if (this.state.zoom > 10) {
+
+            }*/
+
+            return lat + (cloudletIndex * 0.0007)
 
         }
 
