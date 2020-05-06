@@ -64,13 +64,18 @@ export const SHOW_LOGS = "ShowLogs";
 export const SHOW_CONSOLE = "RunConsole";
 export const SHOW_AUTO_PROV_POLICY = "ShowAutoProvPolicy";
 export const CREATE_AUTO_PROV_POLICY = "CreateAutoProvPolicy";
-export const DELETE_AUTO_PROV_POLICY= "DeleteAutoProvPolicy";
+export const DELETE_AUTO_PROV_POLICY = "DeleteAutoProvPolicy";
 export const ADD_AUTO_PROV_POLICY_CLOUDLET = "AddAutoProvPolicyCloudlet";
 export const REMOVE_AUTO_PROV_POLICY_CLOUDLET = "RemoveAutoProvPolicyCloudlet";
 export const SHOW_PRIVACY_POLICY = "ShowPrivacyPolicy";
 export const UPDATE_PRIVACY_POLICY = "UpdatePrivacyPolicy";
 export const CREATE_PRIVACY_POLICY = "CreatePrivacyPolicy";
 export const DELETE_PRIVACY_POLICY = "DeletePrivacyPolicy";
+export const EVENT_CLOUDLET = "CloudletLevelEvents";
+export const METRICS_CLOUDLET = "cloudlet";
+export const METRICS_CLUSTER = "cluster";
+export const METHOD_CLIENT = "MethodClient";
+
 
 export function getPath(request) {
     switch (request.method) {
@@ -153,6 +158,9 @@ export function getPath(request) {
         case CLUSTER_INST_METRICS_APP:
         case APP_INST_METRICS_APP:
             return '/api/v1/auth/metrics/app';
+        case METRICS_CLUSTER:
+        case METRICS_CLOUDLET:
+            return `/api/vi/auth/metrics/${request.method}`;
         case SHOW_CLOUDLET_LINKORG:
             return `/api/v1/auth/orgcloudletpool/show`;
         case CREATE_LINK_POOL_ORG:

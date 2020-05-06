@@ -175,9 +175,10 @@ const MetricsService = async (defaultValue: MetricsParmaType, self: any) => {
         //     self.onReceiveResult(data);
         // });
         //
+
         let result = await getMetricsCloudlet(self, defaultValue);
         console.log("20200505 result --- +++++ ", result)
-        return result;
+        //return result;
     }
 
     // if (defaultValue.method === serviceMC.getEP().METHOD_CLIENT) {
