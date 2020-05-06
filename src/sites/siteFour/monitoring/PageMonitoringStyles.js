@@ -144,7 +144,7 @@ export const PageMonitoringStyles = {
         borderRadius: 3,
         width: '30px',
         height: 'auto',
-        paddingLeft: 0,
+        paddingLeft: 4,
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'center',
