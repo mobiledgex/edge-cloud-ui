@@ -40,6 +40,9 @@ export const ADMIN_MANAGER = 'AdminManager'
 export const OPERATOR_MANAGER = 'OperatorManager'
 export const OPERATOR_CONTRIBUTOR = 'OperatorContributor'
 
+export const CONFIG_ENV_VAR = 'Environment Variables'
+export const CONFIG_HELM_CUST = 'Helm Customization'
+
 export const CRM_OVERRIDE_NO_OVERRIDE = 0
 export const CRM_OVERRIDE_IGNORE_CRM_ERRORS= 1
 export const CRM_OVERRIDE_IGNORE_CRM = 2
