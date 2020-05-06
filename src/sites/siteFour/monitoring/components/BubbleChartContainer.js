@@ -2,10 +2,11 @@
 import * as React from 'react';
 import BubbleChartCore from "./BubbleChartCore";
 import {handleHardwareTabChanges, handleLegendAndBubbleClickedEvent, makeLineChartDataForCluster} from "../dev/PageDevMonitoringService";
-import {makeBubbleChartDataForCluster, PageMonitoringStyles, renderPlaceHolderLoader, showToast} from "../PageMonitoringCommonService";
+import {makeBubbleChartDataForCluster, renderPlaceHolderLoader, showToast} from "../PageMonitoringCommonService";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import {Dropdown} from "semantic-ui-react";
 import {HARDWARE_OPTIONS_FOR_CLUSTER} from "../../../../shared/Constants";
+import {PageMonitoringStyles} from "../PageMonitoringStyles";
 
 type Props = {
     bubbleChartData: any,

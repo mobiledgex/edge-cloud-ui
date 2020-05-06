@@ -115,9 +115,9 @@ class CloudletPoolReg extends React.Component {
         if (this.organizationList.length > 0) {
             let label = this.action === constant.DELETE_ORGANIZATION ? 'Unlink' : 'Link'
             let step = [
-                { label: 'Link Organization', formType: 'Header', visible: true },
+                { label: `${label} Organizations`, formType: 'Header', visible: true },
                 { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible: true, options: [region], value: region },
-                { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { disabled: true }, visible: true, value: data[fields.poolName] },
+                { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Cloudlet Pool Name', rules: { disabled: true }, visible: true, value: data[fields.poolName] },
                 { field: fields.organizations, label: 'Organizations', formType: 'DualList', rules: { required: true }, visible: true, options: this.getData(this.organizationList, fields.organizationName) },
                 { label: `${label} Organizations`, formType: 'Button', onClick: this.onAddOrganizations },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
@@ -212,9 +212,9 @@ class CloudletPoolReg extends React.Component {
             let label = this.action === constant.DELETE_CLOUDLET ? 'Delete' : 'Add'
 
             let step2 = [
-                { label: 'Add Cloudlets', formType: 'Header', visible: true },
+                { label: `${label} Cloudlets`, formType: 'Header', visible: true },
                 { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible: true, options: [region], value: region },
-                { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { disabled: true }, visible: true, value: data[fields.poolName] },
+                { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Cloudlet Pool Name', rules: { disabled: true }, visible: true, value: data[fields.poolName] },
                 { field: fields.cloudlets, label: 'Clouldets', formType: 'DualList', rules: { required: true }, visible: true, options: this.getData(this.cloudletList, fields.cloudletName) },
                 { label: `${label} Cloudlets`, formType: 'Button', onClick: this.onAddCloudlets },
                 { label: this.props.action ? 'Cancel' : 'Skip', formType: 'Button', onClick: this.onCloudletCancel }
@@ -339,7 +339,7 @@ class CloudletPoolReg extends React.Component {
             let step1 = [
                 { label: 'Create Cloudlet Pool', formType: 'Header', visible: true },
                 { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
-                { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { required: true }, visible: true },
+                { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Cloudlet Pool Name', rules: { required: true }, visible: true },
                 { label: 'Create Cloudlet Pool', formType: 'Button', onClick: this.onCreateCloudletPool, validate: true },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
             ]

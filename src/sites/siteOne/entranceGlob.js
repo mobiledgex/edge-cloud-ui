@@ -54,7 +54,11 @@ class EntranceGlobe extends Component {
     }
     componentWillReceiveProps(nextProps, nextContext) {
 
-        //alert(nextProps.loginMode+":"+this.props.loginMode)
+        /** If alrady logined */
+        if (localStorage.getItem(LOCAL_STRAGE_KEY)) {
+            this.goToNext("/site4");
+            return;
+        }
 
         if(nextProps.loginMode && nextProps.loginMode === 'verify') {
             this.setState({modalOpen: true, logined:true})
@@ -64,31 +68,10 @@ class EntranceGlobe extends Component {
             this.setState({modalOpen: true, logined:false})
         } else if(nextProps.loginMode === 'login') {
             if(nextProps.user.userToken) {
-                this.setState({modalOpen: false, logined:true})
+                /** goto console page 202004-05-04 @Smith */
+                this.goToNext("/site4");
             }
         }
-
-
-        // if(nextProps.user.login_token !== undefined) {
-        //     this.setState({modalOpen: false})
-        //     self.setState({loading:true})
-        //     Alert.info('Please wait !', {
-        //         position: 'top-right',
-        //         effect: 'bouncyflip',
-        //         timeout: 'none'
-        //     });
-        // } else {
-        //     self.setState({loading:false})
-        //     this.setState({modalOpen: true})
-        //
-        // }
-
-        //
-        // if(nextProps.user.userToken !== undefined) {
-        //     this.spuserToken = nextProps.user.userToken;
-        //     this.setState({loading:false, modalOpen:false})
-        //     Alert.closeAll();
-        // }
 
         //Redux Alert
         if(nextProps.alertInfo.mode) {

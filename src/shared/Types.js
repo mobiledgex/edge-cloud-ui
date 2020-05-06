@@ -34,6 +34,16 @@ export type TypeClient = {
     }
 }
 
+export type TypeCloudletMarker = {
+    AppNames: string,
+    CloudletLocation: {
+        latitude: number,
+        longitude: number,
+    },
+    timestamp: string,
+    Cloudlet: string,
+}
+
 /*export type TypeMapTyleLayerReducer = {
     currentTyleLayer: string,
     lineColor: string,
@@ -45,7 +55,21 @@ export type TypeLineChartData2 = {
     usageSetList: Array,
     newDateTimeList: Array,
     hardwareType: string,
+}
 
+export type TypeClientOnCloudlet = {
+    latitude: number,
+    longitude: number,
+    horizontal_accuracy: number,
+    vertical_accuracy: number,
+    altitude: number,
+    timestamp: {
+        seconds: number, nanos: number,
+    },
+    uuid: string,
+    unique_id_type: string,
+    serverLocInfo: { lat: number, long: number },
+    clientLocation: string,  //"37.4-122.1"
 }
 
 export type TypeClientLocation = {

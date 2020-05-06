@@ -2,11 +2,10 @@
 import * as React from 'react';
 import {Modal as AModal, notification, Radio, Select} from "antd";
 import {Dropdown} from "semantic-ui-react";
-import {PageMonitoringStyles} from "../PageMonitoringCommonService";
 import {CLASSIFICATION, EVENT_LOG_ITEM_LIST, GRID_ITEM_TYPE} from "../../../../shared/Constants";
 import {ReactSVG} from 'react-svg'
 import {CircularProgress} from "@material-ui/core";
-import {Center, ChartIconOuterDiv} from "../PageMonitoringStyledComponent";
+import {Center, ChartIconOuterDiv, PageMonitoringStyles} from "../PageMonitoringStyles";
 import Button from "@material-ui/core/Button";
 
 const FA = require('react-fontawesome')

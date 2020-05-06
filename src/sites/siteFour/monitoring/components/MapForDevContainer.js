@@ -1,6 +1,5 @@
 import React from "react";
 import * as L from 'leaflet';
-import "../PageMonitoring.css";
 import 'react-leaflet-fullscreen-control'
 import type {TypeAppInstance, TypeClient} from "../../../../shared/Types";
 import Ripples from "react-ripples";
@@ -17,8 +16,8 @@ import {connect} from "react-redux";
 import * as actions from "../../../../actions";
 import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
-
-
+import '../PageMonitoring.css'
+import {PageMonitoringStyles} from "../PageMonitoringStyles";
 const {Option} = Select;
 
 const DEFAULT_VIEWPORT = {
@@ -138,24 +137,19 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 value: 3,
             },
             {
-                url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png',
-                name: 'light1',
-                value: 4,
-            },
-            {
                 url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
                 name: 'light2',
-                value: 5,
+                value: 4,
             },
             {
                 url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-antique/{z}/{x}/{y}.png',
                 name: 'light3',
-                value: 6,
+                value: 5,
             },
             {
                 url: 'https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
                 name: 'light4',
-                value: 7,
+                value: 6,
             },
         ]
 
@@ -326,6 +320,108 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
         }
 
+        makeMapThemeDropDown() {
+            return (
+                <Select
+                    size={"small"}
+                    defaultValue="dark1"
+                    style={{width: 70}}
+                    showArrow={false}
+                    bordered={false}
+                    listHeight={550}
+                    onChange={async (value) => {
+                        try {
+                            let index = value
+                            let lineColor = DARK_LINE_COLOR
+                            let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
+                            if (Number(index) >= 4) {
+                                lineColor = WHITE_LINE_COLOR;
+                                cloudletIconColor = WHITE_CLOUTLET_ICON_COLOR
+                            }
+
+                            this.props.setMapTyleLayer(this.mapTileList[index].url);
+                            this.props.setLineColor(lineColor);
+                            this.props.setCloudletIconColor(cloudletIconColor);
+                        } catch (e) {
+
+                        }
+
+                    }}
+                >
+                    {this.mapTileList.map((item, index) => {
+                        return (
+                            <Option style={{color: 'white'}} defaultChecked={index === 0} value={item.value}>{item.name}</Option>
+                        )
+                    })}
+                </Select>
+            )
+        }
+
+        makeClusterGrpForClient(objkeyOne, index) {
+            let groupedClientList = this.state.clientList;
+            return (
+                <MarkerClusterGroup key={index}>
+                    {groupedClientList[objkeyOne].map((item, index) => {
+                        return (
+                            <React.Fragment>
+                                <Marker
+                                    icon={cellphoneIcon2}
+                                    position={
+                                        [item.latitude, item.longitude]
+                                    }
+                                >
+                                    <Popup className='clientPopup'
+                                           style={{fontSize: 11}}>
+                                        <div style={{display: 'flex'}}>
+                                            <div style={{color: 'white', fontFamily: 'ubuntu'}}>
+                                                {item.uuid}
+                                            </div>
+                                        </div>
+
+                                    </Popup>
+                                </Marker>
+                                {/*@desc:#####################################..*/}
+                                {/*@desc:Render lines....                       */}
+                                {/*@desc:#####################################..*/}
+                                <Polyline
+                                    //dashArray={['30,1,30']}
+                                    id={index}
+                                    positions={[
+                                        [item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
+                                    ]}
+                                    color={this.props.lineColor}
+                                />
+
+                            </React.Fragment>
+                        )
+
+
+                    })
+
+                    }
+                </MarkerClusterGroup>
+            )
+        }
+
+        handleRefresh = async () => {
+            try {
+                await this.setState({
+                    zoom: 1,
+                    selectedAppInstIndex: -1,
+                }, () => {
+                    notification.success({
+                        placement: 'bottomLeft',
+                        duration: 1.5,
+                        message: 'Fetch locally stored data.',
+                    });
+                })
+
+                await this.props.parent.handleClusterDropdownAndReset('');
+            } catch (e) {
+
+            }
+        }
+
         render() {
 
             return (
@@ -386,9 +482,11 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                  dragging={true}
                                  boundsOptions={{padding: [50, 50]}}
                                  maxZoom={15}
+                                 zoomControl={false}
                                  onResize={() => {
 
                                  }}
+
                                  ref={(ref) => {
                                      this.map = ref;
                                  }}
@@ -399,124 +497,68 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     minZoom={2}
                                     style={{zIndex: 1}}
                                 />
-                                <Control position="topleft" style={{marginTop: 3}}>
-                                    <Icon
-                                        icon={'history'} color={'black'}
-                                        onClick={async () => {
-                                            try {
-                                                await this.setState({
-                                                    zoom: 1,
-                                                    selectedAppInstIndex: -1,
-                                                }, () => {
-                                                    notification.success({
-                                                        placement: 'bottomLeft',
-                                                        duration: 1.5,
-                                                        message: 'Fetch locally stored data.',
-                                                    });
+                                {/*@todo:#####################################..*/}
+                                {/*@todo: zoom, reset button...*/}
+                                {/*@todo:#####################################..*/}
+                                <Control position="topleft" style={{marginTop: 3, display: 'flex',}}>
+                                    <div style={PageMonitoringStyles.mapControlDiv}>
+                                        <div
+                                            style={{backgroundColor: 'transparent', height: 30}}
+                                            onClick={() => {
+                                                this.setState({
+                                                    zoom: this.state.zoom + 1,
                                                 })
+                                            }}
+                                        >
+                                            <Icon
+                                                name='add'
 
-                                                await this.props.parent.handleClusterDropdownAndReset('');
-                                            } catch (e) {
+                                                style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
+                                            />
+                                        </div>
+                                        <div style={{width: 2}}/>
+                                        <div
+                                            style={{backgroundColor: 'transparent', height: 30, width: 30, display: 'flex', justifyContent: 'center', alignSelf: 'center'}}
+                                            onClick={() => {
+                                                this.setState({
+                                                    zoom: this.state.zoom - 1,
+                                                })
+                                            }}
+                                        >
+                                            <Icon
+                                                name='minus'
 
-                                            }
-                                        }}
-                                        name='redo'
-                                        style={{
-                                            color: 'black',
-                                            fontSize: 18,
-                                            borderRadius: 3,
-                                            backgroundColor: 'white',
-                                            height: 26,
-                                            width: 27,
-                                            cursor: 'pointer'
-                                        }}
-                                    />
+                                                style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
+                                            />
+                                        </div>
+                                        <div
+                                            style={{backgroundColor: 'transparent', height: 30, width: 30, display: 'flex', justifyContent: 'center', alignSelf: 'center'}}
+                                        >
+                                            <Icon
+                                                name='redo'
+                                                onClick={this.handleRefresh}
+                                                style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
+                                            />
+                                        </div>
+                                    </div>
                                 </Control>
                                 {/*@todo:#####################################..*/}
                                 {/*@todo: topRight Dropdown changing MapTyles...*/}
                                 {/*@todo:#####################################..*/}
-                                {this.props.isFullScreenMap &&
-                                <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
-                                    <Select
-                                        defaultValue="dark1"
-                                        style={{width: 120}}
-                                        //showArrow={false}
-                                        listHeight={550}
-                                        onChange={async (value) => {
-                                            let index = value
-
-                                            let lineColor = DARK_LINE_COLOR
-                                            let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
-                                            if (Number(index) >= 4) {
-                                                lineColor = WHITE_LINE_COLOR;
-                                                cloudletIconColor = WHITE_CLOUTLET_ICON_COLOR
-                                            }
-
-                                            this.props.setMapTyleLayer(this.mapTileList[index].url);
-                                            this.props.setLineColor(lineColor);
-                                            this.props.setCloudletIconColor(cloudletIconColor);
-
-                                        }}
-                                    >
-                                        {this.mapTileList.map((item, index) => {
-                                            return (
-                                                <Option style={{color: 'white'}} defaultChecked={index === 0} value={item.value}>{item.name}</Option>
-                                            )
-                                        })}
-                                    </Select>
-                                </div>
+                                {this.props.isFullScreenMap ?
+                                    <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
+                                        {this.makeMapThemeDropDown()}
+                                    </div>
+                                    : <Control position="bottomright" style={{marginTop: 1, marginRight: -1}}>
+                                        {this.makeMapThemeDropDown()}
+                                    </Control>
                                 }
-
                                 {/*@desc:#####################################..*/}
-                                {/*@desc:client Markers  (MarkerClusterGroup)...*/}
+                                {/*@desc: Client Markers  (MarkerClusterGroup)...*/}
                                 {/*@desc:#####################################..*/}
-                                {this.state.clientObjKeys.map((objkeyOne, index) => {
-                                    let groupedClientList = this.state.clientList;
-                                    return (
-                                        <MarkerClusterGroup>
-                                            {groupedClientList[objkeyOne].map((item, index) => {
-                                                return (
-                                                    <React.Fragment>
-                                                        <Marker
-                                                            icon={cellphoneIcon2}
-                                                            position={
-                                                                [item.latitude, item.longitude]
-                                                            }
-                                                        >
-                                                            <Popup className='clientPopup'
-                                                                   style={{fontSize: 11}}>
-                                                                <div style={{display: 'flex'}}>
-                                                                    <div style={{color: 'white', fontFamily: 'ubuntu'}}>
-                                                                        {item.uuid}
-                                                                    </div>
-                                                                </div>
-
-                                                            </Popup>
-                                                        </Marker>
-                                                        {/*@desc:#####################################..*/}
-                                                        {/*@desc:Render lines....                       */}
-                                                        {/*@desc:#####################################..*/}
-                                                        <Polyline
-                                                            //dashArray={['30,1,30']}
-                                                            id={index}
-                                                            positions={[
-                                                                [item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
-                                                            ]}
-                                                            color={this.props.lineColor}
-                                                        />
-
-                                                    </React.Fragment>
-                                                )
-
-
-                                            })
-
-                                            }
-                                        </MarkerClusterGroup>
-                                    )
-
-
-                                })}
+                                {this.state.clientObjKeys.map((objkeyOne, index) =>
+                                    this.makeClusterGrpForClient(objkeyOne, index)
+                                )}
 
 
                                 {/*@desc:#####################################..*/}
