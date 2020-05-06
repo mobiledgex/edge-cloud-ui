@@ -16,6 +16,9 @@ import { createCloudlet, updateCloudlet } from '../../../services/model/cloudlet
 //Map
 import Map from '../../../libs/simpleMaps/with-react-motion/index_clusters';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
+import {CloudletTutor} from "../../../tutorial";
+
+const cloudletSteps = CloudletTutor();
 
 class ClusterInstReg extends React.Component {
     constructor(props) {
@@ -318,6 +321,7 @@ class ClusterInstReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data)
+        this.props.handleViewMode( cloudletSteps.stepsCloudletReg )
     }
 
 
@@ -343,6 +347,7 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
+        handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
     };
 };
 

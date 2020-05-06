@@ -279,7 +279,8 @@ class AutoProvPolicyReg extends React.Component {
     }
 
     componentDidMount() {
-        this.getFormData(this.props.data)
+        this.getFormData(this.props.data);
+        this.props.handleViewMode( policySteps.stepsNewPolicy )
     }
 
 

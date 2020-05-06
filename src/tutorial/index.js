@@ -121,6 +121,68 @@ export const organizationTutor = () => {
                     intro: 'Click this button to view the organization you have created.',
                 },
             ],
+        }
+    )
+
+}
+
+
+export const flavorTutor = () => {
+    return(
+        {
+            stepsFlavors: [
+                {
+                    element: '.none',
+                    intro: 'This is page for manage Flavors'
+                },
+                {
+                    element: '.buttonCreate',
+                    intro: '<span>Click “+” button to create new Flavors.</span>'
+                },
+                {
+                    element: '.buttonActions',
+                    intro: 'Click this button to perform "Delete".'
+                }
+            ],
+            stepsCreateFlavor: [
+                {
+                    element: '.formRow-1',
+                    intro: 'Select region where you want to deploy.'
+                },
+                {
+                    element: '.formRow-2',
+                    intro: 'Name of the Flavor.'
+                },
+                {
+                    element: '.formRow-3',
+                    intro: 'Enter RAM Size.'
+                },
+                {
+                    element: '.formRow-4',
+                    intro: 'Enter number of vCPUs.'
+                },
+                {
+                    element: '.formRow-5',
+                    intro: 'Enter Disk Space.'
+                },
+                {
+                    element: '.formRow-6',
+                    intro: 'Check for GPU.'
+                },
+                {
+                    element: '.formButton-7',
+                    intro: 'Click this button to create'
+                }
+
+            ]
+        }
+    )
+
+}
+
+export const clusterInstTutor = () => {
+    return(
+        {
             stepsClusterInst: [
                 {
                     element: '.none',
@@ -375,6 +437,316 @@ export const organizationTutor = () => {
     )
 
 }
+
+export const appTutor = () => {
+    return(
+        {
+            stepsApp: [
+                {
+                    element: '.none',
+                    intro: '<span>App belongs to developers and it provides information about their app.<br />Use this page to define your app.</span>'
+                },
+                {
+                    element: '.buttonCreate',
+                    intro: '<span>Click “+” button to  start creating new app.<br />Please note that Developer Managers and Developer Contributors have permission to create apps.</span>'
+                },
+                {
+                    element: '.buttonActions',
+                    intro: '<span>Click this button and select “Create Instance” button to start deploying your app.</span>'
+                }
+            ],
+            stepsCreateApp: [
+                {
+                    element: '.formRow-1',
+                    intro: 'Select region where you want to deploy.'
+                },
+                {
+                    element: '.formRow-2',
+                    intro: 'Name of the organization you are currently managing.'
+                },
+                {
+                    element: '.formRow-3',
+                    intro: 'App name.'
+                },
+                {
+                    element: '.formRow-4',
+                    intro: 'App version.'
+                },
+                {
+                    element: '.formRow-5',
+                    intro: 'Deployment type (kubernetes, docker, or vm)'
+                },
+                {
+                    element: '.formRow-7',
+                    intro: 'Skip this.. As it gets autofilled.'
+                },
+                {
+                    element: '.formRow-8',
+                    intro: '<div style="height: 200px; overflow-y: auto;"><span>URI of where image resides. If image has not be uploaded to MobiledgeX registry, please use following instructions.<br />If your image is docker, please upload your image with your MobiledgeX Account Credentials to our docker registry using the following docker commands.<br /><br />$ docker login -u <username> docker.mobiledgex.net<br />$ docker tag <your application> docker.mobiledgex.net/<organization name>/images/<application name>:<version><br />$ docker push docker.mobiledgex.net/<organization name>/images/<application name>:<version><br />$ docker logout docker.mobiledgex.net<br /><br />If you image is VM, please upload your image with your MobiledgeX Account Credentials to our VM registry using the following curl command.<br /><br />$ curl -u<username> -T <path_to_file> "https://artifactory.mobiledgex.net/artifactory/repo-<organization name>/<target_file_path>" --progress-bar -o <upload status filename></span></div>'
+                },
+                {
+                    element: '.formRow-9',
+                    intro: 'Public Key of this app used for client-side authentication.'
+                },
+                {
+                    element: '.formRow-10',
+                    intro: 'Hardware resource requirement to run this app.'
+                },
+                {
+                    element: '.formRow-13',
+                    intro: 'Official FQDN the app uses to connect by default'
+                },
+                {
+                    element: '.formRow-14',
+                    intro: 'Android package name of the app.'
+                },
+                // {
+                //     element: '.formRow-13',
+                //     intro: 'Option to run App on all nodes of the cluster.'
+                // },
+                {
+                    element: '.formRow-16',
+                    intro: 'Command that the container runs to start service.'
+                },
+                {
+                    element: '.formRow-17',
+                    intro: '<span>Deployment manifest is the deployment specific manifest file/config.<br />For docker deployment, this file can be a docker-compose or docker run. For kubernetes deployment, this file can be a kubernetes yaml or helm chart file.<br />For VM deployment, this file can be a cloud config.</span>'
+                },
+                {
+                    element: '.formHeader-19',
+                    intro: 'protocol:port pairs that the app listens on'
+                },
+                {
+                    element: '.formButton-22',
+                    intro: 'Click this button to create'
+                }
+            ],
+            stepsAppInst: [
+                {
+                    element: '.none',
+                    intro: 'Use App Instances page to deploy, manage and view app instances.'
+                },
+                {
+                    element: '.buttonCreate',
+                    intro: '<span>Click “+” button to start deploying new app instance.<br />Please note that user role of Developer Manager and Developer Contributor have permission to deploy app instances.</span>'
+                },
+                {
+                    element: '.progressIndicator',
+                    intro: 'Click to View Detail Progress'
+                },
+                {
+                    element: '.buttonActions',
+                    intro: 'Click this button to perform "Delete" or "Terminal".'
+                }
+            ],
+            stepsCreateAppInst: [
+                {
+                    element: '.formRow-1',
+                    intro: 'Select region where you want to deploy.'
+                },
+                {
+                    element: '.formRow-2',
+                    intro: 'The name of the organization you are currently managing.'
+                },
+                {
+                    element: '.formRow-3',
+                    intro: 'The name of the application to deploy.'
+                },
+                {
+                    element: '.formRow-4',
+                    intro: 'The version of the application to deploy.'
+                },
+                {
+                    element: '.formRow-5',
+                    intro: 'Which operator do you want to deploy this applicaton? Please select one.'
+                },
+                {
+                    element: '.formRow-6',
+                    intro: 'Which cloudlet(s) do you want to deploy this application?'
+                },
+                // {
+                //     element: '.formRow-7',
+                //     intro: 'If you have yet to create a cluster, you can select this to auto create cluster instance.'
+                // },
+                // {
+                //     element: '.formRow-8',
+                //     intro: 'Name of cluster instance to deploy this application.'
+                // },
+                // {
+                //     element: '.formRow-9',
+                //     intro: 'Please add instruction here'
+                // },
+                {
+                    element: '.formButton-12',
+                    intro: 'Click this button to create'
+                }
+            ],
+
+            stepsFlavors: [
+                {
+                    element: '.none',
+                    intro: 'This is page for manage Flavors'
+                },
+                {
+                    element: '.buttonCreate',
+                    intro: '<span>Click “+” button to create new Flavors.</span>'
+                },
+                {
+                    element: '.buttonActions',
+                    intro: 'Click this button to perform "Delete".'
+                }
+            ],
+            stepsCreateFlavor: [
+                {
+                    element: '.formRow-1',
+                    intro: 'Select region where you want to deploy.'
+                },
+                {
+                    element: '.formRow-2',
+                    intro: 'Name of the Flavor.'
+                },
+                {
+                    element: '.formRow-3',
+                    intro: 'Enter RAM Size.'
+                },
+                {
+                    element: '.formRow-4',
+                    intro: 'Enter number of vCPUs.'
+                },
+                {
+                    element: '.formRow-5',
+                    intro: 'Enter Disk Space.'
+                },
+                {
+                    element: '.formRow-6',
+                    intro: 'Check for GPU.'
+                },
+                {
+                    element: '.formButton-7',
+                    intro: 'Click this button to create'
+                }
+
+            ]
+        }
+    )
+
+}
+
+
+export const appInstTutor = () => {
+    return(
+        {
+            stepsAppInst: [
+                {
+                    element: '.none',
+                    intro: 'Use App Instances page to deploy, manage and view app instances.'
+                },
+                {
+                    element: '.buttonCreate',
+                    intro: '<span>Click “+” button to start deploying new app instance.<br />Please note that user role of Developer Manager and Developer Contributor have permission to deploy app instances.</span>'
+                },
+                {
+                    element: '.progressIndicator',
+                    intro: 'Click to View Detail Progress'
+                },
+                {
+                    element: '.buttonActions',
+                    intro: 'Click this button to perform "Delete" or "Terminal".'
+                }
+            ],
+            stepsCreateAppInst: [
+                {
+                    element: '.formRow-1',
+                    intro: 'Select region where you want to deploy.'
+                },
+                {
+                    element: '.formRow-2',
+                    intro: 'The name of the organization you are currently managing.'
+                },
+                {
+                    element: '.formRow-3',
+                    intro: 'The name of the application to deploy.'
+                },
+                {
+                    element: '.formRow-4',
+                    intro: 'The version of the application to deploy.'
+                },
+                {
+                    element: '.formRow-5',
+                    intro: 'Which operator do you want to deploy this applicaton? Please select one.'
+                },
+                {
+                    element: '.formRow-6',
+                    intro: 'Which cloudlet(s) do you want to deploy this application?'
+                },
+                // {
+                //     element: '.formRow-7',
+                //     intro: 'If you have yet to create a cluster, you can select this to auto create cluster instance.'
+                // },
+                // {
+                //     element: '.formRow-8',
+                //     intro: 'Name of cluster instance to deploy this application.'
+                // },
+                // {
+                //     element: '.formRow-9',
+                //     intro: 'Please add instruction here'
+                // },
+                {
+                    element: '.formButton-12',
+                    intro: 'Click this button to create'
+                }
+            ],
+
+            stepsFlavors: [
+                {
+                    element: '.none',
+                    intro: 'This is page for manage Flavors'
+                },
+                {
+                    element: '.buttonCreate',
+                    intro: '<span>Click “+” button to create new Flavors.</span>'
+                },
+                {
+                    element: '.buttonActions',
+                    intro: 'Click this button to perform "Delete".'
+                }
+            ],
+            stepsCreateFlavor: [
+                {
+                    element: '.formRow-1',
+                    intro: 'Select region where you want to deploy.'
+                },
+                {
+                    element: '.formRow-2',
+                    intro: 'Name of the Flavor.'
+                },
+                {
+                    element: '.formRow-3',
+                    intro: 'Enter RAM Size.'
+                },
+                {
+                    element: '.formRow-4',
+                    intro: 'Enter number of vCPUs.'
+                },
+                {
+                    element: '.formRow-5',
+                    intro: 'Enter Disk Space.'
+                },
+                {
+                    element: '.formRow-6',
+                    intro: 'Check for GPU.'
+                },
+                {
+                    element: '.formButton-7',
+                    intro: 'Click this button to create'
+                }
+
+            ]
+        }
+    )
+
+}
+
 export const UserRolesTutor = () => {
     return (
         {

@@ -9,9 +9,9 @@ import { fields } from '../../../services/model/format';
 import { keys, showApps, deleteApp } from '../../../services/model/app';
 import AppReg from './appReg';
 import AppInstReg from '../appInst/appInstReg';
-import {organizationTutor} from "../../../tutorial";
+import {appTutor} from "../../../tutorial";
 
-const orgaSteps = organizationTutor();
+const appSteps = appTutor();
 
 class AppList extends React.Component {
     constructor(props) {
@@ -31,7 +31,6 @@ class AppList extends React.Component {
 
     onAdd = (action , data) => {
         this.setState({ currentView: <AppReg isUpdate={action ? true : false} data={data} onClose={this.onRegClose}/> });
-        this.props.handleViewMode( orgaSteps.stepsCreateApp )
     }
 
     /***Action Block */
@@ -39,7 +38,6 @@ class AppList extends React.Component {
 
     onLaunch = (action, data) => {
         this.setState({ currentView: <AppInstReg isLaunch={action ? true : false} data={data} onClose={this.onRegClose}/> });
-        this.props.handleViewMode( orgaSteps.stepsCreateApp )
     }
 
     actionMenu = () => {
@@ -60,7 +58,7 @@ class AppList extends React.Component {
             sortBy: [fields.region, fields.appName],
             keys: this.keys,
             onAdd: this.onAdd,
-            viewMode : orgaSteps.stepsApp
+            viewMode : appSteps.stepsApp
         })
     }
 

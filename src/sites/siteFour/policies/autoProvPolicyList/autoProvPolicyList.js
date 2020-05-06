@@ -30,17 +30,14 @@ class AutoProvPolicy extends React.Component {
 
     onAdd = () => {
         this.setState({ currentView: <AutoProvPolicyReg onClose={this.onRegClose}/> });
-        this.props.handleViewMode( policySteps.stepsNewPolicy )
     }
 
     onAddCloudlet = (action, data) => {
         this.setState({ currentView: <AutoProvPolicyReg data={data} action={'Add'} onClose={this.onRegClose}/> });
-        this.props.handleViewMode( policySteps.stepsNewPolicy )
     }
 
     onDeleteCloudlet = (action, data) => {
         this.setState({ currentView: <AutoProvPolicyReg data={data} action={'Delete'} onClose={this.onRegClose}/> });
-        this.props.handleViewMode( policySteps.stepsNewPolicy )
     }
 
     actionMenu = () => {

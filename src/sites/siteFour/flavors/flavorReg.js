@@ -10,6 +10,10 @@ import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 //model
 import { createFlavor} from '../../../services/model/flavor';
+import {flavorTutor} from "../../../tutorial";
+
+
+const flavorSteps = flavorTutor();
 
 class ClusterInstReg extends React.Component {
     constructor(props) {
@@ -157,12 +161,10 @@ class ClusterInstReg extends React.Component {
     }
 
     componentDidMount() {
-        this.getFormData(this.props.data)
+        this.getFormData(this.props.data);
+        this.props.handleViewMode( flavorSteps.stepsCreateFlavor )
     }
 
-    componentWillUnmount() {
-        this.props.handleViewMode( false )
-    }
 };
 
 const mapStateToProps = (state) => {

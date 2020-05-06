@@ -35,7 +35,6 @@ class OrganizationList extends React.Component {
 
     onAdd = (action, data) => {
         this.setState({ currentView: <OrganizationReg data={data} action={action ? 'AddUser' : null} onClose={this.onRegClose} /> });
-        this.props.handleViewMode( orgaSteps.stepsNewOrg )
     }
 
     /**Action menu block */

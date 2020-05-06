@@ -27,7 +27,6 @@ import changeStep from "../../reducers/changeStep";
 
 let defaultMotion = {left: window.innerWidth / 2, top: window.innerHeight / 2, opacity: 1}
 let _self = null
-const orgaSteps = organizationTutor();
 
 const monitoringSteps = MonitoringTutor();
 

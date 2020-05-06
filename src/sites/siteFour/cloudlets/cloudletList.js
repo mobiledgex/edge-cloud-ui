@@ -34,7 +34,6 @@ class CloudletList extends React.Component {
 
     onAdd = (action, data) => {
         this.setState({ currentView: <ClouldletReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose}/> });
-        this.props.handleViewMode( cloudletSteps.stepsCloudletReg )
     }
 
     actionMenu = () => {

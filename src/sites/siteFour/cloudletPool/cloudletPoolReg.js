@@ -358,6 +358,7 @@ class CloudletPoolReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data)
+        this.props.handleViewMode( cloudletPoolSteps.stepsNewPool );
     }
 
 };

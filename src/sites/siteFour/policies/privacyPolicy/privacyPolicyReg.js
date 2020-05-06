@@ -11,6 +11,9 @@ import {fields, getOrganization} from '../../../../services/model/format';
 import {getOrganizationList} from '../../../../services/model/organization';
 import {updatePrivacyPolicy, createPrivacyPolicy} from '../../../../services/model/privacyPolicy';
 import * as serverData from '../../../../services/model/serverData';
+import {PolicyTutor} from "../../../../tutorial";
+
+const policySteps = PolicyTutor();
 
 class AutoProvPolicyReg extends React.Component {
     constructor(props) {
@@ -351,6 +354,7 @@ class AutoProvPolicyReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data)
+        this.props.handleViewMode( policySteps.stepsNewPolicyPrivacy )
     }
 
 };
@@ -375,7 +379,8 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
+        handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
     };
 };
 

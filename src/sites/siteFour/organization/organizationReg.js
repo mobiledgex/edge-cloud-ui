@@ -361,6 +361,7 @@ class OrganizationReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data)
+        this.props.handleViewMode( orgaSteps.stepsNewOrg )
     }
 
 };
