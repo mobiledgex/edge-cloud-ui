@@ -638,8 +638,10 @@
 }
 
 .timeline_item_dot {
-    width:20px;
-    height:20px;
+    width:10px;
+    height:10px;
+    border-width: 1px;
+    border-style: solid;
     border-radius: 50%;
     display: flex;
     justify-content: center;
