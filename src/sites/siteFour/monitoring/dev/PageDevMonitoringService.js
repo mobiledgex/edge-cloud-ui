@@ -962,6 +962,17 @@ export const addUnitNameForUsage = (value, hardwareType, _this) => {
     }
 };
 
+export const groupByCloudletLocation = (items, key) => items.reduce(
+    (result, item) => ({
+        ...result,
+        [item[key]]: [
+            ...(result[item[key]] || []),
+            item,
+        ],
+    }),
+    {},
+);
+
 
 export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBig = false) => {
     try {
