@@ -10,7 +10,7 @@ const validate = values => {
     if (!values.username) {
         errors.username = 'Required'
     } else if(!/^[-_.0-9a-zA-Z]+$/.test(values.username)){
-        errors.username = 'Invalid characters in user name'
+        errors.username = 'User name can only contain letters, digits, "_", ".", "-".'
     }
 
     if (!values.password) {
