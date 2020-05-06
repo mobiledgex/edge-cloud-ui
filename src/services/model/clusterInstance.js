@@ -128,7 +128,8 @@ export const getClusterInstList = async (self, data) => {
 
 export const createClusterInst = (self, data, callback) => {
     let requestData = clusterKey(data, true)
-    let request = { uuid: data.uuid ? data.uuid : uuid(), method: CREATE_CLUSTER_INST, data: requestData }
+    data.uuid = data[fields.cloudletName]
+    let request = { uuid: data.uuid, method: CREATE_CLUSTER_INST, data: requestData }
     return serverData.sendWSRequest(self, request, callback, data)
 }
 

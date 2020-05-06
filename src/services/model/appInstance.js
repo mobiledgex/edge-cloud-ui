@@ -127,7 +127,8 @@ export const getAppInstList = async (self, data) => {
 
 export const createAppInst = (self, data, callback) => {
   let requestData = getKey(data, true)
-  let request = { uuid: data.uuid ? data.uuid : uuid(), method: CREATE_APP_INST, data: requestData }
+  data.uuid = data[fields.cloudletName]
+  let request = { uuid: data.uuid, method: CREATE_APP_INST, data: requestData }
   return serverData.sendWSRequest(self, request, callback, data)
 }
 
