@@ -1340,6 +1340,13 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
     }
 }
 
+
+/**
+ *
+ * @param str
+ * @param lengthLimit
+ * @returns {string}
+ */
 export const reduceString = (str: string, lengthLimit: number) => {
     if (str.length > lengthLimit) {
         return str.substring(0, lengthLimit) + "..";
@@ -1547,6 +1554,16 @@ export const makeSelectBoxListWithValuePipe = (appInstList, keyName: string, val
     }
 };
 
+
+/**
+ *
+ * @param appInstList
+ * @param keyName
+ * @param valueName
+ * @param thirdValue
+ * @param fourthValue
+ * @returns {[]}
+ */
 export const makeDropdownListWithValuePipeForAppInst = (appInstList, keyName: string, valueName: string, thirdValue: string, fourthValue: string = '') => {
     try {
         let newArrList = [];
@@ -1554,8 +1571,8 @@ export const makeDropdownListWithValuePipeForAppInst = (appInstList, keyName: st
             for (let i in appInstList) {
                 newArrList.push({
                     key: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim(),
-                    value: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim(),
-                    text: appInstList[i][keyName].trim(),
+                    value: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim() ,
+                    text: appInstList[i][keyName].trim() + " [" + appInstList[i][fourthValue].trim() + "]",
                 })
             }
         } else {

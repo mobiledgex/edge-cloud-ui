@@ -166,6 +166,7 @@ export const CLASSIFICATION = {
     APPNAME: 'AppName',
     APPINST: 'AppInst',
     CLUSTER_INST: 'ClusterInst',
+    VERSION: 'Version',
     CLUSTER: 'Cluster',
     REGION: 'Region',
 }
