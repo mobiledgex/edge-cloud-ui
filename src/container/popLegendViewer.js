@@ -7,54 +7,72 @@ const roles =
     {
         Developer: {
             Manager: {
-                'Users': 'Manage',
+                'Users & Roles': 'Manage',
                 'Cloudlets': 'View',
-                'Flavor': 'View',
-                'Cluster Instance': 'Manage',
+                'Flavors': 'View',
+                'Cluster Instances': 'Manage',
                 'Apps': 'Manage',
-                'App Instance': 'Manage'
+                'App Instances': 'Manage',
+                'Policies': 'Manage',
+                'Monitoring' : 'Manage',
+                'Audit Logs' : 'Manage'
             },
             Contributor: {
-                'Users': 'View',
+                'Users & Roles': 'View',
                 'Cloudlets': 'View',
-                'Flavor': 'View',
-                'Cluster Instance': 'Manage',
+                'Flavors': 'View',
+                'Cluster Instances': 'Manage',
                 'Apps': 'Manage',
-                'App Instance': 'Manage'
+                'App Instances': 'Manage',
+                'Policies': 'Manage',
+                'Monitoring' : 'Manage',
+                'Audit Logs' : 'Manage'
             },
             Viewer: {
-                'Users': 'View',
+                'Users & Roles': 'View',
                 'Cloudlets': 'View',
-                'Flavor': 'View',
-                'Cluster Instance': 'View',
+                'Flavors': 'View',
+                'Cluster Instances': 'View',
                 'Apps': 'View',
-                'App Instance': 'View'
+                'App Instances': 'View',
+                'Policies': 'Manage',
+                'Monitoring' : 'Manage',
+                'Audit Logs' : 'Manage'
             }
         },
         Operator: {
             Manager: {
-                'Users': 'Manage',
+                'Users & Roles': 'Manage',
                 'Cloudlets': 'Manage',
-                'Flavor': 'disabled',
-                'Cluster Instance': 'disabled',
+                'Flavors': 'disabled',
+                'Cluster Instances': 'disabled',
                 'Apps': 'disabled',
-                'App Instance': 'disabled'
+                'App Instances': 'disabled',
+                'Policies': 'disabled',
+                'Monitoring' : 'Manage',
+                'Audit Logs' : 'Manage'
             },
             Contributor: {
-                'Users': 'View',
+                'Users & Roles': 'View',
                 'Cloudlets': 'Manage',
-                'Flavor': 'disabled',
-                'Cluster Instance': 'disabled',
+                'Flavors': 'disabled',
+                'Cluster Instances': 'disabled',
                 'Apps': 'disabled',
-                'App Instance': 'disabled'
+                'App Instances': 'disabled',
+                'Policies': 'disabled',
+                'Monitoring' : 'Manage',
+                'Audit Logs' : 'Manage'
             },
             Viewer: {
-                'Users': 'View',
+                'Users & Roles': 'View',
                 'Cloudlets': 'View',
-                'Flavor': 'disabled',
-                'Cluster Instance': 'disabled',
+                'Flavors': 'disabled',
+                'Cluster Instances': 'disabled',
                 'Apps': 'disabled',
-                'App Instance': 'disabled'
+                'App Instances': 'disabled',
+                'Policies': 'disabled',
+                'Monitoring' : 'Manage',
+                'Audit Logs' : 'Manage'
             },
         }
     }
@@ -232,24 +250,20 @@ export default class PopLegendViewer extends React.Component {
                                 <Table celled inverted selectable>
                                     <Table.Body>
                                         <Table.Row>
-                                            <Table.Cell style={{width:'35%'}}>Users</Table.Cell>
-                                            <Table.Cell>
-                                                {this.getUserRole('Users')}
-                                            </Table.Cell>
+                                            <Table.Cell>Users & Roles</Table.Cell>
+                                            <Table.Cell>{this.getUserRole('Users & Roles')}</Table.Cell>
                                         </Table.Row>
                                         <Table.Row>
                                             <Table.Cell>Cloudlets</Table.Cell>
-                                            <Table.Cell>
-                                                {this.getUserRole('Cloudlets')}
-                                            </Table.Cell>
+                                            <Table.Cell>{this.getUserRole('Cloudlets')}</Table.Cell>
                                         </Table.Row>
                                         <Table.Row>
                                             <Table.Cell>Flavors</Table.Cell>
-                                            <Table.Cell>{this.getUserRole('Flavor')}</Table.Cell>
+                                            <Table.Cell>{this.getUserRole('Flavors')}</Table.Cell>
                                         </Table.Row>
                                         <Table.Row>
                                             <Table.Cell>Cluster Instances</Table.Cell>
-                                            <Table.Cell>{this.getUserRole('Cluster Instance')}</Table.Cell>
+                                            <Table.Cell>{this.getUserRole('Cluster Instances')}</Table.Cell>
                                         </Table.Row>
                                         <Table.Row>
                                             <Table.Cell>Apps</Table.Cell>
@@ -257,7 +271,19 @@ export default class PopLegendViewer extends React.Component {
                                         </Table.Row>
                                         <Table.Row>
                                             <Table.Cell>App Instances</Table.Cell>
-                                            <Table.Cell>{this.getUserRole('App Instance')}</Table.Cell>
+                                            <Table.Cell>{this.getUserRole('App Instances')}</Table.Cell>
+                                        </Table.Row>
+                                        <Table.Row>
+                                            <Table.Cell>Policies</Table.Cell>
+                                            <Table.Cell>{this.getUserRole('Policies')}</Table.Cell>
+                                        </Table.Row>
+                                        <Table.Row>
+                                            <Table.Cell>Monitoring</Table.Cell>
+                                            <Table.Cell>{this.getUserRole('Monitoring')}</Table.Cell>
+                                        </Table.Row>
+                                        <Table.Row>
+                                            <Table.Cell>Audit Logs</Table.Cell>
+                                            <Table.Cell>{this.getUserRole('Audit Logs')}</Table.Cell>
                                         </Table.Row>
                                     </Table.Body>
                                 </Table>

@@ -32,14 +32,74 @@ const stepData = [
 const roles =
 {
     Developer: [
-        { Users: 'Manage', Cloudlets: 'View', Flavor: 'View', 'Cluster Instance': 'Manage', Apps: 'Manage', 'App Instance': 'Manage' },
-        { Users: 'View', Cloudlets: 'View', Flavor: 'View', 'Cluster Instance': 'Manage', Apps: 'Manage', 'App Instance': 'Manage' },
-        { Users: 'View', Cloudlets: 'View', Flavor: 'View', 'Cluster Instance': 'View', Apps: 'View', 'App Instance': 'View' }
+        {
+            'Users & Roles': 'Manage',
+            'Cloudlets': 'View',
+            'Flavors': 'View',
+            'Cluster Instances': 'Manage',
+            'Apps': 'Manage',
+            'App Instances': 'Manage',
+            'Policies': 'Manage',
+            'Monitoring' : 'Manage',
+            'Audit Logs' : 'Manage'
+        },
+        {
+            'Users & Roles': 'View',
+            'Cloudlets': 'View',
+            'Flavors': 'View',
+            'Cluster Instances': 'Manage',
+            'Apps': 'Manage',
+            'App Instances': 'Manage',
+            'Policies': 'Manage',
+            'Monitoring' : 'Manage',
+            'Audit Logs' : 'Manage'
+        },
+        {
+            'Users & Roles': 'View',
+            'Cloudlets': 'View',
+            'Flavors': 'View',
+            'Cluster Instances': 'View',
+            'Apps': 'View',
+            'App Instances': 'View',
+            'Policies': 'Manage',
+            'Monitoring' : 'Manage',
+            'Audit Logs' : 'Manage'
+        }
     ],
     Operator: [
-        { Users: 'Manage', Cloudlets: 'Manage', Flavor: 'disabled', 'Cluster Instance': 'disabled', Apps: 'disabled', 'App Instance': 'disabled' },
-        { Users: 'View', Cloudlets: 'Manage', Flavor: 'disabled', 'Cluster Instance': 'disabled', Apps: 'disabled', 'App Instance': 'disabled' },
-        { Users: 'View', Cloudlets: 'View', Flavor: 'disabled', 'Cluster Instance': 'disabled', Apps: 'disabled', 'App Instance': 'disabled' },
+        {
+            'Users & Roles': 'Manage',
+            'Cloudlets': 'Manage',
+            'Flavors': 'disabled',
+            'Cluster Instances': 'disabled',
+            'Apps': 'disabled',
+            'App Instances': 'disabled',
+            'Policies': 'disabled',
+            'Monitoring' : 'Manage',
+            'Audit Logs' : 'Manage'
+        },
+        {
+            'Users & Roles': 'View',
+            'Cloudlets': 'Manage',
+            'Flavors': 'disabled',
+            'Cluster Instances': 'disabled',
+            'Apps': 'disabled',
+            'App Instances': 'disabled',
+            'Policies': 'disabled',
+            'Monitoring' : 'Manage',
+            'Audit Logs' : 'Manage'
+        },
+        {
+            'Users & Roles': 'View',
+            'Cloudlets': 'View',
+            'Flavors': 'disabled',
+            'Cluster Instances': 'disabled',
+            'Apps': 'disabled',
+            'App Instances': 'disabled',
+            'Policies': 'disabled',
+            'Monitoring' : 'Manage',
+            'Audit Logs' : 'Manage'
+        },
     ]
 }
 
