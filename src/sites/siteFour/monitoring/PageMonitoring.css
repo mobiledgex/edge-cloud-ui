@@ -163,6 +163,8 @@ tbody:hover {
     color: white;
     font-size: 9px;
     width: auto;
+    min-width: auto;
+    max-width: auto;
 }
 
 .clientPopup {

@@ -23,7 +23,6 @@ import {
     makeLineChartDataForBigModal,
     makeLineChartDataForCluster,
     makeSelectBoxListWithKeyValuePipeForCluster,
-    makeSelectBoxListWithValuePipe,
     reduceLegendClusterCloudletName,
     revertToDefaultLayout,
 } from "./PageDevMonitoringService";
@@ -245,6 +244,7 @@ type PageDevMonitoringState = {
     selectedAppInstIndex: number,
     isOpenGlobe: boolean,
     legendColSize: number,
+    currentAppVersion: number,
 }
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
@@ -416,6 +416,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     isOpenGlobe: false,
                     isLegendExpanded: false,
                     legendColSize: 3,
+                    currentAppVersion: undefined,
                 };
             }
 
@@ -456,6 +457,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let newPromiseList = await Promise.all(promiseList);
                     let cloudletList = newPromiseList[0]
                     let clusterList = newPromiseList[1];
+
+
+                    clusterList.sort((a, b) => a.Cloudlet - b.Cloudlet);
+
+                    console.log(`clusterList====>`,clusterList);
+
                     let appInstList = newPromiseList[2];
                     let clusterDropdownList = makeSelectBoxListWithKeyValuePipeForCluster(clusterList, 'ClusterName', 'Cloudlet')
 
@@ -711,7 +718,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             }
                         })
 
-                        let appInstDropdown = makeDropdownListWithValuePipeForAppInst(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
+                        let appInstDropdown = makeDropdownListWithValuePipeForAppInst(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST, CLASSIFICATION.VERSION)
+
+
+                        console.log(`appInstDropdown2222====>`, appInstDropdown);
+
                         let bubbleChartData = makeBubbleChartDataForCluster(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
                         await this.setState({
                             bubbleChartData: bubbleChartData,
@@ -747,93 +758,108 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             handleAppInstDropdown = async (pCurrentAppInst) => {
-
-
-                console.log(`pCurrentAppInst====>`,pCurrentAppInst);
-
-                clearInterval(this.intervalForAppInst)
-                clearInterval(this.intervalForCluster)
-                //@desc: ################################
-                //@desc: requestShowAppInstClientWS
-                //@desc: ################################
-                if (this.state.showAppInstClient) {
-                    await this.setState({
-                        selectedClientLocationListOnAppInst: [],
-                    })
-                    this.webSocketInst = requestShowAppInstClientWS(pCurrentAppInst, this);
-                }
-
-
-                await this.setState({
-                    currentAppInst: pCurrentAppInst,
-                    loading: true,
-                })
-
-                let AppName = pCurrentAppInst.split('|')[0].trim()
-                let Cloudlet = pCurrentAppInst.split('|')[1].trim()
-                let ClusterInst = pCurrentAppInst.split('|')[2].trim()
-                let filteredAppList = filterByClassification(this.state.appInstanceList, Cloudlet, 'Cloudlet');
-                filteredAppList = filterByClassification(filteredAppList, ClusterInst, 'ClusterInst');
-                filteredAppList = filterByClassification(filteredAppList, AppName, 'AppName');
-                //desc:########################################
-                //desc:Terminal
-                //desc:########################################
-                this.setState({
-                    terminalData: null
-                })
-                this.validateTerminal(filteredAppList)
-
-                let appInstDropdown = makeSelectBoxListWithValuePipe(filteredAppList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST)
-                await this.setState({
-                    appInstDropdown,
-                }, () => {
-                })
-
-
-                let arrDateTime = getOneYearStartEndDatetime();
-                let appInstUsageList = [];
-                await this.setState({dropdownRequestLoading: true})
                 try {
-                    appInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime[0], arrDateTime[1]);
-                } catch (e) {
-                    showToast(e.toString())
-                } finally {
-                    this.setState({dropdownRequestLoading: false})
-                }
 
-                pCurrentAppInst = pCurrentAppInst.trim();
-                pCurrentAppInst = pCurrentAppInst.split("|")[0].trim() + " | " + pCurrentAppInst.split('|')[1].trim() + " | " + pCurrentAppInst.split('|')[2].trim()
+                    console.log(`pCurrentAppInst====>`, pCurrentAppInst);
 
-                //desc: ############################
-                //desc: filtered AppInstEventLogList
-                //desc: ############################
-                let _allAppInstEventLog = this.state.allAppInstEventLogs;
-                let filteredAppInstEventLogList = _allAppInstEventLog.filter(item => {
-                    if (item[APP_INST_MATRIX_HW_USAGE_INDEX.APP].trim() === AppName && item[APP_INST_MATRIX_HW_USAGE_INDEX.CLUSTER].trim() === ClusterInst) {
-                        return true;
-                    }
-                })
-
-                await this.setState({
-                    filteredAppInstEventLogs: filteredAppInstEventLogList,
-                    currentTabIndex: 0,
-                    currentClassification: CLASSIFICATION.APPINST,
-                    allAppInstUsageList: appInstUsageList,
-                    filteredAppInstUsageList: appInstUsageList,
-                    loading: false,
-                    currentAppInst: pCurrentAppInst,
-                    currentCluster: isEmpty(this.state.currentCluster) ? '' : this.state.currentCluster,
-                    clusterSelectBoxPlaceholder: 'Select Cluster',
-                });
-
-                //desc: ############################
-                //desc: setStream
-                //desc: ############################
-                if (this.state.isStream) {
-                    this.setAppInstInterval(filteredAppList)
-                } else {
                     clearInterval(this.intervalForAppInst)
+                    clearInterval(this.intervalForCluster)
+                    //@desc: ################################
+                    //@desc: requestShowAppInstClientWS
+                    //@desc: ################################
+                    if (this.state.showAppInstClient) {
+                        await this.setState({
+                            selectedClientLocationListOnAppInst: [],
+                        })
+                        this.webSocketInst = requestShowAppInstClientWS(pCurrentAppInst, this);
+                    }
+
+
+                    await this.setState({
+                        currentAppInst: pCurrentAppInst,
+                        loading: true,
+                    })
+
+                    let AppName = pCurrentAppInst.split('|')[0].trim()
+                    let Cloudlet = pCurrentAppInst.split('|')[1].trim()
+                    let ClusterInst = pCurrentAppInst.split('|')[2].trim()
+                    let Version = pCurrentAppInst.split('|')[3].trim()
+                    let filteredAppList = filterByClassification(this.state.appInstanceList, Cloudlet, 'Cloudlet');
+                    filteredAppList = filterByClassification(filteredAppList, ClusterInst, 'ClusterInst');
+                    filteredAppList = filterByClassification(filteredAppList, AppName, 'AppName');
+                    filteredAppList = filterByClassification(filteredAppList, Version, 'Version');
+
+                    console.log(`filteredAppList====>`, filteredAppList);
+                    //desc:########################################
+                    //desc:Terminal, currentAppVersion
+                    //desc:########################################
+                    this.setState({
+                        currentAppVersion: Version,
+                        terminalData: null
+                    })
+                    this.validateTerminal(filteredAppList)
+
+                    let appInstDropdown = makeDropdownListWithValuePipeForAppInst(filteredAppList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST, CLASSIFICATION.VERSION)
+
+
+                    console.log(`sldkflskdflksdlfklsdkfk====>`,appInstDropdown);
+
+                    await this.setState({
+                        appInstDropdown,
+                    }, () => {
+                    })
+
+
+                    let arrDateTime = getOneYearStartEndDatetime();
+                    let appInstUsageList = [];
+                    await this.setState({dropdownRequestLoading: true})
+                    try {
+                        appInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime[0], arrDateTime[1]);
+                    } catch (e) {
+                        showToast(e.toString())
+                    } finally {
+                        this.setState({dropdownRequestLoading: false})
+                    }
+
+                    pCurrentAppInst = pCurrentAppInst.trim();
+                    pCurrentAppInst = pCurrentAppInst.split("|")[0].trim() + " | " + pCurrentAppInst.split('|')[1].trim() + " | " + pCurrentAppInst.split('|')[2].trim() + ' | ' + Version
+
+                    //desc: ############################
+                    //desc: filtered AppInstEventLogList
+                    //desc: ############################
+                    let _allAppInstEventLog = this.state.allAppInstEventLogs;
+                    let filteredAppInstEventLogList = _allAppInstEventLog.filter(item => {
+                        if (item[APP_INST_MATRIX_HW_USAGE_INDEX.APP].trim() === AppName && item[APP_INST_MATRIX_HW_USAGE_INDEX.CLUSTER].trim() === ClusterInst) {
+                            return true;
+                        }
+                    })
+
+                    console.log(`pCurrentAppInst2====>`, pCurrentAppInst);
+
+                    await this.setState({
+                        filteredAppInstEventLogs: filteredAppInstEventLogList,
+                        currentTabIndex: 0,
+                        currentClassification: CLASSIFICATION.APPINST,
+                        allAppInstUsageList: appInstUsageList,
+                        filteredAppInstUsageList: appInstUsageList,
+                        loading: false,
+                        currentAppInst: pCurrentAppInst,
+                        currentCluster: isEmpty(this.state.currentCluster) ? '' : this.state.currentCluster,
+                        clusterSelectBoxPlaceholder: 'Select Cluster',
+                    });
+
+                    //desc: ############################
+                    //desc: setStream
+                    //desc: ############################
+                    if (this.state.isStream) {
+                        this.setAppInstInterval(filteredAppList)
+                    } else {
+                        clearInterval(this.intervalForAppInst)
+                    }
+                } catch (e) {
+                    throw new Error(e)
                 }
+
 
             }
 
@@ -1707,6 +1733,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             selection
                             options={this.state.allAppInstDropdown}
                             onChange={async (e, {value}) => {
+
+                                console.log(`currentAppVersion====>`,this.state.currentAppInst);
+
                                 await this.handleAppInstDropdown(value.trim())
                             }}
                             style={PageMonitoringStyles.dropDownForAppInst}
@@ -1753,7 +1782,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 <Row gutter={16} style={{flex: .97, marginLeft: 10, backgroundColor: 'transparent', justifyContent: 'center', alignSelf: 'center'}}>
                                     {this.state.filteredClusterUsageList.map((item, index) => {
                                         return (
-                                            <Col className="gutterRow" span={this.state.legendColSize} title={!this.state.isLegendExpanded ? item.cluster + '[' + item.cloudlet + ']' : null}>
+                                            <Col className="gutterRow" span={this.state.legendColSize}
+                                                 title={!this.state.isLegendExpanded ? item.cluster + '[' + item.cloudlet + ']' : null}>
                                                 <div style={{backgroundColor: 'transparent', marginTop: 2,}}>
                                                     <div
                                                         style={{
@@ -1772,7 +1802,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         )
                                     })}
                                 </Row>
-                                :
+                                ://@desc: When AppInstLevel
                                 <div style={{
                                     display: 'flex',
                                     justifyContent: 'center',
@@ -1795,7 +1825,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     </div>
                                     <ClusterCluoudletLabel
                                         style={{marginLeft: 5, marginRight: 15, marginBottom: 2}}>
-                                        {this.state.currentAppInst.split("|")[0]}
+                                        {this.state.currentAppInst.split("|")[0]}[{this.state.currentAppVersion}]
                                     </ClusterCluoudletLabel>
                                 </div>
                             }

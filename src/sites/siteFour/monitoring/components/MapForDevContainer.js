@@ -18,6 +18,7 @@ import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WH
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import '../PageMonitoring.css'
 import {PageMonitoringStyles} from "../PageMonitoringStyles";
+
 const {Option} = Select;
 
 const DEFAULT_VIEWPORT = {
@@ -624,7 +625,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                             long,
                                                         }
 
-                                                        let fullAppInstOne = AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Region + " | " + HealthCheck + " | " + Version + " | " + Operator + " | " + JSON.stringify(serverLocation);
+                                                        let fullAppInstOne = AppName + " | " + outerItem.Cloudlet.trim() + " | " + ClusterInst + " | " + Version + " | " + Region + " | " + HealthCheck + " | " + Operator + " | " + JSON.stringify(serverLocation);
 
                                                         return (
                                                             <div style={{

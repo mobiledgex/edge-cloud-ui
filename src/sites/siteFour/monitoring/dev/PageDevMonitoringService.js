@@ -1541,12 +1541,24 @@ export const makeSelectBoxListWithValuePipe = (appInstList, keyName: string, val
             }
         }
 
+        console.log(`pCurrentAppInst3====>`, newArrList);
+
         return newArrList;
     } catch (e) {
 
     }
 };
 
+
+/**
+ *
+ * @param appInstList
+ * @param keyName
+ * @param valueName
+ * @param thirdValue
+ * @param fourthValue
+ * @returns {[]}
+ */
 export const makeDropdownListWithValuePipeForAppInst = (appInstList, keyName: string, valueName: string, thirdValue: string, fourthValue: string = '') => {
     try {
         let newArrList = [];
@@ -1554,8 +1566,8 @@ export const makeDropdownListWithValuePipeForAppInst = (appInstList, keyName: st
             for (let i in appInstList) {
                 newArrList.push({
                     key: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim(),
-                    value: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim(),
-                    text: appInstList[i][keyName].trim(),
+                    value: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim() ,
+                    text: appInstList[i][keyName].trim() + " [" + appInstList[i][fourthValue].trim() + "]",
                 })
             }
         } else {
