@@ -44,7 +44,16 @@ import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData, TypeUtil
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
 import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../PageMonitoringCommonService";
-import {getAllAppInstEventLogs, getAllClusterEventLogList, getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList, requestShowAppInstClientWS} from "../PageMonitoringMetricService";
+import {
+    getAllAppInstEventLogs,
+    getAllClusterEventLogList,
+    getAppInstList,
+    getAppLevelUsageList,
+    getCloudletList,
+    getClusterLevelUsageList,
+    getClusterList,
+    requestShowAppInstClientWS
+} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
@@ -66,7 +75,14 @@ import BarChartContainer from "../components/BarChartContainer";
 import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryForClusterHook";
 import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryForAppInstHook";
 import type {PageDevMonitoringProps} from "./PageDevMonitoringProps";
-import {ColorLinearProgress, CustomSwitch, defaultLayoutXYPosForAppInst, defaultLayoutXYPosForCluster, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageDevMonitoringProps";
+import {
+    ColorLinearProgress,
+    CustomSwitch,
+    defaultLayoutXYPosForAppInst,
+    defaultLayoutXYPosForCluster,
+    PageDevMonitoringMapDispatchToProps,
+    PageDevMonitoringMapStateToProps
+} from "./PageDevMonitoringProps";
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListHookVirtualScroll from "../components/AppInstEventLogListHookVirtualScroll";
 import {fields} from '../../../../services/model/format'
@@ -731,6 +747,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             handleAppInstDropdown = async (pCurrentAppInst) => {
+
+
+                console.log(`pCurrentAppInst====>`,pCurrentAppInst);
+
                 clearInterval(this.intervalForAppInst)
                 clearInterval(this.intervalForCluster)
                 //@desc: ################################
