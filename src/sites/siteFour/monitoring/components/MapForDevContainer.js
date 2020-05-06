@@ -288,9 +288,9 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 })
 
                 let groupByCloudletLocationObject = groupByCloudletLocation(newCloudLetLocationList, 'strCloudletLocation')
-                let keys = Object.keys(groupByCloudletLocationObject);
+                let keysForCloudlet = Object.keys(groupByCloudletLocationObject);
                 let locationGroupedCloudletList = []
-                keys.map((item, index) => {
+                keysForCloudlet.map((item, index) => {
                     let itemOne = groupByCloudletLocationObject[item];
                     locationGroupedCloudletList.push(itemOne);
                 })
@@ -586,6 +586,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                     icon={this.props.cloudletIconColor === 'green' ? cloudGreenIcon : cloudBlueIcon}
                                                     className='marker1'
                                                     position={
+                                                        //@DESC :If the positions are the same, a slight VERTICAL OFFSET is given.
                                                         [cloudletOneIndex === 0 ? cloudletOne.CloudletLocation.latitude : cloudletOne.CloudletLocation.latitude + (cloudletIndex * 0.01), cloudletOne.CloudletLocation.longitude]
                                                     }
                                                     onClick={() => {
