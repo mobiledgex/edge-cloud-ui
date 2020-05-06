@@ -587,7 +587,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                     className='marker1'
                                                     position={
                                                         //@DESC :If the positions are the same, a slight VERTICAL OFFSET is given.
-                                                        [cloudletOneIndex === 0 ? cloudletOne.CloudletLocation.latitude : cloudletOne.CloudletLocation.latitude + (cloudletIndex * 0.01), cloudletOne.CloudletLocation.longitude]
+                                                        [cloudletOneIndex === 0 ? cloudletOne.CloudletLocation.latitude : cloudletOne.CloudletLocation.latitude + (cloudletIndex * 0.0005), cloudletOne.CloudletLocation.longitude]
                                                     }
                                                     onClick={() => {
 
