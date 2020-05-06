@@ -1340,6 +1340,13 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
     }
 }
 
+
+/**
+ *
+ * @param str
+ * @param lengthLimit
+ * @returns {string}
+ */
 export const reduceString = (str: string, lengthLimit: number) => {
     if (str.length > lengthLimit) {
         return str.substring(0, lengthLimit) + "..";

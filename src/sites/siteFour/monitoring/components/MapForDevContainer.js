@@ -18,6 +18,7 @@ import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WH
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import '../PageMonitoring.css'
 import {PageMonitoringStyles} from "../PageMonitoringStyles";
+import {reduceString} from "../dev/PageDevMonitoringService";
 
 const {Option} = Select;
 
@@ -651,7 +652,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                                         }
                                                                     }}
                                                                 >
-                                                                    {AppName} [{Version}]
+                                                                    {reduceString(AppName.toString(), 25)} [{Version}]
                                                                     <div style={{
                                                                         color: '#77BD25',
                                                                         fontSize: 12
