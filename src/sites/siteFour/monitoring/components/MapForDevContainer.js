@@ -633,9 +633,14 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                                 fontSize: 14,
                                                                 cursor: 'crosshair',
                                                                 flexDirection: 'column',
-                                                                marginTop: 5,
+                                                                marginTop: 0,
                                                                 marginBottom: 5,
-                                                                backgroundColor: innerIndex === this.state.selectedAppInstIndex ? 'rgba(97, 102, 97,.412)' : null,
+                                                                borderRadius: 5,
+                                                                justifyContents: 'center',
+                                                                alignSelf: 'center',
+                                                                alignItem: 'center,',
+                                                                display: 'flex',
+                                                                backgroundColor: innerIndex === this.state.selectedAppInstIndex ? 'rgba(192, 192, 192,.2)' : null,
                                                             }}
                                                             >
                                                                 <Ripples
@@ -657,7 +662,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                                         color: '#77BD25',
                                                                         fontSize: 12
                                                                     }}>
-                                                                        &nbsp;&nbsp;{` [${ClusterInst.trim()}]`}
+                                                                        &nbsp;&nbsp;[{reduceString(ClusterInst.trim(), 25)}]
                                                                     </div>
                                                                     <div>
 
