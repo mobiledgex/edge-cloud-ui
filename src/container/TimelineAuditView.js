@@ -523,7 +523,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             return {normalCount:normalCount, errorCount:errorCount}
         }
 
-        dropDownOnNameChange = (e, v) => {
+        dropDownOnNameChange = (e, v, current) => {
             let allData = this.state.rawAllData
             let statusCount = []
             let timelineList = []
@@ -553,12 +553,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
             statusCount.push(this.dropDownOnChangeStatusCount(allData, v))
             if(statusList.length)this.onHandleIndexClick({traceid:statusList[0].traceid})
-            timelineList.push({'timesList' : timesList ,'tasksList':tasksList, 'statusList': statusList})
+            timelineList.push({'timesList' : timesList ,'tasksList':tasksList, 'statusList': statusList, 'current':current})
             this.setState({timelineList: timelineList, statusErrorToggle: false, statusNormalToggle: false, unCheckedErrorToggle:false, statusCount: statusCount})
         }
 
-        onClickUnCheckedError = (e) => {
-            let unCheckedToggle = (e === 'current')?false:this.state.unCheckedErrorToggle
+        onClickUnCheckedError = (e, current) => {
+            let unCheckedToggle = (e === 'all')?false:this.state.unCheckedErrorToggle
             let value = 'uncheck'
             let allData = this.state.rawAllData
             let timelineList = []
@@ -599,11 +599,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             })
 
             if(statusList.length)this.onHandleIndexClick({traceid:statusList[0].traceid})
-            timelineList.push({'timesList' : timesList ,'tasksList':tasksList, 'statusList': statusList})
+            timelineList.push({'timesList' : timesList ,'tasksList':tasksList, 'statusList': statusList, 'current':current})
             this.setState({timelineList: timelineList, statusErrorToggle:false, statusNormalToggle:false, dropDownNameValue: 'All'})
         }
 
-        onClickStatus = (status) => {
+        onClickStatus = (status, current) => {
             let statusErrorToggle = this.state.statusErrorToggle
             let statusNormalToggle = this.state.statusNormalToggle
             let nameValue = this.state.dropDownNameValue
@@ -678,7 +678,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             });
 
             if(statusList.length)this.onHandleIndexClick({traceid:statusList[0].traceid})
-            timelineList.push({'timesList' : timesList ,'tasksList':tasksList, 'statusList': statusList})
+            timelineList.push({'timesList' : timesList ,'tasksList':tasksList, 'statusList': statusList, 'current':current})
             this.setState({timelineList: timelineList, unCheckedErrorToggle:false})
         }
 
@@ -687,13 +687,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             let nameValue = this.state.dropDownNameValue
 
             if(statusValue === '' && nameValue === 'All'){
-                this.dropDownOnNameChange('name', {value:'all'})
+                this.dropDownOnNameChange('name', {value:'all'}, true)
             } else if(statusValue === '' && nameValue !== 'All'){
-                this.dropDownOnNameChange('name', {value:nameValue})
+                this.dropDownOnNameChange('name', {value:nameValue}, true)
             } else if(statusValue === 'error' || statusValue === 'normal'){
-                this.onClickStatus(statusValue)
+                this.onClickStatus(statusValue, true)
             } else if(statusValue === 'uncheck'){
-                this.onClickUnCheckedError("current")
+                this.onClickUnCheckedError("all", true)
             }
         };
 

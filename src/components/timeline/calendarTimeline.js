@@ -253,8 +253,8 @@ export default class CalendarTimeline extends React.PureComponent {
             let items = this.generateItemsData(groups);
             let defaultTimeStart = this.makeUTCDateTime(moment(), "hour", -4);
             let defaultTimeEnd = this.makeUTCDateTime(moment(), "hour", 1);
-            let visibleTimeStart= this.makeUTCDateTime(moment(), "hour", -4);
-            let visibleTimeEnd= this.makeUTCDateTime(moment(), "hour", 1);
+            let visibleTimeStart= (snapshot.timelineList.current)?this.makeUTCDateTime(moment(), "hour", -4):this.state.visibleTimeStart;
+            let visibleTimeEnd= (snapshot.timelineList.current)?this.makeUTCDateTime(moment(), "hour", 1):this.state.visibleTimeEnd;
 
             this.setState({
                 groups,
