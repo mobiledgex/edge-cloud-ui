@@ -4,6 +4,7 @@ import {useEffect, useState} from 'react';
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import {FixedSizeList} from "react-window";
 
+const FontAwesomeIcon = require('react-fontawesome')
 type Props = {
     eventLogList: any,
     columnList: any,
@@ -19,20 +20,19 @@ function getWindowDimensions() {
 }
 
 
-export default function AppInstEventLogListHook_VirtualScroll(props) {
+export default function AppInstEventLogListHookVirtualScroll(props) {
     const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
     let itemHeight = 35
-    //let gridWidth = window.innerWidth / 5;
 
     useEffect(() => {
-        function handleResize() {
-            setWindowDimensions(getWindowDimensions());
-        }
-
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
 
     }, [props.eventLogList]);
+
+    function handleResize() {
+        setWindowDimensions(getWindowDimensions());
+    }
 
 
     return (
@@ -56,7 +56,7 @@ export default function AppInstEventLogListHook_VirtualScroll(props) {
             <table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll', marginTop: -10}}
                    stickyHeader={true}>
 
-                <thead style={{backgroundColor: 'red', fontFamily: 'Ubuntu', zIndex: 99999999999,}} fixedHeader={true}>
+                <thead style={{backgroundColor: 'red', fontFamily: 'Ubuntu', zIndex: 99999999999,}}>
                 <tr style={{display: 'flex', backgroundColor: '#303030'}}>
                     <td padding={'none'} align="center" style={{color: 'white', flex: .25}}>
                         TIME
@@ -85,9 +85,10 @@ export default function AppInstEventLogListHook_VirtualScroll(props) {
                             <tr key={index} className='table0000001'
                                 style={style}
                             >
-                                <React.Fragment style={{backgroundColor: 'red'}}>
+                                <React.Fragment>
                                     {/*111111*/}
-                                    <td padding={'none'} align="center" style={{flex: .25, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight}}>
+                                    <td padding={'none'} align="center"
+                                        style={{flex: .25, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight}}>
                                         <div style={{marginLeft: 2}}>
                                             {props.eventLogList[index][0].toString().split('T')[0]}
                                         </div>
@@ -96,7 +97,8 @@ export default function AppInstEventLogListHook_VirtualScroll(props) {
                                         </div>
                                     </td>
                                     {/*222222*/}
-                                    <td padding={'none'} align="center" style={{flex: .4, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight}}>
+                                    <td padding={'none'} align="center"
+                                        style={{flex: .4, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight}}>
                                         {windowDimensions.width <= 1440 ?
                                             <React.Fragment>
                                                 <div>
@@ -120,12 +122,24 @@ export default function AppInstEventLogListHook_VirtualScroll(props) {
                                         }
                                     </td>
                                     {/*333333*/}
-                                    <td padding={'none'} align="center" style={{flex: .35, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight,}}>
+                                    <td padding={'none'} align="center"
+                                        style={{flex: .35, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight,}}>
                                         <div>
-                                            {props.eventLogList[index][9]}
+                                            {props.eventLogList[index][8]}
                                         </div>
                                         <div>
-                                            [{props.eventLogList[index][10]}]
+                                            {/*[]*/}
+
+                                            {props.eventLogList[index][9].toLowerCase() === 'up' ?
+                                                <FontAwesomeIcon
+                                                    name="arrow-up" style={{fontSize: 15, color: 'green', cursor: 'pointer', marginTop: 2}}
+                                                />
+                                                :
+                                                <FontAwesomeIcon
+                                                    name="arrow-down" style={{fontSize: 15, color: 'red', cursor: 'pointer', marginTop: 2}}
+                                                />
+                                            }
+
                                         </div>
                                     </td>
                                 </React.Fragment>

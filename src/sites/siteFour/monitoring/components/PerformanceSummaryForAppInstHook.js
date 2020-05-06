@@ -164,10 +164,10 @@ export default function PerformanceSummaryForAppInstHook(props) {
                                         </div>
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
-                                        {numberWithCommas(item.sumRecvBytes.toFixed(0)) + ' '}
+                                        {numberWithCommas(convertByteToMegaGigaByte(item.sumRecvBytes.toFixed(0)))}
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
-                                        {numberWithCommas(item.sumSendBytes.toFixed(0)) + ' '}
+                                        {numberWithCommas(convertByteToMegaGigaByte(item.sumSendBytes.toFixed(0)))}
                                     </TableCell>
                                     <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
                                         {numberWithCommas(parseInt(item.sumActiveConnection.toFixed(0))) + ' '}

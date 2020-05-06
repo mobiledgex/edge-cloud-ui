@@ -6,11 +6,12 @@ import BubbleChartCore from "../components/BubbleChartCore";
 import type {TypeAppInstanceUsage2, TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import PageAdminMonitoring from "./PageAdminMonitoring";
-import {PageMonitoringStyles, renderBarChartCore, renderLineChartCore, renderUsageByType2, showToast} from "../PageMonitoringCommonService";
+import {renderBarChartCore, renderLineChartCore, renderUsageByType2, showToast} from "../PageMonitoringCommonService";
 import {TabPanel, Tabs} from "react-tabs";
 import {Table} from "semantic-ui-react";
 import {Progress} from "antd";
 import {numberWithCommas} from "../PageMonitoringUtils";
+import {PageMonitoringStyles} from "../PageMonitoringStyles";
 
 export const cutArrayList = (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];

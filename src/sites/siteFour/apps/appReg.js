@@ -67,13 +67,19 @@ class ClusterInstReg extends React.Component {
         input.onchange = (event) => {
             let file = event.target.files[0];
             if (file) {
-                let reader = new FileReader();
-                reader.onload = () => {
-                    let manifestForm = form.parent.form.forms[0]
-                    manifestForm.value = reader.result;
-                    this.reloadForms()
-                };
-                reader.readAsText(file)
+                if (file.size <= 1000000) {
+                    let reader = new FileReader();
+                    reader.onload = () => {
+                        let manifestForm = form.parent.form.forms[0]
+                        manifestForm.value = reader.result;
+                        this.reloadForms()
+                    };
+                    reader.readAsText(file)
+                }
+                else
+                {
+                    this.props.handleAlertInfo('error', 'File size cannot be >1MB')
+                }
             }
         };
         input.click();
@@ -342,8 +348,8 @@ class ClusterInstReg extends React.Component {
                             ports = ports.length > 0 ? ports + ',' : ports
                             ports = ports + multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMax]
                         }
-                        else if (form.field === fields.deploymentManifest) {
-                            data[fields.deploymentManifest] = multiFormData[fields.deploymentManifest]
+                        else if (form.field === fields.deploymentManifest && multiFormData[fields.deploymentManifest]) {
+                            data[fields.deploymentManifest] = multiFormData[fields.deploymentManifest].trim()
                         }
                         else if (multiFormData[fields.key] && multiFormData[fields.value]) {
                             annotations = annotations.length > 0 ? annotations + ',' : annotations

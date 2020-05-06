@@ -18,12 +18,12 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {PageMonitoringStyles, renderLoaderArea, renderPlaceHolderLoader, showToast} from "../PageMonitoringCommonService";
+import {renderLoaderArea, renderPlaceHolderLoader, showToast} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
 import {handleBubbleChartDropDownForCloudlet, makeBarChartDataForCloudlet, makeLineChartForCloudlet, renderBottomGridAreaForCloudlet} from "./PageOperMonitoringService";
 import LeafletMap from "../components/MapForOperContainer";
 import {filterByClassification, makeSelectBoxListWithKey, sortByKey} from "../dev/PageDevMonitoringService";
-
+import {PageMonitoringStyles} from "../PageMonitoringStyles";
 import {getAllCloudletEventLogs, getCloudletEventLog, getCloudletLevelUsageList, getCloudletList,} from '../PageMonitoringMetricService'
 
 const FA = require('react-fontawesome')
@@ -56,7 +56,6 @@ type Props = {
     sendingContent: any,
     loading: boolean,
     isLoading: boolean,
-    toggleLoading: Function,
     userRole: any,
 }
 

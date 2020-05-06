@@ -67,23 +67,23 @@ export default class LineChartContainer extends React.Component<Props, State> {
     makeToShortTitle(hwType) {
         let title = hwType.replace("_", "")
         if (title.includes(HARDWARE_TYPE.ACCEPTS_CONNECTION)) {
-            return 'ACCEPTS CONN'
+            return 'Accepts Conn'
         } else if (title.includes(HARDWARE_TYPE.HANDLED_CONNECTION)) {
-            return 'HANDLED CONN'
+            return 'Handled Conn'
         } else if (title.includes(HARDWARE_TYPE.ACTIVE_CONNECTION)) {
-            return 'ACTIVE CONN'
+            return 'Active Conn'
         } else if (title.includes(HARDWARE_TYPE.TCPRETRANS)) {
-            return 'TCP RETRANS'
+            return 'TCP Retrans'
         } else if (title.includes(HARDWARE_TYPE.TCPCONNS)) {
-            return 'TCP CONNS'
+            return 'TCP Conns'
         } else if (title.includes(HARDWARE_TYPE.UDPRECV)) {
-            return 'RECV UDP Datagram'
+            return 'Recv UDP Datagram'
         } else if (title.includes(HARDWARE_TYPE.UDPSENT)) {
-            return 'SENT UDP Datagram'
+            return 'Sent UDP Datagram'
         } else if (title.includes(HARDWARE_TYPE.RECVBYTES)) {
-            return 'NETWORK RECV'
+            return 'Network Recv'
         } else if (title.includes(HARDWARE_TYPE.SENDBYTES)) {
-            return 'NETWORK SENT'
+            return 'Network Sent'
         } else {
             return title + " Utilization"
         }

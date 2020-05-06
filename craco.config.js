@@ -69,6 +69,11 @@ module.exports = {
                 'ant'
             ],
         ],
+        "env": {
+            "production": {
+                "plugins": ["transform-remove-console"]// remove all console.log at production build
+            }
+        }
     },
     plugins: [
         {
@@ -140,8 +145,8 @@ module.exports = {
                                             '@info-color': '@primary-color',
                                             '@warning-color': '#ffbf00',
                                             '@error-color': '#f04134',
-                                            '@menu-bg': '#30303d',
-                                            '@menu-item-active-bg': 'fade(@light, 5)',
+                                            '@menu-bg': 'black',
+                                            '@menu-item-active-bg': 'rgba(42,50,66,1)',
                                             '@menu-highlight-color': '@light',
                                             '@card-background': '@component-background',
                                             '@card-hover-border': '#383847',
