@@ -439,6 +439,46 @@ export default connect(mapStateToProps, mapDispatchProps)(
             }
         }
 
+        setOffset(lat, cloudletIndex) {
+            console.log(`zoom===>`, this.state.zoom);
+
+            if (this.state.zoom === 1) {
+                return lat + (cloudletIndex * 0.1)
+            }
+            if (this.state.zoom === 2) {
+                return lat + (cloudletIndex * 0.1)
+            }
+            if (this.state.zoom === 3) {
+                return lat + (cloudletIndex * 0.1)
+            }
+            if (this.state.zoom === 4) {
+                return lat + (cloudletIndex * 0.5)
+            }
+            if (this.state.zoom === 5) {
+                return lat + (cloudletIndex * 0.5)
+            }
+            if (this.state.zoom === 6) {
+                return lat + (cloudletIndex * 0.08)
+            }
+            if (this.state.zoom === 7) {
+                return lat + (cloudletIndex * 0.08)
+            }
+            if (this.state.zoom === 8) {
+                return lat + (cloudletIndex * 0.08)
+            }
+            if (this.state.zoom === 9) {
+                return lat + (cloudletIndex * 0.08)
+            }
+            if (this.state.zoom === 10) {
+                return lat + (cloudletIndex * 0.008)
+            }
+
+            if (this.state.zoom > 10) {
+                return lat + (cloudletIndex * 0.0007)
+            }
+
+        }
+
         render() {
 
             return (
@@ -595,7 +635,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                         className='marker1'
                                                         position={
                                                             //@DESC :If the positions are the same, a slight VERTICAL OFFSET is given.
-                                                            [cloudletOneIndex === 0 ? cloudletOne.CloudletLocation.latitude : cloudletOne.CloudletLocation.latitude + (cloudletIndex * 0.0007), cloudletOne.CloudletLocation.longitude]
+                                                            [cloudletOneIndex === 0 ? cloudletOne.CloudletLocation.latitude : this.setOffset(cloudletOne.CloudletLocation.latitude, cloudletIndex), cloudletOne.CloudletLocation.longitude]
                                                         }
                                                         onClick={() => {
 
@@ -608,31 +648,21 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                             })
                                                         }}
                                                     >
-                                                        <a
-                                                            onClick={() => {
-                                                                alert('sldkflsdkf')
+                                                        <Tooltip
+                                                            direction='right'
+                                                            offset={[14, -10]}//x,y
+                                                            opacity={0.8}
+                                                            permanent
+                                                            ref={c => {
+                                                                this.toolTip = c;
                                                             }}
+                                                            style={{cursor: 'pointer', pointerEvents: 'auto'}}
+
                                                         >
-                                                            <Tooltip
-                                                                direction='right'
-                                                                offset={[14, -10]}//x,y
-                                                                opacity={0.8}
-                                                                permanent
-                                                                ref={c => {
-                                                                    this.toolTip = c;
-                                                                }}
-                                                                style={{cursor: 'pointer', pointerEvents: 'auto'}}
-
-
-                                                            >
-                                                                <div
-                                                                    className='toolTip'
-                                                                    style={{color: 'black'}}>{cloudletOne.Cloudlet}</div>
-
-
-                                                            </Tooltip>
-                                                        </a>
-
+                                                            <div
+                                                                className='toolTip'
+                                                                style={{color: 'black'}}>{cloudletOne.Cloudlet}</div>
+                                                        </Tooltip>
                                                         {/*desc:################################*/}
                                                         {/*desc:appInstPopup                    */}
                                                         {/*desc:################################*/}
