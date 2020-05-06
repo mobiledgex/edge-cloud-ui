@@ -378,13 +378,13 @@ class ClusterInstReg extends React.Component {
     onCreateResponse = (mcRequest) => {
         this.props.handleLoadingSpinner(false)
         if (mcRequest) {
-            let data = undefined;
+            let responseData = undefined;
             let request = mcRequest.request;
-            let cloudletName = request.data.appinst.key.cluster_inst_key.cloudlet_key.name;
             if (mcRequest.response && mcRequest.response.data) {
-                data = mcRequest.response.data;
+                responseData = mcRequest.response.data;
             }
-            this.setState({ stepsArray: updateStepper(this.state.stepsArray, cloudletName, data, cloudletName) })
+            let labels = [{label : 'Cloudlet', field : fields.cloudletName}]
+            this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
         }
     }
 
@@ -422,7 +422,7 @@ class ClusterInstReg extends React.Component {
                     let cloudlet = cloudlets[i];
                     data[fields.cloudletName] = cloudlet;
                     this.props.handleLoadingSpinner(true)
-                    createAppInst(this, data, this.onCreateResponse)
+                    createAppInst(this, Object.assign({}, data), this.onCreateResponse)
                 }
             }
         }

@@ -318,13 +318,13 @@ class ClusterInstReg extends React.Component {
     onUpgradeResponse = (mcRequest) => {
         this.props.handleLoadingSpinner(false)
         if (mcRequest) {
-            let data = undefined;
+            let responseData = undefined;
             let request = mcRequest.request;
-            let appName = request.orgData[fields.appName];
             if (mcRequest.response && mcRequest.response.data) {
-                data = mcRequest.response.data;
+                responseData = mcRequest.response.data;
             }
-            this.setState({ stepsArray: updateStepper(this.state.stepsArray, appName, data, appName) })
+            let labels = [{ label: 'App', field: fields.appName }]
+            this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
         }
     }
 
