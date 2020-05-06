@@ -457,12 +457,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let newPromiseList = await Promise.all(promiseList);
                     let cloudletList = newPromiseList[0]
                     let clusterList = newPromiseList[1];
-
-
-                    clusterList.sort((a, b) => a.Cloudlet - b.Cloudlet);
-
-                    console.log(`clusterList====>`,clusterList);
-
                     let appInstList = newPromiseList[2];
                     let clusterDropdownList = makeSelectBoxListWithKeyValuePipeForCluster(clusterList, 'ClusterName', 'Cloudlet')
 
@@ -721,8 +715,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let appInstDropdown = makeDropdownListWithValuePipeForAppInst(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST, CLASSIFICATION.VERSION)
 
 
-                        console.log(`appInstDropdown2222====>`, appInstDropdown);
-
                         let bubbleChartData = makeBubbleChartDataForCluster(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
                         await this.setState({
                             bubbleChartData: bubbleChartData,
@@ -759,9 +751,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             handleAppInstDropdown = async (pCurrentAppInst) => {
                 try {
-
-                    console.log(`pCurrentAppInst====>`, pCurrentAppInst);
-
                     clearInterval(this.intervalForAppInst)
                     clearInterval(this.intervalForCluster)
                     //@desc: ################################
@@ -788,8 +777,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     filteredAppList = filterByClassification(filteredAppList, ClusterInst, 'ClusterInst');
                     filteredAppList = filterByClassification(filteredAppList, AppName, 'AppName');
                     filteredAppList = filterByClassification(filteredAppList, Version, 'Version');
-
-                    console.log(`filteredAppList====>`, filteredAppList);
                     //desc:########################################
                     //desc:Terminal, currentAppVersion
                     //desc:########################################
@@ -800,14 +787,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     this.validateTerminal(filteredAppList)
 
                     let appInstDropdown = makeDropdownListWithValuePipeForAppInst(filteredAppList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST, CLASSIFICATION.VERSION)
-
-
-                    console.log(`sldkflskdflksdlfklsdkfk====>`,appInstDropdown);
-
                     await this.setState({
                         appInstDropdown,
-                    }, () => {
-                    })
+                    });
 
 
                     let arrDateTime = getOneYearStartEndDatetime();
@@ -833,8 +815,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             return true;
                         }
                     })
-
-                    console.log(`pCurrentAppInst2====>`, pCurrentAppInst);
 
                     await this.setState({
                         filteredAppInstEventLogs: filteredAppInstEventLogList,
@@ -1733,9 +1713,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             selection
                             options={this.state.allAppInstDropdown}
                             onChange={async (e, {value}) => {
-
-                                console.log(`currentAppVersion====>`,this.state.currentAppInst);
-
                                 await this.handleAppInstDropdown(value.trim())
                             }}
                             style={PageMonitoringStyles.dropDownForAppInst}

@@ -166,8 +166,6 @@ export const removeDuplicates = (paramArrayList, key) => {
     for (let i in uniqueObject) {
         newArray.push(uniqueObject[i]);
     }
-
-    console.log(newArray);
     return newArray;
 }
 

@@ -1541,8 +1541,6 @@ export const makeSelectBoxListWithValuePipe = (appInstList, keyName: string, val
             }
         }
 
-        console.log(`pCurrentAppInst3====>`, newArrList);
-
         return newArrList;
     } catch (e) {
 
