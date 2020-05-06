@@ -1,18 +1,19 @@
-import * as Organization from "./organization";
-import * as Users from "./users";
-import * as Accounts from "./accounts";
-import * as App from "./app";
-import * as Cloudlet from "./cloudlet";
-import * as CloudletInfo from "./cloudletInfo";
-import * as ClusterInstance from "./clusterInstance";
-import * as Flavor from "./flavor";
-import * as AppInstance from "./appInstance";
-import * as OrgCloudlet from "./orgCloudlet";
-import * as AutoProvPolicy from "./autoProvisioningPolicy";
-import * as PrivacyPolicy from "./privacyPolicy";
-import * as CloudletPool from "./cloudletPool";
-import * as CloudletPoolMember from "./cloudletPoolMember";
-import * as CloudletLinkOrg from "./cloudletLinkOrg";
+
+import * as Organization from './organization';
+import * as Users from './users';
+import * as Accounts from './accounts';
+import * as App from './app';
+import * as Cloudlet from './cloudlet';
+import * as CloudletInfo from './cloudletInfo';
+import * as ClusterInstance from './clusterInstance';
+import * as Flavor from './flavor';
+import * as AppInstance from './appInstance';
+import * as AutoProvPolicy from './autoProvisioningPolicy';
+import * as PrivacyPolicy from './privacyPolicy';
+import * as CloudletPool from './cloudletPool';
+import * as CloudletPoolMember from './cloudletPoolMember';
+import * as CloudletLinkOrg from './cloudletLinkOrg';
+
 
 export const SHOW_ORG = "showOrg";
 export const CREATE_ORG = "createOrg";
@@ -208,6 +209,9 @@ export function formatData(request, response) {
         case SHOW_CLOUDLET:
             data = Cloudlet.getData(response, request.data);
             break;
+        case SHOW_ORG_CLOUDLET:
+            data = Cloudlet.getData(response, request.data);
+            break;
         case SHOW_CLOUDLET_INFO:
             data = CloudletInfo.getData(response, request.data);
             break;
@@ -222,9 +226,6 @@ export function formatData(request, response) {
             break;
         case SHOW_APP_INST:
             data = AppInstance.getData(response, request.data);
-            break;
-        case SHOW_ORG_CLOUDLET:
-            data = OrgCloudlet.getData(response, request.data);
             break;
         case SHOW_AUTO_PROV_POLICY:
             data = AutoProvPolicy.getData(response, request.data);
