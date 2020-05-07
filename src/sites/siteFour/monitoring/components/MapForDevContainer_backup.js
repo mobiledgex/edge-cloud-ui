@@ -449,9 +449,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
         }
 
         setVerticalOffset(lat, cloudletIndex) {
-
-            console.log(`setVerticalOffset====>`, this.state.zoom);
-            return lat + (cloudletIndex * 0.001)
+            return lat + (cloudletIndex * 0.005)
         }
 
         render() {
@@ -609,12 +607,11 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {/*@desc:#####################################..*/}
                                 {/*@desc:cloudlet Markers                    ...*/}
                                 {/*@desc:#####################################..*/}
-                                {this.state.newCloudLetLocationList.map((cloudletList, cloudletIndex) => {
+                                <MarkerClusterGroup>
+                                    {this.state.newCloudLetLocationList.map((cloudletList, cloudletIndex) => {
+                                        return cloudletList.map((cloudletOne, cloudletOneIndex) => {
+                                            let listAppName = cloudletOne.AppNames.split(",")
 
-                                    return cloudletList.map((cloudletOne, cloudletOneIndex) => {
-                                        let listAppName = cloudletOne.AppNames.split(",")
-
-                                        if (cloudletOne.CloudletLocation.latitude != undefined) {
                                             return (
                                                 <React.Fragment>
                                                     <Marker
@@ -623,7 +620,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                         className='marker1'
                                                         position={
                                                             //@DESC :If the positions are the same, a slight VERTICAL OFFSET is given.
-                                                            [cloudletOneIndex === 0 ? cloudletOne.CloudletLocation.latitude : this.setVerticalOffset(cloudletOne.CloudletLocation.latitude, cloudletIndex), cloudletOne.CloudletLocation.longitude]
+                                                             [cloudletOneIndex === 0 ? cloudletOne.CloudletLocation.latitude : this.setVerticalOffset(cloudletOne.CloudletLocation.latitude, cloudletIndex), cloudletOne.CloudletLocation.longitude]
+                                                            //[cloudletOne.CloudletLocation.latitude, cloudletOne.CloudletLocation.longitude]
                                                         }
                                                         onClick={() => {
 
@@ -748,13 +746,15 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                             })}
                                                         </Popup>
                                                     </Marker>
+
                                                 </React.Fragment>
                                             )
-                                        }
-                                    })
+                                        })
+
+                                    })}
 
 
-                                })}
+                                </MarkerClusterGroup>
                             </Map>
                         </div>
 
