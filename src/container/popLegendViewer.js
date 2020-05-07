@@ -3,6 +3,7 @@ import {Button, Divider, Modal, Grid, Table, Icon} from "semantic-ui-react";
 import TextareaAutosize from "react-textarea-autosize";
 
 
+const menuItem = ['Users & Roles', 'Cloudlets', 'Flavors', 'Cluster Instances', 'Apps', 'App Instances', 'Policies', 'Monitoring', 'Audit Logs'];
 const roles =
     {
         Developer: {
@@ -248,43 +249,15 @@ export default class PopLegendViewer extends React.Component {
                             </Grid.Row>
                             <Grid.Row>
                                 <Table celled inverted selectable>
+
                                     <Table.Body>
-                                        <Table.Row>
-                                            <Table.Cell>Users & Roles</Table.Cell>
-                                            <Table.Cell>{this.getUserRole('Users & Roles')}</Table.Cell>
-                                        </Table.Row>
-                                        <Table.Row>
-                                            <Table.Cell>Cloudlets</Table.Cell>
-                                            <Table.Cell>{this.getUserRole('Cloudlets')}</Table.Cell>
-                                        </Table.Row>
-                                        <Table.Row>
-                                            <Table.Cell>Flavors</Table.Cell>
-                                            <Table.Cell>{this.getUserRole('Flavors')}</Table.Cell>
-                                        </Table.Row>
-                                        <Table.Row>
-                                            <Table.Cell>Cluster Instances</Table.Cell>
-                                            <Table.Cell>{this.getUserRole('Cluster Instances')}</Table.Cell>
-                                        </Table.Row>
-                                        <Table.Row>
-                                            <Table.Cell>Apps</Table.Cell>
-                                            <Table.Cell>{this.getUserRole('Apps')}</Table.Cell>
-                                        </Table.Row>
-                                        <Table.Row>
-                                            <Table.Cell>App Instances</Table.Cell>
-                                            <Table.Cell>{this.getUserRole('App Instances')}</Table.Cell>
-                                        </Table.Row>
-                                        <Table.Row>
-                                            <Table.Cell>Policies</Table.Cell>
-                                            <Table.Cell>{this.getUserRole('Policies')}</Table.Cell>
-                                        </Table.Row>
-                                        <Table.Row>
-                                            <Table.Cell>Monitoring</Table.Cell>
-                                            <Table.Cell>{this.getUserRole('Monitoring')}</Table.Cell>
-                                        </Table.Row>
-                                        <Table.Row>
-                                            <Table.Cell>Audit Logs</Table.Cell>
-                                            <Table.Cell>{this.getUserRole('Audit Logs')}</Table.Cell>
-                                        </Table.Row>
+                                        {menuItem.map((type) =>
+                                            this.getUserRole(type) !== 'disabled' ?
+                                            <Table.Row>
+                                                <Table.Cell>{type}</Table.Cell>
+                                                <Table.Cell>{this.getUserRole(type)}</Table.Cell>
+                                            </Table.Row> : null
+                                        )}
                                     </Table.Body>
                                 </Table>
                             </Grid.Row>
