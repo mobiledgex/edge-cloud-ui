@@ -1,0 +1,28 @@
+on:
+  release:
+    types: [published]
+
+jobs:
+
+  deploy_to_staging:
+    name: Publish the docker image to the MobiledgeX registry
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - name: Extract release tag
+        id: get_tag
+        run: echo ::set-output name=RELEASE_TAG::$(echo ${GITHUB_REF##refs/tags/})
+
+      - name: Build and push to registry
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.MOBILEDGEX_USERNAME }}
+          password: ${{ secrets.MOBILEDGEX_PASSWORD }}
+          registry: registry.mobiledgex.net:5000
+          repository: mobiledgex/console
+          tag_with_ref: true
+          build_args: TAG=${{ steps.get_tag.outputs.RELEASE_TAG }}
