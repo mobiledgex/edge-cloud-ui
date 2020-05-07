@@ -176,6 +176,7 @@ export default connect(
 const generatWidget = info => (
     <ChartWidget
         id={info.id}
+        title={info.title}
         method={info.method}
         chartType={info.chartType}
         type={info.type}
@@ -204,6 +205,7 @@ const generateComponentAdmin = (self, infos, cloudlets) => {
             method: serviceMC.getEP().METRICS_CLOUDLET,
             chartType: ChartType.GRAPH,
             type: "scatter",
+            title: { filter: "dropdown" },
             page: "single",
             ...defaultProp
         }),

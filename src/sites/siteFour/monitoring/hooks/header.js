@@ -2,6 +2,9 @@ import React, { useState } from "react";
 
 const HeaderComponent = (defaultValue: string) => {
     const [value, setValue] = useState(defaultValue);
+    const onHandleClick = (a, b) => {
+        console.log("20200507 on click ...", a, ":", b)
+    }
 
     return (
         <div style={{ position: "relative" }}>
@@ -37,8 +40,15 @@ const HeaderComponent = (defaultValue: string) => {
                 }}
             >
                 <div
+                    className="info-button"
+                    onClick={() => value.onClick("info", value.idx)}
+                    style={{ padding: "3px" }}
+                >
+                    info
+                </div>
+                <div
                     className="edit-button"
-                    onClick={() => console.log()}
+                    onClick={() => value.onClick("edit")}
                     style={{ padding: "3px" }}
                 >
                     edit

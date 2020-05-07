@@ -53,9 +53,7 @@ const getListCloud = (self, params) => {
 let store = JSON.parse(localStorage.PROJECT_INIT);
 let token = store ? store.userToken : "null";
 const getMetricsCloudlet = async (self, params) => {
-    console.log("20200504 get metrics cloudlet info -->>>> ", params);
     /* Continue, get events of cloudlets */
-
     const requestData = cloudletInfo => {
         return {
             token: token,
@@ -63,18 +61,16 @@ const getMetricsCloudlet = async (self, params) => {
             selectOrg: cloudletInfo.operatorName,
             method: serviceMC.getEP().METRICS_CLOUDLET,
             cloudletSelectedOne: cloudletInfo.cloudletName,
-            last: 1
+            last: 10
         }
     };
 
-    await params.cloudlets.map(async (cloudlet, i) => {
+    params.cloudlets.map(async (cloudlet, i) => {
         let response = await Cloudlet.getCloudletMetrics(
             self,
             requestData(cloudlet)
         );
-        console.log("20200505 response metrics of cloudlet===== ", response)
-
-        //return response;
+        self.onReceiveResult(response, self)
     });
 };
 
@@ -82,7 +78,6 @@ const getMetricsCloudlet = async (self, params) => {
  * EVENT CLOUDLET
  ************************************/
 const getEventCloudlet = async (self, params) => {
-    console.log("get event cloudlet info -->>>> ", params);
     /* Continue, get events of cloudlets */
 
     const execrequest = cloudletInfo =>
@@ -166,19 +161,11 @@ const MetricsService = async (defaultValue: MetricsParmaType, self: any) => {
     if (defaultValue.method === serviceMC.getEP().EVENT_CLOUDLET) {
         //this.props.handleLoadingSpinner(true);
         getEventCloudlet(defaultValue.self, defaultValue).then(async data => {
-            self.onReceiveResult(data);
+            self.onReceiveResult(data, self);
         });
     }
     if (defaultValue.method === serviceMC.getEP().METRICS_CLOUDLET) {
-        //this.props.handleLoadingSpinner(true);
-        // getMetricsCloudlet(self, defaultValue).then(async data => {
-        //     self.onReceiveResult(data);
-        // });
-        //
-
         let result = await getMetricsCloudlet(self, defaultValue);
-        console.log("20200505 result --- +++++ ", result)
-        //return result;
     }
 
     // if (defaultValue.method === serviceMC.getEP().METHOD_CLIENT) {
@@ -191,3 +178,31 @@ const MetricsService = async (defaultValue: MetricsParmaType, self: any) => {
 
 export default MetricsService;
 //export const EventsCloudlet;
+
+
+
+/*
+{
+  "region": "US",
+  "appinst": {
+    "app_key": {
+      "organization": "MobiledgeX",
+      "name": "automation_api_app",
+      "version": "1.0"
+    },
+    "cluster_inst_key": {
+      "cluster_key": {
+        "name": "autoclusterautomation"
+      },
+      "cloudlet_key": {
+        "name": "tmocloud-1",
+        "organization": "tmus"
+      }
+    }
+  },
+  "selector": "*",
+  "last": 10,
+  "starttime": "2019-05-08T11:50:00Z",
+  "endtime": "2020-05-06T11:50:00Z"
+}
+*/

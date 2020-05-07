@@ -40,7 +40,7 @@ export default class MonitoringLayout extends React.Component {
     static defaultProps = {
         className: "layout",
         rowHeight: 30,
-        onLayoutChange: function() {},
+        onLayoutChange: function () { },
         cols: { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 },
         initialLayout: generateLayout()
     };
@@ -77,6 +77,7 @@ export default class MonitoringLayout extends React.Component {
                     <HeaderComponent
                         defaultProps={l.i}
                         onPutItem={this.onPutItem}
+                        onClick={this.onClickMenu}
                         idx={l}
                     ></HeaderComponent>
                     <div
@@ -112,8 +113,8 @@ export default class MonitoringLayout extends React.Component {
             oldCompactType === "horizontal"
                 ? "vertical"
                 : oldCompactType === "vertical"
-                ? null
-                : "horizontal";
+                    ? null
+                    : "horizontal";
         this.setState({ compactType });
     };
 
@@ -166,6 +167,9 @@ export default class MonitoringLayout extends React.Component {
             layouts: { lg: generateLayout() }
         });
     };
+    onClickMenu = (info, idx) => {
+        console.log('20200507 on click menu == ', info, ":", idx)
+    }
 
     render() {
         return (
@@ -204,7 +208,7 @@ export default class MonitoringLayout extends React.Component {
 }
 
 function generateLayout() {
-    return _.map(_.range(0, 25), function(item, i) {
+    return _.map(_.range(0, 25), function (item, i) {
         var y = Math.ceil(Math.random() * 4) + 1;
         return {
             x: (_.random(0, 5) * 2) % 12,

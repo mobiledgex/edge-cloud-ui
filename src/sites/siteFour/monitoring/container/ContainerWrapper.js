@@ -33,8 +33,11 @@ const ContainerWrapper = obj =>
             state = {
                 data: [],
                 chartType: "",
-                chartMethod: ""
+                chartMethod: "",
+                title: null
             };
+
+
 
             async initialize(props: MetricsParmaType, self: any) {
                 try {
@@ -50,24 +53,31 @@ const ContainerWrapper = obj =>
                         /**
                          * completing service, go to onReceiveResult below lines
                          */
+                        console.log("20200507 result == ", result)
                     }
                 } catch (e) {
                     console.log(e);
                 }
             }
 
-            async onReceiveResult(result) {
+            async onReceiveResult(result, self) {
                 try {
                     console.log(
-                        "20200430 ------->>>>>>>>>>",
+                        "20200507 ------->>>>>>>>>>",
                         JSON.stringify(result)
                     );
+                    // TODO: 20200507 필터가 있는지 확인 후 데이터 가공
+
+
+
+
                     this.setState({ data: result });
-                } catch (e) {}
+                } catch (e) { }
             }
             componentDidMount() {
-                let _self = this;
-                this.setState({ chartType: this.props.chartType });
+                console.log('20200507 did mount == ', this.props.title)
+                this.setState({ chartType: this.props.chartType, title: this.props.title });
+
             }
             componentWillReceiveProps(nextProps) {
                 if (
@@ -79,8 +89,8 @@ const ContainerWrapper = obj =>
                      * STEP # 1
                      * necessary to get cloudlets from the parent
                      *********************************************/
-
-                    this.initialize(nextProps, _self);
+                    console.log("20200507 did next props..", this.state.title)
+                    this.initialize(nextProps, this);
                 }
             }
             render() {

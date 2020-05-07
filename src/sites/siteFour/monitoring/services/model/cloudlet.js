@@ -7,6 +7,7 @@ import {
 } from "../../../../../services/model/cloudlet";
 import { fields } from "../../../../../services/model/format";
 import { showCloudletInfos } from "../../../../../services/model/cloudletInfo";
+import * as ChartType from "../../formatter/chartType";
 
 let dataList = [];
 let filterList = [];
@@ -112,6 +113,120 @@ const dataFromServer = async (region, self, method) => {
 
 // TODO: 클라우드렛 당 메트릭스 데이터 가져오기, 모든 region에 모든 cloudlet에 대한 메트릭스 데이터 
 // 한번에 하나씩 가져와 쌓는 구조, 로딩 속도 문제 해결 방안
+
+const VCPU = "vCpuUsed"
+const VCPUMAX = "vCpuMax"
+const MEM = "memUsed"
+const MEMMAX = "memMax"
+const DISK = "diskUsed"
+const DISKMAX = "diskMax"
+const IP = "floatingIpsUsed"
+const IPMAX = "floatingIpsMax"
+const IPV4 = "ipv4Used"
+const IPV4MAX = "ipv4Max"
+
+interface eventData {
+    time: string;
+    cloudlet: string;
+    cloudletorg: string;
+    event: string;
+    status: number;
+}
+function createData(time: string, cloudlet: string, cloudletorg: string, event: string, status: number): eventData {
+    return { time, cloudlet, cloudletorg, event, status };
+}
+function createDataUtilization() {
+
+}
+const setdataPart = (data, name, columns) => {
+    let setted = {};
+    let seriesX = [];
+    let seriesY = [];
+    data.map((item, i) => {
+        seriesX.push(item[0]);
+        seriesY.push(item[columns.indexOf(name)])
+    })
+    let array =
+    {
+        x: seriesX,
+        y: seriesY,
+        max: [],
+        mode: 'lines',
+        name: 'Solid',
+        line: {
+            dash: 'solid',
+            width: 1
+        }
+    }
+
+
+    return setted[data[0][1] + "_" + data[0][2]] = array;
+
+}
+const createTime = (resSeries_utilize) => {
+    let times = [];
+    resSeries_utilize.map((value, i) => {
+        times.push(value[0]);
+    })
+
+    return times;
+}
+
+
+const parseData = (response, type) => {
+    let resData = [];
+    let times = [];
+    let resData_util = {}
+    let resData_ip = {}
+    let resultParse = [];
+    if (response && response.response && response.response.data.data) {
+        response.response.data.data.map((data, i) => {
+
+
+
+            const resSeries_utilize = (data.Series) ? data.Series[0] : null;
+            const resSeries_ipuse = (data.Series) ? data.Series[1] : null;
+            const columns_utilize = (data.Series) ? data.Series[0].columns : null;
+            const columns_ipus = (data.Series) ? data.Series[1].columns : null;
+
+            if (data.Series && data.Series.length > 0) {
+                /** metrics of the cloudlets */
+
+                times.push(resSeries_utilize ? createTime(resSeries_utilize.values) : null)
+
+                let resultParse = {
+                    method: type,
+                    times: times,
+                    resData_util: [
+                        {
+                            [VCPU]: setdataPart(resSeries_utilize.values, VCPU, columns_utilize),
+                            [MEM]: setdataPart(resSeries_utilize.values, MEM, columns_utilize),
+                            [DISK]: setdataPart(resSeries_utilize.values, DISK, columns_utilize)
+                        }
+                    ],
+                    resData_ip: [
+                        {
+                            [IP]: setdataPart(resSeries_ipuse.values, IP, columns_ipus),
+                            [IPV4]: setdataPart(resSeries_ipuse.values, IPV4, columns_ipus)
+                        }
+                    ]
+                }
+
+                resData.push(resultParse)
+            } else {
+                console.log("ERROR ::: ", data)
+            }
+
+
+        })
+
+    } else {
+        console.log(" ERROR ::::::::::::::: Faile to request data")
+        return resData;
+    }
+
+    return resData;
+};
 const metricFromServer = async (self, data) => {
     let requestData = {
         token: data.token,
@@ -127,7 +242,7 @@ const metricFromServer = async (self, data) => {
         }
     }
     let response = await serverData.sendRequest(self, requestData);
-    return response;
+    return parseData(response, data.selectOrg + "/" + data.cloudletSelectedOne);
 };
 
 /*******************************************************
@@ -141,7 +256,6 @@ export const getCloudletList = (self, param) => {
 };
 
 export const getCloudletMetrics = async (self, params) => {
-    console.log("20200504 get cloudlet metrics.. ", params);
     if (!_self) _self = self;
-    await metricFromServer(_self, params);
+    return await metricFromServer(_self, params);
 };

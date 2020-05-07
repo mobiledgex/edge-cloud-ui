@@ -160,7 +160,7 @@ export function getPath(request) {
             return '/api/v1/auth/metrics/app';
         case METRICS_CLUSTER:
         case METRICS_CLOUDLET:
-            return `/api/vi/auth/metrics/${request.method}`;
+            return `/api/v1/auth/metrics/${request.method}`;
         case SHOW_CLOUDLET_LINKORG:
             return `/api/v1/auth/orgcloudletpool/show`;
         case CREATE_LINK_POOL_ORG:

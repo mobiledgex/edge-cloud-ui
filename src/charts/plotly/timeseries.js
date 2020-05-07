@@ -11,6 +11,49 @@ import * as actions from "../../actions";
 //https://plot.ly/javascript/axes/#tick-placement-color-and-style
 //https://plot.ly/javascript/streaming/
 
+const trace1 = {
+    x: [1, 2, 3, 4, 5],
+    y: [1, 3, 2, 3, 1],
+    mode: 'lines',
+    name: 'Solid',
+    line: {
+        dash: 'solid',
+        width: 4
+    }
+};
+
+const trace2 = {
+    x: [1, 2, 3, 4, 5],
+    y: [6, 8, 7, 8, 6],
+    mode: 'lines',
+    name: 'dashdot',
+    line: {
+        dash: 'dashdot',
+        width: 4
+    }
+};
+
+const trace3 = {
+    x: [1, 2, 3, 4, 5],
+    y: [11, 13, 12, 13, 11],
+    mode: 'lines',
+    name: 'Solid',
+    line: {
+        dash: 'solid',
+        width: 4
+    }
+};
+
+const trace4 = {
+    x: [1, 2, 3, 4, 5],
+    y: [16, 18, 17, 18, 16],
+    mode: 'lines',
+    name: 'dot',
+    line: {
+        dash: 'dot',
+        width: 4
+    }
+};
 class TimeSeries extends React.Component {
     constructor() {
         super();
@@ -19,32 +62,36 @@ class TimeSeries extends React.Component {
             vHeight: 170,
             data: [],
             chartData: [
-                {
-                    x: [1, 2, 3, 4, 5],
-                    y: [0, 0, 0, 0, 0],
-                    type: "scatter"
-                }
+                trace1, trace2, trace3, trace4
             ],
             layout: {
                 datarevision: 0
             },
+            name: 'Solid',
             currentKey: "",
             revision: 10,
-            mode: "line+markers"
+            mode: "line+markers",
+            type: "scatter"
         };
         this.wGab = 10;
-        this.hGab = 25;
+        this.hGab = 38;
         this.colors = ["#22cccc", "#6699ff", "#ff710a", "#ffce03"];
         this.colorsErr = ["#22cccc", "#ff3355", "#6699ff", "#ffce03"];
+        this.stackData = [];
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        if (nextProps.chartData && nextProps.series[0]) {
+        if (nextProps.data && nextProps.data.length > 0) {
+            console.log('20200507 receive data in timeseries--', nextProps.data)
+
+            let times = nextProps.data[0].times[0];
+            let datas = nextProps.data[0].resData_util[0].diskUsed.y;
+            let method = nextProps.data[0].method;
             this.reloadChart(
-                nextProps.chartData,
-                nextProps.series[0],
-                nextProps.label,
+                datas,
+                times,
+                method,
                 nextProps.single,
-                nextProps.dataType
+                nextProps.dataType,
             );
         }
         console.log(
@@ -81,7 +128,36 @@ class TimeSeries extends React.Component {
             this.props.type
         );
     }
-    reloadChart(data, series, names, dataId, dataType) {
+    reloadChart(data, times, names, dataId, dataType) {
+        let seriesData = null;
+        // let series = times.map((time) => (
+        //     d3.TimeSeries()
+        // ))
+
+        seriesData =
+        {
+            mode: "line",
+            x: times,
+            y: data,
+            yaxis: "y",
+            name: names,
+            line: {
+                dash: 'solid',
+                width: 1
+            },
+            marker: { size: 4 }
+        }
+
+        if (this.stackData.length < 4) {
+            this.stackData.push(seriesData)
+        }
+        this.setState({
+            chartData: this.stackData
+        });
+
+        this.setState({ revision: this.state.revision + 1 });
+    }
+    reloadChartOld(data, series, names, dataId, dataType) {
         let xaxis = series;
 
         let _data = dataId ? data[parseInt(dataId)] : data;
@@ -166,9 +242,20 @@ class TimeSeries extends React.Component {
                         paper_bgcolor: "transparent",
                         plot_bgcolor: "transparent",
                         legend: {
-                            x: 1.05,
-                            y: 1
+                            orientation: "h",
+                            x: 1,
+                            y: 1,
+                            xanchor: 'bottom',
+                            font: {
+                                family: 'Roboto',
+                                size: 10,
+                                color: 'rgb(54, 54, 54)'
+                            },
+                            bgcolor: '#212121',
+                            bordercolor: '#454545',
+                            borderwidth: 1
                         },
+                        showlegend: this.props.showLegend,
                         xaxis: {
                             showgrid: false,
                             zeroline: true,
@@ -238,7 +325,7 @@ class TimeSeries extends React.Component {
                             position: this.props.y3Position,
                             range: this.props.y3Range
                         },
-                        showlegend: this.props.showLegend,
+
                         points: {
                             width: 1
                         },
@@ -258,7 +345,7 @@ TimeSeries.defaultProps = {
     margin: {
         l: 45,
         r: 3,
-        b: 25,
+        b: 35,
         t: 5,
         pad: 0
     },

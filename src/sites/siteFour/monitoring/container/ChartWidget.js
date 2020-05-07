@@ -42,10 +42,10 @@ class ChartWidget extends React.Component {
         props.page === "multi" ? (
             <Slider size={props.size} content={props.content}></Slider>
         ) : (
-            props.content
-        );
+                props.content
+            );
     render() {
-        const { data, chartType, type, size } = this.props;
+        const { data, chartType, type, size, title } = this.props;
         //const { size } = this.state;
         return (
             <div
@@ -56,9 +56,9 @@ class ChartWidget extends React.Component {
                 }}
             >
                 {chartType === ChartType.GRAPH ? (
-                    <TimeSeries size={size} type={type} />
+                    <TimeSeries size={size} type={type} data={data} title={title} />
                 ) : chartType === ChartType.GAUGE ? (
-                    <ContainerHealth size={size} type={type} />
+                    <ContainerHealth size={size} type={type} title={title} />
                 ) : chartType === ChartType.MAP ? (
                     <Map
                         size={size}
@@ -67,16 +67,18 @@ class ChartWidget extends React.Component {
                         id={"matricMap"}
                         reg="cloudletAndClusterMap"
                         zoomControl={{ center: [0, 0], zoom: 1.5 }}
+                        title={title}
                     ></Map>
                 ) : chartType === ChartType.COUNTER ? (
                     <CounterWidget
                         size={size}
                         ref={this.divRef}
                         clusterCnt={this.state.clusterCnt}
+                        title={title}
                     ></CounterWidget>
                 ) : (
-                    <DataGrid size={size} data={data} />
-                )}
+                                    <DataGrid size={size} data={data} title={title} />
+                                )}
             </div>
         );
     }
@@ -186,8 +188,8 @@ class Slider extends React.Component {
                         this.getItem(item, i, size)
                     )
                 ) : (
-                    <div>empty</div>
-                )}
+                        <div>empty</div>
+                    )}
             </Carousel>
         );
     }

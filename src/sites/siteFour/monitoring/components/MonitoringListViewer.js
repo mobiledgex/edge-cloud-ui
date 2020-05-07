@@ -66,7 +66,7 @@ export default function MonitoringListViewer(props) {
             setSizeH(parentSize.height - 50);
         }
         if (props.data && props.data.length > 0) {
-            console.log("20200503 data in monitroing viewer ... ", props.data);
+            console.log("20200507 data in monitroing viewer ... ", props.data);
             setColumns(makeColumn(props.data[0]));
             setRows(props.data);
         }
@@ -137,7 +137,7 @@ export default function MonitoringListViewer(props) {
                                                     align={column.align}
                                                 >
                                                     {column.format &&
-                                                    typeof value === "number"
+                                                        typeof value === "number"
                                                         ? column.format(value)
                                                         : value}
                                                 </TableCell>
