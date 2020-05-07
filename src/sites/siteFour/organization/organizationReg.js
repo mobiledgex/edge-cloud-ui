@@ -133,6 +133,7 @@ class OrganizationReg extends React.Component {
     }
 
     onAddUser = async (data) => {
+
         if (data) {
             data[fields.role] = this.type + data[fields.role]
             let mcRequest = await addUser(this, data)
@@ -140,6 +141,7 @@ class OrganizationReg extends React.Component {
                 let message = mcRequest.response.data.message
                 if (message === 'Role added to user') {
                     this.props.handleAlertInfo('success', `User ${data[fields.username]} added successfully`)
+                    this.addUserForm(this.organizationInfo)
                 }
             }
         }
