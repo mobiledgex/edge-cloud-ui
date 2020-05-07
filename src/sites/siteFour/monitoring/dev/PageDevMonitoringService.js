@@ -1067,13 +1067,19 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                         padding: 10,
                         labelOffset: 0,
                         callback(value, index, label) {
-                            /*  if (isBig) {
-                                  return value
-                              } else {
-                                  if (index % 2 === 0) return '';
-                                  return value;
-                              }*/
-                            return value;
+                            /*if (isBig) {
+                                return value
+                            } else {
+                                if (index % 2 === 0)
+                                    return '';
+                                return value;
+                            }*/
+                            //return value;
+
+                            if (index % 2 === 0)
+                                return '';
+                            else
+                                return value;
                         },
                     },
                     beginAtZero: false,
@@ -1323,12 +1329,12 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
                     borderDash: [],
                     borderDashOffset: 0.0,
                     borderJoinStyle: 'miter',
-                    pointBorderColor: 'rgba(75,192,192,1)',
-                    pointBackgroundColor: '#fff',
+                    pointBorderColor: _this.state.chartColorList[index],
+                    pointBackgroundColor: _this.state.chartColorList[index],
                     pointBorderWidth: 1,
                     pointHoverRadius: 5,
-                    pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-                    pointHoverBorderColor: 'rgba(220,220,220,1)',
+                    pointHoverBackgroundColor: _this.state.chartColorList[index],
+                    pointHoverBorderColor: _this.state.chartColorList[index],
                     pointHoverBorderWidth: 2,
                     pointRadius: 1,
                     pointHitRadius: 10,
@@ -1394,10 +1400,10 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
                     borderJoinStyle: 'miter',
                     pointBorderColor: _this.state.chartColorList[index],
                     pointBackgroundColor: _this.state.chartColorList[index],
-                    pointBorderWidth: 1,
-                    pointHoverRadius: 5,
                     pointHoverBackgroundColor: _this.state.chartColorList[index],
                     pointHoverBorderColor: _this.state.chartColorList[index],
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
                     pointHoverBorderWidth: 2,
                     pointRadius: 1,
                     pointHitRadius: 10,
@@ -1579,7 +1585,7 @@ export const makeDropdownListWithValuePipeForAppInst = (appInstList, keyName: st
             for (let i in appInstList) {
                 newArrList.push({
                     key: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim(),
-                    value: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim() ,
+                    value: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim(),
                     text: appInstList[i][keyName].trim() + " [" + appInstList[i][fourthValue].trim() + "]",
                 })
             }
