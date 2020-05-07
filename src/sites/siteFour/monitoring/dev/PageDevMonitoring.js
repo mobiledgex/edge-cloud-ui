@@ -2,11 +2,10 @@ import {ClusterCluoudletLabel, LegendOuterDiv, PageMonitoringStyles} from '../Pa
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Dropdown} from 'semantic-ui-react'
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
 import {CircularProgress, Dialog, Toolbar} from '@material-ui/core'
-import {Col, Dropdown as ADropdown, Menu as AMenu, Row, TreeSelect} from 'antd';
+import {Col, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect} from 'antd';
 import {
     defaultHwMapperListForCluster,
     defaultLayoutForAppInst,
@@ -70,6 +69,7 @@ import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListHookVirtualScroll from "../components/AppInstEventLogListHookVirtualScroll";
 import {fields} from '../../../../services/model/format'
 
+const {Option} = Select;
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const FontAwesomeIcon = require('react-fontawesome')
@@ -281,7 +281,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentRegion: 'ALL',
                     currentCloudLet: '',
                     currentCluster: '',
-                    currentAppInst: '',
+                    currentAppInst: undefined,
                     isModalOpened: false,
                     appInstanceListTop5: [],
                     selectBoxTop5InstanceForMem: [],
@@ -662,10 +662,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
             }
 
-            async handleCloudletDropdown(cloudletOne) {
-
-
-            }
 
             async handleClusterDropdownAndReset(selectedClusterOne) {
                 try {
@@ -713,8 +709,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         })
 
                         let appInstDropdown = makeDropdownListWithValuePipeForAppInst(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST, CLASSIFICATION.VERSION)
-
-
                         let bubbleChartData = makeBubbleChartDataForCluster(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
                         await this.setState({
                             bubbleChartData: bubbleChartData,
@@ -725,10 +719,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             filteredClusterEventLogList: filteredClusterEventLogList,
                             appInstDropdown: appInstDropdown,
                             allAppInstDropdown: appInstDropdown,
-                            currentAppInst: '',
                             appInstSelectBoxPlaceholder: 'Select App Inst',
                             filteredAppInstanceList: filteredAppInstList,
                             appInstanceListGroupByCloudlet: reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET),
+                            currentAppInst: undefined,
                         });
 
                     }
@@ -1448,12 +1442,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 <div>
                                     {this.makeClusterOnCloudletDropdown()}
                                 </div>
-                                {/*
-                                   <div>
-                                    {this.makeClusterDropdown()}
-                                </div>
-                                */}
-                                <div style={{marginLeft: 30}}>
+                                <div style={{marginLeft: 15}}>
                                     {this.makeAppInstDropdown()}
                                 </div>
                                 {this.state.intervalLoading &&
@@ -1676,7 +1665,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     clusterList.map(clusterOne => {
                         if (clusterOne.Cloudlet === cloudletOne) {
-                            console.log(`sldkfldskflkdsf===>`, clusterOne);
                             newCloudletOne.children.push({
                                 title: clusterOne.ClusterName,
                                 value: clusterOne.ClusterName + " | " + cloudletOne,
@@ -1692,6 +1680,45 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
+            /*    makeClusterDropdown() {
+                    return (
+                        <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
+                            <div
+                                className="page_monitoring_dropdown_label"
+                                style={{
+                                    marginLeft: this.state.isShowFilter ? 0 : 10
+                                }}
+                            >
+                                Cluster | Cloudlet
+                            </div>
+                            <Dropdown
+                                selectOnBlur={false}
+                                value={this.state.currentCluster}
+                                clearable={this.state.clusterSelectBoxClearable}
+                                disabled={this.state.loading}
+                                placeholder={this.state.clusterSelectBoxPlaceholder}
+                                selection
+                                loading={this.state.loading}
+                                options={this.state.clusterDropdownList}
+                                style={PageMonitoringStyles.dropDownForClusterCloudlet}
+                                onChange={async (e, {value}) => {
+                                    clearInterval(this.intervalForCluster)
+                                    clearInterval(this.intervalForAppInst)
+                                    //@desc: If you are choosing the whole cluster ...
+                                    if (value === '') {
+                                        await this.setState({
+                                            filteredClusterList: this.state.clusterList,
+                                        })
+                                    } else {
+                                        await this.filterClusterList(value)
+                                    }
+                                    await this.handleClusterDropdownAndReset(value.trim())
+                                }}
+                            />
+                        </div>
+                    )
+                }*/
+
             makeClusterOnCloudletDropdown() {
 
                 return (
@@ -1705,6 +1732,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             Cluster
                         </div>
                         <TreeSelect
+                            disabled={this.state.loading}
+                            size={'middle'}
                             showSearch={true}
                             switcherIcon={<FontAwesomeIcon
                                 name="arrow-up" style={{fontSize: 15, color: 'green', cursor: 'pointer', marginTop: 2}}
@@ -1719,49 +1748,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             placeholder={'Select Cluster'}
                             dropdownStyle={{maxHeight: 800, overflow: 'auto', width: 600,}}
                             treeData={this.state.dropDownCludsterListOnCloudlet}
-                            treeDefaultExpandAll
+                            treeDefaultExpandAll={true}
+
                             onChange={async (value, label, extra) => {
-                                clearInterval(this.intervalForCluster)
-                                clearInterval(this.intervalForAppInst)
-                                //@desc: If you are choosing the whole cluster ...
-                                if (value === '') {
-                                    await this.setState({
-                                        filteredClusterList: this.state.clusterList,
-                                    })
-                                } else {
-                                    await this.filterClusterList(value)
-                                }
-                                await this.handleClusterDropdownAndReset(value.trim())
-
-                            }}
-                        />
-                    </div>
-                )
-            }
-
-
-            makeClusterDropdown() {
-                return (
-                    <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
-                        <div
-                            className="page_monitoring_dropdown_label"
-                            style={{
-                                marginLeft: this.state.isShowFilter ? 0 : 10
-                            }}
-                        >
-                            Cluster | Cloudlet
-                        </div>
-                        <Dropdown
-                            selectOnBlur={false}
-                            value={this.state.currentCluster}
-                            clearable={this.state.clusterSelectBoxClearable}
-                            disabled={this.state.loading}
-                            placeholder={this.state.clusterSelectBoxPlaceholder}
-                            selection
-                            loading={this.state.loading}
-                            options={this.state.clusterDropdownList}
-                            style={PageMonitoringStyles.dropDownForClusterCloudlet}
-                            onChange={async (e, {value}) => {
                                 clearInterval(this.intervalForCluster)
                                 clearInterval(this.intervalForAppInst)
                                 //@desc: If you are choosing the whole cluster ...
@@ -1785,20 +1774,22 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <div className="page_monitoring_dropdown_label">
                             App Inst
                         </div>
-                        <Dropdown
-                            selectOnBlur={false}
-                            disabled={this.state.currentCluster === '' || this.state.loading || this.state.appInstDropdown.length === 0}
-                            clearable={this.state.appInstSelectBoxClearable}
-                            loading={this.state.loading}
+                        <Select
+                            dropdownStyle={{}}
+                            style={{width: 350}}
+                            disabled={this.state.currentCluster === '' || this.state.loading || this.state.appInstDropdown.length === 0 || this.state.currentCluster === undefined}
                             value={this.state.currentAppInst}
                             placeholder={this.state.appInstSelectBoxPlaceholder}
-                            selection
-                            options={this.state.allAppInstDropdown}
-                            onChange={async (e, {value}) => {
+                            onChange={async (value) => {
                                 await this.handleAppInstDropdown(value.trim())
                             }}
-                            style={PageMonitoringStyles.dropDownForAppInst}
-                        />
+                        >
+                            {this.state.allAppInstDropdown.map(item => {
+                                return (
+                                    <Option value={item.value}>{item.text}</Option>
+                                )
+                            })}
+                        </Select>
                     </div>
                 )
             }

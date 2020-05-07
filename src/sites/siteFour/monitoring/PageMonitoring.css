@@ -588,7 +588,7 @@ tr td {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 20px;
+    /*height: 20px;*/
     margin-left: 5px;
 }
 
@@ -613,7 +613,7 @@ tr td {
 /*.ant-select-tree-title{
     background-color: red;
 }*/
-.ant-select-tree-treenode-switcher-open .ant-select-tree-treenode-switcher-close {
+/*.ant-select-tree-treenode-switcher-open .ant-select-tree-treenode-switcher-close {
     height: 15px;
     padding: 0px;
     margin: 0px
@@ -628,4 +628,4 @@ tr td {
     white-space: nowrap;
     list-style: none;
     outline: 0;
-}
+}*/
