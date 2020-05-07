@@ -17,7 +17,6 @@ import {
     handleThemeChanges,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
-    makeCloudletDropdown,
     makeDropdownListWithValuePipeForAppInst,
     makeid,
     makeLineChartDataForAppInst,
@@ -231,7 +230,8 @@ type PageDevMonitoringState = {
     legendColSize: number,
     currentAppVersion: number,
     isEnableZoomIn: boolean,
-    dropDownCloudletList: any,
+    dropDownCludsterListOnCloudlet: any,
+    searchClusterValue: string,
 }
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
@@ -323,7 +323,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     connectionsTabIndex: 0,
                     tcpTabIndex: 0,
                     udpTabIndex: 0,
-                    dropdownCloudletList: [],
+                    dropDownCludsterListOnCloudlet: [],
                     allUsageList: [],
                     maxCpu: 0,
                     maxMem: 0,
@@ -405,6 +405,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     legendColSize: 3,
                     currentAppVersion: undefined,
                     isEnableZoomIn: false,
+                    searchClusterValue: '',
                 };
             }
 
@@ -448,21 +449,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let appInstList = newPromiseList[1];
                     let clusterDropdownList = makeSelectBoxListWithKeyValuePipeForCluster(clusterList, 'ClusterName', 'Cloudlet')
 
-
-                    console.log(`clusterList===>`, clusterList);
+                    //@todo: dropdownClusterListOnCloudlet
                     let cloudletList = []
-                    clusterList.map(item => {
-                        console.log(`sldkfldskflkdsf===>`, item.Cloudlet);
-                        cloudletList.push(item.Cloudlet)
-                    })
+                    clusterList.map(item => (cloudletList.push(item.Cloudlet)))
+                    let dropdownClusterListOnCloudlet = this.makeClusterTree(_.uniqBy(cloudletList), clusterList)
 
-                    console.log(`cloudletList===>`, cloudletList);
-
-                    cloudletList = _.uniqBy(cloudletList);
-
-                    console.log(`cloudletListuniqBy===>`, cloudletList);
-
-                    let dropDownCloudletList = makeCloudletDropdown(cloudletList);
 
                     //@desc:#########################################################################
                     //@desc: map Marker
@@ -502,7 +493,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         filteredAppInstEventLogs: allAppInstEventLogList,
                         isReady: true,
                         clusterDropdownList: clusterDropdownList,
-                        dropDownCloudletList: dropDownCloudletList,
+                        dropDownCludsterListOnCloudlet: dropdownClusterListOnCloudlet,
                         clusterList: clusterList,
                         filteredClusterList: clusterList,
                         isAppInstaceDataReady: true,
@@ -1455,12 +1446,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                      //backgroundColor: 'red',
                                  }}>
                                 <div>
-                                    {this.makeCloudletDropdown()}
+                                    {this.makeClusterOnCloudletDropdown()}
                                 </div>
                                 {/*
                                    <div>
                                     {this.makeClusterDropdown()}
-                                </div>*/}
+                                </div>
+                                */}
                                 <div style={{marginLeft: 30}}>
                                     {this.makeAppInstDropdown()}
                                 </div>
@@ -1665,161 +1657,42 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
             }
 
-            makeCloudletDropdown() {
+            makeClusterTree(cloudletList, clusterList) {
+                let newCloudletList = []
+                newCloudletList.push({
+                    title: 'Reset Filter',
+                    value: '',
+                    selectable: true,
+                    children: []
+                });
+                cloudletList.map(cloudletOne => {
 
-                const treeData = [
-                    {
-                        "title": "Reset Filter",
-                        "value": "",
-                        "selectable": true,
-                        "children": []
-                    },
-                    {
-                        "title": "automationDusseldorfCloudlet",
-                        "value": "automationDusseldorfCloudlet",
-                        "selectable": false,
-                        "children": [
-                            {
-                                "title": "andytls",
-                                "value": "andytls | automationDusseldorfCloudlet",
-                                "isParent": false
-                            },
-                            {
-                                "title": "autoclustermobiledgexsdkdemo",
-                                "value": "autoclustermobiledgexsdkdemo | automationDusseldorfCloudlet",
-                                "isParent": false
-                            },
-                            {
-                                "title": "andydocker",
-                                "value": "andydocker | automationDusseldorfCloudlet",
-                                "isParent": false
-                            },
-                            {
-                                "title": "andyded",
-                                "value": "andyded | automationDusseldorfCloudlet",
-                                "isParent": false
-                            },
-                            {
-                                "title": "cluster1588797625-969057",
-                                "value": "cluster1588797625-969057 | automationDusseldorfCloudlet",
-                                "isParent": false
-                            },
-                            {
-                                "title": "autoclusterandydnsapp",
-                                "value": "autoclusterandydnsapp | automationDusseldorfCloudlet",
-                                "isParent": false
-                            },
-                            {
-                                "title": "andyk8sded",
-                                "value": "andyk8sded | automationDusseldorfCloudlet",
-                                "isParent": false
-                            }
-                        ]
-                    },
-                    {
-                        "title": "automationHamburgCloudlet",
-                        "value": "automationHamburgCloudlet",
-                        "selectable": false,
-                        "children": [
-                            {
-                                "title": "multiple",
-                                "value": "multiple | automationHamburgCloudlet",
-                                "isParent": false
-                            },
-                            {
-                                "title": "autoclusterandydockercomposeinput",
-                                "value": "autoclusterandydockercomposeinput | automationHamburgCloudlet",
-                                "isParent": false
-                            }
-                        ]
-                    },
-                    {
-                        "title": "automationMunichCloudlet",
-                        "value": "automationMunichCloudlet",
-                        "selectable": false,
-                        "children": [
-                            {
-                                "title": "multiple",
-                                "value": "multiple | automationMunichCloudlet",
-                                "isParent": false
-                            },
-                            {
-                                "title": "autoclustermobiledgexsdkdemo",
-                                "value": "autoclustermobiledgexsdkdemo | automationMunichCloudlet",
-                                "isParent": false
-                            }
-                        ]
-                    },
-                    {
-                        "title": "verificationCloudlet",
-                        "value": "verificationCloudlet",
-                        "selectable": false,
-                        "children": [
-                            {
-                                "title": "cluster158871680299202dockerdedicated",
-                                "value": "cluster158871680299202dockerdedicated | verificationCloudlet",
-                                "isParent": false
-                            },
-                            {
-                                "title": "cluster158871680299202dockershared",
-                                "value": "cluster158871680299202dockershared | verificationCloudlet",
-                                "isParent": false
-                            },
-                            {
-                                "title": "autoclusterandydnsapp",
-                                "value": "autoclusterandydnsapp | verificationCloudlet",
-                                "isParent": false
-                            },
-                            {
-                                "title": "cluster158871680299202dockerdedicatedgpu",
-                                "value": "cluster158871680299202dockerdedicatedgpu | verificationCloudlet",
-                                "isParent": false
-                            }
-                        ]
-                    },
-                    {
-                        "title": "automationFrankfurtCloudlet",
-                        "value": "automationFrankfurtCloudlet",
-                        "selectable": false,
-                        "children": [
-                            {
-                                "title": "multiple",
-                                "value": "multiple | automationFrankfurtCloudlet",
-                                "isParent": false
-                            },
-                            {
-                                "title": "autoclustermobiledgexsdkdemo",
-                                "value": "autoclustermobiledgexsdkdemo | automationFrankfurtCloudlet",
-                                "isParent": false
-                            }
-                        ]
-                    },
-                    {
-                        "title": "automationBerlinCloudlet",
-                        "value": "automationBerlinCloudlet",
-                        "selectable": false,
-                        "children": [
-                            {
-                                "title": "mutiple",
-                                "value": "mutiple | automationBerlinCloudlet",
-                                "isParent": false
-                            }
-                        ]
-                    },
-                    {
-                        "title": "tmocloud-1",
-                        "value": "tmocloud-1",
-                        "selectable": false,
-                        "children": [
-                            {
-                                "title": "autoclusterautomation",
-                                "value": "autoclusterautomation | tmocloud-1",
-                                "isParent": false
-                            }
-                        ]
-                    }
-                ]
+                    let newCloudletOne = {
+                        title: cloudletOne,
+                        value: cloudletOne,
+                        selectable: false,
+                        children: []
+                    };
 
+                    clusterList.map(clusterOne => {
+                        if (clusterOne.Cloudlet === cloudletOne) {
+                            console.log(`sldkfldskflkdsf===>`, clusterOne);
+                            newCloudletOne.children.push({
+                                title: clusterOne.ClusterName,
+                                value: clusterOne.ClusterName + " | " + cloudletOne,
+                                isParent: false,
+                            })
+                        }
+                    })
+
+                    newCloudletList.push(newCloudletOne);
+                })
+
+                return newCloudletList;
+            }
+
+
+            makeClusterOnCloudletDropdown() {
 
                 return (
                     <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
@@ -1831,47 +1704,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         >
                             Cluster
                         </div>
-                        {/*<Dropdown
-                            selectOnBlur={false}
-                            //value={this.state.currentCluster}
-                            selection
-                            options={this.state.dropDownCloudletList}
-                            style={PageMonitoringStyles.dropDownForCloudlet}
-                            onChange={async (e, {value}) => {
-
-                                if (value === '') {
-                                    this.setState({
-                                        clusterDropdownList: makeSelectBoxListWithKeyValuePipeForCluster(this.state.clusterList, 'ClusterName', 'Cloudlet')
-                                    })
-                                } else {
-
-                                    let newFilteredClusterList = this.state.clusterList.filter(item => {
-                                        if (item.Cloudlet.trim() === value.trim()) {
-                                            return true;
-                                        }
-                                    })
-
-                                    console.log(`newFilteredClusterList===>`, newFilteredClusterList);
-
-                                    this.setState({
-                                        clusterDropdownList: makeSelectBoxListWithKeyValuePipeForCluster(newFilteredClusterList, 'ClusterName', 'Cloudlet')
-                                    })
-
-                                }
-
-
-                            }}
-                        />*/}
                         <TreeSelect
                             showSearch={true}
                             switcherIcon={<FontAwesomeIcon
                                 name="arrow-up" style={{fontSize: 15, color: 'green', cursor: 'pointer', marginTop: 2}}
                             />}
                             style={{width: '300px'}}
-                            //value={this.state.value}
+                            onSearch={(value) => {
+                                this.setState({
+                                    searchClusterValue: value,
+                                });
+                            }}
+                            searchValue={this.state.searchClusterValue}
                             placeholder={'Select Cluster'}
-                            dropdownStyle={{maxHeight: 400, overflow: 'auto', width: 600}}
-                            treeData={treeData}
+                            dropdownStyle={{maxHeight: 800, overflow: 'auto', width: 600,}}
+                            treeData={this.state.dropDownCludsterListOnCloudlet}
                             treeDefaultExpandAll
                             onChange={async (value, label, extra) => {
                                 clearInterval(this.intervalForCluster)
@@ -1885,7 +1732,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     await this.filterClusterList(value)
                                 }
                                 await this.handleClusterDropdownAndReset(value.trim())
-
 
                             }}
                         />

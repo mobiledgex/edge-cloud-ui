@@ -606,11 +606,26 @@ tr td {
     background-color: rgba(0, 0, 0, 0.6);
 }
 
-/*
 .ant-select-tree {
-    background-color: ;
+    background-color: rgba(0, 0, 0, 0.6);
 }
-*/
+
 /*.ant-select-tree-title{
     background-color: red;
 }*/
+.ant-select-tree-treenode-switcher-open .ant-select-tree-treenode-switcher-close {
+    height: 15px;
+    padding: 0px;
+    margin: 0px
+}
+
+.ant-select-tree li {
+    margin-top: 0px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    padding: 5;
+    white-space: nowrap;
+    list-style: none;
+    outline: 0;
+}
