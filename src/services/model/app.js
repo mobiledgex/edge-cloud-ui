@@ -116,6 +116,10 @@ const compareObjects = (newData, oldData, ignoreCase) => {
     {
         return true
     }
+    else if(newData === undefined && oldData !== undefined)
+    {
+        return false
+    }
     else if(newData.length === 0 && oldData === undefined)
     {
         return true
@@ -139,43 +143,47 @@ export const updateApp = async (self, data, originalData) => {
     let updateFields = []
     if(!compareObjects(data[fields.imagePath], originalData[fields.imagePath]))
     {
-        updateFields.push("4")
+        updateFields.push('4')
     }
     if(!compareObjects(data[fields.accessPorts], originalData[fields.accessPorts], true))
     {
-        updateFields.push("7")
+        updateFields.push('7')
     }
     if(!compareObjects(data[fields.flavorName], originalData[fields.flavorName]))
     {
-        updateFields.push("9.1")
+        updateFields.push('9.1')
     }
     if(!compareObjects(data[fields.command], originalData[fields.command]))
     {
-        updateFields.push("13")
+        updateFields.push('13')
     }
     if(!compareObjects(data[fields.deploymentManifest], originalData[fields.deploymentManifest]))
     {
-        updateFields.push("16")
+        updateFields.push('16')
     }
     if(!compareObjects(data[fields.androidPackageName], originalData[fields.androidPackageName]))
     {
-        updateFields.push("18")
+        updateFields.push('18')
+    }
+    if(!compareObjects(data[fields.configs], originalData[fields.configs]))
+    {
+        updateFields.push('21', '21.1', '21.2')
     }
     if(!compareObjects(data[fields.scaleWithCluster], originalData[fields.scaleWithCluster]))
     {
-        updateFields.push("22")
+        updateFields.push('22')
     }
     if(!compareObjects(data[fields.officialFQDN], originalData[fields.officialFQDN]))
     {
-        updateFields.push("25")
+        updateFields.push('25')
     }
     if(!compareObjects(data[fields.autoPolicyName], originalData[fields.autoPolicyName]))
     {
-        updateFields.push("28")
+        updateFields.push('28')
     }
     if(!compareObjects(data[fields.privacyPolicyName], originalData[fields.privacyPolicyName]))
     {
-        updateFields.push("30")
+        updateFields.push('30')
     }
     requestData.app.fields = updateFields
     let request = { method: UPDATE_APP, data: requestData }

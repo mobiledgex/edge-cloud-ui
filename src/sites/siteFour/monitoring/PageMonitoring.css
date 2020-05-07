@@ -162,11 +162,13 @@ tbody:hover {
     font-weight: bold;
     color: white;
     font-size: 9px;
-    /*width: 300px;*/
+    width: auto;
+    min-width: auto;
+    max-width: auto;
 }
 
 .clientPopup {
-    width: 280px;
+    width: auto;
     font-family: Ubuntu !important;
     font-size: 9pt !important;
 }
@@ -174,6 +176,7 @@ tbody:hover {
 .leaflet-popup-content {
     font-size: 10pt !important;
 }
+
 
 .leaflet-popup-content-wrapper2 {
     background-color: rgba(71, 82, 102, 0.65);
@@ -371,11 +374,6 @@ tbody:hover {
     background-color: #1e2124;
 }
 
-/*tbody {*/
-/*    background-color: rgb(30, 33, 36);*/
-/*    height: 360px;*/
-/*    min-height: 350px;*/
-/*}*/
 
 .react-grid-layout {
     position: relative;
@@ -391,11 +389,10 @@ tbody:hover {
 
 .leaflet-popup-content-wrapper {
     background-color: rgba(0, 0, 0, 0.65);
-    /*font-weight: bold;*/
     color: white;
     border: solid 1px;
-    /*font-family: "Roboto Light";*/
     font-size: 20px;
+    width: auto;
 }
 
 
