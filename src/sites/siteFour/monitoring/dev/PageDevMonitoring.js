@@ -245,6 +245,7 @@ type PageDevMonitoringState = {
     isOpenGlobe: boolean,
     legendColSize: number,
     currentAppVersion: number,
+    isEnableZoomIn: boolean,
 }
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
@@ -417,6 +418,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     isLegendExpanded: false,
                     legendColSize: 3,
                     currentAppVersion: undefined,
+                    isEnableZoomIn: false,
                 };
             }
 
@@ -563,6 +565,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentAppInst: '',
                     appInstDropdown: [],
                     isShowAppInstPopup: !this.state.isShowAppInstPopup,
+                    isEnableZoomIn: !this.state.isEnableZoomIn,
                 })
             }
 
@@ -1125,6 +1128,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             isFullScreenMap={false}
                             isShowAppInstPopup={this.state.isShowAppInstPopup}
                             selectedAppInstIndex={this.state.selectedAppInstIndex}
+                            isEnableZoomIn={!this.state.isEnableZoomIn}
                         />
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
