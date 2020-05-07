@@ -43,7 +43,16 @@ import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData, TypeUtil
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
 import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../PageMonitoringCommonService";
-import {getAllAppInstEventLogs, getAllClusterEventLogList, getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList, requestShowAppInstClientWS} from "../PageMonitoringMetricService";
+import {
+    getAllAppInstEventLogs,
+    getAllClusterEventLogList,
+    getAppInstList,
+    getAppLevelUsageList,
+    getCloudletList,
+    getClusterLevelUsageList,
+    getClusterList,
+    requestShowAppInstClientWS
+} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
@@ -65,7 +74,14 @@ import BarChartContainer from "../components/BarChartContainer";
 import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryForClusterHook";
 import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryForAppInstHook";
 import type {PageDevMonitoringProps} from "./PageDevMonitoringProps";
-import {ColorLinearProgress, CustomSwitch, defaultLayoutXYPosForAppInst, defaultLayoutXYPosForCluster, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageDevMonitoringProps";
+import {
+    ColorLinearProgress,
+    CustomSwitch,
+    defaultLayoutXYPosForAppInst,
+    defaultLayoutXYPosForCluster,
+    PageDevMonitoringMapDispatchToProps,
+    PageDevMonitoringMapStateToProps
+} from "./PageDevMonitoringProps";
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListHookVirtualScroll from "../components/AppInstEventLogListHookVirtualScroll";
 import {fields} from '../../../../services/model/format'
@@ -229,6 +245,7 @@ type PageDevMonitoringState = {
     isOpenGlobe: boolean,
     legendColSize: number,
     currentAppVersion: number,
+    isEnableZoomIn: boolean,
 }
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
@@ -401,6 +418,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     isLegendExpanded: false,
                     legendColSize: 3,
                     currentAppVersion: undefined,
+                    isEnableZoomIn: false,
                 };
             }
 
@@ -547,6 +565,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentAppInst: '',
                     appInstDropdown: [],
                     isShowAppInstPopup: !this.state.isShowAppInstPopup,
+                    isEnableZoomIn: !this.state.isEnableZoomIn,
                 })
             }
 
@@ -1109,6 +1128,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             isFullScreenMap={false}
                             isShowAppInstPopup={this.state.isShowAppInstPopup}
                             selectedAppInstIndex={this.state.selectedAppInstIndex}
+                            isEnableZoomIn={!this.state.isEnableZoomIn}
                         />
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
@@ -1741,7 +1761,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     return (
 
-                        <LegendOuterDiv style={{height: this.state.currentClassification === CLASSIFICATION.CLUSTER && filteredClusterUsageListLength > 1 ? this.state.legendHeight : 25,}}>
+                        <LegendOuterDiv
+                            style={{height: this.state.currentClassification === CLASSIFICATION.CLUSTER && filteredClusterUsageListLength > 1 ? this.state.legendHeight : 25,}}>
                             {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
                                 <Row gutter={16} style={{
                                     flex: .97,

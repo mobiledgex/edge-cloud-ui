@@ -103,6 +103,7 @@ type Props = {
     setCloudletIconColor: Function,
     isLoading: boolean,
     isShowAppInstPopup: boolean,
+    isEnableZoomIn: boolean,
 
 };
 type State = {
@@ -119,6 +120,7 @@ type State = {
     cloudletIconColor: string,
     mapCenter: any,
     selectedAppInstIndex: number,
+    isEnableZoomIn: boolean,
 
 };
 
@@ -192,6 +194,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 cloudletIconColor: 'green',
                 mapCenter: [43.4, 51.7],
                 selectedAppInstIndex: -1,
+                isEnableZoomIn: false,
 
             };
 
@@ -215,6 +218,13 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
         async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
             try {
+
+                if (this.props.isEnableZoomIn !== nextProps.isEnableZoomIn) {
+                    this.setState({
+                        isEnableZoomIn: false,
+                    })
+                }
+
                 if (this.props.markerList !== nextProps.markerList) {
                     let appInstanceListGroupByCloudlet = nextProps.markerList;
                     this.setCloudletLocation(appInstanceListGroupByCloudlet)
@@ -440,7 +450,9 @@ export default connect(mapStateToProps, mapDispatchProps)(
         }
 
         setVerticalOffset(lat, cloudletIndex) {
-            return lat + (cloudletIndex * 0.0007)
+
+            console.log(`setVerticalOffset====>`, this.state.zoom);
+            return lat + (cloudletIndex * 0.001)
         }
 
         render() {
@@ -502,7 +514,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                  useFlyTo={true}
                                  dragging={true}
                                  boundsOptions={{padding: [50, 50]}}
-                                 maxZoom={15}
+                                 maxZoom={14}
                                  zoomControl={false}
                                  onResize={() => {
 
@@ -561,6 +573,19 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                 style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
                                             />
                                         </div>
+                                        <div
+                                            style={{backgroundColor: 'transparent', height: 30, width: 30, display: 'flex', justifyContent: 'center', alignSelf: 'center'}}
+                                        >
+                                            <Icon
+                                                name='zoom-in'
+                                                onClick={() => {
+                                                    this.setState({
+                                                        isEnableZoomIn: !this.state.isEnableZoomIn
+                                                    })
+                                                }}
+                                                style={{fontSize: 20, color: this.state.isEnableZoomIn ? 'white' : 'grey', cursor: 'pointer'}}
+                                            />
+                                        </div>
                                     </div>
                                 </Control>
                                 {/*@todo:#####################################..*/}
@@ -603,12 +628,15 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                         }
                                                         onClick={() => {
 
+
                                                             let toggleNewCloudletLocationList = this.state.newCloudLetLocationList;
                                                             toggleNewCloudletLocationList[cloudletOneIndex].isShowCircle = !toggleNewCloudletLocationList[cloudletOneIndex].isShowCircle
                                                             this.setState({
                                                                 newCloudLetLocationList: toggleNewCloudletLocationList,
                                                                 isUpdateEnable: true,
                                                                 selectedAppInstIndex: -1,
+                                                                zoom: this.state.isEnableZoomIn ? 14 : this.state.zoom,
+                                                                mapCenter: this.state.isEnableZoomIn ? [cloudletOne.CloudletLocation.latitude, cloudletOne.CloudletLocation.longitude] : null,
                                                             })
                                                         }}
                                                     >
