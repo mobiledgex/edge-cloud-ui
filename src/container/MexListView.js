@@ -544,9 +544,6 @@ class MexListView extends React.Component {
             dataList = [...dataList, ...newDataList]
         }
         
-        if (this.requestCount === 0 && dataList.length === 0) {
-            // this.props.handleAlertInfo('error', 'Requested data is empty')
-        }
         this.setState({
             dataList: Object.assign([], dataList)
         })
