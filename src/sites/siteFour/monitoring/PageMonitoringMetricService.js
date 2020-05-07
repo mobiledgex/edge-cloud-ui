@@ -11,14 +11,16 @@ import PageDevMonitoring from "./dev/PageDevMonitoring";
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
     try {
+
+        console.log(`pCurrentAppInst====>`,pCurrentAppInst);
+
         let AppName = pCurrentAppInst.split('|')[0].trim()
         let Cloudlet = pCurrentAppInst.split('|')[1].trim()
         let ClusterInst = pCurrentAppInst.split('|')[2].trim()
-        let Region = pCurrentAppInst.split('|')[3].trim()
-        let HealthCheck = pCurrentAppInst.split('|')[4].trim()
-        let Version = pCurrentAppInst.split('|')[5].trim()
+        let Version = pCurrentAppInst.split('|')[3].trim()
+        let Region = pCurrentAppInst.split('|')[4].trim()
+        let HealthCheck = pCurrentAppInst.split('|')[5].trim()
         let Operator = pCurrentAppInst.split('|')[6].trim()
-
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
         let organization = localStorage.selectOrg.toString()
@@ -73,6 +75,9 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
                 appInstCount++;
 
                 let data = JSON.parse(event.data);
+
+                console.log(`data====>`, data);
+
                 let uniqueId = data.data.client_key.unique_id;
                 let unique_id_type = data.data.client_key.unique_id_type;
                 if (data.code === 200) {

@@ -86,7 +86,7 @@
         "react-image-filter": "^0.1.2",
         "react-interval-timer": "^1.0.5",
         "react-json-view": "^1.19.1",
-        "react-leaflet": "2.7.0",
+        "react-leaflet": "2.6.3",
         "react-leaflet-control": "^2.1.2",
         "react-leaflet-dialog": "^2.0.1",
         "react-leaflet-fullscreen-control": "0.0.4",

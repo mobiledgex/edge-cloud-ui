@@ -245,7 +245,6 @@ type PageDevMonitoringState = {
     isOpenGlobe: boolean,
     legendColSize: number,
     currentAppVersion: number,
-    isEnableZoomIn: boolean,
 }
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
@@ -418,7 +417,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     isLegendExpanded: false,
                     legendColSize: 3,
                     currentAppVersion: undefined,
-                    isEnableZoomIn: false,
                 };
             }
 
@@ -565,7 +563,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentAppInst: '',
                     appInstDropdown: [],
                     isShowAppInstPopup: !this.state.isShowAppInstPopup,
-                    isEnableZoomIn: !this.state.isEnableZoomIn,
                 })
             }
 
@@ -1128,7 +1125,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             isFullScreenMap={false}
                             isShowAppInstPopup={this.state.isShowAppInstPopup}
                             selectedAppInstIndex={this.state.selectedAppInstIndex}
-                            isEnableZoomIn={!this.state.isEnableZoomIn}
                         />
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
@@ -1756,26 +1752,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 } else {
 
                     let filteredClusterUsageListLength = this.state.filteredClusterUsageList.length;
-
                     return (
 
-                        <LegendOuterDiv
-                            style={{height: this.state.currentClassification === CLASSIFICATION.CLUSTER && filteredClusterUsageListLength > 1 ? this.state.legendHeight : 25,}}>
+                        <LegendOuterDiv style={{height: this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.state.legendHeight : 25,}}>
                             {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                                <Row gutter={16} style={{
-                                    flex: .97,
-                                    marginLeft: 10,
-                                    backgroundColor: 'transparent',
-                                    justifyContent: 'center',
-                                    alignSelf: 'center',
-                                    display: filteredClusterUsageListLength === 1 ? 'flex' : null,
-                                }}>
+                                <Row gutter={16} style={{flex: .97, marginLeft: 10, backgroundColor: 'transparent', justifyContent: 'center', alignSelf: 'center'}}>
                                     {this.state.filteredClusterUsageList.map((item, index) => {
                                         return (
-                                            <Col className="gutterRow"
-                                                 span={this.state.legendColSize}
-                                                 title={!this.state.isLegendExpanded ? item.cluster + '[' + item.cloudlet + ']' : null}
-                                            >
+                                            <Col className="gutterRow" span={this.state.legendColSize}
+                                                 title={!this.state.isLegendExpanded ? item.cluster + '[' + item.cloudlet + ']' : null}>
                                                 <div style={{backgroundColor: 'transparent', marginTop: 2,}}>
                                                     <div
                                                         style={{
@@ -1788,7 +1773,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                     </div>
                                                 </div>
                                                 <div className="clusterCloudletBox">
-                                                    {filteredClusterUsageListLength > 1 ? reduceLegendClusterCloudletName(item, this) : item.cluster + "[" + item.cloudlet + "]"}
+                                                    {reduceLegendClusterCloudletName(item, this)}
                                                 </div>
                                             </Col>
                                         )
