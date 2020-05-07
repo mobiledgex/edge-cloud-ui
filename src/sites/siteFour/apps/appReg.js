@@ -33,6 +33,7 @@ class ClusterInstReg extends React.Component {
         this.autoProvPolicyList = []
         this.requestedRegionList = []
         this.appInstanceList = []
+        this.configOptions = [constant.CONFIG_ENV_VAR, constant.CONFIG_HELM_CUST]
         this.originalData = undefined
         //To avoid refetching data from server
     }
@@ -126,8 +127,8 @@ class ClusterInstReg extends React.Component {
     }
 
     configForm = () => ([
-        { field: fields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, type: 'number', rows: 4 }, width: 9, visible: true },
-        { field: fields.kind, label: 'Kind', formType: SELECT, rules: { required: true }, width: 4, visible: true, options: ['Environment Variables', 'Helm Customization'] },
+        { field: fields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, type: 'number', rows: 4 }, width: 9, visible: true, update:true },
+        { field: fields.kind, label: 'Kind', formType: SELECT, placeholder: 'Select Kind', rules: { required: true }, width: 4, visible: true, options: this.configOptions, update:true },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm }
     ])
 
@@ -205,11 +206,12 @@ class ClusterInstReg extends React.Component {
                 return form
             }
             else if (form.label === 'Configs' || form.label === 'Annotations') {
-                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_HELM ? true : false
+                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_HELM || currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? true : false
+                this.configOptions = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? [constant.CONFIG_ENV_VAR] : [constant.CONFIG_ENV_VAR, constant.CONFIG_HELM_CUST]
                 return form
             }
             else if (form.field === fields.configs || form.field === fields.annotations) {
-                if (currentForm.value === constant.DEPLOYMENT_TYPE_HELM) {
+                if (currentForm.value === constant.DEPLOYMENT_TYPE_HELM || currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES) {
                     return form
                 }
             }
@@ -461,6 +463,10 @@ class ClusterInstReg extends React.Component {
             this.flavorList = await getFlavorList(this, { region: data[fields.region] })
             this.privacyPolicyList = await getPrivacyPolicyList(this, { region: data[fields.region] })
             this.autoProvPolicyList = await getAutoProvPolicyList(this, { region: data[fields.region] })
+            if(data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES)
+            {
+                this.configOptions = [constant.CONFIG_ENV_VAR]
+            }
             let multiFormCount = 0
             if (data[fields.accessPorts]) {
                 let portArray = data[fields.accessPorts].split(',')
@@ -517,7 +523,6 @@ class ClusterInstReg extends React.Component {
                     multiFormCount += 1
                 }
             }
-
             if (data[fields.configs]) {
                 let configs = data[fields.configs]
                 for (let i = 0; i < configs.length; i++) {
