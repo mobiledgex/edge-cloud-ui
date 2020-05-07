@@ -1,6 +1,5 @@
 import React, {createRef} from "react";
 import * as L from 'leaflet';
-import 'react-leaflet-fullscreen-control'
 import type {TypeAppInstance, TypeClient} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 import {CheckCircleOutlined} from '@material-ui/icons';
