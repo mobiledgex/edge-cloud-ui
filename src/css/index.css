@@ -1536,7 +1536,8 @@ body, button, input, textarea, optgroup, select, textarea,
 }
 /*Alert word-break*/
 .s-alert-wrapper > .s-alert-box {
-    word-break: keep-all;
+    word-break: break-word;
+    overflow: hidden;
 }
 
 /*Alert progress */
