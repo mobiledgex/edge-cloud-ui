@@ -3,58 +3,77 @@ import {Button, Divider, Modal, Grid, Table, Icon} from "semantic-ui-react";
 import TextareaAutosize from "react-textarea-autosize";
 
 
+const menuItem = ['Users & Roles', 'Cloudlets', 'Flavors', 'Cluster Instances', 'Apps', 'App Instances', 'Policies', 'Monitoring', 'Audit Logs'];
 const roles =
     {
         Developer: {
             Manager: {
-                'Users': 'Manage',
+                'Users & Roles': 'Manage',
                 'Cloudlets': 'View',
-                'Flavor': 'View',
-                'Cluster Instance': 'Manage',
+                'Flavors': 'View',
+                'Cluster Instances': 'Manage',
                 'Apps': 'Manage',
-                'App Instance': 'Manage'
+                'App Instances': 'Manage',
+                'Policies': 'Manage',
+                'Monitoring' : 'Manage',
+                'Audit Logs' : 'Manage'
             },
             Contributor: {
-                'Users': 'View',
+                'Users & Roles': 'View',
                 'Cloudlets': 'View',
-                'Flavor': 'View',
-                'Cluster Instance': 'Manage',
+                'Flavors': 'View',
+                'Cluster Instances': 'Manage',
                 'Apps': 'Manage',
-                'App Instance': 'Manage'
+                'App Instances': 'Manage',
+                'Policies': 'Manage',
+                'Monitoring' : 'Manage',
+                'Audit Logs' : 'Manage'
             },
             Viewer: {
-                'Users': 'View',
+                'Users & Roles': 'View',
                 'Cloudlets': 'View',
-                'Flavor': 'View',
-                'Cluster Instance': 'View',
+                'Flavors': 'View',
+                'Cluster Instances': 'View',
                 'Apps': 'View',
-                'App Instance': 'View'
+                'App Instances': 'View',
+                'Policies': 'Manage',
+                'Monitoring' : 'Manage',
+                'Audit Logs' : 'Manage'
             }
         },
         Operator: {
             Manager: {
-                'Users': 'Manage',
+                'Users & Roles': 'Manage',
                 'Cloudlets': 'Manage',
-                'Flavor': 'disabled',
-                'Cluster Instance': 'disabled',
+                'Flavors': 'disabled',
+                'Cluster Instances': 'disabled',
                 'Apps': 'disabled',
-                'App Instance': 'disabled'
+                'App Instances': 'disabled',
+                'Policies': 'disabled',
+                'Monitoring' : 'Manage',
+                'Audit Logs' : 'Manage'
             },
             Contributor: {
-                'Users': 'View',
+                'Users & Roles': 'View',
                 'Cloudlets': 'Manage',
-                'Flavor': 'disabled',
-                'Cluster Instance': 'disabled',
+                'Flavors': 'disabled',
+                'Cluster Instances': 'disabled',
                 'Apps': 'disabled',
-                'App Instance': 'disabled'
+                'App Instances': 'disabled',
+                'Policies': 'disabled',
+                'Monitoring' : 'Manage',
+                'Audit Logs' : 'Manage'
             },
             Viewer: {
-                'Users': 'View',
+                'Users & Roles': 'View',
                 'Cloudlets': 'View',
-                'Flavor': 'disabled',
-                'Cluster Instance': 'disabled',
+                'Flavors': 'disabled',
+                'Cluster Instances': 'disabled',
                 'Apps': 'disabled',
-                'App Instance': 'disabled'
+                'App Instances': 'disabled',
+                'Policies': 'disabled',
+                'Monitoring' : 'Manage',
+                'Audit Logs' : 'Manage'
             },
         }
     }
@@ -230,35 +249,15 @@ export default class PopLegendViewer extends React.Component {
                             </Grid.Row>
                             <Grid.Row>
                                 <Table celled inverted selectable>
+
                                     <Table.Body>
-                                        <Table.Row>
-                                            <Table.Cell style={{width:'35%'}}>Users</Table.Cell>
-                                            <Table.Cell>
-                                                {this.getUserRole('Users')}
-                                            </Table.Cell>
-                                        </Table.Row>
-                                        <Table.Row>
-                                            <Table.Cell>Cloudlets</Table.Cell>
-                                            <Table.Cell>
-                                                {this.getUserRole('Cloudlets')}
-                                            </Table.Cell>
-                                        </Table.Row>
-                                        <Table.Row>
-                                            <Table.Cell>Flavors</Table.Cell>
-                                            <Table.Cell>{this.getUserRole('Flavor')}</Table.Cell>
-                                        </Table.Row>
-                                        <Table.Row>
-                                            <Table.Cell>Cluster Instances</Table.Cell>
-                                            <Table.Cell>{this.getUserRole('Cluster Instance')}</Table.Cell>
-                                        </Table.Row>
-                                        <Table.Row>
-                                            <Table.Cell>Apps</Table.Cell>
-                                            <Table.Cell>{this.getUserRole('Apps')}</Table.Cell>
-                                        </Table.Row>
-                                        <Table.Row>
-                                            <Table.Cell>App Instances</Table.Cell>
-                                            <Table.Cell>{this.getUserRole('App Instance')}</Table.Cell>
-                                        </Table.Row>
+                                        {menuItem.map((type) =>
+                                            this.getUserRole(type) !== 'disabled' ?
+                                            <Table.Row>
+                                                <Table.Cell>{type}</Table.Cell>
+                                                <Table.Cell>{this.getUserRole(type)}</Table.Cell>
+                                            </Table.Row> : null
+                                        )}
                                     </Table.Body>
                                 </Table>
                             </Grid.Row>
