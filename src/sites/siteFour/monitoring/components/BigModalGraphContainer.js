@@ -169,12 +169,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             }
                                         </div>
                                         <div>
-                                            <Button type={'primary'} onClick={() => {
-                                                this.setState({
-                                                    redraw: true,
-                                                })
-                                            }}>
-                                                reset
+                                            <Button
+
+                                                type={this.state.redraw ? 'primary' : null}
+                                                onClick={() => {
+                                                    this.setState({
+                                                        redraw: !this.state.redraw,
+                                                    })
+                                                }}
+                                            >
+                                                Redraw Graph
                                             </Button>
                                         </div>
                                     </div>
@@ -217,7 +221,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {this.state.graphType === GRID_ITEM_TYPE.LINE ?
                             <div>
                                 <Line
-                                    redraw={this.state.redraw}
+                                    redraw={this.state.redraw ? true : null}
                                     width={window.innerWidth * 0.9}
                                     ref={(reference) => this.lineChart = reference}
                                     height={window.innerHeight * 0.8}
