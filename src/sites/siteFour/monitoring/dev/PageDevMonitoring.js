@@ -1757,8 +1757,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     let filteredClusterUsageListLength = this.state.filteredClusterUsageList.length;
 
-                    console.log(`filteredClusterUsageListLength===>`, filteredClusterUsageListLength);
-
                     return (
 
                         <LegendOuterDiv

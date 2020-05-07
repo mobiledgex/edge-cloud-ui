@@ -252,7 +252,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     let newClientList = []
                     clientList.map((item: TypeClient, index) => {
                         let clientLocation = parseFloat(item.latitude).toFixed(1).toString() + parseFloat(item.longitude).toFixed(1).toString();
-                        console.log(`clientLocation${item.latitude}===${item.longitude}>`, clientLocation);
                         item.clientLocation = clientLocation;
                         newClientList.push(item);
                     })
@@ -450,8 +449,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
         }
 
         setVerticalOffset(lat, cloudletIndex) {
-
-            console.log(`setVerticalOffset====>`, this.state.zoom);
             return lat + (cloudletIndex * 0.001)
         }
 

@@ -1030,12 +1030,10 @@ export const makeNetworkLineChartData = (filteredNetworkUsageList, pHardwareType
 
             let usageOne = 0;
             if (pHardwareType === HARDWARE_TYPE.RECV_BYTES) {
-                //console.log('pHardwareType===>', pHardwareType);
                 usageOne = seriesValues[j]["12"];//receivceBytes -> index12
 
             } else {
                 usageOne = seriesValues[j]["13"]; //sendBytes -> index13
-                //console.log('usageOne===>', usageOne);
             }
             usageList.push(usageOne);
             let dateOne = seriesValues[j]["0"];
