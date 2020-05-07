@@ -1038,13 +1038,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             }
 
                             {/*desc:############################*/}
-                            {/*desc:    edit btn                */}
-                            {/*desc:############################*/}
-                            <div className="edit page_monitoring_widget_icon"
-                            >
-                                <MaterialIcon size={'tiny'} icon='create' color={'white'}/>
-                            </div>
-                            {/*desc:############################*/}
                             {/*desc:    delete btn                */}
                             {/*desc:############################*/}
                             <div className="remove page_monitoring_widget_icon"

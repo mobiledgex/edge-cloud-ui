@@ -20,6 +20,7 @@ import '../PageMonitoring.css'
 import {PageMonitoringStyles} from "../PageMonitoringStyles";
 import {groupByCloudletLocation, reduceString} from "../dev/PageDevMonitoringService";
 
+const FontAwesomeIcon = require('react-fontawesome')
 
 const {Option} = Select;
 
@@ -121,6 +122,7 @@ type State = {
     mapCenter: any,
     selectedAppInstIndex: number,
     isEnableZoomIn: boolean,
+    isCloudletClustering: boolean,
 
 };
 
@@ -195,6 +197,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 mapCenter: [43.4, 51.7],
                 selectedAppInstIndex: -1,
                 isEnableZoomIn: false,
+                isCloudletClustering: false,
 
             };
 
@@ -452,6 +455,155 @@ export default connect(mapStateToProps, mapDispatchProps)(
             return lat + (cloudletIndex * 0.005)
         }
 
+        renderCloudletMarkers = () => (
+            this.state.newCloudLetLocationList.map((cloudletList, cloudletIndex) => {
+                return cloudletList.map((cloudletOne, cloudletOneIndex) => {
+                    let listAppName = cloudletOne.AppNames.split(",")
+
+                    return (
+                        <React.Fragment>
+                            <Marker
+                                ref={c => this.marker1 = c}
+                                icon={this.props.cloudletIconColor === 'green' ? cloudGreenIcon : cloudBlueIcon}
+                                className='marker1'
+                                position={
+                                    //@DESC :If the positions are the same, a slight VERTICAL OFFSET is given.
+                                    [cloudletOneIndex === 0 ? cloudletOne.CloudletLocation.latitude : this.setVerticalOffset(cloudletOne.CloudletLocation.latitude, cloudletIndex), cloudletOne.CloudletLocation.longitude]
+                                    //[cloudletOne.CloudletLocation.latitude, cloudletOne.CloudletLocation.longitude]
+                                }
+                                onClick={() => {
+
+
+                                    let toggleNewCloudletLocationList = this.state.newCloudLetLocationList;
+                                    toggleNewCloudletLocationList[cloudletOneIndex].isShowCircle = !toggleNewCloudletLocationList[cloudletOneIndex].isShowCircle
+                                    this.setState({
+                                        newCloudLetLocationList: toggleNewCloudletLocationList,
+                                        isUpdateEnable: true,
+                                        selectedAppInstIndex: -1,
+                                        zoom: this.state.isEnableZoomIn ? 14 : this.state.zoom,
+                                        mapCenter: this.state.isEnableZoomIn ? [cloudletOne.CloudletLocation.latitude, cloudletOne.CloudletLocation.longitude] : null,
+                                    })
+                                }}
+                            >
+                                <Tooltip
+                                    direction='right'
+                                    offset={[14, -10]}//x,y
+                                    opacity={0.8}
+                                    permanent
+                                    ref={c => {
+                                        this.toolTip = c;
+                                    }}
+                                    style={{cursor: 'pointer', pointerEvents: 'auto'}}
+
+                                >
+                                    <div
+                                        className='toolTip'
+                                        style={{color: 'black'}}>{cloudletOne.Cloudlet}</div>
+                                </Tooltip>
+                                {/*desc:################################*/}
+                                {/*desc:appInstPopup                    */}
+                                {/*desc:################################*/}
+                                <Popup permanent className='popup1' ref={this.appInstPopup}>
+                                    {listAppName.map((AppFullName, innerIndex) => {
+                                        let AppName = AppFullName.trim().split(" | ")[0].trim()
+                                        let ClusterInst = AppFullName.trim().split(" | ")[1].trim()
+                                        let Region = AppFullName.trim().split(" | ")[2].trim()
+                                        let HealthCheck = AppFullName.trim().split(" | ")[3].trim()
+                                        let Version = AppFullName.trim().split(" | ")[4].trim()
+                                        let Operator = AppFullName.trim().split(" | ")[5].trim()
+                                        let lat = cloudletOne.CloudletLocation.latitude;
+                                        let long = cloudletOne.CloudletLocation.longitude;
+
+                                        let serverLocation = {
+                                            lat,
+                                            long,
+                                        }
+
+                                        let fullAppInstOne = AppName + " | " + cloudletOne.Cloudlet.trim() + " | " + ClusterInst + " | " + Version + " | " + Region + " | " + HealthCheck + " | " + Operator + " | " + JSON.stringify(serverLocation);
+
+                                        return (
+                                            <div style={{
+                                                fontSize: 14,
+                                                cursor: 'crosshair',
+                                                flexDirection: 'column',
+                                                marginTop: 0,
+                                                marginBottom: 5,
+                                                borderRadius: 5,
+                                                justifyContents: 'center',
+                                                alignSelf: 'center',
+                                                alignItem: 'center,',
+                                                display: 'flex',
+                                                backgroundColor: innerIndex === this.state.selectedAppInstIndex ? 'rgba(192, 192, 192,.2)' : null,
+                                            }}
+                                            >
+                                                <Ripples
+                                                    style={{marginLeft: 5,}}
+                                                    color='#1cecff' during={500}
+                                                    onClick={async () => {
+                                                        try {
+                                                            this.setState({
+                                                                selectedAppInstIndex: innerIndex,
+                                                            })
+                                                            await this.handleClickAppInst(fullAppInstOne)
+                                                        } catch (e) {
+
+                                                        }
+                                                    }}
+                                                >
+                                                    {reduceString(AppName.toString(), 25)} [{Version}]
+                                                    <div style={{
+                                                        color: '#77BD25',
+                                                        fontSize: 12
+                                                    }}>
+                                                        &nbsp;&nbsp;[{reduceString(ClusterInst.trim(), 25)}]
+                                                    </div>
+                                                    <div>
+
+                                                        {/*todo:HealthCheck value 3 is okay*/}
+                                                        {/*todo:HealthCheck value 3 is okay*/}
+                                                        {/*todo:HealthCheck value 3 is okay*/}
+                                                        {HealthCheck === 3 ?
+                                                            <div style={{
+                                                                marginLeft: 7,
+                                                                marginBottom: 0,
+                                                                height: 15,
+                                                            }}>
+                                                                <CheckCircleOutlined style={{
+                                                                    color: 'green',
+                                                                    fontSize: 17,
+                                                                    marginBottom: 25
+                                                                }}/>
+                                                            </div>
+                                                            :
+                                                            <div style={{
+                                                                marginLeft: 7,
+                                                                marginBottom: 0,
+                                                                height: 15,
+                                                            }}>
+                                                                <CheckCircleOutlined style={{
+                                                                    color: 'red',
+                                                                    fontSize: 17,
+                                                                    marginBottom: 25
+                                                                }}/>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </Ripples>
+                                            </div>
+                                        )
+                                    })}
+                                </Popup>
+                            </Marker>
+
+                        </React.Fragment>
+                    )
+                })
+
+            })
+
+        )
+
+
         render() {
 
             return (
@@ -528,7 +680,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     style={{zIndex: 1}}
                                 />
                                 {/*@todo:#####################################..*/}
-                                {/*@todo: zoom, reset button...*/}
+                                {/*@todo: zoom, reset Icons...*/}
                                 {/*@todo:#####################################..*/}
                                 <Control position="topleft" style={{marginTop: 3, display: 'flex',}}>
                                     <div style={PageMonitoringStyles.mapControlDiv}>
@@ -583,6 +735,20 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                 style={{fontSize: 20, color: this.state.isEnableZoomIn ? 'white' : 'grey', cursor: 'pointer'}}
                                             />
                                         </div>
+
+                                        <div
+                                            style={{backgroundColor: 'transparent', height: 30, width: 30, display: 'flex', justifyContent: 'center', alignSelf: 'center'}}
+                                        >
+                                            <Icon
+                                                name='compress'
+                                                onClick={() => {
+                                                    this.setState({
+                                                        isCloudletClustering: !this.state.isCloudletClustering
+                                                    })
+                                                }}
+                                                style={{fontSize: 20, color: this.state.isCloudletClustering ? 'white' : 'grey', cursor: 'pointer'}}
+                                            />
+                                        </div>
                                     </div>
                                 </Control>
                                 {/*@todo:#####################################..*/}
@@ -607,154 +773,18 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {/*@desc:#####################################..*/}
                                 {/*@desc:cloudlet Markers                    ...*/}
                                 {/*@desc:#####################################..*/}
-                                <MarkerClusterGroup>
-                                    {this.state.newCloudLetLocationList.map((cloudletList, cloudletIndex) => {
-                                        return cloudletList.map((cloudletOne, cloudletOneIndex) => {
-                                            let listAppName = cloudletOne.AppNames.split(",")
+                                <React.Fragment>
+                                    {this.state.isCloudletClustering ?
+                                        <MarkerClusterGroup>
+                                            {this.renderCloudletMarkers()}
+                                        </MarkerClusterGroup>
+                                        :
+                                        <React.Fragment>
+                                            {this.renderCloudletMarkers()}
+                                        </React.Fragment>
+                                    }
 
-                                            return (
-                                                <React.Fragment>
-                                                    <Marker
-                                                        ref={c => this.marker1 = c}
-                                                        icon={this.props.cloudletIconColor === 'green' ? cloudGreenIcon : cloudBlueIcon}
-                                                        className='marker1'
-                                                        position={
-                                                            //@DESC :If the positions are the same, a slight VERTICAL OFFSET is given.
-                                                            [cloudletOneIndex === 0 ? cloudletOne.CloudletLocation.latitude : this.setVerticalOffset(cloudletOne.CloudletLocation.latitude, cloudletIndex), cloudletOne.CloudletLocation.longitude]
-                                                            //[cloudletOne.CloudletLocation.latitude, cloudletOne.CloudletLocation.longitude]
-                                                        }
-                                                        onClick={() => {
-
-
-                                                            let toggleNewCloudletLocationList = this.state.newCloudLetLocationList;
-                                                            toggleNewCloudletLocationList[cloudletOneIndex].isShowCircle = !toggleNewCloudletLocationList[cloudletOneIndex].isShowCircle
-                                                            this.setState({
-                                                                newCloudLetLocationList: toggleNewCloudletLocationList,
-                                                                isUpdateEnable: true,
-                                                                selectedAppInstIndex: -1,
-                                                                zoom: this.state.isEnableZoomIn ? 14 : this.state.zoom,
-                                                                mapCenter: this.state.isEnableZoomIn ? [cloudletOne.CloudletLocation.latitude, cloudletOne.CloudletLocation.longitude] : null,
-                                                            })
-                                                        }}
-                                                    >
-                                                        <Tooltip
-                                                            direction='right'
-                                                            offset={[14, -10]}//x,y
-                                                            opacity={0.8}
-                                                            permanent
-                                                            ref={c => {
-                                                                this.toolTip = c;
-                                                            }}
-                                                            style={{cursor: 'pointer', pointerEvents: 'auto'}}
-
-                                                        >
-                                                            <div
-                                                                className='toolTip'
-                                                                style={{color: 'black'}}>{cloudletOne.Cloudlet}</div>
-                                                        </Tooltip>
-                                                        {/*desc:################################*/}
-                                                        {/*desc:appInstPopup                    */}
-                                                        {/*desc:################################*/}
-                                                        <Popup permanent className='popup1' ref={this.appInstPopup}>
-                                                            {listAppName.map((AppFullName, innerIndex) => {
-                                                                let AppName = AppFullName.trim().split(" | ")[0].trim()
-                                                                let ClusterInst = AppFullName.trim().split(" | ")[1].trim()
-                                                                let Region = AppFullName.trim().split(" | ")[2].trim()
-                                                                let HealthCheck = AppFullName.trim().split(" | ")[3].trim()
-                                                                let Version = AppFullName.trim().split(" | ")[4].trim()
-                                                                let Operator = AppFullName.trim().split(" | ")[5].trim()
-                                                                let lat = cloudletOne.CloudletLocation.latitude;
-                                                                let long = cloudletOne.CloudletLocation.longitude;
-
-                                                                let serverLocation = {
-                                                                    lat,
-                                                                    long,
-                                                                }
-
-                                                                let fullAppInstOne = AppName + " | " + cloudletOne.Cloudlet.trim() + " | " + ClusterInst + " | " + Version + " | " + Region + " | " + HealthCheck + " | " + Operator + " | " + JSON.stringify(serverLocation);
-
-                                                                return (
-                                                                    <div style={{
-                                                                        fontSize: 14,
-                                                                        cursor: 'crosshair',
-                                                                        flexDirection: 'column',
-                                                                        marginTop: 0,
-                                                                        marginBottom: 5,
-                                                                        borderRadius: 5,
-                                                                        justifyContents: 'center',
-                                                                        alignSelf: 'center',
-                                                                        alignItem: 'center,',
-                                                                        display: 'flex',
-                                                                        backgroundColor: innerIndex === this.state.selectedAppInstIndex ? 'rgba(192, 192, 192,.2)' : null,
-                                                                    }}
-                                                                    >
-                                                                        <Ripples
-                                                                            style={{marginLeft: 5,}}
-                                                                            color='#1cecff' during={500}
-                                                                            onClick={async () => {
-                                                                                try {
-                                                                                    this.setState({
-                                                                                        selectedAppInstIndex: innerIndex,
-                                                                                    })
-                                                                                    await this.handleClickAppInst(fullAppInstOne)
-                                                                                } catch (e) {
-
-                                                                                }
-                                                                            }}
-                                                                        >
-                                                                            {reduceString(AppName.toString(), 25)} [{Version}]
-                                                                            <div style={{
-                                                                                color: '#77BD25',
-                                                                                fontSize: 12
-                                                                            }}>
-                                                                                &nbsp;&nbsp;[{reduceString(ClusterInst.trim(), 25)}]
-                                                                            </div>
-                                                                            <div>
-
-                                                                                {/*todo:HealthCheck value 3 is okay*/}
-                                                                                {/*todo:HealthCheck value 3 is okay*/}
-                                                                                {/*todo:HealthCheck value 3 is okay*/}
-                                                                                {HealthCheck === 3 ?
-                                                                                    <div style={{
-                                                                                        marginLeft: 7,
-                                                                                        marginBottom: 0,
-                                                                                        height: 15,
-                                                                                    }}>
-                                                                                        <CheckCircleOutlined style={{
-                                                                                            color: 'green',
-                                                                                            fontSize: 17,
-                                                                                            marginBottom: 25
-                                                                                        }}/>
-                                                                                    </div>
-                                                                                    :
-                                                                                    <div style={{
-                                                                                        marginLeft: 7,
-                                                                                        marginBottom: 0,
-                                                                                        height: 15,
-                                                                                    }}>
-                                                                                        <CheckCircleOutlined style={{
-                                                                                            color: 'red',
-                                                                                            fontSize: 17,
-                                                                                            marginBottom: 25
-                                                                                        }}/>
-                                                                                    </div>
-                                                                                }
-                                                                            </div>
-                                                                        </Ripples>
-                                                                    </div>
-                                                                )
-                                                            })}
-                                                        </Popup>
-                                                    </Marker>
-
-                                                </React.Fragment>
-                                            )
-                                        })
-
-                                    })}
-
-
-                                </MarkerClusterGroup>
+                                </React.Fragment>
                             </Map>
                         </div>
 
