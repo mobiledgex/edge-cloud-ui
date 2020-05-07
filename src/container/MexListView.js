@@ -454,7 +454,7 @@ class MexListView extends React.Component {
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} stepsArray={this.state.stepsArray} />
                 <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} />
-                <MexToolbar requestInfo={this.props.requestInfo} onAction={this.onToolbarAction} isDetail={this.state.isDetail} onFilterValue={this.onFilterValue}/>
+                <MexToolbar requestInfo={this.props.requestInfo} onAction={this.onToolbarAction} isDetail={this.state.isDetail} onFilterValue={this.onFilterValue} regions = {this.regions}/>
                 {this.state.currentView ? this.state.currentView : this.listView()}
             </Card>
         );
@@ -544,9 +544,6 @@ class MexListView extends React.Component {
             dataList = [...dataList, ...newDataList]
         }
         
-        if (this.requestCount === 0 && dataList.length === 0) {
-            this.props.handleAlertInfo('error', 'Requested data is empty')
-        }
         this.setState({
             dataList: Object.assign([], dataList)
         })
