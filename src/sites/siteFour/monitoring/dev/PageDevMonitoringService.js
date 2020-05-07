@@ -1067,19 +1067,15 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                         padding: 10,
                         labelOffset: 0,
                         callback(value, index, label) {
-                            /*if (isBig) {
-                                return value
-                            } else {
+                            if (RECENT_DATA_LIMIT_COUNT >= 50) {
                                 if (index % 2 === 0)
                                     return '';
+                                else
+                                    return value;
+                            } else {
                                 return value;
-                            }*/
-                            //return value;
+                            }
 
-                            if (index % 2 === 0)
-                                return '';
-                            else
-                                return value;
                         },
                     },
                     beginAtZero: false,

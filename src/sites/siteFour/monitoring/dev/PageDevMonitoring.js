@@ -1432,6 +1432,35 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Delete All Grid Items
                             </div>
                         </AMenu.Item>
+                        {/* desc: ######################
+                        desc:  Graph data limit count
+                        desc: ######################
+                        <ASubMenu
+                            key="sub_last"
+                            title={
+                                <div style={{display: 'flex'}}>
+                                    <MaterialIcon icon={'invert_colors'} color={'white'}/>
+                                    <div style={PageMonitoringStyles.listItemTitle}>Data limit Count</div>
+                                </div>
+                            }
+                        >
+                            <AMenu.Item
+                                key="1"
+                                onClick={async () => {
+                                    alert('10')
+                                }}
+                            >
+                                10
+                            </AMenu.Item>
+                            <AMenu.Item
+                                key="2"
+                                onClick={async () => {
+                                    alert('50')
+                                }}
+                            >
+                                50
+                            </AMenu.Item>
+                        </ASubMenu>*/}
                     </AMenu>
                 )
             }
