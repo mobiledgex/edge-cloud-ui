@@ -6,7 +6,7 @@ import {Dropdown} from 'semantic-ui-react'
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
 import {CircularProgress, Dialog, Toolbar} from '@material-ui/core'
-import {Col, Dropdown as ADropdown, Menu as AMenu, Row} from 'antd';
+import {Col, Dropdown as ADropdown, Menu as AMenu, Row, TreeSelect} from 'antd';
 import {
     defaultHwMapperListForCluster,
     defaultLayoutForAppInst,
@@ -17,6 +17,7 @@ import {
     handleThemeChanges,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
+    makeCloudletDropdown,
     makeDropdownListWithValuePipeForAppInst,
     makeid,
     makeLineChartDataForAppInst,
@@ -43,16 +44,7 @@ import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData, TypeUtil
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
 import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../PageMonitoringCommonService";
-import {
-    getAllAppInstEventLogs,
-    getAllClusterEventLogList,
-    getAppInstList,
-    getAppLevelUsageList,
-    getCloudletList,
-    getClusterLevelUsageList,
-    getClusterList,
-    requestShowAppInstClientWS
-} from "../PageMonitoringMetricService";
+import {getAllAppInstEventLogs, getAllClusterEventLogList, getAppInstList, getAppLevelUsageList, getClusterLevelUsageList, getClusterList, requestShowAppInstClientWS} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
@@ -74,21 +66,14 @@ import BarChartContainer from "../components/BarChartContainer";
 import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryForClusterHook";
 import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryForAppInstHook";
 import type {PageDevMonitoringProps} from "./PageDevMonitoringProps";
-import {
-    ColorLinearProgress,
-    CustomSwitch,
-    defaultLayoutXYPosForAppInst,
-    defaultLayoutXYPosForCluster,
-    PageDevMonitoringMapDispatchToProps,
-    PageDevMonitoringMapStateToProps
-} from "./PageDevMonitoringProps";
+import {ColorLinearProgress, CustomSwitch, defaultLayoutXYPosForAppInst, defaultLayoutXYPosForCluster, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageDevMonitoringProps";
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListHookVirtualScroll from "../components/AppInstEventLogListHookVirtualScroll";
 import {fields} from '../../../../services/model/format'
 
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
-
+const FontAwesomeIcon = require('react-fontawesome')
 type PageDevMonitoringState = {
     layoutForCluster: any,
     layoutForAppInst: any,
@@ -246,6 +231,7 @@ type PageDevMonitoringState = {
     legendColSize: number,
     currentAppVersion: number,
     isEnableZoomIn: boolean,
+    dropDownCloudletList: any,
 }
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
@@ -453,14 +439,30 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#############################################
                     //@desc: (cloudletList ,clusterList, appnInstList)
                     //@desc:#############################################
-                    promiseList.push(getCloudletList())
+                    //promiseList.push(getCloudletList())
                     promiseList.push(getClusterList())
                     promiseList.push(getAppInstList())
                     let newPromiseList = await Promise.all(promiseList);
-                    let cloudletList = newPromiseList[0]
-                    let clusterList = newPromiseList[1];
-                    let appInstList = newPromiseList[2];
+                    //let cloudletList = newPromiseList[0]
+                    let clusterList = newPromiseList[0];
+                    let appInstList = newPromiseList[1];
                     let clusterDropdownList = makeSelectBoxListWithKeyValuePipeForCluster(clusterList, 'ClusterName', 'Cloudlet')
+
+
+                    console.log(`clusterList===>`, clusterList);
+                    let cloudletList = []
+                    clusterList.map(item => {
+                        console.log(`sldkfldskflkdsf===>`, item.Cloudlet);
+                        cloudletList.push(item.Cloudlet)
+                    })
+
+                    console.log(`cloudletList===>`, cloudletList);
+
+                    cloudletList = _.uniqBy(cloudletList);
+
+                    console.log(`cloudletListuniqBy===>`, cloudletList);
+
+                    let dropDownCloudletList = makeCloudletDropdown(cloudletList);
 
                     //@desc:#########################################################################
                     //@desc: map Marker
@@ -500,7 +502,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         filteredAppInstEventLogs: allAppInstEventLogList,
                         isReady: true,
                         clusterDropdownList: clusterDropdownList,
-                        dropDownCloudletList: cloudletList,
+                        dropDownCloudletList: dropDownCloudletList,
                         clusterList: clusterList,
                         filteredClusterList: clusterList,
                         isAppInstaceDataReady: true,
@@ -669,6 +671,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
             }
 
+            async handleCloudletDropdown(cloudletOne) {
+
+
+            }
 
             async handleClusterDropdownAndReset(selectedClusterOne) {
                 try {
@@ -1432,38 +1438,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Delete All Grid Items
                             </div>
                         </AMenu.Item>
-                        {/* desc: ######################
-                        desc:  Graph data limit count
-                        desc: ######################
-                        <ASubMenu
-                            key="sub_last"
-                            title={
-                                <div style={{display: 'flex'}}>
-                                    <MaterialIcon icon={'invert_colors'} color={'white'}/>
-                                    <div style={PageMonitoringStyles.listItemTitle}>Data limit Count</div>
-                                </div>
-                            }
-                        >
-                            <AMenu.Item
-                                key="1"
-                                onClick={async () => {
-                                    alert('10')
-                                }}
-                            >
-                                10
-                            </AMenu.Item>
-                            <AMenu.Item
-                                key="2"
-                                onClick={async () => {
-                                    alert('50')
-                                }}
-                            >
-                                50
-                            </AMenu.Item>
-                        </ASubMenu>*/}
                     </AMenu>
                 )
             }
+
 
             renderHeader = () => {
                 return (
@@ -1477,9 +1455,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                      //backgroundColor: 'red',
                                  }}>
                                 <div>
-                                    {this.makeClusterDropdown()}
+                                    {this.makeCloudletDropdown()}
                                 </div>
-                                <div>
+                                {/*
+                                   <div>
+                                    {this.makeClusterDropdown()}
+                                </div>*/}
+                                <div style={{marginLeft: 30}}>
                                     {this.makeAppInstDropdown()}
                                 </div>
                                 {this.state.intervalLoading &&
@@ -1491,10 +1473,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }
                             </div>
                             {/*
-                        desc :####################################
-                        desc :loading Area
-                        desc :####################################
-                        */}
+                            desc :####################################
+                            desc :loading Area
+                            desc :####################################
+                            */}
                             <div>
 
                                 {this.state.webSocketLoading &&
@@ -1681,6 +1663,234 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 await this.setState({
                     filteredClusterList: selectedClusterList,
                 })
+            }
+
+            makeCloudletDropdown() {
+
+                const treeData = [
+                    {
+                        "title": "Reset Filter",
+                        "value": "",
+                        "selectable": true,
+                        "children": []
+                    },
+                    {
+                        "title": "automationDusseldorfCloudlet",
+                        "value": "automationDusseldorfCloudlet",
+                        "selectable": false,
+                        "children": [
+                            {
+                                "title": "andytls",
+                                "value": "andytls | automationDusseldorfCloudlet",
+                                "isParent": false
+                            },
+                            {
+                                "title": "autoclustermobiledgexsdkdemo",
+                                "value": "autoclustermobiledgexsdkdemo | automationDusseldorfCloudlet",
+                                "isParent": false
+                            },
+                            {
+                                "title": "andydocker",
+                                "value": "andydocker | automationDusseldorfCloudlet",
+                                "isParent": false
+                            },
+                            {
+                                "title": "andyded",
+                                "value": "andyded | automationDusseldorfCloudlet",
+                                "isParent": false
+                            },
+                            {
+                                "title": "cluster1588797625-969057",
+                                "value": "cluster1588797625-969057 | automationDusseldorfCloudlet",
+                                "isParent": false
+                            },
+                            {
+                                "title": "autoclusterandydnsapp",
+                                "value": "autoclusterandydnsapp | automationDusseldorfCloudlet",
+                                "isParent": false
+                            },
+                            {
+                                "title": "andyk8sded",
+                                "value": "andyk8sded | automationDusseldorfCloudlet",
+                                "isParent": false
+                            }
+                        ]
+                    },
+                    {
+                        "title": "automationHamburgCloudlet",
+                        "value": "automationHamburgCloudlet",
+                        "selectable": false,
+                        "children": [
+                            {
+                                "title": "multiple",
+                                "value": "multiple | automationHamburgCloudlet",
+                                "isParent": false
+                            },
+                            {
+                                "title": "autoclusterandydockercomposeinput",
+                                "value": "autoclusterandydockercomposeinput | automationHamburgCloudlet",
+                                "isParent": false
+                            }
+                        ]
+                    },
+                    {
+                        "title": "automationMunichCloudlet",
+                        "value": "automationMunichCloudlet",
+                        "selectable": false,
+                        "children": [
+                            {
+                                "title": "multiple",
+                                "value": "multiple | automationMunichCloudlet",
+                                "isParent": false
+                            },
+                            {
+                                "title": "autoclustermobiledgexsdkdemo",
+                                "value": "autoclustermobiledgexsdkdemo | automationMunichCloudlet",
+                                "isParent": false
+                            }
+                        ]
+                    },
+                    {
+                        "title": "verificationCloudlet",
+                        "value": "verificationCloudlet",
+                        "selectable": false,
+                        "children": [
+                            {
+                                "title": "cluster158871680299202dockerdedicated",
+                                "value": "cluster158871680299202dockerdedicated | verificationCloudlet",
+                                "isParent": false
+                            },
+                            {
+                                "title": "cluster158871680299202dockershared",
+                                "value": "cluster158871680299202dockershared | verificationCloudlet",
+                                "isParent": false
+                            },
+                            {
+                                "title": "autoclusterandydnsapp",
+                                "value": "autoclusterandydnsapp | verificationCloudlet",
+                                "isParent": false
+                            },
+                            {
+                                "title": "cluster158871680299202dockerdedicatedgpu",
+                                "value": "cluster158871680299202dockerdedicatedgpu | verificationCloudlet",
+                                "isParent": false
+                            }
+                        ]
+                    },
+                    {
+                        "title": "automationFrankfurtCloudlet",
+                        "value": "automationFrankfurtCloudlet",
+                        "selectable": false,
+                        "children": [
+                            {
+                                "title": "multiple",
+                                "value": "multiple | automationFrankfurtCloudlet",
+                                "isParent": false
+                            },
+                            {
+                                "title": "autoclustermobiledgexsdkdemo",
+                                "value": "autoclustermobiledgexsdkdemo | automationFrankfurtCloudlet",
+                                "isParent": false
+                            }
+                        ]
+                    },
+                    {
+                        "title": "automationBerlinCloudlet",
+                        "value": "automationBerlinCloudlet",
+                        "selectable": false,
+                        "children": [
+                            {
+                                "title": "mutiple",
+                                "value": "mutiple | automationBerlinCloudlet",
+                                "isParent": false
+                            }
+                        ]
+                    },
+                    {
+                        "title": "tmocloud-1",
+                        "value": "tmocloud-1",
+                        "selectable": false,
+                        "children": [
+                            {
+                                "title": "autoclusterautomation",
+                                "value": "autoclusterautomation | tmocloud-1",
+                                "isParent": false
+                            }
+                        ]
+                    }
+                ]
+
+
+                return (
+                    <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
+                        <div
+                            className="page_monitoring_dropdown_label"
+                            style={{
+                                marginLeft: this.state.isShowFilter ? 0 : 10
+                            }}
+                        >
+                            Cluster
+                        </div>
+                        {/*<Dropdown
+                            selectOnBlur={false}
+                            //value={this.state.currentCluster}
+                            selection
+                            options={this.state.dropDownCloudletList}
+                            style={PageMonitoringStyles.dropDownForCloudlet}
+                            onChange={async (e, {value}) => {
+
+                                if (value === '') {
+                                    this.setState({
+                                        clusterDropdownList: makeSelectBoxListWithKeyValuePipeForCluster(this.state.clusterList, 'ClusterName', 'Cloudlet')
+                                    })
+                                } else {
+
+                                    let newFilteredClusterList = this.state.clusterList.filter(item => {
+                                        if (item.Cloudlet.trim() === value.trim()) {
+                                            return true;
+                                        }
+                                    })
+
+                                    console.log(`newFilteredClusterList===>`, newFilteredClusterList);
+
+                                    this.setState({
+                                        clusterDropdownList: makeSelectBoxListWithKeyValuePipeForCluster(newFilteredClusterList, 'ClusterName', 'Cloudlet')
+                                    })
+
+                                }
+
+
+                            }}
+                        />*/}
+                        <TreeSelect
+                            showSearch={true}
+                            switcherIcon={<FontAwesomeIcon
+                                name="arrow-up" style={{fontSize: 15, color: 'green', cursor: 'pointer', marginTop: 2}}
+                            />}
+                            style={{width: '300px'}}
+                            //value={this.state.value}
+                            placeholder={'Select Cluster'}
+                            dropdownStyle={{maxHeight: 400, overflow: 'auto', width: 600}}
+                            treeData={treeData}
+                            treeDefaultExpandAll
+                            onChange={async (value, label, extra) => {
+                                clearInterval(this.intervalForCluster)
+                                clearInterval(this.intervalForAppInst)
+                                //@desc: If you are choosing the whole cluster ...
+                                if (value === '') {
+                                    await this.setState({
+                                        filteredClusterList: this.state.clusterList,
+                                    })
+                                } else {
+                                    await this.filterClusterList(value)
+                                }
+                                await this.handleClusterDropdownAndReset(value.trim())
+
+
+                            }}
+                        />
+                    </div>
+                )
             }
 
 

@@ -591,3 +591,26 @@ tr td {
     height: 20px;
     margin-left: 5px;
 }
+
+.ant-select-tree-node-content-wrapper .ant-select-tree-node-content-wrapper-normal {
+    color: red;
+}
+
+.ant-select-tree-dropdown .ant-select-dropdown-search .ant-select-search__field {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 4px 7px;
+    border: 1px solid #17171f;
+    border-radius: 4px;
+    outline: none;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+/*
+.ant-select-tree {
+    background-color: ;
+}
+*/
+/*.ant-select-tree-title{
+    background-color: red;
+}*/

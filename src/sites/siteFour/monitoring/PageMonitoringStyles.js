@@ -86,6 +86,13 @@ export const PageMonitoringStyles = {
         zIndex: 1,
         //height: '50px',
     },
+    dropDownForCloudlet: {
+        minWidth: '220px',
+        fontSize: '11px',
+        minHeight: '30px',
+        zIndex: 1,
+        //height: '50px',
+    },
     dropDownForClusterCloudlet3: {
         minWidth: '180px',
         fontSize: '11px',

@@ -1521,6 +1521,27 @@ export const makeSelectBoxListWithKeyValuePipeForCluster = (arrList, keyName, va
     }
 };
 
+export const makeCloudletDropdown = (arrList) => {
+    try {
+        let newArrList = [];
+        newArrList.push({
+            key: '',
+            value: '',
+            text: 'All Cloudlet',
+        })
+        for (let i in arrList) {
+            newArrList.push({
+                key: arrList[i],
+                value: arrList[i],
+                text: arrList[i],
+            })
+        }
+        return newArrList;
+    } catch (e) {
+
+    }
+};
+
 
 export const makeSelectBoxListWithKey = (arrList, keyName) => {
     try {
