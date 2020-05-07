@@ -4,7 +4,6 @@ import {Map, Marker, Popup, TileLayer, Tooltip} from "react-leaflet";
 import * as L from 'leaflet';
 import "../PageMonitoring.css";
 import {hot} from "react-hot-loader/root";
-import 'react-leaflet-fullscreen-control'
 import {renderPlaceHolderLottiePinJump2} from "../PageMonitoringCommonService";
 
 
