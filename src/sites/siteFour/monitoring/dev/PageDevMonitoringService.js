@@ -1003,13 +1003,13 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     fontFamily: 'ubuntu',
                     fontWeight: 'bold',
                 },
-                onClick: (e, clickedItem) => {
-                    /*let selectedClusterOne = clickedItem.text.toString().replace('\n', "|");
-                    handleLegendAndBubbleClickedEvent(_this, selectedClusterOne, lineChartDataSet)*/
+                /*onClick: (e, clickedItem) => {
+                    /!*let selectedClusterOne = clickedItem.text.toString().replace('\n', "|");
+                    handleLegendAndBubbleClickedEvent(_this, selectedClusterOne, lineChartDataSet)*!/
                 },
                 onHover: (e, item) => {
                     //alert(`Item with text ${item.text} and index ${item.index} hovered`)
-                },
+                },*/
             },
             scales: {
                 ticks: {
@@ -1310,35 +1310,32 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
 
             let finalSeriesDataSets = [];
             for (let index in usageSetList) {
-                //@todo: top5 만을 추린다
-                if (index < 5) {
-                    let dataSetsOne = {
-                        label: levelTypeNameList[index],
-                        radius: 0,
-                        borderWidth: 3.5,//todo:라인 두께
-                        fill: _this.state.isStackedLineChart,// @desc:fill BackgroundArea
-                        backgroundColor: _this.state.isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
-                        borderColor: _this.state.isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
-                        lineTension: 0.5,
-                        data: usageSetList[index],
-                        borderCapStyle: 'butt',
-                        borderDash: [],
-                        borderDashOffset: 0.0,
-                        borderJoinStyle: 'miter',
-                        pointBorderColor: 'rgba(75,192,192,1)',
-                        pointBackgroundColor: '#fff',
-                        pointBorderWidth: 1,
-                        pointHoverRadius: 5,
-                        pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-                        pointHoverBorderColor: 'rgba(220,220,220,1)',
-                        pointHoverBorderWidth: 2,
-                        pointRadius: 1,
-                        pointHitRadius: 10,
+                let dataSetsOne = {
+                    label: levelTypeNameList[index],
+                    radius: 0,
+                    borderWidth: 3.5,//todo:라인 두께
+                    fill: _this.state.isStackedLineChart,// @desc:fill BackgroundArea
+                    backgroundColor: _this.state.isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
+                    borderColor: _this.state.isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
+                    lineTension: 0.5,
+                    data: usageSetList[index],
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: 'rgba(75,192,192,1)',
+                    pointBackgroundColor: '#fff',
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+                    pointHoverBorderColor: 'rgba(220,220,220,1)',
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
 
-                    };
+                };
 
-                    finalSeriesDataSets.push(dataSetsOne)
-                }
+                finalSeriesDataSets.push(dataSetsOne)
             }
             return {
                 labels: newDateTimeList,
