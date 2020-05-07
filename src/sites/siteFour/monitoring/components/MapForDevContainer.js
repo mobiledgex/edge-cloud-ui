@@ -439,9 +439,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
             }
         }
 
-        setOffset(lat, cloudletIndex) {
-            /*if (this.state.zoom > 10) {
-            }*/
+        setVerticalOffset(lat, cloudletIndex) {
             return lat + (cloudletIndex * 0.0007)
         }
 
@@ -601,7 +599,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                         className='marker1'
                                                         position={
                                                             //@DESC :If the positions are the same, a slight VERTICAL OFFSET is given.
-                                                            [cloudletOneIndex === 0 ? cloudletOne.CloudletLocation.latitude : this.setOffset(cloudletOne.CloudletLocation.latitude, cloudletIndex), cloudletOne.CloudletLocation.longitude]
+                                                            [cloudletOneIndex === 0 ? cloudletOne.CloudletLocation.latitude : this.setVerticalOffset(cloudletOne.CloudletLocation.latitude, cloudletIndex), cloudletOne.CloudletLocation.longitude]
                                                         }
                                                         onClick={() => {
 
