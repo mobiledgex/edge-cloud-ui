@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import {Button, Modal as AModal} from "antd";
+import {Modal as AModal} from "antd";
 import {CLASSIFICATION, GRID_ITEM_TYPE} from "../../../../shared/Constants";
 import {Line} from "react-chartjs-2";
 import {Chart as Bar_Column_Chart} from "react-google-charts";
@@ -168,7 +168,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             </div>
                                             }
                                         </div>
-                                        <div>
+                                        {/*  <div>
                                             <Button
 
                                                 type={this.state.redraw ? 'primary' : null}
@@ -180,7 +180,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             >
                                                 Redraw Graph
                                             </Button>
-                                        </div>
+                                        </div>*/}
                                     </div>
 
                                     : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ?
@@ -221,7 +221,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {this.state.graphType === GRID_ITEM_TYPE.LINE ?
                             <div>
                                 <Line
-                                    redraw={this.state.redraw ? true : null}
+                                    //redraw={this.state.redraw ? true : null}
                                     width={window.innerWidth * 0.9}
                                     ref={(reference) => this.lineChart = reference}
                                     height={window.innerHeight * 0.8}
