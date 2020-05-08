@@ -443,7 +443,7 @@ class SiteFour extends React.Component {
                             loading={_self.props.loadingSpinner}
                         />
                     </div> : null}
-                <SideNav onOptionClick={_self.handleItemClick} isShowHeader={this.props.isShowHeader} email={_self.state.email} data={_self.props.userInfo.info} helpClick={_self.enableSteps} gotoUrl={_self.gotoUrl}/>
+                <SideNav onOptionClick={_self.handleItemClick} isShowHeader={this.props.isShowHeader} email={_self.state.email} data={_self.props.userInfo.info} helpClick={_self.enableSteps} gotoUrl={_self.gotoUrl} viewMode={_self.props.ViewMode}/>
                 <Motion defaultStyle={defaultMotion} style={_self.state.setMotion}>
                     {interpolatingStyle => <div style={interpolatingStyle} id='animationWrapper'></div>}
                 </Motion>

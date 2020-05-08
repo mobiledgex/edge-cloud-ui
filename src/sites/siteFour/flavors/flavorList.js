@@ -42,6 +42,9 @@ class FlavorList extends React.Component {
     /*Action menu block*/
 
     requestInfo = () => {
+
+        let mode = (localStorage.selectRole === 'AdminManager')? flavorSteps.stepsFlavors : null ;
+
         return ({
             id: 'Flavors',
             headerLabel: 'Flavors',
@@ -51,7 +54,7 @@ class FlavorList extends React.Component {
             sortBy: [fields.region, fields.flavorName],
             keys: this.keys,
             onAdd: isAdmin() ? this.onAdd : undefined,
-            viewMode : flavorSteps.stepsFlavors
+            viewMode : mode
         })
     }
 

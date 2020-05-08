@@ -87,7 +87,7 @@ export default function Header(props) {
                         </h5>
                     </IconButton>
                     <IconButton aria-label="show 17 new notifications" color="inherit"
-                                onClick={(e) => props.helpClick()}>
+                                onClick={(e) => props.helpClick()} disabled={props.viewMode !== null ? false : true}>
                         <HelpOutlineOutlinedIcon fontSize='default'/>
                     </IconButton>
                     <HeaderGlobalMini email={props.email} data={props.data}/>

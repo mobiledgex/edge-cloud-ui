@@ -302,7 +302,7 @@ export default function MiniDrawer(props) {
             <React.Fragment>
                 <CssBaseline/>
                 <MexHeader handleDrawerOpen={handleDrawerOpen} open={open} email={props.email} data={props.data}
-                           helpClick={props.helpClick} gotoUrl={props.gotoUrl}/>
+                           helpClick={props.helpClick} gotoUrl={props.gotoUrl} viewMode={props.viewMode}/>
             </React.Fragment>
             }
             <Drawer
