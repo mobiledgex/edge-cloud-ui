@@ -373,7 +373,7 @@ class OrganizationReg extends React.Component {
             { field: fields.type, label: 'Type', formType: 'Select', placeholder: 'Select Type', rules: { required: true }, visible: true },
             { field: fields.organizationName, label: 'Organization Name', formType: INPUT, placeholder: 'Enter Organization Name', rules: { required: true }, visible: true, },
             { field: fields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: true }, visible: true, },
-            { field: fields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: true }, visible: true, },
+            { field: fields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: true, vaildRule: /^\+?(?:[0-9] ?){6,14}[0-9]$/, vaildError: 'Phone should only contain "+" and 7~15 digits.' }, visible: true, },
             { field: fields.publicImages, label: 'Public Image', formType: CHECKBOX, visible: true, value:false }
         ]
     }
