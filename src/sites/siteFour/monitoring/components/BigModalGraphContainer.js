@@ -168,9 +168,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             </div>
                                             }
                                         </div>
-                                        {/*  <div>
+                                        {/*<div>
                                             <Button
-
                                                 type={this.state.redraw ? 'primary' : null}
                                                 onClick={() => {
                                                     this.setState({
