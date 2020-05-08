@@ -532,7 +532,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                 alignSelf: 'center',
                                                 alignItem: 'center,',
                                                 display: 'flex',
-                                                backgroundColor: innerIndex === this.state.selectedAppInstIndex ? 'rgba(192, 192, 192,.2)' : null,
+                                                //backgroundColor: innerIndex === this.state.selectedAppInstIndex ? 'rgba(192, 192, 192,.2)' : null,
                                             }}
                                             >
                                                 <Ripples

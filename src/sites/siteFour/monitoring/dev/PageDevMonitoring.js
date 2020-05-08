@@ -552,8 +552,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 await this.setState({
                     bubbleChartData: bubbleChartData,
                     dropdownRequestLoading: false,
-                    currentCluster: '',
-                    currentAppInst: '',
+                    currentCluster: undefined,
+                    currentAppInst: undefined,
                     appInstDropdown: [],
                     isShowAppInstPopup: !this.state.isShowAppInstPopup,
                     isEnableZoomIn: !this.state.isEnableZoomIn,
