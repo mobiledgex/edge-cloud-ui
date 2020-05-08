@@ -575,7 +575,7 @@ tr td {
 }
 
 .ant-select-dropdown-menu-item {
-    line-height: 15px !important;
+   /* line-height: 15px !important;*/
 }
 
 .gutterRow {
