@@ -50,7 +50,7 @@
 .page_monitoring_dropdown_label {
     display: flex;
     align-items: center;
-    color: rgba(255, 255, 255, .8);
+    color: rgba(255, 255, 255, 1.0);
     margin-right: 10px;
     margin-bottom: 10px;
     /*z-index: 10;*/
