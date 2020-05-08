@@ -126,6 +126,154 @@ export const organizationTutor = () => {
 
 }
 
+export const UserRolesTutor = () => {
+    return (
+        {
+            stepsZero: [
+                {
+                    element: '.selector1',
+                    intro: 'This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip!</span>',
+                },
+                {
+                    element: '.selector2',
+                    intro: 'select organization',
+                }
+
+            ]
+        }
+    )
+}
+
+export const CloudletTutor = () => {
+    return (
+        {
+            stepsCloudlet: [
+                {
+                    element: '.createAppInst0',
+                    intro: 'A Cloudlet is a set of compute resources at a particular location, provided by an Operator. Use this page to deploy, manage and view cloudlets.'
+                },
+                {
+                    element: '.buttonCreate',
+                    intro: 'Click “+” button to start deploying new cloudlet. Please note that Operator Managers and Operator Contributors have permission to deploy cloudlets.'
+                },
+                {
+                    element: '.progressIndicator',
+                    intro: 'Click to View Detail Progress'
+                },
+                {
+                    element: '.buttonActions',
+                    intro: 'Click this button to perform "Update" and "Delete".'
+                }
+            ],
+            stepsCloudletDev: [
+                {
+                    element: '.createAppInst0',
+                    intro: 'A Cloudlet is a set of compute resources at a particular location, provided by an Operator. Use this page to deploy, manage and view cloudlets.'
+                },
+                {
+                    element: '.progressIndicator',
+                    intro: 'Click to View Detail Progress'
+                }
+            ],
+            stepsCloudletReg: [
+                {
+                    element: '.formRow-1',
+                    intro: 'Select region where you want to deploy.'
+                },
+                {
+                    element: '.formRow-2',
+                    intro: 'Name of the cloudlet.'
+                },
+                {
+                    element: '.formRow-3',
+                    intro: 'Name of the organization you are currently managing.'
+                },
+                {
+                    element: '.formRow-4',
+                    intro: 'Cloudlet Location'
+                },
+                {
+                    element: '.formRow-5',
+                    intro: '<span>Ip Support indicates the type of public IP support provided by the Cloudlet.<br />Static IP support indicates a set of static public IPs are available for use, and managed by the Controller.<br />Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.</span>'
+                },
+                {
+                    element: '.formRow-6',
+                    intro: 'Number of dynamic IPs available for dynamic IP support.'
+                },
+                {
+                    element: '.formRow-7',
+                    intro: 'Physical infrastructure cloudlet name.'
+                },
+                {
+                    element: '.formRow-9',
+                    intro: 'Supported list of cloudlet types.'
+                },
+                {
+                    element: '.formButton-12',
+                    intro: '<span>Click the button to create.</span>',
+                },
+            ],
+        }
+    )
+}
+
+
+export const CloudletPoolTutor = () => {
+    return(
+        {
+            stepsCloudletPool: [
+                {
+                    element: '.createAppInst0',
+                    intro: 'This is cloudlet pool page.'
+                },
+                {
+                    element: '.buttonCreate',
+                    intro: 'Click “+” button to add new cloudlet Pool.'
+                },
+                {
+                    element: '.buttonActions',
+                    intro: 'Click this button to perform "Add Cloudlet", "Link Organization" and "Delete".'
+                }
+            ],
+            stepsNewPool: [
+                {
+                    element: '.formRow-1',
+                    intro: '<span>Select Region.</span>',
+                },
+                {
+                    element: '.formRow-2',
+                    intro: '<span>Select PoolName.</span>',
+                },
+                {
+                    element: '.formButton-3',
+                    intro: '<span>Click the button to move to next step.</span>',
+                },
+            ],
+            stepsNewPool2: [
+                {
+                    element: '.formRow-3',
+                    intro: '<span>Add Cloudlets.</span>',
+                },
+                {
+                    element: '.formButton-4',
+                    intro: '<span>Click this button to move to Add Cloudlets.</span>',
+                },
+            ],
+            stepsNewPool3: [
+                {
+                    element: '.formRow-3',
+                    intro: '<span>Add Cloudlets.</span>',
+                },
+                {
+                    element: '.formButton-4',
+                    intro: '<span>Click this button to move to Link Oragnization.</span>',
+                },
+            ],
+        }
+    )
+
+}
+
 
 export const flavorTutor = () => {
     return(
@@ -734,154 +882,6 @@ export const appInstTutor = () => {
                 }
 
             ]
-        }
-    )
-
-}
-
-export const UserRolesTutor = () => {
-    return (
-        {
-            stepsZero: [
-                {
-                    element: '.selector1',
-                    intro: 'This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip!</span>',
-                },
-                {
-                    element: '.selector2',
-                    intro: 'select organization',
-                }
-
-            ]
-        }
-    )
-}
-
-export const CloudletTutor = () => {
-    return (
-        {
-            stepsCloudlet: [
-                {
-                    element: '.createAppInst0',
-                    intro: 'A Cloudlet is a set of compute resources at a particular location, provided by an Operator. Use this page to deploy, manage and view cloudlets.'
-                },
-                {
-                    element: '.buttonCreate',
-                    intro: 'Click “+” button to start deploying new cloudlet. Please note that Operator Managers and Operator Contributors have permission to deploy cloudlets.'
-                },
-                {
-                    element: '.progressIndicator',
-                    intro: 'Click to View Detail Progress'
-                },
-                {
-                    element: '.buttonActions',
-                    intro: 'Click this button to perform "Update" and "Delete".'
-                }
-            ],
-            stepsCloudletDev: [
-                {
-                    element: '.createAppInst0',
-                    intro: 'A Cloudlet is a set of compute resources at a particular location, provided by an Operator. Use this page to deploy, manage and view cloudlets.'
-                },
-                {
-                    element: '.progressIndicator',
-                    intro: 'Click to View Detail Progress'
-                }
-            ],
-            stepsCloudletReg: [
-                {
-                    element: '.formRow-1',
-                    intro: 'Select region where you want to deploy.'
-                },
-                {
-                    element: '.formRow-2',
-                    intro: 'Name of the cloudlet.'
-                },
-                {
-                    element: '.formRow-3',
-                    intro: 'Name of the organization you are currently managing.'
-                },
-                {
-                    element: '.formRow-4',
-                    intro: 'Cloudlet Location'
-                },
-                {
-                    element: '.formRow-5',
-                    intro: '<span>Ip Support indicates the type of public IP support provided by the Cloudlet.<br />Static IP support indicates a set of static public IPs are available for use, and managed by the Controller.<br />Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.</span>'
-                },
-                {
-                    element: '.formRow-6',
-                    intro: 'Number of dynamic IPs available for dynamic IP support.'
-                },
-                {
-                    element: '.formRow-7',
-                    intro: 'Physical infrastructure cloudlet name.'
-                },
-                {
-                    element: '.formRow-9',
-                    intro: 'Supported list of cloudlet types.'
-                },
-                {
-                    element: '.formButton-12',
-                    intro: '<span>Click the button to create.</span>',
-                },
-            ],
-        }
-    )
-}
-
-
-export const CloudletPoolTutor = () => {
-    return(
-        {
-            stepsCloudletPool: [
-                {
-                    element: '.createAppInst0',
-                    intro: 'This is cloudlet pool page.'
-                },
-                {
-                    element: '.buttonCreate',
-                    intro: 'Click “+” button to add new cloudlet Pool.'
-                },
-                {
-                    element: '.buttonActions',
-                    intro: 'Click this button to perform "Add Cloudlet", "Link Organization" and "Delete".'
-                }
-            ],
-            stepsNewPool: [
-                {
-                    element: '.formRow-1',
-                    intro: '<span>Select Region.</span>',
-                },
-                {
-                    element: '.formRow-2',
-                    intro: '<span>Select PoolName.</span>',
-                },
-                {
-                    element: '.formButton-3',
-                    intro: '<span>Click the button to move to next step.</span>',
-                },
-            ],
-            stepsNewPool2: [
-                {
-                    element: '.formRow-3',
-                    intro: '<span>Add Cloudlets.</span>',
-                },
-                {
-                    element: '.formButton-4',
-                    intro: '<span>Click this button to move to Add Cloudlets.</span>',
-                },
-            ],
-            stepsNewPool3: [
-                {
-                    element: '.formRow-3',
-                    intro: '<span>Add Cloudlets.</span>',
-                },
-                {
-                    element: '.formButton-4',
-                    intro: '<span>Click this button to move to Link Oragnization.</span>',
-                },
-            ],
         }
     )
 

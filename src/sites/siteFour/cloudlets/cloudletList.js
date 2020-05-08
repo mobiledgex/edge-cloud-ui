@@ -56,6 +56,8 @@ class CloudletList extends React.Component {
 
 
     requestInfo = () => {
+        let mode = (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer')? cloudletSteps.stepsCloudletDev : cloudletSteps.stepsCloudlet
+
         return ({
             id: 'Cloudlets',
             headerLabel: 'Cloudlets',
@@ -67,7 +69,7 @@ class CloudletList extends React.Component {
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
             onAdd: this.canAdd() ? this.onAdd : undefined,
-            viewMode : cloudletSteps.stepsCloudlet
+            viewMode : mode
         })
     }
 
