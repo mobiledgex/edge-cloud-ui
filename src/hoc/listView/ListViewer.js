@@ -35,7 +35,8 @@ const StyledTableCell = withStyles((theme) => ({
         maxWidth:250,
         overflow:'hidden',
         textOverflow:'ellipsis',
-        borderBottom: 'none'
+        borderBottom: 'none',
+        height:50 
     },
 }))(TableCell);
 
