@@ -35,7 +35,8 @@ const StyledTableCell = withStyles((theme) => ({
         maxWidth:250,
         overflow:'hidden',
         textOverflow:'ellipsis',
-        borderBottom: 'none'
+        borderBottom: 'none',
+        height:50 
     },
 }))(TableCell);
 
@@ -103,7 +104,7 @@ function EnhancedTableHead(props) {
                     checkRole(headCell)
                     if (headCell.visible) {
                         return <TableCell
-                            style={{ backgroundColor: '#2A2C33' }}
+                            style={{ backgroundColor: '#2A2C33'}}
                             key={headCell.field}
                             align={headCell.numeric ? 'right' : 'left'}
                             padding={headCell.disablePadding ? 'none' : 'default'}
@@ -364,7 +365,7 @@ export default function EnhancedTable(props) {
                                             tabIndex={-1}
                                         >
                                             {props.requestInfo.selection ?
-                                                <TableCell style={{ borderBottom: "none" }} padding="checkbox"
+                                                <TableCell style={{ borderBottom: "none"}} padding="checkbox"
                                                     onClick={(event) => handleClick(event, row)}>
                                                     <Checkbox
                                                         checked={isItemSelected}
