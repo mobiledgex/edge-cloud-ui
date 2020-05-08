@@ -356,6 +356,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     style={{width: 70}}
                     showArrow={false}
                     bordered={false}
+                    ref={c => this.themeSelect = c}
                     listHeight={550}
                     onChange={async (value) => {
                         try {
@@ -366,11 +367,16 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 lineColor = WHITE_LINE_COLOR;
                                 cloudletIconColor = WHITE_CLOUTLET_ICON_COLOR
                             }
-
                             this.props.setMapTyleLayer(this.mapTileList[index].url);
                             this.props.setLineColor(lineColor);
                             this.props.setCloudletIconColor(cloudletIconColor);
+                            setTimeout(() => {
+                                this.themeSelect.blur();
+                            }, 250)
+
                         } catch (e) {
+
+                        } finally {
 
                         }
 
