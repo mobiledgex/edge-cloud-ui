@@ -1438,7 +1438,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                      //backgroundColor: 'red',
                                  }}>
                                 <div>
-                                    {this.makeClusterTreeDropdown()}
+                                    {this.makeClusterDropdown()}
                                 </div>
                                 <div style={{marginLeft: 15}}>
                                     {this.makeAppInstDropdown()}
@@ -1677,7 +1677,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 return newCloudletList;
             }
 
-            makeClusterTreeDropdown() {
+            makeClusterDropdown() {
                 return (
                     <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
                         <div
@@ -1732,6 +1732,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             App Inst
                         </div>
                         <Select
+                            ref={c => this.appInstSelect = c}
                             dropdownStyle={{}}
                             style={{width: 250}}
                             disabled={this.state.currentCluster === '' || this.state.loading || this.state.appInstDropdown.length === 0 || this.state.currentCluster === undefined}
@@ -1739,6 +1740,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             placeholder={this.state.appInstSelectBoxPlaceholder}
                             onChange={async (value) => {
                                 await this.handleAppInstDropdown(value.trim())
+                                this.appInstSelect.blur();
                             }}
                         >
                             {this.state.allAppInstDropdown.map(item => {

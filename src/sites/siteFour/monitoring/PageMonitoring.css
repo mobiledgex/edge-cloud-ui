@@ -607,7 +607,9 @@ tr td {
 }
 
 .ant-select-tree {
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.3);
+    border-color: #96c8da;
+    box-shadow: 0 2px 3px 0 rgba(34,36,38,.15);
 }
 
 /*.ant-select-tree-title{
@@ -629,3 +631,10 @@ tr td {
     list-style: none;
     outline: 0;
 }*/
+.ant-select-focused .ant-select-selection,
+.ant-select-selection:focus,
+.ant-select-selection:active,
+.ant-select-open .ant-select-selection {
+    border-color: #d9d9d9;
+    box-shadow: none;
+}
