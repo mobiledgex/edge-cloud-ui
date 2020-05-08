@@ -177,6 +177,7 @@ const generatWidget = info => (
     <ChartWidget
         id={info.id}
         title={info.title}
+        filter={info.filter}
         method={info.method}
         chartType={info.chartType}
         type={info.type}
@@ -196,6 +197,8 @@ const generateComponentAdmin = (self, infos, cloudlets) => {
             method: null,
             chartType: ChartType.COUNTER,
             type: "",
+            title: "Count of Clusters",
+            filter: null,
             page: "multi",
             itemCount: 6,
             ...defaultProp
@@ -205,7 +208,8 @@ const generateComponentAdmin = (self, infos, cloudlets) => {
             method: serviceMC.getEP().METRICS_CLOUDLET,
             chartType: ChartType.GRAPH,
             type: "scatter",
-            title: { filter: "dropdown" },
+            title: "Health of Cloudlets",
+            filter: "dropdown",
             page: "single",
             ...defaultProp
         }),
@@ -214,6 +218,8 @@ const generateComponentAdmin = (self, infos, cloudlets) => {
             method: null,
             chartType: ChartType.MAP,
             type: "scatter",
+            title: "Find Cloudlets",
+            filter: null,
             page: "single",
             ...defaultProp
         }),
@@ -222,6 +228,8 @@ const generateComponentAdmin = (self, infos, cloudlets) => {
             method: null,
             chartType: ChartType.GRAPH,
             type: "scatter",
+            title: "Rate of Regist Client",
+            filter: null,
             page: "single",
             ...defaultProp
         }),
@@ -230,6 +238,8 @@ const generateComponentAdmin = (self, infos, cloudlets) => {
             method: serviceMC.getEP().METHOD_CLIENT,
             chartType: ChartType.GRAPH,
             type: "bar",
+            title: "Rate of Find Cloudlet",
+            filter: null,
             page: "single",
             ...defaultProp
         }),
@@ -238,6 +248,8 @@ const generateComponentAdmin = (self, infos, cloudlets) => {
             method: serviceMC.getEP().EVENT_CLOUDLET,
             chartType: ChartType.TABLE,
             type: "alarm",
+            title: "Events of Cloudlet",
+            filter: null,
             page: "single",
             ...defaultProp
         })

@@ -1,5 +1,5 @@
-import {combineReducers} from 'redux';
-import {reducer as formReducer} from 'redux-form';
+import { combineReducers } from 'redux';
+import { reducer as formReducer } from 'redux-form';
 import videoControl from './videoControl';
 import siteChanger from './siteChanger';
 import tabChanger from './tabChanger';
@@ -47,6 +47,7 @@ import MapTyleLayerReducer from "./MapTyleLayerReducer";
 import HeaderReducer from "./HeaderReducer";
 import ThemeReducer from "./ThemeReducer";
 import ChartDataReducer from "./ChartDataReducer";
+import infoPanelReducer from "./infoPanelReducer";
 
 const reducers = combineReducers({
     videoControl,
@@ -96,6 +97,7 @@ const reducers = combineReducers({
     HeaderReducer,
     ThemeReducer,
     ChartDataReducer,
+    infoPanelReducer,
     form: formReducer
 });
 

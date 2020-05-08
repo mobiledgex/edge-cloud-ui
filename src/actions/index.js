@@ -1,11 +1,11 @@
 import * as types from './ActionTypes';
-import {SET_MAP_TYLE_LAYER} from "./ActionTypes";
-import {SET_LINE_COLOR} from "./ActionTypes";
-import {SET_CLOUDLET_ICON_COLOR} from "./ActionTypes";
-import {TOGGLE_HEADER} from "./ActionTypes";
-import {TOGGLE_LOADING} from "./ActionTypes";
-import {TOGGLE_THEME} from "./ActionTypes";
-import {SET_CHART_DATAS} from "./ActionTypes";
+import { SET_MAP_TYLE_LAYER } from "./ActionTypes";
+import { SET_LINE_COLOR } from "./ActionTypes";
+import { SET_CLOUDLET_ICON_COLOR } from "./ActionTypes";
+import { TOGGLE_HEADER } from "./ActionTypes";
+import { TOGGLE_LOADING } from "./ActionTypes";
+import { TOGGLE_THEME } from "./ActionTypes";
+import { SET_CHART_DATAS } from "./ActionTypes";
 
 export function changeSite(state) {
     return {
@@ -98,14 +98,14 @@ export function deleteReset(state) {
     };
 }
 
-export function loginWithEmailRedux({params}) {
+export function loginWithEmailRedux({ params }) {
     return {
         type: types.LOGIN_WITH_EMAIL,
         params
     }
 }
 
-export function refreshData({params}) {
+export function refreshData({ params }) {
     return {
         type: types.REFRESH_DATA,
         params
@@ -396,5 +396,15 @@ export function changeNext(next) {
     return {
         type: types.CHANGE_NEXT,
         next
+    }
+}
+/**
+ * monitoring - admin
+ */
+
+export function clickInfoPanel(info) {
+    return {
+        type: types.CLICK_INFOPANEL,
+        info
     }
 }

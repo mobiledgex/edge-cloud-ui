@@ -1,7 +1,9 @@
 import React from "react";
 import _ from "lodash";
 import { Responsive, WidthProvider } from "react-grid-layout";
+import { connect } from "react-redux";
 import HeaderComponent from "../hooks/header";
+import * as actions from "../../../../actions"
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -36,7 +38,7 @@ class ToolBox extends React.Component {
     }
 }
 
-export default class MonitoringLayout extends React.Component {
+class MonitoringLayout extends React.Component {
     static defaultProps = {
         className: "layout",
         rowHeight: 30,
@@ -52,7 +54,7 @@ export default class MonitoringLayout extends React.Component {
         layouts: { lg: this.props.initialLayout },
         toolbox: { lg: [] },
         headerSize: 30,
-        padding: 3
+        padding: 3,
     };
 
     componentDidMount() {
@@ -79,6 +81,7 @@ export default class MonitoringLayout extends React.Component {
                         onPutItem={this.onPutItem}
                         onClick={this.onClickMenu}
                         idx={l}
+                        panelInfo={items[idx].props}
                     ></HeaderComponent>
                     <div
                         style={{
@@ -167,8 +170,9 @@ export default class MonitoringLayout extends React.Component {
             layouts: { lg: generateLayout() }
         });
     };
-    onClickMenu = (info, idx) => {
-        console.log('20200507 on click menu == ', info, ":", idx)
+    onClickMenu = (info, title) => {
+        console.log('20200507 on click menu == ', info, ":", title)
+        this.props.handleClickPanelInfo({ info, title })
     }
 
     render() {
@@ -206,6 +210,23 @@ export default class MonitoringLayout extends React.Component {
         );
     }
 }
+
+//
+const mapStateToProps = (state, ownProps) => {
+    return {
+        not: null
+    };
+};
+const mapDispatchProps = dispatch => {
+    return {
+        handleClickPanelInfo: data => {
+            dispatch(actions.clickInfoPanel(data));
+        }
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchProps)(MonitoringLayout);
+
 
 function generateLayout() {
     return _.map(_.range(0, 25), function (item, i) {

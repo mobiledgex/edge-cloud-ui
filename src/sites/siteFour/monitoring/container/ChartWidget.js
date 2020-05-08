@@ -45,7 +45,7 @@ class ChartWidget extends React.Component {
                 props.content
             );
     render() {
-        const { data, chartType, type, size, title } = this.props;
+        const { data, chartType, type, size, title, legendShow } = this.props;
         //const { size } = this.state;
         return (
             <div
@@ -56,7 +56,7 @@ class ChartWidget extends React.Component {
                 }}
             >
                 {chartType === ChartType.GRAPH ? (
-                    <TimeSeries size={size} type={type} data={data} title={title} />
+                    <TimeSeries size={size} type={type} data={data} title={title} showLegend={legendShow} />
                 ) : chartType === ChartType.GAUGE ? (
                     <ContainerHealth size={size} type={type} title={title} />
                 ) : chartType === ChartType.MAP ? (

@@ -2,6 +2,7 @@ import React from "react";
 import { SizeMe } from "react-sizeme";
 import { compose } from "redux";
 import { connect } from "react-redux";
+import _ from "lodash";
 import * as actions from "../../../../actions";
 import MetricsService from "../services";
 import * as serviceMC from "../../../../services/model/serviceMC";
@@ -29,12 +30,14 @@ const ContainerWrapper = obj =>
             constructor() {
                 super();
                 _self = this;
+                this.firstProps = null;
             }
             state = {
                 data: [],
                 chartType: "",
                 chartMethod: "",
-                title: null
+                title: null,
+                legendShow: false
             };
 
 
@@ -75,11 +78,12 @@ const ContainerWrapper = obj =>
                 } catch (e) { }
             }
             componentDidMount() {
-                console.log('20200507 did mount == ', this.props.title)
+                console.log('20200507 did mount == ', this.props)
                 this.setState({ chartType: this.props.chartType, title: this.props.title });
 
             }
             componentWillReceiveProps(nextProps) {
+                if (nextProps === this.firstProps) return;
                 if (
                     nextProps.cloudlets &&
                     nextProps.cloudlets.length > 0 &&
@@ -89,12 +93,22 @@ const ContainerWrapper = obj =>
                      * STEP # 1
                      * necessary to get cloudlets from the parent
                      *********************************************/
-                    console.log("20200507 did next props..", this.state.title)
+
+                    this.setState({ method: nextProps.method })
                     this.initialize(nextProps, this);
                 }
+                console.log("20200507 did this  nextProps==  ", nextProps, ": nextProps == ", this.firstProps)
+                if (nextProps.panelInfo) {
+                    if (nextProps.panelInfo.title === this.state.title) {
+                        console.log("20200507 did recevie props from redux --- ", JSON.stringify(nextProps.panelInfo), ":" + this.state.title)
+                        this.setState({ legendShow: !this.state.legendShow })
+                    }
+
+                }
+                this.firstProps = _.cloneDeep(nextProps);
             }
             render() {
-                const { data, chartType } = this.state;
+                const { data, chartType, legendShow } = this.state;
                 return (
                     <SizeMe monitorHeight={true}>
                         {({ size }) => (
@@ -103,6 +117,7 @@ const ContainerWrapper = obj =>
                                 data={data}
                                 chartType={chartType}
                                 size={size}
+                                legendShow={legendShow}
                             ></WrapperComponent>
                         )}
                     </SizeMe>
@@ -113,8 +128,10 @@ const ContainerWrapper = obj =>
 
 const mapStateToProps = state => {
     let regionInfo = state.regionInfo ? state.regionInfo : null;
+    let panelInfo = state.infoPanelReducer ? state.infoPanelReducer : null;
     return {
-        regionInfo: regionInfo
+        regionInfo: regionInfo,
+        panelInfo: panelInfo.info
     };
 };
 const mapDispatchProps = dispatch => {

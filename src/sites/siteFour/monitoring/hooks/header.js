@@ -2,10 +2,11 @@ import React, { useState } from "react";
 
 const HeaderComponent = (defaultValue: string) => {
     const [value, setValue] = useState(defaultValue);
+    const [info, setInfo] = useState(defaultValue.panelInfo)
     const onHandleClick = (a, b) => {
         console.log("20200507 on click ...", a, ":", b)
     }
-
+    console.log("20200507 header info == ", info)
     return (
         <div style={{ position: "relative" }}>
             <div
@@ -20,11 +21,11 @@ const HeaderComponent = (defaultValue: string) => {
                     alignItems: "center"
                 }}
             >
-                <div>{value.defaultProps}</div>
+                <div>{info.title}</div>
             </div>
             <div
                 style={{
-                    width: "60px",
+                    width: "130px",
                     height: "25px",
                     borderColor: "#696969",
                     borderWidth: "1px",
@@ -41,14 +42,14 @@ const HeaderComponent = (defaultValue: string) => {
             >
                 <div
                     className="info-button"
-                    onClick={() => value.onClick("info", value.idx)}
+                    onClick={() => value.onClick("info", info.title)}
                     style={{ padding: "3px" }}
                 >
                     info
                 </div>
                 <div
                     className="edit-button"
-                    onClick={() => value.onClick("edit")}
+                    onClick={() => value.onClick("edit", info.title)}
                     style={{ padding: "3px" }}
                 >
                     edit
