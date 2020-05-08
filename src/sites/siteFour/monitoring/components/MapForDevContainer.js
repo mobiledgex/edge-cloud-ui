@@ -608,7 +608,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
         )
 
-
         render() {
 
             return (
@@ -687,7 +686,9 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {/*@todo:#####################################..*/}
                                 {/*@todo: zoom, reset Icons...*/}
                                 {/*@todo:#####################################..*/}
+
                                 <Control position="topleft" style={{marginTop: 3, display: 'flex',}}>
+
                                     <div style={PageMonitoringStyles.mapControlDiv}>
                                         <div
                                             style={{backgroundColor: 'transparent', height: 30}}
@@ -754,8 +755,22 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                 style={{fontSize: 20, color: this.state.isCloudletClustering ? 'white' : 'grey', cursor: 'pointer'}}
                                             />
                                         </div>
+                                        <div
+                                            style={{backgroundColor: 'transparent', height: 30, width: 30, display: 'flex', justifyContent: 'center', alignSelf: 'center'}}
+                                        >
+                                            <Icon
+                                                name='star'
+                                                onClick={() => {
+                                                    this.props.parent.setState({
+                                                        isOpenGlobe: !this.props.parent.state.isOpenGlobe
+                                                    })
+                                                }}
+                                                style={{fontSize: 20, color: this.state.isCloudletClustering ? 'white' : 'grey', cursor: 'pointer'}}
+                                            />
+                                        </div>
                                     </div>
                                 </Control>
+
                                 {/*@todo:#####################################..*/}
                                 {/*@todo: topRight Dropdown changing MapTyles...*/}
                                 {/*@todo:#####################################..*/}
