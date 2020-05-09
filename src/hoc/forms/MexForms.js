@@ -14,6 +14,9 @@ import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 import ClearIcon from '@material-ui/icons/Clear';
 import ContactSupportOutlinedIcon from '@material-ui/icons/ContactSupportOutlined';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import AddToPhotosOutlinedIcon from '@material-ui/icons/AddToPhotosOutlined';
 
 export const HEADER = 'Header'
 export const SELECT = 'Select'
@@ -35,12 +38,18 @@ const MexForms = (props) => {
                 return <DeleteOutlineOutlinedIcon />
             case 'add':
                 return <AddIcon />
+            case 'add_mult':
+                return <AddToPhotosOutlinedIcon />
             case 'browse':
                 return <FolderOpenIcon />
             case 'clear':
                 return <ClearIcon />
             case 'help':
                 return <ContactSupportOutlinedIcon />
+            case 'expand_less':
+                return <ExpandLessIcon />
+            case 'expand_more':
+                return <ExpandMoreIcon />
             default:
                 return id
         }
@@ -174,7 +183,11 @@ const MexForms = (props) => {
     const loadButton = (form, index) => {
         return (
             form.formType === ICON_BUTTON ?
-                <IconButton key={index} style={form.style} onClick={(e) => { form.onClick(e, form) }}>{getIcon(form.icon)}</IconButton>
+                form.label ? 
+                <Tooltip key={index} title={form.label} aria-label="icon">
+                    <IconButton style={form.style} onClick={(e) => { form.onClick(e, form) }}>{getIcon(form.icon)}</IconButton>
+                </Tooltip> :
+                <IconButton style={form.style} onClick={(e) => { form.onClick(e, form) }}>{getIcon(form.icon)}</IconButton>
                 :
                 form.formType === BUTTON ?
                     <MexButton
@@ -188,21 +201,28 @@ const MexForms = (props) => {
         form.id = { id: index }
         let subForms = form.forms
         return (
-            <div key={index} style={{ width: '100%' }}>
-                <br/>
-                <h2 style={{ color: "white", display: 'inline' }}>{form.label}
+            <Grid style={{width:'100%'}}>
+                <Grid.Row key={index} columns={2} key={uuid() + '' + index}>
+                    <Grid.Column width={15} className='detail_item'>
+                        <h2 style={{ color: "white", display: 'inline' }}>{form.label}
+                            {
+                                subForms ? subForms.map((subForm, i) => {
+                                    subForm.parent = { id: index, form: form }
+                                    return loadButton(subForm, i)
+                                }) : null
+                            }
+                        </h2>
+                    </Grid.Column>
                     {
-                        subForms ? subForms.map((subForm, i) => {
-                            subForm.parent = { id: index, form: form }
-                            return loadButton(subForm, i)
-                        }) : null
+                        form.tip ?
+                            <Grid.Column key={index} width={1}>
+                                {showTip(form)}
+                            </Grid.Column> :
+                            null
                     }
-                    {
-                        form.tip ? showTip(form) : null
-                    }
-                </h2>
+                </Grid.Row>
                 <Divider />
-            </div>
+            </Grid>
         )
     }
 
@@ -243,7 +263,7 @@ const MexForms = (props) => {
 
     const showTip = (form) => {
         return (
-            <Tooltip title={form.tip.split('\n').map((info)=>{return <strong>{info}<br/></strong>})} aria-label="tip">
+            <Tooltip title={form.tip.split('\n').map((info, i)=>{return <strong key={i}>{info}<br/></strong>})} aria-label="tip">
                 {getIcon('help')}
             </Tooltip>
         )
@@ -298,7 +318,7 @@ const MexForms = (props) => {
                     </Grid.Column>
                     {
                         form.tip ?
-                            <Grid.Column width={1}>
+                            <Grid.Column key={index} width={1}>
                                 {showTip(form)}
                             </Grid.Column> :
                             null
@@ -316,12 +336,12 @@ const MexForms = (props) => {
                             initValidateRules(form);
                             checkRole(form)
                             return (
-                                form.visible ?
+                                (form.advance === undefined || form.advance === true) && form.visible ?
                                     form.formType === HEADER ?
                                         loadHeader(i, form) :
                                         form.formType === MULTI_FORM ?
                                             form.forms ?
-                                                <Grid.Row key={i} id={form.field} style={{ marginLeft: -13, width: '100%' }}>{loadHorizontalForms(i, form.forms)}</Grid.Row>
+                                                <Grid.Row key={i} id={form.field} style={{ width: '100%' }}>{loadHorizontalForms(i, form.forms)}</Grid.Row>
                                                 : null :
                                             loadForms(i, form) :
                                     null
