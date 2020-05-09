@@ -6,6 +6,8 @@ import ContainerDimensions from "react-container-dimensions";
 import { connect } from "react-redux";
 import "./styles.css";
 import * as actions from "../../actions";
+import serviceMC from "../../sites/siteFour/monitoring/formatter/chartType";
+
 
 //https://plot.ly/python/#layout-options
 //https://plot.ly/javascript/axes/#tick-placement-color-and-style
@@ -81,8 +83,11 @@ class TimeSeries extends React.Component {
     }
     componentWillReceiveProps(nextProps, nextContext) {
         if (nextProps.data && nextProps.data.length > 0) {
-            console.log('20200507 receive data in timeseries--', nextProps.data)
-
+            console.log('20200509 receive data in timeseries--', nextProps)
+            let selectedItem = ""
+            if (nextProps.method === "") {
+                selectedItem = "diskUsed"
+            }
             let times = nextProps.data[0].times[0];
             let datas = nextProps.data[0].resData_util[0].diskUsed.y;
             let method = nextProps.data[0].method;

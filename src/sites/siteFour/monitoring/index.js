@@ -173,6 +173,9 @@ export default connect(
     mapDispatchProps
 )(sizeMe({ monitorHeight: true, refreshMode: "debounce" })(MonitoringAdmin));
 
+const makeFilterComponent = (info) => {
+
+}
 const generatWidget = info => (
     <ChartWidget
         id={info.id}
@@ -209,7 +212,7 @@ const generateComponentAdmin = (self, infos, cloudlets) => {
             chartType: ChartType.GRAPH,
             type: "scatter",
             title: { value: "Health of Cloudlets", align: "left" },
-            filter: "dropdown",
+            filter: { type: "dropdown", method: serviceMC.getEP().METRICS_CLOUDLET },
             page: "single",
             ...defaultProp
         }),

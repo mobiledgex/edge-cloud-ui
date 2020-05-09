@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const HeaderComponent = (defaultValue: string) => {
+const HeaderComponent = (defaultValue) => {
     const [value, setValue] = useState(defaultValue);
     const [info, setInfo] = useState(defaultValue.panelInfo)
     const onHandleClick = (a, b) => {

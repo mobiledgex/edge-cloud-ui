@@ -11,6 +11,8 @@ import CounterWidget from "./CounterWidget";
 import { Segment } from "semantic-ui-react";
 import MonitoringListViewer from "../components/MonitoringListViewer";
 import * as ChartType from "../formatter/chartType";
+import FilteringComponent from "../components/FilteringComponent";
+
 
 class ChartWidget extends React.Component {
     state = {
@@ -45,7 +47,8 @@ class ChartWidget extends React.Component {
                 props.content
             );
     render() {
-        const { data, chartType, type, size, title, legendShow } = this.props;
+        const { data, chartType, type, size, title, legendShow, filter, method } = this.props;
+        console.log("20200509 data --- ", this.props)
         //const { size } = this.state;
         return (
             <div
@@ -55,8 +58,9 @@ class ChartWidget extends React.Component {
                     backgroundColor: "transparent"
                 }}
             >
+                {(filter) ? <FilteringComponent data={data} filterInfo={filter} /> : null}
                 {chartType === ChartType.GRAPH ? (
-                    <TimeSeries size={size} type={type} data={data} title={title.value} showLegend={legendShow} />
+                    <TimeSeries size={size} type={type} data={data} title={title.value} showLegend={legendShow} method={method} />
                 ) : chartType === ChartType.GAUGE ? (
                     <ContainerHealth size={size} type={type} title={title.value} />
                 ) : chartType === ChartType.MAP ? (
