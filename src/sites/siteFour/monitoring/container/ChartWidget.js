@@ -56,9 +56,9 @@ class ChartWidget extends React.Component {
                 }}
             >
                 {chartType === ChartType.GRAPH ? (
-                    <TimeSeries size={size} type={type} data={data} title={title} showLegend={legendShow} />
+                    <TimeSeries size={size} type={type} data={data} title={title.value} showLegend={legendShow} />
                 ) : chartType === ChartType.GAUGE ? (
-                    <ContainerHealth size={size} type={type} title={title} />
+                    <ContainerHealth size={size} type={type} title={title.value} />
                 ) : chartType === ChartType.MAP ? (
                     <Map
                         size={size}
@@ -67,17 +67,17 @@ class ChartWidget extends React.Component {
                         id={"matricMap"}
                         reg="cloudletAndClusterMap"
                         zoomControl={{ center: [0, 0], zoom: 1.5 }}
-                        title={title}
+                        title={title.value}
                     ></Map>
                 ) : chartType === ChartType.COUNTER ? (
                     <CounterWidget
                         size={size}
                         ref={this.divRef}
                         clusterCnt={this.state.clusterCnt}
-                        title={title}
+                        title={title.value}
                     ></CounterWidget>
                 ) : (
-                                    <DataGrid size={size} data={data} title={title} />
+                                    <DataGrid size={size} data={data} title={title.value} />
                                 )}
             </div>
         );

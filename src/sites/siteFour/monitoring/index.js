@@ -197,7 +197,7 @@ const generateComponentAdmin = (self, infos, cloudlets) => {
             method: null,
             chartType: ChartType.COUNTER,
             type: "",
-            title: "Count of Clusters",
+            title: { value: "Count of Clusters", align: "left" },
             filter: null,
             page: "multi",
             itemCount: 6,
@@ -208,7 +208,7 @@ const generateComponentAdmin = (self, infos, cloudlets) => {
             method: serviceMC.getEP().METRICS_CLOUDLET,
             chartType: ChartType.GRAPH,
             type: "scatter",
-            title: "Health of Cloudlets",
+            title: { value: "Health of Cloudlets", align: "left" },
             filter: "dropdown",
             page: "single",
             ...defaultProp
@@ -218,7 +218,7 @@ const generateComponentAdmin = (self, infos, cloudlets) => {
             method: null,
             chartType: ChartType.MAP,
             type: "scatter",
-            title: "Find Cloudlets",
+            title: { value: "Find Cloudlets", align: "left" },
             filter: null,
             page: "single",
             ...defaultProp
@@ -228,7 +228,7 @@ const generateComponentAdmin = (self, infos, cloudlets) => {
             method: null,
             chartType: ChartType.GRAPH,
             type: "scatter",
-            title: "Rate of Regist Client",
+            title: { value: "Rate of Regist Client", align: "left" },
             filter: null,
             page: "single",
             ...defaultProp
@@ -238,7 +238,7 @@ const generateComponentAdmin = (self, infos, cloudlets) => {
             method: serviceMC.getEP().METHOD_CLIENT,
             chartType: ChartType.GRAPH,
             type: "bar",
-            title: "Rate of Find Cloudlet",
+            title: { value: "Rate of Find Cloudlet", align: "left" },
             filter: null,
             page: "single",
             ...defaultProp
@@ -248,7 +248,7 @@ const generateComponentAdmin = (self, infos, cloudlets) => {
             method: serviceMC.getEP().EVENT_CLOUDLET,
             chartType: ChartType.TABLE,
             type: "alarm",
-            title: "Events of Cloudlet",
+            title: { value: "Events of Cloudlet", align: "center" },
             filter: null,
             page: "single",
             ...defaultProp

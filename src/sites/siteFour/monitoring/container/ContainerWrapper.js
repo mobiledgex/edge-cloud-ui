@@ -83,7 +83,17 @@ const ContainerWrapper = obj =>
 
             }
             componentWillReceiveProps(nextProps) {
-                if (nextProps === this.firstProps) return;
+                if (nextProps.panelInfo) {
+                    console.log("20200509 did recevie props from redux --- ", JSON.stringify(nextProps.panelInfo.title.value), " == : == " + this.state.title.value)
+                    if (nextProps.panelInfo.title.value === this.state.title.value) {
+                        this.setState({ legendShow: !this.state.legendShow })
+                    }
+
+                }
+
+                // TODO: 20200509 //데이터가 갱신될 경우 id는 새로 갱신되어 들어온다 
+                if (nextProps.id === this.firstProps) return;
+                console.log("20200509 receive props... ---....----....")
                 if (
                     nextProps.cloudlets &&
                     nextProps.cloudlets.length > 0 &&
@@ -96,16 +106,11 @@ const ContainerWrapper = obj =>
 
                     this.setState({ method: nextProps.method })
                     this.initialize(nextProps, this);
+                    this.firstProps = _.cloneDeep(nextProps.id);
                 }
-                console.log("20200507 did this  nextProps==  ", nextProps, ": nextProps == ", this.firstProps)
-                if (nextProps.panelInfo) {
-                    if (nextProps.panelInfo.title === this.state.title) {
-                        console.log("20200507 did recevie props from redux --- ", JSON.stringify(nextProps.panelInfo), ":" + this.state.title)
-                        this.setState({ legendShow: !this.state.legendShow })
-                    }
 
-                }
-                this.firstProps = _.cloneDeep(nextProps);
+
+
             }
             render() {
                 const { data, chartType, legendShow } = this.state;

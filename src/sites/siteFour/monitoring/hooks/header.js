@@ -17,11 +17,11 @@ const HeaderComponent = (defaultValue: string) => {
                     backgroundColor: "#4b4b4b",
                     display: "flex",
                     position: "absolute",
-                    justifyContent: "center",
+                    justifyContent: (info.title.align === "left") ? "flex-start" : "center",
                     alignItems: "center"
                 }}
             >
-                <div>{info.title}</div>
+                <div style={{ paddingLeft: 8 }}>{info.title.value}</div>
             </div>
             <div
                 style={{
