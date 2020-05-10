@@ -1,5 +1,9 @@
 import React, { useRef } from "react";
-import { Paper } from "@material-ui/core";
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import MobileStepper from '@material-ui/core/MobileStepper';
+import Button from '@material-ui/core/Button';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import _ from "lodash";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
@@ -13,12 +17,25 @@ import MonitoringListViewer from "../components/MonitoringListViewer";
 import * as ChartType from "../formatter/chartType";
 import FilteringComponent from "../components/FilteringComponent";
 
-
 class ChartWidget extends React.Component {
+    constructor(props) {
+        super(props);
+
+    }
     state = {
         mapData: [],
         clusterCnt: [0],
-        size: { width: 10, height: 10 }
+        size: { width: 10, height: 10 },
+        activeStep: 0
+    };
+
+
+    handleNext = () => {
+        this.setState({ activeStep: (prevActiveStep) => prevActiveStep + 1 });
+    };
+
+    handleBack = () => {
+        this.setState({ activeStep: (prevActiveStep) => prevActiveStep - 1 });
     };
 
     getData = () => [100, 3, 0, 6, 4, 5, 8, 6, 0, 1];
@@ -47,7 +64,7 @@ class ChartWidget extends React.Component {
                 props.content
             );
     render() {
-        const { data, chartType, type, size, title, legendShow, filter, method } = this.props;
+        const { data, chartType, type, size, title, legendShow, filter, method, page, itemCount } = this.props;
         console.log("20200509 data --- ", this.props)
         //const { size } = this.state;
         return (
@@ -58,7 +75,9 @@ class ChartWidget extends React.Component {
                     backgroundColor: "transparent"
                 }}
             >
-                {(filter) ? <FilteringComponent data={data} filterInfo={filter} /> : null}
+                {(filter) ? <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                    <FilteringComponent data={data} filterInfo={filter} />
+                </div> : null}
                 {chartType === ChartType.GRAPH ? (
                     <TimeSeries size={size} type={type} data={data} title={title.value} showLegend={legendShow} method={method} />
                 ) : chartType === ChartType.GAUGE ? (
@@ -83,6 +102,13 @@ class ChartWidget extends React.Component {
                 ) : (
                                     <DataGrid size={size} data={data} title={title.value} />
                                 )}
+
+                {page === "multi" ?
+                    <div style={{ height: 10, backgroundColor: "green" }}>
+                        <DotsMobileStepper></DotsMobileStepper>
+                    </div> : null
+                }
+
             </div>
         );
     }
@@ -197,4 +223,49 @@ class Slider extends React.Component {
             </Carousel>
         );
     }
+}
+
+/**
+ * DotsMobileStepper
+ */
+
+const useStyles = makeStyles({
+    root: {
+        maxWidth: 400,
+        flexGrow: 1,
+    },
+});
+
+export const DotsMobileStepper = () => {
+    const classes = useStyles();
+    const theme = useTheme();
+    const [activeStep, setActiveStep] = React.useState(0);
+
+    const handleNext = () => {
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    };
+
+    const handleBack = () => {
+        setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    };
+
+    return (
+        <MobileStepper
+            variant="dots"
+            steps={3}
+            position="static"
+            activeStep={activeStep}
+            className={classes.root}
+            nextButton={
+                <div size="small" onClick={handleNext} disabled={activeStep === 2}>
+                    {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+                </div>
+            }
+            backButton={
+                <div size="small" onClick={handleBack} disabled={activeStep === 0}>
+                    {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+                </div>
+            }
+        />
+    );
 }

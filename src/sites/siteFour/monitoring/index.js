@@ -186,6 +186,8 @@ const generatWidget = info => (
         type={info.type}
         size={info.sizeInfo}
         cloudlets={info.cloudlets}
+        page={info.page}
+        itemCount={info.itemCount}
     />
 );
 const generateComponentAdmin = (self, infos, cloudlets) => {
@@ -203,7 +205,7 @@ const generateComponentAdmin = (self, infos, cloudlets) => {
             title: { value: "Count of Clusters", align: "left" },
             filter: null,
             page: "multi",
-            itemCount: 6,
+            itemCount: 3,
             ...defaultProp
         }),
         generatWidget({
@@ -213,7 +215,8 @@ const generateComponentAdmin = (self, infos, cloudlets) => {
             type: "scatter",
             title: { value: "Health of Cloudlets", align: "left" },
             filter: { type: "dropdown", method: serviceMC.getEP().METRICS_CLOUDLET },
-            page: "single",
+            page: "multi",
+            itemCount: 3,
             ...defaultProp
         }),
         generatWidget({

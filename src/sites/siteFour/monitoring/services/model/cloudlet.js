@@ -168,21 +168,25 @@ const createTime = (resSeries_utilize) => {
     resSeries_utilize.map((value, i) => {
         times.push(value[0]);
     })
-
     return times;
 }
-
+const createMethods = (type, resSeries_utilize) => {
+    let method = [];
+    resSeries_utilize.map((value, i) => {
+        method.push(type);
+    })
+    return method;
+}
 
 const parseData = (response, type) => {
     let resData = [];
     let times = [];
+    let methods = [];
     let resData_util = {}
     let resData_ip = {}
     let resultParse = [];
     if (response && response.response && response.response.data.data) {
         response.response.data.data.map((data, i) => {
-
-
 
             const resSeries_utilize = (data.Series) ? data.Series[0] : null;
             const resSeries_ipuse = (data.Series) ? data.Series[1] : null;
@@ -193,9 +197,10 @@ const parseData = (response, type) => {
                 /** metrics of the cloudlets */
 
                 times.push(resSeries_utilize ? createTime(resSeries_utilize.values) : null)
+                methods.push(resSeries_utilize ? createMethods(type, resSeries_utilize.values) : null)
 
                 let resultParse = {
-                    method: type,
+                    methods: methods,
                     times: times,
                     resData_util: [
                         {

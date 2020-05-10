@@ -65,7 +65,7 @@ const FilteringComponent = (props) => {
         }
         if (props.filterInfo) {
             setFilter(props.filterInfo)
-            if (props.filterInfo.method = serviceMC.getEP().METRICS_CLOUDLET) {
+            if (props.filterInfo.method === serviceMC.getEP().METRICS_CLOUDLET) {
                 setSelecteditem(filterOptions.DISK_USED)
             }
         }
@@ -81,7 +81,7 @@ const FilteringComponent = (props) => {
         let ipsKeys = [];
         let allKeys = [];
         console.log("20200509 filter comp ... ", items[0]);
-        if (filter.method = serviceMC.getEP().METRICS_CLOUDLET) {
+        if (filter.method === serviceMC.getEP().METRICS_CLOUDLET) {
             utilsKeys = Object.keys(items[0]["resData_util"][0]);
             ipsKeys = Object.keys(items[0]["resData_ip"][0]);
             allKeys = utilsKeys.concat(ipsKeys)

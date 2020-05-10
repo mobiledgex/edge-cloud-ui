@@ -84,17 +84,18 @@ class TimeSeries extends React.Component {
     componentWillReceiveProps(nextProps, nextContext) {
         if (nextProps.data && nextProps.data.length > 0) {
             console.log('20200509 receive data in timeseries--', nextProps)
+            // TODO : select box의 선택에 따른 데이터 교체
             let selectedItem = ""
             if (nextProps.method === "") {
                 selectedItem = "diskUsed"
             }
             let times = nextProps.data[0].times[0];
             let datas = nextProps.data[0].resData_util[0].diskUsed.y;
-            let method = nextProps.data[0].method;
+            let methods = nextProps.data[0].methods[0];
             this.reloadChart(
                 datas,
                 times,
-                method,
+                methods,
                 nextProps.single,
                 nextProps.dataType,
             );
@@ -145,12 +146,17 @@ class TimeSeries extends React.Component {
             x: times,
             y: data,
             yaxis: "y",
-            name: names,
+            text: names,
+            name: names[0],
             line: {
                 dash: 'solid',
                 width: 1
             },
-            marker: { size: 4 }
+            marker: { size: 4 },
+            hovertemplate: '<i>Used</i>: %{y:.2f}GB' +
+                '<br><b>Time</b>: %{x}<br>' +
+                '<b> %{text} </b>' +
+                '<extra></extra>'
         }
 
         if (this.stackData.length < 4) {
@@ -338,6 +344,7 @@ class TimeSeries extends React.Component {
                             bordercolor: "rgba(255,255,255,.3)",
                             font: { color: "rgba(255,255,255,.7)" }
                         },
+                        hovermode: "closest",
                         datarevision: this.state.datarevision + 1
                     }}
                     revision={this.state.revision}
