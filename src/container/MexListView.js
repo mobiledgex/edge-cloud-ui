@@ -15,7 +15,6 @@ import MexDetailViewer from '../hoc/dataViewer/DetailViewer';
 import MexListViewer from '../hoc/listView/ListViewer';
 import MexMessageStream, { CODE_FINISH } from '../hoc/stepper/mexMessageStream';
 import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiStream'
-import { getUserRole } from '../services/model/format';
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import Map from '../libs/simpleMaps/with-react-motion/index_clusters';
 
@@ -51,23 +50,6 @@ class MexListView extends React.Component {
     setSelected = (dataList)=>
     {
         this.setState({selected:dataList})
-    }
-
-    checkRole = (form) => {
-        let roles = form.roles
-        if (roles) {
-            let visible  = false
-            form.detailView = false
-            for (let i = 0; i < roles.length; i++) {
-                let role = roles[i]
-                if (role === getUserRole()) {
-                    visible = true
-                    form.detailView = true
-                    break;
-                }
-            }
-            form.visible = form.visible ? visible : form.visible
-        }
     }
 
     detailView = (data) => {
