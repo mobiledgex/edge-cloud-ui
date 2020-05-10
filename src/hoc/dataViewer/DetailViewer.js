@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactJson from 'react-json-view';
-import { Card, Table, TableHead, TableRow, TableBody, TableCell } from '@material-ui/core';
+import { Table, TableHead, TableRow, TableBody, TableCell } from '@material-ui/core';
 import * as constant from '../../constant'
 import * as JsonUtils from '../../utils/JsonUtil'
+import { getUserRole } from '../../services/model/format';
 
 const jsonViewProps = {
     name: null,
@@ -18,6 +19,23 @@ const jsonViewProps = {
     displayDataTypes: false,
     iconStyle: "triangle"
 }
+
+const checkRole = (form) => {
+    let roles = form.roles
+    if (roles) {
+        let visible = false
+        for (let i = 0; i < roles.length; i++) {
+            let role = roles[i]
+            if (role === getUserRole()) {
+                visible = true
+                break;
+            }
+        }
+        return visible
+    }
+    return true
+}
+
 const getJson = (data, item) => {
     try {
         if (item.dataType === constant.TYPE_YAML) {
@@ -81,14 +99,15 @@ const MexDetailViewer = (props) => {
                     {props.keys.map((item, i) => {
                         let data = detailData[item.field]
                         return (
-                            (data !== undefined && (item.detailView === undefined || item.detailView))?
-                                item.keys ?
-                                    data.length > 0 ?
-                                        getRow(i, item, subView(item.keys, data)) : null
-                                    :
-                                    getRow(i, item, data) :
-                                null
-
+                            checkRole(item) ?
+                                (data !== undefined && (item.detailView === undefined || item.detailView)) ?
+                                    item.keys ?
+                                        data.length > 0 ?
+                                            getRow(i, item, subView(item.keys, data)) : null
+                                        :
+                                        getRow(i, item, data) :
+                                    null 
+                            : null
                         )
                     })}
                 </TableBody>
