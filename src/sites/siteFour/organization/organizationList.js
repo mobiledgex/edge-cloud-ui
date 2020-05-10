@@ -193,8 +193,7 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleUserRole: (data) => { dispatch(actions.showUserRole(data)) },
         handleRoleInfo: (data) => { dispatch(actions.roleInfo(data)) },
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
-        handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
+        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) }
     };
 };
 

@@ -71,7 +71,6 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchProps = (dispatch) => {
     return {
-        handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
     };
 };
 

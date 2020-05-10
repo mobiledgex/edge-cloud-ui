@@ -98,7 +98,6 @@ const mapDispatchProps = (dispatch) => {
         handleAppLaunch: (data) => { dispatch(actions.appLaunch(data))},
         handleEditInstance: (data) => { dispatch(actions.editInstance(data))},
         handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
-        handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
     };
 };
 
