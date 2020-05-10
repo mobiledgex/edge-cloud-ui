@@ -35,18 +35,7 @@ import {
     renderPlaceHolder2,
     renderSixGridForAppInstOnCloudlet,
 } from "./PageAdminMonitoringService";
-import {
-    APPINSTANCE_INIT_VALUE,
-    CLASSIFICATION,
-    CONNECTIONS_OPTIONS,
-    HARDWARE_OPTIONS,
-    HARDWARE_TYPE,
-    NETWORK_OPTIONS,
-    NETWORK_TYPE,
-    RECENT_DATA_LIMIT_COUNT,
-    REGIONS_OPTIONS,
-    USER_TYPE
-} from "../../../../shared/Constants";
+import {APPINSTANCE_INIT_VALUE, CLASSIFICATION, CONNECTIONS_OPTIONS, HARDWARE_OPTIONS, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS, USER_TYPE} from "../../../../shared/Constants";
 import type {TypeAppInstance, TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
@@ -343,7 +332,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 await this.setState({
                     allAppInstUsageList: allAppInstUsageList,
                     filteredAppInstUsageList: allAppInstUsageList,
-                    dropDownCloudletList: dropDownCloudletList,
+                    dropDownCludsterListOnCloudlet: dropDownCloudletList,
                     clusterList: clusterList,
                 }, () => {
                 });
@@ -506,7 +495,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     loading0: true,
                     appInstanceListSortByCloudlet: [],
                     currentRegion: pRegion,
-                    dropDownCloudletList: [],
+                    dropDownCludsterListOnCloudlet: [],
                 })
 
                 //todo: -------------------------------------------
@@ -569,7 +558,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     appInstanceList: appInstanceList,
                     appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                     loading0: false,
-                    dropDownCloudletList: cloudletSelectBoxList,
+                    dropDownCludsterListOnCloudlet: cloudletSelectBoxList,
                     clusterList: clusterSelectBoxList,
                     currentCloudLet: pCloudLet,
                     currentCluster: pCluster,

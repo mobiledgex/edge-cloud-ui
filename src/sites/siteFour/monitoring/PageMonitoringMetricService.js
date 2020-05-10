@@ -14,11 +14,10 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
         let AppName = pCurrentAppInst.split('|')[0].trim()
         let Cloudlet = pCurrentAppInst.split('|')[1].trim()
         let ClusterInst = pCurrentAppInst.split('|')[2].trim()
-        let Region = pCurrentAppInst.split('|')[3].trim()
-        let HealthCheck = pCurrentAppInst.split('|')[4].trim()
-        let Version = pCurrentAppInst.split('|')[5].trim()
+        let Version = pCurrentAppInst.split('|')[3].trim()
+        let Region = pCurrentAppInst.split('|')[4].trim()
+        let HealthCheck = pCurrentAppInst.split('|')[5].trim()
         let Operator = pCurrentAppInst.split('|')[6].trim()
-
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
         let organization = localStorage.selectOrg.toString()

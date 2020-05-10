@@ -79,7 +79,7 @@ export const updateStepper = (stepsArray, labels, data, serverData, wsObj) => {
     if (stepsArray && stepsArray.length > 0) {
         stepsArray.map((item, i) => {
             if (id === item.id) {
-                if (data) {
+                if (serverData) {
                     currentSteps = item;
                 }
                 else {
@@ -135,7 +135,7 @@ const MultiStream = (props) => {
                 <div ref={body} style={{ backgroundColor: '#24252b', overflowY: 'auto', maxHeight: 400 }}>
                     {labels.map((info, i) => {
                         if (i > 0)
-                            return <p><b>{info.label}</b>&nbsp;-&nbsp;{data[info.field]}</p>
+                            return <p key={i}><b>{info.label}</b>&nbsp;-&nbsp;{data[info.field]}</p>
                     })}
                 </div>
             </ExpansionPanelDetails>
