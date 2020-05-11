@@ -140,6 +140,9 @@ class ClusterInstReg extends React.Component {
             else if (form.field === fields.numberOfNodes) {
                 form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_DOCKER ? false : true
             }
+            else if (form.field === fields.sharedVolumeSize) {
+                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_DOCKER ? false : true
+            }
         }
         if (isInit === undefined || isInit === false) {
             this.setState({ forms: forms })
@@ -376,6 +379,7 @@ class ClusterInstReg extends React.Component {
             { field: fields.flavorName, label: 'Flavor', formType: 'Select', placeholder: 'Select Flavor', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
             { field: fields.numberOfMasters, label: 'Number of Masters', formType: 'Input', placeholder: 'Enter Number of Masters', rules: { type: 'number', disabled: true }, visible: false, value: 1, update: true },
             { field: fields.numberOfNodes, label: 'Number of Workers', formType: 'Input', placeholder: 'Enter Number of Workers', rules: { type: 'number' }, visible: false, update: true },
+            { field: fields.sharedVolumeSize, label: 'Shared Volume Size', formType: 'Input', placeholder: 'Enter Shared Volume Size', unit: 'GB', rules: { type: 'number' }, visible: false, update: true },
             { field: fields.reservable, label: 'Reservable', formType: 'Checkbox', visible: true, roles: ['AdminManager'], value: false, update: true },
         ]
     }

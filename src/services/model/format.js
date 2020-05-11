@@ -13,6 +13,7 @@ export const fields = {
     nodeFlavor: 'nodeFlavor',
     numberOfMasters: 'numberOfMasters',
     numberOfNodes: 'numberOfNodes',
+    sharedVolumeSize : 'sharedVolumeSize',
     autoClusterInstance:'autoClusterInstance',
     state: 'state',
     status: 'status',
