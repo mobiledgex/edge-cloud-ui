@@ -3,7 +3,12 @@ import type {TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../share
 import {SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET} from "../../../services/endPointTypes";
 import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../shared/Constants";
 import {sendSyncRequest} from "../../../services/serviceMC";
-import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
+import {
+    isEmpty,
+    makeFormForCloudletLevelMatric,
+    makeFormForClusterLevelMatric,
+    showToast
+} from "./PageMonitoringCommonService";
 import {formatData} from "../../../services/formatter/formatComputeInstance";
 import {makeFormForAppLevelUsageList} from "./admin/PageAdminMonitoringService";
 import PageDevMonitoring from "./dev/PageDevMonitoring";
@@ -123,15 +128,50 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
 }
 
+
+/**
+ *
+ * @param serviceBody
+ * @param token
+ * @returns {Promise<AxiosResponse<any>>}
+ */
+export const showAppInst = async (serviceBody, token) => {
+    try {
+        return await axios({
+            url: '/api/v1/auth/ctrl/ShowAppInst',
+            method: 'post',
+            data: serviceBody['params'],
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token
+            },
+            timeout: 15 * 1000
+        }).then(async response => {
+            let parseData = JSON.parse(JSON.stringify(response));
+
+            if (parseData.data === '') {
+                return null;
+            } else {
+                let finalizedJSON = formatData(parseData, serviceBody)
+                return finalizedJSON;
+            }
+
+        })
+    } catch (e) {
+        throw new Error(e)
+    }
+}
+
 export const getAppInstList = async (pArrayRegion = localStorage.getItem('regions').split(","), type: string = '') => {
 
     try {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let mergedAppInstanceList = [];
+        let token = store.userToken;
 
         for (let index = 0; index < pArrayRegion.length; index++) {
             let serviceBody = {
-                "token": store.userToken,
+                "token": token,
                 "params": {
                     "region": pArrayRegion[index],
                     "appinst": {
@@ -144,37 +184,11 @@ export const getAppInstList = async (pArrayRegion = localStorage.getItem('region
                 }
             }
 
-
-            let responseResult = await axios({
-                url: '/api/v1/auth/ctrl/ShowAppInst',
-                method: 'post',
-                data: serviceBody['params'],
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: 'Bearer ' + store.userToken
-                },
-                timeout: 15 * 1000
-            }).then(async response => {
-                let parseData = JSON.parse(JSON.stringify(response));
-
-                if (parseData.data === '') {
-                    return null;
-                } else {
-                    let finalizedJSON = formatData(parseData, serviceBody)
-                    return finalizedJSON;
-                }
-
-            }).catch(e => {
-                //showToast(e.toString())
-            }).finally(() => {
-
-            })
-
+            let responseResult = await showAppInst(serviceBody, token)
             if (responseResult !== null) {
                 let mergedList = mergedAppInstanceList.concat(responseResult);
                 mergedAppInstanceList = mergedList;
             }
-
         }
 
         if (type === USER_TYPE.ADMIN) {
@@ -204,7 +218,12 @@ export const getClusterList = async () => {
         let regionList = localStorage.getItem('regions').split(",");
         let promiseList = []
         for (let i in regionList) {
-            let requestData = {showSpinner: false, token: token, method: SHOW_CLUSTER_INST, data: {region: regionList[i]}}
+            let requestData = {
+                showSpinner: false,
+                token: token,
+                method: SHOW_CLUSTER_INST,
+                data: {region: regionList[i]}
+            }
             promiseList.push(sendSyncRequest(this, requestData))
         }
 
@@ -243,7 +262,12 @@ export const getCloudletList = async () => {
 
         let promiseList = []
         for (let i in regionList) {
-            let requestData = {showSpinner: false, token: token, method: SHOW_ORG_CLOUDLET, data: {region: regionList[i]}}
+            let requestData = {
+                showSpinner: false,
+                token: token,
+                method: SHOW_ORG_CLOUDLET,
+                data: {region: regionList[i]}
+            }
             promiseList.push(sendSyncRequest(this, requestData))
         }
 
