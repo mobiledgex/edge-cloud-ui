@@ -40,8 +40,8 @@ const roles =
             'Apps': 'Manage',
             'App Instances': 'Manage',
             'Policies': 'Manage',
-            'Monitoring' : 'Manage',
-            'Audit Logs' : 'Manage'
+            'Monitoring' : 'View',
+            'Audit Logs' : 'View'
         },
         {
             'Users & Roles': 'View',
@@ -51,8 +51,8 @@ const roles =
             'Apps': 'Manage',
             'App Instances': 'Manage',
             'Policies': 'Manage',
-            'Monitoring' : 'Manage',
-            'Audit Logs' : 'Manage'
+            'Monitoring' : 'View',
+            'Audit Logs' : 'View'
         },
         {
             'Users & Roles': 'View',
@@ -62,8 +62,8 @@ const roles =
             'Apps': 'View',
             'App Instances': 'View',
             'Policies': 'Manage',
-            'Monitoring' : 'Manage',
-            'Audit Logs' : 'Manage'
+            'Monitoring' : 'View',
+            'Audit Logs' : 'View'
         }
     ],
     Operator: [
@@ -75,8 +75,8 @@ const roles =
             'Apps': 'disabled',
             'App Instances': 'disabled',
             'Policies': 'disabled',
-            'Monitoring' : 'Manage',
-            'Audit Logs' : 'Manage'
+            'Monitoring' : 'View',
+            'Audit Logs' : 'View'
         },
         {
             'Users & Roles': 'View',
@@ -86,8 +86,8 @@ const roles =
             'Apps': 'disabled',
             'App Instances': 'disabled',
             'Policies': 'disabled',
-            'Monitoring' : 'Manage',
-            'Audit Logs' : 'Manage'
+            'Monitoring' : 'View',
+            'Audit Logs' : 'View'
         },
         {
             'Users & Roles': 'View',
@@ -97,8 +97,8 @@ const roles =
             'Apps': 'disabled',
             'App Instances': 'disabled',
             'Policies': 'disabled',
-            'Monitoring' : 'Manage',
-            'Audit Logs' : 'Manage'
+            'Monitoring' : 'View',
+            'Audit Logs' : 'View'
         },
     ]
 }
