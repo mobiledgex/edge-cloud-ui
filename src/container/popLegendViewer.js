@@ -251,9 +251,9 @@ export default class PopLegendViewer extends React.Component {
                                 <Table celled inverted selectable>
 
                                     <Table.Body>
-                                        {menuItem.map((type) =>
+                                        {menuItem.map((type, i) =>
                                             this.getUserRole(type) !== 'disabled' ?
-                                            <Table.Row>
+                                            <Table.Row key={i}>
                                                 <Table.Cell>{type}</Table.Cell>
                                                 <Table.Cell>{this.getUserRole(type)}</Table.Cell>
                                             </Table.Row> : null

@@ -1,4 +1,3 @@
-//export const RECENT_DATA_LIMIT_COUNT = 50
 import {convertToMegaGigaForNumber} from "../sites/siteFour/monitoring/PageMonitoringCommonService";
 import randomColor from 'randomcolor'
 
