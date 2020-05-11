@@ -755,7 +755,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                 style={{fontSize: 20, color: this.state.isCloudletClustering ? 'white' : 'grey', cursor: 'pointer'}}
                                             />
                                         </div>
-                                        <div
+                                    {/*    <div
                                             style={{backgroundColor: 'transparent', height: 30, width: 30, display: 'flex', justifyContent: 'center', alignSelf: 'center'}}
                                         >
                                             <Icon
@@ -767,7 +767,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                 }}
                                                 style={{fontSize: 20, color: this.state.isCloudletClustering ? 'white' : 'grey', cursor: 'pointer'}}
                                             />
-                                        </div>
+                                        </div>*/}
                                     </div>
                                 </Control>
 
