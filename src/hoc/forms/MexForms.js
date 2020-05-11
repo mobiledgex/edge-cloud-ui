@@ -97,16 +97,6 @@ const MexForms = (props) => {
                             form.error = undefined
                         }
                     }
-
-                    if (rules.vaildRule) {
-                        if (!rules.vaildRule.test(form.value)) {
-                            form.error = rules.vaildError ? rules.vaildError : 'error'
-                            valid = false;
-                        }
-                        else {
-                            form.error = undefined
-                        }
-                    }
                 }
             }
         }
