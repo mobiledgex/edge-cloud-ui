@@ -1,6 +1,6 @@
 import axios from "axios";
 import type {TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../shared/Types";
-import {SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET} from "../../../services/endPointTypes";
+import {SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../services/endPointTypes";
 import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../shared/Constants";
 import {sendSyncRequest} from "../../../services/serviceMC";
 import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
@@ -243,7 +243,7 @@ export const getCloudletList = async () => {
 
         let promiseList = []
         for (let i in regionList) {
-            let requestData = {showSpinner: false, token: token, method: SHOW_ORG_CLOUDLET, data: {region: regionList[i]}}
+            let requestData = {showSpinner: false, token: token, method: SHOW_CLOUDLET, data: {region: regionList[i]}}
             promiseList.push(sendSyncRequest(this, requestData))
         }
 

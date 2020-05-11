@@ -42,7 +42,16 @@ import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData, TypeUtil
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
 import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../PageMonitoringCommonService";
-import {getAllAppInstEventLogs, getAllClusterEventLogList, getAppInstList, getAppLevelUsageList, getClusterLevelUsageList, getClusterList, requestShowAppInstClientWS} from "../PageMonitoringMetricService";
+import {
+    getAllAppInstEventLogs,
+    getAllClusterEventLogList,
+    getAppInstList,
+    getAppLevelUsageList,
+    getCloudletList,
+    getClusterLevelUsageList,
+    getClusterList,
+    requestShowAppInstClientWS
+} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
@@ -64,7 +73,14 @@ import BarChartContainer from "../components/BarChartContainer";
 import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryForClusterHook";
 import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryForAppInstHook";
 import type {PageDevMonitoringProps} from "./PageDevMonitoringProps";
-import {ColorLinearProgress, CustomSwitch, defaultLayoutXYPosForAppInst, defaultLayoutXYPosForCluster, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageDevMonitoringProps";
+import {
+    ColorLinearProgress,
+    CustomSwitch,
+    defaultLayoutXYPosForAppInst,
+    defaultLayoutXYPosForCluster,
+    PageDevMonitoringMapDispatchToProps,
+    PageDevMonitoringMapStateToProps
+} from "./PageDevMonitoringProps";
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListHookVirtualScroll from "../components/AppInstEventLogListHookVirtualScroll";
 import {fields} from '../../../../services/model/format'
@@ -441,11 +457,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#############################################
                     //@desc: (cloudletList ,clusterList, appnInstList)
                     //@desc:#############################################
+                    promiseList.push(getCloudletList())
                     promiseList.push(getClusterList())
                     promiseList.push(getAppInstList())
                     let newPromiseList = await Promise.all(promiseList);
-                    let clusterList = newPromiseList[0];
-                    let appInstList = newPromiseList[1];
+                    //let allCloudletList = newPromiseList[0];
+                    let clusterList = newPromiseList[1];
+                    let appInstList = newPromiseList[2];
                     let clusterDropdownList = makeSelectBoxListWithKeyValuePipeForCluster(clusterList, 'ClusterName', 'Cloudlet')
 
                     //@todo: dropdownClusterListOnCloudlet
@@ -665,6 +683,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             async handleClusterDropdownAndReset(selectedClusterOne) {
                 try {
 
+
+                    console.log(`selectedClusterOne====>`, selectedClusterOne);
+
                     //desc: When selected all Cluster options
                     if (selectedClusterOne === '') {
                         await this.setState({
@@ -722,6 +743,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             filteredAppInstanceList: filteredAppInstList,
                             appInstanceListGroupByCloudlet: reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET),
                             currentAppInst: undefined,
+                        }, () => {
+                            console.log(`currentCluster====>`, this.state.currentCluster);
                         });
 
                     }
@@ -1707,6 +1730,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             dropdownStyle={{maxHeight: 800, overflow: 'auto', width: 450,}}
                             treeData={this.state.dropDownCludsterListOnCloudlet}
                             treeDefaultExpandAll={true}
+                            value={this.state.currentCluster}
 
                             onChange={async (value, label, extra) => {
                                 clearInterval(this.intervalForCluster)
@@ -1800,6 +1824,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     {this.state.filteredClusterUsageList.map((item, index) => {
                                         return (
                                             <Col className="gutterRow"
+                                                 onClick={async () => {
+                                                     let clusterOne = item.cluster + " | " + item.cloudlet;
+                                                     await this.handleClusterDropdownAndReset(clusterOne)
+
+                                                 }}
                                                  span={this.state.legendColSize}
                                                  title={!this.state.isLegendExpanded ? item.cluster + '[' + item.cloudlet + ']' : null}
                                             >

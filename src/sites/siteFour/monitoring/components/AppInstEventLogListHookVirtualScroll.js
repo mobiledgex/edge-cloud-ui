@@ -25,6 +25,9 @@ export default function AppInstEventLogListHookVirtualScroll(props) {
     let itemHeight = 35
 
     useEffect(() => {
+
+        console.log(`eventLogList====>`, props.eventLogList);
+
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
 
@@ -111,8 +114,9 @@ export default function AppInstEventLogListHookVirtualScroll(props) {
                                             </React.Fragment>
                                             :
                                             <React.Fragment>
-                                                <div>
-                                                    {props.eventLogList[index][1].toString().substring(0, 20)} {/*-{index}*/}
+                                                <div style={{textAlign: 'right'}}>
+                                                    {props.eventLogList[index][1].toString().substring(0, 20)}
+                                                    &nbsp;[{props.eventLogList[index][2]}{/*version*/}]
 
                                                 </div>
                                                 <div>

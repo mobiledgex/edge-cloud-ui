@@ -575,11 +575,12 @@ tr td {
 }
 
 .ant-select-dropdown-menu-item {
-   /* line-height: 15px !important;*/
+    /* line-height: 15px !important;*/
 }
 
 .gutterRow {
     display: flex;
+    cursor: pointer;
 }
 
 .clusterCloudletBox {
@@ -609,7 +610,7 @@ tr td {
 .ant-select-tree {
     background-color: rgba(0, 0, 0, 0.3);
     border-color: #96c8da;
-    box-shadow: 0 2px 3px 0 rgba(34,36,38,.15);
+    box-shadow: 0 2px 3px 0 rgba(34, 36, 38, .15);
 }
 
 /*.ant-select-tree-title{
