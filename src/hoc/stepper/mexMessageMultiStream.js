@@ -113,7 +113,7 @@ const MultiStream = (props) => {
 
     const getSummary = (data) => (
         <ExpansionPanelSummary
-            style={{ backgroundColor: '#24252b', color: 'white' }}
+            style={{ backgroundColor: '#24252b', color: 'white', wordBreak: 'break-word' }}
             expandIcon={<ExpandMoreIcon style={{ color: 'white' }} />}
             aria-controls="panel1a-content"
             id="panel1a-header"
