@@ -13,6 +13,9 @@ import { fields } from '../../../services/model/format';
 import { keys, createOrganization } from '../../../services/model/organization';
 import { addUser } from '../../../services/model/users';
 import { } from '../../../services/model/cloudlet';
+import {organizationTutor} from "../../../tutorial";
+
+const orgaSteps = organizationTutor();
 
 const stepData = [
     {
@@ -184,7 +187,8 @@ class OrganizationReg extends React.Component {
             this.props.onClose()
         }
         else {
-            this.setState({ step: 2 })
+            this.setState({ step: 2 });
+            this.props.handleViewMode( orgaSteps.stepsNewOrg3 );
         }
     }
 
@@ -221,6 +225,7 @@ class OrganizationReg extends React.Component {
             step: 1,
             forms: forms
         })
+        this.props.handleViewMode( orgaSteps.stepsNewOrg2 );
     }
 
 
@@ -272,7 +277,7 @@ class OrganizationReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <div className="grid_table" style={{ height: constant.getHeight(), overflow: 'auto' }}>
+                <div className="grid_table" >
 
                     <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
                         {this.props.action ? null :
@@ -400,6 +405,7 @@ class OrganizationReg extends React.Component {
             this.organizationInfo = data
             this.addUserForm(data)
             this.setState({ step: 1 })
+            this.props.handleViewMode( orgaSteps.stepsNewOrg2 );
         }
         else {
 
@@ -427,7 +433,9 @@ class OrganizationReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data)
+        this.props.handleViewMode( orgaSteps.stepsNewOrg )
     }
+
 };
 
 const mapStateToProps = (state) => {
@@ -438,7 +446,8 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
+        handleViewMode: (data) => { dispatch(actions.viewMode(data)) },
     };
 };
 

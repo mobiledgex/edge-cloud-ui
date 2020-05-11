@@ -19,6 +19,9 @@ import { getPrivacyPolicyList } from '../../../services/model/privacyPolicy';
 import Map from '../../../libs/simpleMaps/with-react-motion/index_clusters';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { object } from 'prop-types';
+import {clusterInstTutor} from "../../../tutorial";
+
+const clusterInstSteps = clusterInstTutor();
 
 class ClusterInstReg extends React.Component {
     constructor(props) {
@@ -270,7 +273,7 @@ class ClusterInstReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <div className="grid_table" style={{ height: constant.getHeight(), overflow: 'auto' }}>
+                <div className="grid_table" >
                     <Grid>
                         <Grid.Row>
                             <Grid.Column width={8}>
@@ -411,6 +414,7 @@ class ClusterInstReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data)
+        this.props.handleViewMode( clusterInstSteps.stepsClusterInstReg )
     }
 };
 
@@ -433,7 +437,8 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
+        handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
     };
 };
 

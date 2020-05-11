@@ -18,8 +18,6 @@ import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiSt
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import Map from '../libs/simpleMaps/with-react-motion/index_clusters';
 
-
-
 class MexListView extends React.Component {
     constructor(props) {
         super(props);
@@ -54,6 +52,7 @@ class MexListView extends React.Component {
 
     detailView = (data) => {
         let additionalDetail = this.props.requestInfo.additionalDetail
+        this.props.handleViewMode( null )
         return (
             <Card style={{ height: '95%', backgroundColor: '#2A2C33', overflowY: 'auto' }}>
                 <MexDetailViewer detailData={data} keys={this.keys} />
@@ -460,6 +459,7 @@ class MexListView extends React.Component {
                 break;
             case ACTION_CLOSE:
                 this.setState({ isDetail: false, currentView: null })
+                this.props.handleViewMode( this.props.requestInfo.viewMode )
                 break;
             default:
 
@@ -530,6 +530,7 @@ class MexListView extends React.Component {
             dataList: Object.assign([], dataList)
         })
         this.onFilterValue()
+        this.props.handleViewMode( this.props.requestInfo.viewMode );
     }
 
     dataFromServer = (region) => {
@@ -548,11 +549,13 @@ class MexListView extends React.Component {
                 serverData.showMultiDataFromServer(this, requestInfo.requestType, this.onServerResponse)
             }
         }
+
     }
 
 
     componentDidMount() {
         this.dataFromServer(REGION_ALL)
+        this.props.handleViewMode( null )
     }
 }
 
@@ -574,7 +577,8 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) }
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
     };
 };
 

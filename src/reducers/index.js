@@ -47,6 +47,7 @@ import MapTyleLayerReducer from "./MapTyleLayerReducer";
 import HeaderReducer from "./HeaderReducer";
 import ThemeReducer from "./ThemeReducer";
 import ChartDataReducer from "./ChartDataReducer";
+import ViewMode from "./ViewMode";
 
 const reducers = combineReducers({
     videoControl,
@@ -96,6 +97,7 @@ const reducers = combineReducers({
     HeaderReducer,
     ThemeReducer,
     ChartDataReducer,
+    ViewMode,
     form: formReducer
 });
 
