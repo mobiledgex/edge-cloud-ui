@@ -56,6 +56,8 @@ const trace4 = {
         width: 4
     }
 };
+
+
 class TimeSeries extends React.Component {
     constructor() {
         super();
@@ -73,17 +75,22 @@ class TimeSeries extends React.Component {
             currentKey: "",
             revision: 10,
             mode: "line+markers",
-            type: "scatter"
+            type: "scatter",
         };
         this.wGab = 10;
         this.hGab = 38;
         this.colors = ["#22cccc", "#6699ff", "#ff710a", "#ffce03"];
         this.colorsErr = ["#22cccc", "#ff3355", "#6699ff", "#ffce03"];
+        this.stackAllData = [];
         this.stackData = [];
+        this.loadedCount = 0;
+        this.maxDataCount = 20;
+        this.currentPage = 0;
     }
     componentWillReceiveProps(nextProps, nextContext) {
+        console.log('20200511 ------ receive data in timeseries--', nextProps)
         if (nextProps.data && nextProps.data.length > 0) {
-            console.log('20200509 receive data in timeseries--', nextProps)
+
             // TODO : select box의 선택에 따른 데이터 교체
             let selectedItem = ""
             if (nextProps.method === "") {
@@ -95,17 +102,28 @@ class TimeSeries extends React.Component {
             this.reloadChart(
                 datas,
                 times,
-                methods,
-                nextProps.single,
-                nextProps.dataType,
+                methods
             );
+            this.stackAllData.push(Object.assign(nextProps.data))
+
         }
-        console.log(
-            "20200409 chart size ... receive -----------------",
-            nextProps.size,
-            "  type : ",
-            nextProps.type
-        );
+        console.log("20200511 ------ page info ... ", nextProps.step)
+        if (this.currentPage !== nextProps.step) {
+            this.currentPage = nextProps.step;
+            this.stackData = [];
+            this.loadedCount = 0;
+            this.stackAllData.map((data) => {
+                let times = data[0].times[0];
+                let datas = data[0].resData_util[0].diskUsed.y;
+                let methods = data[0].methods[0];
+                this.reloadChart(
+                    datas,
+                    times,
+                    methods
+                );
+            })
+        }
+
         if (nextProps.size) {
             this.setState({
                 vWidth: nextProps.size.width,
@@ -128,13 +146,17 @@ class TimeSeries extends React.Component {
             this.setState({ chartData: cloneData || "scatter" });
         }
         console.log(
-            "20200409 chart size ... ",
-            this.props.size,
-            "  type : ",
-            this.props.type
+            "20200511 chart size ... ",
+            this.props.filterInfo
         );
+        if (this.props.filterInfo) {
+            this.hGab = 38;
+        } else {
+            this.hGab = 0;
+        }
+        if (this.props.divide) this.maxDataCount = this.props.divide;
     }
-    reloadChart(data, times, names, dataId, dataType) {
+    reloadChart(data, times, names) {
         let seriesData = null;
         // let series = times.map((time) => (
         //     d3.TimeSeries()
@@ -153,21 +175,30 @@ class TimeSeries extends React.Component {
                 width: 1
             },
             marker: { size: 4 },
-            hovertemplate: '<i>Used</i>: %{y:.2f}GB' +
+            hovertemplate: '<i>Used</i>: %{y:.2f}GBs' +
                 '<br><b>Time</b>: %{x}<br>' +
                 '<b> %{text} </b>' +
                 '<extra></extra>'
         }
 
-        if (this.stackData.length < 4) {
-            this.stackData.push(seriesData)
+        if (this.stackData.length < this.maxDataCount) {
+            if (Math.floor(this.loadedCount / this.maxDataCount) === this.currentPage) {
+                this.stackData.push(seriesData)
+            }
+            this.loadedCount++;
         }
+
         this.setState({
             chartData: this.stackData
         });
 
         this.setState({ revision: this.state.revision + 1 });
+
     }
+    resetData() {
+        this.setState({ chartData: [] });
+    }
+
     reloadChartOld(data, series, names, dataId, dataType) {
         let xaxis = series;
 
@@ -254,7 +285,7 @@ class TimeSeries extends React.Component {
                         plot_bgcolor: "transparent",
                         legend: {
                             orientation: "h",
-                            x: 1,
+                            x: 0,
                             y: 1,
                             xanchor: 'bottom',
                             font: {

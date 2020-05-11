@@ -31,13 +31,17 @@ const ContainerWrapper = obj =>
                 super();
                 _self = this;
                 this.firstProps = null;
+                this.stackData = [];
+                this.groupData = [];
+                this.allData = [];
             }
             state = {
                 data: [],
                 chartType: "",
                 chartMethod: "",
                 title: null,
-                legendShow: false
+                legendShow: false,
+                page: "single"
             };
 
 
@@ -63,23 +67,21 @@ const ContainerWrapper = obj =>
                 }
             }
 
+
             async onReceiveResult(result, self) {
                 try {
-                    console.log(
-                        "20200507 ------->>>>>>>>>>",
-                        JSON.stringify(result)
-                    );
+                    console.log("20200511 ------->>>>>>>>>>  page  = ", self.state.page);
                     // TODO: 20200507 필터가 있는지 확인 후 데이터 가공
-
-
+                    /** filtering data */
+                    let groupByData = result;
 
 
                     this.setState({ data: result });
                 } catch (e) { }
             }
             componentDidMount() {
-                console.log('20200507 did mount == ', this.props)
-                this.setState({ chartType: this.props.chartType, title: this.props.title });
+                console.log('20200511 did mount == ', this.props)
+                this.setState({ chartType: this.props.chartType, title: this.props.title, page: this.props.page });
 
             }
             componentWillReceiveProps(nextProps) {

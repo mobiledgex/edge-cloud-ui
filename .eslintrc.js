@@ -1,4 +1,4 @@
-{
+module.exports = {
     "env": {
         "browser": true,
         "es6": true
@@ -20,9 +20,14 @@
         "ecmaVersion": 2018,
         "sourceType": "module"
     },
-    "plugins": ["react", "@typescript-eslint"],
+    "plugins": [
+        "react",
+        "@typescript-eslint"
+    ],
     "rules": {
+        "semi": ["error", "always"],
+        "quotes": ["error", "double"],
         "object-curly-spacing": [2, "always"],
         "max-len": [2, { "code": 1000 }]
     }
-}
+};

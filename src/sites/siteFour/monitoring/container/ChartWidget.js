@@ -30,13 +30,6 @@ class ChartWidget extends React.Component {
     };
 
 
-    handleNext = () => {
-        this.setState({ activeStep: (prevActiveStep) => prevActiveStep + 1 });
-    };
-
-    handleBack = () => {
-        this.setState({ activeStep: (prevActiveStep) => prevActiveStep - 1 });
-    };
 
     getData = () => [100, 3, 0, 6, 4, 5, 8, 6, 0, 1];
     componentDidMount() {
@@ -63,6 +56,9 @@ class ChartWidget extends React.Component {
         ) : (
                 props.content
             );
+    setActiveStep = step => {
+        this.setState({ activeStep: step });
+    }
     render() {
         const { data, chartType, type, size, title, legendShow, filter, method, page, itemCount } = this.props;
         console.log("20200509 data --- ", this.props)
@@ -79,7 +75,7 @@ class ChartWidget extends React.Component {
                     <FilteringComponent data={data} filterInfo={filter} />
                 </div> : null}
                 {chartType === ChartType.GRAPH ? (
-                    <TimeSeries size={size} type={type} data={data} title={title.value} showLegend={legendShow} method={method} />
+                    <TimeSeries size={size} type={type} data={data} title={title.value} showLegend={legendShow} method={method} filterInfo={filter} divide={4} step={this.state.activeStep} />
                 ) : chartType === ChartType.GAUGE ? (
                     <ContainerHealth size={size} type={type} title={title.value} />
                 ) : chartType === ChartType.MAP ? (
@@ -104,8 +100,8 @@ class ChartWidget extends React.Component {
                                 )}
 
                 {page === "multi" ?
-                    <div style={{ height: 10, backgroundColor: "green" }}>
-                        <DotsMobileStepper></DotsMobileStepper>
+                    <div style={{ height: 10 }}>
+                        <DotsMobileStepper setActiveStep={this.setActiveStep}></DotsMobileStepper>
                     </div> : null
                 }
 
@@ -236,17 +232,19 @@ const useStyles = makeStyles({
     },
 });
 
-export const DotsMobileStepper = () => {
+export const DotsMobileStepper = (props) => {
     const classes = useStyles();
     const theme = useTheme();
     const [activeStep, setActiveStep] = React.useState(0);
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        props.setActiveStep(activeStep + 1);
     };
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
+        props.setActiveStep(activeStep - 1);
     };
 
     return (
@@ -256,6 +254,7 @@ export const DotsMobileStepper = () => {
             position="static"
             activeStep={activeStep}
             className={classes.root}
+            style={{ backgroundColor: "transparent", height: 30 }}
             nextButton={
                 <div size="small" onClick={handleNext} disabled={activeStep === 2}>
                     {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
