@@ -20,7 +20,6 @@ import { fields } from '../../services/model/format';
 import {Popper, Grow, Paper, ClickAwayListener, MenuList, MenuItem} from '@material-ui/core';
 import { getUserRole } from '../../services/model/format';
 import MaterialIcon from 'material-icons-react';
-import Icon from '@material-ui/core/Icon';
 
 
 const StyledTableRow = withStyles((theme) => ({
@@ -30,6 +29,16 @@ const StyledTableRow = withStyles((theme) => ({
         },
     },
 }))(TableRow);
+
+const StyledTableCell = withStyles((theme) => ({
+    root: {
+        maxWidth:250,
+        overflow:'hidden',
+        textOverflow:'ellipsis',
+        borderBottom: 'none',
+        height:50 
+    },
+}))(TableCell);
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -165,7 +174,7 @@ const EnhancedTableToolbar = (props) => {
                         return (
                             <Tooltip key={i} title={actionMenu.label}>
                                 <IconButton aria-label={actionMenu.label} onClick={() => { props.groupActionClose(actionMenu) }}>
-                                    <i class={actionMenu.icon} aria-hidden="true"></i>
+                                    <MaterialIcon icon={actionMenu.icon} color={'white'}/>
                                 </IconButton>
                             </Tooltip>)
                     }) : null
@@ -200,6 +209,12 @@ const useStyles = makeStyles((theme) => ({
         top: 20,
         width: 1,
     },
+    tip: {
+        width:'fit-content',
+        maxWidth:'100%',
+        overflow:'hidden',
+        textOverflow:'ellipsis',
+    }
 }));
 
 export default function EnhancedTable(props) {
@@ -362,13 +377,19 @@ export default function EnhancedTable(props) {
                                                 if (header.visible) {
                                                     let field = header.field;
                                                     return (
-                                                        <TableCell key={j} style={{ borderBottom: "none" }}
-                                                            onClick={(event) => cellClick(header, row)}>
-                                                            {
+                                                        <StyledTableCell key={j} onClick={(event) => cellClick(header, row)}>
+                                                            {field.indexOf('Name') !== -1 ?
+                                                                <Tooltip title={header.customizedData ? header.customizedData(row) : row[field]} arrow>
+                                                                    <div className={classes.tip}>
+                                                                        {header.customizedData ? header.customizedData(row) : row[field]}
+                                                                    </div>
+                                                                </Tooltip>
+                                                            :
                                                                 field === fields.actions ? getAction(row) :
                                                                     header.customizedData ? header.customizedData(row) : row[field]
                                                             }
-                                                        </TableCell>
+                                                        </StyledTableCell>
+
                                                     )
                                                 }
                                             })

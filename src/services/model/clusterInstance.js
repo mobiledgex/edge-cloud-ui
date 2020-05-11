@@ -18,7 +18,7 @@ export const keys = () => ([
     { field: fields.cloudletLocation, label: 'Cloudlet Location', dataType: TYPE_JSON },
     { field: fields.nodeFlavor, serverField: 'node_flavor', label: 'Node Flavor' },
     { field: fields.numberOfMasters, serverField: 'num_masters', label: 'Number of Masters' },
-    { field: fields.numberOfNodes, serverField: 'num_nodes', label: 'Node of Nodes' },
+    { field: fields.numberOfNodes, serverField: 'num_nodes', label: 'Number of Workers' },
     { field: fields.deployment, serverField: 'deployment', sortable: true, label: 'Deployment', visible: true, filter: true },
     { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
     { field: fields.status, serverField: 'status', label: 'Status', dataType: TYPE_JSON },
@@ -128,7 +128,8 @@ export const getClusterInstList = async (self, data) => {
 
 export const createClusterInst = (self, data, callback) => {
     let requestData = clusterKey(data, true)
-    let request = { uuid: data.uuid ? data.uuid : uuid(), method: CREATE_CLUSTER_INST, data: requestData }
+    data.uuid = data[fields.cloudletName]
+    let request = { uuid: data.uuid, method: CREATE_CLUSTER_INST, data: requestData }
     return serverData.sendWSRequest(self, request, callback, data)
 }
 

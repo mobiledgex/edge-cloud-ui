@@ -91,14 +91,16 @@ export const showOrgCloudlets = (data) => {
 
 export const createCloudlet = (self, data, callback) => {
     let requestData = getKey(data, true)
-    let request = { uuid: data.uuid ? data.uuid : uuid(), method: CREATE_CLOUDLET, data: requestData }
+    data.uuid = data[fields.cloudletName]
+    let request = { uuid: data.uuid, method: CREATE_CLOUDLET, data: requestData }
     return serverData.sendWSRequest(self, request, callback, data)
 }
 
 export const updateCloudlet = (self, data, callback) => {
     let requestData = getKey(data, true)
     requestData.cloudlet.fields = ['20']
-    let request = { uuid: data.uuid ? data.uuid : uuid(), method: UPDATE_CLOUDLET, data: requestData }
+    data.uuid = data.uuid ? data.uuid : uuid()
+    let request = { uuid: data.uuid, method: UPDATE_CLOUDLET, data: requestData }
     return serverData.sendWSRequest(self, request, callback, data)
 }
 
@@ -138,7 +140,7 @@ export const keys = () => ([
     { field: fields.cloudletStatus, label: 'Cloudlet Status', visible: true },
     { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
     { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
-    { field: fields.containerVersion, serverField: 'container_version', label: 'Container Version' },
+    { field: fields.containerVersion, serverField: 'container_version', label: 'Container Version', roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] },
     { field: fields.restagmap, serverField: 'res_tag_map', label: 'Resource Mapping', dataType: constant.TYPE_JSON  },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] }
 ])

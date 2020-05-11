@@ -162,11 +162,13 @@ tbody:hover {
     font-weight: bold;
     color: white;
     font-size: 9px;
-    /*width: 300px;*/
+    width: auto;
+    min-width: auto;
+    max-width: auto;
 }
 
 .clientPopup {
-    width: 280px;
+    width: auto;
     font-family: Ubuntu !important;
     font-size: 9pt !important;
 }
@@ -174,6 +176,7 @@ tbody:hover {
 .leaflet-popup-content {
     font-size: 10pt !important;
 }
+
 
 .leaflet-popup-content-wrapper2 {
     background-color: rgba(71, 82, 102, 0.65);
@@ -371,11 +374,6 @@ tbody:hover {
     background-color: #1e2124;
 }
 
-/*tbody {*/
-/*    background-color: rgb(30, 33, 36);*/
-/*    height: 360px;*/
-/*    min-height: 350px;*/
-/*}*/
 
 .react-grid-layout {
     position: relative;
@@ -391,11 +389,10 @@ tbody:hover {
 
 .leaflet-popup-content-wrapper {
     background-color: rgba(0, 0, 0, 0.65);
-    /*font-weight: bold;*/
     color: white;
     border: solid 1px;
-    /*font-family: "Roboto Light";*/
     font-size: 20px;
+    width: auto;
 }
 
 
@@ -578,7 +575,7 @@ tr td {
 }
 
 .ant-select-dropdown-menu-item {
-    line-height: 15px !important;
+   /* line-height: 15px !important;*/
 }
 
 .gutterRow {
@@ -591,6 +588,46 @@ tr td {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 20px;
+    /*height: 20px;*/
     margin-left: 5px;
 }
+
+.ant-select-tree-node-content-wrapper .ant-select-tree-node-content-wrapper-normal {
+    color: red;
+}
+
+.ant-select-tree-dropdown .ant-select-dropdown-search .ant-select-search__field {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 4px 7px;
+    border: 1px solid #17171f;
+    border-radius: 4px;
+    outline: none;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.ant-select-tree {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-color: #96c8da;
+    box-shadow: 0 2px 3px 0 rgba(34,36,38,.15);
+}
+
+/*.ant-select-tree-title{
+    background-color: red;
+}*/
+/*.ant-select-tree-treenode-switcher-open .ant-select-tree-treenode-switcher-close {
+    height: 15px;
+    padding: 0px;
+    margin: 0px
+}
+
+.ant-select-tree li {
+    margin-top: 0px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    padding: 5;
+    white-space: nowrap;
+    list-style: none;
+    outline: 0;
+}*/

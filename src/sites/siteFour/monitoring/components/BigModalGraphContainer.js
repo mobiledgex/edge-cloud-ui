@@ -46,6 +46,7 @@ type State = {
     graphType: string,
     popupGraphHWType: string,
     appInstanceListGroupByCloudlet: any,
+    redraw: boolean,
 
 };
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
@@ -61,6 +62,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 graphType: '',
                 popupGraphHWType: '',
                 appInstanceListGroupByCloudlet: [],
+                redraw: false,
             }
         }
 
@@ -166,11 +168,24 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             </div>
                                             }
                                         </div>
+                                        {/*<div>
+                                            <Button
+                                                type={this.state.redraw ? 'primary' : null}
+                                                onClick={() => {
+                                                    this.setState({
+                                                        redraw: !this.state.redraw,
+                                                    })
+                                                }}
+                                            >
+                                                Redraw Graph
+                                            </Button>
+                                        </div>*/}
                                     </div>
 
                                     : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ?
                                         <div style={{display: 'flex'}}>
                                             {this.renderPrevBtn()}
+
                                             <div className='page_monitoring_popup_title' style={{display: 'flex'}}>
                                                 App Instance {this.props.popupGraphHWType} Usage
                                                 {this.props.intervalLoading &&
@@ -179,6 +194,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 </div>
                                                 }
                                             </div>
+
 
                                         </div>
                                         : this.state.graphType === GRID_ITEM_TYPE.BUBBLE ?
@@ -204,8 +220,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {this.state.graphType === GRID_ITEM_TYPE.LINE ?
                             <div>
                                 <Line
+                                    //redraw={this.state.redraw ? true : null}
                                     width={window.innerWidth * 0.9}
-                                    ref="chart"
+                                    ref={(reference) => this.lineChart = reference}
                                     height={window.innerHeight * 0.8}
                                     data={this.state.chartDataForRendering}
                                     options={makeLineChartOptions(this.state.popupGraphHWType, this.state.chartDataForRendering, this.props.parent, true)}

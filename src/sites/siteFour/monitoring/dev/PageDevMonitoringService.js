@@ -962,6 +962,17 @@ export const addUnitNameForUsage = (value, hardwareType, _this) => {
     }
 };
 
+export const groupByCloudletLocation = (items, key) => items.reduce(
+    (result, item) => ({
+        ...result,
+        [item[key]]: [
+            ...(result[item[key]] || []),
+            item,
+        ],
+    }),
+    {},
+);
+
 
 export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBig = false) => {
     try {
@@ -992,13 +1003,13 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     fontFamily: 'ubuntu',
                     fontWeight: 'bold',
                 },
-                onClick: (e, clickedItem) => {
-                    /*let selectedClusterOne = clickedItem.text.toString().replace('\n', "|");
-                    handleLegendAndBubbleClickedEvent(_this, selectedClusterOne, lineChartDataSet)*/
+                /*onClick: (e, clickedItem) => {
+                    /!*let selectedClusterOne = clickedItem.text.toString().replace('\n', "|");
+                    handleLegendAndBubbleClickedEvent(_this, selectedClusterOne, lineChartDataSet)*!/
                 },
                 onHover: (e, item) => {
                     //alert(`Item with text ${item.text} and index ${item.index} hovered`)
-                },
+                },*/
             },
             scales: {
                 ticks: {
@@ -1056,13 +1067,15 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                         padding: 10,
                         labelOffset: 0,
                         callback(value, index, label) {
-                            /*  if (isBig) {
-                                  return value
-                              } else {
-                                  if (index % 2 === 0) return '';
-                                  return value;
-                              }*/
-                            return value;
+                            if (RECENT_DATA_LIMIT_COUNT >= 50) {
+                                if (index % 2 === 0)
+                                    return '';
+                                else
+                                    return value;
+                            } else {
+                                return value;
+                            }
+
                         },
                     },
                     beginAtZero: false,
@@ -1299,35 +1312,32 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
 
             let finalSeriesDataSets = [];
             for (let index in usageSetList) {
-                //@todo: top5 만을 추린다
-                if (index < 5) {
-                    let dataSetsOne = {
-                        label: levelTypeNameList[index],
-                        radius: 0,
-                        borderWidth: 3.5,//todo:라인 두께
-                        fill: _this.state.isStackedLineChart,// @desc:fill BackgroundArea
-                        backgroundColor: _this.state.isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
-                        borderColor: _this.state.isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
-                        lineTension: 0.5,
-                        data: usageSetList[index],
-                        borderCapStyle: 'butt',
-                        borderDash: [],
-                        borderDashOffset: 0.0,
-                        borderJoinStyle: 'miter',
-                        pointBorderColor: 'rgba(75,192,192,1)',
-                        pointBackgroundColor: '#fff',
-                        pointBorderWidth: 1,
-                        pointHoverRadius: 5,
-                        pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-                        pointHoverBorderColor: 'rgba(220,220,220,1)',
-                        pointHoverBorderWidth: 2,
-                        pointRadius: 1,
-                        pointHitRadius: 10,
+                let dataSetsOne = {
+                    label: levelTypeNameList[index],
+                    radius: 0,
+                    borderWidth: 3.5,//todo:라인 두께
+                    fill: _this.state.isStackedLineChart,// @desc:fill BackgroundArea
+                    backgroundColor: _this.state.isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
+                    borderColor: _this.state.isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
+                    lineTension: 0.5,
+                    data: usageSetList[index],
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: _this.state.chartColorList[index],
+                    pointBackgroundColor: _this.state.chartColorList[index],
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: _this.state.chartColorList[index],
+                    pointHoverBorderColor: _this.state.chartColorList[index],
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
 
-                    };
+                };
 
-                    finalSeriesDataSets.push(dataSetsOne)
-                }
+                finalSeriesDataSets.push(dataSetsOne)
             }
             return {
                 labels: newDateTimeList,
@@ -1340,6 +1350,13 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
     }
 }
 
+
+/**
+ *
+ * @param str
+ * @param lengthLimit
+ * @returns {string}
+ */
 export const reduceString = (str: string, lengthLimit: number) => {
     if (str.length > lengthLimit) {
         return str.substring(0, lengthLimit) + "..";
@@ -1379,10 +1396,10 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
                     borderJoinStyle: 'miter',
                     pointBorderColor: _this.state.chartColorList[index],
                     pointBackgroundColor: _this.state.chartColorList[index],
-                    pointBorderWidth: 1,
-                    pointHoverRadius: 5,
                     pointHoverBackgroundColor: _this.state.chartColorList[index],
                     pointHoverBorderColor: _this.state.chartColorList[index],
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
                     pointHoverBorderWidth: 2,
                     pointRadius: 1,
                     pointHitRadius: 10,
@@ -1504,6 +1521,27 @@ export const makeSelectBoxListWithKeyValuePipeForCluster = (arrList, keyName, va
     }
 };
 
+export const makeCloudletDropdown = (arrList) => {
+    try {
+        let newArrList = [];
+        newArrList.push({
+            key: '',
+            value: '',
+            text: 'All Cloudlet',
+        })
+        for (let i in arrList) {
+            newArrList.push({
+                key: arrList[i],
+                value: arrList[i],
+                text: arrList[i],
+            })
+        }
+        return newArrList;
+    } catch (e) {
+
+    }
+};
+
 
 export const makeSelectBoxListWithKey = (arrList, keyName) => {
     try {
@@ -1547,6 +1585,16 @@ export const makeSelectBoxListWithValuePipe = (appInstList, keyName: string, val
     }
 };
 
+
+/**
+ *
+ * @param appInstList
+ * @param keyName
+ * @param valueName
+ * @param thirdValue
+ * @param fourthValue
+ * @returns {[]}
+ */
 export const makeDropdownListWithValuePipeForAppInst = (appInstList, keyName: string, valueName: string, thirdValue: string, fourthValue: string = '') => {
     try {
         let newArrList = [];
@@ -1555,7 +1603,7 @@ export const makeDropdownListWithValuePipeForAppInst = (appInstList, keyName: st
                 newArrList.push({
                     key: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim(),
                     value: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim(),
-                    text: appInstList[i][keyName].trim(),
+                    text: appInstList[i][keyName].trim() + " [" + appInstList[i][fourthValue].trim() + "]",
                 })
             }
         } else {

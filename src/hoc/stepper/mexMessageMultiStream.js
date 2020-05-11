@@ -7,11 +7,12 @@ import ErrorIcon from '@material-ui/icons/Error';
 import { green, red } from '@material-ui/core/colors';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CloseIcon from '@material-ui/icons/Close';
-
+import { fields } from '../../services/model/format';
 export const CODE_FINISH = 100;
 export const CODE_SUCCESS = 200;
 export const CODE_FAILED = 400;
 export const CODE_FAILED_403 = 403;
+let header = 'Cloudlet';
 
 const useStyles = makeStyles(theme => ({
 
@@ -67,17 +68,18 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: '#88dd00'
     },
     close_btn: {
-        color: '#88dd00',
-        height:10
+        color: '#88dd00'
     },
 }));
 
-export const updateStepper = (stepsArray, id, data, header, wsObj) => {
+export const updateStepper = (stepsArray, labels, data, serverData, wsObj) => {
     let currentSteps = null;
+    let id = data[fields.uuid]
+    header = labels[0].label
     if (stepsArray && stepsArray.length > 0) {
         stepsArray.map((item, i) => {
             if (id === item.id) {
-                if (data) {
+                if (serverData) {
                     currentSteps = item;
                 }
                 else {
@@ -87,10 +89,10 @@ export const updateStepper = (stepsArray, id, data, header, wsObj) => {
         })
     }
 
-    if (data) {
-        let step = { code: data.code, message: data.data.message }
+    if (serverData) {
+        let step = { code: serverData.code, message: serverData.data.message }
         if (currentSteps === null) {
-            stepsArray.push({ header:header, id: id, steps: [step], wsObj:wsObj })
+            stepsArray.push({ data: data, labels: labels, id: id, steps: [step], wsObj: wsObj })
         }
         else {
             stepsArray.map((item, i) => {
@@ -109,18 +111,37 @@ const MultiStream = (props) => {
     const classes = useStyles();
 
 
-    const getSummary = (steps) => {
-        let step = steps[steps.length - 1]
-        step = step.code === CODE_FINISH ? steps[steps.length - 2] : step
-        return (<ExpansionPanelSummary
-            style={{ backgroundColor: '#24252b', color: 'white'}}
+    const getSummary = (data) => (
+        <ExpansionPanelSummary
+            style={{ backgroundColor: '#24252b', color: 'white' }}
             expandIcon={<ExpandMoreIcon style={{ color: 'white' }} />}
             aria-controls="panel1a-content"
             id="panel1a-header"
         >
-            <Typography>{step.message}</Typography>
-        </ExpansionPanelSummary>)
+            <Typography>{data}</Typography>
+        </ExpansionPanelSummary>
+    )
+    const getDataSummary = (steps) => {
+        let step = steps[steps.length - 1]
+        step = step.code === CODE_FINISH ? steps[steps.length - 2] : step
+        return getSummary(step.message)
     }
+
+    const getHeaderDetails = (item) => {
+        let data = item.data
+        let labels = item.labels
+        return (
+            <ExpansionPanelDetails style={{ backgroundColor: '#24252b', color: 'white' }}>
+                <div ref={body} style={{ backgroundColor: '#24252b', overflowY: 'auto', maxHeight: 400 }}>
+                    {labels.map((info, i) => {
+                        if (i > 0)
+                            return <p key={i}><b>{info.label}</b>&nbsp;-&nbsp;{data[info.field]}</p>
+                    })}
+                </div>
+            </ExpansionPanelDetails>
+        )
+    }
+
 
     const getStepLabel = (item, stepperProps) => {
         let code = item.steps[stepperProps.icon - 1].code;
@@ -171,9 +192,9 @@ const MultiStream = (props) => {
                             </IconButton>
                         </div>
                         <DialogContent style={{ background: '#24252b', maxHeight: 600 }}>
-                            <Grid container spacing={2} style={{ paddingLeft: 10,paddingRight: 10 }}>
+                            <Grid container spacing={2} style={{ paddingLeft: 10, paddingRight: 10 }}>
                                 <Grid item xs={3}>
-                                    <h4 style={{ padding: '13px 0', color: '#88dd00' }}><strong>{props.header ? props.header : 'Cloudlet'}</strong></h4>
+                                    <h4 style={{ padding: '13px 0', color: '#88dd00' }}><strong>{header}</strong></h4>
                                 </Grid>
                                 <Grid item xs={9}>
                                     <h4 style={{ padding: '13px 0', color: '#88dd00' }} align="center"><strong>Progress</strong></h4>
@@ -185,13 +206,21 @@ const MultiStream = (props) => {
                                     <div key={i}>
                                         <Grid container spacing={2} style={{ padding: 10 }}>
                                             <Grid item xs={3}>
-                                                <h4 style={{ padding: '13px 0', color: '#DDDD' }}>{item.header}</h4>
+                                                {item.labels.length > 1 ?
+                                                    <ExpansionPanel>
+                                                        {getSummary(item.data[item.labels[0].field])}
+                                                        {getHeaderDetails(item)}
+                                                    </ExpansionPanel> :
+                                                    <h4 style={{ padding: '13px 0', color: '#DDDD' }}>{item.data[item.labels[0].field]}</h4>}
                                             </Grid>
                                             <Grid item xs={9}>
-                                                <ExpansionPanel>
-                                                    {getSummary(item.steps)}
-                                                    {getDetails(item)}
-                                                </ExpansionPanel>
+                                                {
+
+                                                    <ExpansionPanel>
+                                                        {getDataSummary(item.steps)}
+                                                        {getDetails(item)}
+                                                    </ExpansionPanel>
+                                                }
                                             </Grid>
                                         </Grid>
                                     </div>)

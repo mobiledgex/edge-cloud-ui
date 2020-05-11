@@ -10,7 +10,7 @@ export const outboundSecurityRulesKeys = [
   { field: fields.remoteCIDR, serverField: 'remote_cidr', label: 'Remote CIDR' }
 ]
 
-export const keys = [
+export const keys = () => ([
   { field: fields.region, label: 'Region', sortable: true, visible: true, filter:true },
   { field: fields.organizationName, serverField: 'key#OS#organization', label: 'Organization Name', sortable: true, visible: true, filter:true },
   { field: fields.privacyPolicyName, serverField: 'key#OS#name', label: 'Privacy Policy Name', sortable: true, visible: true, filter:true },
@@ -20,7 +20,7 @@ export const keys = [
     keys: outboundSecurityRulesKeys
   },
   { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true }
-]
+])
 
 const getKey = (data) => {
   return {
@@ -69,9 +69,10 @@ export const deletePrivacyPolicy = (data) => {
 
 const customData = (value) => {
   value[fields.outboundSecurityRulesCount] = value[fields.outboundSecurityRules].length;
+  value[fields.outboundSecurityRulesCount] = value[fields.outboundSecurityRulesCount] === 0 ? 'Full Isolation' : value[fields.outboundSecurityRulesCount];
 }
 
 export const getData = (response, body) => {
-  return formatter.formatData(response, body, keys, customData)
+  return formatter.formatData(response, body, keys(), customData)
 }
 

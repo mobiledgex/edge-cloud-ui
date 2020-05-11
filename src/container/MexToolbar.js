@@ -29,10 +29,17 @@ const CustomSwitch = withStyles({
     track: {},
 })(Switch);
 
-const regions = [{ key: 'ALL', value: REGION_ALL, text: 'ALL' },
-{ key: 'US', value: 'US', text: 'US' },
-{ key: 'EU', value: 'EU', text: 'EU' }]
-
+const getRegion = (props)=>
+{
+    let options = []
+    if (props.regions) {
+        options = props.regions.map(region => {
+            return { key: region, value: region, text: region }
+        })
+        options.splice(0, 0, { key: 'ALL', value: REGION_ALL, text: 'ALL' })
+    }
+    return options
+}
 
 const MexToolbar = (props) => {
     let requestInfo = props.requestInfo;
@@ -45,8 +52,9 @@ const MexToolbar = (props) => {
         </div>
     )
 
-    const getList = (props) =>
-        (
+    const getList = (props) => {
+        let regions = getRegion(props)
+        return (
             <div style={{ right: 0, position: 'absolute' }}>
                 <Input 
                     onChange={(e) => { props.onFilterValue(e) }} 
@@ -62,7 +70,7 @@ const MexToolbar = (props) => {
                         <strong>Region:&nbsp;&nbsp;</strong>
                         <Dropdown
                             options={regions}
-                            defaultValue={regions[0].value}
+                            defaultValue={regions && regions.length > 0 ? regions[0].value : undefined}
                             onChange={(e, { value }) => { props.onAction(ACTION_REGION, value) }}
                         />
                     </div> :
@@ -86,7 +94,7 @@ const MexToolbar = (props) => {
                     <RefreshIcon style={{ color: '#76ff03' }} />
                 </IconButton>
             </div>
-        )
+        )}
     return (
         <Toolbar>
             <label className='content_title_label'>{requestInfo.headerLabel}</label>

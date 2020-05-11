@@ -18,6 +18,7 @@ import { getPrivacyPolicyList } from '../../../services/model/privacyPolicy';
 //Map
 import Map from '../../../libs/simpleMaps/with-react-motion/index_clusters';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
+import { object } from 'prop-types';
 
 class ClusterInstReg extends React.Component {
     constructor(props) {
@@ -203,13 +204,13 @@ class ClusterInstReg extends React.Component {
     onCreateResponse = (mcRequest) => {
         this.props.handleLoadingSpinner(false)
         if (mcRequest) {
-            let data = undefined;
+            let responseData = undefined;
             let request = mcRequest.request;
-            let cloudletName = request.data.clusterinst.key.cloudlet_key.name;
             if (mcRequest.response && mcRequest.response.data) {
-                data = mcRequest.response.data;
+                responseData = mcRequest.response.data;
             }
-            this.setState({ stepsArray: updateStepper(this.state.stepsArray, cloudletName, data, cloudletName) })
+            let labels = [{label : 'Cloudlet', field : fields.cloudletName}]
+            this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
         }
     }
 
@@ -226,7 +227,7 @@ class ClusterInstReg extends React.Component {
                         let cloudlet = cloudlets[i];
                         data[fields.cloudletName] = cloudlet;
                         this.props.handleLoadingSpinner(true)
-                        createClusterInst(this, data, this.onCreateResponse)
+                        createClusterInst(this, Object.assign({}, data), this.onCreateResponse)
                     }
 
                 }
@@ -366,7 +367,7 @@ class ClusterInstReg extends React.Component {
             { label: 'Create Cluster Instances', formType: 'Header', visible: true },
             { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
             { field: fields.clusterName, label: 'Cluster Name', formType: 'Input', placeholder: 'Enter Cluster Inst Name', rules: { required: true }, visible: true, },
-            { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: true, disabled: getOrganization() ? true : false }, visible: true, value: getOrganization() },
+            { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, visible: true, value: getOrganization() },
             { field: fields.operatorName, label: 'Operator', formType: 'Select', placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
             { field: fields.cloudletName, label: 'Cloudlet', formType: 'MultiSelect', placeholder: 'Select Cloudlet', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 4, field: fields.operatorName }] },
             { field: fields.deployment, label: 'Deployment Type', formType: 'Select', placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, update: true },
@@ -374,7 +375,7 @@ class ClusterInstReg extends React.Component {
             { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: 'Select', placeholder: 'Select Privacy Policy Name', visible: false, update: true, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.organizationName }] },
             { field: fields.flavorName, label: 'Flavor', formType: 'Select', placeholder: 'Select Flavor', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
             { field: fields.numberOfMasters, label: 'Number of Masters', formType: 'Input', placeholder: 'Enter Number of Masters', rules: { type: 'number', disabled: true }, visible: false, value: 1, update: true },
-            { field: fields.numberOfNodes, label: 'Number of Nodes', formType: 'Input', placeholder: 'Enter Number of Nodes', rules: { type: 'number' }, visible: false, update: true },
+            { field: fields.numberOfNodes, label: 'Number of Workers', formType: 'Input', placeholder: 'Enter Number of Workers', rules: { type: 'number' }, visible: false, update: true },
             { field: fields.reservable, label: 'Reservable', formType: 'Checkbox', visible: true, roles: ['AdminManager'], value: false, update: true },
         ]
     }

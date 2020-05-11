@@ -15,6 +15,7 @@ class PrivacyPolicy extends React.Component {
         this.state = {
             currentView: null
         }
+        this.keys = keys();
     }
 
     onRegClose = (isEdited)=>
@@ -44,7 +45,7 @@ class PrivacyPolicy extends React.Component {
             isRegion: true,
             nameField: fields.privacyPolicyName,
             sortBy: [fields.region, fields.privacyPolicyName],
-            keys: keys,
+            keys: this.keys,
             onAdd: this.onAdd
         })
     }

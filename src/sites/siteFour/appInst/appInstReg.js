@@ -328,7 +328,7 @@ class ClusterInstReg extends React.Component {
         return [
             { label: 'Create App Instances', formType: 'Header', visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
-            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of' },
+            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of' },
             { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: true }, fullData: true, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
             { field: fields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: true }, visible: true, dependentData: [{ index: 3, field: fields.appName }] },
             { field: fields.operatorName, label: 'Operator', formType: 'Select', placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
@@ -378,13 +378,13 @@ class ClusterInstReg extends React.Component {
     onCreateResponse = (mcRequest) => {
         this.props.handleLoadingSpinner(false)
         if (mcRequest) {
-            let data = undefined;
+            let responseData = undefined;
             let request = mcRequest.request;
-            let cloudletName = request.data.appinst.key.cluster_inst_key.cloudlet_key.name;
             if (mcRequest.response && mcRequest.response.data) {
-                data = mcRequest.response.data;
+                responseData = mcRequest.response.data;
             }
-            this.setState({ stepsArray: updateStepper(this.state.stepsArray, cloudletName, data, cloudletName) })
+            let labels = [{label : 'Cloudlet', field : fields.cloudletName}]
+            this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
         }
     }
 
@@ -422,7 +422,7 @@ class ClusterInstReg extends React.Component {
                     let cloudlet = cloudlets[i];
                     data[fields.cloudletName] = cloudlet;
                     this.props.handleLoadingSpinner(true)
-                    createAppInst(this, data, this.onCreateResponse)
+                    createAppInst(this, Object.assign({}, data), this.onCreateResponse)
                 }
             }
         }

@@ -172,7 +172,7 @@ export const organizationTutor = () => {
                 },
                 {
                     element: '.cloudletReg10',
-                    intro: '<span>What is the number of nodes you want in this cluster?<br />The nodes in a cluster are the machines that run your applications.</span>'
+                    intro: '<span>What is the number of workers you want in this cluster?<br />The nodes in a cluster are the machines that run your applications.</span>'
                 }
             ],
             stepsApp: [

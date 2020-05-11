@@ -4,9 +4,11 @@ import BubbleChartCore from "./BubbleChartCore";
 import {handleHardwareTabChanges, handleLegendAndBubbleClickedEvent, makeLineChartDataForCluster} from "../dev/PageDevMonitoringService";
 import {makeBubbleChartDataForCluster, renderPlaceHolderLoader, showToast} from "../PageMonitoringCommonService";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
-import {Dropdown} from "semantic-ui-react";
 import {HARDWARE_OPTIONS_FOR_CLUSTER} from "../../../../shared/Constants";
 import {PageMonitoringStyles} from "../PageMonitoringStyles";
+import {Select} from "antd";
+
+const {Option} = Select;
 
 type Props = {
     bubbleChartData: any,
@@ -128,19 +130,17 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
 
                                                 </div>
                                             }
-                                            <div style={{flex: .1, marginRight: 80,}}>
-                                                <Dropdown
-                                                    style={{fontSize: 11, zIndex: 999999999}}
+                                            <div style={{flex: .1, marginRight: 50, marginTop: 2,}}>
+                                                <Select
+                                                    ref={c=>this.bubbleChartSelect=c}
+                                                    bordered={false}
+                                                    size={'small'}
+                                                    style={{width: 125}}
                                                     disabled={this.props.parent.state.bubbleChartLoader}
-                                                    clearable={this.props.parent.state.regionSelectBoxClearable}
                                                     placeholder='SELECT HARDWARE'
-                                                    selection
-                                                    loading={this.props.parent.state.bubbleChartLoader}
-                                                    options={HARDWARE_OPTIONS_FOR_CLUSTER}
-                                                    scrolling={true}
                                                     defaultValue={HARDWARE_OPTIONS_FOR_CLUSTER[0].value}
-                                                    onChange={async (e, {value}) => {
-
+                                                    value={this.props.parent.state.currentHardwareType}
+                                                    onChange={async (value) => {
                                                         await handleHardwareTabChanges(this.props.parent, value)
 
                                                         try {
@@ -150,6 +150,8 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                                                 bubbleChartData: bubbleChartData,
                                                                 currentHardwareType: value,
                                                             }, () => {
+
+                                                                this.bubbleChartSelect.blur();
                                                             })
 
                                                         } catch (e) {
@@ -159,8 +161,13 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                                             })
                                                         }
                                                     }}
-                                                    value={this.props.parent.state.currentHardwareType}
-                                                />
+                                                >
+                                                    {HARDWARE_OPTIONS_FOR_CLUSTER.map(item => {
+                                                        return (
+                                                            <Option value={item.value}>{item.text}</Option>
+                                                        )
+                                                    })}
+                                                </Select>
 
                                             </div>
                                         </div>

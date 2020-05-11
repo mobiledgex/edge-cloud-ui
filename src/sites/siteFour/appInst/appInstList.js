@@ -27,13 +27,14 @@ class AppInstList extends React.Component {
         this.action = '';
         this.data = {};
         this.keys = keys();
+        this.multiStepperHeader = [{ label: 'App', field: fields.appName }, { label: 'Cloudlet', field: fields.cloudletName }, { label: 'Operator', field: fields.operatorName }, { label: 'Cluster', field: fields.clusterName }]
     }
 
     onRegClose = (isEdited) => {
         this.setState({ currentView: null })
     }
 
-    onAdd = (action , data) => {
+    onAdd = (action, data) => {
         this.setState({ currentView: <AppInstReg isUpdate={action ? true : false} data={data} onClose={this.onRegClose} /> })
     }
 
@@ -60,9 +61,8 @@ class AppInstList extends React.Component {
         this.setState({ terminalData: data, openTerminal: true })
     }
 
-    onPowerStateVisible = (data) =>
-    {
-       return data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM && data[fields.accessType] !== constant.ACCESS_TYPE_LOAD_BALANCER
+    onPowerStateVisible = (data) => {
+        return data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM && data[fields.accessType] !== constant.ACCESS_TYPE_LOAD_BALANCER
     }
 
     onUpgradeVisible = (data) => {
@@ -83,7 +83,7 @@ class AppInstList extends React.Component {
         return [
             { label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd },
             { label: 'Upgrade', visible: this.onUpgradeVisible, onClick: refreshAppInst },
-            { label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, },
+            { label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, multiStepperHeader: this.multiStepperHeader },
             { label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
             { label: 'Power On', visible: this.onPowerStateVisible, onClick: changePowerState },
             { label: 'Power Off', visible: this.onPowerStateVisible, onClick: changePowerState },
@@ -93,8 +93,8 @@ class AppInstList extends React.Component {
 
     groupActionMenu = () => {
         return [
-            { label: 'Upgrade', onClick: refreshAppInst, icon: 'fa fa-arrow-circle-up', warning: 'upgrade all the selected App Instances' },
-            { label: 'Delete', onClick: deleteAppInst, icon: 'fa fa-trash', warning: 'delete all the selected App Instances' }
+            { label: 'Upgrade', onClick: refreshAppInst, icon: 'system_update', warning: 'upgrade all the selected App Instances', multiStepperHeader: this.multiStepperHeader },
+            { label: 'Delete', onClick: deleteAppInst, icon: 'delete', warning: 'delete all the selected App Instances', multiStepperHeader: this.multiStepperHeader }
         ]
     }
 
