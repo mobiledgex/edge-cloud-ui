@@ -194,9 +194,11 @@ export default function MiniDrawer(props) {
 
     const roleInfo = () => {
         return (
-            <ListItem onClick={(e) => {
-                setOpenLegend(localStorage.selectRole && localStorage.selectRole != 'null')
-            }}>
+            <ListItem
+                onClick={(e) => {
+                    setOpenLegend(localStorage.selectRole && localStorage.selectRole != 'null')
+                }}
+            >
                 {
                 localStorage.selectRole && localStorage.selectRole!=='null'?
                     <ListItemIcon>
@@ -300,7 +302,7 @@ export default function MiniDrawer(props) {
             <React.Fragment>
                 <CssBaseline/>
                 <MexHeader handleDrawerOpen={handleDrawerOpen} open={open} email={props.email} data={props.data}
-                           helpClick={props.helpClick} gotoUrl={props.gotoUrl}/>
+                           helpClick={props.helpClick} gotoUrl={props.gotoUrl} viewMode={props.viewMode}/>
             </React.Fragment>
             }
             <Drawer

@@ -202,7 +202,7 @@ const MexForms = (props) => {
         let subForms = form.forms
         return (
             <Grid style={{width:'100%'}}>
-                <Grid.Row key={index} columns={2} key={uuid() + '' + index}>
+                <Grid.Row className={'formHeader-'+index} columns={2} key={uuid() + '' + index}>
                     <Grid.Column width={15} className='detail_item'>
                         <h2 style={{ color: "white", display: 'inline' }}>{form.label}
                             {
@@ -299,7 +299,7 @@ const MexForms = (props) => {
         }
         return (
             form.field ?
-                <Grid.Row columns={3} key={uuid() + '' + index}>
+                <Grid.Row columns={3} key={uuid() + '' + index} className={'formRow-'+index}>
                     <Grid.Column width={4} className='detail_item'>
                         <div style={form.labelStyle}>{form.label}{required ? ' *' : ''}</div>
                     </Grid.Column>
@@ -354,6 +354,7 @@ const MexForms = (props) => {
                         {forms.map((form, i) => {
                             return (form.formType === BUTTON ?
                                 <MexButton
+                                    className = {'formButton-'+i}
                                     form={form}
                                     key={i}
                                     onClick={onSubmit} />
