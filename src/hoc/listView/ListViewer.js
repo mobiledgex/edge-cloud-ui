@@ -30,6 +30,16 @@ const StyledTableRow = withStyles((theme) => ({
     },
 }))(TableRow);
 
+const StyledTableCell = withStyles((theme) => ({
+    root: {
+        maxWidth:250,
+        overflow:'hidden',
+        textOverflow:'ellipsis',
+        borderBottom: 'none',
+        height:50 
+    },
+}))(TableCell);
+
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -199,6 +209,12 @@ const useStyles = makeStyles((theme) => ({
         top: 20,
         width: 1,
     },
+    tip: {
+        width:'fit-content',
+        maxWidth:'100%',
+        overflow:'hidden',
+        textOverflow:'ellipsis',
+    }
 }));
 
 export default function EnhancedTable(props) {
@@ -296,7 +312,7 @@ export default function EnhancedTable(props) {
 
     const getAction = (item) => {
         return (
-            <IconButton aria-label="Action" onClick={(e) => { setActionEl(e.currentTarget) }}>
+            <IconButton aria-label="Action" className='buttonActions' onClick={(e) => { setActionEl(e.currentTarget) }}>
                 <ListIcon style={{ color: '#76ff03' }} />
             </IconButton>
         )
@@ -361,13 +377,19 @@ export default function EnhancedTable(props) {
                                                 if (header.visible) {
                                                     let field = header.field;
                                                     return (
-                                                        <TableCell key={j} style={{ borderBottom: "none" }}
-                                                            onClick={(event) => cellClick(header, row)}>
-                                                            {
+                                                        <StyledTableCell key={j} onClick={(event) => cellClick(header, row)}>
+                                                            {field.indexOf('Name') !== -1 ?
+                                                                <Tooltip title={header.customizedData ? header.customizedData(row) : row[field]} arrow>
+                                                                    <div className={classes.tip}>
+                                                                        {header.customizedData ? header.customizedData(row) : row[field]}
+                                                                    </div>
+                                                                </Tooltip>
+                                                            :
                                                                 field === fields.actions ? getAction(row) :
                                                                     header.customizedData ? header.customizedData(row) : row[field]
                                                             }
-                                                        </TableCell>
+                                                        </StyledTableCell>
+
                                                     )
                                                 }
                                             })

@@ -55,7 +55,7 @@ export default function Header(props) {
     return (
 
         <AppBar
-            position="fixed"
+            position="absolute"
             className={clsx(classes.appBar, {
                 [classes.appBarShift]: props.open,
             })}
@@ -82,13 +82,14 @@ export default function Header(props) {
                 <div className={classes.grow}/>
                 <div className={classes.sectionDesktop}>
                     <HeaderGlobalAudit />
-                    <IconButton disabled={true}>
-                        {localStorage.selectOrg ?
-                            <h5>
-                                <strong>Organization:</strong> {localStorage.selectOrg}</h5> : null}
+                    <IconButton disabled={true}  className="orgName">
+                        <h5>
+                            <strong>Organization: </strong>
+                            {localStorage.selectRole === 'AdminManager' ? "Mexadmin" : localStorage.selectOrg ? localStorage.selectOrg : 'no selected organization'}
+                        </h5>
                     </IconButton>
                     <IconButton aria-label="show 17 new notifications" color="inherit"
-                                onClick={(e) => props.helpClick()}>
+                                onClick={(e) => props.helpClick()} disabled={props.viewMode !== null ? false : true}>
                         <HelpOutlineOutlinedIcon fontSize='default'/>
                     </IconButton>
                     <HeaderGlobalMini email={props.email} data={props.data}/>

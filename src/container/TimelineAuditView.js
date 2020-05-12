@@ -683,7 +683,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                         <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
                         <div className="page_audit_history">
                             <div className="page_audit_history_option">
-                                <div className="page_audit_history_option_period">
+                                <div className="page_audit_history_option_period option_name">
                                     <div className="page_audit_history_label">
                                         Name
                                     </div>
@@ -697,7 +697,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                         style={{ width: 150 }}
                                     />
                                 </div>
-                                <div className="page_audit_history_option_period">
+                                <div className="page_audit_history_option_period option_error_check">
                                     <ButtonGroup>
                                         <ButtonM onClick={() => this.onClickStatus("all")}
                                                  className={this.state.statusNormalToggle === false && this.state.statusErrorToggle === false ? "button_on" : "button_off"}>
@@ -722,7 +722,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                         </ButtonM>
                                     </ButtonGroup>
                                 </div>
-                                <div className="page_audit_history_option_period">
+                                <div className="page_audit_history_option_period option_unchecked">
                                     <button className="page_audit_error_box with_button" >
                                         <div className="page_audit_error_label">Unchecked Error</div>
                                         <div className="page_audit_badge_number">{this.state.unCheckedErrorCount}</div>
@@ -732,7 +732,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                             <OfflinePinIcon fontSize='small' style={{marginTop:5}}/>
                                     </button>
                                 </div>
-                                <div className="page_audit_history_option_period">
+                                <div className="page_audit_history_option_period option_current">
                                     <div className="page_audit_error_box with_button" onClick={this.onCurrentClick}>
                                         <div className="page_audit_error_label">(UTC) {moment(this.state.realtime).utc().format("YYYY-MM-DDTHH:mm")}</div>
                                     </div>
@@ -744,7 +744,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     </Toolbar>
                     <div className="mexListView">
 
-                        <div  style={{width:this.getWidth(), height:(this.state.closeMap)? 'calc(100% - 20px)' : 'calc(50% - 27px)', overflow:'hidden'}}>
+                        <div className='page_audit_timeline_area'
+                             style={{width:this.getWidth(), height:(this.state.closeMap)? 'calc(100% - 20px)' : 'calc(50% - 27px)', overflow:'hidden'}}>
                             {(this.state.timesList.length > 0) ?
                                 <CalendarTimeline
                                     timelineList={this.state.timelineList[0]}

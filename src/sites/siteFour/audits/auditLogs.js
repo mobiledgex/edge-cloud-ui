@@ -7,7 +7,9 @@ import * as actions from '../../../actions';
 import * as serviceMC from '../../../services/serviceMC';
 import TimelineAuditView from "../../../container/TimelineAuditView";
 import {Card, Toolbar} from "@material-ui/core";
+import {AuditTutor} from "../../../tutorial";
 
+const auditSteps = AuditTutor();
 
 let _self = null;
 let rgn = ['US', 'EU'];
@@ -116,6 +118,8 @@ class SiteFourPageAudits extends React.Component {
             this.setState({auditMounted: true})
             this.readyToData(nextProps.location.search);
         }
+
+        this.props.handleViewMode( auditSteps.stepsAudit )
 
     }
 
@@ -305,6 +309,9 @@ const mapDispatchProps = (dispatch) => {
         },
         toggleLoading: (data) => {
             dispatch(actions.toggleLoading(data))
+        },
+        handleViewMode: (data) => {
+            dispatch(actions.viewMode(data))
         }
     };
 };

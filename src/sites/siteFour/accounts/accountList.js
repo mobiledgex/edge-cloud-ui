@@ -41,6 +41,7 @@ class OrganizationList extends React.Component {
             requestType: [showAccounts],
             sortBy: [fields.username],
             keys: this.keys,
+            viewMode : null
         })
     }
 
