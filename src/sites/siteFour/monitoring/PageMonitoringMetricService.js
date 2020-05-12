@@ -8,6 +8,17 @@ import {formatData} from "../../../services/formatter/formatComputeInstance";
 import {makeFormForAppLevelUsageList} from "./admin/PageAdminMonitoringService";
 import PageDevMonitoring from "./dev/PageDevMonitoring";
 
+export const CLOUDLET_METRICS_ENDPOINT = '/api/v1/auth/metrics/cloudlet'
+export const CLUSTER_METRICS_ENDPOINT = '/api/v1/auth/metrics/cluster'
+export const APP_INST_METRICS_ENDPOINT = '/api/v1/auth/metrics/app'
+export const CLOUDLET_EVENT_LOG_ENDPOINT = '/api/v1/auth/events/cloudlet'
+export const CLUSTER_EVENT_LOG_ENDPOINT = '/api/v1/auth/events/cluster'
+export const APP_INST_EVENT_LOG_ENDPOINT = '/api/v1/auth/events/app'
+export const SHOW_APP_INST_CLIENT_ENDPOINT = '/api/v1/auth/ctrl/ShowAppInstClient'
+
+
+
+
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
     try {
@@ -22,9 +33,9 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
         let token = store ? store.userToken : 'null';
         let organization = localStorage.selectOrg.toString()
 
-
         let prefixUrl = (process.env.REACT_APP_API_ENDPOINT).replace('http', 'ws');
-        const webSocket = new WebSocket(`${prefixUrl}/ws/api/v1/auth/ctrl/ShowAppInstClient`)
+
+        const webSocket = new WebSocket(`${prefixUrl}/ws${SHOW_APP_INST_CLIENT_ENDPOINT}`)
         let showAppInstClientRequestForm = {
             "Region": Region,
             "AppInstClientKey": {
@@ -286,7 +297,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
         let promiseList = []
         for (let index = 0; index < instanceBodyList.length; index++) {
-            promiseList.push(getAppLevelMetrics(instanceBodyList[index]))
+            promiseList.push(getAppLevelMetric(instanceBodyList[index]))
         }
 
 
@@ -592,7 +603,7 @@ export const getCloudletLevelUsageList = async (cloudletList, pHardwareType, rec
 
         let promiseList = []
         for (let index = 0; index < instanceBodyList.length; index++) {
-            promiseList.push(getCloudletLevelMatric(instanceBodyList[index], token))
+            promiseList.push(getCloudletLevelMetric(instanceBodyList[index], token))
         }
 
         let cloudletLevelMatricUsageList = await Promise.all(promiseList);
@@ -690,10 +701,10 @@ export const getCloudletLevelUsageList = async (cloudletList, pHardwareType, rec
 
 }
 
-export const getCloudletLevelMatric = async (serviceBody: any, pToken: string) => {
+export const getCloudletLevelMetric = async (serviceBody: any, pToken: string) => {
     console.log('token2===>', pToken);
     let result = await axios({
-        url: '/api/v1/auth/metrics/cloudlet',
+        url: CLOUDLET_METRICS_ENDPOINT,
         method: 'post',
         data: serviceBody['params'],
         headers: {
@@ -709,11 +720,10 @@ export const getCloudletLevelMatric = async (serviceBody: any, pToken: string) =
     return result;
 }
 
-
-export const getAppLevelMetrics = async (serviceBodyForAppInstanceOneInfo: any) => {
+export const getAppLevelMetric = async (serviceBodyForAppInstanceOneInfo: any) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     let result = await axios({
-        url: '/api/v1/auth/metrics/app',
+        url: APP_INST_METRICS_ENDPOINT,
         method: 'post',
         data: serviceBodyForAppInstanceOneInfo['params'],
         headers: {
@@ -734,7 +744,7 @@ export const getClusterLevelMatric = async (serviceBody: any, pToken: string) =>
     try {
         console.log('token2===>', pToken);
         let result = await axios({
-            url: '/api/v1/auth/metrics/cluster',
+            url: CLUSTER_METRICS_ENDPOINT,
             method: 'post',
             data: serviceBody['params'],
             headers: {
@@ -761,7 +771,7 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
         let selectOrg = localStorage.getItem('selectOrg')
 
         let result = await axios({
-            url: '/api/v1/auth/events/cloudlet',
+            url: CLOUDLET_EVENT_LOG_ENDPOINT,
             method: 'post',
             data: {
                 "region": pRegion,
@@ -882,7 +892,7 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster) => 
 
 
         let result = await axios({
-            url: '/api/v1/auth/events/cluster',
+            url: CLUSTER_EVENT_LOG_ENDPOINT,
             method: 'post',
             data: form,
             headers: {
@@ -931,7 +941,7 @@ export const getAppInstEventLogByRegion = async (region = 'EU') => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
         return await axios({
-            url: '/api/v1/auth/events/app',
+            url: APP_INST_EVENT_LOG_ENDPOINT,
             method: 'post',
             data: form,
             headers: {
