@@ -39,6 +39,17 @@ export default function AppInstEventLogListContainer(props) {
         setWindowDimensions(getWindowDimensions());
     }
 
+    function reduceEvent(title) {
+        if (title !== undefined) {
+            if (title.includes('HEALTH_CHECK')) {
+                return title.replace('HEALTH_CHECK', 'HEALTH_CHK')
+            } else {
+                return title;
+            }
+        }
+
+    }
+
 
     return (
         <div style={{fontFamily: 'Roboto'}}>
@@ -72,18 +83,18 @@ export default function AppInstEventLogListContainer(props) {
                             flexDirection: 'column',
                         }}
                     >
-                        TIME
+                        Time
                     </td>
                     <td padding={'none'} align="center"
                         style={{
-                            color: 'white', flex: .4, display: 'flex',
+                            color: 'white', flex: .5, display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             flexDirection: 'column',
                         }}
                     >
                         <div>
-                            APP
+                            App
                         </div>
                         <div>
                             <div style={{color: ''}}>
@@ -97,14 +108,19 @@ export default function AppInstEventLogListContainer(props) {
                     </td>
                     <td padding={'none'} align="center"
                         style={{
-                            color: 'white', flex: .35,
+                            color: 'white', flex: .25,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             flexDirection: 'column',
                         }}
                     >
-                        EVENT[STATUS]
+                        <div>
+                            Event
+                        </div>
+                        <div>
+                            [Status]
+                        </div>
                     </td>
 
                 </tr>
@@ -148,45 +164,26 @@ export default function AppInstEventLogListContainer(props) {
                                         </td>
                                         {/*App*/}
                                         <td padding={'none'} align="center"
-                                            style={{flex: .4, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight}}>
-                                            {windowDimensions.width <= 1440 ?
-                                                <React.Fragment>
+                                            style={{flex: .5, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight}}>
+                                            <React.Fragment>
+                                                <div style={{color: 'white'}}>
+                                                    {props.eventLogList[index][1].toString().substring(0, 15)} {/*-{AppInst}*/}
+                                                    &nbsp;[{props.eventLogList[index][2]} {/*version*/}]
+                                                </div>
+                                                <div style={{fontSize: 12,}}>
                                                     <div>
-                                                        {props.eventLogList[index][1].toString().substring(0, 15)} {/*-{index}*/}
-
-                                                    </div>
-                                                    <div>
-                                                        {props.eventLogList[index][1].toString().substring(15, props.eventLogList[index][1].toString().length)}
-                                                    </div>
-                                                    <div>
-                                                        {index.toString()}
-                                                    </div>
-                                                </React.Fragment>
-                                                :
-                                                <React.Fragment>
-                                                    <div style={{color: 'white'}}>
-                                                        {props.eventLogList[index][1].toString().substring(0, 20)}
-                                                        &nbsp;[{props.eventLogList[index][2]}{/*version*/}]
-
+                                                        {reduceString(props.eventLogList[index][3], 30)} {/*cluster*/}
                                                     </div>
                                                     <div>
-                                                        {props.eventLogList[index][1].toString().substring(20, props.eventLogList[index][1].toString().length)}
+                                                        [{reduceString(props.eventLogList[index][5], 30)}] {/*cloudlet*/}
                                                     </div>
-                                                    <div style={{fontSize: 12,}}>
-                                                        <div>
-                                                            {reduceString(props.eventLogList[index][3], 30)} {/*cluster*/}
-                                                        </div>
-                                                        <div>
-                                                            [{reduceString(props.eventLogList[index][5], 30)}] {/*cloudlet*/}
-                                                        </div>
-                                                    </div>
-                                                </React.Fragment>
-                                            }
+                                                </div>
+                                            </React.Fragment>
                                         </td>
                                         {/*event[Status]*/}
                                         <td padding={'none'} align="center"
                                             style={{
-                                                flex: .35, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C',
+                                                flex: .25, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C',
                                                 height: itemHeight,
                                                 display: 'flex',
                                                 alignItems: 'center',
@@ -195,7 +192,7 @@ export default function AppInstEventLogListContainer(props) {
 
                                             }}>
                                             <div style={{fontSize: 10}}>
-                                                {props.eventLogList[index][8]}
+                                                {reduceEvent(props.eventLogList[index][8])}
                                             </div>
                                             <div>
                                                 {props.eventLogList[index][9].toLowerCase() === 'up' ?
