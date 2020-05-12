@@ -7,18 +7,15 @@ import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, 
 import {formatData} from "../../../services/formatter/formatComputeInstance";
 import {makeFormForAppLevelUsageList} from "./admin/PageAdminMonitoringService";
 import PageDevMonitoring from "./dev/PageDevMonitoring";
-
-export const CLOUDLET_METRICS_ENDPOINT = '/api/v1/auth/metrics/cloudlet'
-export const CLUSTER_METRICS_ENDPOINT = '/api/v1/auth/metrics/cluster'
-export const APP_INST_METRICS_ENDPOINT = '/api/v1/auth/metrics/app'
-export const CLOUDLET_EVENT_LOG_ENDPOINT = '/api/v1/auth/events/cloudlet'
-export const CLUSTER_EVENT_LOG_ENDPOINT = '/api/v1/auth/events/cluster'
-export const APP_INST_EVENT_LOG_ENDPOINT = '/api/v1/auth/events/app'
-export const SHOW_APP_INST_CLIENT_ENDPOINT = '/api/v1/auth/ctrl/ShowAppInstClient'
-
-
-
-
+import {
+    APP_INST_EVENT_LOG_ENDPOINT,
+    APP_INST_METRICS_ENDPOINT,
+    CLOUDLET_EVENT_LOG_ENDPOINT,
+    CLOUDLET_METRICS_ENDPOINT,
+    CLUSTER_EVENT_LOG_ENDPOINT,
+    CLUSTER_METRICS_ENDPOINT,
+    SHOW_APP_INST_CLIENT_ENDPOINT
+} from "./MetricServiceEndPoint";
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
     try {
