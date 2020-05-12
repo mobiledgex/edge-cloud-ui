@@ -9,6 +9,10 @@ import { keys, showCloudletPools, deleteCloudletPool, multiDataRequest } from '.
 import { showCloudletPoolMembers } from '../../../services/model/cloudletPoolMember';
 import { showCloudletLinkOrg } from '../../../services/model/cloudletLinkOrg';
 import CloudletPoolReg from './cloudletPoolReg';
+import * as actions from "../../../actions";
+import {CloudletPoolTutor} from "../../../tutorial";
+
+const cloudletPoolSteps = CloudletPoolTutor();
 
 class ClouldetPoolList extends React.Component {
     constructor(props) {
@@ -20,12 +24,14 @@ class ClouldetPoolList extends React.Component {
     }
 
     onAdd = () => {
-        this.setState({ currentView: <CloudletPoolReg onClose={() => this.setState({ currentView: null })} /> })
+        this.setState({ currentView: <CloudletPoolReg onClose={() => this.setState({ currentView: null })} /> });
+
     }
 
     /**Action menu block */
     onActionClick = (action, data) => {
-        this.setState({ currentView: <CloudletPoolReg data={data} action={action.id} onClose={() => this.setState({ currentView: null })} /> })
+        this.setState({ currentView: <CloudletPoolReg data={data} action={action.id} onClose={() => this.setState({ currentView: null })} /> });
+
     }
 
     actionMenu = () => {
@@ -49,7 +55,8 @@ class ClouldetPoolList extends React.Component {
             isRegion: true,
             sortBy: [fields.poolName],
             keys: this.keys,
-            onAdd: this.onAdd
+            onAdd: this.onAdd,
+            viewMode : cloudletPoolSteps.stepsCloudletPool
         })
     }
 
@@ -69,7 +76,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchProps = (dispatch) => {
     return {
-
     };
 };
 

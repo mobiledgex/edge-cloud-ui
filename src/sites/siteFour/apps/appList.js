@@ -9,6 +9,9 @@ import { fields } from '../../../services/model/format';
 import { keys, showApps, deleteApp } from '../../../services/model/app';
 import AppReg from './appReg';
 import AppInstReg from '../appInst/appInstReg';
+import {appTutor} from "../../../tutorial";
+
+const appSteps = appTutor();
 
 class AppList extends React.Component {
     constructor(props) {
@@ -27,14 +30,14 @@ class AppList extends React.Component {
     }
 
     onAdd = (action , data) => {
-        this.setState({ currentView: <AppReg isUpdate={action ? true : false} data={data} onClose={this.onRegClose}/> })
+        this.setState({ currentView: <AppReg isUpdate={action ? true : false} data={data} onClose={this.onRegClose}/> });
     }
 
     /***Action Block */
 
 
     onLaunch = (action, data) => {
-        this.setState({ currentView: <AppInstReg isLaunch={action ? true : false} data={data} onClose={this.onRegClose}/> })
+        this.setState({ currentView: <AppInstReg isLaunch={action ? true : false} data={data} onClose={this.onRegClose}/> });
     }
 
     actionMenu = () => {
@@ -54,7 +57,8 @@ class AppList extends React.Component {
             isRegion: true,
             sortBy: [fields.region, fields.appName],
             keys: this.keys,
-            onAdd: this.onAdd
+            onAdd: this.onAdd,
+            viewMode : appSteps.stepsApp
         })
     }
 
@@ -93,7 +97,7 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleAppLaunch: (data) => { dispatch(actions.appLaunch(data))},
         handleEditInstance: (data) => { dispatch(actions.editInstance(data))},
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) }
+        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
     };
 };
 

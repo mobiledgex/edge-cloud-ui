@@ -2,7 +2,7 @@ import React from 'react';
 import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX, TEXT_AREA } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX, TEXT_AREA, ICON_BUTTON } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -17,6 +17,10 @@ import { getAutoProvPolicyList } from '../../../services/model/autoProvisioningP
 import { createApp, updateApp } from '../../../services/model/app';
 import { refreshAllAppInst } from '../../../services/model/appInstance';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
+import {appTutor} from "../../../tutorial";
+
+
+const appSteps = appTutor();
 
 class ClusterInstReg extends React.Component {
     constructor(props) {
@@ -35,6 +39,7 @@ class ClusterInstReg extends React.Component {
         this.appInstanceList = []
         this.configOptions = [constant.CONFIG_ENV_VAR, constant.CONFIG_HELM_CUST]
         this.originalData = undefined
+        this.expandAdvanceMenu = false
         //To avoid refetching data from server
     }
 
@@ -317,6 +322,20 @@ class ClusterInstReg extends React.Component {
         this.checkForms(form, forms)
     }
 
+    advanceMenu = (e, form) => {
+        this.expandAdvanceMenu = !this.expandAdvanceMenu
+        form.icon = this.expandAdvanceMenu ? 'expand_more' : 'expand_less'
+        let forms = this.state.forms
+
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (form.advance !== undefined) {
+                form.advance = this.expandAdvanceMenu
+            }
+        }
+        this.reloadForms()
+    }
+
     onUpgradeResponse = (mcRequest) => {
         this.props.handleLoadingSpinner(false)
         if (mcRequest) {
@@ -497,7 +516,7 @@ class ClusterInstReg extends React.Component {
                             portForm.value = portMinNo
                         }
                     }
-                    forms.splice(20 + multiFormCount, 0, this.getPortForm(portForms))
+                    forms.splice(13 + multiFormCount, 0, this.getPortForm(portForms))
                     multiFormCount += 1
                 }
             }
@@ -519,7 +538,7 @@ class ClusterInstReg extends React.Component {
                             annotationForm.value = value
                         }
                     }
-                    forms.splice(21 + multiFormCount, 0, this.getAnnotationForm(annotationForms))
+                    forms.splice(14 + multiFormCount, 0, this.getAnnotationForm(annotationForms))
                     multiFormCount += 1
                 }
             }
@@ -537,7 +556,7 @@ class ClusterInstReg extends React.Component {
                             configForm.value = config[fields.config]
                         }
                     }
-                    forms.splice(22 + multiFormCount, 0, this.getConfigForm(configForms))
+                    forms.splice(15 + multiFormCount, 0, this.getConfigForm(configForms))
                     multiFormCount += 1
                 }
             }
@@ -555,19 +574,20 @@ class ClusterInstReg extends React.Component {
             { field: fields.accessType, label: 'Access Type', formType: SELECT, placeholder: 'Select Access Type', rules: { required: true }, visible: true },
             { field: fields.imageType, label: 'Image Type', formType: INPUT, placeholder: 'Select Deployment Type', rules: { required: true, disabled: true }, visible: true, tip: 'ImageType specifies image type of an App' },
             { field: fields.imagePath, label: 'Image Path', formType: INPUT, placeholder: 'Enter Image Path', rules: { required: false }, visible: true, update: true, tip: 'URI of where image resides' },
-            { field: fields.authPublicKey, label: 'Auth Public Key', formType: TEXT_AREA, placeholder: 'Enter Auth Public Key', rules: { required: false }, visible: true, update: true, tip: 'auth_public_key' },
             { field: fields.flavorName, label: 'Default Flavor', formType: SELECT, placeholder: 'Select Flavor', rules: { required: true }, visible: true, update: true, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: fields.region }] },
-            { field: fields.privacyPolicyName, label: 'Default Privacy Policy', formType: SELECT, placeholder: 'Select Privacy Policy', rules: { required: false }, visible: true, update: true, tip: 'Privacy policy when creating auto cluster', dependentData: [{ index: 1, field: fields.region }] },
-            { field: fields.autoPolicyName, label: 'Auto Provisioning Policy', formType: SELECT, placeholder: 'Select Auto Provisioning Policy', rules: { required: false }, visible: true, update: true, tip: 'Select Auto Provisioning Policy', dependentData: [{ index: 1, field: fields.region }] },
-            { field: fields.officialFQDN, label: 'Official FQDN', formType: INPUT, placeholder: 'Enter Official FQDN', rules: { required: false }, visible: true, update: true, tip: 'Official FQDN' },
-            { field: fields.androidPackageName, label: 'Android Package Name', formType: INPUT, placeholder: 'Enter Package Name', rules: { required: false }, visible: true, update: true, tip: 'Package Name' },
-            { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: CHECKBOX, visible: false, value: false, update: true },
-            { field: fields.command, label: 'Command', formType: INPUT, placeholder: 'Enter Command', rules: { required: false }, visible: true, update: true, tip: 'Command that the container runs to start service' },
             { uuid: uuid(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, update: true, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
             { field: fields.refreshAppInst, label: 'Upgrade All App Instances', formType: CHECKBOX, visible: this.isUpdate, value: false, tip: 'Upgrade App Instances running in the cloudlets' },
-            { label: 'Ports', formType: 'Header', forms: [{ formType: BUTTON, label: 'Add Port Mapping', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getPortForm }, { formType: BUTTON, label: 'Add Multiport Mapping', visible: true, onClick: this.addMultiForm, multiForm: this.getMultiPortForm }], visible: true, tip: 'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443' },
-            { label: 'Annotations', formType: 'Header', forms: [{ formType: BUTTON, label: 'Add Annotation', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getAnnotationForm }], visible: false },
-            { label: 'Configs', formType: 'Header', forms: [{ formType: BUTTON, label: 'Add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getConfigForm }], visible: false }
+            { label: 'Ports', formType: 'Header', forms: [{ formType: ICON_BUTTON, label: 'Add Port Mappings', icon: 'add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getPortForm }, { formType: ICON_BUTTON, label: 'Add Multiport Mappings', icon: 'add_mult', visible: true, onClick: this.addMultiForm, multiForm: this.getMultiPortForm }], visible: true, tip: 'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443' },
+            { label: 'Annotations', formType: 'Header', forms: [{ formType: ICON_BUTTON, label: 'Add Annotations', icon: 'add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getAnnotationForm }], visible: false, tip: 'Annotations is a comma separated map of arbitrary key value pairs' },
+            { label: 'Configs', formType: 'Header', forms: [{ formType: ICON_BUTTON, label: 'Add Configs', icon: 'add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getConfigForm }], visible: false, tip: 'Customization files passed through to implementing services' },
+            { label: 'Advanced Settings', formType: 'Header', forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
+            { field: fields.authPublicKey, label: 'Auth Public Key', formType: TEXT_AREA, placeholder: 'Enter Auth Public Key', rules: { required: false }, visible: true, update: true, tip: 'public key used for authentication', advance: false },
+            { field: fields.privacyPolicyName, label: 'Default Privacy Policy', formType: SELECT, placeholder: 'Select Privacy Policy', rules: { required: false }, visible: true, update: true, tip: 'Privacy policy when creating auto cluster', dependentData: [{ index: 1, field: fields.region }], advance: false },
+            { field: fields.autoPolicyName, label: 'Auto Provisioning Policy', formType: SELECT, placeholder: 'Select Auto Provisioning Policy', rules: { required: false }, visible: true, update: true, tip: 'Auto provisioning policy name', dependentData: [{ index: 1, field: fields.region }], advance: false },
+            { field: fields.officialFQDN, label: 'Official FQDN', formType: INPUT, placeholder: 'Enter Official FQDN', rules: { required: false }, visible: true, update: true, tip: 'Official FQDN is the FQDN that the app uses to connect by default', advance: false },
+            { field: fields.androidPackageName, label: 'Android Package Name', formType: INPUT, placeholder: 'Enter Package Name', rules: { required: false }, visible: true, update: true, tip: 'Android package name used to match the App name from the Android package', advance: false },
+            { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: CHECKBOX, visible: false, value: false, update: true, advance: false, tip: 'Option to run App on all nodes of the cluster' },
+            { field: fields.command, label: 'Command', formType: INPUT, placeholder: 'Enter Command', rules: { required: false }, visible: true, update: true, tip: 'Command that the container runs to start service', advance: false },
         ]
     }
 
@@ -620,7 +640,7 @@ class ClusterInstReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <div className="grid_table" style={{ height: constant.getHeight(), overflow: 'auto' }}>
+                <div className="grid_table" >
                     <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                 </div>
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
@@ -630,7 +650,9 @@ class ClusterInstReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data)
+        this.props.handleViewMode( appSteps.stepsCreateApp )
     }
+
 };
 
 const mapStateToProps = (state) => {
@@ -655,7 +677,8 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
+        handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
     };
 };
 

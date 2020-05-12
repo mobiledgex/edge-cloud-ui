@@ -35,7 +35,8 @@ const StyledTableCell = withStyles((theme) => ({
         maxWidth:250,
         overflow:'hidden',
         textOverflow:'ellipsis',
-        borderBottom: 'none'
+        borderBottom: 'none',
+        height:50 
     },
 }))(TableCell);
 
@@ -311,7 +312,7 @@ export default function EnhancedTable(props) {
 
     const getAction = (item) => {
         return (
-            <IconButton aria-label="Action" onClick={(e) => { setActionEl(e.currentTarget) }}>
+            <IconButton aria-label="Action" className='buttonActions' onClick={(e) => { setActionEl(e.currentTarget) }}>
                 <ListIcon style={{ color: '#76ff03' }} />
             </IconButton>
         )
