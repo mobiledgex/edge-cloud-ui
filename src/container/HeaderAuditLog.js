@@ -206,6 +206,10 @@ class HeaderAuditLog extends React.Component {
         }
     };
 
+    onClickClose = () => {
+        this.props.close()
+    };
+
     handleExpandedChange = (index) => (event, newExpanded) => {
         let dayData = this.state.dayData;
         this.props.onItemSelected(dayData[index].traceid, index)
@@ -333,7 +337,7 @@ class HeaderAuditLog extends React.Component {
         const {dayData, groups} = this.state
         return (
             <div style={{"backgroundColor":"black", "width":"500px", "height":"1000px", "overflow":"scroll"}}>
-                <strong>Audit Log</strong>
+                <strong>Audit Log</strong><button onClick={this.onClickClose}>X</button>
                 <Dropdown
                     placeholder='indivisual'
                     fluid

@@ -8,6 +8,7 @@ import {connect} from 'react-redux';
 import * as actions from '../actions';
 import * as serviceMC from '../services/serviceMC';
 import PopDetailViewer from '../container/popDetailViewer';
+import PopSecondDetailViewer from '../container/popSecondDetailViewer';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import {CircularProgress, IconButton, Step, StepLabel, Stepper} from '@material-ui/core';
 import {CODE_FAILED, CODE_FAILED_403, CODE_FINISH} from "../hoc/stepper/mexMessageMultiStream";
@@ -32,7 +33,12 @@ class headerGlobalAudit extends React.Component {
             unCheckedErrorCount: 0,
             errorCount: 0,
             tabValue: 0,
-            openDetail: false
+            openDetail: false,
+            secondRawViewData: [],
+            secondRequestData: [],
+            secondResponseData: [],
+            secondOpenDetail:false,
+            isOpen: false
         }
     }
 
@@ -159,16 +165,37 @@ class headerGlobalAudit extends React.Component {
     }
 
     onPopupDetail = (rawViewData, requestData, responseData) => {
-        this.setState({
-            rawViewData:rawViewData,
-            requestData:requestData,
-            responseData:responseData,
-            openDetail:true
-        })
+        if(this.state.openDetail){
+            this.setState({
+                secondRawViewData:rawViewData,
+                secondRequestData:requestData,
+                secondResponseData:responseData,
+                secondOpenDetail:true
+            })
+        } else {
+            this.setState({
+                rawViewData:rawViewData,
+                requestData:requestData,
+                responseData:responseData,
+                openDetail:true
+            })
+        }
     }
 
     closeDetail = () => {
-        this.setState({openDetail:false})
+        this.setState({openDetail:false, secondOpenDetail:false})
+    }
+
+    secondCloseDetail = () => {
+        this.setState({secondOpenDetail:false})
+    }
+
+    handleOpen = () => {
+        this.setState({ isOpen: true });
+    }
+
+    handleClose = () => {
+        this.setState({ isOpen: false });
     }
 
     render() {
@@ -182,11 +209,13 @@ class headerGlobalAudit extends React.Component {
                             <AccountCircleOutlinedIcon fontSize='default'/>{this.state.errorCount}
                         </IconButton>
                     }
-                    content={<HeaderAuditLog devData={this.state.devData} onItemSelected={this.onItemSelected} detailView={this.onPopupDetail} />}
+                    content={<HeaderAuditLog devData={this.state.devData} onItemSelected={this.onItemSelected} detailView={this.onPopupDetail} close={this.handleClose} />}
                     on='click'
-                    position='bottom right'
+                    position='bottom center'
                     className="table_actions_popup gnb_profile"
                     basic
+                    open={this.state.isOpen}
+                    onOpen={this.handleOpen}
                 />
                 <PopDetailViewer
                     rawViewData={this.state.rawViewData}
@@ -195,6 +224,14 @@ class headerGlobalAudit extends React.Component {
                     dimmer={false}
                     open={this.state.openDetail}
                     close={this.closeDetail}
+                />
+                <PopDetailViewer
+                    rawViewData={this.state.secondRawViewData}
+                    requestData={this.state.secondRequestData}
+                    responseData={this.state.secondResponseData}
+                    dimmer={false}
+                    open={this.state.secondOpenDetail}
+                    close={this.secondCloseDetail}
                 />
             </div >
         )
