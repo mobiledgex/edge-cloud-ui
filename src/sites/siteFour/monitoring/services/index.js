@@ -1,6 +1,7 @@
 import * as serviceMC from "../../../../services/model/serviceMC";
 import * as serverData from "../../../../services/model/serverData";
 import * as Cloudlet from "./model/cloudlet";
+import * as Appinst from "./model/appinst";
 import * as Events from "./model/events";
 
 interface MetricsParmaType {
@@ -47,6 +48,15 @@ const getListCloud = (self, params) => {
     Cloudlet.getCloudletList(self, params);
     /* Through the result to the ContainerWrapper.onLoadComplete after success execute getCloudletList */
 };
+/***********************************
+ * LIST APPINSTANCE
+ ************************************/
+const getListAppinst = async (self, params) => {
+    /* First, need to get data for all appinstance */
+    return await Appinst.getAppinstanceList(self, params)
+};
+
+
 /***********************************
  * METRICS CLOUDLET
  ************************************/
@@ -111,7 +121,7 @@ const getEventCloudlet = async (self, params) => {
 };
 
 /***********************************
- * METHOD CLIENT
+ * METRICS CLIENT
  * {
   "region": "local",
   "appinst": {
@@ -157,6 +167,8 @@ let cloudletList = [];
 const MetricsService = async (defaultValue: MetricsParmaType, self: any) => {
     if (defaultValue.method === serviceMC.getEP().SHOW_CLOUDLET) {
         return await getListCloud(self, defaultValue);
+    } else if (defaultValue.method === serviceMC.getEP().SHOW_APP_INST) {
+        return await getListAppinst(self, defaultValue);
     }
     if (defaultValue.method === serviceMC.getEP().EVENT_CLOUDLET) {
         //this.props.handleLoadingSpinner(true);
@@ -168,12 +180,12 @@ const MetricsService = async (defaultValue: MetricsParmaType, self: any) => {
         let result = await getMetricsCloudlet(self, defaultValue);
     }
 
-    // if (defaultValue.method === serviceMC.getEP().METHOD_CLIENT) {
-    //     return await serviceMC.sendSyncRequest(
-    //         self,
-    //         getMethodClient(defaultValue.self, defaultValue)
-    //     );
-    // }
+    if (defaultValue.method === serviceMC.getEP().METRICS_CLIENT) {
+        return await serviceMC.sendSyncRequest(
+            self,
+            getMethodClient(defaultValue.self, defaultValue)
+        );
+    }
 };
 
 export default MetricsService;

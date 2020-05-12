@@ -34,10 +34,10 @@ class MonitoringAdmin extends React.Component {
 
     async initialize(props: any, self: any) {
         try {
-            //TODO :
-
+            /**  As result call method which << this.onReceiveResult >> */
             if (props.method) {
-                await MetricsService(props, self);
+                let resultMetrics = await MetricsService(props, self);
+                console.log("20200512 result of init ---- ", resultMetrics)
             }
         } catch (e) {
             console.log(e);
@@ -60,10 +60,25 @@ class MonitoringAdmin extends React.Component {
             doCloudlets = true;
             regionCount = regions.length;
             count = regions.length;
+            /** 
+             * NEED FOR LIST OF CLOUDLET 
+             * get data all of the cloudlets to get metrics data
+             * */
             this.initialize(
                 {
                     method: serviceMC.getEP().SHOW_CLOUDLET,
-                    region: regions
+                    regions: regions
+                },
+                this
+            );
+            /** 
+             * NEED FOR LIST OF APPINSTANCE
+             * get data all of the appinstance 
+             * */
+            this.initialize(
+                {
+                    method: serviceMC.getEP().SHOW_APP_INST,
+                    regions: regions
                 },
                 this
             );

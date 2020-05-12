@@ -82,13 +82,13 @@ const onServerResponse = mcRequestList => {
     });
 };
 
-const dataFromServer = async (region, self, method) => {
+const dataFromServer = async (regions, self, method) => {
     dataList = [];
     filterList = [];
     selected = [];
     let requestInfo = _requestInfo;
     if (requestInfo) {
-        let filterList = getFilterInfo(requestInfo(), region);
+        let filterList = getFilterInfo(requestInfo(), regions);
         requestCount = filterList.length;
         if (filterList && filterList.length > 0) {
             //self.props.handleLoadingSpinner(true);

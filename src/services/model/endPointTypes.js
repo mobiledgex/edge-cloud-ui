@@ -89,7 +89,7 @@ export const DELETE_PRIVACY_POLICY = "DeletePrivacyPolicy";
 export const EVENT_CLOUDLET = "CloudletLevelEvents";
 export const METRICS_CLOUDLET = "cloudlet";
 export const METRICS_CLUSTER = "cluster";
-export const METHOD_CLIENT = "MethodClient";
+export const METRICS_CLIENT = "client";
 
 export function getPath(request) {
     switch (request.method) {
@@ -179,10 +179,8 @@ export function getPath(request) {
         /** @Smith */
         case METRICS_CLUSTER:
         case METRICS_CLOUDLET:
+        case METRICS_CLIENT:
             return `/api/v1/auth/metrics/${request.method}`;
-        case METHOD_CLIENT:
-            return "/api/v1/auth/metrics/client";
-
 
         case SHOW_CLOUDLET_LINKORG:
             return `/api/v1/auth/orgcloudletpool/show`;
