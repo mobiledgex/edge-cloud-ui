@@ -3,6 +3,7 @@ import * as React from 'react';
 import {useEffect, useState} from 'react';
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import {FixedSizeList} from "react-window";
+import {reduceString} from "../dev/PageDevMonitoringService";
 
 const FontAwesomeIcon = require('react-fontawesome')
 type Props = {
@@ -20,7 +21,7 @@ function getWindowDimensions() {
 }
 
 
-export default function AppInstEventLogListHookVirtualScroll(props) {
+export default function AppInstEventLogListContainer(props) {
     const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
     let itemHeight = 55
 
@@ -156,6 +157,9 @@ export default function AppInstEventLogListHookVirtualScroll(props) {
                                                 <div>
                                                     {props.eventLogList[index][1].toString().substring(15, props.eventLogList[index][1].toString().length)}
                                                 </div>
+                                                <div>
+                                                    {index.toString()}
+                                                </div>
                                             </React.Fragment>
                                             :
                                             <React.Fragment>
@@ -169,12 +173,11 @@ export default function AppInstEventLogListHookVirtualScroll(props) {
                                                 </div>
                                                 <div style={{fontSize: 12,}}>
                                                     <div>
-                                                        {props.eventLogList[index][3]}
+                                                        {reduceString(props.eventLogList[index][3], 30)} {/*cluster*/}
                                                     </div>
                                                     <div>
-                                                        [{props.eventLogList[index][5]}]
+                                                        [{reduceString(props.eventLogList[index][5], 30)}] {/*cloudlet*/}
                                                     </div>
-
                                                 </div>
                                             </React.Fragment>
                                         }

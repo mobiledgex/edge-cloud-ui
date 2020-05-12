@@ -82,7 +82,7 @@ import {
     PageDevMonitoringMapStateToProps
 } from "./PageDevMonitoringProps";
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
-import AppInstEventLogListHookVirtualScroll from "../components/AppInstEventLogListHookVirtualScroll";
+import AppInstEventLogListContainer from "../components/AppInstEventLogListContainer";
 import {fields} from '../../../../services/model/format'
 
 const {Option} = Select;
@@ -1162,7 +1162,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                     return this.state.loading ? renderPlaceHolderLoader() :
-                        <AppInstEventLogListHookVirtualScroll
+                        <AppInstEventLogListContainer
                             currentAppInst={this.state.currentAppInst}
                             parent={this}
                             handleAppInstDropdown={this.handleAppInstDropdown}
