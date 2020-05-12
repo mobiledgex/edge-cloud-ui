@@ -1,7 +1,7 @@
 import axios from "axios";
 import type {TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../shared/Types";
-import {SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../services/endPointTypes";
-import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../shared/Constants";
+import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../services/endPointTypes";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT} from "../../../shared/Constants";
 import {sendSyncRequest} from "../../../services/serviceMC";
 import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
 import {formatData} from "../../../services/formatter/formatComputeInstance";
@@ -123,73 +123,53 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
 }
 
-export const getAppInstList = async (pArrayRegion = localStorage.getItem('regions').split(","), type: string = '') => {
+export const showAppInst = async (serviceBody, store) => {
+    return await axios({
+        url: '/api/v1/auth/ctrl/ShowAppInst',
+        method: 'post',
+        data: serviceBody['params'],
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + store.userToken
+        },
+        timeout: 15 * 1000
+    }).then(async response => {
+        let parseData = JSON.parse(JSON.stringify(response));
 
+        if (parseData.data === '') {
+            return null;
+        } else {
+            let finalizedJSON = formatData(parseData, serviceBody)
+            return finalizedJSON;
+        }
+
+    }).catch(e => {
+        //showToast(e.toString())
+    })
+}
+
+
+
+
+export const getAppInstList = async (pRegionList = localStorage.getItem('regions').split(","), type: string = '') => {
+    let promiseList = []
     try {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        for (let index = 0; index < pRegionList.length; index++) {
+            let requestData = {showSpinner: false, token: store.userToken, method: SHOW_APP_INST, data: {region: pRegionList[index]}}
+            promiseList.push(sendSyncRequest(this, requestData))
+        }
+
+        let promisedShowAppInstList = await Promise.all(promiseList);
+
         let mergedAppInstanceList = [];
+        promisedShowAppInstList.map((item, index) => {
+            let listOne = item.response.data;
+            let mergedList = mergedAppInstanceList.concat(listOne);
+            mergedAppInstanceList = mergedList;
+        })
 
-        for (let index = 0; index < pArrayRegion.length; index++) {
-            let serviceBody = {
-                "token": store.userToken,
-                "params": {
-                    "region": pArrayRegion[index],
-                    "appinst": {
-                        "key": {
-                            "app_key": {
-                                "organization": localStorage.selectOrg,
-                            }
-                        }
-                    }
-                }
-            }
-
-
-            let responseResult = await axios({
-                url: '/api/v1/auth/ctrl/ShowAppInst',
-                method: 'post',
-                data: serviceBody['params'],
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: 'Bearer ' + store.userToken
-                },
-                timeout: 15 * 1000
-            }).then(async response => {
-                let parseData = JSON.parse(JSON.stringify(response));
-
-                if (parseData.data === '') {
-                    return null;
-                } else {
-                    let finalizedJSON = formatData(parseData, serviceBody)
-                    return finalizedJSON;
-                }
-
-            }).catch(e => {
-                //showToast(e.toString())
-            }).finally(() => {
-
-            })
-
-            if (responseResult !== null) {
-                let mergedList = mergedAppInstanceList.concat(responseResult);
-                mergedAppInstanceList = mergedList;
-            }
-
-        }
-
-        if (type === USER_TYPE.ADMIN) {
-            let appInstListWithVersion = []
-            mergedAppInstanceList.map(item => {
-                item.AppName = item.AppName + "[" + item.ClusterInst + "]";
-                item.appName = item.AppName + "[" + item.ClusterInst + "]";
-                appInstListWithVersion.push(item);
-            })
-            return appInstListWithVersion;
-        } else {
-
-        }
-        return mergedAppInstanceList
-
+        return mergedAppInstanceList;
 
     } catch (e) {
         //throw new Error(e)
@@ -315,9 +295,9 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
 
         //todo: Bring health check list(cpu,mem,network,disk..) to the number of apps instance, by parallel request
-        let appInstanceHealthCheckList = []
+        let appInstanceHwUsageList = []
         try {
-            appInstanceHealthCheckList = await Promise.all(promiseList);
+            appInstanceHwUsageList = await Promise.all(promiseList);
         } catch (e) {
             //throw new Error(e)
         }
@@ -326,7 +306,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
         appInstanceList.map((item, index) => {
             usageListForAllInstance.push({
                 instanceData: appInstanceList[index],
-                appInstanceHealth: appInstanceHealthCheckList[index],
+                appInstanceHealth: appInstanceHwUsageList[index],
             });
         })
 

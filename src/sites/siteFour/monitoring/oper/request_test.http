@@ -1,0 +1,59 @@
+POST https://console-qa.mobiledgex.net:443/api/v1/auth/metrics/app
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODkzMzA1NzcsImlhdCI6MTU4OTI0NDE3NywidXNlcm5hbWUiOiJ0ZXN0dXNlciIsImVtYWlsIjoiYXNodXRvc2guYmhhdHQrdGVzdHVzZXJAbW9iaWxlZGdleC5jb20iLCJraWQiOjJ9.R1oNyf5CtKEG9Lr8gJY3WzjUPb-92RTmCbiPdeITJ__IBYTepbo8ZbzwkueN6w8f2fXNFGp5_NpUYXVaaXsYhQ
+
+{
+  "region": "EU",
+  "appinst": {
+    "app_key": {
+      "organization": "MobiledgeX",
+      "name": "andygpu1",
+      "version": "1.0"
+    },
+    "cluster_inst_key": {
+      "cluster_key": {
+        "name": "DefaultVMCluster"
+      },
+      "cloudlet_key": {
+        "name": "automationDusseldorfCloudlet",
+        "organization": "TDG"
+      }
+    }
+  },
+  "selector": "*",
+  "last": 50
+}
+
+
+
+###
+
+POST https://console-qa.mobiledgex.net:443/api/v1/auth/metrics/app
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODkzMzA1NzcsImlhdCI6MTU4OTI0NDE3NywidXNlcm5hbWUiOiJ0ZXN0dXNlciIsImVtYWlsIjoiYXNodXRvc2guYmhhdHQrdGVzdHVzZXJAbW9iaWxlZGdleC5jb20iLCJraWQiOjJ9.R1oNyf5CtKEG9Lr8gJY3WzjUPb-92RTmCbiPdeITJ__IBYTepbo8ZbzwkueN6w8f2fXNFGp5_NpUYXVaaXsYhQ
+
+{
+  "region": "US",
+  "appinst": {
+    "app_key": {
+      "organization": "MobiledgeX",
+      "name": "MEXPrometheusAppName",
+      "version": "1.0"
+    },
+    "cluster_inst_key": {
+      "cluster_key": {
+        "name": "k8scluster"
+      },
+      "cloudlet_key": {
+        "name": "andy",
+        "organization": "Packet"
+      }
+    }
+  },
+  "selector": "*",
+  "last": 10,
+  "starttime": "2019-05-14T11:47:00Z",
+  "endtime": "2020-05-12T11:47:00Z"
+}
+
+###

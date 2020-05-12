@@ -84,7 +84,6 @@ import {
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListHookVirtualScroll from "../components/AppInstEventLogListHookVirtualScroll";
 import {fields} from '../../../../services/model/format'
-import GlobePopupContainer from "../components/GlobePopupContainer";
 
 const {Option} = Select;
 const ASubMenu = AMenu.SubMenu;
@@ -1931,12 +1930,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         width: this.state.currentWidth,
                         height: '100%',
                     }}>
-                        <GlobePopupContainer
+                    {/*    <GlobePopupContainer
                             clientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
                             parent={this}
                             isOpenGlobe={this.state.isOpenGlobe}
                             appInstanceListGroupByCloudlet={this.state.appInstanceListGroupByCloudlet}
-                        />
+                        />*/}
                         <AddItemPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}/>
                         <MiniModalGraphContainer selectedClusterUsageOne={this.state.selectedClusterUsageOne}
                                                  selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
