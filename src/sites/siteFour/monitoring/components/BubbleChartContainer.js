@@ -115,7 +115,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                     }}>
                                         <div className='page_monitoring_title'
                                              style={{
-                                                 fontFamily: 'Ubuntu',
+                                                 fontFamily: 'Roboto',
                                                  display: 'flex',
                                                  flex: 1,
                                                  marginTop: 5,

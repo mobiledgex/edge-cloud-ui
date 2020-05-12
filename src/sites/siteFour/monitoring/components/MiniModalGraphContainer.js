@@ -159,7 +159,7 @@ export default class MiniModalGraphContainer extends React.Component<Props, Stat
                             style={{
                                 flex: .13,
                                 color: 'white',
-                                fontFamily: 'ubuntu',
+                                fontFamily: 'Roboto',
                                 fontSize: 18,
                                 fontWeight: 'bold',
                                 textAlign: 'right',

@@ -336,7 +336,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         {/*@todo:###############################*/}
                         {this.state.isShowHWDropDown && <div>
                             <div className='page_monitoring_form_row'>
-                                <div className='page_monitoring_form_column_left' style={{fontFamily: 'ubuntu'}}>
+                                <div className='page_monitoring_form_column_left' style={{fontFamily: 'Roboto'}}>
                                     <Center>
                                         HW Type
                                     </Center>
@@ -361,7 +361,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         </div>}
                         {this.state.isShowEventLog &&
                         <div className='page_monitoring_form_row'>
-                            <div className='page_monitoring_form_column_left' style={{fontFamily: 'ubuntu'}}>
+                            <div className='page_monitoring_form_column_left' style={{fontFamily: 'Roboto'}}>
                                 <Center>
                                     Event Log Type
                                 </Center>
@@ -389,7 +389,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         {/*blank*/}
                         {this.state.isShowEventLog === false && this.state.isShowHWDropDown === false &&
                         <div className='page_monitoring_form_row'>
-                            <div className='page_monitoring_form_column_left' style={{fontFamily: 'ubuntu', height: 30}}>
+                            <div className='page_monitoring_form_column_left' style={{fontFamily: 'Roboto', height: 30}}>
                                 &nbsp;
                             </div>
                         </div>

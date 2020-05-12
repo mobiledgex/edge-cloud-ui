@@ -407,7 +407,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     <Popup className='clientPopup'
                                            style={{fontSize: 11}}>
                                         <div style={{display: 'flex'}}>
-                                            <div style={{color: 'white', fontFamily: 'ubuntu'}}>
+                                            <div style={{color: 'white', fontFamily: 'Roboto'}}>
                                                 {item.uuid}
                                             </div>
                                         </div>

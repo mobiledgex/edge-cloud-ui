@@ -41,7 +41,7 @@ export default function AppInstEventLogListContainer(props) {
 
 
     return (
-        <div style={{fontFamily: 'ubuntu'}}>
+        <div style={{fontFamily: 'Roboto'}}>
             <div style={{
                 display: 'flex',
                 width: '100%',
@@ -51,7 +51,7 @@ export default function AppInstEventLogListContainer(props) {
                      style={{
                          flex: 1,
                          marginTop: 10,
-                         fontFamily: 'Ubuntu',
+                         fontFamily: 'Roboto',
                      }}
                 >
                     App Inst Event Log
@@ -61,7 +61,7 @@ export default function AppInstEventLogListContainer(props) {
             <table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll', marginTop: -10}}
                    stickyHeader={true}>
 
-                <thead style={{backgroundColor: 'red', fontFamily: 'Ubuntu', zIndex: 99999999999,}}>
+                <thead style={{backgroundColor: 'red', fontFamily: 'Roboto', zIndex: 99999999999,}}>
                 <tr style={{display: 'flex', backgroundColor: '#303030'}}>
                     <td padding={'none'} align="center"
                         style={{

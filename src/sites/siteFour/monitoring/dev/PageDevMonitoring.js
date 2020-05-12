@@ -1984,11 +1984,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                      }}>
                                     {/*desc: no item message for cluster*/}
                                     {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER && this.state.layoutForCluster.length === 0 &&
-                                    <div style={{marginLeft: 15, marginTop: 10, fontSize: 25, fontFamily: 'ubuntu', color: 'rgba(255,255,255,.6)'}}>No Item</div>
+                                    <div style={{marginLeft: 15, marginTop: 10, fontSize: 25, fontFamily: 'Roboto', color: 'rgba(255,255,255,.6)'}}>No Item</div>
                                     }
                                     {/*desc: no item message for appInst*/}
                                     {!this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST && this.state.layoutForAppInst.length === 0 &&
-                                    <div style={{marginLeft: 15, marginTop: 10, fontSize: 25, fontFamily: 'ubuntu', color: 'rgba(255,255,255,.6)'}}>No Item</div>
+                                    <div style={{marginLeft: 15, marginTop: 10, fontSize: 25, fontFamily: 'Roboto', color: 'rgba(255,255,255,.6)'}}>No Item</div>
                                     }
                                     {this.state.currentClassification === CLASSIFICATION.CLUSTER
                                         ? this.renderGridLayoutForCluster()
